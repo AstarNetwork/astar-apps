@@ -8,8 +8,7 @@ import {
 } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
-import { objToArray } from 'src/hooks/helper/common';
-import { calUsdAmount } from 'src/hooks/helper/price';
+import { objToArray, calUsdAmount } from '@astar-network/astar-sdk-core';
 import { Erc20Token } from 'src/modules/token/index';
 import { castCbridgeToErc20, getRegisteredERC20Token } from 'src/modules/token/utils/index';
 import { container, Guard } from 'src/v2/common';

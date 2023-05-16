@@ -1,14 +1,4 @@
-export {
-  getDappAddressEnum,
-  getDappStakers,
-  getLatestStakePoint,
-  getStakeInfo,
-  checkIsLimitedProvider,
-} from 'src/modules/dapp-staking/utils';
-
-export type ContractEvm = {
-  Evm: string;
-};
+export { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
 
 export interface StakingData {
   address: string;

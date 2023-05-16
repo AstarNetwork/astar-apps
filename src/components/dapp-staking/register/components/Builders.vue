@@ -10,11 +10,11 @@
           v-for="(developer, index) in data.developers"
           :key="index"
           :description="developer.name"
+          :base64-image="developer.iconFile"
           :can-remove-card="true"
           @remove="removeDeveloper(index)"
           @click="editDeveloper(index)"
         >
-          <avatar :url="developer.iconFile" class="avatar" />
         </image-card>
         <image-card
           :description="$t('dappStaking.modals.addAccount')"
@@ -48,14 +48,13 @@ import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
 import ItemsContainer from './ItemsContainer.vue';
 import ModalAddDeveloper from './ModalAddDeveloper.vue';
-import Avatar from 'src/components/common/Avatar.vue';
-import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
+import { NewDappItem } from 'src/store/dapp-staking/state';
+import { Developer } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
     ItemsContainer,
     ImageCard,
-    Avatar,
     AddItemCard,
     ModalAddDeveloper,
   },

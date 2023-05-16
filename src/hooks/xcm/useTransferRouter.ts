@@ -16,12 +16,18 @@ import { Asset, astarChains } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
-import { capitalize } from 'src/hooks/helper/common';
+import { capitalize } from '@astar-network/astar-sdk-core';
+import { Path } from 'src/router';
+import { productionOrigin } from 'src/links';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
+// e.g.: endpointKey.SHIDEN;
+const disabledXcmChain = undefined;
+const disabledXcmParachains: string[] = [];
+
 export interface NetworkFromTo {
   from: string;
   to: string;
@@ -344,10 +350,37 @@ export function useTransferRouter() {
     }
   };
 
+  const checkIsDisabledToken = (originChain: string): boolean => {
+    if (!originChain) return false;
+    return !!disabledXcmParachains.find((it) => it === originChain);
+  };
+
+  const isDisableXcmEnvironment = computed<boolean>(() => {
+    const isProductionPage = window.location.origin === productionOrigin;
+    const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
+    const originChain = token.value ? token.value.originChain : '';
+    return checkIsDisabledToken(originChain) || (isDisabledXcmChain && isProductionPage);
+  });
+
+  const checkIsDisabledXcmChain = (from: string, to: string): boolean => {
+    if (!from || !to) return false;
+    const chains = disabledXcmParachains.map((it) => it.toLowerCase());
+    const isDisabled = chains.find((it) => it === from.toLowerCase() || it === to.toLowerCase());
+    return !!isDisabled || isDisableXcmEnvironment.value;
+  };
+
+  // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
+  const handleDisableXcmTransfer = (): void => {
+    if (checkIsDisabledXcmChain(from.value, to.value) && mode.value === 'xcm') {
+      router.push(Path.Assets);
+    }
+  };
+
   watchEffect(handleDefaultConfig);
   watchEffect(monitorProhibitedPair);
   watch([currentAccount, isH160, xcmAssets], handleIsFoundToken, { immediate: false });
   watchEffect(setNativeTokenBalance);
+  watchEffect(handleDisableXcmTransfer);
 
   return {
     tokenSymbol,
@@ -364,6 +397,7 @@ export function useTransferRouter() {
     token,
     tokens,
     chains,
+    isDisableXcmEnvironment,
     redirect,
     reverseChain,
     getFromToParams,

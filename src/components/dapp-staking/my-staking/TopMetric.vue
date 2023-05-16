@@ -11,7 +11,6 @@
         {{ $t('topMetric.wayOfStaking') }}
       </div>
     </div>
-    <snow-pack />
     <div class="wrapper--cards">
       <div class="card">
         <p>
@@ -103,26 +102,30 @@ import {
   AccountLedger,
   RewardDestination,
   useAccount,
-  useApr,
-  useAvgBlockTime,
+  useAprFromApi,
+  useAvgBlockTimeApi,
+  useCurrentEra,
   useNetworkInfo,
 } from 'src/hooks';
-import { formatNumber } from 'src/modules/token-api';
+import { formatNumber } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, SmartContractState } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
-import SnowPack from 'src/components/common/SnowPack.vue';
+
 export default defineComponent({
-  components: { PieChart, SnowPack },
+  components: { PieChart },
   setup() {
     const store = useStore();
-    const { stakerApr, stakerApy } = useApr();
+    const { stakerApr, stakerApy } = useAprFromApi();
     const { currentAccount } = useAccount();
-    const dappsCount = computed<DappCombinedInfo[]>(
-      () => store.getters['dapps/getRegisteredDapps']().length
+    const dappsCount = computed<number>(
+      () =>
+        store.getters['dapps/getRegisteredDapps']().filter(
+          (x: DappCombinedInfo) => x.contract.state === SmartContractState.Registered
+        ).length
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
     const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);
@@ -130,10 +133,11 @@ export default defineComponent({
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const { progress, etaNextEra } = useAvgBlockTime(path.value);
+    const { progress } = useCurrentEra();
+    const { etaNextEra } = useAvgBlockTimeApi(path.value);
 
     const hero_img = {
-      astar_hero: require('/src/assets/img/astar_hero.png'),
+      astar_hero: require('/src/assets/img/astar_hero.svg'),
       shiden_hero: require('/src/assets/img/shiden_hero.png'),
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();

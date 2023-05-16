@@ -5,7 +5,7 @@ import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo, RewardDestination } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
@@ -16,6 +16,9 @@ import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -56,11 +59,13 @@ export class DappStakingService implements IDappStakingService {
     fromContractId,
     targetContractId,
     address,
+    successMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
+    successMessage: string;
   }): Promise<void> {
     Guard.ThrowIfUndefined('fromContractId', fromContractId);
     Guard.ThrowIfUndefined('targetContractId', targetContractId);
@@ -71,29 +76,35 @@ export class DappStakingService implements IDappStakingService {
       fromContractId,
       targetContractId,
     });
-    await this.wallet.signAndSend(
-      stakeCall,
-      address,
-      `You successfully staked to ${targetContractId} from ${fromContractId}`
-    );
+    await this.wallet.signAndSend({
+      extrinsic: stakeCall,
+      senderAddress: address,
+      successMessage,
+    });
   }
 
-  public async stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void> {
+  public async stake(
+    contractAddress: string,
+    stakerAddress: string,
+    amount: BN,
+    successMessage: string
+  ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
 
     const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
-    await this.wallet.signAndSend(
-      stakeCall,
-      stakerAddress,
-      `You successfully staked to ${contractAddress}`
-    );
+    await this.wallet.signAndSend({
+      extrinsic: stakeCall,
+      senderAddress: stakerAddress,
+      successMessage,
+    });
   }
 
   public async unbondAndUnstake(
     contractAddress: string,
     stakerAddress: string,
-    amount: BN
+    amount: BN,
+    successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
@@ -102,11 +113,11 @@ export class DappStakingService implements IDappStakingService {
       contractAddress,
       amount
     );
-    await this.wallet.signAndSend(
-      unboundCall,
-      stakerAddress,
-      `You successfully started unbonding process for ${contractAddress}`
-    );
+    await this.wallet.signAndSend({
+      extrinsic: unboundCall,
+      senderAddress: stakerAddress,
+      successMessage,
+    });
   }
 
   /**
@@ -192,5 +203,33 @@ export class DappStakingService implements IDappStakingService {
     }
 
     return true;
+  }
+
+  public async sendTx({
+    senderAddress,
+    transaction,
+    finalizedCallback,
+  }: {
+    senderAddress: string;
+    transaction: SubmittableExtrinsic<'promise'>;
+    finalizedCallback: (result?: ISubmittableResult) => void;
+  }): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    Guard.ThrowIfUndefined('transaction', transaction);
+
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+      finalizedCallback: finalizedCallback,
+    });
+  }
+
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
+    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 }

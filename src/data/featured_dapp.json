@@ -1,0 +1,25 @@
+[
+  {
+    "img": "",
+    "category": "Developer Incentive",
+    "title": "",
+    "subtitle": "Join the community and know how it works",
+    "link": "https://docs.astar.network/docs/dapp-staking/"
+  },
+  {
+    "img": "",
+    "category": "EVM Staking",
+    "title": "Algem",
+    "subtitle": "dApp Staking is available on EVM",
+    "link": "https://app.algem.io/liquid-staking",
+    "gradient": ["#dcac45", "#0f0a40"]
+  },
+  {
+    "img": "https://storage.googleapis.com/astarnetwork-a4924.appspot.com/astar-dapps%2F0xcca488aeef7a1d5c633f877453784f025e7cf160_logo-without-text-light.png",
+    "category": "New Listing",
+    "title": "Sio2",
+    "subtitle": "Multi-VM Lending Hub on Astar for Polkadot",
+    "link": "https://www.sio2.finance/",
+    "gradient": ["#f35190", "#8332e9"]
+  }
+]

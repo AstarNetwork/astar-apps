@@ -13,25 +13,15 @@
     </div>
 
     <div class="container">
-      <div class="row">
-        <span class="text--title">{{
-          $t(
-            isH160
-              ? 'assets.evmAccount'
-              : isLockdropAccount
-              ? 'assets.lockdropAccount'
-              : 'assets.nativeAccount'
-          )
-        }}</span>
-        <span
-          v-if="isLockdropAccount"
-          class="text--switch-account"
-          @click="toggleEvmWalletSchema"
-          >{{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}</span
-        >
+      <div
+        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
+        class="row"
+      >
+        <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
+        <span class="text--switch-account" @click="toggleEvmWalletSchema">
+          {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
+        </span>
       </div>
-
-      <div class="border--separator" />
 
       <div class="row--details">
         <div class="column-account-name">
@@ -40,71 +30,70 @@
         </div>
         <div class="column-address-icons">
           <div class="column__address">
-            <span>{{
-              width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
-            }}</span>
+            <span>{{ getShortenAddress(currentAccount) }}</span>
           </div>
-          <div class="column__icons">
-            <div>
-              <button type="button" class="icon--primary" @click="copyAddress">
-                <astar-icon-copy />
-              </button>
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t('copy') }}</span>
-              </q-tooltip>
+          <div class="row__column--right">
+            <div class="screen--sm" :class="isH160 ? 'column--usd' : 'column--usd-native'">
+              <span class="text--accent">{{ $n(totalBal) }} USD</span>
             </div>
-            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <button class="icon--primary">
-                <astar-icon-external-link />
-              </button>
+            <div class="column__icons">
+              <div>
+                <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
+                  <astar-icon-copy />
+                </button>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t('copy') }}</span>
+                </q-tooltip>
+              </div>
+              <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+                <button class="icon--primary">
+                  <astar-icon-external-link />
+                </button>
 
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-              </q-tooltip>
-            </a>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+                </q-tooltip>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="border--separator" />
-
-      <div class="row">
+      <div class="row screen--phone">
         <span>{{ $t('assets.totalBalance') }}</span>
         <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
-        <span v-else class="text--total-balance">
-          ${{ $n(balUsd + ttlErc20Amount + ttlNativeXcmUsdAmount) }}
-        </span>
+        <span v-else class="text--total-balance"> ${{ $n(totalBal) }} </span>
       </div>
+      <native-asset-list v-if="!isH160" />
     </div>
   </div>
 </template>
 <script lang="ts">
+import { isValidEvmAddress, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { isValidEvmAddress } from 'src/config/web3';
 import {
   useAccount,
   useBalance,
-  useBreakpoints,
   useConnectWallet,
   useNetworkInfo,
   usePrice,
   useWalletIcon,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
-import {
-  getEvmMappedSs58Address,
-  getShortenAddress,
-  setAddressMapping,
-} from 'src/hooks/helper/addressUtils';
+import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 
 export default defineComponent({
+  components: {
+    NativeAssetList,
+  },
   props: {
     ttlErc20Amount: {
       type: Number,
@@ -121,7 +110,6 @@ export default defineComponent({
     const isLockdropAccount = ref<boolean>(false);
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName } = useAccount();
-    const { width, screenSize } = useBreakpoints();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -129,25 +117,29 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
-    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
     const { currentNetworkIdx } = useNetworkInfo();
-    const blockscout = computed(
+    const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
     );
-    const subScan = computed(
+    const subScan = computed<string>(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
+    );
+
+    const totalBal = computed<number>(
+      () => Number(balUsd.value) + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount
     );
 
     const copyAddress = () => {
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
-        alertType: 'success',
+        alertType: 'copied',
       });
     };
 
@@ -225,14 +217,14 @@ export default defineComponent({
       currentAccount,
       blockscout,
       subScan,
-      width,
       isDarkTheme,
-      screenSize,
       isH160,
       isEthWallet,
       balUsd,
       isLockdropAccount,
       isSkeleton,
+      totalBal,
+      ETHEREUM_EXTENSION,
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,

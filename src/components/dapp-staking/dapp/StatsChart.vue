@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data.length > 0">
+  <div v-if="data && data.length > 0">
     <chart-panel
       :data="data"
       :title="`chart.${statsType}.title`"
@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import ChartPanel from 'src/components/common/ChartPanel.vue';
-import { Duration, filterStatsData, StatsDetail, StatsType } from 'src/modules/token-api';
+import { Duration, filterStatsData, StatsDetail, StatsType } from '@astar-network/astar-sdk-core';
 import { defineComponent, PropType, ref, watchEffect } from 'vue';
 
 export default defineComponent({

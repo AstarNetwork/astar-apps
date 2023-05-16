@@ -9,19 +9,19 @@ span {
 .text--page-title {
   font-weight: 600;
   font-size: 26px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--xl {
   font-weight: 600;
   font-size: 22px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--title {
   font-weight: 700;
   font-size: 16px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text-color--neon {
@@ -29,38 +29,38 @@ span {
 }
 
 .text-color--disabled {
-  color: $gray-3 !important;
+  color: $gray-4 !important;
 }
 
 .text--xlg {
   font-weight: 400;
   font-size: 22px;
-  color: $gray-5;
+  color: $navy-1;
   line-height: 26px;
 }
 
 .text--lg {
   font-weight: 400;
   font-size: 16px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--md {
   font-weight: 400;
   font-size: 14px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--accent {
   font-weight: 700;
   font-size: 14px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--label {
   font-weight: 400;
   font-size: 14px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .text--tooltip {
@@ -72,7 +72,7 @@ span {
 .text--filter {
   font-weight: 400;
   font-size: 12px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .text--error {
@@ -82,7 +82,7 @@ span {
 }
 
 .text--color {
-  color: $gray-5-selected;
+  color: $navy-1;
 }
 
 .input--no-spin::-webkit-inner-spin-button,
@@ -97,7 +97,7 @@ input[type='number'] {
 }
 
 input::placeholder {
-  color: $gray-3 !important;
+  color: $navy-3 !important;
 }
 
 .body--dark {
@@ -117,7 +117,9 @@ input::placeholder {
   .text-color--neon {
     color: $astar-blue-dark;
   }
-
+  .text--label {
+    color: $gray-3;
+  }
   .text-color--disabled {
     color: $gray-4 !important;
   }

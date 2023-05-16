@@ -4,9 +4,9 @@ import { useGasPrice, useCustomSignature, useAccount } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
-import { buildEvmAddress } from 'src/config/web3';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
+import { buildEvmAddress } from '@astar-network/astar-sdk-core';
 
 export function useEvmDeposit(fn?: () => void) {
   const evmDeposit = ref<string>('0');

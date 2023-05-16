@@ -98,7 +98,7 @@ export default defineComponent({
 
 .body--dark {
   .toggle {
-    background-color: $gray-5-selected;
+    background-color: $gray-5;
   }
 
   .toggle-checked {

@@ -10,13 +10,15 @@ import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
 import { usePageReady } from 'src/hooks';
+import { generateMeta, meta } from 'src/config/metadata';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
     Dashboard,
   },
   setup() {
-    useMeta({ title: 'Dashboard' });
+    useMeta(generateMeta(Path.Dashboard));
     const { isReady } = usePageReady();
     return { isReady };
   },
@@ -26,6 +28,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dashboard {
+  padding: 0 16px;
   @media (min-width: $lg) {
     margin-top: 70px;
   }

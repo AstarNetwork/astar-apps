@@ -11,7 +11,7 @@ import { Dispatch } from 'vuex';
 import { HistoryTxType } from 'src/modules/account/index';
 import { SubstrateAccount } from 'src/store/general/state';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -50,7 +50,7 @@ export const getSelectedAccount = (accounts: SubstrateAccount[]): SubstrateAccou
   try {
     const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
     const selectedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-    if (selectedAddress === 'Ethereum Extension') {
+    if (selectedAddress === ETHEREUM_EXTENSION) {
       return undefined;
     }
 
@@ -123,7 +123,9 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
 };
 
 export const checkIsWalletExtension = async (): Promise<boolean> => {
-  const isSubstrateDappBrowser = !!window.injectedWeb3;
+  const isSubstrateDappBrowser = !!(
+    window.injectedWeb3 && JSON.stringify(window.injectedWeb3) !== '{}'
+  );
   const isEvmWalletExtension =
     typeof window.ethereum !== 'undefined' ||
     typeof window.SubWallet !== 'undefined' ||

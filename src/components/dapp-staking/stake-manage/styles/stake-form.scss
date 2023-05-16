@@ -15,7 +15,7 @@
   height: 88px;
   background: transparent;
 
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
   @media (min-width: $xs) {
     width: 344px;
   }
@@ -39,16 +39,43 @@
 }
 
 .row--box-error {
-  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  padding: 8px 16px;
+  margin-bottom: 5px;
   border-radius: 6px;
   width: 344px;
-  margin-bottom: 24px;
   border: 1px solid $warning-red;
   background: $box-red;
-  text-align: left;
   @media (min-width: $sm) {
     width: 412px;
   }
+}
+.row--box-warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  border: 1px solid $border-yellow;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 344px;
+  border-radius: 6px;
+  background: $transparent-yellow;
+  color: $warning-yellow;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+.text--dot {
+  font-size: 24px;
+  font-weight: 700;
+}
+.column--title {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
 }
 
 .box__row {
@@ -109,7 +136,7 @@
   background: transparent;
   text-align: right;
   font-weight: 600;
-  color: $gray-5;
+  color: $navy-1;
   justify-self: flex-end;
   @media (min-width: $md) {
     width: 278px;
@@ -128,8 +155,17 @@
 }
 
 .separator {
-  border-top: 1px solid $gray-4;
-  opacity: 0.5;
+  border-top: 1px solid;
+  border-image: linear-gradient(
+    90deg,
+    #e6007a -4%,
+    #e6007a -3.88%,
+    #703ac2 17.01%,
+    #0070eb 42.25%,
+    #0297fb 73.9%,
+    #0ae2ff 97.42%
+  );
+  border-image-slice: 1;
   margin: 6px 0;
 }
 
@@ -143,7 +179,7 @@
 .text--funds {
   font-weight: 600;
   font-size: 13px;
-  color: $gray-5;
+  color: $navy-1;
   @media (min-width: $md) {
     font-size: 16px;
   }
@@ -173,17 +209,17 @@
 
 .body--dark {
   .box--input-field {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
   input {
     color: white;
   }
+  .row--box-warning {
+    color: $gray-1;
+  }
   .row--box-error {
     background: $box-red-dark;
-  }
-  .text--to--balance {
-    color: $gray-4;
   }
   .text--funds {
     color: $gray-1;

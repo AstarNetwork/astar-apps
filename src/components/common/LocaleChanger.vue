@@ -23,12 +23,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { languagesSelector } from 'src/i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   data() {
+    const { locale } = useI18n();
+
+    watch(
+      [locale],
+      () => {
+        localStorage.setItem(LOCAL_STORAGE.SELECTED_LANGUAGE, locale.value);
+      },
+      { immediate: false }
+    );
+
     return { langs: languagesSelector };
   },
 });
@@ -42,16 +54,17 @@ export default defineComponent({
 }
 .select-language {
   background: #d3d6dc;
-  color: $gray-5;
+  color: $navy-1;
   width: 95px;
   height: 36px;
   padding-left: 15px;
   appearance: none;
   border-radius: 6px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 .icon--select {
-  color: $gray-5;
+  color: $navy-1;
 }
 
 @media (max-width: 768px) {
@@ -62,11 +75,11 @@ export default defineComponent({
 
 .body--dark {
   .select-language {
-    background: $gray-6;
-    color: $gray-1;
+    background: #9d9ccc;
+    color: black;
   }
   .icon--select {
-    color: $gray-1;
+    color: black;
   }
 }
 </style>

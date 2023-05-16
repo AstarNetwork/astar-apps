@@ -9,7 +9,7 @@
   max-width: 1290px;
 
   @media (min-width: $md) {
-    border-radius: 0px 0px 6px 6px;
+    border-radius: 6px;
   }
 
   @media (min-width: $xxl) {
@@ -122,6 +122,7 @@
 
       .txt--tvl {
         white-space: nowrap;
+        margin-right: 5px;
       }
 
       .detail-value {
@@ -183,6 +184,67 @@
       column-gap: 8px;
       margin-right: 16px;
       font-size: 20px;
+    }
+    @media (min-width: $xl) {
+      column-gap: 12px;
+      margin-right: 24px;
+    }
+  }
+
+  .button--not-active {
+    opacity: 0.5;
+    padding-bottom: 6px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease 0s;
+  }
+
+  .button--active {
+    padding-bottom: 6px;
+    border-bottom: 2px solid white;
+    transition: all 0.3s ease 0s;
+  }
+
+  .row--era-info {
+    @media (min-width: $lg) {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+
+  .box-pie-chart {
+    display: none;
+    @media (min-width: $lg) {
+      display: block;
+      margin-top: -32px;
+      margin-left: 8px;
+    }
+  }
+
+  .column--era-info {
+    display: flex;
+    column-gap: 4px;
+  }
+
+  .text--eta-next-era {
+    font-size: 11px;
+    padding-top: 2px;
+    @media (min-width: $md) {
+      display: none;
+    }
+    @media (min-width: $xl) {
+      display: block;
+      white-space: nowrap;
+    }
+  }
+
+  .column--apr-apy {
+    display: none;
+    @media (min-width: $lg) {
+      display: flex;
+      column-gap: 8px;
+      margin-right: 16px;
     }
     @media (min-width: $xl) {
       column-gap: 12px;

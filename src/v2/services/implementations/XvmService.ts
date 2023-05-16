@@ -1,4 +1,4 @@
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { inject, injectable } from 'inversify';
 import { XvmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
@@ -48,13 +48,14 @@ export class XvmService implements IXvmService {
 
     try {
       const transaction = await this.xvmRepository.getTransferCallData(param);
-      const hash = await this.wallet.signAndSend(
-        transaction,
-        param.senderAddress,
-        `You've successfully transferred ${param.amount} ${
+      const hash = await this.wallet.signAndSend({
+        extrinsic: transaction,
+        senderAddress: param.senderAddress,
+        // Todo: update translation file
+        successMessage: `You've successfully transferred ${param.amount} ${
           param.token.symbol
-        } to ${getShortenAddress(param.recipientAddress)}`
-      );
+        } to ${getShortenAddress(param.recipientAddress)}`,
+      });
       addXvmTxHistories({
         hash: String(hash),
         to: param.recipientAddress,

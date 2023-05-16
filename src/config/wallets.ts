@@ -1,4 +1,4 @@
-import { objToArray } from 'src/hooks/helper/common';
+import { objToArray } from '@astar-network/astar-sdk-core';
 
 // Memo: enum value comes from:
 //    const extensions = await getInjectedExtensions();

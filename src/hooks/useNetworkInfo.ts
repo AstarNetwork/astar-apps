@@ -9,6 +9,10 @@ import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 
+export function isCustomNetwork(network: string) {
+  return network === 'custom-network';
+}
+
 export function useNetworkInfo() {
   const store = useStore();
 

@@ -5,8 +5,8 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { fetchNativeBalance } from 'src/modules/account';
 import { ethers } from 'ethers';
+import { fetchNativeBalance } from '@astar-network/astar-sdk-core';
 
 interface Timestamps {
   lastRequestAt: number;
@@ -101,6 +101,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
       store.dispatch('general/showAlertMsg', {
         msg,
         alertType: 'success',
+        txHash: data.hash,
       });
       hash.value = data.hash;
     } catch (e: any) {

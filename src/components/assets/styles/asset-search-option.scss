@@ -5,19 +5,18 @@
   column-gap: 4px;
   align-items: center;
   @media (min-width: $xl) {
-    margin-right: 32px;
+    margin-right: 20px;
     column-gap: 12px;
   }
 }
 
 .box--search {
   position: relative;
+  border: 1px solid $navy-3;
   border-radius: 6px;
-  background-color: $gray-1;
   width: 150px;
-  height: 26px;
-  border: 1px solid transparent;
-  padding: 0 6px;
+  height: 30px;
+  padding: 2px 6px;
   border-radius: 6px;
 }
 
@@ -39,16 +38,19 @@
   padding: 0 4px;
   font-weight: 500;
   font-size: 14px;
-  background-color: $gray-1;
   transition: all 0.5s ease 0s;
   &:focus {
     transition: all 0.5s ease 0s;
     outline: none;
   }
+  &::placeholder {
+    color: $navy-3;
+    opacity: 1;
+  }
 }
 
 .icon--search {
-  stroke: $gray-3;
+  stroke: $navy-3;
   font-size: 20px;
   transition: all 0.4s ease 0s;
   color: transparent;
@@ -67,11 +69,12 @@
 
 .body--dark {
   .box--search {
-    background-color: $gray-5-selected;
+    background-color: $navy-1;
+    border: 1px solid $gray-5-selected-dark;
   }
 
   .input--search {
-    background-color: $gray-5-selected;
+    background-color: $navy-1;
   }
 
   .icon--search {
@@ -80,10 +83,10 @@
 
   .search--active {
     .box--search {
-      border: 1px solid $astar-blue-dark;
+      border: 1px solid $astar-blue;
     }
     .icon--search {
-      stroke: $astar-blue-dark;
+      stroke: $astar-blue;
     }
   }
 }

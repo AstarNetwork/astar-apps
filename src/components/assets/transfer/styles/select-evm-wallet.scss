@@ -40,17 +40,11 @@
   row-gap: 8px;
   padding: 9px 15px;
   border-radius: 6px;
-  width: 320px;
+  width: 344px;
   background: transparent;
-  border: 1px solid $gray-3;
-  @media (min-width: $xs) {
-    width: 344px;
-  }
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  border: 1px solid $gray-4;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -100,12 +94,12 @@
 }
 
 .input--chain {
-  width: 230px;
+  width: 244px;
   background-color: transparent;
   &:focus {
     outline: none;
   }
-  @media (min-width: $md) {
+  @media (min-width: $sm) {
     width: 320px;
   }
 }
@@ -113,7 +107,7 @@
 .icon--selector {
   height: 20px;
   width: 20px;
-  color: $gray-3;
+  color: $navy-1;
 }
 
 .body--dark {
@@ -121,12 +115,14 @@
     background: $gray-6;
   }
   .box--input-select-wallet {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-3;
   }
   .list {
     &:hover {
       background-color: $item--bg--hover-dark;
     }
+  }
+  .icon--selector {
+    color: $gray-1;
   }
 }

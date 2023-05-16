@@ -1,21 +1,26 @@
-import { bool } from '@polkadot/types';
+import {
+  getIndividualClaimTxs,
+  PayloadWithWeight,
+  ExtrinsicPayload,
+} from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
-import { TxType } from 'src/hooks/custom-signature/message';
-import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
-import { signAndSend } from 'src/hooks/helper/wallet';
+import { useCurrentEra, useBalance } from 'src/hooks';
+import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { useLedger } from 'src/hooks';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watchEffect } from 'vue';
+import { ethers } from 'ethers';
+import { computed, ref, watchEffect, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const MAX_BATCH_WEIGHT = new BN('50000000000');
+const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
+const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000'); //Memo: 6 eras
+const MAX_BATCH_WEIGHT_LEDGER_S = new BN('2000000000'); //Memo:2 eras
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
@@ -25,18 +30,30 @@ export function useClaimAll() {
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
-  const { nativeTipPrice } = useGasPrice();
-
+  const { t } = useI18n();
   const { era } = useCurrentEra();
-  const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
-    txType: TxType.dappsStaking,
+  const { accountData } = useBalance(senderAddress);
+  const { isLedgerAccount, isLedgerNanoS } = useLedger();
+
+  const maxBatchWeight = computed<BN>(() => {
+    if (isLedgerAccount.value) {
+      return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;
+    } else {
+      return MAX_BATCH_WEIGHT;
+    }
   });
 
-  watchEffect(async () => {
+  const transferableBalance = computed(() => {
+    const balance = accountData.value
+      ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+      : '0';
+    return Number(balance);
+  });
+
+  const updateClaimEras = async (): Promise<void> => {
     try {
       isLoading.value = true;
       const api = $api;
@@ -57,7 +74,6 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
-
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -78,7 +94,9 @@ export function useClaimAll() {
     } finally {
       isLoading.value = false;
     }
-  });
+  };
+
+  watch([isSendingTx, senderAddress], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
@@ -92,53 +110,52 @@ export function useClaimAll() {
     }
 
     const txsToExecute: ExtrinsicPayload[] = [];
-    let totalWeight: BN = new BN(0);
+    let totalWeight: BN = new BN('0');
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
-      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(maxBatchWeight.value)) {
         break;
       }
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(tx.weight);
+      totalWeight = totalWeight.add(weight);
     }
-
-    // The fix causes problems and confusion for stakers because rewards are not restaked,
-    // second thing is that developers are unable to stake.
-    // Need to change approach
-    // Temporary disable restaking reward to avoid possible claim errors.
-    // const dappStakingRepository = container.get<IDappStakingRepository>(
-    //   Symbols.DappStakingRepository
-    // );
-    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
-
-    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
     );
     const transaction = api.tx.utility.batch(txsToExecute);
+    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress.value);
+    const partialFee = info.partialFee.toBn();
+    const balance = new BN(
+      ethers.utils.parseEther(transferableBalance.value.toString()).toString()
+    );
+
+    if (balance.sub(partialFee.muln(1.5)).isNeg()) {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('dappStaking.error.invalidBalance'),
+        alertType: 'error',
+      });
+      return;
+    }
+
+    const finalizedCallback = (result: ISubmittableResult): void => {
+      displayCustomMessage({
+        txType: TxType.dappsStaking,
+        result,
+        senderAddress: senderAddress.value,
+        store,
+        t,
+      });
+    };
 
     try {
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        const res = await handleResult(result);
-        hasExtrinsicFailedEvent(result.events, store.dispatch);
-        return res;
-      };
-
-      await signAndSend({
-        transaction,
+      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      await dappStakingService.sendTx({
         senderAddress: senderAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: nativeTipPrice.value.fast, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
-        //tip: selectedTip.value.price,
+        transaction,
+        finalizedCallback,
       });
     } catch (error: any) {
       console.error(error.message);

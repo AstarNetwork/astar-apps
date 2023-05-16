@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 
-export { fetchNativeBalance, addTxHistories } from 'src/modules/account/utils';
+export { addTxHistories } from 'src/modules/account/utils';
 
 export interface SystemAccount extends Struct {
   data: {

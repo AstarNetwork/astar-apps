@@ -47,7 +47,7 @@ import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType, ref } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 

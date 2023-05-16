@@ -52,14 +52,14 @@
 
 .body--dark {
   .separator--statistics {
-    border-bottom: 1px solid $gray-6;
+    border-bottom: 1px solid $navy-3;
     @media (min-width: $md) {
-      border-right: 1px solid $gray-5;
+      border-right: 1px solid $navy-3;
     }
   }
 
   .column--statistics {
-    background: $gray-7;
+    background: $container-bg-dark;
     @media (min-width: $md) {
       background: transparent;
     }
@@ -71,6 +71,6 @@
     color: $gray-1;
   }
   .wrapper--dapp-statistics {
-    border-bottom: 1px solid $gray-5;
+    border-bottom: 1px solid $navy-3;
   }
 }

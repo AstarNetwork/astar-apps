@@ -23,7 +23,7 @@ import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: { FormatBalance, ModalWrapper },
@@ -86,7 +86,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: 22px;
     margin-top: 16px;
-    color: $gray-5-selected;
+    color: $navy-1;
   }
 }
 
@@ -102,7 +102,7 @@ export default defineComponent({
 
 .body--dark {
   .box--container {
-    background: $gray-7;
+    background: $container-bg-dark;
     .text--amount {
       color: $gray-1;
     }

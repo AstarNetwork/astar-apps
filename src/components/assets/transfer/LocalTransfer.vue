@@ -113,8 +113,47 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">
-              {{ $t('assets.modals.notSendToExchanges') }}
+            <div class="column--warning">
+              <div v-if="isNativeToEvm" class="row--warning-title">
+                <div class="icon--warning">
+                  <astar-icon-warning size="20" />
+                </div>
+                <span
+                  class="text--title-evm-warning"
+                  :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                >
+                  {{ $t('warning.warning') }}
+                </span>
+              </div>
+              <span
+                v-if="isNativeToEvm"
+                :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                class="text--evm-warning"
+              >
+                {{ $t('assets.modals.notSendToEvmExchanges') }}
+              </span>
+              <span v-else-if="!isH160" :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+                {{ $t('assets.modals.notSendToExchanges') }}
+              </span>
+            </div>
+            <span
+              v-if="isH160 && !isNativeToEvm"
+              :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+            >
+              <div class="row--warning-title">
+                <div class="icon--warning">
+                  <astar-icon-warning size="20" />
+                </div>
+                <span
+                  class="text--title-evm-warning"
+                  :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                >
+                  {{ $t('warning.warning') }}
+                </span>
+              </div>
+              <div class="text--warn">
+                {{ $t('assets.modals.notDestIsLedgerAccount') }}
+              </div>
             </span>
           </label>
         </div>
@@ -144,7 +183,7 @@ import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccoun
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
@@ -195,6 +234,10 @@ export default defineComponent({
       toMaxAmount,
     } = useTokenTransfer(t);
 
+    const isNativeToEvm = computed<boolean>(
+      () => !isH160.value && isValidEvmAddress(toAddress.value)
+    );
+
     const store = useStore();
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -207,6 +250,7 @@ export default defineComponent({
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
+        symbol: props.token.metadata.symbol,
       });
     };
 
@@ -230,6 +274,8 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       isTransferNativeToken,
+      isNativeToEvm,
+      isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,
       transfer,

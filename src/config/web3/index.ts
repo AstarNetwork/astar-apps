@@ -7,11 +7,6 @@ export {
   getTokenBal,
   buildWeb3Instance,
   getTokenExplorer,
-  buildEvmAddress,
-  getBalance,
-  isValidEvmAddress,
-  toSS58Address,
-  sendNativeTokenTransaction,
   fetchErc20TokenInfo,
   getTokenDetails,
 } from 'src/config/web3/utils';

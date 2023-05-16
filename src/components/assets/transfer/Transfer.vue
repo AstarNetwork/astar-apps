@@ -83,7 +83,7 @@ import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount, useBreakpoints, useNetworkInfo, useTransferRouter } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { removeEvmName } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -125,6 +125,7 @@ export default defineComponent({
       chains,
       tokens,
       isLocalTransfer,
+      isDisableXcmEnvironment,
       setIsLocalTransfer,
       setToken,
       setChain,
@@ -143,7 +144,9 @@ export default defineComponent({
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return isShibuya.value || isEvmNativeToken || !isXcmCompatible;
+      return (
+        isShibuya.value || isEvmNativeToken || !isXcmCompatible || isDisableXcmEnvironment.value
+      );
     });
 
     const isTransferNativeToken = computed<boolean>(() => {

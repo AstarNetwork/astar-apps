@@ -36,12 +36,12 @@
 }
 
 .container--dapp-staking {
-  max-width: 1300px;
+  max-width: $container-max-width;
   margin: 0 auto;
 }
 
 .body--dark {
   .row--project-overview {
-    border-bottom: 1px solid $gray-5;
+    border-bottom: 1px solid $navy-3;
   }
 }

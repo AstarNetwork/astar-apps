@@ -11,6 +11,7 @@ import {
   IXcmRepository,
   IEvmAssetsRepository,
   IXvmRepository,
+  ITokenTransferRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -20,6 +21,7 @@ import {
   TokenApiRepository,
   XcmRepository,
   EvmAssetsRepository,
+  TokenTransferRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -29,6 +31,7 @@ import {
   IXcmEvmService,
   IXcmService,
   IEvmAssetsService,
+  ITokenTransferService,
   WalletType,
   IXvmService,
 } from './services';
@@ -41,6 +44,7 @@ import {
   EvmAssetsService,
   BalanceFormatterService,
   XcmEvmService,
+  TokenTransferService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -95,8 +99,14 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
+  container.addTransient<ITokenTransferRepository>(
+    TokenTransferRepository,
+    Symbols.TokenTransferRepository
+  );
 
   // Services
+  container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
+  container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
@@ -107,6 +117,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     BalanceFormatterService,
     Symbols.BalanceFormatterService
   );
+  container.addTransient<ITokenTransferService>(TokenTransferService, Symbols.TokenTransferService);
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),

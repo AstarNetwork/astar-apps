@@ -9,7 +9,7 @@
   </span>
 </template>
 <script lang="ts">
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

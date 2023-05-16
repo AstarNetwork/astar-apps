@@ -8,7 +8,7 @@ import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 import { Chain, ethWalletChains, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
 import { Struct } from '@polkadot/types';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 
 export interface AssetsAccount extends Struct {
   readonly balance: BN;
@@ -56,23 +56,13 @@ export class PhalaXcmRepository extends XcmRepository {
         X2: [
           { Parachain: to.parachainId },
           isAccountId20
-            ? {
-                AccountKey20: {
-                  network: 'Any',
-                  key: recipientAccountId,
-                },
-              }
-            : {
-                AccountId32: {
-                  network: 'Any',
-                  id: recipientAccountId,
-                },
-              },
+            ? { AccountKey20: { key: recipientAccountId } }
+            : { AccountId32: { id: recipientAccountId } },
         ],
       },
     };
 
-    const destWeight = '6000000000';
+    const destWeight = { refTime: '6000000000', proofSize: '1000000' };
     return await this.buildTxCall(from, 'xTransfer', 'transfer', asset, destination, destWeight);
   }
 

@@ -57,6 +57,7 @@
                           :key="i"
                         >
                           <div
+                            v-if="checkIsDisplayEndpoint(provider, endpointObj.endpoint)"
                             class="column--network-option"
                             @click="setSelEndpoint({ endpointObj, networkIdx: index })"
                           >
@@ -84,11 +85,46 @@
           </ul>
         </fieldset>
       </div>
+      <div v-if="isSelectLightClient" class="box--light-client-warning">
+        <span class="text--accent">
+          {{ $t('drawer.lightClientWarning') }}
+        </span>
+        <ul v-if="isLightClientExtension" class="ul--warnings">
+          <li>
+            <span>
+              {{ $t('drawer.takeLongerTimeToConnect') }}
+            </span>
+          </li>
+          <li>
+            <span> {{ $t('drawer.takeLongerTimeToSend') }}</span>
+          </li>
+          <li v-if="selNetwork === endpointKey.SHIBUYA">
+            <span>
+              {{ $t('drawer.shibuyaTakes20mins') }}
+            </span>
+          </li>
+        </ul>
+        <div v-else>
+          <ul class="ul--warnings">
+            <li>
+              <span> {{ $t('installWallet.installWallet', { value: 'Substrate_connect' }) }}</span>
+              <a
+                class="text--download"
+                href="https://substrate.io/developers/substrate-connect/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {{ $t('installWallet.installExtension') }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="wrapper__row--button">
         <astar-button
           class="btn--connect"
           :disabled="isDisabled"
-          @click="selectNetwork(selNetwork, newEndpoint)"
+          @click="selectNetwork(selNetwork)"
         >
           {{ $t('connect') }}
         </astar-button>
@@ -98,9 +134,13 @@
 </template>
 <script lang="ts">
 import { $endpoint } from 'src/boot/api';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  checkIsLightClient,
+  checkIsSubstrateConnectInstalled,
+} from 'src/config/api/polkadot/connectApi';
+import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getRandomFromArray, wait } from 'src/hooks/helper/common';
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
@@ -124,6 +164,7 @@ export default defineComponent({
     const store = useStore();
     const newEndpoint = ref('');
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
+    const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     newEndpoint.value = customEndpoint.value;
 
     const isClosing = ref<boolean>(false);
@@ -162,16 +203,13 @@ export default defineComponent({
       );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
-        endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 
       const network = providerEndpoints[networkIdx].networkAlias;
       const url = buildNetworkUrl(network);
 
-      // Note: Users have to refresh the page manually for MathWallet(Android)
       window.open(url, '_self');
-      location.reload();
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);
@@ -182,11 +220,27 @@ export default defineComponent({
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
 
-    const isDisabled = computed(() => {
-      return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+    const isDisabled = computed<boolean>(() => {
+      if (isSelectLightClient.value) {
+        return !isLightClientExtension.value;
+      } else {
+        return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+      }
     });
 
-    const isCustomNetwork = computed(() => selNetwork.value === endpointKey.CUSTOM);
+    const isCustomNetwork = computed<boolean>(() => selNetwork.value === endpointKey.CUSTOM);
+    const isSelectLightClient = computed<boolean>(() => {
+      switch (selNetwork.value) {
+        case endpointKey.ASTAR:
+          return checkIsLightClient(selEndpointAstar.value);
+        case endpointKey.SHIDEN:
+          return checkIsLightClient(selEndpointShiden.value);
+        case endpointKey.SHIBUYA:
+          return checkIsLightClient(selEndpointShibuya.value);
+        default:
+          return false;
+      }
+    });
 
     const checkIsCheckedEndpoint = ({
       index,
@@ -219,21 +273,22 @@ export default defineComponent({
       }
     };
 
-    const randomizedEndpoint = (networkIdx: number) => {
+    const getRandomizedEndpoint = (endpointKey: endpointKey): string => {
+      const endpointsWithoutLightClient = providerEndpoints[endpointKey].endpoints.filter(
+        (it) => !checkIsLightClient(it.endpoint)
+      );
+      return getRandomFromArray(endpointsWithoutLightClient).endpoint;
+    };
+
+    const randomizedEndpoint = (networkIdx: number): void => {
       if (networkIdx === endpointKey.ASTAR) {
-        selEndpointAstar.value = getRandomFromArray(
-          providerEndpoints[endpointKey.ASTAR].endpoints
-        ).endpoint;
+        selEndpointAstar.value = getRandomizedEndpoint(endpointKey.ASTAR);
       }
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointShiden.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIDEN].endpoints
-        ).endpoint;
+        selEndpointShiden.value = getRandomizedEndpoint(endpointKey.SHIDEN);
       }
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointShibuya.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIBUYA].endpoints
-        ).endpoint;
+        selEndpointShibuya.value = getRandomizedEndpoint(endpointKey.SHIBUYA);
       }
     };
 
@@ -260,6 +315,24 @@ export default defineComponent({
       }
     };
 
+    // Memo: Displays Light client option if:
+    // A: the portal is opened on 'localhost' or 'staging URL'
+    // B: Shibuya
+    const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
+      // As asked by @gluneau Light client is enabled for all networks.
+      return true;
+      // const origin = window.location.origin;
+      // const stagingDomain = '.web.app';
+      // const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
+      // const isForDeveloper = devPaths.some((it) => origin.includes(it));
+      // // Memo: enables selecting light client endpoint for Shibuya on the production page
+      // if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
+      //   return true;
+      // } else {
+      //   return !checkIsLightClient(endpoint);
+      // }
+    };
+
     watch(
       [$endpoint, selNetwork],
       () => {
@@ -281,9 +354,7 @@ export default defineComponent({
     });
 
     return {
-      closeModal,
       newEndpoint,
-      selectNetwork,
       selNetwork,
       classRadioOn,
       classRadioOff,
@@ -295,9 +366,14 @@ export default defineComponent({
       selEndpointAstar,
       selEndpointShiden,
       selEndpointShibuya,
+      windowHeight,
+      isSelectLightClient,
+      isLightClientExtension,
+      closeModal,
       setSelEndpoint,
       checkIsCheckedEndpoint,
-      windowHeight,
+      selectNetwork,
+      checkIsDisplayEndpoint,
     };
   },
 });
@@ -305,4 +381,27 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/modal-network.scss';
+
+/* Memo: somehow these classes won't work in light theme if the classes defined on modal-network.scss  */
+.box--light-client-warning {
+  display: none;
+  @media (min-width: $sm) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    margin-top: 24px;
+  }
+}
+
+.ul--warnings {
+  list-style: disc;
+  text-align: left;
+  padding-left: 24px;
+}
+
+.text--download {
+  display: block;
+  text-decoration: underline;
+  color: $astar-blue;
+}
 </style>

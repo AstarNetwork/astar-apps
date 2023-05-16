@@ -1,7 +1,11 @@
-import { ITuple } from '@polkadot/types/types';
-import { EventRecord, DispatchError } from '@polkadot/types/interfaces';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Null, Result } from '@polkadot/types-codec';
+import { DispatchError, EventRecord } from '@polkadot/types/interfaces';
+import { ITuple } from '@polkadot/types/types';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+
+enum ErrorCode {
+  TooManyEraStakeValues = 'dappsStaking.TooManyEraStakeValues',
+}
 
 export class WalletService {
   constructor(protected readonly eventAggregator: IEventAggregator) {}
@@ -34,9 +38,15 @@ export class WalletService {
       });
 
     if (result) {
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, message));
+      let msg = '';
+      if (message === ErrorCode.TooManyEraStakeValues) {
+        msg = 'Please claim your rewards before sending transaction';
+      } else {
+        msg = message;
+      }
+      this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message: msg }));
+      throw Error(msg);
     }
-
     return result;
   }
 

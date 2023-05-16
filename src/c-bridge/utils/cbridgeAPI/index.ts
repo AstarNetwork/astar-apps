@@ -95,7 +95,7 @@ const pushPooledToken = ({
 // Ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 // Memo: filter/cast the `chains` and `tokens` interface to convenient for bridge page in Astar Portal
 export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
-  const { Ethereum, BSC, Astar, Shiden, Polygon } = EvmChain;
+  const { Ethereum, BSC, Astar, Shiden, Polygon, Injective } = EvmChain;
 
   try {
     const url = cBridgeEndpoint.Configs;
@@ -109,6 +109,7 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
     const polygonToAstar: CbridgeToken[] = [];
     const polygonToShiden: CbridgeToken[] = [];
     const shidenToAstar: CbridgeToken[] = [];
+    const injectiveToAstar: CbridgeToken[] = [];
 
     const pools = [
       {
@@ -146,6 +147,11 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
         chainA: Shiden,
         chainB: Astar,
       },
+      {
+        tokens: injectiveToAstar,
+        chainA: Injective,
+        chainB: Astar,
+      },
     ];
 
     // Memo: Making array for `Canonical (mint&burn)` bridge configuration
@@ -157,6 +163,12 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
       pushCanonicalToken({ tokens: polygonToAstar, srcChain: Polygon, destChain: Astar, token });
       pushCanonicalToken({ tokens: polygonToShiden, srcChain: Polygon, destChain: Shiden, token });
       pushCanonicalToken({ tokens: shidenToAstar, srcChain: Shiden, destChain: Astar, token });
+      pushCanonicalToken({
+        tokens: injectiveToAstar,
+        srcChain: Injective,
+        destChain: Astar,
+        token,
+      });
     });
 
     // Memo: Making array for `Pool Based` bridge configuration
@@ -194,6 +206,7 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
           [Ethereum]: ethToAstar,
           [BSC]: bscToAstar,
           [Polygon]: polygonToAstar,
+          [Injective]: injectiveToAstar,
           [Shiden]: shidenToAstar,
         },
         [Shiden]: {
@@ -213,6 +226,9 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
         [Polygon]: {
           [Astar]: polygonToAstar,
           [Shiden]: polygonToShiden,
+        },
+        [Injective]: {
+          [Astar]: injectiveToAstar,
         },
       },
     };

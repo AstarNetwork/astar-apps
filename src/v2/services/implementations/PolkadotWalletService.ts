@@ -1,16 +1,18 @@
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult, Signer } from '@polkadot/types/types';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-import { inject, injectable } from 'inversify';
+import { Signer } from '@polkadot/types/types';
 import { ethers } from 'ethers';
-import { IWalletService, IGasPriceProvider } from 'src/v2/services';
+import { inject, injectable } from 'inversify';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { getSubscanExtrinsic } from 'src/links';
+import { AlertMsg } from 'src/modules/toast/index';
+import { Guard, wait } from 'src/v2/common';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { WalletService } from './WalletService';
-import { Guard, wait } from 'src/v2/common';
+import { IGasPriceProvider, IWalletService, ParamSignAndSend } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { WalletService } from './WalletService';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -32,18 +34,21 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
    * If not defined, default message will be shown.
    * @param tip Transaction tip, If not provided it will be fetched from gas price provider,
    */
-  public async signAndSend(
-    extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
-    senderAddress: string,
-    successMessage?: string,
-    transactionTip?: number
-  ): Promise<string | null> {
+  public async signAndSend({
+    extrinsic,
+    senderAddress,
+    successMessage,
+    transactionTip,
+    finalizedCallback,
+    subscan,
+  }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve) => {
+        !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
         if (!tip) {
@@ -53,7 +58,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
-        await extrinsic.signAndSend(
+        const unsub = await extrinsic.signAndSend(
           senderAddress,
           {
             signer: await this.getSigner(senderAddress),
@@ -61,29 +66,53 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             tip,
           },
           (result) => {
-            if (result.isFinalized) {
-              if (!this.isExtrinsicFailed(result.events)) {
-                this.eventAggregator.publish(
-                  new ExtrinsicStatusMessage(
-                    true,
-                    successMessage ?? 'Transaction successfully executed',
-                    `${extrinsic.method.section}.${extrinsic.method.method}`,
-                    result.txHash.toHex()
-                  )
-                );
-              }
+            try {
+              !isMobileDevice && this.detectExtensionsAction(false);
+              if (result.isCompleted) {
+                if (!this.isExtrinsicFailed(result.events)) {
+                  if (result.isError) {
+                    this.eventAggregator.publish(
+                      new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+                    );
+                  } else {
+                    const subscanUrl = getSubscanExtrinsic({
+                      subscanBase: subscan,
+                      hash: result.txHash.toHex(),
+                    });
+                    this.eventAggregator.publish(
+                      new ExtrinsicStatusMessage({
+                        success: true,
+                        message: successMessage ?? AlertMsg.SUCCESS,
+                        method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                        explorerUrl: subscanUrl,
+                      })
+                    );
+                  }
+                }
 
+                this.eventAggregator.publish(new BusyMessage(false));
+                if (finalizedCallback) {
+                  finalizedCallback(result);
+                }
+                resolve(extrinsic.hash.toHex());
+                unsub();
+              } else {
+                if (isMobileDevice && !result.isCompleted) {
+                  this.eventAggregator.publish(new BusyMessage(true));
+                }
+              }
+            } catch (error) {
               this.eventAggregator.publish(new BusyMessage(false));
-              resolve(extrinsic.hash.toHex());
-            } else {
-              !result.isCompleted && this.eventAggregator.publish(new BusyMessage(true));
+              unsub();
             }
           }
         );
       });
     } catch (e) {
       const error = e as unknown as Error;
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+      this.eventAggregator.publish(
+        new ExtrinsicStatusMessage({ success: false, message: error.message || AlertMsg.ERROR })
+      );
       this.eventAggregator.publish(new BusyMessage(false));
     }
 
@@ -134,5 +163,33 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
       this.extensions.push(...extensions);
     }
+  }
+
+  // Memo: detects status in the wallet extension
+  // Fixme: doesn't work on MathWallet Mobile
+  // Ref: https://github.com/polkadot-js/extension/issues/674
+  // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
+  private detectExtensionsAction(isMonitorExtension: boolean): void {
+    const handleDetectSign = (listener: any): void => {
+      const { source, data } = listener;
+      if (source !== window || !data.origin) {
+        return;
+      }
+      if (data.id) {
+        if (data.response && data.response.hasOwnProperty('signature')) {
+          this.eventAggregator.publish(new BusyMessage(true));
+          return;
+        }
+        // Memo: detect if the transaction was canceled by users
+        if (data.error === 'Cancelled') {
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(data.error);
+        }
+      }
+    };
+
+    isMonitorExtension
+      ? window.addEventListener('message', handleDetectSign)
+      : window.removeEventListener('message', handleDetectSign);
   }
 }

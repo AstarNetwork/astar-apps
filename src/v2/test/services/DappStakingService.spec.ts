@@ -15,6 +15,7 @@ describe('DappStakingService.ts', () => {
     initTestContainer();
   });
 
+  const successMessage = 'success';
   it('calculates TVL in USD', async () => {
     const sut = container.get<IDappStakingService>(Symbols.DappStakingService);
 
@@ -42,7 +43,7 @@ describe('DappStakingService.ts', () => {
     const contractAddress = '123';
     const stakerAddress = '456';
 
-    await sut.stake(contractAddress, stakerAddress, amount);
+    await sut.stake(contractAddress, stakerAddress, amount, successMessage);
 
     expect(repo.bondAndStakeCallMock).toBeCalledTimes(1);
 
@@ -92,10 +93,17 @@ describe('DappStakingService.ts', () => {
       address: stakerAddress,
       targetContractId: contractAddress,
       fromContractId,
+      successMessage,
     });
 
     expect(repo.nominationTransferMock).toBeCalledTimes(1);
     expect(wallet.walletSignAndSendMock).toBeCalledTimes(1);
     expect(wallet.walletSignAndSendMock).toBeCalledWith({}, stakerAddress, expect.any(String));
+  });
+
+  it('getStakeInfo - throws exception if invalid argument', async () => {
+    const sut = container.get<IDappStakingService>(Symbols.DappStakingService);
+
+    await expect(sut.getStakeInfo('', '')).rejects.toThrow('Invalid argument currentAccount');
   });
 });

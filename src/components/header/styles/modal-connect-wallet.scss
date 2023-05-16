@@ -1,0 +1,95 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--modal--wallet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 38px;
+  padding-bottom: 20px;
+  row-gap: 32px;
+}
+
+.title--account-type {
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 16px;
+  color: $gray-5;
+  text-align: left;
+  margin-bottom: 16px;
+  @media (min-width: 500px) {
+    margin-left: 0px;
+  }
+}
+
+.wrapper--wallets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.box__row--wallet {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  align-items: center;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-5;
+  cursor: pointer;
+  padding: 16px;
+  padding-left: 24px;
+  margin: 0 auto;
+  border: 1px solid $navy-1;
+
+  @media (min-width: 500px) {
+    flex-direction: row;
+    font-size: 16px;
+    column-gap: 8px;
+  }
+
+  &:hover {
+    border: 1px solid $astar-blue;
+  }
+
+  &:active {
+    border: 2px solid $astar-blue;
+  }
+
+  .box--img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.border--active {
+  border: 1px solid $astar-blue !important;
+}
+
+.btn--disconnect {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  height: 52px;
+  background-color: transparent;
+  border: 1px solid $astar-blue;
+  color: $astar-blue;
+  transition: all 0.4s ease 0s;
+  &:hover {
+    background-color: $gray-5;
+    border: 1px solid $gray-2;
+    color: $gray-2;
+  }
+}
+
+.body--dark {
+  .title--account-type {
+    color: $gray-1;
+  }
+  .box__row--wallet {
+    color: $gray-1;
+    border: 1px solid $gray-3;
+  }
+}

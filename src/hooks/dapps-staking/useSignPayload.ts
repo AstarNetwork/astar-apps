@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { $api } from 'src/boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
+import { getDappAddressEnum } from '@astar-network/astar-sdk-core';
 
 export function useSignPayload() {
   const store = useStore();

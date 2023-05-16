@@ -41,6 +41,7 @@
         </div>
         <astar-button
           v-if="index === hoverIndex || width < widthCardLineUp"
+          :disabled="isH160"
           class="button--stake"
           :width="274"
           :height="24"
@@ -55,11 +56,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
+import { useStore } from 'src/store';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
@@ -77,10 +79,12 @@ export default defineComponent({
   setup() {
     const widthCardLineUp = 900;
     const router = useRouter();
+    const store = useStore();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
     const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol } = useNetworkInfo();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const goStakePageLink = (address: string | undefined): void => {
       isToStakePage.value = true;
@@ -104,6 +108,7 @@ export default defineComponent({
       goDappPageLink,
       nativeTokenSymbol,
       widthCardLineUp,
+      isH160,
     };
   },
 });
@@ -118,12 +123,15 @@ export default defineComponent({
   gap: 12px;
 
   @media (max-width: $widthCardLineUp) {
-    display: flex;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     justify-content: left;
+    padding: 10px 0px 10px 10px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -173,21 +181,21 @@ export default defineComponent({
       font-weight: 600;
       font-size: 16px;
       line-height: 18px;
-      color: $gray-6;
+      color: $navy-1;
     }
 
     .badge--tag {
       width: 54px;
       height: 18px;
       padding: 2px 8px;
-      background: $object-light;
+      background: $navy-3;
       border-radius: 6px;
       font-style: normal;
       font-weight: 510;
       font-size: 12px;
       line-height: 14px;
       text-align: center;
-      color: $gray-4;
+      color: #fff;
       margin-top: 16px;
       margin-bottom: 16px;
     }
@@ -230,7 +238,7 @@ export default defineComponent({
   }
   @media (max-width: $widthCardLineUp) {
     @include hover;
-    box-shadow: 0px 0px 12px 0px rgba(164, 162, 162, 0.1);
+    box-shadow: 0px 0px 8px 0px #0000001a;
   }
 }
 
@@ -245,7 +253,7 @@ export default defineComponent({
         color: $gray-1;
       }
       .badge--tag {
-        background: $gray-5;
+        background: $navy-3;
         color: $gray-3;
       }
       .divider {

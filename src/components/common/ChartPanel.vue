@@ -10,6 +10,9 @@
       <div class="row chart--value">
         <div>
           <span class="text--value text-color--neon">{{ defaultValue }}</span>
+          <span v-if="defaultValueAddOn" class="text--value--addon text-color--neon">{{
+            defaultValueAddOn
+          }}</span>
         </div>
         <div v-if="secondValue">
           <div v-if="secondValue === '0'">
@@ -54,6 +57,11 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    defaultValueAddOn: {
+      type: String,
+      required: false,
+      default: '',
+    },
     secondValue: {
       type: String,
       required: false,
@@ -87,7 +95,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const getBackgroundColor = (): string => (isDarkTheme.value ? '#222829' : '#fff');
+    const getBackgroundColor = (): string => (isDarkTheme.value ? '#060b23' : '#fff');
     const getLineColor = (): string => (isDarkTheme.value ? 'rgba(108,111,111,0.1)' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);

@@ -9,13 +9,15 @@ import { injectable, inject } from 'inversify';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import {
+  getPubkeyFromSS58Addr,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+} from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { isValidEvmAddress } from 'src/config/web3';
-import { XcmChain } from 'src/v2/models/XcmModels';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -100,6 +102,13 @@ export class XcmRepository implements IXcmRepository {
     return result;
   }
 
+  public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
+    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE, Chain.BIFROST_KUSAMA];
+    const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
+    const isV3 = version === 'V3';
+    return { version, isV3 };
+  }
+
   public async getTransferToParachainCall(
     from: XcmChain,
     to: XcmChain,
@@ -111,9 +120,12 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
+    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
+    const { version, isV3 } = this.getXcmVersion(from);
+
     // the target parachain connected to the current relaychain
     const destination = {
-      V1: {
+      [version]: {
         interior: {
           X1: {
             Parachain: new BN(to.parachainId),
@@ -125,23 +137,29 @@ export class XcmRepository implements IXcmRepository {
 
     const recipientAddressId = this.getAddress(recipientAddress);
 
-    // the account ID within the destination parachain
+    const id = decodeAddress(recipientAddressId);
+    const AccountId32 = isV3
+      ? {
+          id,
+        }
+      : {
+          network: 'Any',
+          id,
+        };
+
     const beneficiary = {
-      V1: {
+      [version]: {
         interior: {
           X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAddressId),
-            },
+            AccountId32,
           },
         },
         parents: new BN(0),
       },
     };
-    // amount of fungible tokens to be transferred
+
     const assets = {
-      V1: [
+      [version]: [
         {
           fun: {
             Fungible: amount,
@@ -173,22 +191,31 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
+    const { version, isV3 } = this.getXcmVersion(from);
 
     const destination = {
-      V1: {
+      [version]: {
         interior: 'Here',
         parents: new BN(1),
       },
     };
 
+    const id = decodeAddress(recipientAccountId);
+    const AccountId32 = isV3
+      ? {
+          id,
+        }
+      : {
+          network: 'Any',
+          id,
+        };
+
     const beneficiary = {
-      V1: {
+      [version]: {
         interior: {
           X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAccountId),
-            },
+            AccountId32,
           },
         },
         parents: new BN(0),
@@ -203,7 +230,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      V1: [
+      [version]: [
         {
           fun: {
             Fungible: new BN(amount),
@@ -280,8 +307,10 @@ export class XcmRepository implements IXcmRepository {
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
 
     // return config.unwrap().v1;
+    const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
-    return formattedAssetConfig.v1;
+
+    return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
   }
 
   protected isAstarNativeToken(token: Asset): boolean {

@@ -8,7 +8,12 @@ $gray-5-selected-dark: #222829;
 $gray-6: #191d1f;
 $gray-7: #222829;
 
+$navy-1: #080f2e;
+$navy-2: #060b23;
+$navy-3: #1f2f5f;
+
 $object-light: #e6e9ee;
+$modal-item-bg-dark: #141c34;
 
 $astar-blue: #0085ff;
 $astar-blue-dark: #05b6fd;
@@ -21,12 +26,12 @@ $connected-green: #56f566;
 
 $neon-blue: rgb(33, 89, 254);
 
-$body-bg-dark: #181d20;
-$body-bg-light: #ffffff;
-$container-bg-dark: $gray-5-selected-dark;
+$body-bg-dark: $navy-1;
+$body-bg-light: $gray-1;
+$container-bg-dark: $navy-2;
 $container-bg-white: #ffffff;
 $item--bg--hover-dark: $gray-5-selected-dark;
-$border-separator-dark: $gray-6;
+$border-separator-dark: $navy-3;
 $border-separator-light: $object-light;
 $border-yellow: #f0b90b;
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
@@ -51,7 +56,7 @@ $xxl: 1440px;
 
 $widthCardLineUp: 900px;
 
-$container-max-width: 1100px;
+$container-max-width: 1300px;
 $register-form-max-width: 768px;
 
 // Note: overwrite quasar color palette for the quasar components

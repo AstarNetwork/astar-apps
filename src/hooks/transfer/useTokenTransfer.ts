@@ -1,31 +1,31 @@
-import { ISubmittableResult } from '@polkadot/types/types';
-import { BN } from '@polkadot/util';
+import {
+  ASTAR_SS58_FORMAT,
+  SUBSTRATE_SS58_FORMAT,
+  buildEvmAddress,
+  getEvmGasCost,
+  getShortenAddress,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+  sampleEvmWalletAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
-import { buildEvmAddress, getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
-import { useAccount, useBalance, useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
-import {
-  ASTAR_SS58_FORMAT,
-  isValidAddressPolkadotAddress,
-  SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
-import { signAndSend } from 'src/hooks/helper/wallet';
+import { getTokenBal } from 'src/config/web3';
+import { useAccount, useBalance, useGasPrice, useNetworkInfo } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
 import { addTxHistories } from 'src/modules/account/utils/index';
-import { sampleEvmWalletAddress } from 'src/modules/gas-api';
-import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
+import { container } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { computed, ref, Ref, watch, watchEffect } from 'vue';
+import { ITokenTransferService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
@@ -36,7 +36,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const isChecked = ref<boolean>(false);
 
   const store = useStore();
-  const { ethProvider } = useEthProvider();
   const { t } = useI18n();
   const { currentAccount } = useAccount();
   const { accountData } = useBalance(currentAccount);
@@ -47,7 +46,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       : '0';
     return Number(balance);
   });
-  const { handleResult, handleCustomExtrinsic } = useCustomSignature({});
   const {
     evmGasPrice,
     selectedGas,
@@ -63,17 +61,23 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
-  const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-  const substrateAccounts = computed<SubstrateAccount[]>(
-    () => store.getters['general/substrateAccounts']
-  );
 
   const isTransferNativeToken = computed<boolean>(
     () => tokenSymbol.value === nativeTokenSymbol.value.toLowerCase()
   );
 
-  const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
+  const isRequiredCheck = computed<boolean>(() => {
+    const isSs58 = !isH160.value;
+
+    const isNativeTokenEvmToSs58 =
+      isH160.value && isTransferNativeToken.value && isValidAddressPolkadotAddress(toAddress.value);
+
+    const isNativeTokenSs58ToEvm =
+      isSs58 && isTransferNativeToken.value && isValidEvmAddress(toAddress.value);
+
+    return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
+  });
 
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? selectedToken.value.userBalance : 0
@@ -114,16 +118,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddressBalance.value = 0;
   };
 
-  const finalizeCallback = (): void => {
-    router.push(Path.Assets);
-  };
-
-  const toastInvalidAddress = () =>
-    store.dispatch('general/showAlertMsg', {
-      msg: 'assets.invalidAddress',
-      alertType: 'error',
-    });
-
   const toMaxAmount = async (): Promise<void> => {
     transferAmt.value = String(selectedToken.value.userBalance);
   };
@@ -138,7 +132,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
-      } else if (!transferableBalance.value) {
+      } else if (!transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
         });
@@ -150,214 +144,71 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
   };
 
-  const callH160NativeTransfer = async ({
-    transferAmt,
-    fromAddress,
-    toAddress,
-    web3,
-    gasPrice,
-    finalizeCallback,
-  }: {
-    transferAmt: number;
-    fromAddress: string;
-    toAddress: string;
-    web3: Web3;
-    gasPrice: string;
-    finalizeCallback: () => void;
-  }): Promise<void> => {
-    const destinationAddress = buildEvmAddress(toAddress);
-    if (!ethers.utils.isAddress(destinationAddress)) {
-      toastInvalidAddress();
-      return;
-    }
-    const rawTx: TransactionConfig = {
-      nonce: await web3.eth.getTransactionCount(fromAddress),
-      gasPrice: web3.utils.toHex(gasPrice),
-      from: fromAddress,
-      to: destinationAddress,
-      value: web3.utils.toWei(String(transferAmt), 'ether'),
-    };
-
-    const estimatedGas = await web3.eth.estimateGas(rawTx);
-
-    await web3.eth
-      .sendTransaction({ ...rawTx, gas: estimatedGas })
-      .once('transactionHash', (transactionHash) => {
-        store.commit('general/setLoading', true);
-      })
-      .then(({ transactionHash }) => {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('toast.completedTxHash', { hash: transactionHash }),
-          alertType: 'success',
-        });
-        store.commit('general/setLoading', false);
-        addTxHistories({
-          hash: transactionHash,
-          type: HistoryTxType.Transfer,
-          address: fromAddress,
-        });
-        finalizeCallback();
-      })
-      .catch((error: any) => {
-        console.error(error);
-        store.commit('general/setLoading', false);
-        store.dispatch('general/showAlertMsg', {
-          msg: error.message,
-          alertType: 'error',
-        });
-      });
-  };
-
-  const callErc20Transfer = async ({
-    transferAmt,
-    fromAddress,
-    toAddress,
-    contractAddress,
-    gasPrice,
-    web3,
-    finalizeCallback,
-  }: {
-    transferAmt: string;
-    fromAddress: string;
-    toAddress: string;
-    contractAddress: string;
-    gasPrice: string;
-    web3: Web3;
-    finalizeCallback: () => void;
-  }): Promise<void> => {
-    if (!isH160.value) return;
-    const destAddress = isValidAddressPolkadotAddress(toAddress)
-      ? buildEvmAddress(toAddress)
-      : toAddress;
-    if (!ethers.utils.isAddress(destAddress)) {
-      toastInvalidAddress();
-      return;
-    }
-    const contract = new web3.eth.Contract(ABI as AbiItem[], contractAddress);
-
-    const rawTx: TransactionConfig = {
-      nonce: await web3.eth.getTransactionCount(fromAddress),
-      gasPrice: web3.utils.toHex(gasPrice),
-      from: fromAddress,
-      to: contractAddress,
-      value: '0x0',
-      data: contract.methods.transfer(destAddress, transferAmt).encodeABI(),
-    };
-
-    const estimatedGas = await web3.eth.estimateGas(rawTx);
-    await web3.eth
-      .sendTransaction({ ...rawTx, gas: estimatedGas })
-      .once('transactionHash', (transactionHash) => {
-        store.commit('general/setLoading', true);
-      })
-      .then(({ transactionHash }) => {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('toast.completedTxHash', { hash: transactionHash }),
-          alertType: 'success',
-        });
-        store.commit('general/setLoading', false);
-        addTxHistories({
-          hash: transactionHash,
-          type: HistoryTxType.Transfer,
-          address: fromAddress,
-        });
-        finalizeCallback();
-      })
-      .catch((error: any) => {
-        console.error(error);
-        store.commit('general/setLoading', false);
-        store.dispatch('general/showAlertMsg', {
-          msg: error.message,
-          alertType: 'error',
-        });
-      });
+  const finalizedCallback = (hash: string): void => {
+    addTxHistories({
+      hash: String(hash),
+      type: HistoryTxType.Transfer,
+      address: currentAccount.value,
+    });
+    router.push(Path.Assets);
   };
 
   const transferAsset = async ({
     transferAmt,
     toAddress,
+    symbol,
   }: {
     transferAmt: number;
     toAddress: string;
+    symbol: string;
   }): Promise<void> => {
     if (!selectedToken?.value) {
       throw Error('Token is not selected');
     }
 
-    const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-    const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-      const res = await handleResult(result);
-      finalizeCallback();
-      return res;
-    };
-
     const decimals = Number(selectedToken.value.metadata.decimals);
     const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
 
-    const callH160Transfer = async (): Promise<void> => {
-      const web3 = new Web3(ethProvider.value as any);
-      const gasPrice = await getEvmGas(web3, selectedGas.value.price);
-      if (isTransferNativeToken.value) {
-        await callH160NativeTransfer({
-          fromAddress: currentAccount.value,
-          toAddress: toAddress,
-          transferAmt,
-          gasPrice,
-          web3,
-          finalizeCallback,
-        });
-      } else {
-        await callErc20Transfer({
-          fromAddress: currentAccount.value,
-          toAddress: toAddress,
-          transferAmt: amount,
-          contractAddress: selectedToken.value.mappedERC20Addr,
-          gasPrice,
-          web3,
-          finalizeCallback,
-        });
-      }
-    };
-
-    const callSs58Transfer = async (): Promise<void> => {
-      if (isTransferNativeToken.value) {
-        const transaction = $api!.tx.balances.transferKeepAlive(receivingAddress, amount);
-        await signAndSend({
-          transaction,
-          senderAddress: currentAccount.value,
-          substrateAccounts: substrateAccounts.value,
-          isCustomSignature: isEthWallet.value,
-          txResHandler,
-          handleCustomExtrinsic,
-          dispatch: store.dispatch,
-          tip: selectedTip.value.price,
-          txType: HistoryTxType.Transfer,
-        });
-      } else {
-        const transaction = $api!.tx.assets.transfer(
-          new BN(selectedToken.value.id),
-          receivingAddress,
-          amount
-        );
-        await signAndSend({
-          transaction,
-          senderAddress: currentAccount.value,
-          substrateAccounts: substrateAccounts.value,
-          isCustomSignature: false,
-          txResHandler,
-          handleCustomExtrinsic,
-          dispatch: store.dispatch,
-          tip: selectedTip.value.price,
-          txType: HistoryTxType.Transfer,
-        });
-      }
-    };
-
     try {
+      const tokenTransferService = container.get<ITokenTransferService>(
+        Symbols.TokenTransferService
+      );
+
       if (isH160.value) {
-        await callH160Transfer();
+        const receivingAddress = isValidEvmAddress(toAddress)
+          ? toAddress
+          : buildEvmAddress(toAddress);
+        const successMessage = t('assets.toast.completedMessage', {
+          symbol,
+          transferAmt,
+          toAddress: getShortenAddress(receivingAddress, 5),
+        });
+        await tokenTransferService.transferEvmAsset({
+          senderAddress: currentAccount.value,
+          toAddress: receivingAddress,
+          amount: String(transferAmt),
+          contractAddress: selectedToken.value.mappedERC20Addr,
+          decimals,
+          finalizedCallback,
+          successMessage,
+        });
       } else {
-        await callSs58Transfer();
+        const receivingAddress = isValidEvmAddress(toAddress)
+          ? toSS58Address(toAddress)
+          : toAddress;
+        const successMessage = t('assets.toast.completedMessage', {
+          symbol,
+          transferAmt,
+          toAddress: getShortenAddress(receivingAddress, 5),
+        });
+        await tokenTransferService.transferNativeAsset({
+          assetId: selectedToken.value.id,
+          senderAddress: currentAccount.value,
+          receivingAddress: receivingAddress,
+          amount,
+          finalizedCallback,
+          successMessage,
+        });
       }
     } catch (e: any) {
       console.error(e);
