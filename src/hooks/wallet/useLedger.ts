@@ -88,11 +88,14 @@ export const useLedger = () => {
             }
 
             ledgerAccount.value = await matchLedgerAccount(ledgerData);
+            console.log('ledgerAccount.value', ledgerAccount.value);
             if (ledgerAccount.value) {
               ledger.value = ledgerData;
               const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
               isLedgerAccount.value = true;
               isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
+              console.log('isLedgerAccount.value', isLedgerAccount.value);
+              console.log('isLedgerNanoS.value', isLedgerNanoS.value);
             } else {
               handleReset();
             }
