@@ -26,30 +26,6 @@ export const useLedger = () => {
     ledgerAccount.value = '';
   };
 
-  const matchLedgerAccount = async (ledgerInstance: Ledger): Promise<string> => {
-    // Memo: Polkadot.js supports importing from Ledger from 0-19 account types and indexes
-    // Ref: https://gyazo.com/27b57e8a5f2c6bddaeb8e5b00180ba7b
-    const pjsLedgerIndexes = Array.from({ length: 20 }, (_, index) => index); // [0, 1, 2, ..19]
-
-    let found = false;
-    let ledgerAddress = '';
-
-    // Problem: it could be a time-consuming process if `accountType` is far from 0.
-    // Memo: we can't use `await Promise.all` here due to Ledger's limitation
-    for await (const accountType of pjsLedgerIndexes) {
-      if (found) break;
-      for await (const addressIndex of pjsLedgerIndexes) {
-        const { address } = await ledgerInstance.getAddress(undefined, accountType, addressIndex);
-        if (address === currentAccount.value) {
-          ledgerAddress = address;
-          found = true;
-          break;
-        }
-      }
-    }
-    return ledgerAddress;
-  };
-
   const handleLedgerData = async (): Promise<void> => {
     // Memo: make sure `transport` has been closed before creating ledger transport
     if (ledger.value && ledgerAccount.value) {
@@ -69,7 +45,6 @@ export const useLedger = () => {
       }
 
       const hidDevices = (await (window.navigator as any).hid.getDevices()) as any;
-      console.log('hidDevices', hidDevices);
       if (process.env.DEV) {
         console.info('hidDevices', hidDevices);
       }
@@ -83,20 +58,17 @@ export const useLedger = () => {
         try {
           if (device?.productName?.toLowerCase().includes('nano')) {
             const ledgerData = new Ledger('hid', 'astar');
-
+            const { address } = await ledgerData.getAddress();
             if (process.env.DEV) {
               console.info('ledgerData', ledgerData);
             }
 
-            ledgerAccount.value = await matchLedgerAccount(ledgerData);
-            console.log('ledgerAccount.value', ledgerAccount.value);
-            if (ledgerAccount.value) {
+            if (address) {
               ledger.value = ledgerData;
               const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
-              isLedgerAccount.value = true;
+              ledgerAccount.value = address;
+              isLedgerAccount.value = address === currentAccount.value;
               isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
-              console.log('isLedgerAccount.value', isLedgerAccount.value);
-              console.log('isLedgerNanoS.value', isLedgerNanoS.value);
             } else {
               handleReset();
             }
