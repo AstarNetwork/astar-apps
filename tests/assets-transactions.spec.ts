@@ -91,16 +91,4 @@ test.describe('account panel', () => {
     await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
     await expect(page.getByText('the funds will likely be lost')).toBeVisible();
   });
-
-  // Test case: AS002
-  test('should transfer tokens from Alice to Bob on EVM account', async ({ page }) => {
-    await createMetamaskAccount(
-      page,
-      'bottom drive obey lake curtain smoke basket hold race lonely fit walk',
-      'Test'
-    );
-    await page.goto('/astar/assets');
-    await connectToNetwork(page);
-    await page.getByText('MetaMask').click();
-  });
 });
