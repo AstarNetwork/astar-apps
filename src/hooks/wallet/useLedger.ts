@@ -48,7 +48,8 @@ export const useLedger = () => {
         ledger.value = ledgerData;
         const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
         ledgerAccount.value = address;
-        isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
+        isLedgerNanoS.value = deviceModel.id === LedgerId.nanoX;
+        // isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
       } else {
         handleReset();
       }
