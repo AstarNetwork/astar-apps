@@ -83,6 +83,10 @@ const buildMeta = ({
         property: 'twitter:image',
         content: ogImageUrl ? ogImageUrl : 'https://portal.astar.network/images/card-img.jpg',
       },
+      ogImage: {
+        property: 'og:image',
+        content: ogImageUrl ? ogImageUrl : 'https://portal.astar.network/images/card-img.jpg',
+      },
     },
   };
 };
