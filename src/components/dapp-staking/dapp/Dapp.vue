@@ -21,7 +21,6 @@
   </div>
 </template>
 <script lang="ts">
-// import { useMeta } from 'quasar';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
@@ -30,7 +29,6 @@ import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue'
 import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
-// import { generateMeta } from 'src/config/metadata';
 import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
@@ -82,15 +80,6 @@ export default defineComponent({
       }
       return null;
     });
-
-    // watch(
-    //   [dapp],
-    //   () => {
-    //     const imgUrl = dapp.value?.dapp?.imagesUrl?.[0] || dapp.value?.dapp?.logoUrl;
-    //     useMeta(generateMeta(Path.Dapp, imgUrl));
-    //   },
-    //   { immediate: true }
-    // );
 
     return {
       Path,
