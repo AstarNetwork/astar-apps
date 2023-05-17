@@ -79,8 +79,8 @@ const buildMeta = ({
         name: 'description',
         content,
       },
-      ogImage: {
-        property: 'og:image',
+      twitterImage: {
+        property: 'twitter:image',
         content: ogImageUrl ? ogImageUrl : 'https://portal.astar.network/images/card-img.jpg',
       },
     },
