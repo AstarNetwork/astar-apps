@@ -107,7 +107,7 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <div class="row--ledger-check">
+        <div v-if="currentNetworkChain === astarChain.ASTAR" class="row--ledger-check">
           <span class="text--is-ledger">
             {{ $t('wallet.isLedgerAccount') }}
           </span>
@@ -116,7 +116,7 @@
           </div>
         </div>
         <astar-button
-          :disabled="substrateAccounts.length > 0 && !selAccount"
+          :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
           class="btn--connect"
           @click="selectAccount(selAccount)"
         >
@@ -148,8 +148,9 @@ import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vu
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
+import { astarChain } from 'src/config/chain';
 
 export default defineComponent({
   components: {
@@ -188,6 +189,7 @@ export default defineComponent({
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
     const toggleIsLedger = ref<boolean>(false);
+    const isLedgerReady = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
     const closeModal = async (): Promise<void> => {
@@ -206,6 +208,7 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
+    const { currentNetworkChain } = useNetworkInfo();
 
     const substrateAccounts = computed<SubstrateAccount[]>(() => {
       const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
@@ -339,23 +342,37 @@ export default defineComponent({
         try {
           // Memo: send a popup request for permission(first time only)
           const ledgerData = new Ledger('hid', 'astar');
-          const { address } = await ledgerData.getAddress();
           if (process.env.DEV) {
             console.info('ledgerData', ledgerData);
           }
+
+          const { address } = await ledgerData.getAddress();
           if (address) {
+            isLedgerReady.value = true;
             const transport = (ledgerData as any).__internal__app.transport;
             transport.close();
           }
         } catch (error: any) {
+          console.error(error);
           const idLedgerLocked = '0x5515';
+          const idNotRunningApp = '28161';
+          let errMsg = '';
+
           if (error.message.includes(idLedgerLocked)) {
+            errMsg = error.message;
+          } else if (error.message.includes(idNotRunningApp)) {
+            errMsg = t('warning.ledgerNotOpened');
+          }
+
+          if (errMsg) {
             store.dispatch('general/showAlertMsg', {
-              msg: error.message,
+              msg: errMsg,
               alertType: 'error',
             });
           }
         }
+      } else {
+        isLedgerReady.value = false;
       }
     };
 
@@ -405,6 +422,10 @@ export default defineComponent({
       isClosing,
       toggleIsLedger,
       isShowBalance,
+      currentNetworkChain,
+      astarChain,
+      isLedgerReady,
+      isLedger,
       displayBalance,
       backModal,
     };

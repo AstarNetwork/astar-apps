@@ -2,6 +2,7 @@ import { Ledger } from '@polkadot/hw-ledger';
 import { useAccount } from 'src/hooks/useAccount';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 enum LedgerId {
   nanoS = 'nanoS',
@@ -14,6 +15,7 @@ export const useLedger = () => {
   const ledger = ref<Ledger>();
   const ledgerAccount = ref<string>('');
   const { currentAccount } = useAccount();
+  const { t } = useI18n();
 
   const store = useStore();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -48,17 +50,25 @@ export const useLedger = () => {
         ledger.value = ledgerData;
         const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
         ledgerAccount.value = address;
-        isLedgerNanoS.value = deviceModel.id === LedgerId.nanoX;
-        // isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
+        isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
       } else {
         handleReset();
       }
     } catch (error: any) {
       console.error(error);
       const idLedgerLocked = '0x5515';
+      const idNotRunningApp = '28161';
+      let errMsg = '';
+
       if (error.message.includes(idLedgerLocked)) {
+        errMsg = error.message;
+      } else if (error.message.includes(idNotRunningApp)) {
+        errMsg = t('warning.ledgerNotOpened');
+      }
+
+      if (errMsg) {
         store.dispatch('general/showAlertMsg', {
-          msg: error.message,
+          msg: errMsg,
           alertType: 'error',
         });
       }

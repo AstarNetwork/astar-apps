@@ -57,6 +57,7 @@ export default {
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
+    ledgerNotOpened: 'Ledger has not opened Astar App',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -138,7 +139,7 @@ export default {
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
     showBalance: 'Show {token} balance',
-    isLedgerAccount: 'This is a ledger account',
+    isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
   },
   installWallet: {
     getWallet: 'Haven’t got a {value} yet?',
