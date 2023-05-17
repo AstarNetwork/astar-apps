@@ -1,6 +1,7 @@
 import { GasTip } from '@astar-network/astar-sdk-core';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export type SubstrateAccount = {
   address: string;
@@ -45,6 +46,7 @@ export interface GeneralStateInterface {
   currentNetworkIdx: number;
   isEthWallet: boolean;
   isH160Formatted: boolean;
+  isLedger: boolean;
   currentEcdsaAccount: EcdsaAccount;
   currentAddress: string;
   currentCustomEndpoint: string;
@@ -76,6 +78,7 @@ function state(): GeneralStateInterface {
     currentNetworkIdx: endpointKey.ASTAR,
     isEthWallet: false,
     isH160Formatted: false,
+    isLedger: localStorage.getItem(LOCAL_STORAGE.IS_LEDGER) === 'true',
     currentEcdsaAccount: {
       ethereum: '',
       ss58: '',

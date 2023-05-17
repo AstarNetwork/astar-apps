@@ -2,6 +2,7 @@ import { Ledger } from '@polkadot/hw-ledger';
 import { useAccount } from 'src/hooks/useAccount';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 enum LedgerId {
   nanoS = 'nanoS',
@@ -10,17 +11,17 @@ enum LedgerId {
 }
 
 export const useLedger = () => {
-  const isLedgerAccount = ref<boolean>(false);
   const isLedgerNanoS = ref<boolean>(false);
   const ledger = ref<Ledger>();
   const ledgerAccount = ref<string>('');
   const { currentAccount } = useAccount();
+  const { t } = useI18n();
 
   const store = useStore();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+  const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
   const handleReset = (): void => {
-    isLedgerAccount.value = false;
     isLedgerNanoS.value = false;
     ledger.value = undefined;
     ledgerAccount.value = '';
@@ -38,60 +39,44 @@ export const useLedger = () => {
       return;
     }
     try {
-      if (!('hid' in window.navigator)) {
-        console.error('WebHID API is not supported in this browser.');
-        handleReset();
-        return;
-      }
-
-      const hidDevices = (await (window.navigator as any).hid.getDevices()) as any;
+      if (!isLedger.value) return;
+      const ledgerData = new Ledger('hid', 'astar');
+      const { address } = await ledgerData.getAddress();
       if (process.env.DEV) {
-        console.info('hidDevices', hidDevices);
+        console.info('ledgerData', ledgerData);
       }
 
-      if (hidDevices.length === 0) {
+      if (address) {
+        ledger.value = ledgerData;
+        const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
+        ledgerAccount.value = address;
+        isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
+      } else {
         handleReset();
-        return;
+      }
+    } catch (error: any) {
+      console.error(error);
+      const idLedgerLocked = '0x5515';
+      const idNotRunningApp = '28161';
+      let errMsg = '';
+
+      if (error.message.includes(idLedgerLocked)) {
+        errMsg = error.message;
+      } else if (error.message.includes(idNotRunningApp)) {
+        errMsg = t('warning.ledgerNotOpened');
       }
 
-      hidDevices.some(async (device: any) => {
-        try {
-          if (device?.productName?.toLowerCase().includes('nano')) {
-            const ledgerData = new Ledger('hid', 'astar');
-            const { address } = await ledgerData.getAddress();
-            if (process.env.DEV) {
-              console.info('ledgerData', ledgerData);
-            }
-
-            if (address) {
-              ledger.value = ledgerData;
-              const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
-              ledgerAccount.value = address;
-              isLedgerAccount.value = address === currentAccount.value;
-              isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
-            } else {
-              handleReset();
-            }
-          }
-        } catch (error: any) {
-          const idLedgerLocked = '0x5515';
-          if (error.message.includes(idLedgerLocked)) {
-            store.dispatch('general/showAlertMsg', {
-              msg: error.message,
-              alertType: 'error',
-            });
-            handleReset();
-          }
-        } finally {
-          return;
-        }
-      });
-    } catch (error) {
+      if (errMsg) {
+        store.dispatch('general/showAlertMsg', {
+          msg: errMsg,
+          alertType: 'error',
+        });
+      }
       handleReset();
     }
   };
 
   watch([currentAccount], handleLedgerData, { immediate: true });
 
-  return { isLedgerAccount, isLedgerNanoS };
+  return { isLedgerNanoS };
 };
