@@ -60,7 +60,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const twitterUrl = `https://twitter.com/intent/tweet?text=Hey, stake on us on @AstarNetwork dApp staking&url=${window.location.href}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=Hey, stake on our dApp on @AstarNetwork dApp staking&url=${window.location.href}`;
 
     const goEditLink = (): void => {
       const url = networkParam + Path.DappStaking + Path.Register;
