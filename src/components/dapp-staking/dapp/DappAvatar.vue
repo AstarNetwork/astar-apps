@@ -23,6 +23,12 @@
               {{ $t('dappStaking.stake') }}
             </span>
           </astar-button>
+          <a :href="twitterUrl" target="_blank" class="twitter-link">
+            <astar-icon-base class="twitter-icon" viewBox="0 0 512 512" icon-name="Twitter">
+              <astar-icon-twitter />
+            </astar-icon-base>
+            {{ $t('share') }}
+          </a>
         </div>
       </div>
     </div>
@@ -54,6 +60,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const twitterUrl = `https://twitter.com/intent/tweet?text=Hey, stake on us on @AstarNetwork dApp staking&url=${window.location.href}`;
 
     const goEditLink = (): void => {
       const url = networkParam + Path.DappStaking + Path.Register;
@@ -75,6 +82,7 @@ export default defineComponent({
       goEditLink,
       isH160,
       goStakeLink,
+      twitterUrl,
     };
   },
 });
@@ -82,4 +90,19 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/dapp-staking/dapp/styles/dapp-avatar.scss';
+
+.twitter-icon {
+  width: 20px;
+  margin-left: 24px;
+  margin-right: 8px;
+  color: #1da1f2;
+}
+
+.twitter-link {
+  display: flex;
+  align-items: center;
+  color: #1da1f2;
+  font-size: 14px;
+  font-weight: 600;
+}
 </style>
