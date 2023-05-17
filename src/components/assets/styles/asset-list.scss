@@ -37,6 +37,24 @@
   }
 }
 
+.row--bg--extend-evm-withdraw {
+  padding: 16px 14px;
+  margin-bottom: 16px;
+  @media (min-width: $md) {
+    margin: 0 -6px;
+    padding: 16px 14px;
+    padding-left: 20px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+  }
+  @media (min-width: $xl) {
+    margin: 0;
+    padding-left: 14px;
+    padding-right: 8px;
+    margin-bottom: 16px;
+  }
+}
+
 .row--details {
   display: flex;
   justify-content: space-between;
@@ -234,6 +252,15 @@
 .adjuster--width {
   @media (min-width: $xl) {
     width: 70px !important;
+  }
+}
+
+.column---title-button {
+  @media (min-width: $md) {
+    margin-right: 8px;
+  }
+  @media (min-width: $xl) {
+    margin-right: -60px;
   }
 }
 
