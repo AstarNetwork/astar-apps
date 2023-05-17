@@ -99,6 +99,12 @@
   font-size: 18px;
 }
 
+.row--eras {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
 .body--dark {
   .card {
     background: $body-bg-dark;
@@ -127,6 +133,11 @@
   background-color: rgba(255, 86, 33, 0.3);
   color: $warning-red;
   padding: 8px 16px;
+}
+
+.row--ledgers {
+  display: flex;
+  flex-direction: column;
 }
 
 .body--dark {

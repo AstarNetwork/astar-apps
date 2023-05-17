@@ -11,11 +11,6 @@
 - [ ] documentation changes
 - [ ] tested on mobile devices
 
-**Release notes:**
-
-- (ex: feat: updated dApp staking to V2)
-- (ex: fix: modified styling bugs on the Assets page)
-
 **This pull request makes the following changes:**
 
 **Adds**

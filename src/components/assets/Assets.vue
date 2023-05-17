@@ -1,5 +1,8 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
+    <div class="separator--top">
+      <div class="separator" />
+    </div>
     <div class="container--assets">
       <div>
         <span class="text--xl">

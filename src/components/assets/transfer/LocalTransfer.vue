@@ -132,10 +132,29 @@
               >
                 {{ $t('assets.modals.notSendToEvmExchanges') }}
               </span>
-              <span v-else :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+              <span v-else-if="!isH160" :class="isChecked ? 'color--gray1' : 'color--not-checked'">
                 {{ $t('assets.modals.notSendToExchanges') }}
               </span>
             </div>
+            <span
+              v-if="isH160 && !isNativeToEvm"
+              :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+            >
+              <div class="row--warning-title">
+                <div class="icon--warning">
+                  <astar-icon-warning size="20" />
+                </div>
+                <span
+                  class="text--title-evm-warning"
+                  :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                >
+                  {{ $t('warning.warning') }}
+                </span>
+              </div>
+              <div class="text--warn">
+                {{ $t('assets.modals.notDestIsLedgerAccount') }}
+              </div>
+            </span>
           </label>
         </div>
       </div>

@@ -7,7 +7,7 @@
       <img class="icon" width="16" :src="iconWallet" />
       <template v-if="width >= screenSize.sm">
         <span class="text--address">
-          {{ getShortenAddress(account) }}
+          {{ getShortenAddress(account, 4) }}
         </span>
       </template>
     </button>
@@ -51,7 +51,6 @@ export default defineComponent({
   align-items: center;
   padding: 8px 16px 8px 12px;
   border-radius: 16px;
-  margin-left: 16px;
   transition: all 0.3s ease 0s;
   background: transparent;
   color: #fff;
