@@ -46,9 +46,26 @@
                 {{ $n(pendingRewards) }} {{ nativeTokenSymbol }}
               </span>
             </div>
-            <span class="text--eras">
-              ({{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }})
-            </span>
+            <div class="row--eras">
+              <span class="text--eras">
+                ({{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }})
+              </span>
+              <span class="wrapper--icon-help">
+                <astar-icon-help size="16" />
+                <q-tooltip max-width="200px" class="box--tooltip">
+                  <div>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.limitation') }}</span>
+                  </div>
+                  <br />
+                  <div class="row--ledgers">
+                    <span class="text--tooltip">{{ $t('myReward.claimable.nativeWallets') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerX') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerSPlus') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerS') }}</span>
+                  </div>
+                </q-tooltip>
+              </span>
+            </div>
           </div>
           <astar-button
             :width="80"

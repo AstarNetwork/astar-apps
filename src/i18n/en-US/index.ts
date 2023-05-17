@@ -199,6 +199,14 @@ export default {
       'The number of eras that is shown here is per dApp. You may need to claim multiple times if you have too many unclaimed eras.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
+    claimable: {
+      limitation:
+        'There is a limitation on the number of eras that can be claimed in one transaction.',
+      nativeWallets: 'Native wallets: ≒56 eras',
+      ledgerX: 'Ledger Nano X: 6 eras',
+      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
+      ledgerS: 'Ledger Nano S: 2 eras',
+    },
   },
   dappStaking: {
     myStaking: 'My Staking',

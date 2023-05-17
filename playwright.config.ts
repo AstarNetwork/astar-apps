@@ -25,7 +25,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   /*
   Limit workers to 1 because tests depends on a single Zombienet instance.
   It shouldn't be like that but spawning Zombienet for every test is time consuming.
