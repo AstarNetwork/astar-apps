@@ -100,5 +100,7 @@ test.describe('account panel', () => {
       'Test'
     );
     await page.goto('/astar/assets');
+    await connectToNetwork(page);
+    await page.getByText('MetaMask').click();
   });
 });
