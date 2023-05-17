@@ -145,30 +145,6 @@
                 </div>
               </div>
             </div>
-            <div v-if="numEvmDeposit" class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
-                  </div>
-                </div>
-                <div class="column--buttons">
-                  <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
-                    {{ $t('assets.withdraw') }}
-                  </button>
-                </div>
-              </div>
-            </div>
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
