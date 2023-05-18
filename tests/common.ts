@@ -95,6 +95,7 @@ export const signInMetamask = async (context: BrowserContext): Promise<void> => 
 };
 
 export const connectWithEVM = async (context: BrowserContext): Promise<void> => {
+  //    'MetaMask Notification window not found.'
   const extensionWindow = await getWindow('MetaMask Notification', context);
   await extensionWindow
     .locator('.permissions-connect-choose-account__bottom-buttons')
