@@ -83,8 +83,6 @@ test.describe('account panel', () => {
     await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
     await expect(page.getByText('Inputted invalid destination address')).toBeVisible();
 
-    // Send to exchanges warning is shown on EVM
-
     // Send to exchanges warning is shown on Native
     const TEST_EVM_ADDRESS = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
     await page.getByPlaceholder('Destination Address').fill(TEST_EVM_ADDRESS);

@@ -24,6 +24,35 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
   await page.getByRole('button', { name: 'Add the account with the supplied seed' }).click();
 };
 
+export const connectToNetwork = async (page: Page): Promise<void> => {
+  await page.locator('.btn--network').click();
+  await page.getByText('Custom Network').click();
+  await page.getByPlaceholder('IP Address / Domain').click();
+  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT);
+  await page.getByRole('button', { name: 'Connect', exact: true }).click();
+};
+
+export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
+  await page.getByText('Polkadot.js').click();
+  await page.getByText(`${accountName} (extension)`).click();
+  await page.getByRole('button', { name: 'Connect', exact: true }).click();
+};
+
+export const signTransaction = async (context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('polkadot{.js}', context);
+  await extensionWindow.getByRole('textbox').fill('Test1234');
+  await extensionWindow.getByRole('button', { name: 'Sign the transaction' }).click();
+};
+
+export const closePolkadotWelcomePopup = async (context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('polkadot{.js}', context);
+  const extensionAcceptButton = extensionWindow.getByText('Understood, let me continue');
+  await extensionAcceptButton.click();
+  const extensionAcceptButton2 = extensionWindow.getByText('Yes, allow this application access');
+  await extensionAcceptButton2.click();
+};
+
+// metamask
 export const createMetamaskAccount = async (
   page: Page,
   seed: string,
@@ -55,30 +84,20 @@ export const createMetamaskAccount = async (
   await page.getByRole('button').nth(1).click();
 };
 
-export const connectToNetwork = async (page: Page): Promise<void> => {
-  await page.locator('.btn--network').click();
-  await page.getByText('Custom Network').click();
-  await page.getByPlaceholder('IP Address / Domain').click();
-  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT);
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
-};
-
-export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
-  await page.getByText('Polkadot.js').click();
-  await page.getByText(`${accountName} (extension)`).click();
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
-};
-
-export const signTransaction = async (context: BrowserContext): Promise<void> => {
-  const extensionWindow = await getWindow('polkadot{.js}', context);
-  await extensionWindow.getByRole('textbox').fill('Test1234');
-  await extensionWindow.getByRole('button', { name: 'Sign the transaction' }).click();
-};
-
-export const closePolkadotWelcomePopup = async (context: BrowserContext): Promise<void> => {
-  const extensionWindow = await getWindow('polkadot{.js}', context);
-  const extensionAcceptButton = extensionWindow.getByText('Understood, let me continue');
-  await extensionAcceptButton.click();
-  const extensionAcceptButton2 = extensionWindow.getByText('Yes, allow this application access');
-  await extensionAcceptButton2.click();
+export const signTransactionWithEVM = async (context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('Metamask Notification', context);
+  await extensionWindow
+    .locator('.permissions-connect-choose-account__bottom-buttons')
+    .getByRole('button', { name: 'Next' })
+    .click();
+  // connect button
+  await extensionWindow.locator('page-container-footer-next').click();
+  await extensionWindow
+    .locator('.confirmation-footer__actions')
+    .getByRole('button', { name: 'Approve' })
+    .click();
+  await extensionWindow
+    .locator('.confirmation-footer__actions')
+    .getByRole('button', { name: 'Switch network' })
+    .click();
 };
