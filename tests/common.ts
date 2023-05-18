@@ -84,14 +84,23 @@ export const createMetamaskAccount = async (
   await page.getByRole('button').nth(1).click();
 };
 
-export const signTransactionWithEVM = async (context: BrowserContext): Promise<void> => {
-  const extensionWindow = await getWindow('Metamask Notification', context);
+export const signInMetamask = async (context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('MetaMask', context);
+  await extensionWindow.locator('data-testid=unlock-password').fill('Test1234');
+  await extensionWindow.locator('data-testid=unlock-submit').click();
+  await extensionWindow.locator('data-testid=onboarding-complete-done').click();
+  await extensionWindow.locator('data-testid=pin-extension-next').click();
+  await extensionWindow.locator('data-testid=pin-extension-done').click();
+  await extensionWindow.locator('data-testid=popover-close').click();
+};
+
+export const connectWithEVM = async (context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('MetaMask Notification', context);
   await extensionWindow
     .locator('.permissions-connect-choose-account__bottom-buttons')
     .getByRole('button', { name: 'Next' })
     .click();
-  // connect button
-  await extensionWindow.locator('page-container-footer-next').click();
+  await extensionWindow.locator('data-testid=page-container-footer-next').click();
   await extensionWindow
     .locator('.confirmation-footer__actions')
     .getByRole('button', { name: 'Approve' })

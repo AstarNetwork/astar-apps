@@ -13,8 +13,9 @@ import {
   createAccount,
   createMetamaskAccount,
   selectAccount,
+  signInMetamask,
   signTransaction,
-  signTransactionWithEVM,
+  connectWithEVM,
 } from './common';
 import { ApiPromise } from '@polkadot/api';
 import { chainDecimals, getApi, getBalance } from './common-api';
@@ -51,15 +52,11 @@ test.describe('account panel', () => {
   test('should transfer tokens from Alice to Bob on EVM account', async ({ page, context }) => {
     //metamask setup
     await page.getByText('MetaMask').click();
-    // await page.goto(
-    //   'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#onboarding/welcome'
-    // );
-    // await page.locator('data-test-id=unlock-password').fill('Test1234');
-    // await page.getByRole('button').click();
-    // await page.getByRole('button').click();
-    // await page.getByRole('button').click();
+    await signInMetamask(context);
 
-    signTransactionWithEVM(context);
+    await page.locator('.btn--connect').click();
+    await page.getByText('MetaMask').click();
+    await connectWithEVM(context);
 
     //transfer test
     await page.waitForSelector('.modal-close', { state: 'hidden' });

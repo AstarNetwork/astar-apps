@@ -89,4 +89,22 @@ test.describe('account panel', () => {
     await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
     await expect(page.getByText('the funds will likely be lost')).toBeVisible();
   });
+
+  // Test case: XCM007
+  test('should perform validation when xcm transfer from Alice to Bob', async ({ page }) => {
+    await page.goto('/astar/assets/transfer?token=astr&from=astar&to=acala&mode=xcm');
+    const baseTransferAmount = BigInt(5);
+    const lowerTransferAmount = BigInt(3);
+    const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+
+    // Insufficient balance
+    const transferAmount = aliceBalanceBeforeTransaction + baseTransferAmount;
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await expect(page.getByText('Insufficient')).toBeVisible();
+
+    // Invalid destination address
+    await page.getByPlaceholder('0.0').fill(lowerTransferAmount.toString());
+    await expect(page.getByText('Minimum transfer amount')).toBeVisible();
+  });
 });
