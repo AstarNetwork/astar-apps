@@ -94,9 +94,10 @@ export const signInMetamask = async (context: BrowserContext): Promise<void> => 
   await extensionWindow.locator('data-testid=popover-close').click();
 };
 
-export const connectWithEVM = async (context: BrowserContext): Promise<void> => {
+export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<void> => {
   //    'MetaMask Notification window not found.'
-  const extensionWindow = await getWindow('MetaMask Notification', context);
+  // await page.goto('chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html');
+  const extensionWindow = await getWindow('MetaMask', context);
   await extensionWindow
     .locator('.permissions-connect-choose-account__bottom-buttons')
     .getByRole('button', { name: 'Next' })

@@ -56,7 +56,7 @@ test.describe('account panel', () => {
 
     await page.locator('.btn--connect').click();
     await page.getByText('MetaMask').click();
-    await connectWithEVM(context);
+    await connectWithEVM(page, context);
 
     //transfer test
     await page.waitForSelector('.modal-close', { state: 'hidden' });
