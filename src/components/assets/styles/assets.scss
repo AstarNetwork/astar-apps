@@ -2,11 +2,10 @@
 
 .wrapper--assets {
   position: relative;
-  padding-top: 36px;
   @media (min-width: $lg) {
     padding-top: 16px;
   }
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     display: flex;
     justify-content: center;
   }
@@ -16,7 +15,7 @@
   display: grid;
   row-gap: 32px;
   margin-bottom: 24px;
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     width: 100%;
     max-width: $container-max-width;
   }
@@ -57,21 +56,21 @@
 }
 
 .row--links {
-  display: none;
   padding-left: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: block;
   @media (min-width: $lg) {
     padding: 0;
   }
-  @media (max-width: $xxl) {
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: block;
+  @media (min-width: $xxxl) {
+    display: none;
   }
 }
 
 .column--links {
   display: none;
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     display: block;
   }
 }
@@ -86,5 +85,5 @@
   padding: 0 16px;
   @media (min-width: $lg) {
     padding: 0;
-  } 
+  }
 }

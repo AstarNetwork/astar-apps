@@ -1,5 +1,6 @@
 <template>
   <div>
+    <decentralized-banner />
     <dashboard-layout>
       <router-view v-slot="{ Component }">
         <keep-alive>
@@ -38,6 +39,7 @@ import 'reflect-metadata';
 import '@polkadot/api-augment';
 import { defineComponent, computed, watch } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
+import DecentralizedBanner from 'src/components/common/decentralized-banner.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
@@ -64,6 +66,7 @@ export default defineComponent({
     AlertBox,
     CookiePolicy,
     NotificationStack,
+    DecentralizedBanner,
   },
   setup() {
     useAppRouter();

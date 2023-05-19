@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
-    <div class="separator--top">
+    <div class="separator--top container--account">
       <div class="separator" />
     </div>
     <div class="container--assets">
@@ -21,7 +21,9 @@
         <dynamic-links />
       </div>
       <div>
-        <div class="separator" />
+        <div class="container--account">
+          <div class="separator" />
+        </div>
         <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
       </div>
       <div class="container--asset-list">
