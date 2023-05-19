@@ -54,6 +54,10 @@ export default defineComponent({
 .text--banner {
   color: $gray-1;
   font-weight: 600;
+  font-size: 12px;
+  @media (min-width: $sm) {
+    font-size: 14px;
+  }
 }
 
 .text-highlight {
