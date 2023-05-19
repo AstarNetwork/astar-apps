@@ -38,3 +38,14 @@ yarn-error.log*
 
 # ICP dfx
 .dfx/
+# End-to-end tests
+test-results/
+playwright-report/
+playwright/.cache/
+
+
+# Zombienet binaries
+zombienet-macos
+polkadot
+astar-collator
+

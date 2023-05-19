@@ -75,6 +75,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setIsH160Formatted(state, isH160Formatted) {
     state.isH160Formatted = isH160Formatted;
   },
+  setIsLedger(state, isLedger) {
+    state.isLedger = isLedger;
+  },
   setCurrentEcdsaAccount(state, ecdsa) {
     state.currentEcdsaAccount = ecdsa;
   },
@@ -98,8 +101,8 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setHeaderName(state, name) {
     state.headerName = name;
   },
-  setCurrentWallet(state, walle: string) {
-    state.currentWallet = walle;
+  setCurrentWallet(state, wallet: string) {
+    state.currentWallet = wallet;
   },
   setGas(state, gas: GasTip) {
     state.gas = gas;

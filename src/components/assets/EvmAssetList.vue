@@ -25,6 +25,8 @@
       </div>
     </div>
 
+    <div class="separator" />
+
     <div class="container">
       <div class="row">
         <div>

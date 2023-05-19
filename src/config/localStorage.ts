@@ -15,6 +15,8 @@ export enum LOCAL_STORAGE {
   XCM_TX_HISTORIES = 'xcmTxHistories',
   XVM_TX_HISTORIES = 'xvmTxHistories',
   BALLOON_NATIVE_TOKEN = 'balloonNativeToken',
+  THEME_COLOR = 'themeColor',
+  IS_LEDGER = 'isLedger',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser

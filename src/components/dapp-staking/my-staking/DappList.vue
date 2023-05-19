@@ -37,6 +37,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper {
+  padding-left: 8px;
   .wrapper--header {
     display: flex;
     justify-content: space-between;
@@ -50,13 +51,22 @@ export default defineComponent({
     display: flex;
     align-items: center;
     letter-spacing: -0.02em;
-    color: $gray-5-selected;
+    color: $navy-1;
   }
 }
 
 .divider {
-  border-top: 1px solid $object-light;
-  margin-top: 24px;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(
+    121.48deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  border-image-slice: 1;
+  margin-top: 80px;
   margin-bottom: 24px;
 }
 

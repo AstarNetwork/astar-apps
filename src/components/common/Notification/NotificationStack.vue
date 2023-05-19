@@ -5,7 +5,7 @@
         <notification-bar
           :alert-type="t.alertType"
           :alert-msg="t.alertMsg"
-          :tx-hash="t.txHash"
+          :explorer-url="t.explorerUrl"
           :show="true"
           @close="() => closeNoti(index)"
         />

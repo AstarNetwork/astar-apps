@@ -3,6 +3,8 @@
     :show="isOpen && !isSelected"
     title="Wallet"
     :is-closing="isClosing"
+    :is-back="true"
+    :handle-back="backModal"
     @close="closeModal"
   >
     <div class="wrapper--modal-account">
@@ -11,16 +13,16 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <select-wallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
+          <selected-wallet :selected-wallet="selectedWallet" />
         </div>
-        <div v-if="isNativeWallet" class="row--balance-option">
+        <div class="row--balance-option">
           <div class="column--balance-option">
             <span class="text--option-label">
               {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
             </span>
             <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
             <div class="toggle--custom">
-              <q-toggle v-model="isShowBalance" color="light-blue" />
+              <q-toggle v-model="isShowBalance" color="#0085ff" />
             </div>
           </div>
         </div>
@@ -52,51 +54,69 @@
                   @change="selAccount = account.address"
                 />
                 <div class="wrapper--account-detail">
-                  <div class="accountName">{{ account.name }}</div>
-                  <div class="row--address-icons">
-                    <div class="address">{{ getShortenAddress(account.address) }}</div>
-                    <div class="icons">
-                      <button class="box--share btn--primary" @click="copyAddress(account.address)">
-                        <div class="icon--primary">
-                          <astar-icon-copy />
-                        </div>
-                        <q-tooltip>
-                          <span class="text--tooltip">{{ $t('copy') }}</span>
-                        </q-tooltip>
-                      </button>
-                      <a
-                        :href="subScan + account.address"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <button class="box--share btn--primary">
-                          <div class="icon--primary">
-                            <astar-icon-external-link />
-                          </div>
-                          <q-tooltip>
-                            <span class="text--tooltip">{{ $t('subscan') }}</span>
-                          </q-tooltip>
-                        </button>
-                      </a>
+                  <div class="box--account">
+                    <div class="row--account">
+                      <div class="account-name">
+                        <span>
+                          {{ account.name }}
+                        </span>
+                      </div>
+                      <div class="address">
+                        <span>
+                          {{ getShortenAddress(account.address, 4) }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="row--balance-icons">
+                      <div>
+                        <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
+                          {{ $n(displayBalance(account.address)) }}
+                          {{ nativeTokenSymbol }}
+                        </span>
+                        <span v-else class="text--balance-hide">
+                          ----- {{ nativeTokenSymbol }}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
-                      {{ $n(displayBalance(account.address)) }}
-                      {{ nativeTokenSymbol }}
-                    </span>
-                    <span v-else class="text--balance-hide"> ----- {{ nativeTokenSymbol }} </span>
+                  <div class="icons">
+                    <button class="box--share btn--primary" @click="copyAddress(account.address)">
+                      <div class="icon--primary">
+                        <astar-icon-copy />
+                      </div>
+                      <q-tooltip>
+                        <span class="text--tooltip">{{ $t('copy') }}</span>
+                      </q-tooltip>
+                    </button>
+                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
+                      <button class="box--share btn--primary">
+                        <div class="icon--primary">
+                          <astar-icon-external-link />
+                        </div>
+                        <q-tooltip>
+                          <span class="text--tooltip">{{ $t('subscan') }}</span>
+                        </q-tooltip>
+                      </button>
+                    </a>
                   </div>
                 </div>
-                <div v-if="index === previousSelIdx" class="dot"></div>
+                <div v-if="index === previousSelIdx" class="dot" />
               </label>
             </li>
           </ul>
         </fieldset>
       </div>
       <div class="wrapper__row--button">
+        <div v-if="currentNetworkChain === astarChain.ASTAR" class="row--ledger-check">
+          <span class="text--is-ledger">
+            {{ $t('wallet.isLedgerAccount') }}
+          </span>
+          <div class="toggle--custom">
+            <q-toggle v-model="toggleIsLedger" color="#0085ff" />
+          </div>
+        </div>
         <astar-button
-          :disabled="substrateAccounts.length > 0 && !selAccount"
+          :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
           class="btn--connect"
           @click="selectAccount(selAccount)"
         >
@@ -111,7 +131,7 @@ import { ApiPromise } from '@polkadot/api';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
+import SelectedWallet from 'src/components/header/modals/SelectedWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
@@ -121,21 +141,20 @@ import {
   wait,
   fetchNativeBalance,
 } from '@astar-network/astar-sdk-core';
-import {
-  castMobileSource,
-  checkIsEthereumWallet,
-  checkIsNativeWallet,
-} from 'src/hooks/helper/wallet';
+import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { Ledger } from '@polkadot/hw-ledger';
+import { astarChain } from 'src/config/chain';
 
 export default defineComponent({
   components: {
-    SelectWallet,
+    SelectedWallet,
   },
   props: {
     isOpen: {
@@ -146,7 +165,7 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
-    setWalletModal: {
+    openSelectModal: {
       type: Function,
       required: true,
     },
@@ -169,6 +188,8 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
+    const toggleIsLedger = ref<boolean>(false);
+    const isLedgerReady = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
     const closeModal = async (): Promise<void> => {
@@ -179,11 +200,15 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const backModal = async (): Promise<void> => {
+      await closeModal();
+      props.openSelectModal();
+    };
+
     const store = useStore();
     const { t } = useI18n();
-
-    const isNativeWallet = computed<boolean>(() => checkIsNativeWallet(props.selectedWallet));
+    const { width, screenSize } = useBreakpoints();
+    const { currentNetworkChain } = useNetworkInfo();
 
     const substrateAccounts = computed<SubstrateAccount[]>(() => {
       const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
@@ -200,6 +225,7 @@ export default defineComponent({
     );
 
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
     const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -257,7 +283,8 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      windowHeight.value = window.innerHeight - 414;
+      const adjustment = width.value > screenSize.sm ? 520 : 390;
+      windowHeight.value = window.innerHeight - adjustment;
     };
 
     window.addEventListener('resize', onHeightChange);
@@ -301,7 +328,6 @@ export default defineComponent({
     );
 
     const requestExtensionsIfFirstAccess = (): void => {
-      if (!isNativeWallet.value) return;
       // Memo: displays wallet's authorization popup
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
@@ -309,8 +335,65 @@ export default defineComponent({
       store.commit('general/setExtensionCount', extensionCount.value);
     };
 
-    watch([isNativeWallet, props.selectedWallet], requestExtensionsIfFirstAccess, {
-      immediate: false,
+    const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
+      localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
+      store.commit('general/setIsLedger', isLedger);
+      if (isLedger) {
+        try {
+          // Memo: send a popup request for permission(first time only)
+          const ledgerData = new Ledger('hid', 'astar');
+          if (process.env.DEV) {
+            console.info('ledgerData', ledgerData);
+          }
+
+          const { address } = await ledgerData.getAddress();
+          if (address) {
+            isLedgerReady.value = true;
+            const transport = (ledgerData as any).__internal__app.transport;
+            transport.close();
+          }
+        } catch (error: any) {
+          console.error(error);
+          const idLedgerLocked = '0x5515';
+          const idNotRunningApp = '28161';
+          let errMsg = '';
+
+          if (error.message.includes(idLedgerLocked)) {
+            errMsg = error.message;
+          } else if (error.message.includes(idNotRunningApp)) {
+            errMsg = t('warning.ledgerNotOpened');
+          }
+
+          if (errMsg) {
+            store.dispatch('general/showAlertMsg', {
+              msg: errMsg,
+              alertType: 'error',
+            });
+          }
+        }
+      } else {
+        isLedgerReady.value = false;
+      }
+    };
+
+    watch([props.selectedWallet], requestExtensionsIfFirstAccess);
+
+    watch([selAccount], () => {
+      toggleIsLedger.value = false;
+    });
+
+    watch(
+      [isLedger],
+      () => {
+        toggleIsLedger.value = isLedger.value;
+      },
+      {
+        immediate: true,
+      }
+    );
+
+    watch([toggleIsLedger], async () => {
+      await updateIsLedgerAccount(toggleIsLedger.value);
     });
 
     onUnmounted(() => {
@@ -326,9 +409,7 @@ export default defineComponent({
       substrateAccounts,
       SupportWallet,
       currentNetworkIdx,
-      isDarkTheme,
       subScan,
-      isNativeWallet,
       nativeTokenSymbol,
       isLoadingBalance,
       accountBalanceMap,
@@ -339,8 +420,14 @@ export default defineComponent({
       windowHeight,
       isSelected,
       isClosing,
+      toggleIsLedger,
       isShowBalance,
+      currentNetworkChain,
+      astarChain,
+      isLedgerReady,
+      isLedger,
       displayBalance,
+      backModal,
     };
   },
 });

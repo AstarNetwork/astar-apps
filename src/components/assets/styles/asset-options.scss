@@ -41,7 +41,7 @@
 .text--option {
   font-weight: 500;
   font-size: 14px;
-  color: $gray-5;
+  color: $navy-1;
   text-align: left;
 }
 
@@ -84,22 +84,22 @@
 
 .body--dark {
   .box--options {
-    background-color: $gray-6;
+    background-color: $navy-1;
     filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.8));
   }
   .text--option {
     color: $gray-1;
   }
   .row--option:hover {
-    background-color: $gray-5-selected-dark;
+    background-color: rgba(255, 255, 255, 0.02);
   }
   .icon--plus {
-    color: $astar-blue-dark;
+    color: $astar-blue;
   }
   .icon-hide {
-    color: $astar-blue-dark;
+    color: $astar-blue;
   }
   .icon-vert {
-    color: $astar-blue-dark;
+    color: $astar-blue;
   }
 }

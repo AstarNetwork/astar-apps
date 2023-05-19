@@ -17,10 +17,10 @@ function initSplashText() {
   }
 
   if (!isLightClientConenction()) {
-    document.getElementById('splash').remove();
+    document.getElementById('splash')?.remove();
     return;
   } else {
-    document.getElementById('overlay').remove();
+    document.getElementById('overlay')?.remove();
   }
 
   const intervalId = setInterval(() => {

@@ -7,13 +7,13 @@
       </div>
     </div>
     <div class="header-right">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'HeaderComp',
@@ -22,11 +22,6 @@ export default defineComponent({
       type: String,
       default: '',
     },
-  },
-  setup(props) {
-    return {
-      ...toRefs(props),
-    };
   },
 });
 </script>
@@ -38,15 +33,29 @@ export default defineComponent({
   overflow: hidden;
   display: flex;
   justify-content: space-between;
-  height: 6rem;
-  padding: 40px 40px 25px 40px;
-  background: rgba(247, 247, 248, 0.8);
+  background: #0e101d;
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
-  border-bottom: 1px solid $object-light;
+  height: 4rem;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: 1px solid transparent !important;
+  border-image: linear-gradient(
+    121.48deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  border-image-slice: 1;
   @media (min-width: $lg) {
-    padding-left: 28px;
-    padding-right: 28px;
+    background: rgba(247, 247, 248, 0.8);
+  }
+  @media (min-width: $lg) {
+    padding: 40px 40px 25px 40px;
+    height: 6rem;
+    background: #fff;
   }
 }
 
@@ -56,48 +65,38 @@ export default defineComponent({
   align-items: center;
   font-weight: 590;
   font-size: 1.625rem;
-  padding: 0.75rem;
-  color: $gray-5-selected;
+  color: $navy-1;
+  padding: 0rem;
 }
 
 .header-right {
   display: flex;
   height: 100%;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0rem;
 }
 
 .body--dark {
   .header {
-    background: rgba(25, 29, 31, 0.8) !important;
-    border-bottom: 1px solid $gray-5;
+    background: rgba(8, 15, 46, 0.4);
+    backdrop-filter: blur(200px);
+    border-bottom: 1px solid !important;
+    border-image: linear-gradient(
+      90deg,
+      #e6007a -4%,
+      #e6007a -3.88%,
+      #703ac2 17.01%,
+      #0070eb 42.25%,
+      #0297fb 73.9%,
+      #0ae2ff 97.42%
+    );
+    border-image-slice: 1;
   }
+
   .header-left {
     color: $gray-1;
-  }
-}
-
-@media screen and (max-width: $lg) {
-  .header {
-    height: 4rem;
-    padding-top: 36px;
-    padding-left: 20px;
-    padding-right: 16px;
-    background: $gray-1;
-    border-bottom: 0px !important;
-  }
-
-  .header-left {
-    padding: 0rem;
-  }
-
-  .header-right {
-    padding: 0rem;
-  }
-
-  .body--dark {
-    .header {
-      background: $gray-6 !important;
+    @media (min-width: $lg) {
+      padding: 0px;
     }
   }
 }

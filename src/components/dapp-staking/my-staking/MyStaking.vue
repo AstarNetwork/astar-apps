@@ -1,10 +1,14 @@
 <template>
-  <div>
+  <div class="wrapper--mystaking">
     <div class="txt--header">{{ $t('dappStaking.myStaking') }}</div>
     <div class="staking-container">
       <div class="wrapper--tabs responsive">
         <nav class="tabs">
-          <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
+          <div
+            class="tab"
+            :class="currentTab === MyStakingTab.MyRewards ? 'active' : ''"
+            @click="currentTab = MyStakingTab.MyRewards"
+          >
             <span class="text--tab">
               {{ $t('dappStaking.myRewards') }}
             </span>
@@ -12,8 +16,8 @@
           <div
             v-if="unlockingChunks && unlockingChunks.length > 0"
             class="tab"
-            :class="currentTab === 1 ? 'active' : ''"
-            @click="currentTab = 1"
+            :class="currentTab === MyStakingTab.UnbondingList ? 'active' : ''"
+            @click="currentTab = MyStakingTab.UnbondingList"
           >
             <span class="text--tab">
               {{ $t('dappStaking.unbonding') }}
@@ -22,8 +26,8 @@
           <div
             v-if="myStakeInfos && myStakeInfos.length > 0"
             class="tab"
-            :class="currentTab === 2 ? 'active' : ''"
-            @click="currentTab = 2"
+            :class="currentTab === MyStakingTab.MyDapps ? 'active' : ''"
+            @click="currentTab = MyStakingTab.MyDapps"
           >
             <span class="text--tab">
               {{ $t('dappStaking.myDapps') }}
@@ -56,15 +60,21 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
-import { useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import MyRewards from './MyRewards.vue';
 import UnbondingList from './UnbondingList.vue';
 import MyDapps from './MyDapps.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+
+enum MyStakingTab {
+  MyRewards = 0,
+  UnbondingList = 1,
+  MyDapps = 2,
+}
 
 export default defineComponent({
   components: {
@@ -75,10 +85,11 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const currentTab = ref(0);
+    const currentTab = ref<MyStakingTab>(MyStakingTab.MyDapps);
     const { nativeTokenSymbol } = useNetworkInfo();
     const { unlockingChunks } = useUnbonding();
     const { myStakeInfos } = useStakerInfo();
+    const { currentAccount } = useAccount();
 
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData, isLoadingBalance } = useBalance(selectedAddress);
@@ -90,6 +101,14 @@ export default defineComponent({
       return Number(balance);
     });
 
+    watch(
+      [currentAccount],
+      () => {
+        currentTab.value = MyStakingTab.MyRewards;
+      },
+      { immediate: false }
+    );
+
     return {
       currentTab,
       isLoadingBalance,
@@ -97,6 +116,7 @@ export default defineComponent({
       nativeTokenSymbol,
       unlockingChunks,
       myStakeInfos,
+      MyStakingTab,
     };
   },
 });

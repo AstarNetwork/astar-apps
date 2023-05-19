@@ -7,3 +7,5 @@
 .eslintrc.js
 babel.config.js
 /src-ssr
+/tests/polkadot_wallet
+/tests/metamask_wallet

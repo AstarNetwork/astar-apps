@@ -37,6 +37,24 @@
   }
 }
 
+.row--bg--extend-evm-withdraw {
+  padding: 16px 14px;
+  margin-bottom: 16px;
+  @media (min-width: $md) {
+    margin: 0 -6px;
+    padding: 16px 14px;
+    padding-left: 20px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+  }
+  @media (min-width: $xl) {
+    margin: 0;
+    padding-left: 14px;
+    padding-right: 8px;
+    margin-bottom: 16px;
+  }
+}
+
 .row--details {
   display: flex;
   justify-content: space-between;
@@ -237,6 +255,15 @@
   }
 }
 
+.column---title-button {
+  @media (min-width: $md) {
+    margin-right: 8px;
+  }
+  @media (min-width: $xl) {
+    margin-right: -60px;
+  }
+}
+
 .column--buttons {
   display: grid;
   row-gap: 14px;
@@ -296,7 +323,7 @@
 }
 
 .icon--add {
-  color: $astar-blue-dark;
+  color: $astar-blue;
   font-size: 24px;
   font-weight: bold;
 }
@@ -304,7 +331,7 @@
 .text--value {
   font-weight: 400;
   font-size: 14px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .row--staking {
@@ -316,7 +343,7 @@
 
 .color--astar {
   @media (min-width: $md) {
-    color: $astar-blue-dark;
+    color: $astar-blue;
   }
 }
 
@@ -395,7 +422,7 @@
 }
 
 .icon--expand {
-  color: $astar-blue-dark;
+  color: $astar-blue;
   width: 32px;
   height: 32px;
   cursor: pointer;
@@ -404,7 +431,7 @@
   border-radius: 100%;
   &:hover {
     color: white;
-    background-color: $astar-blue-dark;
+    background-color: $astar-blue;
   }
 }
 
@@ -450,17 +477,34 @@
   margin-top: 0;
 }
 
+.separator {
+  border-bottom: 1px solid $border-separator-light;
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
   }
   .container--explorer-icon {
-    stroke: $astar-blue-dark;
+    stroke: $astar-blue;
     &:hover {
       stroke: white;
     }
   }
   .button--import-token:hover {
     background-color: $gray-5;
+  }
+  .separator {
+    border-bottom: 1px solid;
+    border-image: linear-gradient(
+      90deg,
+      #e6007a -4%,
+      #e6007a -3.88%,
+      #703ac2 17.01%,
+      #0070eb 42.25%,
+      #0297fb 73.9%,
+      #0ae2ff 97.42%
+    );
+    border-image-slice: 1;
   }
 }

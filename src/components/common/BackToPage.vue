@@ -1,6 +1,6 @@
 <template>
-  <div class="container--back">
-    <router-link :to="link">
+  <div>
+    <router-link :to="link" class="container--back">
       <span class="icon--back"> &#60; </span>
       <span> {{ text }}</span>
     </router-link>

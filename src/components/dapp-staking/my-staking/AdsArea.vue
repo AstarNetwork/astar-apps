@@ -47,6 +47,7 @@ export default defineComponent({
   grid-template-columns: auto auto auto;
   gap: 16px;
   justify-content: center;
+  padding: 0 16px;
   margin-top: 48px;
   margin-bottom: 48px;
   @media (min-width: $md) {
@@ -93,7 +94,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: 20px;
     line-height: 18px;
-    color: $gray-5-selected;
+    color: $navy-1;
     margin-top: 10px;
   }
   @media (max-width: $sm) {

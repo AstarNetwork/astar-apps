@@ -25,7 +25,7 @@
   border-radius: 6px;
   width: 320px;
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   @media (min-width: $xs) {
     width: 344px;
   }
@@ -61,15 +61,12 @@
 .text--to--balance {
   font-weight: 400;
   font-size: 12px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .body--dark {
   .box--input-chain {
-    background: $gray-6;
-    border: 1px solid $gray-4;
-  }
-  .text--to--balance {
-    color: $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
 }
