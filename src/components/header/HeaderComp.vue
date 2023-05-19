@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" :class="isDecentralised && 'margin--decentralised'">
     <div class="header-left">
       <div v-if="title">{{ title }}</div>
       <div v-else>
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   name: 'HeaderComp',
@@ -23,11 +23,25 @@ export default defineComponent({
       default: '',
     },
   },
+  setup() {
+    const isDecentralised = computed(() => {
+      return true;
+    });
+
+    return { isDecentralised };
+  },
 });
 </script>
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+
+.margin--decentralised {
+  margin-top: 62px;
+  @media (min-width: $md) {
+    margin-top: 40px;
+  }
+}
 
 .header {
   overflow: hidden;

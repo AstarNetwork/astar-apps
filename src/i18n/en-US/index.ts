@@ -102,6 +102,11 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
+    decentralisedBanner: {
+      bannerText:
+        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
+      goToClassicPortal: 'our Classic Portal',
+    },
   },
   sidenavi: {
     community: 'Community',
