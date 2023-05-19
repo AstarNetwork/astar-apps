@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" :class="isDecentralised && 'sidebar--height-decentralised '">
     <div class="icon">
       <logo />
     </div>
@@ -133,15 +133,18 @@ export default defineComponent({
     const { isOpen } = useSidebar();
 
     const store = useStore();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
 
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
-    const hoverNFT = ref(false);
+    const hoverNFT = ref<boolean>(false);
+    const isDecentralised = computed<boolean>(() => {
+      return true;
+    });
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -165,6 +168,7 @@ export default defineComponent({
       path,
       RoutePath,
       hoverNFT,
+      isDecentralised,
     };
   },
 });

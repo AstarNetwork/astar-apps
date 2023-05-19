@@ -37,8 +37,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .margin--decentralised {
-  margin-top: 62px;
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     margin-top: 40px;
   }
 }
