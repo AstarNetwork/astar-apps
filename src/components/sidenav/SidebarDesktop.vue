@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" :class="isDecentralised && 'sidebar--height-decentralised '">
+  <div class="sidebar" :class="isDecentralized && 'sidebar--height-decentralized '">
     <div class="icon">
       <logo />
     </div>
@@ -118,6 +118,7 @@ import { Path as RoutePath } from 'src/router/routes';
 import IconSideNft from './components/IconSideNFT.vue';
 import IconEcosystem from './components/IconEcosystem.vue';
 import Balloon from './components/Balloon.vue';
+import { decentralizedOrigin } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -142,8 +143,8 @@ export default defineComponent({
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
     const hoverNFT = ref<boolean>(false);
-    const isDecentralised = computed<boolean>(() => {
-      return true;
+    const isDecentralized = computed<boolean>(() => {
+      return window.location.origin === decentralizedOrigin;
     });
 
     const getIndicatorClass = (path: string): string => {
@@ -168,7 +169,7 @@ export default defineComponent({
       path,
       RoutePath,
       hoverNFT,
-      isDecentralised,
+      isDecentralized,
     };
   },
 });

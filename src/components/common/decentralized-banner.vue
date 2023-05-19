@@ -1,29 +1,30 @@
 <template>
-  <div v-if="isDecentralised" class="wrapper--decentralized-banner highest-z-index">
+  <div v-if="isDecentralized" class="wrapper--decentralized-banner highest-z-index">
     <span class="text--banner">
-      {{ $t('common.decentralisedBanner.bannerText') }}
+      {{ $t('common.decentralizedBanner.bannerText') }}
       <a
         href="https://portal.astar.network"
         class="text-highlight"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {{ $t('common.decentralisedBanner.goToClassicPortal') }}
+        {{ $t('common.decentralizedBanner.goToClassicPortal') }}
       </a>
     </span>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { decentralizedOrigin } from 'src/links';
 
 export default defineComponent({
   setup() {
-    const isDecentralised = computed(() => {
-      return true;
+    const isDecentralized = computed<boolean>(() => {
+      return window.location.origin === decentralizedOrigin;
     });
 
     return {
-      isDecentralised,
+      isDecentralized,
     };
   },
 });
