@@ -38,6 +38,7 @@ export default {
   amountToken: '{amount} {token}',
   select: 'Select',
   help: 'Help',
+  share: 'Share',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
