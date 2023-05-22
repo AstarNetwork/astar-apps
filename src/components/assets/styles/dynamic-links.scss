@@ -1,0 +1,79 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper {
+  display: block;
+  @media (min-width: $xl) {
+    display: flex;
+    gap: 16px;
+  }
+  @media (min-width: $xxxl) {
+    margin-top: 42px;
+    margin-left: 24px;
+  }
+}
+
+.wrapper--banners {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  justify-content: left;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: $md) {
+    padding: 0;
+  }
+  @media (min-width: $xl) {
+    margin-top: 0px;
+  }
+  @media (min-width: $xxxl) {
+    flex-direction: column;
+  }
+  .card {
+    flex-basis: 33%;
+    min-width: 240px;
+    height: 128px;
+    cursor: pointer;
+    background: rgba(196, 196, 196, 0.1);
+    backdrop-filter: blur(50px);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .card--info {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .txt--title {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      color: #fff;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+    .txt--subtitle {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      color: $gray-2;
+    }
+    .txt--bold {
+      font-style: italic;
+      font-weight: 800;
+    }
+
+    @media (min-width: $xxl) {
+      flex-basis: unset;
+    }
+  }
+
+  @media (min-width: $xxl) {
+    gap: 24px;
+  }
+}
