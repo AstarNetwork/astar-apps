@@ -56,6 +56,7 @@ test.describe('account panel', () => {
 
     await page.locator('.btn--connect').click();
     await page.getByText('MetaMask').click();
+    //ERROR : Metamask window not found.
     await connectWithEVM(page, context);
 
     //transfer test
