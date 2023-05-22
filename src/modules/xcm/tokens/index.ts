@@ -261,6 +261,7 @@ export const xcmToken = {
   [endpointKey.SHIBUYA]: [],
   [endpointKey.LOCAL]: [],
   [endpointKey.CUSTOM]: [],
+  [endpointKey.ROCSTAR]: [],
 };
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY

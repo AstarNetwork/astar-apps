@@ -4,7 +4,12 @@
       <div class="wrapper--select-network">
         <fieldset>
           <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(provider, index) in providerEndpoints" :key="index">
+            <li
+              v-for="(provider, index) in providerEndpoints.filter(
+                (it) => it.networkAlias !== 'rocstar'
+              )"
+              :key="index"
+            >
               <label
                 :class="[
                   'class-radio',
