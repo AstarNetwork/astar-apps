@@ -5,6 +5,7 @@ import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
   ALICE_ADDRESS,
+  ALICE_EVM_ADDRESS,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
   BOB_ADDRESS,
@@ -16,6 +17,7 @@ import {
   signInMetamask,
   signTransaction,
   connectWithEVM,
+  changeNetworkOnEVM,
 } from './common';
 import { ApiPromise } from '@polkadot/api';
 import { chainDecimals, getApi, getBalance } from './common-api';
@@ -50,41 +52,53 @@ test.beforeEach(async ({ page, context }) => {
 test.describe('account panel', () => {
   // Test case: AS002
   test('should transfer tokens from Alice to Bob on EVM account', async ({ page, context }) => {
+    // transfer test (from native to evm) :: need to testing
+    await page.goto('/custom-node/assets/transfer?token=astr&mode=local');
+    const faucetAmount = BigInt(200);
+    await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(faucetAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+    await expect(page.getByText('Success')).toBeVisible();
+
     //metamask setup
     await page.getByText('MetaMask').click();
     await signInMetamask(context);
 
     await page.locator('.btn--connect').click();
     await page.getByText('MetaMask').click();
-    //ERROR : Metamask window not found.
-    await connectWithEVM(page, context);
 
-    //transfer test
+    await connectWithEVM(page, context);
+    // TBD: change network on EVM :: need to testing
+    // await changeNetworkOnEVM(page, context);
+
     await page.waitForSelector('.modal-close', { state: 'hidden' });
     await expect(page.getByText('Select a Wallet')).toBeHidden();
 
-    const transferAmount = BigInt(1000);
+    //transfer test (from evm to native)
     await page.goto('/custom-node/assets/transfer?token=astr&mode=local');
 
+    const baseTransferAmount = BigInt(10);
+    //BOB_ADDRESS > ALICE_EVM_ADDRESS
+    const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
+    const overTransferAmount = bobBalanceBeforeTransaction + baseTransferAmount;
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByPlaceholder('0.0').fill(overTransferAmount.toString());
     await expect(page.getByText('the funds will likely be lost')).toBeVisible();
     await expect(page.getByText('Insufficient')).toBeVisible();
-    await page.getByRole('button', { name: 'Confirm' }).click();
 
     // Invalid destination address
     await page.getByPlaceholder('Destination Address').fill('invalid address');
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByPlaceholder('0.0').fill('0');
     await expect(page.getByText('Inputted invalid destination address')).toBeVisible();
 
-    // Send to evm account
-    const TEST_EVM_ADDRESS = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
-    await page.getByPlaceholder('Destination Address').fill(TEST_EVM_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-    await expect(page.getByText('the funds will likely be lost')).toBeHidden();
+    // transfer alice_evm to native
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
     // send transaction
-    // const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
     // await signTransaction(context);
     // await page.waitForSelector('.four', { state: 'hidden' });
 

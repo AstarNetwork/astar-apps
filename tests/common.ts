@@ -6,6 +6,7 @@ export const ALICE_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice';
 export const ALICE_ACCOUNT_NAME = 'Alice';
 export const ALICE_ADDRESS = 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8';
+export const ALICE_EVM_ADDRESS = '0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac';
 export const BOB_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Bob';
 export const BOB_ACCOUNT_NAME = 'Bob';
@@ -95,14 +96,22 @@ export const signInMetamask = async (context: BrowserContext): Promise<void> => 
 };
 
 export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<void> => {
-  //    'MetaMask Notification window not found.'
-  // await page.goto('chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html');
   const extensionWindow = await getWindow('MetaMask Notification', context);
+  await extensionWindow.waitForLoadState('load');
+  await extensionWindow.waitForSelector('.permissions-connect-header__title', { state: 'visible' });
+
   await extensionWindow
     .locator('.permissions-connect-choose-account__bottom-buttons')
     .getByRole('button', { name: 'Next' })
     .click();
+
   await extensionWindow.locator('data-testid=page-container-footer-next').click();
+};
+
+export const changeNetworkOnEVM = async (page: Page, context: BrowserContext): Promise<void> => {
+  const extensionWindow = await getWindow('MetaMask Notification', context);
+  await extensionWindow.waitForLoadState('load');
+  await extensionWindow.waitForSelector('.confirmation-page__content', { state: 'visible' });
   await extensionWindow
     .locator('.confirmation-footer__actions')
     .getByRole('button', { name: 'Approve' })
