@@ -26,12 +26,10 @@ export const deepLink = {
 };
 
 // Memo: use for debugging
-export const devOrigin = 'http://localhost:8080';
+// export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
 export const productionOrigin = 'https://portal.astar.network';
-// export const decentralizedOrigin = 'https://decentralized-portal.astar.network';
-// export const decentralizedOrigin = 'https://astar-apps--pr803-feat-decentralised-b-bewdf9xn.web.app/';
-export const decentralizedOrigin = devOrigin;
+export const decentralizedOrigin = 'https://decentralized-portal.astar.network';
 
 export const polkadotJsUrl = {
   settings: {
