@@ -16,14 +16,12 @@ export function useStakerInfo() {
   const { currentAccount } = useAccount();
   const store = useStore();
 
-  store.dispatch('dapps/getStakingInfo');
   const isLoadingTotalStaked = ref<boolean>(true);
   const totalStaked = ref<string>('0');
   const stakeInfos = ref<StakeInfo[]>();
   const myStakeInfos = ref<MyStakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
@@ -71,6 +69,10 @@ export function useStakerInfo() {
   });
 
   watch([currentAccount, myStakeInfos], setTotalStaked);
+
+  watchEffect(() => {
+    store.dispatch('dapps/getStakingInfo');
+  });
 
   return {
     stakeInfos,
