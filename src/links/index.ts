@@ -29,7 +29,7 @@ export const deepLink = {
 // export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
 export const productionOrigin = 'https://portal.astar.network';
-export const decentralizedOrigin = 'https://decentralized-portal.astar.network';
+export const decentralizedOrigin = 'https://decentralized.portal.astar.network';
 
 export const polkadotJsUrl = {
   settings: {
