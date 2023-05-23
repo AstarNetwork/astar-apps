@@ -16,6 +16,7 @@ export function useStakerInfo() {
   const { currentAccount } = useAccount();
   const store = useStore();
 
+  store.dispatch('dapps/getStakingInfo');
   const isLoadingTotalStaked = ref<boolean>(true);
   const totalStaked = ref<string>('0');
   const stakeInfos = ref<StakeInfo[]>();
@@ -69,10 +70,6 @@ export function useStakerInfo() {
   });
 
   watch([currentAccount, myStakeInfos], setTotalStaked);
-
-  watchEffect(() => {
-    store.dispatch('dapps/getStakingInfo');
-  });
 
   return {
     stakeInfos,

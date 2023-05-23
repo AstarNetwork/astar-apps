@@ -27,7 +27,7 @@ export function useClaimAll() {
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(true);
-  const isLoading = ref<boolean>(true);
+  const isLoading = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
@@ -56,6 +56,7 @@ export function useClaimAll() {
 
   const updateClaimEras = async (): Promise<void> => {
     try {
+      console.log('1');
       isLoading.value = true;
       const api = $api;
       const senderAddressRef = senderAddress.value;
@@ -93,6 +94,7 @@ export function useClaimAll() {
     } catch (error: any) {
       console.error(error.message);
     } finally {
+      console.log('2');
       isLoading.value = false;
     }
   };
