@@ -97,7 +97,7 @@ export function useClaimAll() {
     }
   };
 
-  watch([isSendingTx, senderAddress], updateClaimEras);
+  watch([isSendingTx, senderAddress, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
