@@ -223,7 +223,7 @@ export default defineComponent({
         data.sort((a: Data, b: Data) => Number(a.balance) - Number(b.balance));
       }
 
-      pageTtl.value = Number((data.length / numItems.value).toFixed(0));
+      pageTtl.value = Math.ceil(data.length / numItems.value);
       dataArray.value = paginate(data, numItems.value, page.value);
     };
 

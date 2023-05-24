@@ -92,6 +92,8 @@ export default defineComponent({
         }
       } else if (index === 1) {
         return require('/src/assets/img/ic_algem_staking.svg');
+      } else if (index === 2) {
+        return require('/src/assets/img/ic_subwallet.svg');
       } else {
         return img;
       }

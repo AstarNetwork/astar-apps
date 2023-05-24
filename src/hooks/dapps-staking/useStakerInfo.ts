@@ -23,7 +23,6 @@ export function useStakerInfo() {
   const myStakeInfos = ref<MyStakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];

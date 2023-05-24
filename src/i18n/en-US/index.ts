@@ -38,6 +38,7 @@ export default {
   amountToken: '{amount} {token}',
   select: 'Select',
   help: 'Help',
+  share: 'Share',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -102,6 +103,11 @@ export default {
       fast: 'Fast',
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
+    },
+    decentralizedBanner: {
+      bannerText:
+        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
+      goToClassicPortal: 'our Classic Portal',
     },
   },
   sidenavi: {
@@ -523,5 +529,11 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+  },
+  links: {
+    goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
+    astarHome: 'Astar Home',
+    astarDocs: 'Astar Docs',
   },
 };

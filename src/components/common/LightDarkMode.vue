@@ -79,15 +79,28 @@ export default defineComponent({
 .icon--selected {
   width: 20px;
   height: 20px;
+  stroke: $gray-5;
   cursor: default;
-  stroke: $gray-1;
   opacity: 0.4;
+  @media (min-width: $lg) {
+    stroke: $gray-1;
+  }
 }
 
 .icon {
   width: 20px;
   height: 20px;
-  stroke: $gray-1;
+  stroke: $gray-5;
   cursor: pointer;
+  @media (min-width: $lg) {
+    stroke: $gray-1;
+  }
+}
+
+.body--dark {
+  .icon--selected,
+  .icon {
+    stroke: $gray-1;
+  }
 }
 </style>
