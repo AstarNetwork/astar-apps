@@ -27,7 +27,7 @@ export function useClaimAll() {
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(true);
-  const isLoading = ref<boolean>(true);
+  const isLoading = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
@@ -97,7 +97,7 @@ export function useClaimAll() {
     }
   };
 
-  watch([isSendingTx, senderAddress], updateClaimEras);
+  watch([isSendingTx, senderAddress, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
