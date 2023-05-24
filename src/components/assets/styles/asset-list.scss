@@ -256,6 +256,10 @@
 }
 
 .column---title-button {
+  margin-right: -22px;
+  @media (min-width: $sm) {
+    margin-right: -64px;
+  }
   @media (min-width: $md) {
     margin-right: 8px;
   }
