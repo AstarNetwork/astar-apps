@@ -5,6 +5,7 @@ import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
   ALICE_ADDRESS,
+  ALICE_EVM_ADDRESS,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
   BOB_ADDRESS,
@@ -88,6 +89,23 @@ test.describe('account panel', () => {
     await page.getByPlaceholder('Destination Address').fill(TEST_EVM_ADDRESS);
     await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
     await expect(page.getByText('the funds will likely be lost')).toBeVisible();
+  });
+
+  // Test case: AS004
+  test('should transfer tokens when tokens from Alice to Alice EVM account', async ({
+    page,
+    context,
+  }) => {
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    const faucetAmount = BigInt(200);
+    await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(faucetAmount.toString());
+    await page.locator('.box--warning label').check();
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+    await expect(page.getByText('Success')).toBeVisible();
   });
 
   // Test case: XCM007
