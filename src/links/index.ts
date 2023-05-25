@@ -25,8 +25,11 @@ export const deepLink = {
   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
 };
 
+// Memo: use for debugging
+// export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
 export const productionOrigin = 'https://portal.astar.network';
+export const decentralizedOrigin = 'https://decentralized.portal.astar.network';
 
 export const polkadotJsUrl = {
   settings: {

@@ -63,7 +63,15 @@ export const meta = {
   },
 };
 
-const buildMeta = ({ title, content }: { title: string; content: string }) => {
+const buildMeta = ({
+  title,
+  content,
+  ogImageUrl,
+}: {
+  title: string;
+  content: string;
+  ogImageUrl?: string;
+}) => {
   return {
     title,
     meta: {
@@ -71,11 +79,19 @@ const buildMeta = ({ title, content }: { title: string; content: string }) => {
         name: 'description',
         content,
       },
+      twitterImage: {
+        property: 'twitter:image',
+        content: ogImageUrl ? ogImageUrl : 'https://portal.astar.network/images/card-img.jpg',
+      },
+      ogImage: {
+        property: 'og:image',
+        content: ogImageUrl ? ogImageUrl : 'https://portal.astar.network/images/card-img.jpg',
+      },
     },
   };
 };
 
-export const generateMeta = (path: Path): MetaData => {
+export const generateMeta = (path: Path, ogImageUrl?: string): MetaData => {
   switch (path) {
     case Path.Assets:
       return buildMeta({
@@ -105,6 +121,7 @@ export const generateMeta = (path: Path): MetaData => {
       return buildMeta({
         title: meta.title.dappsStaking.dappStaking,
         content: meta.description.dappsStaking,
+        ogImageUrl,
       });
 
     case Path.Dashboard:

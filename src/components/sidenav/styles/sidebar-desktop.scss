@@ -25,11 +25,14 @@
 
 .sidebar {
   width: 224px;
-  height: 100%;
   padding-top: 24px;
   background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   display: flex;
   flex-direction: column;
+}
+
+.sidebar--height-decentralized {
+  height: calc(100% - 40px);
 }
 
 .menu {
