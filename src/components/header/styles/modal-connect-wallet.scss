@@ -84,6 +84,44 @@
   }
 }
 
+.box--no-extension {
+  margin-top: 32px;
+  background: rgba(255, 86, 33, 0.1);
+  border-radius: 6px;
+  padding: 16px;
+  padding-bottom: 22px;
+  text-align: left;
+}
+
+.title--no-extension {
+  margin-bottom: 8px;
+}
+
+.row--no-extension {
+  margin-bottom: 22px;
+}
+
+.row--icon-links {
+}
+
+.button--link {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.icon--link {
+  font-size: 20px;
+  transition: all 0.4s ease 0s;
+  border-radius: 50%;
+  stroke: $navy-1;
+}
+
+.row--icon-links {
+  display: flex;
+  column-gap: 26px;
+}
+
 .body--dark {
   .title--account-type {
     color: $gray-1;
@@ -91,5 +129,11 @@
   .box__row--wallet {
     color: $gray-1;
     border: 1px solid $gray-3;
+  }
+  .box--no-extension {
+    background: $astar-blue;
+  }
+  .icon--link {
+    stroke: $gray-1;
   }
 }

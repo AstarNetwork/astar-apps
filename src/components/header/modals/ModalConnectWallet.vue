@@ -56,6 +56,50 @@
             </div>
           </div>
         </div>
+        <div v-if="selWallet && isNoExtension" class="box--no-extension">
+          <div class="title--no-extension">
+            <span class="text--title">
+              {{ $t('installWallet.getWallet', { value: $t(selWallet.name) }) }}
+            </span>
+          </div>
+          <div class="row--no-extension">
+            <span class="text--md">
+              {{ $t('installWallet.installWallet', { value: $t(selWallet.name) }) }}</span
+            >
+          </div>
+          <div class="row--icon-links">
+            <button>
+              <a
+                :href="selWallet.walletUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="button--link"
+              >
+                <div class="icon--link">
+                  <astar-icon-external-link />
+                </div>
+                <span class="text--accent">
+                  {{ $t('installWallet.install') }}
+                </span>
+              </a>
+            </button>
+            <button>
+              <a
+                :href="selWallet.guideUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="button--link"
+              >
+                <div class="icon--link">
+                  <astar-icon-external-link />
+                </div>
+                <span class="text--accent">
+                  {{ $t('installWallet.learn') }}
+                </span>
+              </a>
+            </button>
+          </div>
+        </div>
       </div>
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
@@ -65,11 +109,17 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
+import {
+  supportAllWalletsObj,
+  supportEvmWallets,
+  SupportWallet,
+  supportWallets,
+  Wallet,
+} from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
 export default defineComponent({
   props: {
@@ -87,6 +137,14 @@ export default defineComponent({
     },
     connectEthereumWallet: {
       type: Function,
+      required: true,
+    },
+    isNoExtension: {
+      type: Boolean,
+      required: true,
+    },
+    selectedWallet: {
+      type: String as PropType<SupportWallet>,
       required: true,
     },
   },
@@ -130,6 +188,8 @@ export default defineComponent({
         .filter((it) => it !== undefined) as Wallet[];
     });
 
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
     };
@@ -152,6 +212,7 @@ export default defineComponent({
       isClosing,
       currentWallet,
       currentAccountName,
+      selWallet,
       castWalletName,
       closeModal,
       setSubstrateWalletModal,
