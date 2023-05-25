@@ -86,7 +86,8 @@
 
 .box--no-extension {
   margin-top: 32px;
-  background: rgba(255, 86, 33, 0.1);
+  // background: rgba(255, 86, 33, 0.1);
+  background: $astar-blue;
   border-radius: 6px;
   padding: 16px;
   padding-bottom: 22px;
@@ -114,12 +115,30 @@
   font-size: 20px;
   transition: all 0.4s ease 0s;
   border-radius: 50%;
-  stroke: $navy-1;
+  stroke: $gray-1;
 }
 
 .row--icon-links {
   display: flex;
   column-gap: 26px;
+}
+
+.text--install-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: $gray-1;
+}
+
+.text--install {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.text--install-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-1;
 }
 
 .body--dark {
@@ -129,11 +148,5 @@
   .box__row--wallet {
     color: $gray-1;
     border: 1px solid $gray-3;
-  }
-  .box--no-extension {
-    background: $astar-blue;
-  }
-  .icon--link {
-    stroke: $gray-1;
   }
 }

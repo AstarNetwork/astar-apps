@@ -58,12 +58,12 @@
         </div>
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
-            <span class="text--title">
+            <span class="text--install-title">
               {{ $t('installWallet.getWallet', { value: $t(selWallet.name) }) }}
             </span>
           </div>
           <div class="row--no-extension">
-            <span class="text--md">
+            <span class="text--install">
               {{ $t('installWallet.installWallet', { value: $t(selWallet.name) }) }}</span
             >
           </div>
@@ -78,7 +78,7 @@
                 <div class="icon--link">
                   <astar-icon-external-link />
                 </div>
-                <span class="text--accent">
+                <span class="text--install-link">
                   {{ $t('installWallet.install') }}
                 </span>
               </a>
@@ -93,7 +93,7 @@
                 <div class="icon--link">
                   <astar-icon-external-link />
                 </div>
-                <span class="text--accent">
+                <span class="text--install-link">
                   {{ $t('installWallet.learn') }}
                 </span>
               </a>
