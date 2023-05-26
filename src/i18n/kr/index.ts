@@ -223,6 +223,7 @@ export default {
       totalStaker: '총 스테이커 수',
       team: '팀',
       projectOverview: '프로젝트 개요',
+      projectNews: 'Project News',
       projectSite: '프로젝트 사이트',
       goToApp: '앱으로 이동',
       goToWebsite: '웹사이트로 이동',

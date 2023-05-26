@@ -224,6 +224,7 @@ export default {
       totalStaker: 'Total do Staker',
       team: 'Time',
       projectOverview: 'Visão Geral do Projeto',
+      projectNews: 'Project News',
       projectSite: 'Site do Projeto',
       goToApp: 'Ir para o App',
       goToWebsite: 'Ir para o website',

@@ -229,6 +229,7 @@ export default {
       totalStaker: 'Participants total',
       team: 'Équipe',
       projectOverview: "Vue d'ensemble du projet",
+      projectNews: 'Nouvelles du projet',
       projectSite: 'Site du projet',
       goToApp: "Accéder à l'application",
       goToWebsite: 'Accéder au site Web',

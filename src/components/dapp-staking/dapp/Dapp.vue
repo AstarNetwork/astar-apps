@@ -6,7 +6,10 @@
     <dapp-images :dapp="dapp" />
     <builders :dapp="dapp" />
     <div class="row--project-overview">
-      <project-overview :dapp="dapp" />
+      <div class="col--project-overview">
+        <project-overview :dapp="dapp" />
+        <project-news :dapp="dapp" />
+      </div>
       <project-details :dapp="dapp" />
     </div>
     <dapp-stats-charts :dapp="dapp" />
@@ -29,6 +32,7 @@ import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue'
 import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
+import ProjectNews from 'src/components/dapp-staking/dapp/ProjectNews.vue';
 import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
@@ -44,6 +48,7 @@ export default defineComponent({
     DappImages,
     Builders,
     ProjectOverview,
+    ProjectNews,
     ProjectDetails,
     BackToPage,
     DappStatsCharts,

@@ -260,6 +260,7 @@ export default {
       totalStaker: 'Total Staker',
       team: 'Team',
       projectOverview: 'Project Overview',
+      projectNews: 'Project News',
       projectSite: 'Project Site',
       goToApp: 'Go to App',
       goToWebsite: 'Go to website',
