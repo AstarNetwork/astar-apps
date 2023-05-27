@@ -133,6 +133,8 @@ export default defineComponent({
     const account4 = ref<string>('');
     const account5 = ref<string>('');
     const threshold = ref<number>(2);
+    const errorMsg = ref<string>('');
+    const generatedMultisig = ref<string>('');
     // const accountsObj = ref({
     //   account1: currentAccount.value,
     //   account2: '',
@@ -170,25 +172,24 @@ export default defineComponent({
     const route = useRoute();
     const multisigAccount = computed<string>(() => route.query.multisig as string);
 
-    watchEffect(() => {
-      console.log('accountsObj', accountsObj.value);
+    const setMultisigAccount = () => {
       const accounts = Object.values(accountsObj.value).filter((account) => account !== '');
-      console.log('accounts', accounts);
       if (accounts.length >= threshold.value) {
-        //   // Create the multisig address
         const multiAddress = createKeyMulti(accounts, threshold.value);
         const formattedMultiAddress = encodeAddress(multiAddress, ASTAR_SS58_FORMAT);
 
-        console.log(`\nMultisig Address: ${formattedMultiAddress}`);
-
-        // Prepare other signatories
-        const otherSignatories = accounts.filter((who) => who !== accounts[0]);
-        const otherSignatoriesSorted = sortAddresses(otherSignatories, ASTAR_SS58_FORMAT);
-
-        console.log('otherSignatories', otherSignatories);
-        console.log(`\nOther Signatories: ${otherSignatoriesSorted}\n`);
+        if (formattedMultiAddress === multisigAccount.value) {
+          generatedMultisig.value = formattedMultiAddress;
+          const otherSignatories = accounts.filter((it) => it !== accounts[0]);
+          const otherSignatoriesFormatted = sortAddresses(otherSignatories, ASTAR_SS58_FORMAT);
+          console.log('otherSignatoriesFormatted', otherSignatoriesFormatted);
+        } else {
+          errorMsg.value = "Generated multisig account isn't tally with inputted in the URL";
+        }
       }
-    });
+    };
+
+    watchEffect(setMultisigAccount);
 
     return {
       width,
