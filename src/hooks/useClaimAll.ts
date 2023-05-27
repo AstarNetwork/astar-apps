@@ -7,14 +7,14 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { useBalance, useCurrentEra, useLedger } from 'src/hooks';
+import { useBalance, useCurrentEra, useLedger, useMultisig } from 'src/hooks';
 import { TxType, displayCustomMessage } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -30,6 +30,7 @@ export function useClaimAll() {
   const isLoading = ref<boolean>(false);
   const store = useStore();
   const route = useRoute();
+  const { sendMultisigTransaction } = useMultisig();
 
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
@@ -158,82 +159,23 @@ export function useClaimAll() {
     };
 
     try {
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-      await dappStakingService.sendTx({
-        senderAddress: senderAddress.value,
-        transaction,
-        finalizedCallback,
-      });
+      if (multisigAccount.value) {
+        await sendMultisigTransaction({
+          extrinsic: transaction,
+          senderAddress: senderAddress.value,
+        });
+      } else {
+        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+        await dappStakingService.sendTx({
+          senderAddress: senderAddress.value,
+          transaction,
+          finalizedCallback,
+        });
+      }
     } catch (error: any) {
       console.error(error.message);
     }
   };
-
-  watchEffect(() => {
-    console.log('multisigAccount', multisigAccount.value);
-  });
-
-  // watchEffect(async () => {
-  //   const api = $api!;
-  //   const addresses = [
-  //     'axodJWpkSi9E5k7SgewYCCnTMZw3y6n79nuLevTCGFt7ADw',
-  //     'WkuMXKG2tLL2T2MLuD7JxzFaLVDFcEpg7JxZirCFbSzeovY',
-  //     'avf5nPmTfztUfq3gi1Bm3vBcEUHghUyrqRppXmsmDZ5hfrD',
-  //   ];
-  //   const threshold = 2;
-  //   const index = 0;
-  //   const recipient = 'XV15MJAbMLPKawqPnLkNshePY7RsaS7ZXyFUys51BH3rvQw';
-  //   // const amount = BigInt(1e12);  // 1 ASTR token, assuming 12 decimal places
-  //   const amount = '1000000000000000000'; // 1 ASTR token, assuming 12 decimal places
-
-  //   // Create the multisig address
-  //   const multiAddress = createKeyMulti(addresses, threshold);
-  //   const Ss58Address = encodeAddress(multiAddress, 5);
-
-  //   console.log(`\nMultisig Address: ${Ss58Address}`);
-
-  //   // Prepare other signatories
-  //   const otherSignatories = addresses.filter((who) => who !== addresses[index]);
-  //   const otherSignatoriesSorted = sortAddresses(otherSignatories, 5);
-
-  //   console.log(`\nOther Signatories: ${otherSignatoriesSorted}\n`);
-
-  //   // Prepare the transfer call
-  //   // const transferCall = api.tx.balances.transferKeepAlive(recipient, amount);
-  //   const transferCall = api.tx.dappsStaking.bondAndStake(
-  //     { Evm: '0xba939477113e01637cca0be3a3a2b9b543660d68' },
-  //     '5000000000000000000'
-  //   );
-
-  //   const info = await transferCall.paymentInfo(addresses[0]);
-  //   const weight = new PayloadWithWeight(transferCall, info.weight);
-  //   // Create the multisig call
-  //   const multisigCall = api.tx.multisig.asMulti(
-  //     threshold,
-  //     otherSignatoriesSorted,
-  //     null,
-  //     transferCall,
-  //     weight.asWeightV2()
-  //   );
-  //   // console.log('multisigCall',multisigCall.)
-
-  //   const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-  //     console.log('result', result);
-  //     return true;
-  //   };
-
-  //   const hexCallData = transferCall.method.toHex();
-  //   console.log('hexCallData', hexCallData);
-
-  //   await signAndSend({
-  //     transaction: multisigCall,
-  //     senderAddress: addresses[0],
-  //     substrateAccounts: substrateAccounts.value,
-  //     isCustomSignature: false,
-  //     txResHandler,
-  //     dispatch: store.dispatch,
-  //   });
-  // });
 
   return {
     claimAll,

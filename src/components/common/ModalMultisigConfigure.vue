@@ -81,6 +81,13 @@
           />
         </div>
       </div>
+      <astar-button
+        :disabled="generatedMultisig !== multisigAccount"
+        class="button--confirm"
+        @click="handleConfirm"
+      >
+        {{ $t('confirm') }}
+      </astar-button>
     </div>
   </modal-wrapper>
 </template>
@@ -93,8 +100,9 @@ import {
   wait,
 } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { createKeyMulti, encodeAddress, sortAddresses } from '@polkadot/util-crypto';
+import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBreakpoints } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import { useStore } from 'src/store';
@@ -125,7 +133,6 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
-    const { width, screenSize } = useBreakpoints();
     const { currentAccount } = useAccount();
 
     const account2 = ref<string>('');
@@ -135,13 +142,6 @@ export default defineComponent({
     const threshold = ref<number>(2);
     const errorMsg = ref<string>('');
     const generatedMultisig = ref<string>('');
-    // const accountsObj = ref({
-    //   account1: currentAccount.value,
-    //   account2: '',
-    //   account3: '',
-    //   account4: '',
-    //   account5: '',
-    // });
     const accountsObj = computed(() => {
       return {
         account1: currentAccount.value,
@@ -180,26 +180,38 @@ export default defineComponent({
 
         if (formattedMultiAddress === multisigAccount.value) {
           generatedMultisig.value = formattedMultiAddress;
-          const otherSignatories = accounts.filter((it) => it !== accounts[0]);
-          const otherSignatoriesFormatted = sortAddresses(otherSignatories, ASTAR_SS58_FORMAT);
-          console.log('otherSignatoriesFormatted', otherSignatoriesFormatted);
         } else {
           errorMsg.value = "Generated multisig account isn't tally with inputted in the URL";
         }
       }
     };
 
+    const handleConfirm = async (): Promise<void> => {
+      localStorage.setItem(
+        LOCAL_STORAGE.MULTISIG,
+        JSON.stringify({
+          threshold: threshold.value,
+          accounts: Object.values(accountsObj.value).filter((account) => account !== ''),
+          multisigAccount: generatedMultisig.value,
+        })
+      );
+      await closeModal();
+    };
+
     watchEffect(setMultisigAccount);
 
     return {
-      width,
-      screenSize,
       socialUrl,
       account2,
       account3,
       account4,
       account5,
       threshold,
+      generatedMultisig,
+      multisigAccount,
+      isClosingModal,
+      currentAccount,
+      errorMsg,
       setAccount2,
       setAccount3,
       setAccount4,
@@ -208,8 +220,7 @@ export default defineComponent({
       close,
       truncate,
       closeModal,
-      isClosingModal,
-      currentAccount,
+      handleConfirm,
     };
   },
 });

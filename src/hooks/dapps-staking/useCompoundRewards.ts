@@ -4,7 +4,7 @@ import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCustomSignature, useGasPrice } from 'src/hooks';
+import { useCustomSignature, useGasPrice, useMultisig } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
@@ -46,6 +46,7 @@ export function useCompoundRewards() {
   const { selectedTip } = useGasPrice();
   const { era } = useCurrentEra();
   const route = useRoute();
+  const { sendMultisigTransaction } = useMultisig();
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
@@ -125,16 +126,24 @@ export function useCompoundRewards() {
         });
       };
 
-      await signAndSend({
-        transaction,
-        senderAddress: currentAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
-      });
+      if (multisigAccount.value) {
+        await sendMultisigTransaction({
+          extrinsic: transaction,
+          senderAddress: currentAddress.value,
+        });
+      } else {
+        await signAndSend({
+          transaction,
+          senderAddress: currentAddress.value,
+          substrateAccounts: substrateAccounts.value,
+          isCustomSignature: isCustomSig.value,
+          txResHandler,
+          handleCustomExtrinsic,
+          dispatch: store.dispatch,
+          tip: selectedTip.value.price,
+        });
+      }
+
       toggleCounter.value++;
     } catch (e: any) {
       console.error(e);
