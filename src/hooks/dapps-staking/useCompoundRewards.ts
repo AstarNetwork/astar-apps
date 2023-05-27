@@ -12,6 +12,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
+import { useRoute } from 'vue-router';
 
 type EraIndex = u32;
 
@@ -44,6 +45,7 @@ export function useCompoundRewards() {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const { selectedTip } = useGasPrice();
   const { era } = useCurrentEra();
+  const route = useRoute();
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
@@ -52,6 +54,11 @@ export function useCompoundRewards() {
   const isDappOwner = ref<boolean>(false);
   const toggleCounter = ref<number>(0);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
+
+  const multisigAccount = computed<string>(() => route.query.multisig as string);
+  const claimAccount = computed<string>(() =>
+    multisigAccount.value ? multisigAccount.value : currentAddress.value
+  );
 
   const getCompoundingType = async () => {
     try {
@@ -62,7 +69,7 @@ export function useCompoundRewards() {
       isSupported.value = metadataJson.includes('set_reward_destination');
 
       // Subscribe to compounding data.
-      await $api?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
+      await $api?.query.dappsStaking.ledger(claimAccount.value, (ledger: AccountLedger) => {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
@@ -139,19 +146,19 @@ export function useCompoundRewards() {
   };
 
   const checkIsClaimable = async () => {
-    if (!dapps.value || !currentAddress.value || !era.value) return;
+    if (!dapps.value || !claimAccount.value || !era.value) return;
     await Promise.all(
       dapps.value.map(async (it) => {
         const [resIsDappOwner, { numberOfUnclaimedEra, isRequiredWithdraw }] = await Promise.all([
           checkIsDappOwner({
             dappAddress: it.contract.address,
             api: $api!,
-            senderAddress: currentAddress.value,
+            senderAddress: claimAccount.value,
           }),
           getNumberOfUnclaimedEra({
             dappAddress: it.contract.address,
             api: $api!,
-            senderAddress: currentAddress.value,
+            senderAddress: claimAccount.value,
             currentEra: era.value,
           }),
         ]);
@@ -168,9 +175,9 @@ export function useCompoundRewards() {
   };
 
   watch(
-    [currentAddress, toggleCounter],
+    [claimAccount, toggleCounter],
     async () => {
-      if (!currentAddress.value) return;
+      if (!claimAccount.value) return;
       await Promise.all([checkIsClaimable(), getCompoundingType()]);
     },
     { immediate: true }

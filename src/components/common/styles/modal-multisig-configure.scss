@@ -1,0 +1,48 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--multisig-configure {
+  display: flex;
+  flex-direction: column;
+  padding: 0 14px;
+  padding-bottom: 36px;
+  width: 100%;
+  @media (min-width: $lg) {
+    padding: 0;
+    padding-bottom: 0px;
+    max-width: 480px;
+  }
+}
+
+.row--description {
+  margin-bottom: 34px;
+  padding: 0 16px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.row--addresses {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
+.row--address {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.input--address {
+  background-color: transparent;
+  border: 1px solid $gray-4;
+  border-radius: 6px;
+  padding: 12px;
+  &:focus {
+    outline: none;
+    border: 1px solid $astar-blue;
+  }
+}
+
+.body--dark {
+}

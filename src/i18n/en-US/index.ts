@@ -39,6 +39,7 @@ export default {
   select: 'Select',
   help: 'Help',
   share: 'Share',
+  multisig: 'Multisig',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -468,6 +469,11 @@ export default {
         askCommunity: 'Ask our community',
         askCommunityDiscord: 'Ask our Discord community',
         askCommunityTip: 'Someone is always there for you.',
+      },
+      multisigConfigure: {
+        multisigConfigure: 'Multisig Configure',
+        tipsDescription:
+          'Currently, Astar Portal only supports sending multisig transactions for "Claiming dApp staking rewards" and "Re-stake after claiming".',
       },
 
       xcmWarning: {

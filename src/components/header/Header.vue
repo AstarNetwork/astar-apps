@@ -5,6 +5,7 @@
         <div class="icon"><logo /></div>
       </template>
       <trouble-help />
+      <multisig-configure v-if="multisigAccount" />
       <template v-if="!currentAccount">
         <connect-button @click="openSelectModal">
           <astar-icon-wallet />
@@ -63,6 +64,7 @@ import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
 import TroubleHelp from 'src/components/header/TroubleHelp.vue';
+import MultisigConfigure from 'src/components/header/MultisigConfigure.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -92,6 +94,7 @@ export default defineComponent({
     ModalUpdateWallet,
     HeaderComp,
     TroubleHelp,
+    MultisigConfigure,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -139,6 +142,7 @@ export default defineComponent({
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed<string>(() => route.path);
+    const multisigAccount = computed<string>(() => route.query.multisig as string);
     const headerName = ref<string>('');
 
     watch(
@@ -164,6 +168,7 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
+      multisigAccount,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
