@@ -75,7 +75,7 @@
             type="number"
             min="0"
             pattern="^[0-9]*(\.)?[0-9]*$"
-            placeholder="Threshold"
+            placeholder="2"
             class="input--address"
             @change="setThreshold"
           />
@@ -101,6 +101,7 @@ import {
 } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
+import { LocalStorage } from 'quasar';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBreakpoints } from 'src/hooks';
@@ -109,6 +110,8 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+
+type DefaultStateParam = 'threshold' | '1' | '2' | '3' | '4';
 
 export default defineComponent({
   components: { ModalWrapper },
@@ -135,11 +138,38 @@ export default defineComponent({
     const { t } = useI18n();
     const { currentAccount } = useAccount();
 
-    const account2 = ref<string>('');
-    const account3 = ref<string>('');
-    const account4 = ref<string>('');
-    const account5 = ref<string>('');
-    const threshold = ref<number>(2);
+    const storedMultisigObjStr = LocalStorage.getItem(LOCAL_STORAGE.MULTISIG);
+    const storedMultisigObj = JSON.parse(storedMultisigObjStr as string);
+
+    const initDefaultState = (key: DefaultStateParam) => {
+      if (!storedMultisigObjStr) {
+        return key === 'threshold' ? 2 : '';
+      }
+
+      if (key === 'threshold') {
+        return storedMultisigObj[key];
+      } else {
+        console.log('storedMultisigObj.accounts', storedMultisigObj.accounts);
+        console.log('currentAccount.value', currentAccount.value);
+        const isValid = storedMultisigObj.accounts.some(
+          (it: string) => it === currentAccount.value
+        );
+        console.log('isValid', isValid);
+        if (!isValid) return '';
+
+        const otherSignatories = storedMultisigObj.accounts.filter(
+          (it: string) => it !== currentAccount.value
+        );
+        const index = Number(key);
+        return otherSignatories[index] ? otherSignatories[index] : '';
+      }
+    };
+
+    const account2 = ref<string>(initDefaultState('1'));
+    const account3 = ref<string>(initDefaultState('2'));
+    const account4 = ref<string>(initDefaultState('3'));
+    const account5 = ref<string>(initDefaultState('4'));
+    const threshold = ref<number>(initDefaultState('threshold'));
     const errorMsg = ref<string>('');
     const generatedMultisig = ref<string>('');
     const accountsObj = computed(() => {
