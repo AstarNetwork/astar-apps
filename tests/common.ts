@@ -87,6 +87,7 @@ export const createMetamaskAccount = async (
 
 export const signInMetamask = async (context: BrowserContext): Promise<void> => {
   const extensionWindow = await getWindow('MetaMask', context);
+  await extensionWindow.waitForLoadState('load');
   await extensionWindow.locator('data-testid=unlock-password').fill('Test1234');
   await extensionWindow.locator('data-testid=unlock-submit').click();
   await extensionWindow.locator('data-testid=onboarding-complete-done').click();
