@@ -1,10 +1,11 @@
 [
   {
-    "img": "",
-    "category": "Developer Incentive",
-    "title": "",
-    "subtitle": "Join the community and know how it works",
-    "link": "https://docs.astar.network/docs/dapp-staking/"
+    "img": "https://storage.googleapis.com/astarnetwork-a4924.appspot.com/astar-dapps%2Fa8SVGV6X5vpZyq85A9mscME9Y7k91LGbhfpB7KjcbtDDUHK_Icon%20Mark%20-%20Half%20Colour%201.png",
+    "category": "Campaign",
+    "title": "Exclusive Free Mint NFT",
+    "subtitle": "Join Paras dApp staking to mint your USAGII NFT!",
+    "link": "https://bit.ly/USAGII-NFT",
+    "gradient": ["#1706A2", "#070438"]
   },
   {
     "img": "",
