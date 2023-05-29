@@ -32,14 +32,14 @@ async function run(nodeName, networkInfo, args) {
   console.log('endpoint :', endpoint);
 
   let result = await spawn('npx playwright install --with-deps');
-  // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
-  // );
+  result = await spawn(
+    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
+  );
 
   // for debugging
-  result = await spawn(
-    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
-  );
+  // result = await spawn(
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
+  // );
 
   return result?.includes('failed') ? 0 : 1;
 }
