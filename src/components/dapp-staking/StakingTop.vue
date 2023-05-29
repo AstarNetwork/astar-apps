@@ -3,12 +3,15 @@
     <div class="container--main">
       <top-metric />
       <register />
-      <wasm-ad-area />
       <dynamic-ads-area />
 
-      <div class="divider" />
+      <div class="container--divider">
+        <div class="divider" />
+      </div>
       <my-staking />
-      <div class="divider" />
+      <div class="container--divider">
+        <div class="divider" />
+      </div>
       <on-chain-data />
       <dapp-list category="DeFi" />
 
@@ -38,7 +41,6 @@ import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import DynamicAdsArea from './my-staking/DynamicAdsArea.vue';
-import WasmAdArea from './my-staking/WasmAdArea.vue';
 import { generateMeta } from 'src/config/metadata';
 import { Path } from 'src/router';
 
@@ -51,7 +53,6 @@ export default defineComponent({
     Register,
     DynamicAdsArea,
     OnChainData,
-    WasmAdArea,
   },
   setup() {
     useMeta(generateMeta(Path.Discover));
@@ -119,14 +120,30 @@ export default defineComponent({
     max-width: 100%;
   }
   @media (min-width: $lg) {
-    margin-top: 48px;
+    margin-top: 50px;
   }
 }
 
 .divider {
-  border-top: 1px solid $object-light;
-  margin-top: 24px;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(
+    121.48deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  border-image-slice: 1;
+  margin-top: 80px;
   margin-bottom: 24px;
+}
+
+.container--divider {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
 }
 
 .body--dark {

@@ -1,0 +1,9 @@
+# Ignore all files
+file://.*
+
+# Twitter its API does not like us
+https://twitter.com/*
+
+# quasar
+https://*.quasar.dev/*
+https://quasar.dev/*

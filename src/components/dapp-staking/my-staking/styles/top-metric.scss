@@ -1,15 +1,15 @@
 @import 'src/css/quasar.variables.scss';
 
 .panel {
+  background-size: cover;
   margin-bottom: 25px;
   padding-top: 55px;
   padding-bottom: 24px;
   padding-left: 16px;
   padding-right: 16px;
-  max-width: 1290px;
 
   @media (min-width: $md) {
-    border-radius: 0px 0px 6px 6px;
+    border-radius: 6px;
   }
 
   @media (min-width: $xxl) {

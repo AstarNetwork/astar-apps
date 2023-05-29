@@ -4,7 +4,12 @@
       <div class="wrapper--select-network">
         <fieldset>
           <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(provider, index) in providerEndpoints" :key="index">
+            <li
+              v-for="(provider, index) in providerEndpoints.filter(
+                (it) => it.networkAlias !== 'rocstar'
+              )"
+              :key="index"
+            >
               <label
                 :class="[
                   'class-radio',
@@ -199,7 +204,6 @@ export default defineComponent({
       );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
-        endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 
@@ -424,6 +428,6 @@ export default defineComponent({
 .text--download {
   display: block;
   text-decoration: underline;
-  color: $astar-blue-dark;
+  color: $astar-blue;
 }
 </style>

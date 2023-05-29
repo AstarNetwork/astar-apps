@@ -124,6 +124,16 @@ export const xcmToken = {
       originChain: Chain.BIFROST_POLKADOT,
       minBridgeAmount: '0.1',
     },
+    {
+      symbol: 'EQD',
+      isNativeToken: false,
+      assetId: '18446744073709551629',
+      originAssetId: 'EQD',
+      logo: require('/src/assets/img/EQD.png'),
+      isXcmCompatible: true,
+      originChain: Chain.EQUILIBRIUM,
+      minBridgeAmount: '0.2',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -252,6 +262,7 @@ export const xcmToken = {
   [endpointKey.ROCSTAR]: [],
   [endpointKey.LOCAL]: [],
   [endpointKey.CUSTOM]: [],
+  [endpointKey.ROCSTAR]: [],
 };
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY
@@ -305,7 +316,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
     name,
     symbol,
   };
-  const minBridgeAmount = '0.1';
+  const minBridgeAmount = symbol === 'ASTR' ? '5' : '1';
   const originChain = name;
   const originAssetId = symbol;
   const isNativeToken = true;

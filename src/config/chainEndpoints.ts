@@ -150,21 +150,22 @@ export const providerEndpoints: ChainProvider[] = [
   },
   {
     networkAlias: 'rocstar',
-    displayName: 'Rocstar Network',
-    info: 'The rococo test network of the layer 2 scaling blockchain',
+    displayName: 'Rocstar',
+    info: 'The test network of Rococo',
     endpoints: [{ name: 'Rocstar', endpoint: 'wss://rocstar.astar.network' }],
     isSupportContract: true,
     prefix: 0xff51,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ROCSTAR,
     isStoreEnabled: true,
-    subscan: 'https://rocstar.subscan.io',
-    blockscout: 'https://blockscout.com/rocstar',
-    evmChainId: '81',
-    evmEndpoints: ['https://evm.rocstar.astar.network'],
-    faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/rocstar',
+    subscan: '',
+    blockscout: '',
+    evmChainId: '692',
+    evmEndpoints: ['https://rocstar.astar.network'],
+    faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
+    xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
 ];
 
@@ -175,10 +176,10 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.ASTAR;
     case 'Shiden':
       return endpointKey.SHIDEN;
-    case 'Rocstar':
-      return endpointKey.ROCSTAR;
     case 'Development':
       return endpointKey.LOCAL;
+    case 'Rocstar Testnet':
+      return endpointKey.ROCSTAR;
     default:
       return endpointKey.SHIBUYA;
   }

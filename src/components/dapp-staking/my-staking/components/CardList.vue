@@ -123,12 +123,15 @@ export default defineComponent({
   gap: 12px;
 
   @media (max-width: $widthCardLineUp) {
-    display: flex;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     justify-content: left;
+    padding: 10px 0px 10px 10px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -178,21 +181,21 @@ export default defineComponent({
       font-weight: 600;
       font-size: 16px;
       line-height: 18px;
-      color: $gray-6;
+      color: $navy-1;
     }
 
     .badge--tag {
       width: 54px;
       height: 18px;
       padding: 2px 8px;
-      background: $object-light;
+      background: $navy-3;
       border-radius: 6px;
       font-style: normal;
       font-weight: 510;
       font-size: 12px;
       line-height: 14px;
       text-align: center;
-      color: $gray-4;
+      color: #fff;
       margin-top: 16px;
       margin-bottom: 16px;
     }
@@ -235,7 +238,7 @@ export default defineComponent({
   }
   @media (max-width: $widthCardLineUp) {
     @include hover;
-    box-shadow: 0px 0px 12px 0px rgba(164, 162, 162, 0.1);
+    box-shadow: 0px 0px 8px 0px #0000001a;
   }
 }
 
@@ -250,7 +253,7 @@ export default defineComponent({
         color: $gray-1;
       }
       .badge--tag {
-        background: $gray-5;
+        background: $navy-3;
         color: $gray-3;
       }
       .divider {

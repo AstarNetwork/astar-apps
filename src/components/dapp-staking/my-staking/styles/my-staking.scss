@@ -1,5 +1,13 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--mystaking {
+  padding: 0 16px;
+
+  @media (min-width: $md) {
+    padding: 0;
+  }
+}
+
 .txt--header {
   font-weight: 600;
   font-size: 22px;
@@ -7,7 +15,7 @@
   display: flex;
   align-items: center;
   letter-spacing: -0.02em;
-  color: $gray-5-selected;
+  color: $navy-1;
   margin-left: 6px;
   margin-bottom: 24px;
 }
@@ -39,7 +47,7 @@
 .text--transferable {
   font-weight: 600;
   font-size: 14px;
-  color: $gray-3;
+  color: $gray-4;
   text-align: right;
   margin-top: 32px;
   @media (min-width: $lg) {
@@ -71,7 +79,7 @@
   }
 
   .text--tab {
-    color: $gray-5-selected;
+    color: $navy-1;
     font-size: 14px;
     font-weight: 400;
     @media (min-width: 400px) {
@@ -120,7 +128,7 @@
     color: $gray-1;
   }
   .staking-container {
-    background: $gray-5-selected-dark;
+    background: $container-bg-dark;
     box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
   }
 

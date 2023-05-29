@@ -1,13 +1,8 @@
 <template>
-  <div class="tw-flex tw-items-center">
-    <button
-      type="button"
-      class="icon-light"
-      :class="{ 'tw-cursor-default': !isDarkTheme }"
-      @click="switchThemeTo('LIGHT')"
-    >
+  <div class="row--icons">
+    <button type="button" @click="switchThemeTo('LIGHT')">
       <astar-icon-base
-        class="tw-h-5 tw-w-5 tw-text-gray-300 dark:tw-text-gray-300 dark:tw-text-darkGray-500"
+        :class="isDarkTheme ? 'icon' : 'icon--selected'"
         viewBox="0 0 24 24"
         stroke="currentColor"
         icon-color="none"
@@ -16,11 +11,11 @@
       </astar-icon-base>
     </button>
 
-    <span class="tw-text-gray-400 dark:tw-text-darkGray-500">/</span>
+    <span class="text--slash">/</span>
 
     <button type="button" class="icon-dark" @click="switchThemeTo('DARK')">
       <astar-icon-base
-        class="icon-outline-moon"
+        :class="isDarkTheme ? 'icon--selected' : 'icon'"
         viewBox="0 0 24 24"
         stroke="currentColor"
         icon-color="none"
@@ -36,24 +31,28 @@ import { defineComponent, computed, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import { useStore } from 'src/store';
 import { Theme } from 'src/store/general/state';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const currentTheme = computed(() => store.getters['general/theme']);
-    const isDarkTheme = currentTheme.value == 'DARK';
+    const currentTheme = computed<string>(() => store.getters['general/theme']);
+    const isDarkTheme = computed<boolean>(() => currentTheme.value === 'DARK');
     const $q = useQuasar();
+
+    const switchThemeTo = (theme: Theme): void => {
+      store.commit('general/setTheme', theme);
+      localStorage.setItem(LOCAL_STORAGE.THEME_COLOR, theme);
+    };
 
     watch(
       () => isDarkTheme,
-      () => $q.dark.set(isDarkTheme)
+      () => $q.dark.set(isDarkTheme.value)
     );
 
     return {
       isDarkTheme,
-      switchThemeTo(theme: Theme) {
-        store.commit('general/setTheme', theme);
-      },
+      switchThemeTo,
     };
   },
 });
@@ -62,16 +61,46 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.icon-light {
-  @apply tw-pr-2 tw-rounded-full tw-relative;
+.text--slash {
+  color: $gray-1;
+  opacity: 0.4;
 }
 
-.icon-dark {
-  @apply tw-pl-2 tw-rounded-full tw-relative;
+.row--icons {
+  display: flex;
+  column-gap: 6px;
 }
 
-.icon-outline-moon {
-  color: $gray-4;
-  @apply tw-h-5 tw-w-5 dark:tw-text-darkGray-100;
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.icon--selected {
+  width: 20px;
+  height: 20px;
+  stroke: $gray-5;
+  cursor: default;
+  opacity: 0.4;
+  @media (min-width: $lg) {
+    stroke: $gray-1;
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  stroke: $gray-5;
+  cursor: pointer;
+  @media (min-width: $lg) {
+    stroke: $gray-1;
+  }
+}
+
+.body--dark {
+  .icon--selected,
+  .icon {
+    stroke: $gray-1;
+  }
 }
 </style>

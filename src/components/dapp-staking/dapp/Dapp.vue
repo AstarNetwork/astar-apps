@@ -68,7 +68,6 @@ export default defineComponent({
     };
 
     const dapp = computed(() => {
-      console.log('dapps', dapps.value);
       if (dapps.value.length > 0 && dappAddress.value) {
         return dapps.value.find((it: DappCombinedInfo) => {
           try {

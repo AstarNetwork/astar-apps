@@ -35,6 +35,7 @@ export * from './dapps-staking/useDappRedirect';
 export * from './dapps-staking/useDispatchGetDapps';
 export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
+export * from './wallet/useLedger';
 export * from './xcm/useXcmBridge';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useTransferRouter';

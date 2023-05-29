@@ -2,11 +2,10 @@
 
 .wrapper--assets {
   position: relative;
-  padding-top: 36px;
   @media (min-width: $lg) {
     padding-top: 16px;
   }
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     display: flex;
     justify-content: center;
   }
@@ -16,19 +15,75 @@
   display: grid;
   row-gap: 32px;
   margin-bottom: 24px;
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     width: 100%;
     max-width: $container-max-width;
   }
 }
 
-.separator {
-  margin-bottom: 24px;
-  border-bottom: 1px solid $border-separator-light;
+.container--account {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
 }
 
-.body--dark {
-  .separator {
-    border-bottom: 1px solid $gray-5;
+.title--account {
+  margin-bottom: 10px;
+}
+
+.separator--top {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
+.separator {
+  border-bottom: 1px solid;
+  border-image: linear-gradient(
+    90deg,
+    #e6007a -4%,
+    #e6007a -3.88%,
+    #703ac2 17.01%,
+    #0070eb 42.25%,
+    #0297fb 73.9%,
+    #0ae2ff 97.42%
+  );
+  border-image-slice: 1;
+  margin-bottom: 20px;
+}
+
+.row--links {
+  padding-left: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: block;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+  @media (min-width: $xxxl) {
+    display: none;
+  }
+}
+
+.column--links {
+  display: none;
+  @media (min-width: $xxxl) {
+    display: block;
+  }
+}
+
+.title--assets {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+.container--asset-list {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
   }
 }

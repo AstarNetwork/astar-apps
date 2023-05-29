@@ -26,11 +26,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watchEffect } from 'vue';
 import { useBreakpoints, useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import SidebarMobile from 'components/sidenav/SidebarMobile.vue';
+import { useQuasar } from 'quasar';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -39,11 +42,19 @@ export default defineComponent({
     SidebarDesktop,
   },
   setup() {
+    const store = useStore();
     const { width, screenSize } = useBreakpoints();
-    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    isDark
-      ? document.documentElement.classList.add('dark')
-      : document.documentElement.classList.remove('dark');
+    const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
+    const isDark = storedThemeColor
+      ? storedThemeColor === 'DARK'
+      : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const $q = useQuasar();
+    $q.dark.set(isDark);
+
+    watchEffect(() => {
+      store.commit('general/setTheme', isDark ? 'DARK' : 'LIGHT');
+    });
 
     const isFetchGas = true;
     useGasPrice(isFetchGas);
@@ -58,9 +69,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wrapper--components {
-  padding: 0 16px;
   @media (min-width: $lg) {
     padding: 0 40px;
+    padding-top: 12px;
   }
 }
 </style>

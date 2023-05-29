@@ -1,22 +1,32 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
+    <div class="separator--top container--account">
+      <div class="separator" />
+    </div>
     <div class="container--assets">
-      <div>
-        <span class="text--xl">
-          {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
-        </span>
+      <div class="container--account">
+        <div class="title--account">
+          <span class="text--xl">
+            {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
+          </span>
+        </div>
+        <account
+          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+          :is-loading-erc20-amount="isLoading"
+          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
       </div>
-      <account
-        :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-        :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-        :is-loading-erc20-amount="isLoading"
-        :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-      />
-      <div>
-        <div class="separator" />
-        <span class="text--xl">{{ $t('assets.assets') }}</span>
+      <div class="row--links">
+        <dynamic-links />
       </div>
       <div>
+        <div class="container--account">
+          <div class="separator" />
+        </div>
+        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
+      </div>
+      <div class="container--asset-list">
         <div v-if="isH160">
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
@@ -26,10 +36,14 @@
         </div>
       </div>
     </div>
+    <div class="column--links">
+      <dynamic-links />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
+import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
@@ -45,6 +59,7 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
+    DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
     XvmNativeAssetList,

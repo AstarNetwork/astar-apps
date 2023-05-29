@@ -54,6 +54,7 @@ export default defineComponent({
 #assets-top {
   @media (min-width: $lg) {
     margin-top: 50px;
+    padding: 0 16px;
   }
 }
 </style>

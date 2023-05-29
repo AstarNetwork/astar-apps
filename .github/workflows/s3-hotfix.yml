@@ -1,0 +1,39 @@
+name: Deploy to Release hotfix-S3
+on: 
+  workflow_dispatch:
+    branches: 
+      - release-hotfix
+
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  # deploy to prod
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: release-hotfix
+          token: ${{ env.GH_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: yarn && yarn build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync ./dist/spa  s3://astar-apps --delete
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: 'Merge release-hotfix to main'
+          body: 'This is an auto-generated PR to merge release-hotfix to main'
+          branch: main
+          base: release-hotfix
+          delete-branch: false

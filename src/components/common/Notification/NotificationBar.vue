@@ -25,7 +25,7 @@
       </div>
       <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType && txHash" class="btn--check" @click="goToSubscan">{{
+        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">{{
           $t('toast.checkYourTransactions')
         }}</astar-button>
       </div>
@@ -35,8 +35,6 @@
 
 <script lang="ts">
 import { AlertType } from 'src/store/general/state';
-import { useNetworkInfo } from 'src/hooks';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
 
@@ -55,9 +53,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    txHash: {
+    explorerUrl: {
       type: String,
       default: null,
+      required: false,
     },
   },
   emits: ['close'],
@@ -82,21 +81,9 @@ export default defineComponent({
     const showCloseBtn = ref<boolean>(false);
     const isSuccessType = computed<boolean>(() => props.alertType === AlertType.Success);
     const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
-    const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
-    const goToSubscan = () => {
-      if (!props.txHash) return;
-
-      let rootName = 'astar';
-      if (isShiden.value) {
-        rootName = 'shiden';
-      } else if (isShibuya.value) {
-        rootName = 'shibuya';
-      }
-      const link = `https://${rootName}.subscan.io/extrinsic/${props.txHash}`;
-      window.open(link, '_blank');
+    const goToSubscan = (): void => {
+      window.open(props.explorerUrl, '_blank');
     };
 
     return {
@@ -118,7 +105,7 @@ export default defineComponent({
   display: none;
   border: 1px solid $astar-blue;
   border-radius: 6px;
-  color: $gray-5-selected;
+  color: $navy-1;
   width: 100%;
   background: #e5f2ff;
   mix-blend-mode: normal;
@@ -188,15 +175,15 @@ export default defineComponent({
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: $gray-5-selected;
+  color: $navy-1;
 }
 
 .column--close {
   width: 16px;
   height: 16px;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   border-radius: 30px;
-  color: $gray-3;
+  color: $gray-4;
   font-size: 30px;
   font-weight: 10;
   cursor: pointer;
@@ -210,7 +197,7 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: $gray-5-selected;
+  color: $navy-1;
   text-align: left;
   padding-left: 12px;
   padding-right: 12px;

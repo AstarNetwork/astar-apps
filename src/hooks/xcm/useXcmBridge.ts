@@ -1,3 +1,12 @@
+import {
+  ASTAR_DECIMALS,
+  ASTAR_SS58_FORMAT,
+  SUBSTRATE_SS58_FORMAT,
+  capitalize,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { ApiPromise } from '@polkadot/api';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
@@ -10,13 +19,6 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
-import { capitalize, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
-import {
-  ASTAR_DECIMALS,
-  ASTAR_SS58_FORMAT,
-  isValidAddressPolkadotAddress,
-  SUBSTRATE_SS58_FORMAT,
-} from '@astar-network/astar-sdk-core';
 import { SystemAccount } from 'src/modules/account';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
@@ -28,9 +30,9 @@ import {
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset, ethWalletChains } from 'src/v2/models';
-import { Chain, chainsNotSupportWithdrawal, XcmChain } from 'src/v2/models/XcmModels';
+import { Chain, XcmChain, chainsNotSupportWithdrawal } from 'src/v2/models/XcmModels';
 import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
-import { computed, ref, Ref, watch, watchEffect } from 'vue';
+import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { evmToAddress } from '@polkadot/util-crypto';
@@ -41,6 +43,7 @@ import { IApiFactory } from 'src/v2/integration';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
+import { castChainName } from 'src/modules/xcm';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
@@ -184,7 +187,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   };
 
   const checkIsEnoughMinBal = (amount: number): boolean => {
-    const originChainMinBal = selectedToken.value && selectedToken.value.minBridgeAmount;
+    if (!selectedToken.value) return false;
+    const originChainMinBal = Number(selectedToken.value.minBridgeAmount);
     return fromAddressBalance.value - amount > (originChainMinBal || 0);
   };
 
@@ -380,6 +384,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         ? inputtedAddress.value
         : currentAccount.value;
 
+      const successMessage = t('assets.toast.completedBridgeMessage', {
+        symbol: selectedToken.value.metadata.symbol,
+        transferAmt: amount.value,
+        fromChain: castChainName(srcChain.value.name),
+        toChain: castChainName(destChain.value.name),
+      });
+
       await xcmService.transfer({
         from: srcChain.value,
         to: destChain.value,
@@ -388,6 +399,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         recipientAddress,
         amount: Number(amount.value),
         finalizedCallback,
+        successMessage,
       });
     } catch (error: any) {
       console.error(error.message);

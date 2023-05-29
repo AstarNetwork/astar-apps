@@ -35,3 +35,15 @@ yarn-error.log*
 
 # Firebase cache
 .firebase/
+
+# End-to-end tests
+test-results/
+playwright-report/
+playwright/.cache/
+
+
+# Zombienet binaries
+zombienet-macos
+polkadot
+astar-collator
+

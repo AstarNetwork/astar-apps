@@ -146,7 +146,7 @@ interface StakerInfo extends Struct {
   stakes: EraStake[];
 }
 
-interface EraStakingPointsIndividualClaim extends Struct {
+export interface EraStakingPointsIndividualClaim extends Struct {
   total: Balance;
   numberOfStakers: u32;
   contractRewardClaimed: bool;

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" :class="isDecentralized && 'sidebar--height-decentralized '">
     <div class="icon">
       <logo />
     </div>
@@ -7,11 +7,11 @@
       <div>
         <router-link
           :to="RoutePath.Assets"
-          :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'assets' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="currentColor"
             icon-name="assets"
           >
             <astar-icon-assets />
@@ -24,11 +24,11 @@
       <div>
         <router-link
           :to="RoutePath.Dashboard"
-          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="#0085FF"
             icon-name="dashboard"
           >
             <astar-icon-dashboard />
@@ -42,11 +42,11 @@
         <router-link
           v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
-          :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="currentColor"
             icon-name="staking"
           >
             <astar-icon-dapp-staking />
@@ -57,11 +57,44 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
+      <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
+        <router-link
+          to="#"
+          :class="['link', $route.path.split('/')[2] === 'astar-nft' ? 'activeLink' : '']"
+        >
+          <astar-icon-base
+            :class="['icon-add', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="staking"
+          >
+            <icon-side-nft />
+          </astar-icon-base>
+          <div class="row--item">
+            <astar-text type="H4">NFT</astar-text>
+          </div>
+        </router-link>
+        <balloon
+          class="balloon"
+          :is-balloon="hoverNFT"
+          :is-balloon-closing="!hoverNFT"
+          :text="$t('sidenavi.comingsoon')"
+        />
+      </div>
+      <div>
+        <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
+          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">
+            <icon-ecosystem />
+          </astar-icon-base>
+          <div class="row--item row--item-ecosystem">
+            <astar-text type="H4">{{ $t('common.ecosystem') }}</astar-text>
+            <astar-icon-external-link />
+          </div>
+        </a>
+      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
     <div class="wrapper--bottom">
-      <connection-trouble />
       <social-media-links />
       <div class="wrapper--option">
         <light-dark-mode />
@@ -80,9 +113,12 @@ import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
-import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
+import IconSideNft from './components/IconSideNFT.vue';
+import IconEcosystem from './components/IconEcosystem.vue';
+import Balloon from './components/Balloon.vue';
+import { decentralizedOrigin } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -90,19 +126,26 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     Logo,
-    ConnectionTrouble,
+    IconSideNft,
+    IconEcosystem,
+    Balloon,
   },
   setup() {
     const { isOpen } = useSidebar();
 
     const store = useStore();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
 
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+
+    const hoverNFT = ref<boolean>(false);
+    const isDecentralized = computed<boolean>(() => {
+      return window.location.origin === decentralizedOrigin;
+    });
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -125,6 +168,8 @@ export default defineComponent({
       router,
       path,
       RoutePath,
+      hoverNFT,
+      isDecentralized,
     };
   },
 });

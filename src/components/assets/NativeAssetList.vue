@@ -43,11 +43,23 @@
             </div>
 
             <div v-if="isFaucet" class="column--buttons">
-              <button class="btn btn--sm" @click="handleModalFaucet({ isOpen: true })">
+              <button
+                class="btn btn--sm column---title-button"
+                @click="handleModalFaucet({ isOpen: true })"
+              >
                 {{ $t('assets.faucet') }}
               </button>
             </div>
-            <div v-else />
+            <div v-else class="column--buttons">
+              <router-link
+                :to="buildTransferPageLink(nativeTokenSymbol)"
+                class="column---title-button"
+              >
+                <button class="btn btn--sm">
+                  {{ $t('assets.transfer') }}
+                </button>
+              </router-link>
+            </div>
             <div class="row--icon--expand">
               <div class="column--expand">
                 <button
@@ -73,6 +85,34 @@
                   :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="numEvmDeposit"
+          class="row--bg--extend-evm-withdraw row--details-native bg--accent"
+        >
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
+          </div>
+          <div class="row__right row__right-collapse">
+            <div class="column--balance">
+              <div v-if="!isSkeleton" class="column__box-native">
+                <span class="text--value">
+                  <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
+                </span>
+              </div>
+              <div v-else class="column__box-native">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
+                {{ $t('assets.withdraw') }}
+              </button>
             </div>
           </div>
         </div>
@@ -105,32 +145,6 @@
                 </div>
               </div>
             </div>
-
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
-                  </div>
-                </div>
-                <div class="column--buttons">
-                  <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
-                    {{ $t('assets.withdraw') }}
-                  </button>
-                </div>
-              </div>
-            </div>
-
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
@@ -204,7 +218,6 @@
         </div>
       </div>
     </div>
-
     <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <modal-evm-withdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
@@ -254,6 +267,7 @@ export default defineComponent({
     const balUsd = ref<number | null>(null);
     const vestingTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);
+    const isRocstar = ref<boolean>(false);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
     const isExpand = ref<boolean>(false);
@@ -298,9 +312,12 @@ export default defineComponent({
       const tokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
-        isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
-        isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
+        isShibuya.value = tokenSymbolRef === 'SBY';
+        isRocstar.value = tokenSymbolRef === 'RSTR';
+        isFaucet.value = isRocstar.value
+          ? false
+          : isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
         } else {

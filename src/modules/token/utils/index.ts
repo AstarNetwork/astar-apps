@@ -1,3 +1,4 @@
+import { isXc20Token } from 'src/config/web3/utils';
 import { CbridgeCurrency } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -117,9 +118,18 @@ export const castCbridgeToErc20 = ({
   token: CbridgeCurrency;
   srcChainId: number;
 }): Erc20Token => {
+  const isXc20Asset =
+    token.bridgeMethod === 'canonical' &&
+    isXc20Token(token.canonicalConfig?.canonical_token_contract_addr as string);
+
+  const address =
+    isXc20Asset && token.canonicalConfig?.canonical_token_contract_addr
+      ? token.canonicalConfig.canonical_token_contract_addr
+      : token.address;
+
   return {
     srcChainId,
-    address: token.address,
+    address,
     decimal: token.decimal,
     symbol: token.symbol,
     name: token.name,

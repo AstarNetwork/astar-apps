@@ -10,18 +10,29 @@
 }
 
 .iconbase {
-  color: $astar-blue-dark;
+  color: $astar-blue;
   width: 20px;
   height: 20px;
 }
 
+.icon-add {
+  color: $astar-blue;
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  margin-left: 1px;
+}
+
 .sidebar {
   width: 224px;
-  height: 100%;
   padding-top: 24px;
-  background: $border-separator-light;
+  background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   display: flex;
   flex-direction: column;
+}
+
+.sidebar--height-decentralized {
+  height: calc(100% - 40px);
 }
 
 .menu {
@@ -34,6 +45,11 @@
     flex: 1 1 0%;
     margin-left: rem(12);
   }
+  .row--item-ecosystem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
 .link {
@@ -44,14 +60,17 @@
   padding: 8px;
   margin-bottom: 8px;
   border-radius: 6px;
-  color: $gray-5;
+  color: #fff;
   position: relative;
+  transition: all 0.3s ease 0s;
 }
 
 .link:hover {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
+  background: $navy-3;
 }
-
+.activeLink {
+  color: #fff;
+}
 .activeLink:hover {
   background: transparent;
 }
@@ -70,7 +89,7 @@
 
 // Memo: set the animation indicator from the bottom of the menu
 .menu__indicator {
-  background: #d3d6dc;
+  background: $navy-3;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
   height: 38px;
@@ -78,15 +97,15 @@
 }
 
 .menu__assets {
-  margin-top: -139px;
+  margin-top: -230px;
 }
 
 .menu__dashboard {
-  margin-top: -92px;
+  margin-top: -184px;
 }
 
 .menu__staking {
-  margin-top: -46px;
+  margin-top: -138px;
 }
 
 .dummy-row {
@@ -95,16 +114,16 @@
 
 .body--dark {
   .menu__indicator {
-    background: $gray-5-selected;
+    background: $navy-3;
   }
   .sidebar {
-    background: $gray-5;
+    background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   }
   .link {
     color: $gray-1;
   }
   .link:hover {
-    background: #313a3d;
+    background: $navy-3;
   }
   .activeLink:hover {
     background: transparent;

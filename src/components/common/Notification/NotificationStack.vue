@@ -5,7 +5,7 @@
         <notification-bar
           :alert-type="t.alertType"
           :alert-msg="t.alertMsg"
-          :tx-hash="t.txHash"
+          :explorer-url="t.explorerUrl"
           :show="true"
           @close="() => closeNoti(index)"
         />
@@ -15,8 +15,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { AlertBox, AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
 import NotificationBar from './NotificationBar.vue';
@@ -36,21 +34,8 @@ export default defineComponent({
     };
 
     const alertStack = computed<AlertBox[]>(() => store.getters['general/alertStack']);
-    const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
-    const goToSubscan = (txHash: string) => {
-      if (!txHash) return;
-
-      let rootName = 'astar';
-      if (isShiden.value) {
-        rootName = 'shiden';
-      }
-      const link = `https://${rootName}.subscan.io/extrinsic/${txHash}`;
-      window.open(link, '_blank');
-    };
-
-    return { alertStack, AlertType, closeNoti, goToSubscan };
+    return { alertStack, AlertType, closeNoti };
   },
 });
 </script>

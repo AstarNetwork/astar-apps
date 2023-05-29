@@ -37,6 +37,8 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  help: 'Help',
+  share: 'Share',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -56,12 +58,12 @@ export default {
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
+    ledgerNotOpened: 'Ledger has not opened Astar App',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
     completedTxHash: 'Completed at transaction hash #{hash}',
-    completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
@@ -81,6 +83,7 @@ export default {
     dappStaking: 'dApp Staking',
     staking: 'Staking',
     contract: 'Contract',
+    ecosystem: 'Ecosystem',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
@@ -101,6 +104,11 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
+    decentralizedBanner: {
+      bannerText:
+        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
+      goToClassicPortal: 'our Classic Portal',
+    },
   },
   sidenavi: {
     community: 'Community',
@@ -116,7 +124,7 @@ export default {
     language: 'Language',
     theme: 'Theme',
     close: 'Close',
-    connectionTrouble: 'Connection Trouble?',
+    comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
     endpoint: 'Endpoint',
@@ -137,6 +145,7 @@ export default {
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
     showBalance: 'Show {token} balance',
+    isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
   },
   installWallet: {
     getWallet: 'Haven’t got a {value} yet?',
@@ -186,7 +195,6 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Available to claim',
     compound: 'Compound',
     schedule: 'Schedule',
     depositNoRefund: 'Deposit - Non Refundable',
@@ -209,15 +217,26 @@ export default {
       'You are still required to claim by yourself but the rewards will automatically re-stake.',
     claimYourselfManual:
       'You are required to claim by yourself and the rewards will be added to transferable balance.',
+    availableToClaim: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
-    restake: 'Re-Stake after claiming',
+    restake: 'Re-Stake After Claiming',
     turnOff: 'Turn Off',
-    totalEarned: 'Total Earned (all-time)',
+    totalEarned: 'Total Earned (all time)',
     availableToClaimTip:
-      'Number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+      'The amount of unclaimed rewards is estimated and there may be a small difference between what is shown and what you actually receive.',
+    availableToClaimTip2:
+      'The number of eras that is shown here is per dApp. You may need to claim multiple times if you have too many unclaimed eras.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
+    claimable: {
+      limitation:
+        'There is a limitation on the number of eras that can be claimed in one transaction.',
+      nativeWallets: 'Native wallets: ≒56 eras',
+      ledgerX: 'Ledger Nano X: 6 eras',
+      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
+      ledgerS: 'Ledger Nano S: 2 eras',
+    },
   },
   dappStaking: {
     myStaking: 'My Staking',
@@ -336,6 +355,10 @@ export default {
         '{message} -Disable compounding, claim your rewards and then enable compounding again',
       successfullyWithdrew: 'Balance is successfully withdrew',
       successfullySetRewardDest: 'You successfully set reward destination',
+      successfullyStaked: 'You successfully staked to {contractAddress}',
+      successfullyUnbond: 'You successfully started unbonding process for {contractAddress}',
+      successfullyNominationTransfer:
+        'You successfully staked to {targetContractId} from {fromContractId}',
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
@@ -393,6 +416,10 @@ export default {
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
+    toast: {
+      completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
+      completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
+    },
     transferPage: {
       backToAssets: 'Back to Assets',
       crossChainTransfer: 'Cross-chain Transfer',
@@ -415,6 +442,10 @@ export default {
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
       notSendToEvmExchanges:
         "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
+      understandWarning: 'I understand the following. If don’t, I will lose my funds.',
+      notDestIsLedgerAccount:
+        'The destination address is neither a ledger native account nor an exchange address. I understand that if I do so, the funds will likely be lost.',
+      notDestIsExchangeAddress: 'Destination address is not an Exchange address',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
@@ -521,5 +552,11 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+  },
+  links: {
+    goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
+    astarHome: 'Astar Home',
+    astarDocs: 'Astar Docs',
   },
 };

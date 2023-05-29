@@ -11,11 +11,10 @@
   row-gap: 12px;
   padding: 9px 15px;
   border-radius: 6px;
-  width: 320px;
   height: 88px;
   background: transparent;
 
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
   @media (min-width: $xs) {
     width: 344px;
   }
@@ -74,7 +73,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   cursor: pointer !important;
   margin-top: -24px;
   background: $body-bg-light;
@@ -163,18 +162,18 @@
 }
 
 .btn--max {
-  border: 1px solid $astar-blue-dark;
+  border: 1px solid $astar-blue;
   box-sizing: border-box;
   filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.05));
   border-radius: 4px;
   padding: 2px 10px;
-  color: $astar-blue-dark;
+  color: $astar-blue;
   font-weight: 500;
   font-size: 11px;
   transition: all 0.3s ease 0s;
   &:hover {
     transition: all 0.3s ease 0s;
-    background-color: $astar-blue-dark;
+    background-color: $astar-blue;
     color: white;
   }
 }
@@ -186,7 +185,7 @@
   background: transparent;
   text-align: right;
   font-weight: 600;
-  color: $gray-5;
+  color: $navy-1;
   justify-self: flex-end;
   @media (min-width: $md) {
     width: 250px;
@@ -223,7 +222,7 @@
   border-radius: 6px;
   width: 320px;
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   margin-bottom: 4px;
   @media (min-width: $xs) {
     width: 344px;
@@ -241,7 +240,7 @@
     outline: none;
   }
   &::placeholder {
-    color: $gray-3 !important;
+    color: $gray-4 !important;
   }
 }
 
@@ -265,14 +264,14 @@
 
 .body--dark {
   .box--input-field {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
   input {
     color: white;
   }
   .selected-bridge-option {
-    border-bottom: 3px solid $astar-blue-dark;
+    border-bottom: 3px solid $astar-blue;
   }
   .text--warning {
     color: $gray-1;
@@ -288,8 +287,7 @@
     background: $body-bg-dark;
   }
   .box--input-address {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-3;
   }
   .input--address {
     &::placeholder {

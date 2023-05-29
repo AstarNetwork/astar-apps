@@ -1,10 +1,11 @@
 {
   "name": "@astar-network/astar-portal",
-  "version": "0.0.25",
+  "version": "0.0.29",
   "description": "Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
-  "private": true,
+  "private": false,
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "quasar dev",
     "build": "yarn run build:spa",
@@ -18,15 +19,20 @@
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
     "heroku-postbuild": "yarn install && yarn build",
-    "heroku-deploy": "git push heroku main"
+    "heroku-deploy": "git push heroku main",
+    "playwright:codegen": "npx playwright codegen http://localhost:8080",
+    "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug",
+    "playwright:ci": "./zombienet-linux-x64 test -p native ./tests/zombienet/e2e.zndsl",
+    "playwright:cimacos": "./zombienet-macos test -p native ./tests/zombienet/e2e.zndsl"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.1.16",
-    "@astar-network/astar-ui": "^0.0.77",
+    "@astar-network/astar-sdk-core": "^0.2.3",
+    "@astar-network/astar-ui": "^0.0.91",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",
     "@polkadot/extension-dapp": "0.44.8",
+    "@polkadot/hw-ledger": "^12.1.2",
     "@polkadot/keyring": "^10.3.1",
     "@polkadot/networks": "^10.3.1",
     "@polkadot/rpc-provider": "^9.13.6",
@@ -82,6 +88,8 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "@depay/web3-mock": "^13.26.0",
+    "@playwright/test": "^1.31.0",
     "@polkadot/ts": "^0.4.22",
     "@quasar/quasar-app-extension-apollo": "^2.0.0-beta.5",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-alpha.8",
@@ -127,7 +135,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": "18.x",
+    "node": ">=18.x",
     "yarn": ">=1.22.0"
   },
   "browser": {
