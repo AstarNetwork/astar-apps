@@ -124,14 +124,20 @@
 </template>
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
-import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
+import {
+  useAccount,
+  useClaimAll,
+  useNetworkInfo,
+  useStakerInfo,
+  useClaimedReward,
+} from 'src/hooks';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
 import { $api } from 'src/boot/api';
 import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -155,15 +161,21 @@ export default defineComponent({
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
     const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
+    const route = useRoute();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const multisigAccount = computed<string>(() => route.query.multisig as string);
+    const stakerAccount = computed<string>(() =>
+      multisigAccount.value ? multisigAccount.value : currentAccount.value
+    );
+
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
         rootName = 'shiden';
       }
-      const link = `https://${rootName}.subscan.io/account/${currentAccount.value}?tab=reward`;
+      const link = `https://${rootName}.subscan.io/account/${stakerAccount.value}?tab=reward`;
       window.open(link, '_blank');
     };
 
@@ -175,7 +187,7 @@ export default defineComponent({
       isLoadingPendingRewards.value = true;
       const { stakerPendingRewards } = await estimatePendingRewards({
         api: $api!,
-        walletAddress: currentAccount.value,
+        walletAddress: stakerAccount.value,
       });
       pendingRewards.value = stakerPendingRewards;
       isLoadingPendingRewards.value = false;

@@ -3,8 +3,10 @@ import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { wait, getClaimedAmount } from '@astar-network/astar-sdk-core';
+import { useRoute } from 'vue-router';
 
 export function useClaimedReward() {
+  const route = useRoute();
   const store = useStore();
   const { isStaker, isDappOwner, isUnclaimedEra, isCompounding, setRewardDestination } =
     useCompoundRewards();
@@ -12,6 +14,11 @@ export function useClaimedReward() {
   const pastClaimed = ref<number>(0);
   const isLoadingClaimed = ref<boolean>(false);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
+
+  const multisigAccount = computed<string>(() => route.query.multisig as string);
+  const stakerAccount = computed<string>(() =>
+    multisigAccount.value ? multisigAccount.value : currentAccount.value
+  );
 
   const claimed = computed<number>(() => {
     // Memo: update the number of claimed rewards after users invoking claim action
@@ -33,7 +40,7 @@ export function useClaimedReward() {
       if (isFetch) {
         const result = await getClaimedAmount({
           network: currentNetworkName.value.toLowerCase(),
-          account: currentAccount.value,
+          account: stakerAccount.value,
         });
         const animationDelay = 2000;
         await wait(animationDelay);

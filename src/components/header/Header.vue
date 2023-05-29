@@ -7,12 +7,16 @@
       <trouble-help />
       <multisig-configure v-if="multisigAccount" />
       <template v-if="!currentAccount">
-        <connect-button @click="openSelectModal">
+        <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
         </connect-button>
       </template>
       <template v-else>
-        <account-button :account="currentAccount" @click="clickAccountBtn" />
+        <account-button
+          :account="currentAccount"
+          :class="isLoading && 'cursor--disabled'"
+          @click="clickAccountBtn"
+        />
       </template>
       <network-button @show-network="clickNetworkBtn" />
     </header-comp>
@@ -26,6 +30,7 @@
     />
 
     <modal-connect-wallet
+      v-if="!isLoading && isReadyOpenWalletDrawer"
       :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
@@ -76,6 +81,7 @@ import Logo from 'src/components/common/Logo.vue';
 import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
+import { wait } from '@astar-network/astar-sdk-core';
 
 interface Modal {
   modalNetwork: boolean;
@@ -118,7 +124,7 @@ export default defineComponent({
       disconnectAccount,
     } = useConnectWallet();
 
-    const clickAccountBtn = () => {
+    const clickAccountBtn = (): void => {
       if (modalName.value === WalletModalOption.SelectWallet) {
         return;
       }
@@ -138,17 +144,22 @@ export default defineComponent({
     };
 
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed<string>(() => route.path);
     const multisigAccount = computed<string>(() => route.query.multisig as string);
     const headerName = ref<string>('');
+    const isReadyOpenWalletDrawer = ref<boolean>(false);
 
     watch(
       path,
-      () => {
+      async () => {
         headerName.value = getHeaderName(path.value);
+        // Memo: wait for 'isLoading' sets to `true` when the page has been opened
+        await wait(500);
+        isReadyOpenWalletDrawer.value = true;
       },
       {
         immediate: true,
@@ -169,6 +180,8 @@ export default defineComponent({
       width,
       screenSize,
       multisigAccount,
+      isLoading,
+      isReadyOpenWalletDrawer,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
@@ -199,5 +212,9 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
+}
+
+.cursor--disabled {
+  cursor: not-allowed !important;
 }
 </style>

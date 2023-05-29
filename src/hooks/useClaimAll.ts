@@ -95,7 +95,7 @@ export function useClaimAll() {
 
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
       canClaimWithoutError.value = await dappStakingService.canClaimRewardWithoutErrors(
-        senderAddress.value
+        senderAddressRef
       );
     } catch (error: any) {
       console.error(error.message);

@@ -9,12 +9,14 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
+import { useRoute } from 'vue-router';
 
 export type MyStakeInfo = StakeInfo | DappItem;
 
 export function useStakerInfo() {
   const { currentAccount } = useAccount();
   const store = useStore();
+  const route = useRoute();
 
   store.dispatch('dapps/getStakingInfo');
   const isLoadingTotalStaked = ref<boolean>(true);
@@ -23,6 +25,10 @@ export function useStakerInfo() {
   const myStakeInfos = ref<MyStakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const multisigAccount = computed<string>(() => route.query.multisig as string);
+  const stakerAccount = computed<string>(() =>
+    multisigAccount.value ? multisigAccount.value : currentAccount.value
+  );
 
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
@@ -33,7 +39,7 @@ export function useStakerInfo() {
       dapps.value.map(async (it: DappCombinedInfo) => {
         const stakeData = await dappStakingService.getStakeInfo(
           it.dapp?.address!,
-          currentAccount.value
+          stakerAccount.value
         );
         if (stakeData?.hasStake) {
           myData.push({ ...stakeData, ...it.dapp });

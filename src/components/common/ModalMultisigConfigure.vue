@@ -67,6 +67,8 @@
             @change="setAccount5"
           />
         </div>
+      </div>
+      <div class="row--results">
         <div class="row--address">
           <span class="text--md">Threshold</span>
           <input
@@ -79,6 +81,18 @@
             class="input--address"
             @change="setThreshold"
           />
+        </div>
+        <div class="row--address">
+          <span class="text--md">Multisig Address</span>
+          <input
+            :value="generatedMultisig"
+            class="input--address text--title"
+            :class="errorMsg && 'input--error'"
+            type="text"
+            spellcheck="false"
+            :readonly="true"
+          />
+          <span class="text--error-msg">{{ errorMsg }}</span>
         </div>
       </div>
       <astar-button
@@ -104,7 +118,6 @@ import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { LocalStorage } from 'quasar';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBreakpoints } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
@@ -136,7 +149,7 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
-    const { currentAccount } = useAccount();
+    const currentAccount = computed(() => store.getters['general/selectedAddress']);
 
     const storedMultisigObjStr = LocalStorage.getItem(LOCAL_STORAGE.MULTISIG);
     const storedMultisigObj = JSON.parse(storedMultisigObjStr as string);
@@ -149,18 +162,15 @@ export default defineComponent({
       if (key === 'threshold') {
         return storedMultisigObj[key];
       } else {
-        console.log('storedMultisigObj.accounts', storedMultisigObj.accounts);
-        console.log('currentAccount.value', currentAccount.value);
         const isValid = storedMultisigObj.accounts.some(
           (it: string) => it === currentAccount.value
         );
-        console.log('isValid', isValid);
         if (!isValid) return '';
 
         const otherSignatories = storedMultisigObj.accounts.filter(
           (it: string) => it !== currentAccount.value
         );
-        const index = Number(key);
+        const index = Number(key) - 1;
         return otherSignatories[index] ? otherSignatories[index] : '';
       }
     };
@@ -202,17 +212,20 @@ export default defineComponent({
     const route = useRoute();
     const multisigAccount = computed<string>(() => route.query.multisig as string);
 
-    const setMultisigAccount = () => {
+    const setMultisigAccount = (): void => {
+      errorMsg.value = '';
       const accounts = Object.values(accountsObj.value).filter((account) => account !== '');
       if (accounts.length >= threshold.value) {
         const multiAddress = createKeyMulti(accounts, threshold.value);
         const formattedMultiAddress = encodeAddress(multiAddress, ASTAR_SS58_FORMAT);
+        generatedMultisig.value = formattedMultiAddress;
 
-        if (formattedMultiAddress === multisigAccount.value) {
-          generatedMultisig.value = formattedMultiAddress;
-        } else {
-          errorMsg.value = "Generated multisig account isn't tally with inputted in the URL";
+        if (formattedMultiAddress !== multisigAccount.value) {
+          errorMsg.value =
+            "Generated multisig account doesn't tally with what's inputted in the URL";
         }
+      } else {
+        generatedMultisig.value = '';
       }
     };
 

@@ -47,7 +47,7 @@ export const useMultisig = () => {
         );
 
         const encodedMultisigData = extrinsic.method.toHex();
-        console.log('encodedMultisigData', encodedMultisigData);
+        console.info('multisig call data: ', encodedMultisigData);
 
         const walletContainer = container.get<IWalletService>(WalletType.Polkadot);
         await walletContainer.signAndSend({

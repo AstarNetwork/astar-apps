@@ -25,6 +25,9 @@
   display: flex;
   flex-direction: column;
   row-gap: 12px;
+  margin-bottom: 24px;
+  height: 292px;
+  overflow-y: auto;
 }
 
 .row--address {
@@ -33,8 +36,13 @@
   row-gap: 8px;
 }
 
+.row--results {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
 .button--confirm {
-  margin-top: 24px;
   font-size: 22px;
   font-weight: 600;
   height: 44px;
@@ -49,6 +57,16 @@
     outline: none;
     border: 1px solid $astar-blue;
   }
+}
+
+.input--error {
+  border: 1px solid $warning-red;
+}
+
+.text--error-msg {
+  color: $warning-red;
+  font-size: 12px;
+  height: 32px;
 }
 
 .body--dark {
