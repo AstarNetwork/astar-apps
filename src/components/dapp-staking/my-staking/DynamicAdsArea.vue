@@ -84,13 +84,7 @@ export default defineComponent({
     };
 
     const sourceImg = (img: string, index: number) => {
-      if (index === 0) {
-        if (isShiden.value) {
-          return require('/src/assets/img/ic_sdn_farm.svg');
-        } else {
-          return require('/src/assets/img/ic_astar_farm.svg');
-        }
-      } else if (index === 1) {
+      if (index === 1) {
         return require('/src/assets/img/ic_algem_staking.svg');
       } else if (index === 2) {
         return require('/src/assets/img/ic_subwallet.svg');
