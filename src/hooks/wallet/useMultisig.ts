@@ -8,10 +8,13 @@ import { container } from 'src/v2/common';
 import { IWalletService, ParamSignAndSend, WalletType } from 'src/v2/services';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import copy from 'copy-to-clipboard';
+import { useI18n } from 'vue-i18n';
 
 export const useMultisig = () => {
   const store = useStore();
   const route = useRoute();
+  const { t } = useI18n();
   const multisigAddress = computed<string>(() => route.query.multisig as string);
   const sendMultisigTransaction = async ({
     senderAddress,
@@ -28,7 +31,7 @@ export const useMultisig = () => {
 
         if (!isValid) {
           store.dispatch('general/showAlertMsg', {
-            msg: 'Please configure your multisig account',
+            msg: t('warning.configureMultisigAccount'),
             alertType: 'error',
           });
         }
@@ -55,10 +58,16 @@ export const useMultisig = () => {
           senderAddress: senderAddress,
           successMessage: encodedMultisigData,
         });
-        alert(`multisig call data: ${encodedMultisigData}`);
+        copy(encodedMultisigData);
+        store.dispatch('general/showAlertMsg', {
+          msg: t('toast.copyMultisigCall', {
+            hash: encodedMultisigData,
+          }),
+          alertType: 'success',
+        });
       } else {
         store.dispatch('general/showAlertMsg', {
-          msg: 'Please configure your multisig account',
+          msg: t('warning.configureMultisigAccount'),
           alertType: 'error',
         });
       }

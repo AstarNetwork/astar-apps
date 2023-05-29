@@ -60,6 +60,7 @@ export default {
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
     ledgerNotOpened: 'Ledger has not opened Astar App',
+    configureMultisigAccount: 'Please configure your multisig account',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -74,6 +75,7 @@ export default {
     note: 'Note',
     error: 'Error',
     copied: 'Copied',
+    copyMultisigCall: 'Multisig Call data: {hash}',
   },
   common: {
     updateMetadata: 'Update Metadata',
