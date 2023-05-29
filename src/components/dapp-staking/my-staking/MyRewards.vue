@@ -91,13 +91,9 @@
           <div class="value">
             {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
           </div>
-          <astar-button
-            :disabled="isH160"
-            :width="80"
-            :height="24"
-            @click="showAutoCompound"
-          >
+          <astar-button :disabled="isH160" :width="80" :height="24" @click="showAutoCompound">
             {{ $t('dappStaking.change') }}
+          </astar-button>
           <astar-button
             :disabled="isH160"
             :width="80"
