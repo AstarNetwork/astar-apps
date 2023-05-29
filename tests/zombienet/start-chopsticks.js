@@ -10,8 +10,9 @@ const networkInfo = {
   },
 };
 
-// const args = process.env.BASE_URL || 'https://portal.astar.network/';
-const args = 'http://localhost:8080/';
+const args = process.env.BASE_URL || 'https://portal.astar.network/';
+// for debug
+// const args = 'http://localhost:8080/';
 
 const spawnDetached = (cmd) => {
   const cp = require('child_process').spawn(cmd, [], {

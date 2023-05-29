@@ -33,7 +33,7 @@ async function run(nodeName, networkInfo, args) {
 
   let result = await spawn('npx playwright install --with-deps');
   result = await spawn(
-    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' CI='true' npx playwright test --project=chromium`
+    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
   );
 
   // for debugging
