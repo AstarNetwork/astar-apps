@@ -30,16 +30,16 @@ async function executeRun() {
     const childProcess = spawnDetached(
       'npx @acala-network/chopsticks@latest xcm -p astar -p shiden'
     );
-    console.log('Chopsticks started with pid:', childProcess.pid);
+    console.info('Chopsticks started with pid:', childProcess.pid);
 
     result = await setupPreconditions.run(nodeName, networkInfo, ['Alice']);
-    console.log('Setup Preconditions tests completed with result:', result);
+    console.info('Setup Preconditions tests completed with result:', result);
 
     result = await startPlaywright.run(nodeName, networkInfo, [args]);
-    console.log('Playwright tests completed with result:', result);
+    console.info('Playwright tests completed with result:', result);
 
     process.kill(-childProcess.pid);
-    console.log('Chopsticks stopped');
+    console.info('Chopsticks stopped');
   } catch (error) {
     console.error('Error executing Playwright tests:', error);
   }

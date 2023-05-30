@@ -5,7 +5,6 @@ const spawn = (cmd) =>
     const error = [];
     const stdout = [];
     cp.stdout.on('data', (data) => {
-      console.log(data.toString());
       stdout.push(data.toString());
 
       if (data.toString().includes('Ctrl+C')) {
@@ -17,7 +16,7 @@ const spawn = (cmd) =>
 
     cp.on('error', (e) => {
       error.push(e.toString());
-      console.log(e.toString());
+      console.error(e.toString());
     });
 
     cp.on('close', () => {
@@ -27,16 +26,16 @@ const spawn = (cmd) =>
   });
 
 async function run(nodeName, networkInfo, args) {
-  console.log('Running Playwright tests on node: ', nodeName, args);
+  console.info('Running Playwright tests on node: ', nodeName, args);
   const endpoint = networkInfo.nodesByName[nodeName].wsUri;
-  console.log('endpoint :', endpoint);
+  console.info('endpoint :', endpoint);
 
   let result = await spawn('npx playwright install --with-deps');
   result = await spawn(
     `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
   );
 
-  // for debugging
+  // MEMO: for debugging specific test case
   // result = await spawn(
   //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
   // );
