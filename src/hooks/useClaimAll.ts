@@ -15,7 +15,7 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras

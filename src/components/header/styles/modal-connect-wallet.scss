@@ -84,6 +84,63 @@
   }
 }
 
+.box--no-extension {
+  margin-top: 32px;
+  // background: rgba(255, 86, 33, 0.1);
+  background: $astar-blue;
+  border-radius: 6px;
+  padding: 16px;
+  padding-bottom: 22px;
+  text-align: left;
+}
+
+.title--no-extension {
+  margin-bottom: 8px;
+}
+
+.row--no-extension {
+  margin-bottom: 22px;
+}
+
+.row--icon-links {
+}
+
+.button--link {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.icon--link {
+  font-size: 20px;
+  transition: all 0.4s ease 0s;
+  border-radius: 50%;
+  stroke: $gray-1;
+}
+
+.row--icon-links {
+  display: flex;
+  column-gap: 26px;
+}
+
+.text--install-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: $gray-1;
+}
+
+.text--install {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.text--install-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-1;
+}
+
 .body--dark {
   .title--account-type {
     color: $gray-1;
