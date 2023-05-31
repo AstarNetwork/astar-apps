@@ -2,23 +2,14 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
-import {
-  useCurrentEra,
-  useCustomSignature,
-  useGasPrice,
-  useNetworkInfo,
-  RewardDestination,
-} from 'src/hooks';
+import { useCustomSignature, useNetworkInfo, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
-import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { getAPI } from 'src/hooks/helper/oakUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { autoStakingConfig } from 'src/config/autoStaking';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 // TODO: move to config
@@ -61,64 +52,20 @@ function isEmpty(obj: any) {
 }
 
 export function useAutoCompound() {
-  let batchTxs: PayloadWithWeight[] = [];
   const isLoadingAutoCompound = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { currentNetworkIdx } = useNetworkInfo();
-  const { nativeTipPrice } = useGasPrice();
   const selfParaId = computed(() => autoStakingConfig[currentNetworkIdx.value].selfParaId);
   const oakParaId = computed(() => autoStakingConfig[currentNetworkIdx.value].oakParaId);
   const oakEndpoint = computed(() => autoStakingConfig[currentNetworkIdx.value].oakEndpoint);
-  const oakSS58Prefix = computed(() => autoStakingConfig[currentNetworkIdx.value].oakSS58Prefix);
-  const { era } = useCurrentEra();
   const { handleResult } = useCustomSignature({
     txType: TxType.dappsStaking,
   });
 
-  watchEffect(async () => {
-    try {
-      isLoadingAutoCompound.value = true;
-      const api = $api;
-      const senderAddressRef = senderAddress.value;
-      if (!api) {
-        throw Error('Failed to connect to API');
-      }
-      if (!senderAddressRef || !era.value || isSendingTx.value) {
-        return;
-      }
-
-      const txs = await Promise.all(
-        dapps.value.map(async (it) => {
-          if (it.dapp && !isH160.value) {
-            const transactions = await getIndividualClaimTxs({
-              dappAddress: it?.dapp?.address,
-              api,
-              senderAddress: senderAddressRef,
-              currentEra: era.value,
-            });
-            return transactions.length ? transactions : null;
-          } else {
-            return null;
-          }
-        })
-      );
-      const filteredTxs = txs.filter((it) => it !== null);
-      batchTxs = filteredTxs.flat() as PayloadWithWeight[];
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      isLoadingAutoCompound.value = false;
-    }
-  });
-
   const compoundAll = async (): Promise<void> => {
     const api = $api;
-    const batchTxsRef = batchTxs;
     const oakAPI = await getAPI(oakEndpoint.value);
 
     const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
@@ -130,22 +77,9 @@ export function useAutoCompound() {
     if (!api) {
       throw Error('Failed to connect to API');
     }
-    if (0 >= batchTxsRef.length) {
-      throw Error('No dApps can be claimed');
-    }
 
-    const txsToExecute: ExtrinsicPayload[] = [];
+    const txsToExecute = [];
     let totalWeight: BN = new BN(0);
-    for (let i = 0; i < batchTxsRef.length; i++) {
-      const tx = batchTxsRef[i];
-      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
-      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
-        break;
-      }
-
-      txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(weight);
-    }
 
     txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
     txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));

@@ -96,7 +96,7 @@ import { defineComponent, computed, ref } from 'vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { useStore } from 'src/store';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
