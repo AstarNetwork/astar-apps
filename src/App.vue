@@ -29,7 +29,6 @@
     </transition>
     <notification-stack />
 
-    <!-- <cookie-policy /> -->
     <modal-disclaimer
       v-if="showDisclaimerModal"
       :set-is-open="setShowDisclaimerModal"
