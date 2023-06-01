@@ -8,6 +8,8 @@ import { Path } from 'src/router/routes';
 import { computed, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
@@ -55,6 +57,13 @@ export function useAppRouter() {
     const storedNetworkAlias = getNetworkName(Number(networkIdxStore));
     const networkParam = castNetworkName(network.value);
 
+    const getRandomizedEndpoint = (): string => {
+      const endpointsWithoutLightClient = selectedChain.endpoints.filter(
+        (it) => !checkIsLightClient(it.endpoint)
+      );
+      return getRandomFromArray(endpointsWithoutLightClient).endpoint;
+    };
+
     const isReload =
       networkIdxStore === null ||
       networkIdxStore === undefined ||
@@ -64,7 +73,7 @@ export function useAppRouter() {
       const isFirstTimeVisitor = localStorage.length === 2;
       localStorage.setItem(
         SELECTED_ENDPOINT,
-        JSON.stringify({ [endpointIdx]: selectedChain.endpoints[0].endpoint })
+        JSON.stringify({ [endpointIdx]: getRandomizedEndpoint() })
       );
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {

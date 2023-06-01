@@ -19,7 +19,6 @@ import Web3 from 'web3';
 import { supportWalletObj } from 'src/config/wallets';
 
 let $api: ApiPromise | undefined;
-const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
@@ -83,7 +82,6 @@ export default boot(async ({ store }) => {
   });
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
-  $endpoint.value = endpoint;
 
   const seen = new Set();
   const accountMap: SubstrateAccount[] = [];
@@ -141,4 +139,4 @@ export default boot(async ({ store }) => {
   }
 });
 
-export { $api, $web3, $endpoint };
+export { $api, $web3 };
