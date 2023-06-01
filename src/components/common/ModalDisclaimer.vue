@@ -1,10 +1,12 @@
 <template>
-  <modal-wrapper
-    :is-modal-open="show"
+  <astar-default-modal
+    v-if="show"
+    :show="show"
     :title="'Disclaimer'"
     :is-closing="isClosingModal"
-    :close-modal="closeModal"
-    class-name="highest-z-index"
+    :width="650"
+    :class="'highest-z-index'"
+    @close="setIsOpen(false)"
   >
     <div class="wrapper--modal-disclaimer">
       <div class="row--description">
@@ -14,29 +16,29 @@
           and accept that your use of the dApps is at your own risk, and they are provided on an "as
           is" and "as available" basis without any express or implied warranties of any kind.
         </div>
-        <div class="text--md">Terms of Services</div>
-        <div>1. Liability:</div>
-        <div>
+        <div class="text--title">Terms of Services</div>
+        <div class="text--lg">1. Liability:</div>
+        <div class="text--md">
           You understand and agree that the Astar Foundation shall not be held liable for any
           direct, indirect, incidental, special, consequential, or exemplary damages arising from
           your use of the Astar ecosystem dApps. This includes, but is not limited to, damages for
           loss of profits, goodwill, use, data or other intangible losses.
         </div>
-        <div>2. Assumption of Network Risks:</div>
-        <div>
+        <div class="text--lg">2. Assumption of Network Risks:</div>
+        <div class="text--md">
           You understand and agree that the Astar Foundation shall not be held liable for any
           direct, indirect, incidental, special, consequential, or exemplary damages arising from
           your use of the Astar ecosystem dApps. This includes, but is not limited to, damages for
           loss of profits, goodwill, use, data or other intangible losses.
         </div>
-        <div>3. No Guarantee of Security:</div>
-        <div>
+        <div class="text--lg">3. No Guarantee of Security:</div>
+        <div class="text--md">
           You understand and agree that the Astar Foundation does not guarantee the security of the
           Astar ecosystem dApps or the safety of your personal information, including your wallet
           address, transaction history, and private keys. You agree to take appropriate measures to
           protect your personal information and to prevent unauthorized access to your wallet.
         </div>
-        <div>
+        <div class="text--md">
           You also confirm that you are not a "Prohibited Person" and that neither you nor any
           person or entity that controls, is controlled by, or is under common control with you is a
           Prohibited Person. Finally, by clicking "Accept," you agree to the terms and conditions
@@ -46,31 +48,28 @@
 
       <div class="container--buttons">
         <div class="row--button">
-          <astar-button :width="120">
+          <astar-button class="btn--action" @click="accept()">
             <span class="text--button">Agree</span>
           </astar-button>
         </div>
         <div class="row--button">
-          <astar-button :width="120">
-            <span class="text--button">Decline</span>
-          </astar-button>
+          <astar-button class="btn--action btn--decline" @click="setIsOpen(false)"
+            >Decline</astar-button
+          >
         </div>
       </div>
     </div>
-  </modal-wrapper>
+  </astar-default-modal>
 </template>
 
 <script lang="ts">
 import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { defineComponent, ref } from 'vue';
-import { useBreakpoints } from 'src/hooks';
-import { useStore } from 'src/store';
-import { useI18n } from 'vue-i18n';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
-  components: { ModalWrapper },
+  components: {},
   props: {
     show: {
       type: Boolean,
@@ -90,27 +89,21 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const store = useStore();
-    const { t } = useI18n();
-    const { width, screenSize } = useBreakpoints();
+    if (localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
+      closeModal();
+    }
 
-    const clearLocalStorage = async (): Promise<void> => {
-      localStorage.clear();
-      store.dispatch('general/showAlertMsg', {
-        msg: t('toast.clearedLocalStorage'),
-        alertType: 'success',
-      });
-      await closeModal();
+    const accept = () => {
+      localStorage.setItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY, 'true');
+      closeModal();
     };
 
     return {
-      width,
-      screenSize,
       close,
       truncate,
       closeModal,
       isClosingModal,
-      clearLocalStorage,
+      accept,
     };
   },
 });

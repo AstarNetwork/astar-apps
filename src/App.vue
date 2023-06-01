@@ -29,7 +29,12 @@
     </transition>
     <notification-stack />
 
-    <cookie-policy />
+    <!-- <cookie-policy /> -->
+    <modal-disclaimer
+      v-if="showDisclaimerModal"
+      :set-is-open="setShowDisclaimerModal"
+      :show="showDisclaimerModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -37,13 +42,14 @@
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
 import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed, watch } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import DecentralizedBanner from 'src/components/common/DecentralizedBanner.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
+import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
 import NotificationStack from './components/common/Notification/NotificationStack.vue';
 import 'animate.css';
 import {
@@ -65,6 +71,7 @@ export default defineComponent({
     ModalLoading,
     AlertBox,
     CookiePolicy,
+    ModalDisclaimer,
     NotificationStack,
     DecentralizedBanner,
   },
@@ -75,6 +82,10 @@ export default defineComponent({
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
+    const showDisclaimerModal = ref<boolean>(true);
+    const setShowDisclaimerModal = (isOpen: boolean): void => {
+      showDisclaimerModal.value = isOpen;
+    };
 
     // Handle busy and extrisnsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
@@ -121,6 +132,8 @@ export default defineComponent({
     return {
       isLoading,
       showAlert,
+      showDisclaimerModal,
+      setShowDisclaimerModal,
     };
   },
 });

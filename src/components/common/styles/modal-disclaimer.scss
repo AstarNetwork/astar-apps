@@ -3,29 +3,39 @@
 .wrapper--modal-disclaimer {
   display: flex;
   flex-direction: column;
-  padding: 0 14px;
   padding-bottom: 36px;
   width: 100%;
+  height: 100%;
+  overflow-y: auto;
   @media (min-width: $lg) {
     padding: 0;
-    padding-bottom: 0px;
-    max-width: 480px;
   }
 }
 
 .row--description {
-  margin-bottom: 34px;
+  margin-bottom: 32px;
   padding: 0 16px;
   @media (min-width: $sm) {
     padding: 0;
   }
+  .text--md {
+    line-height: 17px;
+  }
+  .text--title {
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+  .text--lg {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
 }
 
 .container--buttons {
-  padding: 20px 16px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 16px;
+  row-gap: 32px;
   border: 1px solid $navy-1;
   border-radius: 6px;
 }
@@ -33,11 +43,23 @@
 .row--button {
   display: flex;
   justify-content: space-between;
+  .btn--action {
+    width: 100%;
+    height: 52px;
+  }
 }
 .text--button {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
   color: $gray-1;
+}
+.btn--decline {
+  font-weight: 600;
+  font-size: 16px;
+  color: $astar-blue;
+  border: 1px solid $astar-blue;
+  border-radius: 50px;
+  background: transparent;
 }
 
 .body--dark {
