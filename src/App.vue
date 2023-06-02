@@ -62,6 +62,7 @@ import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAppRouter } from 'src/hooks';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   name: 'App',
@@ -81,7 +82,13 @@ export default defineComponent({
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
-    const showDisclaimerModal = ref<boolean>(true);
+    const showDisclaimerModal = ref<boolean>(false);
+    if (!localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
+      setTimeout(() => {
+        showDisclaimerModal.value = true;
+      }, 2000);
+    }
+
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
     };

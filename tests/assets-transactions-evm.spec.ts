@@ -1,4 +1,4 @@
-import { clickPolicyButton } from 'src/modules/playwright';
+import { clickDisclaimerButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
 import { test } from './fixtures';
 import {
@@ -33,7 +33,7 @@ test.afterAll(async () => {
 
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
-  await clickPolicyButton(page);
+  await clickDisclaimerButton(page);
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 
