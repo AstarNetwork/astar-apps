@@ -26,7 +26,7 @@
 
 .wrapper--banners {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   margin-top: 20px;
   padding-left: 16px;
   width: 100%;
@@ -39,18 +39,19 @@
   }
   @media (min-width: $md) {
     padding: 0;
+    gap: 16px;
   }
   @media (min-width: $xl) {
     margin-top: 0px;
   }
   .card {
-    flex-basis: 33%;
+    flex-basis: 47%;
     height: 100%;
     cursor: pointer;
     background: rgba(196, 196, 196, 0.1);
     backdrop-filter: blur(50px);
     border-radius: 6px;
-    min-width: 191px;
+    min-width: 141px;
     .wrapper--img {
       display: flex;
       justify-content: flex-end;
@@ -92,6 +93,11 @@
       font-size: 14px;
       line-height: 18px;
       color: $gray-2;
+    }
+
+    @media (min-width: $md) {
+      min-width: 191px;
+      flex-basis: 48%;
     }
   }
 
