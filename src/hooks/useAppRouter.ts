@@ -69,8 +69,8 @@ export function useAppRouter() {
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
     if (isReload) {
-      // Memo: `defaultCurrency` and `selectedEndpoint` are updated when the app connects to the API
-      const isFirstTimeVisitor = localStorage.length === 2;
+      // Memo: `defaultCurrency`, `isAppliedRandomEndpoint` and `selectedEndpoint` are updated when the app connects to the API
+      const isFirstTimeVisitor = localStorage.length === 3;
       localStorage.setItem(
         SELECTED_ENDPOINT,
         JSON.stringify({ [endpointIdx]: getRandomizedEndpoint() })

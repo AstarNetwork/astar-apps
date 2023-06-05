@@ -1,10 +1,10 @@
-import { capitalize, objToArray } from '@astar-network/astar-sdk-core';
+import { capitalize, getRandomFromArray, objToArray } from '@astar-network/astar-sdk-core';
 import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
 import { useMeta } from 'quasar';
 import { boot } from 'quasar/wrappers';
-import { connectApi } from 'src/config/api/polkadot/connectApi';
+import { checkIsLightClient, connectApi } from 'src/config/api/polkadot/connectApi';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -22,23 +22,40 @@ let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } =
-    LOCAL_STORAGE;
+  const {
+    NETWORK_IDX,
+    CUSTOM_ENDPOINT,
+    SELECTED_ENDPOINT,
+    SELECTED_ADDRESS,
+    SELECTED_WALLET,
+    IS_APPLIED_RANDOM_ENDPOINT,
+    DEFAULT_CURRENCY,
+  } = LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  const networkIdx = computed(() => store.getters['general/networkIdx']);
+
+  const getRandomizedEndpoint = (): string => {
+    const endpointsWithoutLightClient = providerEndpoints[networkIdx.value].endpoints.filter(
+      (it) => !checkIsLightClient(it.endpoint)
+    );
+    return getRandomFromArray(endpointsWithoutLightClient).endpoint;
+  };
+  const defaultEndpoint = getRandomizedEndpoint();
+
   if (!selectedEndpointData) {
     if (networkIdxStore !== null) {
-      const networkIdx = Number(networkIdxStore);
+      const networkIdx = Number(networkIdxStore) || 0;
       localStorage.setItem(
         LOCAL_STORAGE.SELECTED_ENDPOINT,
-        JSON.stringify({ [networkIdx]: providerEndpoints[networkIdx].endpoints[0].endpoint })
+        JSON.stringify({ [networkIdx]: defaultEndpoint })
       );
     } else {
       localStorage.setItem(
         LOCAL_STORAGE.SELECTED_ENDPOINT,
-        JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+        JSON.stringify({ '0': defaultEndpoint })
       );
     }
   }
@@ -50,8 +67,7 @@ export default boot(async ({ store }) => {
   if (customEndpoint) {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
   }
-  const networkIdx = computed(() => store.getters['general/networkIdx']);
-  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
     : defaultEndpoint;
@@ -62,6 +78,24 @@ export default boot(async ({ store }) => {
 
   if (networkIdx.value === endpointKey.LOCAL) {
     endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+  }
+
+  // Memo: Temporary solution to reset selected endpoints for users who connected to Astar WSS before implementing the random selection method.
+  // Todo: Remove this code in middle of July'23
+  const isAppliedRandomEndpoint = localStorage.getItem(IS_APPLIED_RANDOM_ENDPOINT) === 'true';
+  if (!isAppliedRandomEndpoint) {
+    const astarWss = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
+    const isResetEndpoint =
+      selectedEndpoint.hasOwnProperty(endpointKey.ASTAR) &&
+      selectedEndpoint[endpointKey.ASTAR] === astarWss;
+    if (isResetEndpoint) {
+      localStorage.removeItem(SELECTED_ENDPOINT);
+      localStorage.removeItem(NETWORK_IDX);
+      localStorage.removeItem(DEFAULT_CURRENCY);
+      localStorage.setItem(IS_APPLIED_RANDOM_ENDPOINT, 'true');
+      window.location.reload();
+    }
+    localStorage.setItem(IS_APPLIED_RANDOM_ENDPOINT, 'true');
   }
 
   // set metadata header
