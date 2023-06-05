@@ -15,7 +15,7 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
@@ -27,19 +27,20 @@ export function useClaimAll() {
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(true);
-  const isLoading = ref<boolean>(true);
+  const isLoading = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
+  const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderAddress);
-  const { isLedgerAccount, isLedgerNanoS } = useLedger();
+  const { isLedgerNanoS } = useLedger();
 
   const maxBatchWeight = computed<BN>(() => {
-    if (isLedgerAccount.value) {
+    if (isLedger.value) {
       return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;
     } else {
       return MAX_BATCH_WEIGHT;
@@ -96,7 +97,7 @@ export function useClaimAll() {
     }
   };
 
-  watch([isSendingTx, senderAddress], updateClaimEras);
+  watch([isSendingTx, senderAddress, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;

@@ -3,8 +3,8 @@
   "id": "shiden",
   "chainType": "Live",
   "bootNodes": [
-    "/dns/shiden-01.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWDYfspdMj1tQJZuiecmKKaQjGuSX2cy5rExtqcMqmiNrR",
-    "/dns/shiden-02.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWAgdZ27WhBzLRinaE7iTR1pXxKTsSJniXYu1xAEJD7LzS"
+    "/dns/wss-bootnode-01.shiden.astar.network/tcp/443/wss/p2p/12D3KooWDYfspdMj1tQJZuiecmKKaQjGuSX2cy5rExtqcMqmiNrR",
+    "/dns/wss-bootnode-02.shiden.astar.network/tcp/443/wss/p2p/12D3KooWAgdZ27WhBzLRinaE7iTR1pXxKTsSJniXYu1xAEJD7LzS"
   ],
   "protocolId": "shiden",
   "properties": {

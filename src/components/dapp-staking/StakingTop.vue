@@ -5,9 +5,13 @@
       <register />
       <dynamic-ads-area />
 
-      <div class="divider" />
+      <div class="container--divider">
+        <div class="divider" />
+      </div>
       <my-staking />
-      <div class="divider" />
+      <div class="container--divider">
+        <div class="divider" />
+      </div>
       <on-chain-data />
       <dapp-list category="DeFi" />
 
@@ -133,6 +137,13 @@ export default defineComponent({
   border-image-slice: 1;
   margin-top: 80px;
   margin-bottom: 24px;
+}
+
+.container--divider {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
 }
 
 .body--dark {

@@ -24,6 +24,7 @@ export interface GeneralGetters {
   networkIdx(state: State): number;
   isEthWallet(state: State): boolean;
   isH160Formatted(state: State): boolean;
+  isLedger(state: State): boolean;
   currentEcdsaAccount(state: State): EcdsaAccount;
   selectedAddress(state: State): string;
   customEndpoint(state: State): string;
@@ -47,6 +48,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   networkIdx: (state) => state.currentNetworkIdx,
   isEthWallet: (state) => state.isEthWallet,
   isH160Formatted: (state) => state.isH160Formatted,
+  isLedger: (state) => state.isLedger,
   currentEcdsaAccount: (state) => state.currentEcdsaAccount,
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,

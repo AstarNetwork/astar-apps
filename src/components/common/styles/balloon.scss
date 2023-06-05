@@ -11,6 +11,7 @@
   border-radius: 6px;
   background: $astar-blue;
   width: 100%;
+  z-index: 1;
 }
 
 .balloon-right:before {
@@ -33,6 +34,7 @@
   border-radius: 6px;
   background: $astar-blue;
   width: calc(100vw - 30px);
+  z-index: 1;
 }
 
 .balloon-top:before {

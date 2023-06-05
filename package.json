@@ -1,6 +1,6 @@
 {
   "name": "@astar-network/astar-portal",
-  "version": "0.0.29",
+  "version": "0.0.34",
   "description": "Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
@@ -22,7 +22,8 @@
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
     "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug",
-    "playwright:ci": "./zombienet-linux-x64 test -p native ./tests/zombienet/e2e.zndsl",
+    "playwright:ci": "node ./tests/zombienet/start-chopsticks.js",
+    "playwright:cizn": "./zombienet-linux-x64 test -p native ./tests/zombienet/e2e.zndsl",
     "playwright:cimacos": "./zombienet-macos test -p native ./tests/zombienet/e2e.zndsl"
   },
   "dependencies": {

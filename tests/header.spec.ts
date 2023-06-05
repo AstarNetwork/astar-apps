@@ -13,4 +13,11 @@ test.describe('init screen', () => {
     const connectionTroubleModal = page.locator('.wrapper--modal-connection-trouble');
     await expect(connectionTroubleModal).toBeVisible();
   });
+  test('has wallet installation UI', async ({ page }) => {
+    await clickPolicyButton(page);
+    const clover = page.locator('text=Clover');
+    await clover.click();
+    const boxNoExtension = page.locator('.box--no-extension');
+    await expect(boxNoExtension).toBeVisible();
+  });
 });

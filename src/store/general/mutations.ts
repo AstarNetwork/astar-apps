@@ -75,6 +75,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setIsH160Formatted(state, isH160Formatted) {
     state.isH160Formatted = isH160Formatted;
   },
+  setIsLedger(state, isLedger) {
+    state.isLedger = isLedger;
+  },
   setCurrentEcdsaAccount(state, ecdsa) {
     state.currentEcdsaAccount = ecdsa;
   },

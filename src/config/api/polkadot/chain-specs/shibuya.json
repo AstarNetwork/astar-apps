@@ -3,8 +3,8 @@
   "id": "shibuya",
   "chainType": "Live",
   "bootNodes": [
-    "/dns/shibuya-02.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWBVXQ1WgLjHhWMn8mVEdpwF6uepMT1sYkDvAhYAomZvvx",
-    "/dns/shibuya-03.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWBwxyvhLfMLLBaC4umejNUZu2C1RiyCRAJSTxnNDzywQ4"
+    "/dns/wss-bootnode-02.shibuya.astar.network/tcp/443/wss/p2p/12D3KooWBVXQ1WgLjHhWMn8mVEdpwF6uepMT1sYkDvAhYAomZvvx",
+    "/dns/wss-bootnode-03.shibuya.astar.network/tcp/443/wss/p2p/12D3KooWBwxyvhLfMLLBaC4umejNUZu2C1RiyCRAJSTxnNDzywQ4"
   ],
   "protocolId": "shibuya",
   "properties": {

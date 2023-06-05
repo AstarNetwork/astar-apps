@@ -38,6 +38,7 @@ export default {
   amountToken: '{amount} {token}',
   select: 'Select',
   help: 'Help',
+  share: 'Share',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -57,6 +58,7 @@ export default {
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
+    ledgerNotOpened: 'Ledger has not opened Astar App',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -102,6 +104,11 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
+    decentralizedBanner: {
+      bannerText:
+        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
+      goToClassicPortal: 'our Classic Portal',
+    },
   },
   sidenavi: {
     community: 'Community',
@@ -138,19 +145,14 @@ export default {
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
     showBalance: 'Show {token} balance',
+    isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} yet?',
+    getWallet: 'Haven’t got {value} yet?',
     installWallet:
-      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
-    installExtension: 'Install {value} extension',
-    howToConnect: 'Learn how to Connect',
-  },
-  updateWallet: {
-    getUpdatedWallet: 'Haven’t updated {value} yet?',
-    updateWallet:
-      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
-    updateExtension: 'Update {value} extension',
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page.",
+    install: 'Install',
+    learn: 'Learn',
   },
   topMetric: {
     build2earn: 'Build2Earn',
@@ -521,5 +523,11 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+  },
+  links: {
+    goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
+    astarHome: 'Astar Home',
+    astarDocs: 'Astar Docs',
   },
 };

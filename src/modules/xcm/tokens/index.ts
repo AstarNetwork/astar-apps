@@ -134,6 +134,16 @@ export const xcmToken = {
       originChain: Chain.EQUILIBRIUM,
       minBridgeAmount: '0.2',
     },
+    {
+      symbol: 'UNQ',
+      isNativeToken: true,
+      assetId: '18446744073709551631',
+      originAssetId: 'UNQ',
+      logo: require('/src/assets/img/token/unq.svg'),
+      isXcmCompatible: true,
+      originChain: Chain.UNIQUE,
+      minBridgeAmount: '0.1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -261,6 +271,7 @@ export const xcmToken = {
   [endpointKey.SHIBUYA]: [],
   [endpointKey.LOCAL]: [],
   [endpointKey.CUSTOM]: [],
+  [endpointKey.ROCSTAR]: [],
 };
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY

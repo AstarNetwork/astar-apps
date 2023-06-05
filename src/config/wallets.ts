@@ -9,6 +9,7 @@ export enum SupportWallet {
   PolkadotJs = 'polkadot-js',
   MetaMask = 'metamask',
   Clover = 'clover',
+  Gridlock = 'gridlock',
   Math = 'mathwallet',
   Nova = 'nova',
   NovaEvm = 'novaEvm',
@@ -18,6 +19,8 @@ export enum SupportWallet {
   SubWalletEvm = 'SubWallet',
   Metadot = 'metadot',
   Wallet3 = 'wallet3',
+  HanaNative = 'hana',
+  HanaEvm = 'hanaEvm',
 }
 
 export const WalletModalOption = {
@@ -27,6 +30,7 @@ export const WalletModalOption = {
   OutdatedWallet: 'OutdatedWallet',
   PolkadotJs: SupportWallet.PolkadotJs,
   Clover: SupportWallet.Clover,
+  Gridlock: SupportWallet.Gridlock,
   MetaMask: SupportWallet.MetaMask,
   Math: SupportWallet.Math,
   Nova: SupportWallet.Nova,
@@ -36,17 +40,21 @@ export const WalletModalOption = {
   SubWalletEvm: SupportWallet.SubWalletEvm,
   Metadot: SupportWallet.Metadot,
   Wallet3: SupportWallet.Wallet3,
+  HanaNative: SupportWallet.HanaNative,
+  HanaEvm: SupportWallet.HanaEvm,
 };
 
 export const SubstrateWallets = [
   SupportWallet.PolkadotJs,
   SupportWallet.Clover,
+  SupportWallet.Gridlock,
   SupportWallet.Math,
   SupportWallet.Nova,
   SupportWallet.TalismanNative,
   SupportWallet.SubWalletNative,
   SupportWallet.Metadot,
   SupportWallet.Wallet3,
+  SupportWallet.HanaNative,
 ];
 
 export interface Wallet {
@@ -67,7 +75,7 @@ export const supportWalletObj = {
     name: 'Polkadot.js',
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
-    guideUrl: 'https://www.youtube.com/watch?v=r-fAy7Ta_vY',
+    guideUrl: 'https://docs.astar.network/docs/user-guides/create-wallet/#create-account',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
@@ -79,6 +87,15 @@ export const supportWalletObj = {
     guideUrl: 'https://app.talisman.xyz/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
+  },
+  [SupportWallet.Gridlock]: {
+    img: require('/src/assets/img/logo-gridlock.png'),
+    name: 'Gridlock Wallet',
+    source: SupportWallet.Gridlock,
+    walletUrl: 'https://gridlock.network/',
+    guideUrl: 'https://gridlock.network/',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
   },
   [SupportWallet.SubWalletNative]: {
     img: require('/src/assets/img/logo-subwallet.svg'),
@@ -122,6 +139,15 @@ export const supportWalletObj = {
     source: SupportWallet.Metadot,
     walletUrl: 'https://metadot.app/',
     guideUrl: 'https://docs.metadot.app/install-metadot-on-chrome-and-firefox',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.HanaNative]: {
+    img: require('/src/assets/img/logo-hana.png'),
+    name: 'Hana Wallet (Native)',
+    source: SupportWallet.HanaNative,
+    walletUrl: 'https://hanawallet.io/',
+    guideUrl: 'https://hanawallet.io/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
@@ -177,6 +203,16 @@ export const supportEvmWalletObj = {
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
     ethExtension: 'ethereum',
+  },
+  [SupportWallet.HanaEvm]: {
+    img: require('/src/assets/img/logo-hana.png'),
+    name: 'Hana Wallet (EVM)',
+    source: SupportWallet.HanaEvm,
+    walletUrl: 'https://hanawallet.io/',
+    guideUrl: 'https://hanawallet.io/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+    ethExtension: 'hanaWalletEth',
   },
 };
 
