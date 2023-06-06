@@ -22,10 +22,10 @@ test.describe('on dashboard screen', () => {
     const isSomeOfAstarEndpoints = providerEndpoints[endpointKey.ASTAR].endpoints.some(
       (it) => it.endpoint === selectedEndpoint
     );
-    const isNotLightClient = checkIsLightClient(selectedEndpoint);
+    const isLightClient = checkIsLightClient(selectedEndpoint);
 
     expect(isAppliedRandomEndpoint).toBe('true');
     expect(isSomeOfAstarEndpoints).toBe(true);
-    expect(isNotLightClient).toBe(false);
+    expect(isLightClient).toBe(false);
   });
 });
