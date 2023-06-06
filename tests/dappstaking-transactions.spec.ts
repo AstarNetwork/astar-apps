@@ -19,7 +19,8 @@ import {
   setRewardDestination,
 } from './common-api';
 
-const TEST_DAPP_ADDRESS = '0x0000000000000000000000000000000000000001';
+// Memo: Astar Core Contributors
+const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';
 
 const stake = async (page: Page, context: BrowserContext, amount: bigint): Promise<void> => {
   await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
