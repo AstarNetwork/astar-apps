@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 
@@ -21,7 +22,9 @@ test.describe('on dashboard screen', () => {
     const isSomeOfAstarEndpoints = providerEndpoints[endpointKey.ASTAR].endpoints.some(
       (it) => it.endpoint === selectedEndpoint
     );
+    const isNotLightClient = checkIsLightClient(selectedEndpoint);
     expect(isAppliedRandomEndpoint).toBe('true');
     expect(isSomeOfAstarEndpoints).toBe(true);
+    expect(isNotLightClient).toBe(false);
   });
 });
