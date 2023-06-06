@@ -23,6 +23,7 @@ test.describe('on dashboard screen', () => {
       (it) => it.endpoint === selectedEndpoint
     );
     const isNotLightClient = checkIsLightClient(selectedEndpoint);
+
     expect(isAppliedRandomEndpoint).toBe('true');
     expect(isSomeOfAstarEndpoints).toBe(true);
     expect(isNotLightClient).toBe(false);
