@@ -78,12 +78,12 @@ export default defineComponent({
       closeModal();
     }
 
-    const accept = () => {
+    const accept = (): void => {
       localStorage.setItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY, 'true');
       closeModal();
     };
 
-    const decline = () => {
+    const decline = (): void => {
       window.open('https://astar.network/', '_self');
     };
 
