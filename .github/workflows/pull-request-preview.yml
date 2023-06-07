@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable --immutable-cache --check-cache
       - name: Install Chopsticks
-        run: npx @acala-network/chopsticks@latest xcm -p astar -p shiden
+        run: npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/shiden.yml
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
