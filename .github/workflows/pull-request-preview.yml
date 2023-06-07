@@ -5,18 +5,18 @@ name: Create Firebase Hosting Preview on PR
 on:
   pull_request:
     inputs:
-        astar_tag:
-          description: 'Release tag version for astar collator'
-          required: true
-          default: '4.47.1'
-        polkadot_tag:
-          description: 'Release tag version for polkadot relay chain'
-          required: true
-          default: '0.9.37'
-        zombienet_tag:
-          description: 'Release tag version for zombinet tool'
-          required: true
-          default: '1.3.35'
+      astar_tag:
+        description: 'Release tag version for astar collator'
+        required: true
+        default: '4.47.1'
+      polkadot_tag:
+        description: 'Release tag version for polkadot relay chain'
+        required: true
+        default: '0.9.37'
+      zombienet_tag:
+        description: 'Release tag version for zombinet tool'
+        required: true
+        default: '1.3.35'
 jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
@@ -65,7 +65,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         # run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' HEADLESS='true' ENDPOINT='ws://127.0.0.1:50001' npx playwright test --project=chromium
-        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' yarn playwright:ci
+        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' ENDPOINT='ws://127.0.0.1:8000' yarn playwright:ci
         # working-directory: ./tests
       - uses: actions/upload-artifact@v3
         if: always()
