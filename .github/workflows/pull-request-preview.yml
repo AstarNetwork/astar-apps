@@ -65,7 +65,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         # run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' HEADLESS='true' ENDPOINT='ws://127.0.0.1:50001' npx playwright test --project=chromium
-        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' ENDPOINT='ws://127.0.0.1:8000' yarn playwright:ci
+        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' yarn playwright:ci
         # working-directory: ./tests
       - uses: actions/upload-artifact@v3
         if: always()
