@@ -2,6 +2,7 @@ import {
   ChainProvider,
   endpointKey,
   getNetworkName,
+  getProviderIndex,
   providerEndpoints,
 } from 'src/config/chainEndpoints';
 import { Path } from 'src/router/routes';
@@ -10,6 +11,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
+import { ASTAR_CHAIN } from 'src/config/chain';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
@@ -69,17 +71,17 @@ export function useAppRouter() {
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
     if (isReload) {
-      // Memo: `defaultCurrency`, `isAppliedRandomEndpoint` and `selectedEndpoint` are updated when the app connects to the API
-      const isFirstTimeVisitor = localStorage.length === 3;
       localStorage.setItem(
         SELECTED_ENDPOINT,
         JSON.stringify({ [endpointIdx]: getRandomizedEndpoint() })
       );
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {
+        const networkIdx = networkIdxStore ? Number(networkIdxStore) : endpointKey.ASTAR;
+        const isNetworkIdxMatch = networkIdx === getProviderIndex(networkParam as ASTAR_CHAIN);
         // Memo: Avoid loading the portal twice on the first visit
         // Reload when users input the networks on the address bar manually
-        !isFirstTimeVisitor && window.location.reload();
+        !isNetworkIdxMatch && window.location.reload();
       } else {
         const redirectNetwork =
           network.value.toLowerCase() === 'shibuya' ? endpointKey.SHIBUYA : endpointKey.ASTAR;
