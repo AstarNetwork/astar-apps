@@ -6,8 +6,7 @@ const setupPreconditions = require('./setup-preconditions-api');
 const nodeName = 'astar';
 const networkInfo = {
   nodesByName: {
-    astar: { wsUri: 'ws://127.0.0.1:8000/' },
-    // astar: { wsUri: 'ws://localhost:8000/' },
+    astar: { wsUri: 'ws://localhost:8000/' },
   },
 };
 
