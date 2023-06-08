@@ -189,7 +189,8 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Estimated Rewards',
+    availableToClaim: 'Available to claim',
+    estimatedRewards: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',
