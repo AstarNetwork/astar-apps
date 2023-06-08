@@ -40,6 +40,8 @@ async function executeRun() {
 
     process.kill(-childProcess.pid);
     console.info('Chopsticks stopped');
+
+    process.exit(0);
   } catch (error) {
     console.error('Error executing Playwright tests:', error);
   }
