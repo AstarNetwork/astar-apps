@@ -50,6 +50,12 @@ test.beforeEach(async ({ page, context }) => {
   await selectAccount(page, ALICE_ACCOUNT_NAME);
 });
 
+// test.describe('transfer on evm', () => {
+//   test('should transfer tokens from Alice to Bob on EVM account', async ({ page, context }) => {
+
+//   });
+// });
+
 test.describe('account panel', () => {
   // Test case: AS002
   test('should transfer tokens from Alice to Bob on EVM account', async ({ page, context }) => {
@@ -76,7 +82,7 @@ test.describe('account panel', () => {
     await page.locator('.btn--connect').click();
     await page.getByText('MetaMask').click();
     await connectWithEVM(page, context);
-    // await changeNetworkOnEVM(page, context);
+    await changeNetworkOnEVM(page, context);
     await page.waitForSelector('.modal-close', { state: 'hidden' });
     await expect(page.getByText('Select a Wallet')).toBeHidden();
 
@@ -97,7 +103,8 @@ test.describe('account panel', () => {
     // transfer alice_evm to native
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
     await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
-    await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled();
+    await page.locator('.box--warning label').check();
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeEnabled();
 
     // MEMO: There's an issue where the balance between from and to of metamask is different, so this should be solved in another PR.
     // await page.getByRole('button', { name: 'Confirm' }).click();

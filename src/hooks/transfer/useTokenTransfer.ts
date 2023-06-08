@@ -30,6 +30,7 @@ import { AbiItem } from 'web3-utils';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
+  const fromAddressBalance = ref<number>(0);
   const toAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
@@ -79,9 +80,9 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
   });
 
-  const fromAddressBalance = computed<number>(() =>
-    selectedToken.value ? selectedToken.value.userBalance : 0
-  );
+  // const fromAddressBalance = computed<number>(() =>
+  //   selectedToken.value ? selectedToken.value.userBalance : 0
+  // );
 
   const isDisabledTransfer = computed<boolean>(() => {
     const isLessAmount =
@@ -235,6 +236,20 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     return 0;
   };
 
+  const setFromAddressBalance = async (): Promise<void> => {
+    if (selectedToken.value) {
+      if (isH160.value) {
+        // const fromAddress = toSS58Address(currentAccount.value);
+        // fromAddressBalance.value = await getNativeTokenBalance(fromAddress);
+        fromAddressBalance.value = Number(selectedToken.value.userBalance);
+      } else {
+        fromAddressBalance.value = Number(selectedToken.value.userBalance);
+      }
+    } else {
+      fromAddressBalance.value = 0;
+    }
+  };
+
   const setToAddressBalance = async (): Promise<void> => {
     if (!isValidDestAddress.value) {
       toAddressBalance.value = 0;
@@ -307,6 +322,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   };
 
   watchEffect(setErrorMsg);
+  watchEffect(setFromAddressBalance);
   watchEffect(setToAddressBalance);
   watchEffect(setEvmGasCost);
   watch([tokenSymbol], resetStates);
