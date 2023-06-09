@@ -88,15 +88,12 @@ export default defineComponent({
     };
 
     const sourceImg = (img: string, index: number) => {
-      // MEMO: will be rollback later
-      // if (index === 0) {
-      //   if (isShiden.value) {
-      //     return require('/src/assets/img/ic_sdn_farm.svg');
-      //   } else {
-      //     return require('/src/assets/img/ic_astar_farm.svg');
-      //   }
       if (index === 0) {
-        return require('/src/assets/img/paras_logo.svg');
+        if (isShiden.value) {
+          return require('/src/assets/img/ic_sdn_farm.svg');
+        } else {
+          return require('/src/assets/img/ic_astar_farm.svg');
+        }
       } else if (index === 1) {
         return require('/src/assets/img/paras_logo.svg');
       } else if (index === 2) {
