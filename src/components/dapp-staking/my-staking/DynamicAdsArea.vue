@@ -21,14 +21,10 @@
         <div class="card-info">
           <div class="txt--category">{{ t.category }}</div>
           <div class="txt--title">
-            {{ t.title }}
-          </div>
-          <!-- MEMO: will be rollback later
-            <div class="txt--title">
             {{
               index === 0 ? $n(truncate(rewardsDeveloper, 0)) + ' ' + nativeTokenSymbol : t.title
             }}
-          </div> -->
+          </div>
           <div class="txt--subtitle">{{ t.subtitle }}</div>
         </div>
       </div>
