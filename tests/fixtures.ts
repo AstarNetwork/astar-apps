@@ -26,16 +26,13 @@ export const test = base.extend<{
     await context.close();
   },
   extensionId: async ({ context }, use) => {
-    /*
     // for manifest v2:
-    let [background] = context.backgroundPages()
-    if (!background)
-      background = await context.waitForEvent('backgroundpage')
-    */
+    let [background] = context.backgroundPages();
+    if (!background) background = await context.waitForEvent('backgroundpage');
 
     // for manifest v3:
-    let [background] = context.serviceWorkers();
-    if (!background) background = await context.waitForEvent('serviceworker');
+    // let [background] = context.serviceWorkers();
+    // if (!background) background = await context.waitForEvent('serviceworker');
 
     const extensionId = background.url().split('/')[2];
     await use(extensionId);
@@ -47,12 +44,13 @@ export const getWindow = async (title: string, context: BrowserContext): Promise
   return new Promise((resolve, reject) => {
     context.on('page', async (target) => {
       const pageTitle = await target.title();
+      // console.log('pageTitle', pageTitle);
       if (pageTitle === title) {
         resolve(target);
       }
     });
     setTimeout(() => {
       reject(`${title} window not found.`);
-    }, 10000);
+    }, 12000);
   });
 };

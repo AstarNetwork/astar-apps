@@ -2,7 +2,7 @@ import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
 import { AccountLedger } from 'src/hooks';
 import { ContractStakeInfo } from 'src/v2/repositories/implementations';
-import { sendTransaction } from './zombienet/tx-utils';
+import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';

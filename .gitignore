@@ -47,3 +47,5 @@ zombienet-macos
 polkadot
 astar-collator
 
+# Chopstick binaries
+db.sqlite

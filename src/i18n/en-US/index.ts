@@ -148,17 +148,11 @@ export default {
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} yet?',
+    getWallet: 'Haven’t got {value} yet?',
     installWallet:
-      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
-    installExtension: 'Install {value} extension',
-    howToConnect: 'Learn how to Connect',
-  },
-  updateWallet: {
-    getUpdatedWallet: 'Haven’t updated {value} yet?',
-    updateWallet:
-      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
-    updateExtension: 'Update {value} extension',
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page.",
+    install: 'Install',
+    learn: 'Learn',
   },
   topMetric: {
     build2earn: 'Build2Earn',
@@ -195,7 +189,8 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Estimated Rewards',
+    availableToClaim: 'Available to claim',
+    estimatedRewards: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',

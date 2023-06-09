@@ -13,6 +13,7 @@ export function useUnbound() {
   const store = useStore();
   const { currentAccount } = useAccount();
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
+  const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
   const { t } = useI18n();
 
   const handleUnbound = async (contractAddress: string, amount: string | null): Promise<void> => {
@@ -28,6 +29,9 @@ export function useUnbound() {
         unbondAmount,
         successMessage
       );
+
+      const ledger = await dappStakingService.getLedger(selectedAccountAddress.value);
+      store.commit('dapps/setUnlockingChunks', ledger.unbondingInfo.unlockingChunks);
     }
   };
 
