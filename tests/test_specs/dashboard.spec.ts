@@ -11,6 +11,14 @@ test.describe('on dashboard screen', () => {
   test('has title', async ({ page }) => {
     await expect(page).toHaveTitle(/Dashboard/);
   });
+  test('DocsBot AI answers inputted questions', async ({ page }) => {
+    const widget = page.locator('.docsbot-chat-container');
+    const botButton = page.locator('.floating-button');
+    await botButton.click();
+    await page.getByPlaceholder('Send a message...').fill('What is the decimals of ASTR token?');
+    await page.locator('.docsbot-chat-btn-send').click();
+    await expect(widget.getByText('18')).toBeVisible();
+  });
   test('Endpoint has been selected randomly', async ({ page }) => {
     const isAppliedRandomEndpoint = await page.evaluate(() => {
       return localStorage.getItem('isAppliedRandomEndpoint');
