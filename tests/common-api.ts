@@ -1,7 +1,7 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
 import { AccountLedger } from 'src/hooks';
-import { ContractStakeInfo } from 'src/v2/repositories/implementations';
+import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
@@ -27,9 +27,9 @@ export const getAddress = (address: string) => {
 
 export const getBalance = async (address: string): Promise<bigint> => {
   const api = await getApi();
-  const balance = await api.query.system.account(address);
+  const balance = (await api.query.system.account(address)) as FrameSystemAccountInfo;
 
-  return balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt();
+  return balance.data.free.toBigInt().sub(balance.data.feeFrozen.toBigInt());
 };
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {
