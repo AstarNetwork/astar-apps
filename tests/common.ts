@@ -63,6 +63,7 @@ export const createMetamaskAccount = async (
     'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#onboarding/welcome'
   );
   const words = seed.split(' ');
+  await page.locator('.dropdown__select').selectOption('en');
   await page.getByText('Import an existing wallet').click();
   await page.getByText('I agree').click();
   await page.getByRole('textbox').first().fill(words[0]);
