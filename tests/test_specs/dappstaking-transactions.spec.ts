@@ -8,8 +8,8 @@ import {
   createAccount,
   selectAccount,
   signTransaction,
-} from './common';
-import { test } from './fixtures';
+} from '../common';
+import { test } from '../fixtures';
 import {
   chainDecimals,
   forceNewEra,
@@ -17,7 +17,7 @@ import {
   getBalance,
   getStakedAmount,
   setRewardDestination,
-} from './common-api';
+} from '../common-api';
 
 // Memo: Astar Core Contributors
 const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';

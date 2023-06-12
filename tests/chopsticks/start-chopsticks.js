@@ -43,6 +43,7 @@ async function executeRun() {
   } catch (error) {
     console.error('Error executing Playwright tests:', error);
   }
+  process.exit(0);
 }
 
 executeRun();

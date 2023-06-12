@@ -32,12 +32,12 @@ async function run(nodeName, networkInfo, args) {
 
   let result = await spawn('npx playwright install --with-deps');
   result = await spawn(
-    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
+    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test tests/test_specs --project=chromium`
   );
 
   // MEMO: for debugging specific test case
   // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions.spec.ts --project=chromium --debug`
   // );
 
   return result?.includes('failed') ? 0 : 1;
