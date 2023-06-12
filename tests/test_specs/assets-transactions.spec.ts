@@ -15,9 +15,9 @@ import {
   createMetamaskAccount,
   selectAccount,
   signTransaction,
-} from './common';
+} from '../common';
 import { ApiPromise } from '@polkadot/api';
-import { chainDecimals, getApi, getBalance } from './common-api';
+import { chainDecimals, getApi, getBalance } from '../common-api';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
