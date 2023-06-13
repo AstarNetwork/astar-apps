@@ -38,7 +38,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const banners = [
-      // require('/src/assets/img/banner/banner01.svg'),
+      require('/src/assets/img/banner/banner01.svg'),
       require('/src/assets/img/banner/banner02.svg'),
       require('/src/assets/img/banner/banner03.svg'),
     ];
