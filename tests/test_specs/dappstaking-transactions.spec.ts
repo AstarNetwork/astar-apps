@@ -170,22 +170,4 @@ test.describe('dApp staking transactions', () => {
     const newPage = await context.waitForEvent('page');
     await expect(newPage).toHaveURL(/twitter/);
   });
-
-  // Test case: DS007
-  test('Twitter share button works', async ({ page, context }) => {
-    await page.goto(`/custom-node/dapp-staking/dapp?dapp=${TEST_DAPP_ADDRESS}`);
-    await selectAccount(page, ALICE_ACCOUNT_NAME);
-    await page.getByRole('link', { name: 'Twitter icon Share' }).click();
-    const newPage = await context.waitForEvent('page');
-    await expect(newPage).toHaveURL(/twitter/);
-  });
-
-  // Test case: DS007
-  test('Twitter share button works', async ({ page, context }) => {
-    await page.goto(`/custom-node/dapp-staking/dapp?dapp=${TEST_DAPP_ADDRESS}`);
-    await selectAccount(page, ALICE_ACCOUNT_NAME);
-    await page.getByRole('link', { name: 'Twitter icon Share' }).click();
-    const newPage = await context.waitForEvent('page');
-    await expect(newPage).toHaveURL(/twitter/);
-  });
 });
