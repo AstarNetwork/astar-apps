@@ -1,4 +1,3 @@
-import { BN } from '@polkadot/util';
 import { container, resetContainer } from 'src/v2/common';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmService } from 'src/v2/services';
@@ -29,7 +28,7 @@ describe('XcmService.ts', () => {
     const token = new Asset(
       '1',
       '2',
-      new AssetMetadata('Test', 'TST', 10, false, new BN(1000000)),
+      new AssetMetadata('Test', 'TST', 10, false, '1000000'),
       '1',
       'Origin',
       '111',

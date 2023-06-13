@@ -13,7 +13,7 @@ export class XcmRepositoryMock implements IXcmRepository {
       new Asset(
         '1',
         '0x111111',
-        new AssetMetadata('Astar', 'ASTR', 6, false, new BN('10000000000000000000')),
+        new AssetMetadata('Astar', 'ASTR', 6, false, '10000000000000000000'),
         '0.1',
         'Shiden',
         '11',
@@ -24,7 +24,7 @@ export class XcmRepositoryMock implements IXcmRepository {
       )
     );
 
-    result[0].balance = new BN('1000');
+    result[0].balance = '1000';
 
     return result;
   }

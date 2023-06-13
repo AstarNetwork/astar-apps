@@ -192,12 +192,12 @@ export class DappStakingRepository implements IDappStakingRepository {
           : '0';
         return new StakerInfo(
           contractAddresses[index],
-          eraStake.total,
+          eraStake.total.toString(),
           eraStake.numberOfStakers.toNumber(),
           accountStakingAmount
         );
       } else {
-        return new StakerInfo('-', new BN(0), 0, '0');
+        return new StakerInfo('-', '0', 0, '0');
       }
     });
   }
