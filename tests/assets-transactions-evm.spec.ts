@@ -75,7 +75,7 @@ test.describe('account panel', () => {
     await page.locator('.btn--account').click();
     await page.locator('.wrapper--modal-drawer .modal-close').first().click();
     await page.getByText('MetaMask').click();
-    await signInMetamask(context);
+    await signInMetamask(page, context);
 
     //transfer test (from evm to native)
     await page.goto('/custom-node/assets/transfer?token=astr&mode=local');
