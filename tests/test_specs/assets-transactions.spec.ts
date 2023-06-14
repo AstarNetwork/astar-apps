@@ -1,6 +1,6 @@
 import { clickPolicyButton } from 'src/modules/playwright';
-import { expect } from '@playwright/test';
-import { test } from './fixtures';
+import { BrowserContext, Page, expect } from '@playwright/test';
+import { test } from '../fixtures';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
@@ -14,9 +14,9 @@ import {
   createAccount,
   selectAccount,
   signTransaction,
-} from './common';
+} from '../common';
 import { ApiPromise } from '@polkadot/api';
-import { chainDecimals, getApi, getBalance } from './common-api';
+import { chainDecimals, getApi, getBalance } from '../common-api';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -27,7 +27,7 @@ test.afterAll(async () => {
   await api.disconnect();
 });
 
-test.beforeEach(async ({ page, context }) => {
+test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext }) => {
   // TODO consider moving this into beforeAll
   await page.goto('/astar/assets');
   await clickPolicyButton(page);
@@ -65,7 +65,11 @@ test.describe('account panel', () => {
   });
 
   // Test case: AS004
-  test('should perform validation when tokens from Alice to Bob', async ({ page }) => {
+  test('should perform validation when tokens from Alice to Bob', async ({
+    page,
+  }: {
+    page: Page;
+  }) => {
     const baseTransferAmount = BigInt(1000);
     await page.locator('.icon--expand').first().click();
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
@@ -94,6 +98,9 @@ test.describe('account panel', () => {
   test('should transfer tokens when tokens from Alice to Alice EVM account', async ({
     page,
     context,
+  }: {
+    page: Page;
+    context: BrowserContext;
   }) => {
     await page.locator('.icon--expand').first().click();
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
@@ -108,7 +115,11 @@ test.describe('account panel', () => {
   });
 
   // Test case: XCM007
-  test('should perform validation when xcm transfer from Alice to Bob', async ({ page }) => {
+  test('should perform validation when xcm transfer from Alice to Bob', async ({
+    page,
+  }: {
+    page: Page;
+  }) => {
     await page.goto('/astar/assets/transfer?token=astr&from=astar&to=acala&mode=xcm');
     await connectToNetwork(page);
     await selectAccount(page, ALICE_ACCOUNT_NAME);
