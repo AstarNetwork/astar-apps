@@ -96,12 +96,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     @inject(Symbols.EventAggregator) private eventAggregator: EventAggregator
   ) {}
 
-  public async getTvl(): Promise<BN> {
+  public async getTvl(): Promise<string> {
     const api = await this.api.getApi();
     const era = await this.getCurrentEra();
     const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
 
-    return result.unwrap().locked.toBn();
+    return result.unwrap().locked.toString();
   }
 
   public async fetchAccountStakingAmount(

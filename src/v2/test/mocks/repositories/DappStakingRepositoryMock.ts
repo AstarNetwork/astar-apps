@@ -35,8 +35,8 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     throw new Error('Method not implemented.');
   }
 
-  getTvl(): Promise<BN> {
-    return Promise.resolve(new BN('100000000000000000000'));
+  getTvl(): Promise<string> {
+    return Promise.resolve('100000000000000000000');
   }
 
   public async getBondAndStakeCall(
