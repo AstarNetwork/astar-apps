@@ -6,7 +6,7 @@ import {
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useBalance } from 'src/hooks';
+import { useCurrentEra, useBalance, usePolkasafe } from 'src/hooks';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
 import { useLedger } from 'src/hooks';
@@ -38,6 +38,8 @@ export function useClaimAll() {
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderAddress);
   const { isLedgerNanoS } = useLedger();
+
+  usePolkasafe();
 
   const maxBatchWeight = computed<BN>(() => {
     if (isLedger.value) {
