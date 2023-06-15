@@ -5,6 +5,6 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { ASTAR_CHAIN } from 'src/config/chain';
 
 export default boot(async () => {
-  const systemChain: string = ((await $api!.rpc.system.chain()) || '<unknown>').toString();
-  buildDependencyContainer(getProviderIndex(systemChain as ASTAR_CHAIN));
+  const systemChain = (await $api!.rpc.system.chain()).toString() as ASTAR_CHAIN;
+  buildDependencyContainer(getProviderIndex(systemChain));
 });
