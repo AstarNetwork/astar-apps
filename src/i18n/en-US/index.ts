@@ -39,6 +39,7 @@ export default {
   select: 'Select',
   help: 'Help',
   share: 'Share',
+  multisig: 'Multisig',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -59,6 +60,7 @@ export default {
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
     ledgerNotOpened: 'Ledger has not opened Astar App',
+    configureMultisigAccount: 'Please configure your multisig account',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -73,6 +75,7 @@ export default {
     note: 'Note',
     error: 'Error',
     copied: 'Copied',
+    copyMultisigCall: 'Multisig Call data: {hash}',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -464,7 +467,11 @@ export default {
         askCommunityDiscord: 'Ask our Discord community',
         askCommunityTip: 'Someone is always there for you.',
       },
-
+      multisigConfigure: {
+        multisigConfigure: 'Multisig Configure',
+        tipsDescription:
+          'Currently, Astar Portal only supports sending multisig transactions for "Claiming dApp staking rewards" and "Re-stake after claiming".',
+      },
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',

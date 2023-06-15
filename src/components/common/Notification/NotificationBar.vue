@@ -202,7 +202,7 @@ export default defineComponent({
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
-  word-break: keep-all;
+  word-wrap: break-word;
 }
 .btn--check {
   width: 90%;

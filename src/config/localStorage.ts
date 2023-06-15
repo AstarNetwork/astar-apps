@@ -18,6 +18,7 @@ export enum LOCAL_STORAGE {
   THEME_COLOR = 'themeColor',
   IS_LEDGER = 'isLedger',
   IS_APPLIED_RANDOM_ENDPOINT = 'isAppliedRandomEndpoint', // Todo: Remove this line in middle of July'23
+  MULTISIG = 'multisig',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser

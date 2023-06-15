@@ -5,13 +5,18 @@
         <div class="icon"><logo /></div>
       </template>
       <trouble-help />
+      <multisig-configure />
       <template v-if="!currentAccount">
-        <connect-button @click="openSelectModal">
+        <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
         </connect-button>
       </template>
       <template v-else>
-        <account-button :account="currentAccount" @click="clickAccountBtn" />
+        <account-button
+          :account="currentAccount"
+          :class="isLoading && 'cursor--disabled'"
+          @click="clickAccountBtn"
+        />
       </template>
       <network-button @show-network="clickNetworkBtn" />
     </header-comp>
@@ -60,6 +65,7 @@ import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
 import TroubleHelp from 'src/components/header/TroubleHelp.vue';
+import MultisigConfigure from 'src/components/header/MultisigConfigure.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -85,6 +91,7 @@ export default defineComponent({
     Logo,
     HeaderComp,
     TroubleHelp,
+    MultisigConfigure,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -121,13 +128,14 @@ export default defineComponent({
       stateModal.modalNetwork = false;
     };
 
-    const clickNetworkBtn = () => {
+    const clickNetworkBtn = (): void => {
       stateModal.modalNetwork = true;
       modalName.value = '';
       modalAccountSelect.value = false;
     };
 
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
@@ -136,7 +144,7 @@ export default defineComponent({
 
     watch(
       path,
-      () => {
+      async () => {
         headerName.value = getHeaderName(path.value);
       },
       {
@@ -157,6 +165,7 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
+      isLoading,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
@@ -187,5 +196,9 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
+}
+
+.cursor--disabled {
+  cursor: not-allowed !important;
 }
 </style>
