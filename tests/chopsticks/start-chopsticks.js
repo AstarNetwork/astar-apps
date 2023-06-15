@@ -28,7 +28,7 @@ const spawnDetached = (cmd) => {
 async function executeRun() {
   try {
     const childProcess = spawnDetached(
-      'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/shiden.yml'
+      'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/shiden.yml -p=acala'
     );
     console.info('Chopsticks started with pid:', childProcess.pid);
 
