@@ -37,79 +37,79 @@ test.beforeEach(async ({ page, context }) => {
   await selectAccount(page, ALICE_ACCOUNT_NAME);
 });
 
-// test.describe('Test case: XCM006', () => {
-//   test('should transfer Alice ASTR tokens from Astar to Acala', async ({ page, context }) => {
-//     const transferAmount = BigInt(1000);
-//     await page.locator('.icon--expand').first().click();
-//     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-//     await page.getByText('Cross-chain Transfer').click();
+test.describe('Test case: XCM006', () => {
+  test('should transfer Alice ASTR tokens from Astar to Acala', async ({ page, context }) => {
+    const transferAmount = BigInt(1000);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    await page.getByText('Cross-chain Transfer').click();
 
-//     await page.getByRole('main').getByRole('button').first().click();
-//     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-//     await page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('main').getByRole('button').first().click();
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
-//     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
-//     await signTransaction(context);
-//     await page.waitForSelector('.four', { state: 'hidden' });
+    const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
 
-//     await expect(page.getByText('Success')).toBeVisible();
-//     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
-//     expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
-//       transferAmount * BigInt(Math.pow(10, chainDecimals))
-//     );
-//   });
-// });
+    await expect(page.getByText('Success')).toBeVisible();
+    const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
+    expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
+      transferAmount * BigInt(Math.pow(10, chainDecimals))
+    );
+  });
+});
 
-// test.describe('Test case: XCM003', () => {
-//   test('should transfer Alice ASTR tokens from Acala to Astar', async ({ page, context }) => {
-//     const transferAmount = BigInt(900);
-//     await page.locator('.icon--expand').first().click();
-//     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-//     await page.getByText('Cross-chain Transfer').click();
+test.describe('Test case: XCM003', () => {
+  test('should transfer Alice ASTR tokens from Acala to Astar', async ({ page, context }) => {
+    const transferAmount = BigInt(900);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    await page.getByText('Cross-chain Transfer').click();
 
-//     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-//     await page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
-//     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
-//     await signTransaction(context);
-//     await page.waitForSelector('.four', { state: 'hidden' });
+    const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
 
-//     await expect(page.getByText('Success')).toBeVisible();
-//     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
-//     expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
-//       transferAmount * BigInt(Math.pow(10, chainDecimals))
-//     );
-//   });
-// });
+    await expect(page.getByText('Success')).toBeVisible();
+    const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
+    expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
+      transferAmount * BigInt(Math.pow(10, chainDecimals))
+    );
+  });
+});
 
-// test.describe('Test case: XCM004', () => {
-//   test('should transfer Alice ACA tokens from Astar to Acala', async ({ page, context }) => {
-//     const transferAmount = BigInt(1000);
-//     await page.locator('.icon--expand').first().click();
-//     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-//     await page.getByText('Cross-chain Transfer').click();
+test.describe('Test case: XCM004', () => {
+  test('should transfer Alice ACA tokens from Astar to Acala', async ({ page, context }) => {
+    const transferAmount = BigInt(1000);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    await page.getByText('Cross-chain Transfer').click();
 
-//     await page.getByRole('main').getByRole('button').first().click();
-//     await page
-//       .locator('div')
-//       .filter({ hasText: /^ASTR$/ })
-//       .nth(1)
-//       .click();
-//     await page.locator('div').filter({ hasText: /^ACA$/ }).nth(2).click();
-//     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-//     await page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('main').getByRole('button').first().click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^ASTR$/ })
+      .nth(1)
+      .click();
+    await page.locator('div').filter({ hasText: /^ACA$/ }).nth(2).click();
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
-//     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
-//     await signTransaction(context);
-//     await page.waitForSelector('.four', { state: 'hidden' });
+    const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
 
-//     await expect(page.getByText('Success')).toBeVisible();
-//     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
-//     expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
-//       transferAmount * BigInt(Math.pow(10, chainDecimals))
-//     );
-//   });
-// });
+    await expect(page.getByText('Success')).toBeVisible();
+    const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
+    expect(aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction).toEqual(
+      transferAmount * BigInt(Math.pow(10, chainDecimals))
+    );
+  });
+});
 
 test.describe('Test case: XCM001', () => {
   test('should transfer Alice ACA tokens from Acala to Astar', async ({ page, context }) => {
