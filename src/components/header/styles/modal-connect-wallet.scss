@@ -86,7 +86,6 @@
 
 .box--no-extension {
   margin-top: 32px;
-  // background: rgba(255, 86, 33, 0.1);
   background: $astar-blue;
   border-radius: 6px;
   padding: 16px;
@@ -139,6 +138,11 @@
   font-weight: 600;
   font-size: 14px;
   color: $gray-1;
+}
+
+.img--polkasafe {
+  width: 24px;
+  height: 24px;
 }
 
 .body--dark {

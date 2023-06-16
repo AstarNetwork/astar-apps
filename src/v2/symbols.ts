@@ -19,6 +19,7 @@ export const Symbols = {
   TypeFactory: Symbol.for('TypeFactory'),
   TypeMappings: Symbol.for('TypeMappings'),
   RegisteredTokens: Symbol.for('RegisteredTokens'),
+  PolkasafeClient: Symbol.for('PolkasafeClient'),
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
   EvmAssetsService: Symbol.for('EvmAssetsService'),

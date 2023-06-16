@@ -101,6 +101,68 @@
           </div>
         </div>
       </div>
+      <div>
+        <div class="title--account-type">
+          <span>
+            {{ $t('wallet.multisigAccount') }}
+          </span>
+        </div>
+        <div class="wrapper--wallets">
+          <!-- :class="currentWallet == wallet.source && 'border--active'" -->
+          <div class="box__row--wallet box--hover--active" @click="setPolkasafeModal()">
+            <div class="box--img">
+              <img :src="require('src/assets/img/logo-polkasafe.svg')" class="img--polkasafe" />
+            </div>
+            <div>
+              <span> PolkaSafe </span>
+            </div>
+          </div>
+        </div>
+        <div v-if="selWallet && isNoExtension" class="box--no-extension">
+          <div class="title--no-extension">
+            <span class="text--install-title">
+              {{ $t('installWallet.getWallet', { value: $t(selWallet.name) }) }}
+            </span>
+          </div>
+          <div class="row--no-extension">
+            <span class="text--install">
+              {{ $t('installWallet.installWallet', { value: $t(selWallet.name) }) }}</span
+            >
+          </div>
+          <div class="row--icon-links">
+            <button>
+              <a
+                :href="selWallet.walletUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="button--link"
+              >
+                <div class="icon--link">
+                  <astar-icon-external-link />
+                </div>
+                <span class="text--install-link">
+                  {{ $t('installWallet.install') }}
+                </span>
+              </a>
+            </button>
+            <button>
+              <a
+                :href="selWallet.guideUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="button--link"
+              >
+                <div class="icon--link">
+                  <astar-icon-external-link />
+                </div>
+                <span class="text--install-link">
+                  {{ $t('installWallet.learn') }}
+                </span>
+              </a>
+            </button>
+          </div>
+        </div>
+      </div>
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
@@ -109,6 +171,7 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
+import { $api } from 'src/boot/api';
 import {
   supportAllWalletsObj,
   supportEvmWallets,
@@ -118,6 +181,7 @@ import {
 } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -136,6 +200,10 @@ export default defineComponent({
       required: true,
     },
     connectEthereumWallet: {
+      type: Function,
+      required: true,
+    },
+    openPolkasafeModal: {
       type: Function,
       required: true,
     },
@@ -199,6 +267,12 @@ export default defineComponent({
       props.setWalletModal(source);
     };
 
+    const setPolkasafeModal = async (): Promise<void> => {
+      useExtensions($api!!, store);
+      await closeModal();
+      props.openPolkasafeModal();
+    };
+
     const setEvmWalletModal = async (source: string): Promise<void> => {
       await closeModal();
       props.connectEthereumWallet(source);
@@ -218,6 +292,7 @@ export default defineComponent({
       setSubstrateWalletModal,
       setEvmWalletModal,
       disconnectAccount,
+      setPolkasafeModal,
     };
   },
 });

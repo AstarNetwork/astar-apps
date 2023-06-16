@@ -142,6 +142,7 @@ export default {
     select: 'Please select a wallet to connect to this portal',
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
+    multisigAccount: 'Multisig Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:

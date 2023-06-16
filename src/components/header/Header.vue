@@ -43,6 +43,7 @@
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
       :selected-wallet="selectedWallet"
+      :open-polkasafe-modal="openPolkasafeModal"
     />
 
     <modal-account
@@ -51,6 +52,14 @@
       :open-select-modal="openSelectModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
+      :disconnect-account="disconnectAccount"
+      :current-account="currentAccount"
+    />
+    <modal-polkasafe
+      v-if="modalPolkasafeSelect"
+      v-model:isOpen="modalPolkasafeSelect"
+      :open-select-modal="openSelectModal"
+      :selected-wallet="selectedWallet"
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     />
@@ -71,6 +80,7 @@ import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
+import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
@@ -92,6 +102,7 @@ export default defineComponent({
     HeaderComp,
     TroubleHelp,
     MultisigConfigure,
+    ModalPolkasafe,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -107,12 +118,14 @@ export default defineComponent({
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
+      modalPolkasafeSelect,
       setCloseModal,
       setWalletModal,
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
       disconnectAccount,
+      openPolkasafeModal,
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
@@ -132,6 +145,7 @@ export default defineComponent({
       stateModal.modalNetwork = true;
       modalName.value = '';
       modalAccountSelect.value = false;
+      modalPolkasafeSelect.value = false;
     };
 
     const store = useStore();
@@ -163,6 +177,7 @@ export default defineComponent({
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
+      modalPolkasafeSelect,
       width,
       screenSize,
       isLoading,
@@ -174,6 +189,7 @@ export default defineComponent({
       changeAccount,
       connectEthereumWallet,
       disconnectAccount,
+      openPolkasafeModal,
     };
   },
 });
