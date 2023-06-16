@@ -95,7 +95,7 @@ test.describe('Test case: XCM004', () => {
       .filter({ hasText: /^ASTR$/ })
       .nth(1)
       .click();
-    await page.locator('div').filter({ hasText: /^ACA$/ }).nth(2).click();
+    await page.locator('div').filter({ hasText: /^ACA$/ }).click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
 
@@ -118,6 +118,12 @@ test.describe('Test case: XCM001', () => {
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
     await page.getByText('Cross-chain Transfer').click();
 
+    await page
+      .locator('div')
+      .filter({ hasText: /^ASTR$/ })
+      .nth(1)
+      .click();
+    await page.locator('div').filter({ hasText: /^ACA$/ }).click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
 
