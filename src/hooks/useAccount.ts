@@ -1,8 +1,9 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportMultisig } from 'src/config/wallets';
 import { useStore } from 'src/store';
-import { computed, ref, watch } from 'vue';
 import { SubstrateAccount } from 'src/store/general/state';
+import { computed, ref, watch } from 'vue';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -16,7 +17,7 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
-  const { SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
     return await new Promise(async (resolve) => {
@@ -33,6 +34,7 @@ export const useAccount = () => {
       });
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
+      localStorage.removeItem(MULTISIG);
       currentAccount.value = '';
       currentAccountName.value = '';
       resolve(true);
@@ -87,6 +89,21 @@ export const useAccount = () => {
       store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
       return;
+    },
+    { immediate: true }
+  );
+
+  watch(
+    [currentAddress],
+    async () => {
+      await wait(DELAY);
+      const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      if (storedWallet === SupportMultisig.Polkasafe) {
+        currentAccount.value = currentAddress.value;
+        const multisig = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '');
+        currentAccountName.value = multisig.multisigAccount.name;
+        localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
+      }
     },
     { immediate: true }
   );

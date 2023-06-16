@@ -12,6 +12,11 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { ASTAR_CHAIN } from 'src/config/chain';
+import { container } from 'src/v2/common';
+import { Polkasafe } from 'polkasafe';
+import { Symbols } from 'src/v2/symbols';
+import { encodeAddress } from '@polkadot/util-crypto';
+import { web3Enable } from '@polkadot/extension-dapp';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
@@ -90,6 +95,23 @@ export function useAppRouter() {
     }
   };
 
+  const initializePolkasafeClient = async (): Promise<void> => {
+    const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
+    if (multisigStored) {
+      const multisig = JSON.parse(multisigStored);
+      const client = new Polkasafe();
+      const substratePrefix = 42;
+      const signatory = encodeAddress(multisig.signatory.address, substratePrefix);
+      const extensions = await web3Enable('AstarNetwork/astar-apps');
+      const signer = extensions.find((it) => {
+        return it.name === multisig.signatory.source;
+      });
+      await client.connect('astar', signatory, signer as any);
+      container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+    }
+  };
+
   watchEffect(handleInputNetworkParam);
   watchEffect(handleInvalidStorage);
+  watchEffect(initializePolkasafeClient);
 }

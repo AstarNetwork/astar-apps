@@ -103,7 +103,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
+  background: $gray-1;
   border-radius: 6px;
   height: rem(56);
   font-weight: 700;
@@ -146,7 +146,7 @@ export default defineComponent({
   cursor: pointer;
   &:hover {
     transition: all 0.3s ease 0s;
-    background-color: $gray-5;
+    background-color: $gray-2;
   }
 }
 
@@ -156,7 +156,8 @@ export default defineComponent({
   left: 50%;
   transform: translate(-50%);
   z-index: 10;
-  background: $container-bg-white;
+  background: $gray-1;
+  /* background: $container-bg-white; */
   box-shadow: 0px 3px 0px rgba(180, 180, 180, 0.5);
   border-radius: 0px 0px 10px 10px;
 }
@@ -180,6 +181,11 @@ export default defineComponent({
   .box__row--wallet {
     background: $gray-6;
     color: $gray-1;
+  }
+  .box__row {
+    &:hover {
+      background-color: $gray-5;
+    }
   }
 }
 </style>

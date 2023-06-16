@@ -17,7 +17,7 @@
             v-for="(wallet, index) in evmWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
-            :class="currentWallet == wallet.source && 'border--active'"
+            :class="currentWallet === wallet.source && 'border--active'"
             :wallet="wallet"
             @click="setEvmWalletModal(wallet.source)"
           >
@@ -43,7 +43,7 @@
             v-for="(wallet, index) in nativeWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
-            :class="currentWallet == wallet.source && 'border--active'"
+            :class="currentWallet === wallet.source && 'border--active'"
             @click="setSubstrateWalletModal(wallet.source)"
           >
             <div class="box--img">
@@ -108,10 +108,13 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <!-- :class="currentWallet == wallet.source && 'border--active'" -->
-          <div class="box__row--wallet box--hover--active" @click="setPolkasafeModal()">
+          <div
+            class="box__row--wallet box--hover--active"
+            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
+            @click="setPolkasafeModal()"
+          >
             <div class="box--img">
-              <img :src="require('src/assets/img/logo-polkasafe.svg')" class="img--polkasafe" />
+              <img :src="imgPolkasafe" class="img--polkasafe" />
             </div>
             <div>
               <span> PolkaSafe </span>
@@ -172,12 +175,14 @@
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { $api } from 'src/boot/api';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   supportAllWalletsObj,
   supportEvmWallets,
   SupportWallet,
   supportWallets,
   Wallet,
+  SupportMultisig,
 } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
@@ -258,11 +263,22 @@ export default defineComponent({
 
     const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
+    const imgPolkasafe = computed(() => {
+      const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
+      const isDark = storedThemeColor
+        ? storedThemeColor === 'DARK'
+        : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return require(isDark
+        ? 'src/assets/img/logo-polkasafe.svg'
+        : 'src/assets/img/logo-polkasafe-black.svg');
+    });
+
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
     };
 
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      useExtensions($api!!, store);
       await closeModal();
       props.setWalletModal(source);
     };
@@ -287,6 +303,8 @@ export default defineComponent({
       currentWallet,
       currentAccountName,
       selWallet,
+      imgPolkasafe,
+      SupportMultisig,
       castWalletName,
       closeModal,
       setSubstrateWalletModal,

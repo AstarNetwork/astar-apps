@@ -29,9 +29,21 @@
             </div>
           </div>
         </div>
-        <!-- <fieldset>
+        <div v-if="isLoadingPolkasafe && selectedSignatory" class="row--zero-accounts">
+          <span>Initializing PolkaSafe SDK for sending signature request...</span>
+        </div>
+        <div
+          v-if="!isLoadingPolkasafe && selectedSignatory && multisigAccounts.length === 0"
+          class="row--zero-accounts"
+        >
+          <span>There are no multisig accounts found.</span>
+          <a :href="polkasafeUrl" target="_blank" rel="noopener noreferrer">
+            Go to PolkaSafe to create one.
+          </a>
+        </div>
+        <fieldset>
           <ul role="radiogroup" class="list--account" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(account, index) in substrateAccounts" :key="index">
+            <li v-for="(account, index) in multisigAccounts" :key="index">
               <label
                 :class="[
                   'class-radio',
@@ -59,8 +71,8 @@
                     </div>
                     <div class="row--balance-icons">
                       <div>
-                        <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
-                          {{ $n(displayBalance(account.address)) }}
+                        <span v-if="isShowBalance" class="text--balance">
+                          {{ $n(displayBalance(account.balance)) }}
                           {{ nativeTokenSymbol }}
                         </span>
                         <span v-else class="text--balance-hide">
@@ -94,11 +106,11 @@
               </label>
             </li>
           </ul>
-        </fieldset> -->
+        </fieldset>
       </div>
       <div class="wrapper__row--button">
         <astar-button
-          :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
+          :disabled="multisigAccounts.length === 0 || !selAccount"
           class="btn--connect"
           @click="selectAccount(selAccount)"
         >
@@ -109,29 +121,46 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
-import { ApiPromise } from '@polkadot/api';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
-import { $api } from 'src/boot/api';
-import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallet } from 'src/config/wallets';
 import {
+  fetchNativeBalance,
   getShortenAddress,
+  isValidAddressPolkadotAddress,
   truncate,
   wait,
-  fetchNativeBalance,
 } from '@astar-network/astar-sdk-core';
-import { castMobileSource } from 'src/hooks/helper/wallet';
+import { ApiPromise } from '@polkadot/api';
+import { web3Enable } from '@polkadot/extension-dapp';
+import { encodeAddress } from '@polkadot/util-crypto';
+import copy from 'copy-to-clipboard';
+import { ethers } from 'ethers';
+import { Polkasafe } from 'polkasafe';
+import { $api } from 'src/boot/api';
+import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
+import { astarChain } from 'src/config/chain';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { container } from 'src/v2/common';
+import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
+import { Symbols } from 'src/v2/symbols';
+import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useExtensions } from 'src/hooks/useExtensions';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
-import { astarChain } from 'src/config/chain';
+import { polkasafeUrl } from 'src/links';
+import { SupportMultisig } from 'src/config/wallets';
+
+interface IMultisigAddress {
+  signatories: string[];
+  address: string;
+  updated_at: Date;
+  name: string;
+  created_at: Date;
+  disabled: boolean;
+  threshold: number;
+  network: string;
+  balance: string;
+}
 
 export default defineComponent({
   components: {
@@ -140,10 +169,6 @@ export default defineComponent({
   props: {
     isOpen: {
       type: Boolean,
-      required: true,
-    },
-    selectedWallet: {
-      type: String as PropType<SupportWallet>,
       required: true,
     },
     openSelectModal: {
@@ -164,12 +189,9 @@ export default defineComponent({
     const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
     const isShowBalance = ref<boolean>(false);
-    const isLoadingBalance = ref<boolean>(false);
-    const toggleIsLedger = ref<boolean>(false);
-    const isLedgerReady = ref<boolean>(false);
-    const accountBalanceMap = ref<SubstrateAccount[]>([]);
-
+    const isLoadingPolkasafe = ref<boolean>(false);
     const selectedSignatory = ref<SubstrateAccount>();
+    const multisigAccounts = ref<IMultisigAddress[]>([]);
 
     const setSelectedSignatory = (account: SubstrateAccount): void => {
       selectedSignatory.value = account;
@@ -191,33 +213,10 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
-    const { currentNetworkChain } = useNetworkInfo();
+    const { currentNetworkChain, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
 
-    const substrateAccounts = computed<SubstrateAccount[]>(() => {
-      const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
-      const filteredAccounts = accounts.filter((it) => {
-        const lookupWallet = castMobileSource(props.selectedWallet);
-        return it.source === lookupWallet;
-      });
-
-      return filteredAccounts.sort((a, b) => Number(b.balance) - Number(a.balance));
-    });
-
-    const substrateAccountsAll = computed<SubstrateAccount[]>(
+    const substrateAccounts = computed<SubstrateAccount[]>(
       () => store.getters['general/substrateAccounts']
-    );
-
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
-
-    const nativeTokenSymbol = computed<string>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
-
-    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
-    const isMathWallet = computed<boolean>(
-      () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
     const selectAccount = async (substrateAccount: string): Promise<void> => {
@@ -225,11 +224,13 @@ export default defineComponent({
       isClosing.value = true;
       const animationDuration = 500;
       await wait(animationDuration);
-      if (substrateAccount) {
-        store.commit('general/setCurrentAddress', substrateAccount);
-        const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
-        wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
-      }
+      store.commit('general/setCurrentAddress', substrateAccount);
+      localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, SupportMultisig.Polkasafe);
+      const multisigObj = {
+        multisigAccount: multisigAccounts.value.find((it) => it.address === substrateAccount),
+        signatory: selectedSignatory.value,
+      };
+      localStorage.setItem(LOCAL_STORAGE.MULTISIG, JSON.stringify(multisigObj));
       isSelected.value = true;
       isClosing.value = false;
       emit('update:is-open', false);
@@ -237,7 +238,6 @@ export default defineComponent({
     };
 
     const selAccount = ref<string>('');
-    const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
@@ -270,90 +270,95 @@ export default defineComponent({
     window.addEventListener('resize', onHeightChange);
     onHeightChange();
 
-    const displayBalance = (address: string): number => {
-      if (!accountBalanceMap.value) return 0;
-      const account = accountBalanceMap.value.find((it) => it.address === address);
-      const balance = account ? account.balance : '0';
+    const displayBalance = (balance: string): number => {
       return truncate(ethers.utils.formatEther(balance || '0'));
     };
 
-    const updateAccountMap = async (): Promise<void> => {
-      isLoadingBalance.value = true;
-      const updatedAccountMap = await Promise.all(
-        substrateAccountsAll.value.map(async (it) => {
-          const balance = await fetchNativeBalance({
-            api: $api as ApiPromise,
-            address: it.address,
-          });
-          return { ...it, balance };
-        })
-      );
-      // Memo: we use local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
-      accountBalanceMap.value = updatedAccountMap;
+    const handleGetMultisigAccounts = async (): Promise<void> => {
+      multisigAccounts.value = [];
+      isLoadingPolkasafe.value = true;
+      selAccount.value = '';
+      if (!selectedSignatory.value || currentNetworkChain.value !== astarChain.ASTAR) {
+        return;
+      }
+      try {
+        const extensions = await web3Enable('AstarNetwork/astar-apps');
+        const injector = extensions.find((it) => {
+          return selectedSignatory.value && it.name === selectedSignatory.value.source;
+        }) as any;
+
+        if (!injector) {
+          throw Error('injector not found');
+        }
+        const client = new Polkasafe();
+        const substratePrefix = 42;
+        const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
+        await client.connect('astar', signatory, injector);
+        container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+        const { data, error } = await client.connectAddress(signatory);
+        console.log('data', data);
+        if (!data.hasOwnProperty('multisigAddresses')) {
+          throw Error('error fetching multisig accounts');
+        }
+
+        //@ts-ignore
+        const filteredMultisigAccounts = data.multisigAddresses.filter((it: IMultisigAddress) =>
+          isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
+        );
+        if (filteredMultisigAccounts.length > 0) {
+          const updatedAccountMap = await Promise.all(
+            filteredMultisigAccounts.map(async (it: IMultisigAddress) => {
+              const balance = await fetchNativeBalance({
+                api: $api as ApiPromise,
+                address: it.address,
+              });
+              return { ...it, balance };
+            }) as IMultisigAddress[]
+          );
+          multisigAccounts.value = updatedAccountMap.sort(
+            (a: IMultisigAddress, b: IMultisigAddress) => Number(b.balance) - Number(a.balance)
+          );
+        }
+
+        if (error) {
+          throw Error(error);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        isLoadingPolkasafe.value = false;
+      }
     };
 
     watch(
-      [isLoading, isShowBalance, substrateAccountsAll],
+      [selectedSignatory, substrateAccounts],
       async () => {
-        if (!substrateAccountsAll.value.length || isLoading.value) return;
-        try {
-          await updateAccountMap();
-        } catch (error) {
-          console.error(error);
-        } finally {
-          isLoadingBalance.value = false;
-        }
+        await handleGetMultisigAccounts();
       },
       { immediate: true }
     );
-
-    // Need?
-    const requestExtensionsIfFirstAccess = (): void => {
-      // Memo: displays wallet's authorization popup
-      const { extensions } = useExtensions($api!!, store);
-      const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
-      store.commit('general/setMetaExtensions', metaExtensions.value);
-      store.commit('general/setExtensionCount', extensionCount.value);
-    };
-
-    watch([], requestExtensionsIfFirstAccess, { immediate: true });
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);
     });
 
-    watchEffect(() => {
-      // requestExtensionsIfFirstAccess();
-      console.log('substrateAccountsAll', substrateAccountsAll.value);
-    });
-
     return {
+      multisigAccounts,
       selAccount,
-      closeModal,
-      selectAccount,
       previousSelIdx,
-      currentNetworkStatus,
-      substrateAccounts,
-      SupportWallet,
-      currentNetworkIdx,
-      subScan,
       nativeTokenSymbol,
-      isLoadingBalance,
-      accountBalanceMap,
-      copyAddress,
-      getShortenAddress,
-      endpointKey,
-      isMathWallet,
       windowHeight,
       isSelected,
       isClosing,
-      toggleIsLedger,
       isShowBalance,
-      currentNetworkChain,
-      astarChain,
-      isLedgerReady,
-      isLedger,
       selectedSignatory,
+      subScan,
+      isLoadingPolkasafe,
+      polkasafeUrl,
+      copyAddress,
+      getShortenAddress,
+      closeModal,
+      selectAccount,
       displayBalance,
       backModal,
       setSelectedSignatory,

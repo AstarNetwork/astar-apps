@@ -23,12 +23,16 @@ export enum SupportWallet {
   HanaEvm = 'hanaEvm',
 }
 
+export enum SupportMultisig {
+  Polkasafe = 'polkasafe',
+}
+
 export const WalletModalOption = {
   SelectWallet: 'SelectWallet',
   SelectSubstrateAccount: 'SelectSubstrateAccount',
   NoExtension: 'NoExtension',
   OutdatedWallet: 'OutdatedWallet',
-  Polkasafe: 'Polkasafe',
+  Polkasafe: SupportMultisig.Polkasafe,
   PolkadotJs: SupportWallet.PolkadotJs,
   Clover: SupportWallet.Clover,
   Gridlock: SupportWallet.Gridlock,

@@ -5,7 +5,6 @@
         <div class="icon"><logo /></div>
       </template>
       <trouble-help />
-      <multisig-configure />
       <template v-if="!currentAccount">
         <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
@@ -74,7 +73,7 @@ import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
 import TroubleHelp from 'src/components/header/TroubleHelp.vue';
-import MultisigConfigure from 'src/components/header/MultisigConfigure.vue';
+// import MultisigConfigure from 'src/components/header/MultisigConfigure.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -85,6 +84,7 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 interface Modal {
   modalNetwork: boolean;
@@ -101,7 +101,6 @@ export default defineComponent({
     Logo,
     HeaderComp,
     TroubleHelp,
-    MultisigConfigure,
     ModalPolkasafe,
   },
   setup() {
@@ -129,14 +128,19 @@ export default defineComponent({
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
-      if (modalName.value === WalletModalOption.SelectWallet) {
-        return;
-      }
-
-      if (isH160.value) {
-        modalName.value = WalletModalOption.SelectWallet;
+      const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
+      if (multisigStored) {
+        openPolkasafeModal();
       } else {
-        changeAccount();
+        if (modalName.value === WalletModalOption.SelectWallet) {
+          return;
+        }
+
+        if (isH160.value) {
+          modalName.value = WalletModalOption.SelectWallet;
+        } else {
+          changeAccount();
+        }
       }
       stateModal.modalNetwork = false;
     };

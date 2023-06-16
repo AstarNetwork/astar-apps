@@ -1,5 +1,10 @@
 import { useAccount } from 'src/hooks';
-import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
+import {
+  supportEvmWalletObj,
+  SupportMultisig,
+  SupportWallet,
+  supportWalletObj,
+} from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import { getSelectedAccount } from '../helper/wallet';
@@ -12,6 +17,11 @@ export function useWalletIcon() {
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const { currentAccount } = useAccount();
+  const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+  const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
+  const isDark = storedThemeColor
+    ? storedThemeColor === 'DARK'
+    : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   const setIconWallet = () => {
     try {
@@ -23,6 +33,10 @@ export function useWalletIcon() {
       } else if (account) {
         // @ts-ignore
         iconWallet.value = supportWalletObj[account.source].img;
+      } else if (storedWallet === SupportMultisig.Polkasafe) {
+        iconWallet.value = require(isDark
+          ? 'src/assets/img/logo-polkasafe.svg'
+          : 'src/assets/img/logo-polkasafe-black.svg');
       }
     } catch (error) {
       console.error(error);
