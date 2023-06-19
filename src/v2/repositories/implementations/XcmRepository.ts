@@ -103,7 +103,7 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
-    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE, Chain.BIFROST_KUSAMA];
+    const v3s = [Chain.SHIDEN, Chain.BIFROST_KUSAMA];
     const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
     const isV3 = version === 'V3';
     return { version, isV3 };
@@ -120,9 +120,7 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     // the target parachain connected to the current relaychain
     const destination = {
       [version]: {
@@ -138,14 +136,9 @@ export class XcmRepository implements IXcmRepository {
     const recipientAddressId = this.getAddress(recipientAddress);
 
     const id = decodeAddress(recipientAddressId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -191,7 +184,7 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
+    // Todo: unify to 'V3' after Astar XCM version updates to V3
     const { version, isV3 } = this.getXcmVersion(from);
 
     const destination = {
