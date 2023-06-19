@@ -1,6 +1,6 @@
 {
   "name": "@astar-network/astar-portal",
-  "version": "0.0.29",
+  "version": "0.0.35",
   "description": "Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
@@ -21,10 +21,8 @@
     "heroku-postbuild": "yarn install && yarn build",
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
-    "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug",
-    "playwright:ci": "node ./tests/zombienet/start-chopsticks.js",
-    "playwright:cizn": "./zombienet-linux-x64 test -p native ./tests/zombienet/e2e.zndsl",
-    "playwright:cimacos": "./zombienet-macos test -p native ./tests/zombienet/e2e.zndsl"
+    "playwright": "BASE_URL='http://localhost:8080' ENDPOINT='ws://127.0.0.1:8000' npx playwright test --project=chromium --debug",
+    "playwright:ci": "node ./tests/chopsticks/start-chopsticks.js"
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.3",
@@ -64,6 +62,7 @@
     "highcharts-vue": "^1.4.0",
     "inversify": "^6.0.1",
     "keccak": "^3.0.2",
+    "lodash-es": "^4.17.21",
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
@@ -103,6 +102,7 @@
     "@types/dompurify": "^2.3.3",
     "@types/jest": "^28.1.1",
     "@types/keccak": "^3.0.1",
+    "@types/lodash-es": "^4.17.6",
     "@types/luxon": "^2.0.7",
     "@types/marked": "^4.0.3",
     "@types/node": "^16.11.9",

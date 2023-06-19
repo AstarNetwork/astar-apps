@@ -84,7 +84,9 @@ export const useGasPrice = (isFetch = false) => {
   const isEnableSpeedConfiguration = computed<boolean>(() => {
     const currentWallet = store.getters['general/currentWallet'];
     return (
-      currentWallet !== SupportWallet.TalismanEvm && currentWallet !== SupportWallet.SubWalletEvm
+      currentWallet !== SupportWallet.TalismanEvm &&
+      currentWallet !== SupportWallet.SubWalletEvm &&
+      currentWallet !== SupportWallet.OneKeyEvm
     );
   });
 

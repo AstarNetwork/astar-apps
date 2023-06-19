@@ -54,6 +54,12 @@ export function useClaimAll() {
     return Number(balance);
   });
 
+  const isDappDeveloper = computed<boolean>(() => {
+    return (
+      dapps.value && dapps.value.some((it) => it.contract.developerAddress === senderAddress.value)
+    );
+  });
+
   const updateClaimEras = async (): Promise<void> => {
     try {
       isLoading.value = true;
@@ -65,7 +71,6 @@ export function useClaimAll() {
       if (!senderAddressRef || !era.value || isSendingTx.value) {
         return;
       }
-
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
           if (it.dapp && !isH160.value) {
@@ -169,5 +174,6 @@ export function useClaimAll() {
     canClaimWithoutError,
     isLoading,
     amountOfEras,
+    isDappDeveloper,
   };
 }

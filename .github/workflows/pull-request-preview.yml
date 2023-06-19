@@ -5,18 +5,14 @@ name: Create Firebase Hosting Preview on PR
 on:
   pull_request:
     inputs:
-        astar_tag:
-          description: 'Release tag version for astar collator'
-          required: true
-          default: '4.47.1'
-        polkadot_tag:
-          description: 'Release tag version for polkadot relay chain'
-          required: true
-          default: '0.9.37'
-        zombienet_tag:
-          description: 'Release tag version for zombinet tool'
-          required: true
-          default: '1.3.35'
+      astar_tag:
+        description: 'Release tag version for astar collator'
+        required: true
+        default: '4.47.1'
+      polkadot_tag:
+        description: 'Release tag version for polkadot relay chain'
+        required: true
+        default: '0.9.37'
 jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
@@ -42,20 +38,6 @@ jobs:
     needs: build_and_preview
     steps:
       - uses: actions/checkout@v3
-      - name: Download pre-built linux collator binary
-        run: |
-          wget https://github.com/AstarNetwork/Astar/releases/download/v4.47.1/astar-collator-v4.47.1-ubuntu-x86_64.tar.gz
-          tar -xvf astar-collator-*-ubuntu-x86_64.tar.gz
-          chmod +x ./astar-collator
-      - name: Download Polkadot relay chain binary
-        run: |
-          wget https://github.com/paritytech/polkadot/releases/download/v0.9.37/polkadot
-          chmod +x ./polkadot
-      - name: Download Zombinet testing binary
-        run: |
-          wget https://github.com/paritytech/zombienet/releases/download/v1.3.35/zombienet-linux-x64
-          chmod +x ./zombienet-linux-x64
-
       - uses: actions/setup-node@v3
         with:
           node-version: 18

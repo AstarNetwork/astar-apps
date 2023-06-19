@@ -2,12 +2,16 @@ import {
   ChainProvider,
   endpointKey,
   getNetworkName,
+  getProviderIndex,
   providerEndpoints,
 } from 'src/config/chainEndpoints';
 import { Path } from 'src/router/routes';
 import { computed, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
+import { ASTAR_CHAIN } from 'src/config/chain';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
@@ -55,22 +59,29 @@ export function useAppRouter() {
     const storedNetworkAlias = getNetworkName(Number(networkIdxStore));
     const networkParam = castNetworkName(network.value);
 
+    const getRandomizedEndpoint = (): string => {
+      const endpointsWithoutLightClient = selectedChain.endpoints.filter(
+        (it) => !checkIsLightClient(it.endpoint)
+      );
+      return getRandomFromArray(endpointsWithoutLightClient).endpoint;
+    };
+
     const isReload =
       networkIdxStore === null ||
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
     if (isReload) {
-      // Memo: `defaultCurrency` and `selectedEndpoint` are updated when the app connects to the API
-      const isFirstTimeVisitor = localStorage.length === 2;
       localStorage.setItem(
         SELECTED_ENDPOINT,
-        JSON.stringify({ [endpointIdx]: selectedChain.endpoints[0].endpoint })
+        JSON.stringify({ [endpointIdx]: getRandomizedEndpoint() })
       );
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {
+        const networkIdx = networkIdxStore ? Number(networkIdxStore) : endpointKey.ASTAR;
+        const isNetworkIdxMatch = networkIdx === getProviderIndex(networkParam as ASTAR_CHAIN);
         // Memo: Avoid loading the portal twice on the first visit
         // Reload when users input the networks on the address bar manually
-        !isFirstTimeVisitor && window.location.reload();
+        !isNetworkIdxMatch && window.location.reload();
       } else {
         const redirectNetwork =
           network.value.toLowerCase() === 'shibuya' ? endpointKey.SHIBUYA : endpointKey.ASTAR;
