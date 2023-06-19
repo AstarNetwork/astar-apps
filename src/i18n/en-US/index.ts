@@ -55,8 +55,7 @@ export default {
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
-    insufficientOriginChainNativeBalance:
-      'Transaction might fail due to insufficient native token balance on {chain}',
+    insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
