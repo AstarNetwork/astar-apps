@@ -183,10 +183,12 @@
   column-gap: 12px;
   max-width: 255px;
   height: 48px;
-  background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 0px 12px;
   cursor: pointer;
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 
   @media (min-width: $md) {
     column-gap: 16px;

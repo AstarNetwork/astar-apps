@@ -51,7 +51,7 @@
         >
           <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
             <div class="row--dapp">
-              <div class="column--dapp-name" @click="goStakePageLink(dapp.address)">
+              <div class="column--dapp-name" @click="goDappPageLink(dapp.address)">
                 <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
                 <div class="column--name">
                   <span class="text--name"> {{ dapp.name }} </span>
@@ -157,8 +157,8 @@ export default defineComponent({
     );
     const isShiden = computed<boolean>(() => currentNetworkName.value === 'Shiden');
 
-    const goStakePageLink = (address: string | undefined): void => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
       router.push(url);
     };
@@ -279,7 +279,7 @@ export default defineComponent({
       changePage,
       getDappStyle,
       getBorderStyle,
-      goStakePageLink,
+      goDappPageLink,
     };
   },
 });
