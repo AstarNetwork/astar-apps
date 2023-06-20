@@ -2,6 +2,7 @@ endpoint: wss://rpc.astar.network
 mock-signature-host: true
 block: ${env.ASTAR_BLOCK_NUMBER}
 db: ./db.sqlite
+port: 9944
 # wasm-override: astar-58.wasm
 
 import-storage:

@@ -45,7 +45,7 @@ type XcmChainObj = {
   [key in Chain]: XcmChain;
 };
 
-export const xcmChainObj: XcmChainObj = {
+export let xcmChainObj: XcmChainObj = {
   [Chain.POLKADOT]: {
     name: Chain.POLKADOT,
     relayChain: Chain.POLKADOT,
@@ -236,6 +236,16 @@ export const xcmChainObj: XcmChainObj = {
     isAstarNativeToken: true,
   },
 };
+
+// Add this function to your existing file
+export function changeEndpoint(chain: Chain, newEndpoint: string): void {
+  if (xcmChainObj[chain]) {
+    xcmChainObj[chain].endpoint = newEndpoint;
+    console.log(`The endpoint of ${chain} is changed to ${newEndpoint}`);
+  } else {
+    console.warn(`The provided chain "${chain}" is not found in xcmChainObj.`);
+  }
+}
 
 export const xcmChains = objToArray(xcmChainObj);
 

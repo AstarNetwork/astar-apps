@@ -21,7 +21,7 @@
     "heroku-postbuild": "yarn install && yarn build",
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
-    "playwright": "BASE_URL='http://localhost:8080' ENDPOINT='ws://127.0.0.1:8000' npx playwright test --project=chromium --debug",
+    "playwright": "BASE_URL='http://localhost:8080' ENDPOINT='ws://127.0.0.1:9944' npx playwright test --project=chromium --debug",
     "playwright:ci": "node ./tests/chopsticks/start-chopsticks.js"
   },
   "dependencies": {
