@@ -1,5 +1,5 @@
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { Struct, u32, Vec } from '@polkadot/types';
+import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
+import { Struct, Vec, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
@@ -8,13 +8,10 @@ import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
-import { container } from 'src/v2/common';
-import { Polkasafe } from 'polkasafe';
-import { Symbols } from 'src/v2/symbols';
 
 type EraIndex = u32;
 
@@ -121,36 +118,16 @@ export function useCompoundRewards() {
         });
       };
 
-      const c = container.get<Polkasafe>(Symbols.PolkasafeClient);
-      const multisigAddress = 'Wo1f2iyFQNYPnbFVX7Ux1B9ybNiSM24c2zrjGLtBqxAazFk';
-      const eventGrabber = (message: any) => {
-        // use message to track transaction progress and events using eventGrabber for real-time visibility
-        console.log(message);
-      };
-      const isProxy = false;
-      const { data, error } = await c.transferAsMulti(
-        multisigAddress,
+      await signAndSend({
         transaction,
-        eventGrabber,
-        isProxy
-      );
-
-      if (data) {
-        console.log(data);
-        // use your data
-      } else if (error) {
-        console.log(error);
-      }
-      // await signAndSend({
-      //   transaction,
-      //   senderAddress: currentAddress.value,
-      //   substrateAccounts: substrateAccounts.value,
-      //   isCustomSignature: isCustomSig.value,
-      //   txResHandler,
-      //   handleCustomExtrinsic,
-      //   dispatch: store.dispatch,
-      //   tip: selectedTip.value.price,
-      // });
+        senderAddress: currentAddress.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+        tip: selectedTip.value.price,
+      });
       toggleCounter.value++;
     } catch (e: any) {
       console.error(e);

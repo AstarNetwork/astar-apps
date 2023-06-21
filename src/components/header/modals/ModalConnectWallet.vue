@@ -101,7 +101,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
         <div class="title--account-type">
           <span>
             {{ $t('wallet.multisigAccount') }}
@@ -184,12 +184,14 @@ import {
   Wallet,
   SupportMultisig,
 } from 'src/config/wallets';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { endpointKey } from 'src/config/chainEndpoints';
+
 export default defineComponent({
   props: {
     isModalConnectWallet: {
@@ -226,6 +228,8 @@ export default defineComponent({
     const store = useStore();
     const { currentAccountName, disconnectAccount } = useAccount();
     const isClosing = ref<boolean>(false);
+    const { currentNetworkIdx } = useNetworkInfo();
+
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
       const animationDuration = 500;
@@ -263,6 +267,7 @@ export default defineComponent({
 
     const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
+    // Todo: try to update the styling in CSS
     const imgPolkasafe = computed(() => {
       const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
       const isDark = storedThemeColor
@@ -311,6 +316,8 @@ export default defineComponent({
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
+      currentNetworkIdx,
+      endpointKey,
     };
   },
 });

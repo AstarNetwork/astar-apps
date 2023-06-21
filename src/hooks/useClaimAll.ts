@@ -39,8 +39,6 @@ export function useClaimAll() {
   const { accountData } = useBalance(senderAddress);
   const { isLedgerNanoS } = useLedger();
 
-  usePolkasafe();
-
   const maxBatchWeight = computed<BN>(() => {
     if (isLedger.value) {
       return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;

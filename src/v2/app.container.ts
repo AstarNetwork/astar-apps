@@ -12,6 +12,7 @@ import {
   IEvmAssetsRepository,
   IXvmRepository,
   ITokenTransferRepository,
+  IPolkasafeRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -22,6 +23,7 @@ import {
   XcmRepository,
   EvmAssetsRepository,
   TokenTransferRepository,
+  PolkasafeRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -97,6 +99,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
   container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
+  container.addTransient<IPolkasafeRepository>(PolkasafeRepository, Symbols.PolkasafeRepository);
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<ITokenTransferRepository>(
