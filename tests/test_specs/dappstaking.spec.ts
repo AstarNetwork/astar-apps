@@ -86,4 +86,15 @@ test.describe('on dapp staking screen', () => {
     const stakeButton = page.getByRole('button', { name: 'Stake Now' });
     await expect(stakeButton).toBeVisible();
   });
+
+  test('should clickable item on the on chain data after loading is complete', async ({ page }) => {
+    const closeButton = page.locator('.modal-close');
+    await closeButton.click();
+    await page.waitForSelector('.loader', { state: 'hidden' });
+    const onChainCard = page
+      .locator('.wrapper--onchain-data .column--dapp-name:first-child')
+      .first();
+    await expect(onChainCard).toBeVisible();
+    await onChainCard.click();
+  });
 });
