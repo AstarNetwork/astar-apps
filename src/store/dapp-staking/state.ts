@@ -1,6 +1,5 @@
 import { Community, DappItem } from '@astar-network/astar-sdk-core';
 import { SocialIcon } from '@astar-network/astar-ui';
-import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 
@@ -55,7 +54,7 @@ function state(): DappStateInterface {
     unlockingChunks: 0,
     isPalletDisabled: false,
     claimedRewards: 0,
-    tvl: new TvlModel(new BN(0), 0, 0),
+    tvl: new TvlModel('0', 0, 0),
     currentEra: 0,
   };
 }

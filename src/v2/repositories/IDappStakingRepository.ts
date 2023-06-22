@@ -19,7 +19,7 @@ export interface IDappStakingRepository {
   /**
    * Gets Total Value Locked (TVL) value.
    */
-  getTvl(): Promise<BN>;
+  getTvl(): Promise<string>;
 
   /**
    * Gets bondAndStake call extrisnic.

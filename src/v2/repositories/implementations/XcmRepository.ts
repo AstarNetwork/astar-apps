@@ -1,6 +1,6 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
-import { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
+import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
@@ -18,6 +18,7 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations/SystemRepository';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -60,7 +61,7 @@ export class XcmRepository implements IXcmRepository {
     if (metadata.length > 0) {
       metadata.forEach(([key, value]) => {
         const id = key.args.map((x) => x.toString())[0];
-        const deposit = value.deposit.toBn();
+        const deposit = value.deposit.toString();
         const name = u8aToString(value.name);
         const symbol = u8aToString(value.symbol);
         const decimals = value.decimals.toNumber();
@@ -321,7 +322,7 @@ export class XcmRepository implements IXcmRepository {
     balancesOption.map((x, index) => {
       if (x.isSome) {
         const balance = x.unwrap();
-        assets[index].balance = balance.balance.toBn();
+        assets[index].balance = balance.balance.toString();
       }
     });
 

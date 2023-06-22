@@ -12,7 +12,6 @@ import {
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
-  createMetamaskAccount,
   selectAccount,
   signTransaction,
 } from '../common';
