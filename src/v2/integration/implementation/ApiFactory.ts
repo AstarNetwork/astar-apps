@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { injectable } from 'inversify';
-import { castXcmEndpoint } from 'src/modules/xcm/utils';
+import { castXcmEndpoint } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { IApiFactory, IApi } from 'src/v2/integration';
 import { Api } from 'src/v2/integration/implementation';

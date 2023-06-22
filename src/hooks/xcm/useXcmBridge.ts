@@ -43,8 +43,7 @@ import { IApiFactory } from 'src/v2/integration';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
-import { castChainName } from 'src/modules/xcm';
-import { castXcmEndpoint } from 'src/modules/xcm/utils';
+import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 

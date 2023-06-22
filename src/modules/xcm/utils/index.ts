@@ -241,13 +241,13 @@ export const castXcmEndpoint = (endpoint: string): string => {
     const urlObject = new URL(e);
     return urlObject.port;
   };
+
   const selectedCustomEndpoint = String(localStorage.getItem(LOCAL_STORAGE.CUSTOM_ENDPOINT));
+  const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
 
   const isSelectedChopsticksEndpoint =
-    extractPort(selectedCustomEndpoint) ===
-      extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
-    extractPort(selectedCustomEndpoint) ===
-      extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
+    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
+    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
 
   if (isSelectedChopsticksEndpoint) {
     const chains = Object.values(xcmChainObj);

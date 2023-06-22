@@ -17,6 +17,7 @@ export {
   getXcmToken,
   monitorBalanceIncreasing,
   removeEvmName,
+  castXcmEndpoint,
 } from 'src/modules/xcm/utils';
 
 export interface XcmTokenInformation {
