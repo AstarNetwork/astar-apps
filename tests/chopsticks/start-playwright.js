@@ -37,7 +37,7 @@ async function run(nodeName, networkInfo, args) {
 
   // MEMO: for debugging specific test case
   // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions.spec.ts --project=chromium --debug`
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
   // );
 
   return result?.includes('failed') ? 0 : 1;

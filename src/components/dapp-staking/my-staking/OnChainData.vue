@@ -51,7 +51,7 @@
         >
           <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
             <div class="row--dapp">
-              <div class="column--dapp-name">
+              <div class="column--dapp-name" @click="goDappPageLink(dapp.address)">
                 <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
                 <div class="column--name">
                   <span class="text--name"> {{ dapp.name }} </span>
@@ -96,6 +96,8 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 enum Filter {
   tvl = 'dappStaking.stakingTvl',
@@ -111,6 +113,7 @@ interface Data {
   iconUrl: string;
   name: string;
   balance: string;
+  address: string;
 }
 
 const numItemsTablet = 8;
@@ -141,6 +144,7 @@ export default defineComponent({
     const isDisplay = ref<boolean>(true);
     const goToNext = ref<boolean>(true);
     const sortBy = ref<SortBy>(SortBy.amountHighToLow);
+    const router = useRouter();
 
     const numItems = computed<number>(() =>
       width.value > screenSize.md ? numItemsTablet : numItemsMobile
@@ -152,6 +156,12 @@ export default defineComponent({
       goToNext.value ? 'animate__fadeOutLeft' : 'animate__fadeOutRight'
     );
     const isShiden = computed<boolean>(() => currentNetworkName.value === 'Shiden');
+
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
 
     const getDappStyle = (index: number): string => {
       if (screenSize.md > width.value) {
@@ -205,6 +215,7 @@ export default defineComponent({
             return {
               iconUrl: it.dapp.iconUrl,
               name: it.dapp.name,
+              address: it.dapp.address,
               balance,
             };
           } else {
@@ -268,6 +279,7 @@ export default defineComponent({
       changePage,
       getDappStyle,
       getBorderStyle,
+      goDappPageLink,
     };
   },
 });

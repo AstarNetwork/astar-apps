@@ -86,15 +86,18 @@ export const createMetamaskAccount = async (
   await page.getByRole('button').nth(1).click();
 };
 
-export const signInMetamask = async (context: BrowserContext): Promise<void> => {
-  const extensionWindow = await getWindow('MetaMask', context);
-  await extensionWindow.waitForLoadState('load');
-  await extensionWindow.locator('data-testid=unlock-password').fill('Test1234');
-  await extensionWindow.locator('data-testid=unlock-submit').click();
-  await extensionWindow.locator('data-testid=onboarding-complete-done').click();
-  await extensionWindow.locator('data-testid=pin-extension-next').click();
-  await extensionWindow.locator('data-testid=pin-extension-done').click();
-  await extensionWindow.locator('data-testid=popover-close').click();
+export const signInMetamask = async (page: Page, context: BrowserContext): Promise<void> => {
+  await page.goto(
+    'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#onboarding/unlock'
+  );
+  // const extensionWindow = await getWindow('MetaMask', context);
+  await page.waitForLoadState('load');
+  await page.locator('data-testid=unlock-password').fill('Test1234');
+  await page.locator('data-testid=unlock-submit').click();
+  await page.locator('data-testid=onboarding-complete-done').click();
+  await page.locator('data-testid=pin-extension-next').click();
+  await page.locator('data-testid=pin-extension-done').click();
+  await page.locator('data-testid=popover-close').click();
 };
 
 export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<void> => {

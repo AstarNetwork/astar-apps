@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import {
   wait,
   ASTAR_SS58_FORMAT,
@@ -152,7 +153,7 @@ export const useConnectWallet = () => {
 
     const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
     if (wallet === evmWallet.source) {
-      const provider = window[evmWallet.ethExtension as any];
+      const provider = get(window, evmWallet.ethExtension);
       isEvmWalletAvailable = provider !== undefined;
 
       if (!isEvmWalletAvailable) {
