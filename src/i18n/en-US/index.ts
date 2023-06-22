@@ -50,12 +50,13 @@ export default {
   warning: {
     warning: 'Warning',
     insufficientBalance: 'Insufficient {token} balance',
-    insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
+    insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
+    insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",

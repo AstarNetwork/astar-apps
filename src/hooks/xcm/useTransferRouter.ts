@@ -26,7 +26,7 @@ export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 // e.g.: endpointKey.SHIDEN;
 const disabledXcmChain = undefined;
-const disabledXcmParachains: string[] = [];
+const disabledXcmParachains: string[] = [Chain.INTERLAY, Chain.KINTSUGI];
 
 export interface NetworkFromTo {
   from: string;
