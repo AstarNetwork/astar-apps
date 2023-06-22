@@ -52,6 +52,7 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/polkadot.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
+    chopsticksEndpoint: 'ws://localhost:9950',
     subscan: 'https://polkadot.subscan.io',
     isAstarNativeToken: false,
   },
@@ -61,6 +62,7 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/astar.png'),
     parachainId: parachainIds.ASTAR,
     endpoint: 'wss://rpc.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9944',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
   },
@@ -79,6 +81,7 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/kusama.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://kusama-rpc.polkadot.io',
+    chopsticksEndpoint: 'ws://localhost:9945',
     subscan: 'https://kusama.subscan.io',
     isAstarNativeToken: false,
   },
@@ -124,6 +127,7 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/aca.png'),
     parachainId: parachainIds.ACALA,
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+    chopsticksEndpoint: 'ws://localhost:9946',
     subscan: 'https://acala.subscan.io',
     isAstarNativeToken: true,
   },
@@ -237,15 +241,14 @@ export let xcmChainObj: XcmChainObj = {
   },
 };
 
-// Add this function to your existing file
-export function changeEndpoint(chain: Chain, newEndpoint: string): void {
+export const changeEndpoint = (chain: Chain, newEndpoint: string): void => {
   if (xcmChainObj[chain]) {
     xcmChainObj[chain].endpoint = newEndpoint;
-    console.log(`The endpoint of ${chain} is changed to ${newEndpoint}`);
+    console.info(`The endpoint of ${chain} is changed to ${newEndpoint}`);
   } else {
     console.warn(`The provided chain "${chain}" is not found in xcmChainObj.`);
   }
-}
+};
 
 export const xcmChains = objToArray(xcmChainObj);
 
