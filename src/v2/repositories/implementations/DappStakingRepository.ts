@@ -467,4 +467,11 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return undefined;
   }
+
+  public async getSetRewardDestinationCall(
+    rewardDestination: RewardDestination
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.setRewardDestination(rewardDestination);
+  }
 }
