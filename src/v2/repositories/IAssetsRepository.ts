@@ -18,4 +18,5 @@ export interface IAssetsRepository {
   getEvmWithdrawCall(
     param: ParamEvmWithdraw
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+  getVestCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 }

@@ -2,6 +2,7 @@ export interface IAssetsService {
   transferNativeAsset(param: ParamAssetTransfer): Promise<void>;
   transferEvmAsset(param: ParamEvmTransfer): Promise<void>;
   evmWithdraw(param: ParamEvmWithdraw): Promise<void>;
+  unlockVestingTokens(senderAddress: string): Promise<void>;
 }
 
 export interface ParamAssetTransfer {

@@ -12,7 +12,6 @@ import {
   ParamEvmTransfer,
   ParamEvmWithdraw,
 } from 'src/v2/services/IAssetsService';
-import { buildEvmAddress } from '@astar-network/astar-sdk-core';
 
 @injectable()
 export class AssetsService implements IAssetsService {
@@ -78,6 +77,14 @@ export class AssetsService implements IAssetsService {
 
   public async evmWithdraw({ amount, senderAddress }: ParamEvmWithdraw): Promise<void> {
     const transaction = await this.AssetsRepository.getEvmWithdrawCall({ amount, senderAddress });
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+    });
+  }
+
+  public async unlockVestingTokens(senderAddress: string): Promise<void> {
+    const transaction = await this.AssetsRepository.getVestCall();
     await this.wallet.signAndSend({
       extrinsic: transaction,
       senderAddress,

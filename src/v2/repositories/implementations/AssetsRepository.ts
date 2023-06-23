@@ -76,4 +76,8 @@ export class AssetsRepository implements IAssetsRepository {
     const h160Addr = buildEvmAddress(senderAddress);
     return api.tx.evm.withdraw(h160Addr, amount);
   }
+  public async getVestCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.vesting.vest();
+  }
 }
