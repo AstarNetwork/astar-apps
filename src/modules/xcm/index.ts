@@ -242,15 +242,6 @@ export let xcmChainObj: XcmChainObj = {
   },
 };
 
-export const changeEndpoint = (chain: Chain, newEndpoint: string): void => {
-  if (xcmChainObj[chain]) {
-    xcmChainObj[chain].endpoint = newEndpoint;
-    console.info(`The endpoint of ${chain} is changed to ${newEndpoint}`);
-  } else {
-    console.warn(`The provided chain "${chain}" is not found in xcmChainObj.`);
-  }
-};
-
 export const xcmChains = objToArray(xcmChainObj);
 
 export const kusamaParachains = xcmChains.filter(
