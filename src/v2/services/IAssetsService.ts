@@ -1,4 +1,4 @@
-export interface ITokenTransferService {
+export interface IAssetsService {
   transferNativeAsset(param: AssetTransferParam): Promise<void>;
   transferEvmAsset(param: EvmTransferParam): Promise<void>;
 }

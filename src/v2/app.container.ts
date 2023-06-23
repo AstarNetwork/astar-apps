@@ -11,7 +11,7 @@ import {
   IXcmRepository,
   IEvmAssetsRepository,
   IXvmRepository,
-  ITokenTransferRepository,
+  IAssetsRepository,
   IPolkasafeRepository,
 } from './repositories';
 import {
@@ -22,7 +22,7 @@ import {
   TokenApiRepository,
   XcmRepository,
   EvmAssetsRepository,
-  TokenTransferRepository,
+  AssetsRepository,
   PolkasafeRepository,
 } from './repositories/implementations';
 import {
@@ -33,7 +33,7 @@ import {
   IXcmEvmService,
   IXcmService,
   IEvmAssetsService,
-  ITokenTransferService,
+  IAssetsService,
   WalletType,
   IXvmService,
 } from './services';
@@ -46,7 +46,7 @@ import {
   EvmAssetsService,
   BalanceFormatterService,
   XcmEvmService,
-  TokenTransferService,
+  AssetsService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -102,10 +102,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IPolkasafeRepository>(PolkasafeRepository, Symbols.PolkasafeRepository);
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
-  container.addTransient<ITokenTransferRepository>(
-    TokenTransferRepository,
-    Symbols.TokenTransferRepository
-  );
+  container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
@@ -120,7 +117,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     BalanceFormatterService,
     Symbols.BalanceFormatterService
   );
-  container.addTransient<ITokenTransferService>(TokenTransferService, Symbols.TokenTransferService);
+  container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
