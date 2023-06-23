@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { changeEndpoint, Chain } = require('../../src/modules/xcm/index.ts');
 const startPlaywright = require('./start-playwright');
 const setupPreconditions = require('./setup-preconditions-api');
 
@@ -10,11 +9,6 @@ const networkInfo = {
     astar: { wsUri: 'ws://localhost:9944/' },
   },
 };
-
-changeEndpoint(Chain.ASTAR, 'ws://localhost:9944/');
-changeEndpoint(Chain.SHIDEN, 'ws://localhost:9945/');
-changeEndpoint(Chain.ACALA, 'ws://localhost:9946/');
-changeEndpoint(Chain.POLKADOT, 'ws://localhost:9950/');
 
 const args = process.env.BASE_URL || 'https://portal.astar.network/';
 // for debug
