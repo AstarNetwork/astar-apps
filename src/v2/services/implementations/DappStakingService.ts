@@ -137,7 +137,7 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
 
     return stakerInfos.map((x) => {
-      x.totalStakeFormatted = this.balanceFormatter.format(x.totalStake, metadata.decimals);
+      x.totalStakeFormatted = ethers.utils.formatUnits(x.totalStake, metadata.decimals);
       return x;
     });
   }

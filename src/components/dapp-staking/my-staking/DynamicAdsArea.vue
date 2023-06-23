@@ -84,7 +84,6 @@ export default defineComponent({
     };
 
     const sourceImg = (img: string, index: number) => {
-      // MEMO: will be rollback later
       if (index === 0) {
         if (isShiden.value) {
           return require('/src/assets/img/ic_sdn_farm.svg');

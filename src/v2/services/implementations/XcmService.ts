@@ -1,4 +1,3 @@
-import { AlertMsg } from 'src/modules/toast';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
@@ -134,9 +133,10 @@ export class XcmService implements IXcmService {
 
     const updatedAssets = await Promise.all(
       assets.map(async (asset) => {
-        if (asset.balance.gt(new BN(0))) {
+        const balance = Number(asset.balance);
+        if (balance > 0) {
           asset.userBalance = Number(
-            this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
+            ethers.utils.formatUnits(asset.balance, asset.metadata.decimals)
           );
           // Memo: fetch the USD price on the assets page only
           const price = isFetchUsd

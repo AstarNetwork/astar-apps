@@ -2,7 +2,6 @@ import { Erc20Token } from 'src/modules/token';
 import { Asset, Chain } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { BN } from '@polkadot/util';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
 
@@ -320,7 +319,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   const mappedERC20Addr = astarNativeTokenErcAddr;
   const metadata = {
     decimals: ASTAR_DECIMALS,
-    deposit: new BN(0),
+    deposit: '0',
     isFrozen: false,
     name,
     symbol,
@@ -353,7 +352,7 @@ export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[])
   const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,
-    deposit: new BN(0),
+    deposit: '0',
     isFrozen: false,
     name,
     symbol: t ? t.metadata.symbol : token.symbol,
