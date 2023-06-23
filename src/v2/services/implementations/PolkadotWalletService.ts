@@ -61,7 +61,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
-        const multisig = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '');
+        const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
           const multisigData = await this.polkasafeClient.sendMultisigTransaction({
             multisigAddress: senderAddress,

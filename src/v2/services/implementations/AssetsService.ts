@@ -7,7 +7,12 @@ import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { getBlockscoutTx } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
-import { AssetTransferParam, EvmTransferParam } from 'src/v2/services/IAssetsService';
+import {
+  ParamAssetTransfer,
+  ParamEvmTransfer,
+  ParamEvmWithdraw,
+} from 'src/v2/services/IAssetsService';
+import { buildEvmAddress } from '@astar-network/astar-sdk-core';
 
 @injectable()
 export class AssetsService implements IAssetsService {
@@ -23,7 +28,7 @@ export class AssetsService implements IAssetsService {
     this.wallet = walletFactory();
   }
 
-  public async transferNativeAsset(param: AssetTransferParam): Promise<void> {
+  public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
     const transaction = await this.AssetsRepository.getNativeTransferCall(param);
     const hash = await this.wallet.signAndSend({
       extrinsic: transaction,
@@ -33,7 +38,7 @@ export class AssetsService implements IAssetsService {
     param.finalizedCallback(String(hash));
   }
 
-  public async transferEvmAsset(param: EvmTransferParam): Promise<void> {
+  public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
     const rawTx = await this.AssetsRepository.getEvmTransferData({
@@ -69,5 +74,13 @@ export class AssetsService implements IAssetsService {
           })
         );
       });
+  }
+
+  public async evmWithdraw({ amount, senderAddress }: ParamEvmWithdraw): Promise<void> {
+    const transaction = await this.AssetsRepository.getEvmWithdrawCall({ amount, senderAddress });
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+    });
   }
 }

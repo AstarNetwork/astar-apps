@@ -100,7 +100,7 @@ export const useAccount = () => {
       const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
       if (storedWallet === SupportMultisig.Polkasafe) {
         currentAccount.value = currentAddress.value;
-        const multisig = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '');
+        const multisig = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '{}');
         currentAccountName.value = multisig.multisigAccount.name;
         localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       }

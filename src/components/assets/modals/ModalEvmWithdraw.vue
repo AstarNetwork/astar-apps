@@ -63,7 +63,7 @@ export default defineComponent({
       isClosingModal.value = false;
     };
     const { numEvmDeposit, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
-      useEvmDeposit(closeModal);
+      useEvmDeposit();
     return {
       closeModal,
       numEvmDeposit,

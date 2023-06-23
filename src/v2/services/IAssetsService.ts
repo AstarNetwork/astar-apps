@@ -1,9 +1,10 @@
 export interface IAssetsService {
-  transferNativeAsset(param: AssetTransferParam): Promise<void>;
-  transferEvmAsset(param: EvmTransferParam): Promise<void>;
+  transferNativeAsset(param: ParamAssetTransfer): Promise<void>;
+  transferEvmAsset(param: ParamEvmTransfer): Promise<void>;
+  evmWithdraw(param: ParamEvmWithdraw): Promise<void>;
 }
 
-export interface AssetTransferParam {
+export interface ParamAssetTransfer {
   assetId: string;
   senderAddress: string;
   receivingAddress: string;
@@ -12,7 +13,7 @@ export interface AssetTransferParam {
   finalizedCallback: (hash: string) => void;
 }
 
-export interface EvmTransferParam {
+export interface ParamEvmTransfer {
   senderAddress: string;
   toAddress: string;
   amount: string;
@@ -20,4 +21,9 @@ export interface EvmTransferParam {
   decimals: number;
   successMessage: string;
   finalizedCallback: (hash: string) => void;
+}
+
+export interface ParamEvmWithdraw {
+  amount: string;
+  senderAddress: string;
 }
