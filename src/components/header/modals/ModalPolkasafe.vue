@@ -30,7 +30,7 @@
           </div>
         </div>
         <div v-if="isLoadingPolkasafe && selectedSignatory" class="row--zero-accounts">
-          <span>Initializing PolkaSafe SDK for sending signature request...</span>
+          <span>Initializing PolkaSafe SDK for signature request; this may take a while.</span>
         </div>
         <div
           v-if="!isLoadingPolkasafe && selectedSignatory && multisigAccounts.length === 0"
@@ -139,16 +139,17 @@ import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
 import { astarChain } from 'src/config/chain';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { polkasafeUrl } from 'src/links';
 import { SupportMultisig } from 'src/config/wallets';
+import { useExtensions } from 'src/hooks/useExtensions';
 
 interface IMultisigAddress {
   signatories: string[];
@@ -214,6 +215,10 @@ export default defineComponent({
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
     const { currentNetworkChain, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    const isSelectedPolkasafe = computed<boolean>(() =>
+      localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET)
+    );
 
     const substrateAccounts = computed<SubstrateAccount[]>(
       () => store.getters['general/substrateAccounts']
@@ -290,38 +295,61 @@ export default defineComponent({
         if (!injector) {
           throw Error('injector not found');
         }
-        const client = new Polkasafe();
         const substratePrefix = 42;
         const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
-        await client.connect('astar', signatory, injector);
-        container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
-        const { data, error } = await client.connectAddress(signatory);
-        console.log('data', data);
-        if (!data.hasOwnProperty('multisigAddresses')) {
-          throw Error('error fetching multisig accounts');
-        }
 
-        //@ts-ignore
-        const filteredMultisigAccounts = data.multisigAddresses.filter((it: IMultisigAddress) =>
-          isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
-        );
-        if (filteredMultisigAccounts.length > 0) {
-          const updatedAccountMap = await Promise.all(
-            filteredMultisigAccounts.map(async (it: IMultisigAddress) => {
-              const balance = await fetchNativeBalance({
-                api: $api as ApiPromise,
-                address: it.address,
-              });
-              return { ...it, balance };
-            }) as IMultisigAddress[]
-          );
-          multisigAccounts.value = updatedAccountMap.sort(
-            (a: IMultisigAddress, b: IMultisigAddress) => Number(b.balance) - Number(a.balance)
-          );
-        }
+        const setMultisigAccounts = async (c: PolkaSafe): Promise<void> => {
+          try {
+            const { data, error } = await c.connectAddress(signatory);
+            if (error) throw Error(error);
+            if (!data.hasOwnProperty('multisigAddresses')) {
+              throw Error('error fetching multisig accounts');
+            }
 
-        if (error) {
-          throw Error(error);
+            //@ts-ignore
+            const filteredMultisigAccounts = data.multisigAddresses.filter((it: IMultisigAddress) =>
+              isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
+            );
+            if (filteredMultisigAccounts.length > 0) {
+              const updatedAccountMap = await Promise.all(
+                filteredMultisigAccounts.map(async (it: IMultisigAddress) => {
+                  const balance = await fetchNativeBalance({
+                    api: $api as ApiPromise,
+                    address: it.address,
+                  });
+                  return { ...it, balance };
+                }) as IMultisigAddress[]
+              );
+              multisigAccounts.value = updatedAccountMap.sort(
+                (a: IMultisigAddress, b: IMultisigAddress) => Number(b.balance) - Number(a.balance)
+              );
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        };
+
+        const handleInitializePolkasafe = async (): Promise<void> => {
+          try {
+            const client = new Polkasafe();
+            await client.connect('astar', signatory, injector);
+            container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+            await setMultisigAccounts(client);
+          } catch (error) {
+            console.info(error);
+          }
+        };
+
+        try {
+          const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
+          const isSigned = polkasafeClient && polkasafeClient.address === signatory;
+          if (isSigned) {
+            await setMultisigAccounts(polkasafeClient);
+          } else {
+            await handleInitializePolkasafe();
+          }
+        } catch (error) {
+          await handleInitializePolkasafe();
         }
       } catch (error) {
         console.error(error);
@@ -337,6 +365,22 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    const setDefaultSelectedSignatory = (): void => {
+      const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
+      if (multisigStored) {
+        const multisig = JSON.parse(multisigStored);
+        if (substrateAccounts.value.length === 0) {
+          useExtensions($api!!, store);
+        }
+        const account = substrateAccounts.value.find(
+          (it) => it.address === multisig.signatory.address
+        );
+        setSelectedSignatory(account);
+      }
+    };
+
+    watchEffect(setDefaultSelectedSignatory);
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);

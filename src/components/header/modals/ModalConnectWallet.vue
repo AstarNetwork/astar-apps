@@ -191,6 +191,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { SubstrateAccount } from 'src/store/general/state';
 
 export default defineComponent({
   props: {
@@ -266,6 +267,9 @@ export default defineComponent({
     });
 
     const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+    const substrateAccounts = computed<SubstrateAccount[]>(
+      () => store.getters['general/substrateAccounts']
+    );
 
     // Todo: try to update the styling in CSS
     const imgPolkasafe = computed(() => {
@@ -282,14 +286,20 @@ export default defineComponent({
       return wallet.split('(')[0].trim();
     };
 
+    const handleExtensions = (): void => {
+      if (substrateAccounts.value.length === 0) {
+        useExtensions($api!!, store);
+      }
+    };
+
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
-      useExtensions($api!!, store);
+      handleExtensions();
       await closeModal();
       props.setWalletModal(source);
     };
 
     const setPolkasafeModal = async (): Promise<void> => {
-      useExtensions($api!!, store);
+      handleExtensions();
       await closeModal();
       props.openPolkasafeModal();
     };
