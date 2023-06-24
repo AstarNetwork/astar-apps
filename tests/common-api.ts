@@ -34,7 +34,7 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
     balance = BigInt(balanceObj.unwrap().balance.toBigInt());
   } else {
     const balanceObj = (await api.query.system.account(address)) as FrameSystemAccountInfo;
-    balance = BigInt(balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt());
+    balance = BigInt(balanceObj.data.free.toBigInt() - balanceObj.data.feeFrozen.toBigInt());
   }
 
   return balance;
