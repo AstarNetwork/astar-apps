@@ -54,18 +54,11 @@ export class BifrostXcmRepository extends XcmRepository {
       throw `Token name for ${token.originAssetId} is not defined`;
     }
 
-    const { version, isV3 } = this.getXcmVersion(from);
+    const version = 'V3';
 
-    const AccountId32 = isV3
-      ? {
-          id: decodeAddress(recipientAddress),
-        }
-      : {
-          id: decodeAddress(recipientAddress),
-          network: {
-            Any: null,
-          },
-        };
+    const AccountId32 = {
+      id: decodeAddress(recipientAddress),
+    };
 
     const destination = {
       [version]: {

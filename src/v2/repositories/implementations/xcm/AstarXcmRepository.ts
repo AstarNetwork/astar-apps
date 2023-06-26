@@ -35,8 +35,7 @@ export class AstarXcmRepository extends XcmRepository {
     }
 
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
     const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
 
@@ -52,19 +51,6 @@ export class AstarXcmRepository extends XcmRepository {
     };
 
     const isAccountId20 = ethWalletChains.includes(to.name);
-    const X1_V1 = isAccountId20
-      ? {
-          AccountKey20: {
-            network: 'Any',
-            key: recipientAccountId,
-          },
-        }
-      : {
-          AccountId32: {
-            network: 'Any',
-            id: decodeAddress(recipientAccountId),
-          },
-        };
 
     const X1_V3 = isAccountId20
       ? {
@@ -81,7 +67,7 @@ export class AstarXcmRepository extends XcmRepository {
     const beneficiary = {
       [version]: {
         interior: {
-          X1: isV3 ? X1_V3 : X1_V1,
+          X1: X1_V3,
         },
         parents: new BN(0),
       },
