@@ -114,7 +114,10 @@
             @click="setPolkasafeModal()"
           >
             <div class="box--img">
-              <img :src="imgPolkasafe" class="img--polkasafe" />
+              <img
+                :src="require('src/assets/img/logo-polkasafe-black.svg')"
+                class="img--polkasafe"
+              />
             </div>
             <div>
               <span> PolkaSafe </span>
@@ -271,17 +274,6 @@ export default defineComponent({
       () => store.getters['general/substrateAccounts']
     );
 
-    // Todo: try to update the styling in CSS
-    const imgPolkasafe = computed(() => {
-      const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
-      const isDark = storedThemeColor
-        ? storedThemeColor === 'DARK'
-        : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return require(isDark
-        ? 'src/assets/img/logo-polkasafe.svg'
-        : 'src/assets/img/logo-polkasafe-black.svg');
-    });
-
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
     };
@@ -318,7 +310,6 @@ export default defineComponent({
       currentWallet,
       currentAccountName,
       selWallet,
-      imgPolkasafe,
       SupportMultisig,
       castWalletName,
       closeModal,

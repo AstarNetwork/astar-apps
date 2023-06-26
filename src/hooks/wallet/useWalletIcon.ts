@@ -34,9 +34,10 @@ export function useWalletIcon() {
         // @ts-ignore
         iconWallet.value = supportWalletObj[account.source].img;
       } else if (storedWallet === SupportMultisig.Polkasafe) {
-        iconWallet.value = require(isDark
-          ? 'src/assets/img/logo-polkasafe.svg'
-          : 'src/assets/img/logo-polkasafe-black.svg');
+        iconWallet.value = require('src/assets/img/logo-polkasafe-black.svg');
+        // iconWallet.value = require(isDark
+        //   ? 'src/assets/img/logo-polkasafe.svg'
+        //   : 'src/assets/img/logo-polkasafe-black.svg');
       }
     } catch (error) {
       console.error(error);
