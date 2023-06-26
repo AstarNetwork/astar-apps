@@ -71,6 +71,7 @@ export default {
     copyAddressSuccessfully: 'Copy address success!',
     clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
+    approveOnPolkasafe: 'Approve on Polkasafe',
     success: 'Success',
     note: 'Note',
     error: 'Error',
@@ -149,6 +150,11 @@ export default {
     },
     showBalance: 'Show {token} balance',
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
+    multisig: {
+      initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
+      noAccounts: 'There are no multisig accounts found',
+      goToPokasafe: 'Go to PolkaSafe to create one',
+    },
   },
   installWallet: {
     getWallet: 'Haven’t got {value} yet?',

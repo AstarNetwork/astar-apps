@@ -220,6 +220,16 @@
 
 .row--zero-accounts {
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link--polkasafe{
+  margin-top: 4px;
+  color: $astar-blue;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .body--dark {

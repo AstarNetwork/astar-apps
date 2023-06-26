@@ -25,9 +25,15 @@
       </div>
       <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">{{
-          $t('toast.checkYourTransactions')
-        }}</astar-button>
+        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">
+          {{
+            $t(
+              alertMsg === AlertMsg.SUCCESS_MULTISIG
+                ? 'toast.approveOnPolkasafe'
+                : 'toast.checkYourTransactions'
+            )
+          }}
+        </astar-button>
       </div>
     </div>
   </div>
@@ -37,6 +43,7 @@
 import { AlertType } from 'src/store/general/state';
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
+import { AlertMsg } from 'src/modules/toast';
 
 export default defineComponent({
   name: 'NotificationBar',
@@ -92,6 +99,7 @@ export default defineComponent({
       isSuccessType,
       isCopiedType,
       showCloseBtn,
+      AlertMsg,
       goToSubscan,
       close,
     };

@@ -1,7 +1,7 @@
 <template>
   <astar-modal-drawer
     :show="isOpen && !isSelected"
-    title="Multisig"
+    :title="$t('multisig')"
     :is-closing="isClosing"
     :is-back="true"
     :handle-back="backModal"
@@ -30,15 +30,15 @@
           </div>
         </div>
         <div v-if="isLoadingPolkasafe && selectedSignatory" class="row--zero-accounts">
-          <span>Initializing PolkaSafe SDK for signature request; this may take a while.</span>
+          <span>{{ $t('wallet.multisig.initPolkasafe') }}</span>
         </div>
         <div
           v-if="!isLoadingPolkasafe && selectedSignatory && multisigAccounts.length === 0"
           class="row--zero-accounts"
         >
-          <span>There are no multisig accounts found.</span>
-          <a :href="polkasafeUrl" target="_blank" rel="noopener noreferrer">
-            Go to PolkaSafe to create one.
+          <span> {{ $t('wallet.multisig.noAccounts') }}</span>
+          <a :href="polkasafeUrl" target="_blank" rel="noopener noreferrer" class="link--polkasafe">
+            {{ $t('wallet.multisig.goToPokasafe') }}
           </a>
         </div>
         <fieldset>
@@ -139,7 +139,7 @@ import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
 import { astarChain } from 'src/config/chain';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useBreakpoints, useNetworkInfo, useAccount } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
@@ -215,10 +215,6 @@ export default defineComponent({
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
     const { currentNetworkChain, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
-    const { currentAccount } = useAccount();
-    const isSelectedPolkasafe = computed<boolean>(() =>
-      localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET)
-    );
 
     const substrateAccounts = computed<SubstrateAccount[]>(
       () => store.getters['general/substrateAccounts']
@@ -243,7 +239,7 @@ export default defineComponent({
     };
 
     const selAccount = ref<string>('');
-    const subScan = computed(
+    const subScan = computed<string>(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
 
@@ -267,7 +263,7 @@ export default defineComponent({
     };
 
     const windowHeight = ref<number>(window.innerHeight);
-    const onHeightChange = () => {
+    const onHeightChange = (): void => {
       const adjustment = width.value > screenSize.sm ? 520 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
@@ -298,7 +294,7 @@ export default defineComponent({
         const substratePrefix = 42;
         const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
 
-        const setMultisigAccounts = async (c: PolkaSafe): Promise<void> => {
+        const setMultisigAccounts = async (c: Polkasafe): Promise<void> => {
           try {
             const { data, error } = await c.connectAddress(signatory);
             if (error) throw Error(error);
@@ -349,6 +345,7 @@ export default defineComponent({
             await handleInitializePolkasafe();
           }
         } catch (error) {
+          // Memo: polkasafeClient has not been initialized
           await handleInitializePolkasafe();
         }
       } catch (error) {
@@ -370,13 +367,11 @@ export default defineComponent({
       const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
       if (multisigStored) {
         const multisig = JSON.parse(multisigStored);
-        if (substrateAccounts.value.length === 0) {
-          useExtensions($api!!, store);
-        }
+        substrateAccounts.value.length === 0 && useExtensions($api!!, store);
         const account = substrateAccounts.value.find(
           (it) => it.address === multisig.signatory.address
         );
-        setSelectedSignatory(account);
+        account && setSelectedSignatory(account);
       }
     };
 

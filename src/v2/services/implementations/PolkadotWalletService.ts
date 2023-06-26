@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
-import { getSubscanExtrinsic } from 'src/links';
+import { getSubscanExtrinsic, polkasafeUrl } from 'src/links';
 import { AlertMsg } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -63,11 +63,27 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
-          const multisigData = await this.polkasafeClient.sendMultisigTransaction({
-            multisigAddress: senderAddress,
-            transaction: extrinsic,
-          });
-          resolve(multisigData.callHash);
+          try {
+            this.eventAggregator.publish(new BusyMessage(true));
+            const callHash = await this.polkasafeClient.sendMultisigTransaction({
+              multisigAddress: senderAddress,
+              transaction: extrinsic,
+            });
+            this.eventAggregator.publish(
+              new ExtrinsicStatusMessage({
+                success: true,
+                message: AlertMsg.SUCCESS_MULTISIG,
+                method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                explorerUrl: polkasafeUrl + '/transactions',
+              })
+            );
+            resolve(callHash);
+          } catch (error: any) {
+            this.eventAggregator.publish(
+              new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+            );
+            resolve(error.message);
+          }
         } else {
           const unsub = await extrinsic.signAndSend(
             senderAddress,
