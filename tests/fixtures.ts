@@ -44,7 +44,7 @@ export const getWindow = async (title: string, context: BrowserContext): Promise
   return new Promise((resolve, reject) => {
     context.on('page', async (target) => {
       const pageTitle = await target.title();
-      console.log('pageTitle', pageTitle);
+      // console.log('pageTitle', pageTitle);
       if (pageTitle === title) {
         resolve(target);
       }
