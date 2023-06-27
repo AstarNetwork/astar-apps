@@ -186,9 +186,7 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    // Todo: unify to 'V3' after Astar XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     const destination = {
       [version]: {
         interior: 'Here',
@@ -197,14 +195,9 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const id = decodeAddress(recipientAccountId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -300,12 +293,8 @@ export class XcmRepository implements IXcmRepository {
   }> {
     const api = await this.apiFactory.get(source.endpoint);
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
-
-    // return config.unwrap().v1;
-    const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
-
-    return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
+    return formattedAssetConfig.v3;
   }
 
   protected isAstarNativeToken(token: Asset): boolean {
