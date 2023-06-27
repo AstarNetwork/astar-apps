@@ -44,6 +44,7 @@ test.describe('Test case: XCM006', () => {
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
     await page.getByText('Cross-chain Transfer').click();
     await page.getByRole('main').getByRole('button').first().click();
+    await expect(page.getByPlaceholder('0.0')).toBeVisible();
     await page.getByPlaceholder('0.0').click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -68,6 +69,7 @@ test.describe('Test case: XCM003', () => {
     await page.locator('.icon--expand').first().click();
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
     await page.getByText('Cross-chain Transfer').click();
+    await expect(page.getByPlaceholder('0.0')).toBeVisible();
     await page.getByPlaceholder('0.0').click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -101,6 +103,7 @@ test.describe('Test case: XCM004', () => {
       .nth(1)
       .click();
     await page.locator('div').filter({ hasText: /^ACA$/ }).click();
+    await expect(page.getByPlaceholder('0.0')).toBeVisible();
     await page.getByPlaceholder('0.0').click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -133,6 +136,7 @@ test.describe('Test case: XCM001', () => {
       .nth(1)
       .click();
     await page.locator('div').filter({ hasText: /^ACA$/ }).click();
+    await expect(page.getByPlaceholder('0.0')).toBeVisible();
     await page.getByPlaceholder('0.0').click();
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
