@@ -107,7 +107,7 @@ export class BifrostXcmRepository extends XcmRepository {
       } else if (token.originAssetId == 'vKSM') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, vKSM);
         return bal.free.toString();
-      } else if (token.originAssetId == 'STAR') {
+      } else if (token.originAssetId == 'ASTR') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, ASTR);
         return bal.free.toString();
       } else if (token.originAssetId == 'SDN') {
