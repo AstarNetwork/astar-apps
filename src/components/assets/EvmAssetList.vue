@@ -269,7 +269,9 @@ export default defineComponent({
         bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
         isRocstar.value = nativeTokenSymbol.value === 'RSTR';
-        isFaucet.value = isRocstar ? false : isShibuya.value || faucetBalRequirement > bal.value;
+        isFaucet.value = isRocstar.value
+          ? false
+          : isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd) {
           balUsd.value = nativeTokenUsd * bal.value;
         }
