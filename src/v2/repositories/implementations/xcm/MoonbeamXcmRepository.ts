@@ -118,11 +118,6 @@ export class MoonbeamXcmRepository extends XcmRepository {
 
     const contract = new this._web3.eth.Contract(moonbeamXcmAbi as AbiItem[], PRE_COMPILED_ADDRESS);
     const address = await this.getEvmWalletAddress();
-    const [nonce, gasPrice] = await Promise.all([
-      this._web3.eth.getTransactionCount(address),
-      this._web3.eth.getGasPrice(),
-    ]);
-
     let currencyAddress = '';
     const symbol = token.metadata.symbol;
 
@@ -144,20 +139,32 @@ export class MoonbeamXcmRepository extends XcmRepository {
     const destination = [destinationParents, [parachainId, destAddress]];
     const weight = '4000000000';
 
-    const rawTx: TransactionConfig = {
-      nonce,
-      gasPrice: this._web3.utils.toHex(gasPrice),
-      from: address,
-      to: PRE_COMPILED_ADDRESS,
-      value: '0x0',
-      data: contract.methods.transfer(currencyAddress, amount, destination, weight).encodeABI(),
-    };
-    const estimatedGas = await this._web3.eth.estimateGas(rawTx).catch((error) => {
-      throw Error('Insufficient funds to cover the cost of gas');
-    });
-    const txDetails = await this._web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
-
-    return txDetails.transactionHash;
+    // Memo: getting unknown error in `sendTransaction` when sending a transaction from Moonbeam
+    if (this._networkName === 'Moonriver') {
+      const [nonce, gasPrice] = await Promise.all([
+        this._web3.eth.getTransactionCount(address),
+        this._web3.eth.getGasPrice(),
+      ]);
+      const rawTx: TransactionConfig = {
+        nonce,
+        gasPrice: this._web3.utils.toHex(gasPrice),
+        from: address,
+        to: PRE_COMPILED_ADDRESS,
+        value: '0x0',
+        data: contract.methods.transfer(currencyAddress, amount, destination, weight).encodeABI(),
+      };
+      const estimatedGas = await this._web3.eth.estimateGas(rawTx).catch((error) => {
+        console.error(error);
+        throw Error('Insufficient funds to cover the cost of gas');
+      });
+      const txDetails = await this._web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
+      return txDetails.transactionHash;
+    } else {
+      const result = await contract.methods
+        .transfer(currencyAddress, amount, destination, weight)
+        .send({ from: address });
+      return result.transactionHash;
+    }
   }
 
   public async getTokenBalance(
