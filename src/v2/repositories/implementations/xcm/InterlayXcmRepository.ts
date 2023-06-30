@@ -71,7 +71,7 @@ export class InterlayXcmRepository extends XcmRepository {
     token: Asset,
     isNativeToken: boolean
   ): Promise<string> {
-    // Memo: avoid getting an UI error when the `token` is `ASTR` due to while `monitorDestChainBalance` function in useXcmBridge.ts
+    // Memo: avoid getting a UI error when the `token` is `ASTR` while the `monitorDestChainBalance` function(watch) in useXcmBridge.ts
     // Reproduce the UI error: assets page -> transfer ASTR -> XCM -> flip the chains -> To: Interlay
     const interlayChains = [Chain.INTERLAY, Chain.KINTSUGI];
     if (!interlayChains.includes(token.originChain as Chain)) {
