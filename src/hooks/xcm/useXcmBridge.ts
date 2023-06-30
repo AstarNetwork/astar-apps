@@ -255,10 +255,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         });
         return;
       }
-      const originChainNativeBal = await originChainApi.value?.query.system.account(
-        currentAccount.value
-      );
-      if (Number(originChainNativeBal?.data.free) === 0) {
+      if ((await getOriginChainNativeBal()) === '0') {
         errMsg.value = t('warning.insufficientOriginChainNativeBalance', {
           chain: selectedToken.value.originChain,
         });
