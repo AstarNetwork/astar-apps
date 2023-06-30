@@ -73,15 +73,20 @@ export function useClaimAll() {
       }
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
-          if (it.dapp && !isH160.value) {
-            const transactions = await getIndividualClaimTxs({
-              dappAddress: it?.dapp?.address,
-              api,
-              senderAddress: senderAddressRef,
-              currentEra: era.value,
-            });
-            return transactions.length ? transactions : null;
-          } else {
+          try {
+            if (it.dapp && !isH160.value) {
+              const transactions = await getIndividualClaimTxs({
+                dappAddress: it?.dapp?.address,
+                api,
+                senderAddress: senderAddressRef,
+                currentEra: era.value,
+              });
+              return transactions.length ? transactions : null;
+            } else {
+              return null;
+            }
+          } catch (error) {
+            console.error(error);
             return null;
           }
         })

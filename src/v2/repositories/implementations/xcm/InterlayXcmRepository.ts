@@ -34,7 +34,7 @@ export class InterlayXcmRepository extends XcmRepository {
     const tokenData = { Token: token.originAssetId };
 
     const destination = {
-      V1: {
+      V3: {
         parents: '1',
         interior: {
           X2: [
@@ -43,9 +43,6 @@ export class InterlayXcmRepository extends XcmRepository {
             },
             {
               AccountId32: {
-                network: {
-                  Any: null,
-                },
                 id: decodeAddress(recipientAddress),
               },
             },
@@ -55,7 +52,7 @@ export class InterlayXcmRepository extends XcmRepository {
     };
 
     const destWeight = {
-      limited: new BN(10).pow(new BN(9)).muln(5),
+      Unlimited: null,
     };
     return await this.buildTxCall(
       from,
@@ -84,6 +81,19 @@ export class InterlayXcmRepository extends XcmRepository {
     } catch (e) {
       console.error(e);
       return '0';
+    }
+  }
+  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+    try {
+      const api = await this.apiFactory.get(chain.endpoint);
+      const { token } = api.consts.currency.getNativeCurrencyId.toJSON() as any;
+      const originChainNativeBal = await api.query.tokens.accounts<TokensAccounts>(address, {
+        Token: token,
+      });
+      return originChainNativeBal.free;
+    } catch (e) {
+      console.error(e);
+      return new BN(0);
     }
   }
 }
