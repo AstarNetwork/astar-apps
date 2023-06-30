@@ -243,13 +243,17 @@ export const castXcmEndpoint = (endpoint: string): string => {
   };
 
   const selectedCustomEndpoint = String(localStorage.getItem(LOCAL_STORAGE.CUSTOM_ENDPOINT));
-  const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
+  const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+  const selectedEndpoint = JSON.parse(selectedEndpointStored);
+  const isCustomEndpoint =
+    selectedEndpoint && Object.keys(selectedEndpoint)[0] === String(endpointKey.CUSTOM);
 
+  const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
   const isSelectedChopsticksEndpoint =
     portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
     portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
 
-  if (isSelectedChopsticksEndpoint) {
+  if (isCustomEndpoint && isSelectedChopsticksEndpoint) {
     const chains = Object.values(xcmChainObj);
     const chain = chains.find((it) => it.endpoint === endpoint);
     return chain && chain.hasOwnProperty('chopsticksEndpoint')
