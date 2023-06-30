@@ -29,3 +29,27 @@ import-storage:
           - '18446744073709551616'
           - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
         - balance: '100000000000000000'
+      - - # GLMR
+          - '18446744073709551619'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000000000'
+      - - # PHA
+          - '18446744073709551622'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000'
+      - - # BNC
+          - '18446744073709551623'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000'
+      - - # UNQ
+          - '18446744073709551631'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000000000'
+      - - # INTR
+          - '18446744073709551621'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '1000000000000000'
+      - - # EQD
+          - '18446744073709551629'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000'
