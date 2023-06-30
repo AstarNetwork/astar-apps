@@ -1,6 +1,7 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig } from 'src/config/wallets';
+import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, ref, watch } from 'vue';
@@ -12,6 +13,7 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
@@ -100,9 +102,11 @@ export const useAccount = () => {
       const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
       if (storedWallet === SupportMultisig.Polkasafe) {
         currentAccount.value = currentAddress.value;
-        const multisig = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '{}');
-        currentAccountName.value = multisig.multisigAccount.name;
+        multisig.value = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '{}');
+        currentAccountName.value = multisig.value!.multisigAccount.name;
         localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
+      } else {
+        multisig.value = undefined;
       }
     },
     { immediate: true }
@@ -112,6 +116,7 @@ export const useAccount = () => {
     substrateAccounts,
     currentAccount,
     currentAccountName,
+    multisig,
     disconnectAccount,
   };
 };

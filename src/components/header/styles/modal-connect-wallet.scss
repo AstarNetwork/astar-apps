@@ -140,11 +140,6 @@
   color: $gray-1;
 }
 
-.img--polkasafe {
-  width: 24px;
-  height: 24px;
-}
-
 .body--dark {
   .title--account-type {
     color: $gray-1;
@@ -152,10 +147,5 @@
   .box__row--wallet {
     color: $gray-1;
     border: 1px solid $gray-3;
-  }
-  .img--polkasafe {
-    // Memo: #FFFFFF
-    // Ref: https://codepen.io/sosuke/pen/Pjoqqp
-    filter: invert(100%) sepia(100%) saturate(1%) hue-rotate(153deg) brightness(101%) contrast(102%);
   }
 }

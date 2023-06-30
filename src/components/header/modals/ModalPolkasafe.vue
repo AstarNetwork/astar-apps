@@ -139,7 +139,7 @@ import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
 import { astarChain } from 'src/config/chain';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
@@ -150,18 +150,7 @@ import { useI18n } from 'vue-i18n';
 import { polkasafeUrl } from 'src/links';
 import { SupportMultisig } from 'src/config/wallets';
 import { useExtensions } from 'src/hooks/useExtensions';
-
-interface IMultisigAddress {
-  signatories: string[];
-  address: string;
-  updated_at: Date;
-  name: string;
-  created_at: Date;
-  disabled: boolean;
-  threshold: number;
-  network: string;
-  balance: string;
-}
+import { MultisigAddress, Multisig } from 'src/modules/multisig';
 
 export default defineComponent({
   components: {
@@ -192,7 +181,7 @@ export default defineComponent({
     const isShowBalance = ref<boolean>(false);
     const isLoadingPolkasafe = ref<boolean>(false);
     const selectedSignatory = ref<SubstrateAccount>();
-    const multisigAccounts = ref<IMultisigAddress[]>([]);
+    const multisigAccounts = ref<MultisigAddress[]>([]);
 
     const setSelectedSignatory = (account: SubstrateAccount): void => {
       selectedSignatory.value = account;
@@ -213,6 +202,7 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
+    const { multisig } = useAccount();
     const { width, screenSize } = useBreakpoints();
     const { currentNetworkChain, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
 
@@ -230,7 +220,7 @@ export default defineComponent({
       const multisigObj = {
         multisigAccount: multisigAccounts.value.find((it) => it.address === substrateAccount),
         signatory: selectedSignatory.value,
-      };
+      } as Multisig;
       localStorage.setItem(LOCAL_STORAGE.MULTISIG, JSON.stringify(multisigObj));
       isSelected.value = true;
       isClosing.value = false;
@@ -303,21 +293,21 @@ export default defineComponent({
             }
 
             //@ts-ignore
-            const filteredMultisigAccounts = data.multisigAddresses.filter((it: IMultisigAddress) =>
+            const filteredMultisigAccounts = data.multisigAddresses.filter((it: MultisigAddress) =>
               isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
             );
             if (filteredMultisigAccounts.length > 0) {
               const updatedAccountMap = await Promise.all(
-                filteredMultisigAccounts.map(async (it: IMultisigAddress) => {
+                filteredMultisigAccounts.map(async (it: MultisigAddress) => {
                   const balance = await fetchNativeBalance({
                     api: $api as ApiPromise,
                     address: it.address,
                   });
                   return { ...it, balance };
-                }) as IMultisigAddress[]
+                }) as MultisigAddress[]
               );
               multisigAccounts.value = updatedAccountMap.sort(
-                (a: IMultisigAddress, b: IMultisigAddress) => Number(b.balance) - Number(a.balance)
+                (a: MultisigAddress, b: MultisigAddress) => Number(b.balance) - Number(a.balance)
               );
             }
           } catch (error) {
@@ -364,12 +354,10 @@ export default defineComponent({
     );
 
     const setDefaultSelectedSignatory = (): void => {
-      const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
-      if (multisigStored) {
-        const multisig = JSON.parse(multisigStored);
+      if (multisig.value) {
         substrateAccounts.value.length === 0 && useExtensions($api!!, store);
         const account = substrateAccounts.value.find(
-          (it) => it.address === multisig.signatory.address
+          (it) => it.address === multisig.value!.signatory.address
         );
         account && setSelectedSignatory(account);
       }

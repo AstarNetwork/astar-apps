@@ -18,12 +18,8 @@ export function useWalletIcon() {
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const { currentAccount } = useAccount();
   const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-  const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
-  const isDark = storedThemeColor
-    ? storedThemeColor === 'DARK'
-    : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  const setIconWallet = () => {
+  const setIconWallet = (): void => {
     try {
       const account = getSelectedAccount(substrateAccounts.value);
       if (isEthWallet.value) {
@@ -35,9 +31,6 @@ export function useWalletIcon() {
         iconWallet.value = supportWalletObj[account.source].img;
       } else if (storedWallet === SupportMultisig.Polkasafe) {
         iconWallet.value = require('src/assets/img/logo-polkasafe-black.svg');
-        // iconWallet.value = require(isDark
-        //   ? 'src/assets/img/logo-polkasafe.svg'
-        //   : 'src/assets/img/logo-polkasafe-black.svg');
       }
     } catch (error) {
       console.error(error);

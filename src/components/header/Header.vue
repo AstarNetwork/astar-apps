@@ -67,13 +67,12 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
-import { useConnectWallet } from 'src/hooks';
+import { useAccount, useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
 import TroubleHelp from 'src/components/header/TroubleHelp.vue';
-// import MultisigConfigure from 'src/components/header/MultisigConfigure.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -84,7 +83,6 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 interface Modal {
   modalNetwork: boolean;
@@ -105,6 +103,7 @@ export default defineComponent({
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
+    const { multisig } = useAccount();
 
     const stateModal = reactive<Modal>({
       modalNetwork: false,
@@ -128,8 +127,7 @@ export default defineComponent({
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
-      const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
-      if (multisigStored) {
+      if (multisig.value) {
         openPolkasafeModal();
       } else {
         if (modalName.value === WalletModalOption.SelectWallet) {
