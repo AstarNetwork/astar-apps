@@ -24,7 +24,7 @@ export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
-
+// e.g.: endpointKey.SHIDEN;
 const disabledXcmChain: endpointKey | undefined = undefined;
 // e.g.: [Chain.INTERLAY, Chain.KINTSUGI]
 const disabledXcmParachains: Chain[] = [];

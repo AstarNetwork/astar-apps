@@ -1,0 +1,15 @@
+endpoint: wss://api.interlay.io/parachain
+mock-signature-host: true
+block: ${env.INTERLAY_BLOCK_NUMBER}
+db: ./db.sqlite
+port: 9948
+
+import-storage:
+  System:
+    Account:
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - providers: 1
+          data:
+            free: 1000000000000000
