@@ -53,3 +53,7 @@ import-storage:
           - '18446744073709551629'
           - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
         - balance: '100000000000000'
+      - - # IBTC
+          - '18446744073709551620'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '10000000000000'
