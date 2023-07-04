@@ -172,8 +172,8 @@ export default defineComponent({
           currentNetworkName.value.toLowerCase()
         );
       }
-    }
-    
+    };
+
     const goDappPageLink = (address: string | undefined): void => {
       const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
@@ -216,7 +216,7 @@ export default defineComponent({
           const data = aggregatedData.value.find(
             (x) =>
               x.name.toLowerCase() === item?.dapp?.name?.toLowerCase() ||
-              x.url.toLowerCase() === item?.dapp?.url?.toLowerCase()
+              getDomain(x.url.toLowerCase()) === getDomain(item?.dapp?.url?.toLowerCase())
           );
 
           if (data) {
@@ -231,6 +231,24 @@ export default defineComponent({
       } catch (error) {
         return '0';
       }
+    };
+
+    const getDomain = (url: string | undefined): string | undefined => {
+      if (!url) {
+        return undefined;
+      }
+
+      const prefix = /^https?:\/\//i;
+      const domain = /^[^\/:]+/;
+      // Remove any prefix
+      url = url.replace(prefix, '');
+      // Extract just the domain
+      const match = url.match(domain);
+      if (match) {
+        return match[0];
+      }
+
+      return undefined;
     };
 
     const setDataArray = (): void => {

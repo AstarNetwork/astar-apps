@@ -389,11 +389,9 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   public async getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]> {
-    // Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('network', network);
 
-    //const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=7d`;
-    const url = `http://127.0.0.1:5001/astar-token-api/us-central1/app/api/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=7d`;
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=30d`;
 
     try {
       const response = await axios.get<DappAggregatedMetrics[]>(url);
