@@ -5,21 +5,26 @@
     </div>
     <div class="box--data" :class="isShiden && 'box--data-shiden'">
       <div class="row--data-filter">
-        <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
-          <q-list>
-            <q-item
-              v-for="(item, index) in filters"
-              :key="index"
-              v-close-popup
-              clickable
-              @click="filterBy = item"
-            >
-              <q-item-section>
-                <q-item-label>{{ $t(item) }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
+        <div class="column--sort">
+          <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
+            <q-list>
+              <q-item
+                v-for="(item, index) in filters"
+                :key="index"
+                v-close-popup
+                clickable
+                @click="filterBy = item"
+              >
+                <q-item-section>
+                  <q-item-label>{{ $t(item) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <div v-if="filterBy !== Filter.tvl" class="text--value">
+            {{ $t('dappStaking.last30days') }}
+          </div>
+        </div>
         <div class="column--sort">
           <div>
             <span class="text--value">{{ $t('sort.sortBy') }}</span>

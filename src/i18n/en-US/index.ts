@@ -250,6 +250,7 @@ export default {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
     },
+    last30days: '(last 30 days)',
     dappPage: {
       back: 'Back',
       goBackToTopPage: 'Go back to the top page',
