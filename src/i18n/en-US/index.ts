@@ -51,6 +51,7 @@ export default {
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
