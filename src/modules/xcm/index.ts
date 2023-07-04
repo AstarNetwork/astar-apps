@@ -233,7 +233,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.UNIQUE,
     endpoint: 'wss://ws.unique.network',
     subscan: 'https://unique.subscan.io',
-    isAstarNativeToken: true,
+    isAstarNativeToken: false,
   },
 };
 
