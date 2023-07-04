@@ -4,7 +4,12 @@
       <div class="wrapper--select-network">
         <fieldset>
           <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(provider, index) in providerEndpoints" :key="index">
+            <li
+              v-for="(provider, index) in providerEndpoints.filter(
+                (it) => it.networkAlias !== 'rocstar'
+              )"
+              :key="index"
+            >
               <label
                 :class="[
                   'class-radio',
@@ -128,7 +133,6 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
-import { $endpoint } from 'src/boot/api';
 import {
   checkIsLightClient,
   checkIsSubstrateConnectInstalled,
@@ -210,6 +214,10 @@ export default defineComponent({
       emit('update:select-network', networkIdx);
     };
 
+    const setInitialSelEndpoint = (): string => {
+      return JSON.parse(localStorage.getItem(SELECTED_ENDPOINT) || '{}')[props.networkIdx] || '';
+    };
+
     const selNetwork = ref<number>(props.networkIdx);
     const selEndpointAstar = ref<string>('');
     const selEndpointShiden = ref<string>('');
@@ -289,21 +297,21 @@ export default defineComponent({
 
     const setupInitialEndpointOption = (networkIdx: number) => {
       if (networkIdx === endpointKey.ASTAR) {
-        selEndpointAstar.value = $endpoint.value;
+        selEndpointAstar.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
         return;
       }
 
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointShiden.value = $endpoint.value;
+        selEndpointShiden.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
         return;
       }
 
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointShibuya.value = $endpoint.value;
+        selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         return;
@@ -329,7 +337,7 @@ export default defineComponent({
     };
 
     watch(
-      [$endpoint, selNetwork],
+      [selNetwork],
       () => {
         setupInitialEndpointOption(props.networkIdx);
       },

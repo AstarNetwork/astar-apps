@@ -1,11 +1,12 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
 import { AccountLedger } from 'src/hooks';
-import { ContractStakeInfo } from 'src/v2/repositories/implementations';
-import { sendTransaction } from './zombienet/tx-utils';
+import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
+import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';
+import { RewardDestination } from 'src/v2/models';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -26,9 +27,9 @@ export const getAddress = (address: string) => {
 
 export const getBalance = async (address: string): Promise<bigint> => {
   const api = await getApi();
-  const balance = await api.query.system.account(address);
+  const balance = (await api.query.system.account(address)) as FrameSystemAccountInfo;
 
-  return balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt();
+  return BigInt(balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt());
 };
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {
@@ -89,4 +90,11 @@ export const forceUnbondingPeriod = async (): Promise<void> => {
   for (let i = 0; i < unbondingPeriod.toNumber(); i++) {
     await sendTransaction(api.tx.sudo.sudo(api.tx.dappsStaking.forceNewEra()), signer);
   }
+};
+
+export const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
+  const api = await getApi();
+  const signer = await getSigner();
+  const tx = api.tx.dappsStaking.setRewardDestination(rewardDestination);
+  await sendTransaction(tx, signer);
 };

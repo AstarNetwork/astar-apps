@@ -9,30 +9,43 @@ import { $api } from 'boot/api';
 import { useCurrentEra, useBalance } from 'src/hooks';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
+import { useLedger } from 'src/hooks';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const MAX_BATCH_WEIGHT = new BN('50000000000');
+const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
+const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000'); //Memo: 6 eras
+const MAX_BATCH_WEIGHT_LEDGER_S = new BN('2000000000'); //Memo:2 eras
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(true);
-  const isLoading = ref<boolean>(true);
+  const isLoading = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
+  const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderAddress);
+  const { isLedgerNanoS } = useLedger();
+
+  const maxBatchWeight = computed<BN>(() => {
+    if (isLedger.value) {
+      return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;
+    } else {
+      return MAX_BATCH_WEIGHT;
+    }
+  });
 
   const transferableBalance = computed(() => {
     const balance = accountData.value
@@ -41,7 +54,13 @@ export function useClaimAll() {
     return Number(balance);
   });
 
-  watchEffect(async () => {
+  const isDappDeveloper = computed<boolean>(() => {
+    return (
+      dapps.value && dapps.value.some((it) => it.contract.developerAddress === senderAddress.value)
+    );
+  });
+
+  const updateClaimEras = async (): Promise<void> => {
     try {
       isLoading.value = true;
       const api = $api;
@@ -52,18 +71,22 @@ export function useClaimAll() {
       if (!senderAddressRef || !era.value || isSendingTx.value) {
         return;
       }
-
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
-          if (it.dapp && !isH160.value) {
-            const transactions = await getIndividualClaimTxs({
-              dappAddress: it?.dapp?.address,
-              api,
-              senderAddress: senderAddressRef,
-              currentEra: era.value,
-            });
-            return transactions.length ? transactions : null;
-          } else {
+          try {
+            if (it.dapp && !isH160.value) {
+              const transactions = await getIndividualClaimTxs({
+                dappAddress: it?.dapp?.address,
+                api,
+                senderAddress: senderAddressRef,
+                currentEra: era.value,
+              });
+              return transactions.length ? transactions : null;
+            } else {
+              return null;
+            }
+          } catch (error) {
+            console.error(error);
             return null;
           }
         })
@@ -82,7 +105,9 @@ export function useClaimAll() {
     } finally {
       isLoading.value = false;
     }
-  });
+  };
+
+  watch([isSendingTx, senderAddress, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
@@ -100,7 +125,7 @@ export function useClaimAll() {
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
       const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
-      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
+      if (totalWeight.add(weight).gt(maxBatchWeight.value)) {
         break;
       }
 
@@ -154,5 +179,6 @@ export function useClaimAll() {
     canClaimWithoutError,
     isLoading,
     amountOfEras,
+    isDappDeveloper,
   };
 }

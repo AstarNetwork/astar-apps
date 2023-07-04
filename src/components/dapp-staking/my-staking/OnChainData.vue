@@ -51,7 +51,7 @@
         >
           <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
             <div class="row--dapp">
-              <div class="column--dapp-name">
+              <div class="column--dapp-name" @click="goDappPageLink(dapp.address)">
                 <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
                 <div class="column--name">
                   <span class="text--name"> {{ dapp.name }} </span>
@@ -101,6 +101,8 @@ import { paginate } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
 import { IDappStakingRepository, DappAggregatedMetrics } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 enum Filter {
   tvl = 'dappStaking.stakingTvl',
@@ -118,6 +120,7 @@ interface Data {
   iconUrl: string;
   name: string;
   balance: string;
+  address: string;
 }
 
 const numItemsTablet = 8;
@@ -149,6 +152,7 @@ export default defineComponent({
     const goToNext = ref<boolean>(true);
     const sortBy = ref<SortBy>(SortBy.amountHighToLow);
     const aggregatedData = ref<DappAggregatedMetrics[]>([]);
+    const router = useRouter();
 
     const numItems = computed<number>(() =>
       width.value > screenSize.md ? numItemsTablet : numItemsMobile
@@ -168,6 +172,12 @@ export default defineComponent({
           currentNetworkName.value.toLowerCase()
         );
       }
+    }
+    
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
     };
 
     const getDappStyle = (index: number): string => {
@@ -240,6 +250,7 @@ export default defineComponent({
             return {
               iconUrl: it.dapp.iconUrl,
               name: it.dapp.name,
+              address: it.dapp.address,
               balance,
             };
           } else {
@@ -258,7 +269,7 @@ export default defineComponent({
         data.sort((a: Data, b: Data) => Number(a.balance) - Number(b.balance));
       }
 
-      pageTtl.value = Number((data.length / numItems.value).toFixed(0));
+      pageTtl.value = Math.ceil(data.length / numItems.value);
       dataArray.value = paginate(data, numItems.value, page.value);
     };
 
@@ -312,6 +323,7 @@ export default defineComponent({
       getDappStyle,
       getBorderStyle,
       Filter,
+      goDappPageLink,
     };
   },
 });

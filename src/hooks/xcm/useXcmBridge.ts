@@ -209,7 +209,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     }
   };
 
-  const setErrMsg = (): void => {
+  const setErrMsg = async (): Promise<void> => {
     errMsg.value = '';
 
     const isChainNotSupportWithdrawal = chainsNotSupportWithdrawal.includes(destChain.value.name);
@@ -246,13 +246,20 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       return;
     }
 
-    if (isDeposit.value && !checkIsEnoughMinBal(sendingAmount)) {
-      errMsg.value = t('warning.insufficientOriginChainBalance', {
-        chain: selectedToken.value.originChain,
-        amount: selectedToken.value.minBridgeAmount,
-        token: selectedToken.value.metadata.symbol,
-      });
-      return;
+    if (isDeposit.value) {
+      if (!checkIsEnoughMinBal(sendingAmount)) {
+        errMsg.value = t('warning.insufficientOriginChainBalance', {
+          chain: selectedToken.value.originChain,
+          amount: selectedToken.value.minBridgeAmount,
+          token: selectedToken.value.metadata.symbol,
+        });
+        return;
+      }
+      if ((await getOriginChainNativeBal()) === '0') {
+        errMsg.value = t('warning.insufficientOriginChainNativeBalance', {
+          chain: selectedToken.value.originChain,
+        });
+      }
     }
   };
 

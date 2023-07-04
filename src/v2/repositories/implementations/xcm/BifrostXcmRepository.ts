@@ -54,18 +54,11 @@ export class BifrostXcmRepository extends XcmRepository {
       throw `Token name for ${token.originAssetId} is not defined`;
     }
 
-    const { version, isV3 } = this.getXcmVersion(from);
+    const version = 'V3';
 
-    const AccountId32 = isV3
-      ? {
-          id: decodeAddress(recipientAddress),
-        }
-      : {
-          id: decodeAddress(recipientAddress),
-          network: {
-            Any: null,
-          },
-        };
+    const AccountId32 = {
+      id: decodeAddress(recipientAddress),
+    };
 
     const destination = {
       [version]: {
@@ -114,7 +107,7 @@ export class BifrostXcmRepository extends XcmRepository {
       } else if (token.originAssetId == 'vKSM') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, vKSM);
         return bal.free.toString();
-      } else if (token.originAssetId == 'STAR') {
+      } else if (token.originAssetId == 'ASTR') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, ASTR);
         return bal.free.toString();
       } else if (token.originAssetId == 'SDN') {

@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -77,7 +78,7 @@ export const isMobileDevice =
 export const castMobileSource = (source: string): string => {
   if (isMobileDevice) {
     // Memo: source as 'polkadot-js' in mobile app
-    const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova];
+    const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova, SupportWallet.Gridlock];
     if (polkadotJsWallets.find((it) => it === source)) {
       return SupportWallet.PolkadotJs;
     }
@@ -265,7 +266,7 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
-  const provider = wallet ? (window[wallet.ethExtension] as EthereumProvider) : undefined;
+  const provider = wallet ? (get(window, wallet.ethExtension) as EthereumProvider) : undefined;
 
   const isExtension =
     wallet && walletName === wallet.source && typeof provider !== undefined && provider;

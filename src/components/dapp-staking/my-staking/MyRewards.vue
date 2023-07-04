@@ -21,9 +21,29 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div v-if="isDappDeveloper" class="card">
         <div class="row--title">
           {{ $t('myReward.availableToClaim') }}
+        </div>
+        <div class="row--data">
+          <div v-if="isLoading" class="loading">
+            <q-skeleton type="rect" animation="fade" />
+          </div>
+          <div v-else class="value">
+            {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
+          </div>
+          <astar-button
+            :width="80"
+            :height="24"
+            :disabled="!canClaim || !canClaimWithoutError"
+            @click="claimAll"
+            >{{ $t('myReward.claim') }}</astar-button
+          >
+        </div>
+      </div>
+      <div v-else class="card">
+        <div class="row--title">
+          {{ $t('myReward.estimatedRewards') }}
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
             <q-tooltip max-width="200px" class="box--tooltip">
@@ -36,6 +56,7 @@
             </q-tooltip>
           </span>
         </div>
+
         <div class="row--data">
           <div v-if="isLoadingPendingRewards" class="loading">
             <q-skeleton type="rect" animation="fade" />
@@ -46,9 +67,26 @@
                 {{ $n(pendingRewards) }} {{ nativeTokenSymbol }}
               </span>
             </div>
-            <span class="text--eras">
-              ({{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }})
-            </span>
+            <div class="row--eras">
+              <span class="text--eras">
+                ({{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }})
+              </span>
+              <span class="wrapper--icon-help">
+                <astar-icon-help size="16" />
+                <q-tooltip max-width="200px" class="box--tooltip">
+                  <div>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.limitation') }}</span>
+                  </div>
+                  <br />
+                  <div class="row--ledgers">
+                    <span class="text--tooltip">{{ $t('myReward.claimable.nativeWallets') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerX') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerSPlus') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerS') }}</span>
+                  </div>
+                </q-tooltip>
+              </span>
+            </div>
           </div>
           <astar-button
             :width="80"
@@ -122,7 +160,8 @@ export default defineComponent({
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
+    const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
+      useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
 
     const pendingRewards = ref<number>(0);
@@ -183,6 +222,7 @@ export default defineComponent({
       isH160,
       pendingRewards,
       isLoadingPendingRewards,
+      isDappDeveloper,
     };
   },
 });

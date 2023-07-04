@@ -1,6 +1,6 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
-import { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
+import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
@@ -18,6 +18,7 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations/SystemRepository';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -60,7 +61,7 @@ export class XcmRepository implements IXcmRepository {
     if (metadata.length > 0) {
       metadata.forEach(([key, value]) => {
         const id = key.args.map((x) => x.toString())[0];
-        const deposit = value.deposit.toBn();
+        const deposit = value.deposit.toString();
         const name = u8aToString(value.name);
         const symbol = u8aToString(value.symbol);
         const decimals = value.decimals.toNumber();
@@ -103,7 +104,8 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
-    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE, Chain.BIFROST_KUSAMA];
+    // e.g.: [Chain.BIFROST_KUSAMA]
+    const v3s: Chain[] = [];
     const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
     const isV3 = version === 'V3';
     return { version, isV3 };
@@ -120,9 +122,7 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     // the target parachain connected to the current relaychain
     const destination = {
       [version]: {
@@ -138,14 +138,9 @@ export class XcmRepository implements IXcmRepository {
     const recipientAddressId = this.getAddress(recipientAddress);
 
     const id = decodeAddress(recipientAddressId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -191,9 +186,7 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     const destination = {
       [version]: {
         interior: 'Here',
@@ -202,14 +195,9 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const id = decodeAddress(recipientAccountId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -305,12 +293,8 @@ export class XcmRepository implements IXcmRepository {
   }> {
     const api = await this.apiFactory.get(source.endpoint);
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
-
-    // return config.unwrap().v1;
-    const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
-
-    return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
+    return formattedAssetConfig.v3;
   }
 
   protected isAstarNativeToken(token: Asset): boolean {
@@ -328,7 +312,7 @@ export class XcmRepository implements IXcmRepository {
     balancesOption.map((x, index) => {
       if (x.isSome) {
         const balance = x.unwrap();
-        assets[index].balance = balance.balance.toBn();
+        assets[index].balance = balance.balance.toString();
       }
     });
 

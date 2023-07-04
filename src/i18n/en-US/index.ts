@@ -38,6 +38,7 @@ export default {
   amountToken: '{amount} {token}',
   select: 'Select',
   help: 'Help',
+  share: 'Share',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -48,15 +49,17 @@ export default {
   warning: {
     warning: 'Warning',
     insufficientBalance: 'Insufficient {token} balance',
-    insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
+    insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
+    insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
+    ledgerNotOpened: 'Ledger has not opened Astar App',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -102,6 +105,11 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
+    decentralizedBanner: {
+      bannerText:
+        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
+      goToClassicPortal: 'our Classic Portal',
+    },
   },
   sidenavi: {
     community: 'Community',
@@ -138,19 +146,14 @@ export default {
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
     showBalance: 'Show {token} balance',
+    isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} yet?',
+    getWallet: 'Haven’t got {value} yet?',
     installWallet:
-      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
-    installExtension: 'Install {value} extension',
-    howToConnect: 'Learn how to Connect',
-  },
-  updateWallet: {
-    getUpdatedWallet: 'Haven’t updated {value} yet?',
-    updateWallet:
-      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
-    updateExtension: 'Update {value} extension',
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page.",
+    install: 'Install',
+    learn: 'Learn',
   },
   topMetric: {
     build2earn: 'Build2Earn',
@@ -187,7 +190,8 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Estimated Rewards',
+    availableToClaim: 'Available to claim',
+    estimatedRewards: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',
@@ -199,6 +203,14 @@ export default {
       'The number of eras that is shown here is per dApp. You may need to claim multiple times if you have too many unclaimed eras.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
+    claimable: {
+      limitation:
+        'There is a limitation on the number of eras that can be claimed in one transaction.',
+      nativeWallets: 'Native wallets: ≒56 eras',
+      ledgerX: 'Ledger Nano X: 6 eras',
+      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
+      ledgerS: 'Ledger Nano S: 2 eras',
+    },
   },
   dappStaking: {
     myStaking: 'My Staking',
@@ -515,5 +527,11 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+  },
+  links: {
+    goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
+    astarHome: 'Astar Home',
+    astarDocs: 'Astar Docs',
   },
 };

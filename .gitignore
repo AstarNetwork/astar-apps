@@ -35,15 +35,17 @@ yarn-error.log*
 
 # Firebase cache
 .firebase/
-/test-results/
-/playwright-report/
-/playwright/.cache/
-/test-results/
-/playwright-report/
-/playwright/.cache/
+
+# End-to-end tests
+test-results/
+playwright-report/
+playwright/.cache/
+
 
 # Zombienet binaries
 zombienet-macos
 polkadot
 astar-collator
 
+# Chopstick binaries
+db.sqlite

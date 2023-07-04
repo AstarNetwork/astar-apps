@@ -1,4 +1,10 @@
-import { wait, ASTAR_SS58_FORMAT, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
+import { get } from 'lodash-es';
+import {
+  wait,
+  ASTAR_SS58_FORMAT,
+  checkSumEvmAddress,
+  astarChain,
+} from '@astar-network/astar-sdk-core';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
@@ -37,7 +43,7 @@ import {
 } from 'src/hooks/helper/wallet';
 
 export const useConnectWallet = () => {
-  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
 
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
@@ -57,7 +63,7 @@ export const useConnectWallet = () => {
   const isConnectedNetwork = computed<boolean>(
     () => store.getters['general/networkStatus'] === 'connected'
   );
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, currentNetworkChain } = useNetworkInfo();
 
   const selectedWalletSource = computed(() => {
     try {
@@ -147,7 +153,7 @@ export const useConnectWallet = () => {
 
     const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
     if (wallet === evmWallet.source) {
-      const provider = window[evmWallet.ethExtension as any];
+      const provider = get(window, evmWallet.ethExtension);
       isEvmWalletAvailable = provider !== undefined;
 
       if (!isEvmWalletAvailable) {
@@ -322,6 +328,16 @@ export const useConnectWallet = () => {
     });
   };
 
+  // Memo: Ledger accounts are available on Astar only
+  const handleCheckLedgerEnvironment = async (): Promise<void> => {
+    const isLedger = localStorage.getItem(IS_LEDGER) === 'true';
+    if (isLedger && currentNetworkChain.value && currentNetworkChain.value !== astarChain.ASTAR) {
+      localStorage.setItem(IS_LEDGER, 'false');
+      await disconnectAccount();
+      window.location.reload();
+    }
+  };
+
   watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
 
   watchEffect(async () => {
@@ -339,6 +355,8 @@ export const useConnectWallet = () => {
     },
     { immediate: true }
   );
+
+  watch([currentNetworkChain], handleCheckLedgerEnvironment);
 
   // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
   window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);

@@ -226,6 +226,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://equilibrium.subscan.io',
     isAstarNativeToken: true,
   },
+  [Chain.UNIQUE]: {
+    name: Chain.UNIQUE,
+    relayChain: Chain.POLKADOT,
+    img: require('/src/assets/img/token/unq.svg'),
+    parachainId: parachainIds.UNIQUE,
+    endpoint: 'wss://ws.unique.network',
+    subscan: 'https://unique.subscan.io',
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

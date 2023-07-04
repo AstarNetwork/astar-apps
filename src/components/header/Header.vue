@@ -25,10 +25,19 @@
     />
 
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
+      :is-modal-connect-wallet="
+        modalName === WalletModalOption.SelectWallet ||
+        modalName === WalletModalOption.NoExtension ||
+        modalName === WalletModalOption.OutdatedWallet
+      "
+      :is-no-extension="
+        modalName === WalletModalOption.NoExtension ||
+        modalName === WalletModalOption.OutdatedWallet
+      "
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
+      :selected-wallet="selectedWallet"
     />
 
     <modal-account
@@ -39,18 +48,6 @@
       :connect-ethereum-wallet="connectEthereumWallet"
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
-    />
-
-    <modal-install-wallet
-      v-if="modalName === WalletModalOption.NoExtension"
-      :set-close-modal="setCloseModal"
-      :selected-wallet="selectedWallet"
-    />
-
-    <modal-update-wallet
-      v-if="modalName === WalletModalOption.OutdatedWallet"
-      :set-close-modal="setCloseModal"
-      :selected-wallet="selectedWallet"
     />
   </div>
 </template>
@@ -68,10 +65,8 @@ import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
-import ModalInstallWallet from 'src/components/header/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
-import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
 
@@ -86,10 +81,8 @@ export default defineComponent({
     NetworkButton,
     ModalAccount,
     ModalConnectWallet,
-    ModalInstallWallet,
     ModalNetwork,
     Logo,
-    ModalUpdateWallet,
     HeaderComp,
     TroubleHelp,
   },
@@ -180,12 +173,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
+  background-color: $navy-2;
   @media (min-width: $lg) {
     width: 100%;
     position: absolute;
     top: 0;
     left: 224px;
     padding-right: 224px;
+    background-color: transparent;
   }
 }
 

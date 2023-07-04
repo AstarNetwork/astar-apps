@@ -42,7 +42,11 @@ export function useNetworkInfo() {
   const currentNetworkName = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
-    return chain === astarChain.SHIBUYA ? 'Shibuya' : chain;
+    return chain === astarChain.SHIBUYA
+      ? 'Shibuya'
+      : chain === astarChain.ROCSTAR
+      ? 'Rocstar'
+      : chain;
   });
 
   const nativeTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
