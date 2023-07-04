@@ -246,6 +246,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       return;
     }
 
+    const isBlankDestAddressToEvm =
+      isWithdrawalEthChain.value && sendingAmount && !inputtedAddress.value;
+    if (isBlankDestAddressToEvm) {
+      errMsg.value = t('warning.blankDestAddress');
+      return;
+    }
+
     if (isDeposit.value) {
       if (!checkIsEnoughMinBal(sendingAmount)) {
         errMsg.value = t('warning.insufficientOriginChainBalance', {

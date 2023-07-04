@@ -117,11 +117,7 @@
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
           </div>
-          <div
-            v-click-away="setIsMobileDisplayTooltip"
-            class="icon--help"
-            @click="setIsMobileDisplayTooltip"
-          >
+          <div v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
             <astar-icon-help size="20" />
             <q-tooltip
               v-model="isDisplayTooltip"
