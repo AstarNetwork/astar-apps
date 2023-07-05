@@ -173,9 +173,6 @@ export default defineComponent({
     data.imagesContent = [];
     data.imagesContent.push('');
 
-    const isValidAddress = (address: string): boolean => isEthereumAddress(address); // || isValidAddressPolkadotAddress(address);
-    // TODO uncoment the code above when we will support ink contract.
-
     const updateDappLogo = (): void => {
       const reader = new FileReader();
       reader.readAsDataURL(data.icon);
@@ -329,7 +326,6 @@ export default defineComponent({
       errors,
       Path,
       isNewDapp,
-      isValidAddress,
       updateDappLogo,
       isUrlValid,
       handleDappChanged,

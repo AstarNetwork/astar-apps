@@ -5,6 +5,8 @@
 <style scoped>
 .container {
   background-image: url('assets/img/astar_hero.png');
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 700;
