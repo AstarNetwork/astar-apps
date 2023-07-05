@@ -126,7 +126,7 @@ export default defineComponent({
       openPolkasafeModal,
     } = useConnectWallet();
 
-    const clickAccountBtn = () => {
+    const clickAccountBtn = (): void => {
       if (multisig.value) {
         openPolkasafeModal();
       } else {
@@ -160,7 +160,7 @@ export default defineComponent({
 
     watch(
       path,
-      async () => {
+      () => {
         headerName.value = getHeaderName(path.value);
       },
       {
