@@ -81,11 +81,13 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 explorerUrl: polkasafeUrl + '/transactions',
               })
             );
+            this.eventAggregator.publish(new BusyMessage(false));
             resolve(callHash);
           } catch (error: any) {
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
             );
+            this.eventAggregator.publish(new BusyMessage(false));
             resolve(error.message);
           }
         } else {
