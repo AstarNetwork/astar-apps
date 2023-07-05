@@ -9,10 +9,12 @@ import {
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
   BOB_ADDRESS,
+  checkIsMultisigTxSignButtonVisible,
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
   selectAccount,
+  selectMultisigAccount,
   signTransaction,
 } from '../common';
 import { ApiPromise } from '@polkadot/api';
@@ -62,6 +64,19 @@ test.describe('account panel', () => {
     expect(bobBalanceAfterTransaction - bobBalanceBeforeTransaction).toEqual(
       transferAmount * BigInt(Math.pow(10, chainDecimals))
     );
+  });
+
+  test('should transfer tokens from Multisig to Bob', async ({ page, context }) => {
+    await selectMultisigAccount(page, context);
+    const transferAmount = BigInt(1000);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    const isMultisigTxSignButtonVisible = await checkIsMultisigTxSignButtonVisible(context);
+    expect(isMultisigTxSignButtonVisible).toBe(true);
   });
 
   // Test case: AS004

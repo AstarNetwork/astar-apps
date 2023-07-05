@@ -6,17 +6,14 @@ import {
   ALICE_ACCOUNT_SEED,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
-  BOB_ADDRESS,
-  checkIsMultisigTxSignButtonVisible,
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
   createMetamaskAccount,
   selectAccount,
   selectMultisigAccount,
-  signTransaction,
 } from '../common';
-import { chainDecimals, getApi, getBalance } from '../common-api';
+import { getApi } from '../common-api';
 import { test } from '../fixtures';
 
 let api: ApiPromise;
@@ -62,39 +59,6 @@ test.describe('account panel', () => {
 
     await page.locator('.icon--expand').first().click();
     await expect(transferButton).not.toBeVisible();
-  });
-
-  //AS001
-  test('should transfer tokens from Alice to Bob', async ({ page, context }) => {
-    const transferAmount = BigInt(1000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-
-    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-    await page.getByRole('button', { name: 'Confirm' }).click();
-
-    const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
-    await signTransaction(context);
-    await page.waitForSelector('.four', { state: 'hidden' });
-
-    await expect(page.getByText('Success')).toBeVisible();
-    const bobBalanceAfterTransaction = await getBalance(BOB_ADDRESS);
-    expect(bobBalanceAfterTransaction - bobBalanceBeforeTransaction).toEqual(
-      transferAmount * BigInt(Math.pow(10, chainDecimals))
-    );
-  });
-  test('should transfer tokens from Multisig to Bob', async ({ page, context }) => {
-    await selectMultisigAccount(page, context);
-    const transferAmount = BigInt(1000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-
-    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-    await page.getByRole('button', { name: 'Confirm' }).click();
-    const isMultisigTxSignButtonVisible = await checkIsMultisigTxSignButtonVisible(context);
-    expect(isMultisigTxSignButtonVisible).toBe(true);
   });
 
   test('EVM sample', async ({ page }) => {
