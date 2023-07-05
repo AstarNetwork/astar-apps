@@ -69,6 +69,10 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               multisigAddress: senderAddress,
               transaction: extrinsic,
             });
+            // Memo: give some time to wait for listing the transaction on PolkaSafe portal (queue page), so that users won't need to refresh the page to find the transaction for approving
+            const syncTime = 1000 * 10;
+            await wait(syncTime);
+
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage({
                 success: true,
