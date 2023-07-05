@@ -13,6 +13,10 @@ import-storage:
         - providers: 1
           data:
             free: '100000000000000000000000'
+      - - - 5F3QVbS78a4aTYLiRAD8N3czjqVoNyV42L19CXyhqUMCh4Ch # Alice-Bob multisig
+        - providers: 1
+          data:
+            free: '100000000000000000000000'
   # Sample list of available assetIds: https://github.com/AstarNetwork/astar-apps/blob/main/src/modules/xcm/tokens/index.ts
   Assets:
     Account:
