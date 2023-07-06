@@ -80,6 +80,8 @@ export default defineComponent({
         return t('toast.note');
       } else if (props.alertType === AlertType.Error) {
         return t('toast.error');
+      } else if (props.alertType === AlertType.Info) {
+        return t('toast.info');
       } else {
         return t('toast.copied');
       }

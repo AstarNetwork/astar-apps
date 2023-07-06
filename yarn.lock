@@ -979,9 +979,9 @@
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.9.6":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.5.tgz#8564dd588182ce0047d55d7a75e93921107b57ec"
-  integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
+  version "7.22.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.6.tgz#57d64b9ae3cff1d67eb067ae117dac087f5bd438"
+  integrity sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -6476,9 +6476,9 @@ dateformat@^3.0.0:
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
 dayjs@^1.11.7:
-  version "1.11.8"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.8.tgz#4282f139c8c19dd6d0c7bd571e30c2d0ba7698ea"
-  integrity sha512-LcgxzFoWMEPO7ggRv1Y2N31hUf2R0Vj7fuy/m+Bg1K8rr+KAs1AEy4y9jd5DXe8pbHgX+srkHNS7TH6Q6ZhYeQ==
+  version "1.11.9"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.9.tgz#9ca491933fadd0a60a2c19f6c237c03517d71d1a"
+  integrity sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
@@ -12300,10 +12300,10 @@ playwright-core@1.32.3:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.3.tgz#e6dc7db0b49e9b6c0b8073c4a2d789a96f519c48"
   integrity sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==
 
-polkasafe@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/polkasafe/-/polkasafe-1.0.7.tgz#5c69d5607b6ee64aebe26bae1dd11a388da77946"
-  integrity sha512-MLKOcRoKRMSSXNcT2a30DU6/XvnYu0R5+1ThL7t6f5z3inJxlEDSXD8bvYS+jLTSFaTrYsWaysNwhYoa58luMg==
+polkasafe@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/polkasafe/-/polkasafe-1.1.1.tgz#180416f4c2073b243853806414d890d958195310"
+  integrity sha512-mZpyxIYkxb1U0/kecsySoaeoQg9b904tyYVAOEswPctWseOqJiBtgfPRUNSmKCR9Iyyrsjtuy2EXTe/1Rq37Uw==
   dependencies:
     "@polkadot/api" "^10.6.1"
     "@polkadot/api-augment" "^10.7.3"

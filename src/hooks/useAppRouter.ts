@@ -18,6 +18,9 @@ import { Symbols } from 'src/v2/symbols';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
+import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
+import { useAccount } from './useAccount';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -25,6 +28,9 @@ const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTI
 export function useAppRouter() {
   const router = useRouter();
   const route = useRoute();
+  const store = useStore();
+  const { t } = useI18n();
+  const { disconnectAccount } = useAccount();
   const network = computed<string>(() => route.params.network as string);
   const { currentNetworkIdx } = useNetworkInfo();
   const castNetworkName = (networkParam: string): string => {
@@ -121,8 +127,17 @@ export function useAppRouter() {
     const signer = extensions.find((it) => {
       return it.name === multisig.signatory.source;
     });
-    await client.connect('astar', signatory, signer as any);
-    container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+    try {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('toast.enablePolkasafe'),
+        alertType: 'info',
+      });
+      await client.connect('astar', signatory, signer as any);
+      container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+    } catch (error) {
+      console.error(error);
+      await disconnectAccount();
+    }
   };
 
   watchEffect(handleInputNetworkParam);
