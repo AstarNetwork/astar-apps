@@ -2,8 +2,9 @@
   <div class="container--register">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <div class="wrapper--register-form">
-      <welcome-banner v-if="isNewDapp" class="welcome" />
-      <q-form ref="dappForm">
+      <welcome-banner v-if="isNewDapp && !isMobileDevice" class="welcome" />
+      <desktop-only-banner v-if="isMobileDevice" class="welcome" />
+      <q-form v-if="!isMobileDevice" ref="dappForm">
         <div style="display: flex; flex-direction: column">
           <q-input
             v-model="data.name"
@@ -82,7 +83,6 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
 import { FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
 import { Category, Developer } from '@astar-network/astar-sdk-core';
@@ -111,6 +111,8 @@ import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { Path } from 'src/router';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
+import DesktopOnlyBanner from './components/DesktopOnlyBanner.vue';
 
 export default defineComponent({
   components: {
@@ -126,6 +128,7 @@ export default defineComponent({
     Tags,
     BackToPage,
     WelcomeBanner,
+    DesktopOnlyBanner,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -326,6 +329,7 @@ export default defineComponent({
       errors,
       Path,
       isNewDapp,
+      isMobileDevice,
       updateDappLogo,
       isUrlValid,
       handleDappChanged,
