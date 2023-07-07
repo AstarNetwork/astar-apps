@@ -4,7 +4,7 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
-import { XcmChain } from 'src/v2/models/XcmModels';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { TokensAccounts } from 'src/v2/repositories/implementations/xcm/AcalaXcmRepository';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
@@ -71,6 +71,12 @@ export class InterlayXcmRepository extends XcmRepository {
     token: Asset,
     isNativeToken: boolean
   ): Promise<string> {
+    // Memo: avoid getting a UI error when the `token` is `ASTR` while the `monitorDestChainBalance` function(watch) in useXcmBridge.ts
+    // Reproduce the UI error: assets page -> transfer ASTR -> XCM -> flip the chains -> To: Interlay
+    const interlayChains = [Chain.INTERLAY, Chain.KINTSUGI];
+    if (!interlayChains.includes(token.originChain as Chain)) {
+      return '0';
+    }
     const api = await this.apiFactory.get(chain.endpoint);
 
     try {
@@ -83,6 +89,7 @@ export class InterlayXcmRepository extends XcmRepository {
       return '0';
     }
   }
+
   public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
     try {
       const api = await this.apiFactory.get(chain.endpoint);
