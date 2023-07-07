@@ -1,3 +1,4 @@
+import { TransactionConfig } from 'web3-eth';
 import { ASTAR_DECIMALS, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
@@ -7,10 +8,14 @@ import { Path } from 'src/router';
 import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { $web3 } from 'src/boot/api';
+import DAPPS_STAKING_ABI from 'src/config/abi/DAPPS_STAKING.json';
+import { AbiItem } from 'web3-utils';
+import Web3 from 'web3';
 
 export function useStake() {
   const router = useRouter();
@@ -18,6 +23,7 @@ export function useStake() {
   const { currentAccount } = useAccount();
   const { stakingList } = useStakingList();
   const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const addressTransferFrom = ref<string>(currentAccount.value);
   const { t } = useI18n();
   const store = useStore();
@@ -36,7 +42,6 @@ export function useStake() {
 
       const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
       const isNominationTransfer = item.address !== currentAccount.value;
-
       const formattedText = `${name} (${balanceFormatter(item.balance, ASTAR_DECIMALS)})`;
       return { text: formattedText, item, isNominationTransfer };
     } catch (error) {
@@ -97,6 +102,11 @@ export function useStake() {
     },
     { immediate: true }
   );
+
+  watchEffect(() => {
+    console.log('formattedTransferFrom', formattedTransferFrom.value);
+    console.log('stakingList', stakingList.value);
+  });
 
   return {
     formattedTransferFrom,

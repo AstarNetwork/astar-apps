@@ -111,12 +111,7 @@
           <div class="value">
             {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
           </div>
-          <astar-button
-            :disabled="isH160"
-            :width="80"
-            :height="24"
-            @click="changeDestinationForRestaking"
-          >
+          <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">
             {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
           </astar-button>
         </div>
@@ -179,7 +174,6 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const store = useStore();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
@@ -219,7 +213,6 @@ export default defineComponent({
       nativeTokenSymbol,
       isLoadingTotalStaked,
       goToSubscan,
-      isH160,
       pendingRewards,
       isLoadingPendingRewards,
       isDappDeveloper,

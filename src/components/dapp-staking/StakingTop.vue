@@ -70,19 +70,6 @@ export default defineComponent({
     };
 
     watch(
-      [isH160],
-      () => {
-        if (isH160.value) {
-          store.dispatch('general/showAlertMsg', {
-            msg: t('dappStaking.error.onlySupportsSubstrate'),
-            alertType: 'error',
-          });
-        }
-      },
-      { immediate: true }
-    );
-
-    watch(
       [dapps],
       () => {
         handlePageLoading();

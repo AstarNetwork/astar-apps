@@ -12,13 +12,22 @@ import {
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
-import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
+import { IBalanceFormatterService, IDappStakingService, IGasPriceProvider } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
+import Web3 from 'web3';
+import { getEvmGas } from '@astar-network/astar-sdk-core';
+import DAPPS_STAKING_ABI from 'src/config/abi/DAPPS_STAKING.json';
+import { AbiItem } from 'web3-utils';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { getBlockscoutTx } from 'src/links';
+import { AlertMsg } from 'src/modules/toast';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -30,7 +39,11 @@ export class DappStakingService implements IDappStakingService {
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
-    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator,
+
+    @inject(Symbols.CurrentWallet) private currentWallet: string,
+    @inject(Symbols.GasPriceProvider) private gasPriceProvider: IGasPriceProvider
   ) {
     this.wallet = walletFactory();
     this.systemRepository.startBlockSubscription();
@@ -91,13 +104,69 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+    const isH160 = isValidEvmAddress(stakerAddress);
 
-    const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
-    await this.wallet.signAndSend({
-      extrinsic: stakeCall,
-      senderAddress: stakerAddress,
-      successMessage,
-    });
+    if (isH160) {
+      const provider = getEvmProvider(this.currentWallet as any);
+      const web3 = new Web3(provider as any);
+      // const rawTx = await this.tokenTransferRepository.getEvmTransferData({
+      //   param,
+      //   web3,
+      // });
+      const [nonce, gasPrice] = await Promise.all([
+        web3.eth.getTransactionCount(stakerAddress),
+        getEvmGas(web3, this.gasPriceProvider.getGas().price),
+      ]);
+
+      const dappStakingContract = '0x0000000000000000000000000000000000005001';
+      const contract = new web3.eth.Contract(DAPPS_STAKING_ABI as AbiItem[], dappStakingContract);
+
+      const rawTx = {
+        nonce,
+        gasPrice: web3.utils.toHex(gasPrice),
+        from: stakerAddress,
+        to: dappStakingContract,
+        value: '0x0',
+        data: contract.methods.bond_and_stake(contractAddress, amount).encodeABI(),
+      };
+      const estimatedGas = await web3.eth.estimateGas(rawTx);
+      await web3.eth
+        .sendTransaction({ ...rawTx, gas: estimatedGas })
+        .once('transactionHash', (transactionHash) => {
+          this.eventAggregator.publish(new BusyMessage(true));
+        })
+        .then(({ transactionHash }) => {
+          const explorerUrl = getBlockscoutTx(transactionHash);
+          this.eventAggregator.publish(new BusyMessage(false));
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({
+              success: true,
+              message: successMessage,
+              explorerUrl,
+            })
+          );
+        })
+        .catch((error: any) => {
+          console.error(error);
+          this.eventAggregator.publish(new BusyMessage(false));
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({
+              success: false,
+              message: error.message || AlertMsg.ERROR,
+            })
+          );
+        });
+    } else {
+      const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(
+        contractAddress,
+        amount
+      );
+      await this.wallet.signAndSend({
+        extrinsic: stakeCall,
+        senderAddress: stakerAddress,
+        successMessage,
+      });
+    }
   }
 
   public async unbondAndUnstake(

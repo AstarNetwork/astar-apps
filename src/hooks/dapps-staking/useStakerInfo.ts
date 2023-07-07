@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { DappItem } from '@astar-network/astar-sdk-core';
+import { DappItem, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { container } from 'src/v2/common';
@@ -28,13 +28,14 @@ export function useStakerInfo() {
     let data: StakeInfo[] = [];
     let myData: MyStakeInfo[] = [];
 
+    const address = isValidEvmAddress(currentAccount.value)
+      ? toSS58Address(currentAccount.value)
+      : currentAccount.value;
+
     const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
     data = await Promise.all<StakeInfo>(
       dapps.value.map(async (it: DappCombinedInfo) => {
-        const stakeData = await dappStakingService.getStakeInfo(
-          it.dapp?.address!,
-          currentAccount.value
-        );
+        const stakeData = await dappStakingService.getStakeInfo(it.dapp?.address!, address);
         if (stakeData?.hasStake) {
           myData.push({ ...stakeData, ...it.dapp });
         }
