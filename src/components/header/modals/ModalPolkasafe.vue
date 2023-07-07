@@ -32,7 +32,7 @@
         <div v-if="isLoadingPolkasafe && selectedSignatory" class="row--zero-accounts">
           <span>{{ $t('wallet.multisig.initPolkasafe') }}</span>
           <div class="row--skeleton">
-            <q-skeleton animation="pulse-x" />
+            <q-skeleton type="text" />
           </div>
         </div>
         <div

@@ -77,7 +77,8 @@ export default {
     error: 'Error',
     copied: 'Copied',
     info: 'Info',
-    enablePolkasafe: 'Please sign on the wallet extension to enable PolkaSafe functionality',
+    enablePolkasafe:
+      'Please sign on the wallet extension to enable PolkaSafe functionality; the popup may take a while to appear',
   },
   common: {
     updateMetadata: 'Update Metadata',
