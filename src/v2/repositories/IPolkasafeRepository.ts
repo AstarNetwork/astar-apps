@@ -8,4 +8,5 @@ export interface IPolkasafeRepository {
 export interface MultisigTransactionParam {
   multisigAddress: string;
   transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
+  tip: string;
 }

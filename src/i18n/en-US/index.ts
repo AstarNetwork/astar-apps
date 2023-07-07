@@ -52,6 +52,7 @@ export default {
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
@@ -253,12 +254,15 @@ export default {
     dappStakingEvm: 'dApp Staking is available on EVM',
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
+    transactions: 'Transactions',
+    uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
     },
+    last30days: '(last 30 days)',
     dappPage: {
       back: 'Back',
       goBackToTopPage: 'Go back to the top page',

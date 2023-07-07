@@ -3,7 +3,7 @@ import { Guard, container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { Polkasafe } from 'polkasafe';
 import { IPolkasafeRepository, MultisigTransactionParam } from 'src/v2/repositories';
-
+import { BN } from '@polkadot/util';
 @injectable()
 export class PolkasafeRepository implements IPolkasafeRepository {
   constructor() {}
@@ -11,20 +11,19 @@ export class PolkasafeRepository implements IPolkasafeRepository {
   public async sendMultisigTransaction({
     multisigAddress,
     transaction,
+    tip,
   }: MultisigTransactionParam): Promise<string> {
     Guard.ThrowIfUndefined('multisigAddress', multisigAddress);
     Guard.ThrowIfUndefined('transaction', transaction);
-    const eventGrabber = (message: any): void => {
-      // Memo: use message to track transaction progress and events using eventGrabber for real-time visibility
-      // console.info(message);
-    };
+
     const isProxy = false;
     const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
-    const { data, error } = await polkasafeClient.transferAsMulti(
+    const { data, error } = await polkasafeClient.customTransactionAsMulti(
       multisigAddress,
       transaction,
-      eventGrabber,
-      isProxy
+      undefined,
+      isProxy,
+      new BN(tip)
     );
     if (error) {
       throw Error(error);

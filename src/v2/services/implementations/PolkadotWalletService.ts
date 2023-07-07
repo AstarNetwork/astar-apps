@@ -68,6 +68,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             const callHash = await this.polkasafeClient.sendMultisigTransaction({
               multisigAddress: senderAddress,
               transaction: extrinsic,
+              tip,
             });
             // Memo: give some time to wait for listing the transaction on PolkaSafe portal (queue page), so that users won't need to refresh the page to find the transaction for approving
             const syncTime = 1000 * 10;
