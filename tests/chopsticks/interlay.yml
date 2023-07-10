@@ -5,11 +5,20 @@ db: ./db.sqlite
 port: 9948
 
 import-storage:
-  System:
-    Account:
+  Tokens:
+    Accounts:
       -
         -
           - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-        - providers: 1
-          data:
-            free: 1000000000000000
+          - token: INTR
+        - free: 1000000000000000
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: IBTC
+        - free: 100000000000
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: DOT
+        - free: 1000000000000000
