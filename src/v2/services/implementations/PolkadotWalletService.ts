@@ -85,9 +85,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             this.eventAggregator.publish(new BusyMessage(false));
             resolve(callHash);
           } catch (error: any) {
-            this.eventAggregator.publish(
-              new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
-            );
+            const isDuplicatedTx = error.message.includes('AlreadyApproved');
+            const message = isDuplicatedTx ? AlertMsg.ERROR_DUPLICATED_TX : AlertMsg.ERROR;
+            this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
             this.eventAggregator.publish(new BusyMessage(false));
             resolve(error.message);
           }
