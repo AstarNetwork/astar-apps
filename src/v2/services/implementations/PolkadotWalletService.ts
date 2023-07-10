@@ -79,7 +79,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 success: true,
                 message: AlertMsg.SUCCESS_MULTISIG,
                 method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                explorerUrl: polkasafeUrl + '/transactions',
+                explorerUrl: polkasafeUrl + '/transactions?tab=Queue#' + callHash,
               })
             );
             this.eventAggregator.publish(new BusyMessage(false));
