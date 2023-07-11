@@ -67,7 +67,7 @@
             stroke="currentColor"
             icon-name="staking"
           >
-            <icon-side-nft />
+            <astar-icon-dapp-staking />
           </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">NFT</astar-text>
@@ -95,6 +95,7 @@
     </nav>
 
     <div class="wrapper--bottom">
+      <sidebar-option-desktop />
       <social-media-links />
       <div class="wrapper--option">
         <light-dark-mode />
@@ -115,9 +116,9 @@ import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
-import IconSideNft from './components/IconSideNFT.vue';
 import IconEcosystem from './components/IconEcosystem.vue';
 import Balloon from './components/Balloon.vue';
+import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
 import { decentralizedOrigin } from 'src/links';
 
 export default defineComponent({
@@ -126,9 +127,9 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     Logo,
-    IconSideNft,
     IconEcosystem,
     Balloon,
+    SidebarOptionDesktop,
   },
   setup() {
     const { isOpen } = useSidebar();
