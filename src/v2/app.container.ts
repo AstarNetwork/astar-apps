@@ -45,6 +45,7 @@ import {
   BalanceFormatterService,
   XcmEvmService,
   TokenTransferService,
+  EvmDappStakingService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -108,6 +109,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
+  container.addTransient<IDappStakingService>(EvmDappStakingService, Symbols.EvmDappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
   container.addTransient<IXvmService>(XvmService, Symbols.XvmService);

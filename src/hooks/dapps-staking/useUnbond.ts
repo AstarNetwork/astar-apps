@@ -14,12 +14,15 @@ export function useUnbound() {
   const { currentAccount } = useAccount();
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
   const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const { t } = useI18n();
 
   const handleUnbound = async (contractAddress: string, amount: string | null): Promise<void> => {
     if (amount) {
       const unbondAmount = new BN(ethers.utils.parseEther(amount).toString());
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const dappStakingService = container.get<IDappStakingService>(
+        isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+      );
       const successMessage = t('dappStaking.toast.successfullyUnbond', {
         contractAddress: getShortenAddress(contractAddress, 5),
       });

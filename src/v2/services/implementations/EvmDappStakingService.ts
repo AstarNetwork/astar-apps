@@ -3,10 +3,12 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
+import { IEventAggregator } from 'src/v2/messaging';
 import { TvlModel } from 'src/v2/models';
 import { AccountLedger, DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
@@ -15,29 +17,34 @@ import {
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
-import {
-  IBalanceFormatterService,
-  IDappStakingService,
-  ParamSetRewardDestination,
-} from 'src/v2/services';
+import { IDappStakingService, ParamSetRewardDestination } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import { IWalletService } from '../IWalletService';
+import { Contract } from 'web3-eth-contract';
+import { RewardDestination } from 'src/hooks';
+
+const dappStakingContract = '0x0000000000000000000000000000000000005001';
 
 @injectable()
-export class DappStakingService implements IDappStakingService {
+export class EvmDappStakingService implements IDappStakingService {
   private readonly wallet: IWalletService;
+  private readonly evmContract: Contract;
 
   constructor(
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
-    @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
-    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
   ) {
     this.wallet = walletFactory();
     this.systemRepository.startBlockSubscription();
     this.dappStakingRepository.starEraSubscription();
+    const web3 = new Web3();
+    this.evmContract = new web3.eth.Contract(DAPPS_STAKING_ABI as AbiItem[], dappStakingContract);
   }
 
   public async getTvl(): Promise<TvlModel> {
@@ -73,15 +80,12 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('fromContractId', fromContractId);
     Guard.ThrowIfUndefined('targetContractId', targetContractId);
     Guard.ThrowIfUndefined('stakerAddress', address);
-
-    const stakeCall = await this.dappStakingRepository.getNominationTransferCall({
-      amount,
-      fromContractId,
-      targetContractId,
-    });
-    await this.wallet.signAndSend({
-      extrinsic: stakeCall,
-      senderAddress: address,
+    await this.wallet.sendEvmTransaction({
+      from: address,
+      to: dappStakingContract,
+      data: this.evmContract.methods
+        .nomination_transfer(fromContractId, amount, targetContractId)
+        .encodeABI(),
       successMessage,
     });
   }
@@ -94,11 +98,10 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-
-    const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
-    await this.wallet.signAndSend({
-      extrinsic: stakeCall,
-      senderAddress: stakerAddress,
+    await this.wallet.sendEvmTransaction({
+      from: stakerAddress,
+      to: dappStakingContract,
+      data: this.evmContract.methods.bond_and_stake(contractAddress, amount).encodeABI(),
       successMessage,
     });
   }
@@ -111,14 +114,10 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-
-    const unboundCall = await this.dappStakingRepository.getUnbondAndUnstakeCall(
-      contractAddress,
-      amount
-    );
-    await this.wallet.signAndSend({
-      extrinsic: unboundCall,
-      senderAddress: stakerAddress,
+    await this.wallet.sendEvmTransaction({
+      from: stakerAddress,
+      to: dappStakingContract,
+      data: this.evmContract.methods.unbond_and_unstake(contractAddress, amount).encodeABI(),
       successMessage,
     });
   }
@@ -235,18 +234,17 @@ export class DappStakingService implements IDappStakingService {
 
     return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
-
   public async setRewardDestination({
     rewardDestination,
     senderAddress,
     successMessage,
   }: ParamSetRewardDestination) {
-    const transaction = await this.dappStakingRepository.getSetRewardDestinationCall(
-      rewardDestination
-    );
-    await this.wallet.signAndSend({
-      extrinsic: transaction,
-      senderAddress,
+    // Ref: Enum from https://github.com/AstarNetwork/astar-frame/blob/polkadot-v0.9.39/frame/dapps-staking/src/lib.rs#L554
+    const destination = rewardDestination === RewardDestination.FreeBalance ? 0 : 1;
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dappStakingContract,
+      data: this.evmContract.methods.set_reward_destination(destination).encodeABI(),
       successMessage,
     });
   }

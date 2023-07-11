@@ -15,6 +15,14 @@ export interface ParamSignAndSend {
   subscan?: string;
 }
 
+export interface ParamSendEvmTransaction {
+  from: string;
+  to: string;
+  data: any;
+  value?: string;
+  successMessage?: string;
+}
+
 export interface IWalletService {
   /**
    * Signs and sends transaction. Returns transaction hash.
@@ -24,4 +32,13 @@ export interface IWalletService {
    * @param transactionTip Transaction tip.
    */
   signAndSend(param: ParamSignAndSend): Promise<string | null>;
+  /**
+   * Signs and sends EVM transaction. Returns transaction hash.
+   * @param from sender address
+   * @param to contract or destination address
+   * @param data encoded contract methods
+   * @param value amount value of ASTR tokens (default value: '0x0')
+   * @param successMessage Message to show in case of successful transaction
+   */
+  sendEvmTransaction(param: ParamSendEvmTransaction): Promise<string>;
 }

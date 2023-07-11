@@ -5,6 +5,7 @@ export const Symbols = {
   DefaultApi: Symbol.for('DefaultApi'),
   ApiFactory: Symbol.for('ApiFactory'),
   GasPriceProvider: Symbol.for('GasPriceProvider'),
+  EvmDappStakingService: Symbol.for('EvmDappStakingService'),
   DappStakingService: Symbol.for('DappStakingService'),
   DappStakingRepository: Symbol.for('DappStakingRepository'),
   MetadataRepository: Symbol.for('MetadataRepository'),

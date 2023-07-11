@@ -1,12 +1,18 @@
+import { getEvmGas } from '@astar-network/astar-sdk-core';
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { getSubscanExtrinsic } from 'src/links';
+import { getBlockscoutTx, getSubscanExtrinsic } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
-import { IWalletService, ParamSignAndSend } from 'src/v2/services';
+import {
+  IGasPriceProvider,
+  IWalletService,
+  ParamSendEvmTransaction,
+  ParamSignAndSend,
+} from 'src/v2/services';
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
@@ -19,7 +25,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.EthCallRepository) private ethCallRepository: IEthCallRepository,
     @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator,
-    @inject(Symbols.CurrentWallet) private currentWallet: string
+    @inject(Symbols.CurrentWallet) private currentWallet: string,
+    @inject(Symbols.GasPriceProvider) private gasPriceProvider: IGasPriceProvider
   ) {
     super(eventAggregator);
 
@@ -99,5 +106,55 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       this.eventAggregator.publish(new BusyMessage(false));
       throw Error(error.message);
     }
+  }
+  public async sendEvmTransaction({
+    from,
+    to,
+    value,
+    data,
+    successMessage,
+  }: ParamSendEvmTransaction): Promise<string> {
+    const web3 = new Web3(this.provider as any);
+    const [nonce, gasPrice] = await Promise.all([
+      web3.eth.getTransactionCount(from),
+      getEvmGas(web3, this.gasPriceProvider.getGas().price),
+    ]);
+    const rawTx = {
+      nonce,
+      gasPrice: web3.utils.toHex(gasPrice),
+      from,
+      to,
+      value: value ? value : '0x0',
+      data,
+    };
+    const estimatedGas = await web3.eth.estimateGas(rawTx);
+    await web3.eth
+      .sendTransaction({ ...rawTx, gas: estimatedGas })
+      .once('transactionHash', (transactionHash) => {
+        this.eventAggregator.publish(new BusyMessage(true));
+      })
+      .then(({ transactionHash }) => {
+        const explorerUrl = getBlockscoutTx(transactionHash);
+        this.eventAggregator.publish(new BusyMessage(false));
+        this.eventAggregator.publish(
+          new ExtrinsicStatusMessage({
+            success: true,
+            message: successMessage ? successMessage : AlertMsg.SUCCESS,
+            explorerUrl,
+          })
+        );
+        return transactionHash;
+      })
+      .catch((error: any) => {
+        console.error(error);
+        this.eventAggregator.publish(new BusyMessage(false));
+        this.eventAggregator.publish(
+          new ExtrinsicStatusMessage({
+            success: false,
+            message: error.message || AlertMsg.ERROR,
+          })
+        );
+      });
+    return AlertMsg.ERROR;
   }
 }

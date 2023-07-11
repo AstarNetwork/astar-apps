@@ -1,4 +1,9 @@
-import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
+import {
+  checkIsDappOwner,
+  getNumberOfUnclaimedEra,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { Struct, Vec, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
@@ -11,6 +16,7 @@ import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCurrentEra } from '../useCurrentEra';
+import { useAccount } from '../useAccount';
 
 type EraIndex = u32;
 
@@ -37,8 +43,13 @@ export interface AccountLedger extends Struct {
 export function useCompoundRewards() {
   const store = useStore();
   const { t } = useI18n();
-  const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const { currentAccount } = useAccount();
+  const currentAddress = computed<string>(() => {
+    const address = store.getters['general/selectedAddress'];
+    return isValidEvmAddress(address) ? toSS58Address(address) : address;
+  });
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const { era } = useCurrentEra();
 
   const isSupported = ref<boolean>(false);
@@ -47,7 +58,7 @@ export function useCompoundRewards() {
   const isUnclaimedEra = ref<boolean>(false);
   const isDappOwner = ref<boolean>(false);
   const toggleCounter = ref<number>(0);
-  const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
+  const rewardDestination = ref<RewardDestination>(RewardDestination.StakeBalance);
 
   const getCompoundingType = async (): Promise<void> => {
     try {
@@ -76,9 +87,11 @@ export function useCompoundRewards() {
 
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
     try {
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const dappStakingService = container.get<IDappStakingService>(
+        isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+      );
       await dappStakingService.setRewardDestination({
-        senderAddress: currentAddress.value,
+        senderAddress: currentAccount.value,
         rewardDestination,
         successMessage: t('dappStaking.toast.successfullySetRewardDest'),
       });
@@ -131,9 +144,7 @@ export function useCompoundRewards() {
   );
 
   return {
-    isSupported,
     isCompounding,
-    rewardDestination,
     isStaker,
     isDappOwner,
     isUnclaimedEra,

@@ -1,4 +1,3 @@
-import { TransactionConfig } from 'web3-eth';
 import { ASTAR_DECIMALS, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
@@ -12,10 +11,6 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { $web3 } from 'src/boot/api';
-import DAPPS_STAKING_ABI from 'src/config/abi/DAPPS_STAKING.json';
-import { AbiItem } from 'web3-utils';
-import Web3 from 'web3';
 
 export function useStake() {
   const router = useRouter();
@@ -58,7 +53,9 @@ export function useStake() {
     targetContractId: string;
   }) => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount).toString());
-    const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const dappStakingService = container.get<IDappStakingService>(
+      isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+    );
     const balance = new BN(formattedTransferFrom.value.item?.balance || '0');
     if (balance.lt(stakeAmount)) {
       store.dispatch('general/showAlertMsg', {
