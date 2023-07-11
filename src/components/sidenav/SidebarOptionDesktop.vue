@@ -58,17 +58,42 @@
         </div>
       </q-menu>
     </div>
+    <a :href="docsUrl.topPage" target="_blank">
+      <div class="sidebar-button-container">
+        <astar-icon-base class="community-icon">
+          <astar-icon-docs />
+        </astar-icon-base>
+        {{ $t('sidenavi.docs') }}
+      </div>
+    </a>
+    <div class="sidebar-button-container">
+      <astar-icon-base>
+        <astar-icon-3dots />
+      </astar-icon-base>
+      {{ $t('sidenavi.settings') }}
+      <q-menu anchor="top middle" self="center left" :square="false">
+        <div class="menu-container sidebar-text">
+          <div><locale-changer /></div>
+          <div class="theme-container">
+            <span>{{ $t('sidenavi.theme') }}</span>
+            <light-dark-mode />
+          </div>
+        </div>
+      </q-menu>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { socialUrl } from 'src/links';
+import { socialUrl, docsUrl } from 'src/links';
+import LocaleChanger from '../common/LocaleChanger.vue';
+import LightDarkMode from '../common/LightDarkMode.vue';
 
 export default defineComponent({
-  components: {},
+  components: { LocaleChanger, LightDarkMode },
   setup() {
-    return { socialUrl };
+    return { socialUrl, docsUrl };
   },
 });
 </script>
@@ -93,11 +118,13 @@ svg {
 }
 
 .menu-container {
+  display: flex;
+  flex-direction: column;
   width: 240px;
   padding: 8px;
   border-radius: 6px;
+  row-gap: 10px;
   background-color: $navy-1;
-  filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.8));
 }
 
 .sidebar-button-container {
@@ -106,6 +133,7 @@ svg {
   background-color: $navy-3;
   border-radius: 6px;
   padding: 10px;
+  margin-bottom: 10px;
   cursor: pointer;
 
   &:hover {
@@ -129,4 +157,21 @@ svg {
   line-height: normal;
   color: $gray-1;
 }
+
+.theme-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
 </style>
+
+<style lang="scss">
+.q-menu {
+  border-radius: 6px;
+  background-color: $navy-1;
+  color: $gray-1;
+  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.8));
+}
+</style>
+

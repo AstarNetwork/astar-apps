@@ -91,16 +91,22 @@
           </div>
         </a>
       </div>
+      <div>
+        <a :class="['link']" :href="socialUrl.forum" target="_blank">
+          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="forum">
+            <astar-icon-forum />
+          </astar-icon-base>
+          <div class="row--item row--item-ecosystem">
+            <astar-text type="H4">{{ $t('sidenavi.forum') }}</astar-text>
+            <astar-icon-external-link />
+          </div>
+        </a>
+      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
     <div class="wrapper--bottom">
       <sidebar-option-desktop />
-      <social-media-links />
-      <div class="wrapper--option">
-        <light-dark-mode />
-        <locale-changer />
-      </div>
     </div>
   </div>
 </template>
@@ -110,9 +116,6 @@ import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
 import { useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import LocaleChanger from '../common/LocaleChanger.vue';
-import SocialMediaLinks from '../common/SocialMediaLinks.vue';
-import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
@@ -120,12 +123,10 @@ import IconEcosystem from './components/IconEcosystem.vue';
 import Balloon from './components/Balloon.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
 import { decentralizedOrigin } from 'src/links';
+import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {
-    SocialMediaLinks,
-    LightDarkMode,
-    LocaleChanger,
     Logo,
     IconEcosystem,
     Balloon,
@@ -171,6 +172,7 @@ export default defineComponent({
       RoutePath,
       hoverNFT,
       isDecentralized,
+      socialUrl,
     };
   },
 });
