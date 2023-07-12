@@ -58,7 +58,7 @@ export function useCompoundRewards() {
   const isUnclaimedEra = ref<boolean>(false);
   const isDappOwner = ref<boolean>(false);
   const toggleCounter = ref<number>(0);
-  const rewardDestination = ref<RewardDestination>(RewardDestination.StakeBalance);
+  const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async (): Promise<void> => {
     try {
