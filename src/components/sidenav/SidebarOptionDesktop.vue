@@ -33,7 +33,7 @@
           </a>
           <a :href="socialUrl.reddit" target="_blank">
             <div class="menu-item">
-              <astar-icon-base class="icon" icon-name="Reddit">
+              <astar-icon-base class="icon community-icon" icon-name="Reddit">
                 <astar-icon-reddit />
               </astar-icon-base>
               {{ $t('sidenavi.reddit') }}
@@ -41,7 +41,7 @@
           </a>
           <a :href="socialUrl.youtube" target="_blank">
             <div class="menu-item">
-              <astar-icon-base class="icon" icon-name="YouTube">
+              <astar-icon-base class="icon community-icon" icon-name="YouTube">
                 <astar-icon-youtube />
               </astar-icon-base>
               {{ $t('sidenavi.youtube') }}
@@ -49,7 +49,7 @@
           </a>
           <a :href="socialUrl.github" target="_blank">
             <div class="menu-item">
-              <astar-icon-base class="icon" viewBox="0 0 548 512" icon-name="Github">
+              <astar-icon-base class="icon" viewBox="0 4 548 512" icon-name="Github">
                 <astar-icon-github />
               </astar-icon-base>
               {{ $t('sidenavi.github') }}
@@ -73,7 +73,7 @@
       {{ $t('sidenavi.settings') }}
       <q-menu anchor="top middle" self="center left" :square="false">
         <div class="menu-container sidebar-text">
-          <div><locale-changer /></div>
+          <div class="locale-container"><locale-changer /></div>
           <div class="theme-container">
             <span>{{ $t('sidenavi.theme') }}</span>
             <light-dark-mode />
@@ -162,7 +162,11 @@ svg {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding: 12px;
+}
+
+.locale-container {
+  padding: 0px 10px;
 }
 </style>
 
@@ -173,5 +177,16 @@ svg {
   color: $gray-1;
   filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.8));
 }
-</style>
 
+.q-field--filled .q-field__control:before {
+  border-color: transparent;
+}
+
+.q-field--filled .q-field--focused .f-field--selected .q-field__control:before {
+  border-color: transparent;
+}
+
+.q-field--filled .q-field__control {
+  border-radius: 6px;
+}
+</style>

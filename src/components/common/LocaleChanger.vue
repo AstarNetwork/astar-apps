@@ -1,13 +1,15 @@
 <template>
-  <div>
-    <q-select
-      v-model="selectedLang"
-      filled
-      :options="langs"
-      option-value="code"
-      option-label="text"
-    />
-  </div>
+  <q-select
+    v-model="selectedLang"
+    :options="langs"
+    option-value="code"
+    option-label="text"
+    :hide-dropdown-icon="false"
+  >
+    <template #append>
+      <q-icon name="language" />
+    </template>
+  </q-select>
 </template>
 
 <script lang="ts">
@@ -72,16 +74,6 @@ export default defineComponent({
     background: #fff;
   }
 }
-
-// .body--dark {
-//   .select-language {
-//     background: #9d9ccc;
-//     color: black;
-//   }
-//   .icon--select {
-//     color: black;
-//   }
-// }
 </style>
 
 <style lang="scss">
@@ -95,5 +87,9 @@ export default defineComponent({
 
 .q-field__native {
   color: $gray-1;
+}
+
+.q-icon {
+  color: $gray-4;
 }
 </style>
