@@ -1,6 +1,7 @@
 <template>
   <q-select
     v-model="selectedLang"
+    filled
     :options="langs"
     option-value="code"
     option-label="text"

@@ -182,7 +182,7 @@ svg {
   border-color: transparent;
 }
 
-.q-field--filled .q-field--focused .f-field--selected .q-field__control:before {
+.q-field--filled:hover .q-field__control:before {
   border-color: transparent;
 }
 
