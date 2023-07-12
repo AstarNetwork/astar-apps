@@ -29,7 +29,7 @@
         </a>
       </div>
     </div>
-    <div id="history" class="container--information">
+    <div v-if="!isMultisig" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -75,6 +75,7 @@
 </template>
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import { HistoryTxType } from 'src/modules/account';
@@ -109,6 +110,7 @@ export default defineComponent({
     const { currentNetworkName } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
     const faqs = computed<Faq[]>(() => {
       if (props.transferType === HistoryTxType.Transfer) {
         return isH160.value ? faqH160Transfer : faqSs58Transfer;
@@ -144,7 +146,7 @@ export default defineComponent({
 
     watchEffect(setTxHistories);
 
-    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl, isMultisig };
   },
 });
 </script>

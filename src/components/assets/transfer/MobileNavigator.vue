@@ -5,7 +5,7 @@
         <astar-icon-group :size="size" />
         <span>{{ $t('assets.transferPage.faq') }}</span>
       </button>
-      <button class="circle--button" @click="scrollTo('history')">
+      <button v-if="!isMultisig" class="circle--button" @click="scrollTo('history')">
         <astar-icon-history :size="size" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
       </button>
@@ -17,6 +17,7 @@
   </div>
 </template>
 <script lang="ts">
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useBreakpoints } from 'src/hooks';
 import { defineComponent, computed } from 'vue';
 
@@ -24,6 +25,7 @@ export default defineComponent({
   setup() {
     const { screenSize, width } = useBreakpoints();
     const size = computed(() => (width.value > screenSize.sm ? '24' : '21'));
+    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
 
     const scrollTo = (id: string): void => {
       const el = document.getElementById(id);
@@ -33,6 +35,7 @@ export default defineComponent({
     return {
       screenSize,
       size,
+      isMultisig,
       scrollTo,
     };
   },

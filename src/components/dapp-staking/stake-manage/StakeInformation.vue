@@ -29,7 +29,7 @@
         </a>
       </div>
     </div>
-    <div id="history" class="container--information">
+    <div v-if="!isMultisig" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -76,6 +76,7 @@
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import {
@@ -99,6 +100,7 @@ export default defineComponent({
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const subScan = computed<string>(() => `${providerEndpoints[currentNetworkIdx.value].subscan}`);
+    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
 
     const setTxHistories = async (): Promise<void> => {
       if (!currentAccount.value || !currentNetworkName.value) return;
@@ -128,7 +130,7 @@ export default defineComponent({
 
     watchEffect(setTxHistories);
 
-    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl, isMultisig };
   },
 });
 </script>
