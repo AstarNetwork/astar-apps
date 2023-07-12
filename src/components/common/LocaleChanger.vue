@@ -39,7 +39,6 @@ export default defineComponent({
       () => {
         locale.value = selectedLang.value.code;
         localStorage.setItem(LOCAL_STORAGE.SELECTED_LANGUAGE, locale.value);
-        console.log(selectedLang.value);
       },
       { immediate: false }
     );
