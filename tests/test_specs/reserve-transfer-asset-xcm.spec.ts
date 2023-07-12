@@ -1,6 +1,6 @@
 import { clickPolicyButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
-import { test } from './fixtures';
+import { test } from '../fixtures';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
@@ -10,9 +10,9 @@ import {
   createAccount,
   selectAccount,
   signTransaction,
-} from './common';
+} from '../common';
 import { ApiPromise } from '@polkadot/api';
-import { chainDecimals, getApi, getBalance, roundUpAndTruncateBigInt } from './common-api';
+import { chainDecimals, getApi, getBalance, roundUpAndTruncateBigInt } from '../common-api';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
