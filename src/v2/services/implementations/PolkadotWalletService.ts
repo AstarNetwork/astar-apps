@@ -59,8 +59,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
         }
 
-        console.info('transaction tip', tip);
-
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
           try {

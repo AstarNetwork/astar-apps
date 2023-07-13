@@ -26,6 +26,7 @@ export class PolkasafeRepository implements IPolkasafeRepository {
       new BN(tip)
     );
     if (error) {
+      console.error('error', error);
       throw Error(error.error);
     }
     return data.callHash;
