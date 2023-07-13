@@ -1,16 +1,15 @@
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { Struct, u32, Vec } from '@polkadot/types';
+import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
+import { Struct, Vec, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
-import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCustomSignature, useGasPrice } from 'src/hooks';
-import { signAndSend } from 'src/hooks/helper/wallet';
-import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
 
 type EraIndex = u32;
@@ -38,11 +37,8 @@ export interface AccountLedger extends Struct {
 export function useCompoundRewards() {
   const store = useStore();
   const { t } = useI18n();
-  const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
-  const { selectedTip } = useGasPrice();
   const { era } = useCurrentEra();
 
   const isSupported = ref<boolean>(false);
@@ -53,7 +49,7 @@ export function useCompoundRewards() {
   const toggleCounter = ref<number>(0);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
-  const getCompoundingType = async () => {
+  const getCompoundingType = async (): Promise<void> => {
     try {
       // Check if metadata contains set_reward_destination so we know
       // if compounding is supported by a node or not.
@@ -80,53 +76,11 @@ export function useCompoundRewards() {
 
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
     try {
-      const transaction = $api!.tx.dappsStaking.setRewardDestination(rewardDestination);
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        return new Promise<boolean>(async (resolve) => {
-          if (result.status.isFinalized) {
-            let errorMessage = '';
-            if (
-              !hasExtrinsicFailedEvent(
-                result.events,
-                store.dispatch,
-                (message: string) => (errorMessage = message)
-              )
-            ) {
-              store.dispatch(
-                'general/showAlertMsg',
-                {
-                  msg: t('dappStaking.toast.successfullySetRewardDest'),
-                  alertType: 'success',
-                  txHash: result.txHash.toString(),
-                },
-                { root: true }
-              );
-              resolve(true);
-            } else {
-              if (errorMessage.includes('TooManyEraStakeValues')) {
-                errorMessage = t('dappStaking.toast.requiredClaimFirstCompounding', {
-                  message: errorMessage,
-                });
-                resolve(false);
-              }
-            }
-
-            store.commit('general/setLoading', false, { root: true });
-          } else {
-            store.commit('general/setLoading', true);
-          }
-        });
-      };
-
-      await signAndSend({
-        transaction,
+      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      await dappStakingService.setRewardDestination({
         senderAddress: currentAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
+        rewardDestination,
+        successMessage: t('dappStaking.toast.successfullySetRewardDest'),
       });
       toggleCounter.value++;
     } catch (e: any) {
@@ -138,7 +92,7 @@ export function useCompoundRewards() {
     }
   };
 
-  const checkIsClaimable = async () => {
+  const checkIsClaimable = async (): Promise<void> => {
     if (!dapps.value || !currentAddress.value || !era.value) return;
     await Promise.all(
       dapps.value.map(async (it) => {

@@ -6,6 +6,7 @@ import {
   StakerInfo,
   DappStakingConstants,
   AccountLedger,
+  RewardDestination,
 } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
@@ -120,6 +121,9 @@ export interface IDappStakingRepository {
   getNextEraEta(network: string): Promise<number>;
 
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
+  getSetRewardDestinationCall(
+    rewardDestination: RewardDestination
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
   getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }

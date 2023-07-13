@@ -144,7 +144,7 @@ import {
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
+import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
@@ -252,6 +252,7 @@ export default defineComponent({
       }
       isSelected.value = true;
       isClosing.value = false;
+      localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
       emit('update:is-open', false);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
     };
@@ -376,7 +377,7 @@ export default defineComponent({
       }
     };
 
-    watch([props.selectedWallet], requestExtensionsIfFirstAccess);
+    watch([props.selectedWallet], requestExtensionsIfFirstAccess, { immediate: true });
 
     watch([selAccount], () => {
       toggleIsLedger.value = false;

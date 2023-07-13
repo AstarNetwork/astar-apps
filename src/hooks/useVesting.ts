@@ -1,22 +1,16 @@
-import { useGasPrice, ExtendedVestingInfo, useBalance, useCustomSignature } from 'src/hooks';
-import { ApiPromise } from '@polkadot/api';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { $api } from 'boot/api';
 import { ethers } from 'ethers';
+import { ExtendedVestingInfo, useBalance, useGasPrice } from 'src/hooks';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { IAssetsService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed } from 'vue';
-import { signAndSend } from 'src/hooks/helper/wallet';
 
-export function useVesting(closeModal: () => void) {
+export const useVesting = () => {
   const store = useStore();
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { accountData } = useBalance(selectedAddress);
   const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
-
-  const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
-    fn: closeModal,
-  });
 
   const info = computed(() => {
     const defaultData = {
@@ -65,29 +59,9 @@ export function useVesting(closeModal: () => void) {
     }
   });
 
-  const unlockVestedTokens = async (api: ApiPromise): Promise<void> => {
-    try {
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        return await handleResult(result);
-      };
-
-      await signAndSend({
-        transaction: api.tx.vesting.vest(),
-        senderAddress: selectedAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const sendTransaction = async (): Promise<void> => {
-    await unlockVestedTokens($api!);
+    const assetsService = container.get<IAssetsService>(Symbols.AssetsService);
+    await assetsService.unlockVestingTokens(selectedAddress.value);
   };
 
   return {
@@ -97,4 +71,4 @@ export function useVesting(closeModal: () => void) {
     nativeTipPrice,
     setSelectedTip,
   };
-}
+};

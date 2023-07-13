@@ -25,7 +25,7 @@
     "playwright:ci": "node ./tests/chopsticks/start-chopsticks.js"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.2.3",
+    "@astar-network/astar-sdk-core": "^0.2.4",
     "@astar-network/astar-ui": "^0.0.91",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^10.9.1",
@@ -66,6 +66,7 @@
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
+    "polkasafe": "^1.1.9",
     "quasar": "^2.3.3",
     "query-string": "^7.1.0",
     "reflect-metadata": "^0.1.13",
