@@ -108,12 +108,16 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $astar-blue;
+  color: $gray-5;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
   cursor: pointer;
   border: 1px solid $gray-3;
+  transition: all 0.4s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue;
+  }
 
   .wrapper--row--selected-account {
     display: flex;
@@ -173,7 +177,9 @@ export default defineComponent({
     background: $gray-6;
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);
   }
-
+  .box__row--wallet {
+    color: $gray-1;
+  }
   .box__row {
     &:hover {
       background-color: $gray-5;
