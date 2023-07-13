@@ -10,6 +10,7 @@ export enum SupportWallet {
   MetaMask = 'metamask',
   Clover = 'clover',
   Gridlock = 'gridlock',
+  GridlockEvm = 'gridlockEvm',
   Math = 'mathwallet',
   Nova = 'nova',
   NovaEvm = 'novaEvm',
@@ -168,6 +169,16 @@ export const supportWalletObj = {
 };
 
 export const supportEvmWalletObj = {
+  [SupportWallet.GridlockEvm]: {
+    img: require('/src/assets/img/logo-gridlock.png'),
+    name: 'Gridlock Wallet (EVM)',
+    source: SupportWallet.GridlockEvm,
+    walletUrl: 'https://gridlock.network/',
+    guideUrl: 'https://gridlock.network/',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+    ethExtension: 'ethereum',
+  },
   [SupportWallet.MetaMask]: {
     img: require('/src/assets/img/metamask.png'),
     name: 'MetaMask',
