@@ -1,5 +1,5 @@
 <template>
-  <div class="banner--container">{{ $t('dappStaking.welcomeBanner') }}</div>
+  <div class="banner--container">{{ $t('dappStaking.desktopOnlyBanner') }}</div>
 </template>
 
 <style lang="scss" scoped>

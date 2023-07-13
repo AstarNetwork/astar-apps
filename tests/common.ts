@@ -37,6 +37,7 @@ export const selectAccount = async (page: Page, accountName: string): Promise<vo
   await page.getByText('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
+  await page.waitForTimeout(1000);
 };
 
 export const signTransaction = async (context: BrowserContext): Promise<void> => {
