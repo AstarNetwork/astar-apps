@@ -154,6 +154,7 @@ import { polkasafeUrl } from 'src/links';
 import { SupportMultisig } from 'src/config/wallets';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { MultisigAddress, Multisig } from 'src/modules/multisig';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
 
 export default defineComponent({
   components: {
@@ -268,6 +269,40 @@ export default defineComponent({
       return truncate(ethers.utils.formatEther(balance || '0'));
     };
 
+    const setMultisigAccounts = async (c: Polkasafe, signatory: string): Promise<void> => {
+      const { data, error } = await c.connectAddress(signatory);
+      if (error) throw Error(error);
+      if (!data.hasOwnProperty('multisigAddresses')) {
+        throw Error('error fetching multisig accounts');
+      }
+
+      //@ts-ignore
+      const filteredMultisigAccounts = data.multisigAddresses.filter((it: MultisigAddress) =>
+        isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
+      );
+      if (filteredMultisigAccounts.length > 0) {
+        const updatedAccountMap = await Promise.all(
+          filteredMultisigAccounts.map(async (it: MultisigAddress) => {
+            const balance = await fetchNativeBalance({
+              api: $api as ApiPromise,
+              address: it.address,
+            });
+            return { ...it, balance };
+          }) as MultisigAddress[]
+        );
+        multisigAccounts.value = updatedAccountMap.sort(
+          (a: MultisigAddress, b: MultisigAddress) => Number(b.balance) - Number(a.balance)
+        );
+      }
+    };
+
+    const handleInitializePolkasafe = async (signatory: string, injector: any): Promise<void> => {
+      const client = new Polkasafe();
+      await client.connect('astar', signatory, injector);
+      container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+      await setMultisigAccounts(client, signatory);
+    };
+
     const handleGetMultisigAccounts = async (): Promise<void> => {
       multisigAccounts.value = [];
       isLoadingPolkasafe.value = true;
@@ -279,7 +314,7 @@ export default defineComponent({
         const extensions = await web3Enable('AstarNetwork/astar-apps');
         const injector = extensions.find((it) => {
           return selectedSignatory.value && it.name === selectedSignatory.value.source;
-        }) as any;
+        }) as InjectedExtension;
 
         if (!injector) {
           throw Error('injector not found');
@@ -287,54 +322,24 @@ export default defineComponent({
         const substratePrefix = 42;
         const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
 
-        const setMultisigAccounts = async (c: Polkasafe): Promise<void> => {
-          const { data, error } = await c.connectAddress(signatory);
-          if (error) throw Error(error);
-          if (!data.hasOwnProperty('multisigAddresses')) {
-            throw Error('error fetching multisig accounts');
-          }
-
-          //@ts-ignore
-          const filteredMultisigAccounts = data.multisigAddresses.filter((it: MultisigAddress) =>
-            isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
-          );
-          if (filteredMultisigAccounts.length > 0) {
-            const updatedAccountMap = await Promise.all(
-              filteredMultisigAccounts.map(async (it: MultisigAddress) => {
-                const balance = await fetchNativeBalance({
-                  api: $api as ApiPromise,
-                  address: it.address,
-                });
-                return { ...it, balance };
-              }) as MultisigAddress[]
-            );
-            multisigAccounts.value = updatedAccountMap.sort(
-              (a: MultisigAddress, b: MultisigAddress) => Number(b.balance) - Number(a.balance)
-            );
-          }
-        };
-
-        const handleInitializePolkasafe = async (): Promise<void> => {
-          const client = new Polkasafe();
-          await client.connect('astar', signatory, injector);
-          container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
-          await setMultisigAccounts(client);
-        };
-
         try {
           const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
           const isSigned = polkasafeClient && polkasafeClient.address === signatory;
           if (isSigned) {
-            await setMultisigAccounts(polkasafeClient);
+            await setMultisigAccounts(polkasafeClient, signatory);
           } else {
-            await handleInitializePolkasafe();
+            await handleInitializePolkasafe(signatory, injector);
           }
         } catch (error) {
           // Memo: polkasafeClient has not been initialized
-          await handleInitializePolkasafe();
+          await handleInitializePolkasafe(signatory, injector);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
+        store.dispatch('general/showAlertMsg', {
+          msg: error.message,
+          alertType: 'error',
+        });
       } finally {
         isLoadingPolkasafe.value = false;
       }
