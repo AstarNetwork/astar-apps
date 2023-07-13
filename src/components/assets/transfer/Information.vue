@@ -75,7 +75,6 @@
 </template>
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import { HistoryTxType } from 'src/modules/account';
@@ -106,11 +105,10 @@ export default defineComponent({
     const store = useStore();
     const txHistories = ref<RecentHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
+    const { currentAccount, isMultisig } = useAccount();
     const { currentNetworkName } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
     const faqs = computed<Faq[]>(() => {
       if (props.transferType === HistoryTxType.Transfer) {
         return isH160.value ? faqH160Transfer : faqSs58Transfer;

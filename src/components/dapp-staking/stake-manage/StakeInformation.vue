@@ -76,7 +76,6 @@
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import {
@@ -95,12 +94,11 @@ export default defineComponent({
   setup() {
     const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
+    const { currentAccount, isMultisig } = useAccount();
     const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const subScan = computed<string>(() => `${providerEndpoints[currentNetworkIdx.value].subscan}`);
-    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
 
     const setTxHistories = async (): Promise<void> => {
       if (!currentAccount.value || !currentNetworkName.value) return;

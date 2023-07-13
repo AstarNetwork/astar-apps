@@ -17,16 +17,14 @@
   </div>
 </template>
 <script lang="ts">
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useBreakpoints } from 'src/hooks';
+import { useAccount, useBreakpoints } from 'src/hooks';
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   setup() {
     const { screenSize, width } = useBreakpoints();
     const size = computed(() => (width.value > screenSize.sm ? '24' : '21'));
-    const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
-
+    const { isMultisig } = useAccount();
     const scrollTo = (id: string): void => {
       const el = document.getElementById(id);
       el && el.scrollIntoView({ behavior: 'smooth' });
