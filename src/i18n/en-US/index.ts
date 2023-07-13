@@ -221,6 +221,7 @@ export default {
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
       'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
+    desktopOnlyBanner: 'dApp registration is only available on desktop',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     totalStake: 'Total stake:',
@@ -243,12 +244,15 @@ export default {
     dappStakingEvm: 'dApp Staking is available on EVM',
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
+    transactions: 'Transactions',
+    uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
     },
+    last30days: '(last 30 days)',
     dappPage: {
       back: 'Back',
       goBackToTopPage: 'Go back to the top page',

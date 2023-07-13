@@ -12,6 +12,21 @@ import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 
+export interface DappAggregatedMetrics {
+  name: string;
+  url: string;
+  metrics: {
+    transactions: number;
+    transactionsPercentageChange: number;
+    uaw: number;
+    uawPercentageChange: number;
+    volume: number;
+    volumePercentageChange: number;
+    balance: number;
+    balancePercentageChange: number;
+  };
+}
+
 /**
  * Definition of repository to access dapps staking pallet.
  */
@@ -105,4 +120,6 @@ export interface IDappStakingRepository {
   getNextEraEta(network: string): Promise<number>;
 
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
+
+  getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }

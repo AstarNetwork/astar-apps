@@ -32,7 +32,7 @@ async function executeRun() {
     );
     console.info('Chopsticks started with pid:', childProcess.pid);
 
-    result = await setupPreconditions.run(nodeName, networkInfo, ['Alice']);
+    result = await setupPreconditions.run(nodeName, networkInfo, ['Alice', 'Bob']);
     console.info('Setup Preconditions tests completed with result:', result);
 
     result = await startPlaywright.run(nodeName, networkInfo, [args]);
