@@ -288,45 +288,37 @@ export default defineComponent({
         const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
 
         const setMultisigAccounts = async (c: Polkasafe): Promise<void> => {
-          try {
-            const { data, error } = await c.connectAddress(signatory);
-            if (error) throw Error(error);
-            if (!data.hasOwnProperty('multisigAddresses')) {
-              throw Error('error fetching multisig accounts');
-            }
+          const { data, error } = await c.connectAddress(signatory);
+          if (error) throw Error(error);
+          if (!data.hasOwnProperty('multisigAddresses')) {
+            throw Error('error fetching multisig accounts');
+          }
 
-            //@ts-ignore
-            const filteredMultisigAccounts = data.multisigAddresses.filter((it: MultisigAddress) =>
-              isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
+          //@ts-ignore
+          const filteredMultisigAccounts = data.multisigAddresses.filter((it: MultisigAddress) =>
+            isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
+          );
+          if (filteredMultisigAccounts.length > 0) {
+            const updatedAccountMap = await Promise.all(
+              filteredMultisigAccounts.map(async (it: MultisigAddress) => {
+                const balance = await fetchNativeBalance({
+                  api: $api as ApiPromise,
+                  address: it.address,
+                });
+                return { ...it, balance };
+              }) as MultisigAddress[]
             );
-            if (filteredMultisigAccounts.length > 0) {
-              const updatedAccountMap = await Promise.all(
-                filteredMultisigAccounts.map(async (it: MultisigAddress) => {
-                  const balance = await fetchNativeBalance({
-                    api: $api as ApiPromise,
-                    address: it.address,
-                  });
-                  return { ...it, balance };
-                }) as MultisigAddress[]
-              );
-              multisigAccounts.value = updatedAccountMap.sort(
-                (a: MultisigAddress, b: MultisigAddress) => Number(b.balance) - Number(a.balance)
-              );
-            }
-          } catch (error) {
-            console.error(error);
+            multisigAccounts.value = updatedAccountMap.sort(
+              (a: MultisigAddress, b: MultisigAddress) => Number(b.balance) - Number(a.balance)
+            );
           }
         };
 
         const handleInitializePolkasafe = async (): Promise<void> => {
-          try {
-            const client = new Polkasafe();
-            await client.connect('astar', signatory, injector);
-            container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
-            await setMultisigAccounts(client);
-          } catch (error) {
-            console.info(error);
-          }
+          const client = new Polkasafe();
+          await client.connect('astar', signatory, injector);
+          container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+          await setMultisigAccounts(client);
         };
 
         try {
