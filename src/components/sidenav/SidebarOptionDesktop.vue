@@ -135,11 +135,6 @@ svg {
   padding: 10px;
   margin-bottom: 10px;
   cursor: pointer;
-
-  &:hover {
-    transition: all 0.3s ease 0s;
-    background-color: #30393d;
-  }
 }
 
 .menu-item {
@@ -148,6 +143,10 @@ svg {
   border-radius: 6px;
   padding: 10px;
   cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
 }
 
 .sidebar-text {
@@ -163,10 +162,14 @@ svg {
   display: flex;
   justify-content: space-between;
   padding: 12px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
 }
 
 .locale-container {
-  padding: 0px 10px;
+  padding: 0px 0px;
 }
 </style>
 

@@ -67,7 +67,7 @@
             stroke="currentColor"
             icon-name="staking"
           >
-            <astar-icon-dapp-staking />
+            <icon-side-nft />
           </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">NFT</astar-text>
@@ -124,6 +124,7 @@ import Balloon from './components/Balloon.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
 import { decentralizedOrigin } from 'src/links';
 import { socialUrl } from 'src/links';
+import IconSideNft from './components/IconSideNFT.vue';
 
 export default defineComponent({
   components: {
@@ -131,6 +132,7 @@ export default defineComponent({
     IconEcosystem,
     Balloon,
     SidebarOptionDesktop,
+    IconSideNft,
   },
   setup() {
     const { isOpen } = useSidebar();
@@ -143,6 +145,7 @@ export default defineComponent({
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+    console.log(path.value);
 
     const hoverNFT = ref<boolean>(false);
     const isDecentralized = computed<boolean>(() => {
