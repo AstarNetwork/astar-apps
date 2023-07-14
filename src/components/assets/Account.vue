@@ -25,7 +25,13 @@
 
       <div class="row--details">
         <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+          <img
+            v-if="iconWallet"
+            width="24"
+            :src="iconWallet"
+            alt="wallet-icon"
+            :class="multisig && 'img--polkasafe'"
+          />
           <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
         </div>
         <div class="column-address-icons">
@@ -56,6 +62,14 @@
               </a>
             </div>
           </div>
+        </div>
+      </div>
+      <div v-if="multisig" class="row--details-signatory">
+        <div class="column-account-name">
+          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
+          <span class="text--accent">{{
+            $t('assets.theSignatory', { account: multisig.signatory.name })
+          }}</span>
         </div>
       </div>
       <div class="row screen--phone">
@@ -89,6 +103,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -109,7 +124,7 @@ export default defineComponent({
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const { toggleEvmWalletSchema } = useConnectWallet();
-    const { currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName, multisig } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -134,6 +149,11 @@ export default defineComponent({
     const totalBal = computed<number>(
       () => Number(balUsd.value) + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount
     );
+
+    const signatoryIconWallet = computed<string>(() => {
+      // @ts-ignore
+      return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
+    });
 
     const copyAddress = () => {
       copy(currentAccount.value);
@@ -225,6 +245,9 @@ export default defineComponent({
       isSkeleton,
       totalBal,
       ETHEREUM_EXTENSION,
+      multisig,
+      supportWalletObj,
+      signatoryIconWallet,
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,

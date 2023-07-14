@@ -218,6 +218,24 @@
   color: $gray-3;
 }
 
+.row--zero-accounts {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link--polkasafe {
+  margin-top: 4px;
+  color: $astar-blue;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.row--skeleton {
+  margin-top: 24px;
+}
+
 .body--dark {
   .class-radio {
     color: #fff;

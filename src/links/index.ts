@@ -28,8 +28,11 @@ export const deepLink = {
 // Memo: use for debugging
 // export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
+//Todo: add decentralized one
 export const productionOrigin = 'https://portal.astar.network';
 export const decentralizedOrigin = 'https://decentralized.portal.astar.network';
+
+export const polkasafeUrl = 'https://app.polkasafe.xyz';
 
 export const polkadotJsUrl = {
   settings: {

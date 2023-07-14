@@ -1,8 +1,10 @@
 import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportMultisig } from 'src/config/wallets';
+import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
-import { computed, ref, watch } from 'vue';
 import { SubstrateAccount } from 'src/store/general/state';
+import { computed, ref, watch } from 'vue';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -11,6 +13,7 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
@@ -23,7 +26,8 @@ export const useAccount = () => {
       ? toSS58Address(currentAccount.value)
       : currentAccount.value;
   });
-  const { SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
+  const isMultisig = computed<boolean>(() => localStorage.getItem(LOCAL_STORAGE.MULTISIG) !== '');
+  const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
     return await new Promise(async (resolve) => {
@@ -40,6 +44,7 @@ export const useAccount = () => {
       });
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
+      localStorage.removeItem(MULTISIG);
       currentAccount.value = '';
       currentAccountName.value = '';
       resolve(true);
@@ -98,11 +103,30 @@ export const useAccount = () => {
     { immediate: true }
   );
 
+  watch(
+    [currentAddress],
+    async () => {
+      await wait(DELAY);
+      const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      if (storedWallet === SupportMultisig.Polkasafe) {
+        currentAccount.value = currentAddress.value;
+        multisig.value = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '{}');
+        currentAccountName.value = multisig.value!.multisigAccount.name;
+        localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
+      } else {
+        multisig.value = undefined;
+      }
+    },
+    { immediate: true }
+  );
+
   return {
     substrateAccounts,
     currentAccount,
     currentAccountName,
     senderSs58Account,
+    multisig,
+    isMultisig,
     disconnectAccount,
   };
 };

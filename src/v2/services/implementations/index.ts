@@ -7,5 +7,5 @@ export * from './XcmService';
 export * from './XcmEvmService';
 export * from './BalanceFormatterService';
 export * from './EvmAssetsService';
-export * from './TokenTransferService';
 export * from './EvmDappStakingService';
+export * from './AssetsService';

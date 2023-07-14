@@ -6,4 +6,4 @@ export * from './IXvmService';
 export * from './IXcmEvmService';
 export * from './IBalanceFormatterService';
 export * from './IEvmAssetsService';
-export * from './ITokenTransferService';
+export * from './IAssetsService';

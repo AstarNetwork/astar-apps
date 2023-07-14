@@ -40,7 +40,7 @@ export class WalletService {
     if (result) {
       let msg = '';
       if (message === ErrorCode.TooManyEraStakeValues) {
-        msg = 'Please claim your rewards before sending transaction';
+        msg = 'Please claim your rewards before sending transactions';
       } else {
         msg = message;
       }

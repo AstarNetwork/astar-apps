@@ -29,7 +29,7 @@
         </a>
       </div>
     </div>
-    <div id="history" class="container--information">
+    <div v-if="!isMultisig" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -94,7 +94,7 @@ export default defineComponent({
   setup() {
     const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
+    const { currentAccount, isMultisig } = useAccount();
     const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
@@ -128,7 +128,7 @@ export default defineComponent({
 
     watchEffect(setTxHistories);
 
-    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl, isMultisig };
   },
 });
 </script>

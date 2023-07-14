@@ -40,7 +40,7 @@ For E2E testing, we utilize [chopsticks](https://github.com/AcalaNetwork/chopsti
 ### Setup chopsticks
 
 ```bash
-@acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/shiden.yml
+npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/shiden.yml
 ```
 
 ### Running tests locally in debug mode
