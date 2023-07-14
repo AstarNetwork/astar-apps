@@ -147,7 +147,11 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
 import { $api } from 'src/boot/api';
-import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
+import {
+  estimatePendingRewards,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -173,7 +177,6 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const store = useStore();
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
@@ -189,9 +192,12 @@ export default defineComponent({
         return;
       }
       isLoadingPendingRewards.value = true;
+      const walletAddress = isValidEvmAddress(currentAccount.value)
+        ? toSS58Address(currentAccount.value)
+        : currentAccount.value;
       const { stakerPendingRewards } = await estimatePendingRewards({
         api: $api!,
-        walletAddress: currentAccount.value,
+        walletAddress,
       });
       pendingRewards.value = stakerPendingRewards;
       isLoadingPendingRewards.value = false;

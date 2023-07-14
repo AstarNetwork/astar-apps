@@ -2,6 +2,8 @@ import {
   getIndividualClaimTxs,
   PayloadWithWeight,
   ExtrinsicPayload,
+  isValidEvmAddress,
+  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
@@ -29,9 +31,11 @@ export function useClaimAll() {
   const canClaimWithoutError = ref<boolean>(true);
   const isLoading = ref<boolean>(false);
   const store = useStore();
-  const senderAddress = computed(() => store.getters['general/selectedAddress']);
+  const senderAddress = computed(() => {
+    const address = store.getters['general/selectedAddress'];
+    return isValidEvmAddress(address) ? toSS58Address(address) : address;
+  });
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
   const { t } = useI18n();
@@ -74,7 +78,7 @@ export function useClaimAll() {
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
           try {
-            if (it.dapp && !isH160.value) {
+            if (it.dapp) {
               const transactions = await getIndividualClaimTxs({
                 dappAddress: it?.dapp?.address,
                 api,

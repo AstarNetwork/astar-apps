@@ -12,11 +12,15 @@ import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ChunkInfo } from 'src/v2/models';
 import { useI18n } from 'vue-i18n';
+import { isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 
 export function useUnbonding() {
   const store = useStore();
   const { t } = useI18n();
-  const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
+  const selectedAccountAddress = computed<string>(() => {
+    const address = store.getters['general/selectedAddress'];
+    return isValidEvmAddress(address) ? toSS58Address(address) : address;
+  });
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);

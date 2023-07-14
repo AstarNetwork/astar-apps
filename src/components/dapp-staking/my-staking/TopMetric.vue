@@ -107,7 +107,7 @@ import {
   useCurrentEra,
   useNetworkInfo,
 } from 'src/hooks';
-import { formatNumber } from '@astar-network/astar-sdk-core';
+import { formatNumber, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models/DappsStaking';
@@ -150,7 +150,10 @@ export default defineComponent({
 
     const checkIsCompoundingAccount = async (): Promise<void> => {
       try {
-        const ledger = await $api?.query.dappsStaking.ledger<AccountLedger>(currentAccount.value);
+        const account = isValidEvmAddress(currentAccount.value)
+          ? toSS58Address(currentAccount.value)
+          : currentAccount.value;
+        const ledger = await $api?.query.dappsStaking.ledger<AccountLedger>(account);
         const isStaker = ledger && !ledger.locked.eq(new BN(0));
         const isCompounding = ledger?.toJSON().rewardDestination === RewardDestination.StakeBalance;
         isApr.value = isStaker ? !isCompounding : true;
