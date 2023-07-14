@@ -238,7 +238,7 @@ export default defineComponent({
     );
 
     const previousSelIdx = computed<number | null>(() => {
-      if (multisigAccounts.value && props.currentAccount) {
+      if (multisigAccounts.value.length > 0 && props.currentAccount) {
         return multisigAccounts.value.findIndex((it) => it.address === props.currentAccount);
       } else {
         return null;
