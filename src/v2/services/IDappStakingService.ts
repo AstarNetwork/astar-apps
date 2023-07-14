@@ -116,10 +116,16 @@ export interface IDappStakingService {
 
   // Memo: set re-stake to turn it On/Off
   setRewardDestination(param: ParamSetRewardDestination): Promise<void>;
+  withdraw(param: ParamWithdraw): Promise<void>;
 }
 
 export interface ParamSetRewardDestination {
   rewardDestination: RewardDestination;
   senderAddress: string;
   successMessage: string;
+}
+
+export interface ParamWithdraw {
+  senderAddress: string;
+  finalizedCallback?: (result: ISubmittableResult) => void;
 }

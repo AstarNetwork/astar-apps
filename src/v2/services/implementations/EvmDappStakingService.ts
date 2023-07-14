@@ -17,7 +17,7 @@ import {
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
-import { IDappStakingService, ParamSetRewardDestination } from 'src/v2/services';
+import { IDappStakingService, ParamSetRewardDestination, ParamWithdraw } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -246,6 +246,14 @@ export class EvmDappStakingService implements IDappStakingService {
       to: dappStakingContract,
       data: this.evmContract.methods.set_reward_destination(destination).encodeABI(),
       successMessage,
+    });
+  }
+
+  public async withdraw({ senderAddress }: ParamWithdraw) {
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dappStakingContract,
+      data: this.evmContract.methods.withdraw_unbonded().encodeABI(),
     });
   }
 }

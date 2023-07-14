@@ -27,7 +27,6 @@ export function useUnbonding() {
 
   const withdraw = async (): Promise<void> => {
     try {
-      const transaction = $api!.tx.dappsStaking.withdrawUnbonded();
       const finalizedCallback = (result: ISubmittableResult): void => {
         displayCustomMessage({
           txType: TxType.withdrawUnbonded,
@@ -40,9 +39,8 @@ export function useUnbonding() {
 
       try {
         const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-        await dappStakingService.sendTx({
+        await dappStakingService.withdraw({
           senderAddress: selectedAccountAddress.value,
-          transaction,
           finalizedCallback,
         });
       } catch (error: any) {

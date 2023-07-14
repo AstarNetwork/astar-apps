@@ -19,6 +19,7 @@ import {
   IBalanceFormatterService,
   IDappStakingService,
   ParamSetRewardDestination,
+  ParamWithdraw,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
@@ -248,6 +249,15 @@ export class DappStakingService implements IDappStakingService {
       extrinsic: transaction,
       senderAddress,
       successMessage,
+    });
+  }
+
+  public async withdraw({ senderAddress, finalizedCallback }: ParamWithdraw) {
+    const transaction = await this.dappStakingRepository.getWithdrawCall();
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+      finalizedCallback: finalizedCallback as any,
     });
   }
 }

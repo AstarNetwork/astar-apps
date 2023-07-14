@@ -124,6 +124,7 @@ export interface IDappStakingRepository {
   getSetRewardDestinationCall(
     rewardDestination: RewardDestination
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+  getWithdrawCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
   getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }
