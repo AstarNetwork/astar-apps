@@ -238,11 +238,8 @@ export default defineComponent({
     );
 
     const previousSelIdx = computed<number | null>(() => {
-      if (substrateAccounts.value && props.currentAccount) {
-        const index = substrateAccounts.value.findIndex(
-          (it: SubstrateAccount) => it.address === props.currentAccount
-        );
-        return index;
+      if (multisigAccounts.value.length > 0 && props.currentAccount) {
+        return multisigAccounts.value.findIndex((it) => it.address === props.currentAccount);
       } else {
         return null;
       }
