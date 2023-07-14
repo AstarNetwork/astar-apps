@@ -4,7 +4,7 @@
       <astar-icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
         <astar-icon-wallet />
       </astar-icon-base>
-      <img class="icon" width="16" :src="iconWallet" />
+      <img class="icon" width="16" :src="iconWallet" :class="multisig && 'img--polkasafe'" />
       <template v-if="width >= screenSize.sm">
         <span class="text--address">
           {{ getShortenAddress(account, 4) }}
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { useBreakpoints, useWalletIcon } from 'src/hooks';
+import { useBreakpoints, useWalletIcon, useAccount } from 'src/hooks';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { defineComponent } from 'vue';
 
@@ -29,11 +29,13 @@ export default defineComponent({
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { iconWallet } = useWalletIcon();
+    const { multisig } = useAccount();
 
     return {
       width,
       screenSize,
       iconWallet,
+      multisig,
       getShortenAddress,
     };
   },

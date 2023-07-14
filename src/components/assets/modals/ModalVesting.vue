@@ -96,8 +96,7 @@ export default defineComponent({
       props.handleModalVesting({ isOpen: false });
       isClosingModal.value = false;
     };
-    const { info, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
-      useVesting(closeModal);
+    const { info, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } = useVesting();
 
     return {
       info,

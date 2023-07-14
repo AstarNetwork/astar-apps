@@ -29,7 +29,7 @@
         </a>
       </div>
     </div>
-    <div id="history" class="container--information">
+    <div v-if="!isMultisig" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -105,7 +105,7 @@ export default defineComponent({
     const store = useStore();
     const txHistories = ref<RecentHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
+    const { currentAccount, isMultisig } = useAccount();
     const { currentNetworkName } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -144,7 +144,7 @@ export default defineComponent({
 
     watchEffect(setTxHistories);
 
-    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl, isMultisig };
   },
 });
 </script>

@@ -6,12 +6,16 @@
       </template>
       <trouble-help />
       <template v-if="!currentAccount">
-        <connect-button @click="openSelectModal">
+        <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
         </connect-button>
       </template>
       <template v-else>
-        <account-button :account="currentAccount" @click="clickAccountBtn" />
+        <account-button
+          :account="currentAccount"
+          :class="isLoading && 'cursor--disabled'"
+          @click="clickAccountBtn"
+        />
       </template>
       <network-button @show-network="clickNetworkBtn" />
     </header-comp>
@@ -38,6 +42,7 @@
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
       :selected-wallet="selectedWallet"
+      :open-polkasafe-modal="openPolkasafeModal"
     />
 
     <modal-account
@@ -49,12 +54,20 @@
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     />
+    <modal-polkasafe
+      v-if="modalPolkasafeSelect"
+      v-model:isOpen="modalPolkasafeSelect"
+      :open-select-modal="openSelectModal"
+      :selected-wallet="selectedWallet"
+      :disconnect-account="disconnectAccount"
+      :current-account="currentAccount"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
-import { useConnectWallet } from 'src/hooks';
+import { useAccount, useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
@@ -65,6 +78,7 @@ import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
+import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
@@ -85,9 +99,11 @@ export default defineComponent({
     Logo,
     HeaderComp,
     TroubleHelp,
+    ModalPolkasafe,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
+    const { multisig } = useAccount();
 
     const stateModal = reactive<Modal>({
       modalNetwork: false,
@@ -100,34 +116,42 @@ export default defineComponent({
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
+      modalPolkasafeSelect,
       setCloseModal,
       setWalletModal,
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
       disconnectAccount,
+      openPolkasafeModal,
     } = useConnectWallet();
 
-    const clickAccountBtn = () => {
-      if (modalName.value === WalletModalOption.SelectWallet) {
-        return;
-      }
-
-      if (isH160.value) {
-        modalName.value = WalletModalOption.SelectWallet;
+    const clickAccountBtn = (): void => {
+      if (multisig.value) {
+        openPolkasafeModal();
       } else {
-        changeAccount();
+        if (modalName.value === WalletModalOption.SelectWallet) {
+          return;
+        }
+
+        if (isH160.value) {
+          modalName.value = WalletModalOption.SelectWallet;
+        } else {
+          changeAccount();
+        }
       }
       stateModal.modalNetwork = false;
     };
 
-    const clickNetworkBtn = () => {
+    const clickNetworkBtn = (): void => {
       stateModal.modalNetwork = true;
       modalName.value = '';
       modalAccountSelect.value = false;
+      modalPolkasafeSelect.value = false;
     };
 
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
@@ -155,8 +179,10 @@ export default defineComponent({
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
+      modalPolkasafeSelect,
       width,
       screenSize,
+      isLoading,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
@@ -165,6 +191,7 @@ export default defineComponent({
       changeAccount,
       connectEthereumWallet,
       disconnectAccount,
+      openPolkasafeModal,
     };
   },
 });
@@ -187,5 +214,9 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
+}
+
+.cursor--disabled {
+  cursor: not-allowed !important;
 }
 </style>

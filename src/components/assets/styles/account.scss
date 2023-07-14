@@ -28,6 +28,11 @@
   }
 }
 
+.row--details-signatory {
+  padding: 16px 14px;
+  background-color: $body-bg-light;
+}
+
 .column--usd {
   @media (min-width: $sm) {
     margin-right: 24px;
@@ -152,5 +157,8 @@
   }
   .text--total-balance {
     color: $gray-1;
+  }
+  .row--details-signatory {
+    background-color: $body-bg-dark;
   }
 }
