@@ -25,8 +25,9 @@ export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 // e.g.: endpointKey.SHIDEN;
-const disabledXcmChain = undefined;
-const disabledXcmParachains: string[] = [Chain.INTERLAY, Chain.KINTSUGI];
+const disabledXcmChain: endpointKey | undefined = undefined;
+// e.g.: [Chain.INTERLAY, Chain.KINTSUGI]
+const disabledXcmParachains: Chain[] = [];
 
 export interface NetworkFromTo {
   from: string;

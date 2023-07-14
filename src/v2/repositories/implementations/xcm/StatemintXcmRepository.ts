@@ -34,8 +34,7 @@ export class StatemintXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     const destination = {
       [version]: {
         interior: {
@@ -47,16 +46,9 @@ export class StatemintXcmRepository extends XcmRepository {
       },
     };
 
-    const AccountId32 = isV3
-      ? {
-          id: decodeAddress(recipientAddress),
-        }
-      : {
-          id: decodeAddress(recipientAddress),
-          network: {
-            Any: null,
-          },
-        };
+    const AccountId32 = {
+      id: decodeAddress(recipientAddress),
+    };
 
     const beneficiary = {
       [version]: {

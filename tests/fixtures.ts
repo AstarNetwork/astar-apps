@@ -44,13 +44,13 @@ export const getWindow = async (title: string, context: BrowserContext): Promise
   return new Promise((resolve, reject) => {
     context.on('page', async (target) => {
       const pageTitle = await target.title();
-      // console.log('pageTitle', pageTitle);
+      console.info('pageTitle', pageTitle);
       if (pageTitle === title) {
         resolve(target);
       }
     });
     setTimeout(() => {
       reject(`${title} window not found.`);
-    }, 12000);
+    }, 25000);
   });
 };

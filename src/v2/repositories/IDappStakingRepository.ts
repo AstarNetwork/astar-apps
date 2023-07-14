@@ -6,11 +6,27 @@ import {
   StakerInfo,
   DappStakingConstants,
   AccountLedger,
+  RewardDestination,
 } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+
+export interface DappAggregatedMetrics {
+  name: string;
+  url: string;
+  metrics: {
+    transactions: number;
+    transactionsPercentageChange: number;
+    uaw: number;
+    uawPercentageChange: number;
+    volume: number;
+    volumePercentageChange: number;
+    balance: number;
+    balancePercentageChange: number;
+  };
+}
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -19,7 +35,7 @@ export interface IDappStakingRepository {
   /**
    * Gets Total Value Locked (TVL) value.
    */
-  getTvl(): Promise<BN>;
+  getTvl(): Promise<string>;
 
   /**
    * Gets bondAndStake call extrisnic.
@@ -105,4 +121,9 @@ export interface IDappStakingRepository {
   getNextEraEta(network: string): Promise<number>;
 
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
+  getSetRewardDestinationCall(
+    rewardDestination: RewardDestination
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }
