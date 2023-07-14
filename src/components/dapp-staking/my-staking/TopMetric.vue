@@ -95,8 +95,10 @@
   </div>
 </template>
 <script lang="ts">
+import { formatNumber } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { $api } from 'src/boot/api';
+import PieChart from 'src/components/common/PieChart.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import {
   AccountLedger,
@@ -107,20 +109,18 @@ import {
   useCurrentEra,
   useNetworkInfo,
 } from 'src/hooks';
-import { formatNumber, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import PieChart from 'src/components/common/PieChart.vue';
 
 export default defineComponent({
   components: { PieChart },
   setup() {
     const store = useStore();
     const { stakerApr, stakerApy } = useAprFromApi();
-    const { currentAccount } = useAccount();
+    const { senderSs58Account } = useAccount();
     const dappsCount = computed<number>(
       () =>
         store.getters['dapps/getRegisteredDapps']().filter(
@@ -150,10 +150,9 @@ export default defineComponent({
 
     const checkIsCompoundingAccount = async (): Promise<void> => {
       try {
-        const account = isValidEvmAddress(currentAccount.value)
-          ? toSS58Address(currentAccount.value)
-          : currentAccount.value;
-        const ledger = await $api?.query.dappsStaking.ledger<AccountLedger>(account);
+        const ledger = await $api?.query.dappsStaking.ledger<AccountLedger>(
+          senderSs58Account.value
+        );
         const isStaker = ledger && !ledger.locked.eq(new BN(0));
         const isCompounding = ledger?.toJSON().rewardDestination === RewardDestination.StakeBalance;
         isApr.value = isStaker ? !isCompounding : true;
@@ -163,9 +162,9 @@ export default defineComponent({
     };
 
     watch(
-      [currentAccount],
+      [senderSs58Account],
       async () => {
-        if (!currentAccount.value) return;
+        if (!senderSs58Account.value) return;
         await checkIsCompoundingAccount();
       },
       { immediate: false }

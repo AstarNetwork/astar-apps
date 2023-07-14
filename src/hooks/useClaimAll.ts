@@ -2,13 +2,11 @@ import {
   getIndividualClaimTxs,
   PayloadWithWeight,
   ExtrinsicPayload,
-  isValidEvmAddress,
-  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useBalance } from 'src/hooks';
+import { useCurrentEra, useBalance, useAccount } from 'src/hooks';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
 import { useLedger } from 'src/hooks';
@@ -31,16 +29,13 @@ export function useClaimAll() {
   const canClaimWithoutError = ref<boolean>(true);
   const isLoading = ref<boolean>(false);
   const store = useStore();
-  const senderAddress = computed(() => {
-    const address = store.getters['general/selectedAddress'];
-    return isValidEvmAddress(address) ? toSS58Address(address) : address;
-  });
+  const { senderSs58Account, currentAccount } = useAccount();
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
-  const { accountData } = useBalance(senderAddress);
+  const { accountData } = useBalance(senderSs58Account);
   const { isLedgerNanoS } = useLedger();
 
   const maxBatchWeight = computed<BN>(() => {
@@ -60,7 +55,8 @@ export function useClaimAll() {
 
   const isDappDeveloper = computed<boolean>(() => {
     return (
-      dapps.value && dapps.value.some((it) => it.contract.developerAddress === senderAddress.value)
+      dapps.value &&
+      dapps.value.some((it) => it.contract.developerAddress === senderSs58Account.value)
     );
   });
 
@@ -68,7 +64,7 @@ export function useClaimAll() {
     try {
       isLoading.value = true;
       const api = $api;
-      const senderAddressRef = senderAddress.value;
+      const senderAddressRef = senderSs58Account.value;
       if (!api) {
         throw Error('Failed to connect to API');
       }
@@ -102,7 +98,7 @@ export function useClaimAll() {
 
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
       canClaimWithoutError.value = await dappStakingService.canClaimRewardWithoutErrors(
-        senderAddress.value
+        senderSs58Account.value
       );
     } catch (error: any) {
       console.error(error.message);
@@ -111,7 +107,7 @@ export function useClaimAll() {
     }
   };
 
-  watch([isSendingTx, senderAddress, era], updateClaimEras);
+  watch([isSendingTx, senderSs58Account, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
@@ -141,7 +137,7 @@ export function useClaimAll() {
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
     );
     const transaction = api.tx.utility.batch(txsToExecute);
-    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress.value);
+    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderSs58Account.value);
     const partialFee = info.partialFee.toBn();
     const balance = new BN(
       ethers.utils.parseEther(transferableBalance.value.toString()).toString()
@@ -159,7 +155,7 @@ export function useClaimAll() {
       displayCustomMessage({
         txType: TxType.dappsStaking,
         result,
-        senderAddress: senderAddress.value,
+        senderAddress: senderSs58Account.value,
         store,
         t,
       });
@@ -168,7 +164,7 @@ export function useClaimAll() {
     try {
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
       await dappStakingService.sendTx({
-        senderAddress: senderAddress.value,
+        senderAddress: currentAccount.value,
         transaction,
         finalizedCallback,
       });

@@ -139,19 +139,14 @@
   </div>
 </template>
 <script lang="ts">
+import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
+import { $api } from 'src/boot/api';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed, ref, watch } from 'vue';
-import { useStore } from 'src/store';
-import { $api } from 'src/boot/api';
-import {
-  estimatePendingRewards,
-  isValidEvmAddress,
-  toSS58Address,
-} from '@astar-network/astar-sdk-core';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   components: {
@@ -174,7 +169,7 @@ export default defineComponent({
     };
 
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
-    const { currentAccount } = useAccount();
+    const { currentAccount, senderSs58Account } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const goToSubscan = () => {
@@ -192,18 +187,15 @@ export default defineComponent({
         return;
       }
       isLoadingPendingRewards.value = true;
-      const walletAddress = isValidEvmAddress(currentAccount.value)
-        ? toSS58Address(currentAccount.value)
-        : currentAccount.value;
       const { stakerPendingRewards } = await estimatePendingRewards({
         api: $api!,
-        walletAddress,
+        walletAddress: senderSs58Account.value,
       });
       pendingRewards.value = stakerPendingRewards;
       isLoadingPendingRewards.value = false;
     };
 
-    watch([currentAccount, amountOfEras], setPendingRewards, { immediate: false });
+    watch([senderSs58Account, amountOfEras], setPendingRewards, { immediate: false });
 
     return {
       isLoading,
