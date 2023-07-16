@@ -66,8 +66,22 @@ test.describe('account panel', () => {
     );
   });
 
-  test('should transfer tokens from Multisig to Bob', async ({ page, context }) => {
-    await selectMultisigAccount(page, context);
+  test('should transfer tokens from Multisig account to Bob', async ({ page, context }) => {
+    await selectMultisigAccount(page, context, false);
+    // Memo: PolkaSafe SDK will check the balance of the Multisig account on mainnet before sending the transaction (the SDK through an error if the balance is not enough)
+    const transferAmount = BigInt(1);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    const isMultisigTxSignButtonVisible = await checkIsMultisigTxSignButtonVisible(context);
+    expect(isMultisigTxSignButtonVisible).toBe(true);
+  });
+
+  test('should transfer tokens from Multisig Proxy account to Bob', async ({ page, context }) => {
+    await selectMultisigAccount(page, context, true);
     // Memo: PolkaSafe SDK will check the balance of the Multisig account on mainnet before sending the transaction (the SDK through an error if the balance is not enough)
     const transferAmount = BigInt(1);
     await page.locator('.icon--expand').first().click();

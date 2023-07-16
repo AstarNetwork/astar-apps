@@ -46,7 +46,11 @@
         </div>
         <fieldset>
           <ul role="radiogroup" class="list--account" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(account, index) in multisigAccounts" :key="index">
+            <li
+              v-for="(account, index) in multisigAccounts"
+              :key="index"
+              :data-testid="account.isProxyAccount ? 'proxy-account' : 'not-proxy-account'"
+            >
               <label
                 :class="[
                   'class-radio',
@@ -298,13 +302,9 @@ export default defineComponent({
     };
 
     const handleInitializePolkasafe = async (signatory: string, injector: any): Promise<void> => {
-      console.log('handleInitializePolkasafe');
       const client = new Polkasafe();
-      console.log('signatory', signatory);
-      console.log('injector', injector);
       await client.connect('astar', signatory, injector);
       container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
-      console.log('added');
       await setMultisigAccounts(client, signatory);
     };
 
