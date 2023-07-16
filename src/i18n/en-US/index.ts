@@ -158,6 +158,7 @@ export default {
       initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
       noAccounts: 'There are no multisig accounts found',
       goToPokasafe: 'Go to PolkaSafe to create one',
+      proxy: 'Proxy',
     },
   },
   installWallet: {

@@ -130,9 +130,21 @@
   line-height: 20px;
   text-align: left;
   margin-top: 4px;
+  position: relative;
   @media (min-width: $sm) {
     margin-top: 0px;
   }
+}
+
+.column--proxy {
+  position: absolute;
+  color: $gray-1;
+  background-color: $astar-blue;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 4px;
+  margin-top: 2px;
 }
 
 .wrapper--share {
