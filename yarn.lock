@@ -21,10 +21,10 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@astar-network/astar-sdk-core@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.4.tgz#366b78a4a8ec5cfc86d25d72e32454e14f8490ca"
-  integrity sha512-M4An3wEPisGJanaaUZqngZ7rvw+jVBimjwIrcRaIBf446ojxOjABBX0Wu8OrrF54JGBNq+FnBOLdGWtDst8h/A==
+"@astar-network/astar-sdk-core@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.5.tgz#fdaa80f9b0b28516723785135f43b1c5ad9166f5"
+  integrity sha512-BVr9RUYPmaSyHaoNBhrqMWygD15lG78/AnDdaW6S1UGL8hJ/jI1a7dxjanwXKJV4v623Ic0NPJxDWY0oE7Ejsw==
   dependencies:
     "@ethersproject/bignumber" "^5.6.2"
     "@polkadot/util" "^12.3.2"
@@ -34,10 +34,10 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.91":
-  version "0.0.91"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.91.tgz#8cdbf0bc7a0f1e1b056844625841812014082619"
-  integrity sha512-oqEKbfXY72RFrHGUagms/B9urQVOUaAMlWkk3nFrB+0XywNEz83b5LoJnXUp0rNNuZsAo4ZYiqSZDQiVTm/kZA==
+"@astar-network/astar-ui@^0.0.93":
+  version "0.0.93"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.93.tgz#7f4563bf3dd379a4f783a7d4f5fe29712515df49"
+  integrity sha512-aVfrbFCrP2AkAfF0Xaszs2712gF3hIh6+53/PY+yGauFZnb4erz2IH7IY80r8JYgJqWLzUVMwPR15QBKDe6Taw==
   dependencies:
     "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"

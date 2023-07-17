@@ -315,6 +315,7 @@ export default {
         tiktokAccount: 'TikTok account',
         youtubeAccount: 'YouTube account',
         instagramAccount: 'Instagram account',
+        githubAccount: 'GitHub account',
         communityRequired: 'At least one community link is required.',
       },
       description: 'Description',
