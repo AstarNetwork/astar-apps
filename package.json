@@ -66,6 +66,7 @@
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
+    "polkasafe": "^1.1.10",
     "quasar": "^2.3.3",
     "query-string": "^7.1.0",
     "reflect-metadata": "^0.1.13",

@@ -25,9 +25,15 @@
       </div>
       <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">{{
-          $t('toast.checkYourTransactions')
-        }}</astar-button>
+        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">
+          {{
+            $t(
+              alertMsg === AlertMsg.SUCCESS_MULTISIG
+                ? 'toast.approveOnPolkasafe'
+                : 'toast.checkYourTransactions'
+            )
+          }}
+        </astar-button>
       </div>
     </div>
   </div>
@@ -37,6 +43,7 @@
 import { AlertType } from 'src/store/general/state';
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
+import { AlertMsg } from 'src/modules/toast';
 
 export default defineComponent({
   name: 'NotificationBar',
@@ -73,6 +80,8 @@ export default defineComponent({
         return t('toast.note');
       } else if (props.alertType === AlertType.Error) {
         return t('toast.error');
+      } else if (props.alertType === AlertType.Info) {
+        return t('toast.info');
       } else {
         return t('toast.copied');
       }
@@ -92,6 +101,7 @@ export default defineComponent({
       isSuccessType,
       isCopiedType,
       showCloseBtn,
+      AlertMsg,
       goToSubscan,
       close,
     };
@@ -202,7 +212,7 @@ export default defineComponent({
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
-  word-break: keep-all;
+  word-wrap: break-word;
 }
 .btn--check {
   width: 90%;

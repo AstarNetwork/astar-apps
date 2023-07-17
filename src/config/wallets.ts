@@ -25,11 +25,16 @@ export enum SupportWallet {
   OneKeyNative = 'OneKey',
 }
 
+export enum SupportMultisig {
+  Polkasafe = 'polkasafe',
+}
+
 export const WalletModalOption = {
   SelectWallet: 'SelectWallet',
   SelectSubstrateAccount: 'SelectSubstrateAccount',
   NoExtension: 'NoExtension',
   OutdatedWallet: 'OutdatedWallet',
+  Polkasafe: SupportMultisig.Polkasafe,
   PolkadotJs: SupportWallet.PolkadotJs,
   Clover: SupportWallet.Clover,
   Gridlock: SupportWallet.Gridlock,

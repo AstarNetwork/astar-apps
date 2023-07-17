@@ -21,7 +21,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { ITokenTransferService } from 'src/v2/services';
+import { IAssetsService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -170,9 +170,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
 
     try {
-      const tokenTransferService = container.get<ITokenTransferService>(
-        Symbols.TokenTransferService
-      );
+      const assetsService = container.get<IAssetsService>(Symbols.AssetsService);
 
       if (isH160.value) {
         const receivingAddress = isValidEvmAddress(toAddress)
@@ -183,7 +181,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           transferAmt,
           toAddress: getShortenAddress(receivingAddress, 5),
         });
-        await tokenTransferService.transferEvmAsset({
+        await assetsService.transferEvmAsset({
           senderAddress: currentAccount.value,
           toAddress: receivingAddress,
           amount: String(transferAmt),
@@ -201,7 +199,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           transferAmt,
           toAddress: getShortenAddress(receivingAddress, 5),
         });
-        await tokenTransferService.transferNativeAsset({
+        await assetsService.transferNativeAsset({
           assetId: selectedToken.value.id,
           senderAddress: currentAccount.value,
           receivingAddress: receivingAddress,
