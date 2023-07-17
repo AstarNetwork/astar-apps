@@ -74,7 +74,7 @@ export default defineComponent({
     const isModalAddCommunity = ref<boolean>(false);
     const availableCommunities = ref<CommunityDefinition[]>([
       {
-        type: CommunityType.Instagram,
+        type: CommunityType.GitHub,
         handle: '',
         iconName: SocialIcon.Github,
         label: t('dappStaking.modals.community.githubAccount'),
