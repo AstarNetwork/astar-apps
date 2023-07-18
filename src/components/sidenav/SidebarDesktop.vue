@@ -145,7 +145,6 @@ export default defineComponent({
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
-    console.log(path.value);
 
     const hoverNFT = ref<boolean>(false);
     const isDecentralized = computed<boolean>(() => {

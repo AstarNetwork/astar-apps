@@ -91,6 +91,7 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/sdn.png'),
     parachainId: parachainIds.SHIDEN,
     endpoint: 'wss://rpc.shiden.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9961',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
   },
