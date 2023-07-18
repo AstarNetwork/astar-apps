@@ -1,6 +1,7 @@
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { Signer } from '@polkadot/types/types';
+import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -10,11 +11,18 @@ import { AlertMsg } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
-import { IMetadataRepository } from 'src/v2/repositories';
+import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { PolkasafeRepository } from 'src/v2/repositories/implementations';
-import { IGasPriceProvider, IWalletService, ParamSignAndSend } from 'src/v2/services';
+import {
+  IGasPriceProvider,
+  IWalletService,
+  ParamSendMultisigTransaction,
+  ParamSignAndSend,
+} from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
+import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
+import { IApi } from 'src/v2/integration';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -24,7 +32,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     @inject(Symbols.PolkasafeRepository) private readonly polkasafeClient: PolkasafeRepository,
     @inject(Symbols.MetadataRepository) private readonly metadataRepository: IMetadataRepository,
     @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator,
-    @inject(Symbols.GasPriceProvider) private readonly gasPriceProvider: IGasPriceProvider
+    @inject(Symbols.GasPriceProvider) private readonly gasPriceProvider: IGasPriceProvider,
+    @inject(Symbols.DefaultApi) protected api: IApi,
+    @inject(Symbols.AssetsRepository) private assetsRepository: IAssetsRepository
   ) {
     super(eventAggregator);
   }
@@ -62,29 +72,20 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
           try {
-            this.eventAggregator.publish(new BusyMessage(true));
-            const callHash = await this.polkasafeClient.sendMultisigTransaction({
-              multisigAddress: senderAddress,
-              transaction: extrinsic,
+            const callHash = await this.sendMultisigTransaction({
+              multisig,
+              senderAddress,
               tip,
+              extrinsic,
             });
-            // Memo: give some time to wait for listing the transaction on PolkaSafe portal (queue page), so that users won't need to refresh the page to find the transaction for approving
-            const syncTime = 1000 * 10;
-            await wait(syncTime);
-
-            this.eventAggregator.publish(
-              new ExtrinsicStatusMessage({
-                success: true,
-                message: AlertMsg.SUCCESS_MULTISIG,
-                method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                explorerUrl: polkasafeUrl + '/transactions?tab=Queue#' + callHash,
-              })
-            );
-            this.eventAggregator.publish(new BusyMessage(false));
             resolve(callHash);
           } catch (error: any) {
             const isDuplicatedTx = error.message.includes('AlreadyApproved');
-            const message = isDuplicatedTx ? AlertMsg.ERROR_DUPLICATED_TX : AlertMsg.ERROR;
+            const message = isDuplicatedTx
+              ? AlertMsg.ERROR_DUPLICATED_TX
+              : error.message
+              ? error.message
+              : AlertMsg.ERROR;
             this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
             this.eventAggregator.publish(new BusyMessage(false));
             resolve(error.message);
@@ -224,5 +225,49 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     isMonitorExtension
       ? window.addEventListener('message', handleDetectSign)
       : window.removeEventListener('message', handleDetectSign);
+  }
+
+  private async sendMultisigTransaction({
+    multisig,
+    senderAddress,
+    tip,
+    extrinsic,
+  }: ParamSendMultisigTransaction): Promise<string> {
+    this.eventAggregator.publish(new BusyMessage(true));
+    const account = JSON.parse(multisig);
+    let multisigAddress = senderAddress;
+    const isProxyAccount = Boolean(account.multisigAccount.isProxyAccount);
+    if (isProxyAccount) {
+      // Memo: get the multisig address of the proxy account
+      const multiAddress = createKeyMulti(
+        account.multisigAccount.signatories,
+        account.multisigAccount.threshold
+      );
+      multisigAddress = encodeAddress(multiAddress, ASTAR_SS58_FORMAT);
+      const bal = await this.assetsRepository.getNativeBalance(multisigAddress);
+      if (Number(bal) === 0) {
+        throw Error(`Please add Existential Deposit to ${multisigAddress}`);
+      }
+    }
+    const callHash = await this.polkasafeClient.sendMultisigTransaction({
+      multisigAddress,
+      transaction: extrinsic,
+      isProxyAccount,
+      tip,
+    });
+    // Memo: give some time to wait for listing the transaction on PolkaSafe portal (queue page), so that users won't need to refresh the page to find the transaction for approving
+    const syncTime = 1000 * 10;
+    await wait(syncTime);
+
+    this.eventAggregator.publish(
+      new ExtrinsicStatusMessage({
+        success: true,
+        message: AlertMsg.SUCCESS_MULTISIG,
+        method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+        explorerUrl: polkasafeUrl + '/transactions?tab=Queue#' + callHash,
+      })
+    );
+    this.eventAggregator.publish(new BusyMessage(false));
+    return callHash;
   }
 }
