@@ -34,3 +34,6 @@ jobs:
           branch: release-hotfix
           base: main
           delete-branch: false
+      - name: Run 4everland deploy
+        run: |
+          curl "${{ secrets.HOOK_4EVERLAND }}" 
