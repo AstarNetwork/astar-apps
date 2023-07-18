@@ -364,7 +364,8 @@ export function useTransferRouter() {
   const isDisableXcmEnvironment = computed<boolean>(() => {
     const isProductionPage = window.location.origin === productionOrigin;
     const isDecentralizedPage = window.location.origin === decentralizedOrigin;
-    if (!isProductionPage || !isDecentralizedPage) {
+    const isStagingOrDevPage = !isProductionPage && !isDecentralizedPage;
+    if (isStagingOrDevPage) {
       return false;
     }
 
