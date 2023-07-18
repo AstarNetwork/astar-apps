@@ -43,7 +43,7 @@ import { IApiFactory } from 'src/v2/integration';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
-import { castChainName } from 'src/modules/xcm';
+import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
@@ -289,9 +289,9 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       const isFromAstar = srcChain.value.name === Astar.name || srcChain.value.name === Shiden.name;
       const chainName = isFromAstar ? destChain.value.name : srcChain.value.name;
       const defaultParachainEndpoint = xcmChainObj[chainName];
-      return defaultParachainEndpoint.endpoint as string;
+      return castXcmEndpoint(defaultParachainEndpoint.endpoint);
     } else {
-      return originChain.value.endpoint || '';
+      return castXcmEndpoint(originChain.value.endpoint);
     }
   };
 

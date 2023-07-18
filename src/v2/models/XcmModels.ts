@@ -49,6 +49,7 @@ export interface XcmChain {
   img: string;
   parachainId: parachainIds;
   endpoint: string;
+  chopsticksEndpoint?: string;
   subscan: string;
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;
