@@ -238,6 +238,9 @@ export const addXcmTxHistories = ({
 // Memo: cast the XCM endpoint to chopsticks endpoint
 export const castXcmEndpoint = (endpoint: string): string => {
   const extractPort = (e: string): string => {
+    if (!e || e === 'null') {
+      return '';
+    }
     const urlObject = new URL(e);
     return urlObject.port;
   };
