@@ -37,7 +37,9 @@ export class AstarXcmRepository extends XcmRepository {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const version = 'V3';
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
-    const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
+    const functionName = isWithdrawAssets
+      ? 'limitedReserveWithdrawAssets'
+      : 'limitedReserveTransferAssets';
 
     const destination = {
       [version]: {
@@ -95,6 +97,10 @@ export class AstarXcmRepository extends XcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
@@ -102,7 +108,8 @@ export class AstarXcmRepository extends XcmRepository {
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 }
