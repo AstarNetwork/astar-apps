@@ -8,7 +8,7 @@ import { $api, $web3 } from 'boot/api';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested } from '@astar-network/astar-sdk-core';
+import { getVested, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -16,7 +16,6 @@ function useCall(addressRef: Ref<string>) {
   const remainingVests = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
   const store = useStore();
-  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const isLoadingAccount = ref<boolean>(true);
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -104,7 +103,7 @@ function useCall(addressRef: Ref<string>) {
   const updateAccountBalance = () => {
     const address = addressRef.value;
     if (address !== ETHEREUM_EXTENSION) {
-      if (isH160Formatted.value) {
+      if (isValidEvmAddress(address)) {
         updateAccountH160(address);
       } else {
         updateAccount(address);
