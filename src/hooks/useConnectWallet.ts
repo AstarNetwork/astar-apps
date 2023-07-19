@@ -47,6 +47,7 @@ export const useConnectWallet = () => {
 
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
+  const modalPolkasafeSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
 
@@ -81,6 +82,12 @@ export const useConnectWallet = () => {
 
   const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
+    return;
+  };
+
+  const openPolkasafeModal = (): void => {
+    modalName.value = WalletModalOption.Polkasafe;
+    modalPolkasafeSelect.value = true;
     return;
   };
 
@@ -374,6 +381,7 @@ export const useConnectWallet = () => {
     modalName,
     selectedWallet,
     modalAccountSelect,
+    modalPolkasafeSelect,
     isH160,
     isConnectedNetwork,
     isEthWallet,
@@ -384,5 +392,6 @@ export const useConnectWallet = () => {
     toggleEvmWalletSchema,
     changeAccount,
     connectEthereumWallet,
+    openPolkasafeModal,
   };
 };

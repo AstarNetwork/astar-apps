@@ -97,6 +97,7 @@
             </div>
             <div class="box__column--input-amount">
               <input
+                id="amount"
                 :value="amount"
                 inputmode="decimal"
                 type="number"

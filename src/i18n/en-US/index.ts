@@ -39,6 +39,7 @@ export default {
   select: 'Select',
   help: 'Help',
   share: 'Share',
+  multisig: 'Multisig',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -71,10 +72,14 @@ export default {
     copyAddressSuccessfully: 'Copy address success!',
     clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
+    approveOnPolkasafe: 'Approve on PolkaSafe',
     success: 'Success',
     note: 'Note',
     error: 'Error',
     copied: 'Copied',
+    info: 'Info',
+    enablePolkasafe:
+      'Please sign on the wallet extension to enable PolkaSafe functionality; the popup may take a while to appear',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -141,6 +146,7 @@ export default {
     select: 'Please select a wallet to connect to this portal',
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
+    multisigAccount: 'Multisig Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -148,6 +154,12 @@ export default {
     },
     showBalance: 'Show {token} balance',
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
+    multisig: {
+      initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
+      noAccounts: 'There are no multisig accounts found',
+      goToPokasafe: 'Go to PolkaSafe to create one',
+      proxy: 'Proxy',
+    },
   },
   installWallet: {
     getWallet: 'Haven’t got {value} yet?',
@@ -221,6 +233,7 @@ export default {
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
       'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
+    desktopOnlyBanner: 'dApp registration is only available on desktop',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     totalStake: 'Total stake:',
@@ -243,12 +256,15 @@ export default {
     dappStakingEvm: 'dApp Staking is available on EVM',
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
+    transactions: 'Transactions',
+    uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
     },
+    last30days: '(last 30 days)',
     dappPage: {
       back: 'Back',
       goBackToTopPage: 'Go back to the top page',
@@ -300,6 +316,7 @@ export default {
         tiktokAccount: 'TikTok account',
         youtubeAccount: 'YouTube account',
         instagramAccount: 'Instagram account',
+        githubAccount: 'GitHub account',
         communityRequired: 'At least one community link is required.',
       },
       description: 'Description',
@@ -390,6 +407,7 @@ export default {
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
+    theSignatory: '{account} is the signatory',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
@@ -466,7 +484,6 @@ export default {
         askCommunityDiscord: 'Ask our Discord community',
         askCommunityTip: 'Someone is always there for you.',
       },
-
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',

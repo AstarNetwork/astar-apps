@@ -2,6 +2,7 @@ endpoint: wss://rpc.astar.network
 mock-signature-host: true
 block: ${env.ASTAR_BLOCK_NUMBER}
 db: ./db.sqlite
+port: 9944
 # wasm-override: astar-58.wasm
 
 import-storage:
@@ -10,6 +11,14 @@ import-storage:
   System:
     Account:
       - - - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - providers: 1
+          data:
+            free: '100000000000000000000000'
+      - - - ZAP5o2BjWAo5uoKDE6b6Xkk4Ju7k6bDu24LNjgZbfM3iyiR # Bob
+        - providers: 1
+          data:
+            free: '100000000000000000000000'
+      - - - 5F3QVbS78a4aTYLiRAD8N3czjqVoNyV42L19CXyhqUMCh4Ch # Alice-Bob multisig
         - providers: 1
           data:
             free: '100000000000000000000000'
@@ -24,3 +33,35 @@ import-storage:
           - '4294969280'
           - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
         - balance: 100000000000
+      - - # ACA
+          - '18446744073709551616'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000'
+      - - # GLMR
+          - '18446744073709551619'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000000000'
+      - - # PHA
+          - '18446744073709551622'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000'
+      - - # BNC
+          - '18446744073709551623'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000'
+      - - # UNQ
+          - '18446744073709551631'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000000000000'
+      - - # INTR
+          - '18446744073709551621'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '1000000000000000'
+      - - # EQD
+          - '18446744073709551629'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '100000000000000'
+      - - # IBTC
+          - '18446744073709551620'
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+        - balance: '10000000000000'

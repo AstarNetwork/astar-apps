@@ -18,7 +18,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { capitalize } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
-import { productionOrigin } from 'src/links';
+import { decentralizedOrigin, productionOrigin } from 'src/links';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
@@ -28,6 +28,9 @@ export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 const disabledXcmChain: endpointKey | undefined = undefined;
 // e.g.: [Chain.INTERLAY, Chain.KINTSUGI]
 const disabledXcmParachains: Chain[] = [];
+
+// e.g: [Chain.MOONBEAM, Chain.MOONRIVER]
+const disabledXcmEvmWithdrawalChain: Chain[] = [Chain.MOONBEAM, Chain.MOONRIVER];
 
 export interface NetworkFromTo {
   from: string;
@@ -353,14 +356,22 @@ export function useTransferRouter() {
 
   const checkIsDisabledToken = (originChain: string): boolean => {
     if (!originChain) return false;
-    return !!disabledXcmParachains.find((it) => it === originChain);
+    const isDisabledEvmWithdrawal =
+      isH160.value && !!disabledXcmEvmWithdrawalChain.find((it) => it === originChain);
+    return !!disabledXcmParachains.find((it) => it === originChain) || isDisabledEvmWithdrawal;
   };
 
   const isDisableXcmEnvironment = computed<boolean>(() => {
     const isProductionPage = window.location.origin === productionOrigin;
+    const isDecentralizedPage = window.location.origin === decentralizedOrigin;
+    const isStagingOrDevPage = !isProductionPage && !isDecentralizedPage;
+    if (isStagingOrDevPage) {
+      return false;
+    }
+
     const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
-    const originChain = token.value ? token.value.originChain : '';
-    return checkIsDisabledToken(originChain) || (isDisabledXcmChain && isProductionPage);
+    const originChain = token.value?.originChain || '';
+    return checkIsDisabledToken(originChain) || isDisabledXcmChain;
   });
 
   const checkIsDisabledXcmChain = (from: string, to: string): boolean => {

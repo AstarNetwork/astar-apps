@@ -25,11 +25,19 @@ export const getAddress = (address: string) => {
   return { Evm: address };
 };
 
-export const getBalance = async (address: string): Promise<bigint> => {
+export const getBalance = async (address: string, assetId?: string): Promise<bigint> => {
   const api = await getApi();
-  const balance = (await api.query.system.account(address)) as FrameSystemAccountInfo;
+  let balance = BigInt(0);
 
-  return BigInt(balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt());
+  if (assetId) {
+    const balanceObj = await api.query.assets.account(assetId, address);
+    balance = BigInt(balanceObj.unwrap().balance.toBigInt());
+  } else {
+    const balanceObj = (await api.query.system.account(address)) as FrameSystemAccountInfo;
+    balance = BigInt(balanceObj.data.free.toBigInt() - balanceObj.data.feeFrozen.toBigInt());
+  }
+
+  return balance;
 };
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {
@@ -97,4 +105,26 @@ export const setRewardDestination = async (rewardDestination: RewardDestination)
   const signer = await getSigner();
   const tx = api.tx.dappsStaking.setRewardDestination(rewardDestination);
   await sendTransaction(tx, signer);
+};
+
+export const roundUpAndTruncateBigInt = async (
+  bigIntValue: bigint,
+  decimalPlaces: number
+): Promise<bigint> => {
+  const strValue = bigIntValue.toString();
+
+  // Check if we have enough digits for rounding
+  if (strValue.length <= decimalPlaces) {
+    return bigIntValue;
+  }
+
+  const powerOf10 = BigInt('1' + '0'.repeat(decimalPlaces));
+
+  // Determine the digit at the rounding position and round up if it's 5 or greater
+  if (parseInt(strValue[strValue.length - decimalPlaces]) >= 5) {
+    bigIntValue += powerOf10;
+  }
+
+  // Truncate the remaining digits by dividing by power of 10n
+  return bigIntValue / powerOf10;
 };

@@ -130,9 +130,21 @@
   line-height: 20px;
   text-align: left;
   margin-top: 4px;
+  position: relative;
   @media (min-width: $sm) {
     margin-top: 0px;
   }
+}
+
+.column--proxy {
+  position: absolute;
+  color: $gray-1;
+  background-color: $astar-blue;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 4px;
+  margin-top: 2px;
 }
 
 .wrapper--share {
@@ -216,6 +228,24 @@
   font-weight: 500;
   font-size: 12px;
   color: $gray-3;
+}
+
+.row--zero-accounts {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link--polkasafe {
+  margin-top: 4px;
+  color: $astar-blue;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.row--skeleton {
+  margin-top: 24px;
 }
 
 .body--dark {

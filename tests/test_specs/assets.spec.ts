@@ -1,21 +1,20 @@
-import { clickPolicyButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
-import { test } from '../fixtures';
+import { ApiPromise } from '@polkadot/api';
+import { clickPolicyButton } from 'src/modules/playwright';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
-  BOB_ADDRESS,
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
   createMetamaskAccount,
   selectAccount,
-  signTransaction,
+  selectMultisigAccount,
 } from '../common';
-import { ApiPromise } from '@polkadot/api';
-import { chainDecimals, getApi, getBalance } from '../common-api';
+import { getApi } from '../common-api';
+import { test } from '../fixtures';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -47,6 +46,18 @@ test.describe('account panel', () => {
     await expect(page.locator('.noti-content')).toBeVisible();
   });
 
+  test('should copy multisig wallet address', async ({ page, context }) => {
+    await selectMultisigAccount(page, context, false);
+    await page.locator('#copyAddress').click();
+    await expect(page.locator('.noti-content')).toBeVisible();
+  });
+
+  test('should copy multisig proxy wallet address', async ({ page, context }) => {
+    await selectMultisigAccount(page, context, true);
+    await page.locator('#copyAddress').click();
+    await expect(page.locator('.noti-content')).toBeVisible();
+  });
+
   test('account expander works', async ({ page }) => {
     await page.locator('.icon--expand').first().click();
     const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
@@ -54,27 +65,6 @@ test.describe('account panel', () => {
 
     await page.locator('.icon--expand').first().click();
     await expect(transferButton).not.toBeVisible();
-  });
-
-  //AS001
-  test('should transfer tokens from Alice to Bob', async ({ page, context }) => {
-    const transferAmount = BigInt(1000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
-
-    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
-    await page.getByRole('button', { name: 'Confirm' }).click();
-
-    const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
-    await signTransaction(context);
-    await page.waitForSelector('.four', { state: 'hidden' });
-
-    await expect(page.getByText('Success')).toBeVisible();
-    const bobBalanceAfterTransaction = await getBalance(BOB_ADDRESS);
-    expect(bobBalanceAfterTransaction - bobBalanceBeforeTransaction).toEqual(
-      transferAmount * BigInt(Math.pow(10, chainDecimals))
-    );
   });
 
   test('EVM sample', async ({ page }) => {

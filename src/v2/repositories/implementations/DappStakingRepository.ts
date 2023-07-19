@@ -6,7 +6,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
 import { injectable, inject } from 'inversify';
-import { IDappStakingRepository } from 'src/v2/repositories';
+import { DappAggregatedMetrics, IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import {
@@ -388,6 +388,19 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
+  public async getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=30d`;
+
+    try {
+      const response = await axios.get<DappAggregatedMetrics[]>(url);
+      return response.data;
+    } catch {
+      return [];
+    }
+  }
+
   private async handleGetStakeInfo({
     api,
     dappAddress,
@@ -466,5 +479,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
 
     return undefined;
+  }
+
+  public async getSetRewardDestinationCall(
+    rewardDestination: RewardDestination
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.setRewardDestination(rewardDestination);
   }
 }

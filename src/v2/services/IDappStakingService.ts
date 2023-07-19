@@ -3,7 +3,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
+import { DappCombinedInfo, RewardDestination, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 
@@ -113,4 +113,13 @@ export interface IDappStakingService {
   }): Promise<void>;
 
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
+
+  // Memo: set re-stake to turn it On/Off
+  setRewardDestination(param: ParamSetRewardDestination): Promise<void>;
+}
+
+export interface ParamSetRewardDestination {
+  rewardDestination: RewardDestination;
+  senderAddress: string;
+  successMessage: string;
 }
