@@ -11,9 +11,8 @@ import { useI18n } from 'vue-i18n';
 
 export function useUnbound() {
   const store = useStore();
-  const { currentAccount } = useAccount();
+  const { currentAccount, senderSs58Account } = useAccount();
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
-  const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const { t } = useI18n();
 
@@ -33,8 +32,8 @@ export function useUnbound() {
         successMessage
       );
 
-      const ledger = await dappStakingService.getLedger(selectedAccountAddress.value);
-      store.commit('dapps/setUnlockingChunks', ledger.unbondingInfo.unlockingChunks);
+      const ledger = await dappStakingService.getLedger(senderSs58Account.value);
+      store.commit('dapps/setUnlockingChunks', ledger.unbondingInfo.unlockingChunks.length);
     }
   };
 

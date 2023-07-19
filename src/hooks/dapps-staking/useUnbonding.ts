@@ -17,10 +17,12 @@ import { useAccount } from '../useAccount';
 export function useUnbonding() {
   const store = useStore();
   const { t } = useI18n();
-  const { senderSs58Account } = useAccount();
+  const { senderSs58Account, currentAccount } = useAccount();
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
   const unlockingChunks = ref<ChunkInfo[]>();
   const canWithdraw = ref<boolean>(false);
   const totalToWithdraw = ref<BN>(new BN(0));
@@ -39,9 +41,12 @@ export function useUnbonding() {
       };
 
       try {
-        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const dappStakingService = container.get<IDappStakingService>(
+          isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+        );
+
         await dappStakingService.withdraw({
-          senderAddress: senderSs58Account.value,
+          senderAddress: currentAccount.value,
           finalizedCallback,
         });
       } catch (error: any) {

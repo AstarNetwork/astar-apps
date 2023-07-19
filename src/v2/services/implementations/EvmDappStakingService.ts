@@ -8,7 +8,7 @@ import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
-import { IEventAggregator } from 'src/v2/messaging';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { TvlModel } from 'src/v2/models';
 import { AccountLedger, DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
@@ -17,7 +17,12 @@ import {
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
-import { IDappStakingService, ParamSetRewardDestination, ParamWithdraw } from 'src/v2/services';
+import {
+  IDappStakingService,
+  ParamClaimAll,
+  ParamSetRewardDestination,
+  ParamWithdraw,
+} from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -255,5 +260,39 @@ export class EvmDappStakingService implements IDappStakingService {
       to: dappStakingContract,
       data: this.evmContract.methods.withdraw_unbonded().encodeABI(),
     });
+  }
+  public async claimAll({
+    batchTxs,
+    maxBatchWeight,
+    senderAddress,
+    transferableBalance,
+    finalizedCallback,
+    invalidBalanceMsg,
+    h160SenderAddress,
+  }: ParamClaimAll): Promise<void> {
+    try {
+      const transaction = await this.dappStakingRepository.getClaimCall({
+        batchTxs,
+        maxBatchWeight,
+        senderAddress,
+        transferableBalance,
+        invalidBalanceMsg,
+        h160SenderAddress,
+      });
+
+      const transactionInputs = (transaction.toHuman() as any).method.args.calls;
+
+      // Todo
+      await this.wallet.sendEvmTransaction({
+        from: h160SenderAddress || '',
+        to: dappStakingContract,
+        data: this.evmContract.methods.withdraw_unbonded().encodeABI(),
+      });
+    } catch (error: any) {
+      console.error(error);
+      const message =
+        error.message === 'dappStaking.error.invalidBalance' ? invalidBalanceMsg : error.message;
+      this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
+    }
   }
 }

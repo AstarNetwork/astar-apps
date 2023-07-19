@@ -33,6 +33,7 @@ export function useClaimAll() {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderSs58Account);
@@ -46,7 +47,7 @@ export function useClaimAll() {
     }
   });
 
-  const transferableBalance = computed(() => {
+  const transferableBalance = computed<number>(() => {
     const balance = accountData.value
       ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
       : '0';
@@ -110,46 +111,9 @@ export function useClaimAll() {
   watch([isSendingTx, senderSs58Account, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
-    const api = $api;
-    const batchTxsRef = batchTxs;
-
-    if (!api) {
-      throw Error('Failed to connect to API');
-    }
-    if (0 >= batchTxsRef.length) {
-      throw Error('No dApps can be claimed');
-    }
-
-    const txsToExecute: ExtrinsicPayload[] = [];
-    let totalWeight: BN = new BN('0');
-    for (let i = 0; i < batchTxsRef.length; i++) {
-      const tx = batchTxsRef[i];
-      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
-      if (totalWeight.add(weight).gt(maxBatchWeight.value)) {
-        break;
-      }
-
-      txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(weight);
-    }
-
-    console.info(
-      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
+    const dappStakingService = container.get<IDappStakingService>(
+      isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
     );
-    const transaction = api.tx.utility.batch(txsToExecute);
-    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderSs58Account.value);
-    const partialFee = info.partialFee.toBn();
-    const balance = new BN(
-      ethers.utils.parseEther(transferableBalance.value.toString()).toString()
-    );
-
-    if (balance.sub(partialFee.muln(1.5)).isNeg()) {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.invalidBalance'),
-        alertType: 'error',
-      });
-      return;
-    }
 
     const finalizedCallback = (result: ISubmittableResult): void => {
       displayCustomMessage({
@@ -162,11 +126,14 @@ export function useClaimAll() {
     };
 
     try {
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-      await dappStakingService.sendTx({
-        senderAddress: currentAccount.value,
-        transaction,
+      await dappStakingService.claimAll({
+        senderAddress: senderSs58Account.value,
         finalizedCallback,
+        batchTxs,
+        maxBatchWeight: maxBatchWeight.value,
+        transferableBalance: transferableBalance.value,
+        invalidBalanceMsg: t('dappStaking.error.invalidBalance'),
+        h160SenderAddress: isH160.value ? currentAccount.value : '',
       });
     } catch (error: any) {
       console.error(error.message);

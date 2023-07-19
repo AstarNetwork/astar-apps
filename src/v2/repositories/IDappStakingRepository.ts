@@ -12,6 +12,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { ParamClaimAll } from '../services';
 
 export interface DappAggregatedMetrics {
   name: string;
@@ -125,6 +126,7 @@ export interface IDappStakingRepository {
     rewardDestination: RewardDestination
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
   getWithdrawCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+  getClaimCall(param: ParamClaimAll): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
   getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }

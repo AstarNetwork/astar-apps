@@ -6,6 +6,7 @@ import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, RewardDestination, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { PayloadWithWeight } from '@astar-network/astar-sdk-core';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -117,6 +118,7 @@ export interface IDappStakingService {
   // Memo: set re-stake to turn it On/Off
   setRewardDestination(param: ParamSetRewardDestination): Promise<void>;
   withdraw(param: ParamWithdraw): Promise<void>;
+  claimAll(param: ParamClaimAll): Promise<void>;
 }
 
 export interface ParamSetRewardDestination {
@@ -127,5 +129,15 @@ export interface ParamSetRewardDestination {
 
 export interface ParamWithdraw {
   senderAddress: string;
+  finalizedCallback?: (result: ISubmittableResult) => void;
+}
+
+export interface ParamClaimAll {
+  batchTxs: PayloadWithWeight[];
+  maxBatchWeight: BN;
+  senderAddress: string;
+  transferableBalance: number;
+  invalidBalanceMsg: string;
+  h160SenderAddress: string;
   finalizedCallback?: (result: ISubmittableResult) => void;
 }
