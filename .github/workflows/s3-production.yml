@@ -31,6 +31,6 @@ jobs:
         with:
           title: 'Merge main to release-hotfix'
           body: 'This is an auto-generated PR to merge main to release-hotfix'
-          branch: release-hotfix
-          base: main
+          branch: main
+          base: release-hotfix
           delete-branch: false
