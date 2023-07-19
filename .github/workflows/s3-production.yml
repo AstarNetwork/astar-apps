@@ -26,6 +26,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/spa  s3://astar-apps --delete
+      - name: Run 4everland deploy
+        run: |
+          curl "${{ secrets.HOOK_4EVERLAND }}"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
