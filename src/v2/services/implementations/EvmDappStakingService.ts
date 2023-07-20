@@ -3,9 +3,10 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
 import MULTI_CALL_ABI from 'src/config/web3/abi/multicall3.json';
-import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
+import { RewardDestination } from 'src/hooks';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
@@ -26,10 +27,9 @@ import {
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import { IWalletService } from '../IWalletService';
-import { Contract } from 'web3-eth-contract';
-import { RewardDestination } from 'src/hooks';
 
 const dappStakingContract = '0x0000000000000000000000000000000000005001';
 //Todo: add shiden and astar's
@@ -288,48 +288,26 @@ export class EvmDappStakingService implements IDappStakingService {
       const transactionInputs = (transaction.toHuman() as any).method.args.calls;
       console.log('transactionInputs', transactionInputs);
 
-      // Memo: testing
-      const web3 = new Web3('https://evm.shibuya.astar.network');
-      const claimStakerData = web3.eth.abi.encodeFunctionCall(
-        {
-          name: 'claim_staker',
-          type: 'function',
-          inputs: [
-            {
-              type: 'address',
-              name: 'smart_contract',
-            },
-          ],
-        },
-        ['0xde0f34d2845511c20bab0d7ce02b03c8065ff0c5'] // UniSwap in shibuya
-      );
-
-      // const claimStakerData = this.evmContract.methods
-      //   .claim_staker('0xde0f34d2845511c20bab0d7ce02b03c8065ff0c5')
-      //   .encodeABI();
-
-      const calls = [
-        {
-          target: dappStakingContract,
-          allowFailure: false,
-          value: '0x0',
-          callData: claimStakerData,
-        },
-        // {
-        //   target: dappStakingContract,
-        //   allowFailure: false,
-        //   value: '0x0',
-        //   callData: claimStakerData,
-        // },
-        // Add more calls as necessary
-      ];
-      console.log('calls', calls);
-      // Todo
-      await this.wallet.sendEvmTransaction({
-        from: h160SenderAddress || '',
-        to: multiCall3Contract,
-        data: this.multiCallContract.methods.aggregate3(calls).encodeABI(),
+      // Test
+      // const web3 = new Web3('https://evm.shibuya.astar.network');
+      const web3 = new Web3(window.ethereum as any);
+      const batch = new web3.BatchRequest();
+      transactionInputs.forEach((input: any) => {
+        batch.add(
+          this.evmContract.methods
+            .claim_staker(input.args['contract_id'].Evm)
+            .send.request({ from: h160SenderAddress })
+        );
       });
+      batch.execute();
+
+      // Todo
+      // await this.wallet.sendEvmTransaction({
+      //   from: h160SenderAddress || '',
+      //   to: multiCall3Contract,
+      //   data: this.multiCallContract.methods.aggregate(calls).encodeABI(),
+      //   // data: this.multiCallContract.methods.aggregate3(calls).encodeABI(),
+      // });
     } catch (error: any) {
       console.error(error);
       const message =
