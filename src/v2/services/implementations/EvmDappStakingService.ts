@@ -31,7 +31,7 @@ import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import { IWalletService } from '../IWalletService';
 
-const dappStakingContract = '0x0000000000000000000000000000000000005001';
+export const dappStakingContract = '0x0000000000000000000000000000000000005001';
 //Todo: add shiden and astar's
 const multiCall3Contract = '0x271C2cFa8204Ffad3Feb48faDE001bC9457C1EA7'; //shibuya
 

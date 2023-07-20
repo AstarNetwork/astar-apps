@@ -100,11 +100,6 @@ export function useStake() {
     { immediate: true }
   );
 
-  watchEffect(() => {
-    console.log('formattedTransferFrom', formattedTransferFrom.value);
-    console.log('stakingList', stakingList.value);
-  });
-
   return {
     formattedTransferFrom,
     currentAccount,
