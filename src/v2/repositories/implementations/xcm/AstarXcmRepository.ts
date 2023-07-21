@@ -35,45 +35,7 @@ export class AstarXcmRepository extends XcmRepository {
     }
 
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    const version = 'V3';
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
-    const functionName = isWithdrawAssets
-      ? 'limitedReserveWithdrawAssets'
-      : 'limitedReserveTransferAssets';
-
-    const destination = {
-      [version]: {
-        interior: {
-          X1: {
-            Parachain: new BN(to.parachainId),
-          },
-        },
-        parents: new BN(1),
-      },
-    };
-
-    const isAccountId20 = ethWalletChains.includes(to.name);
-
-    const X1_V3 = isAccountId20
-      ? {
-          AccountKey20: {
-            key: recipientAccountId,
-          },
-        }
-      : {
-          AccountId32: {
-            id: decodeAddress(recipientAccountId),
-          },
-        };
-
-    const beneficiary = {
-      [version]: {
-        interior: {
-          X1: X1_V3,
-        },
-        parents: new BN(0),
-      },
-    };
 
     const asset = isWithdrawAssets
       ? {
@@ -87,14 +49,42 @@ export class AstarXcmRepository extends XcmRepository {
         };
 
     const assets = {
-      [version]: [
-        {
-          fun: {
-            Fungible: new BN(amount),
-          },
-          id: asset,
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
         },
-      ],
+        id: asset,
+      },
+    };
+
+    const isAccountId20 = ethWalletChains.includes(to.name);
+
+    const accountId = isAccountId20
+      ? {
+          AccountKey20: {
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
+    const destination = {
+      V3: {
+        interior: {
+          X2: [
+            {
+              Parachain: new BN(to.parachainId),
+            },
+            {
+              ...accountId,
+            },
+          ],
+        },
+        parents: new BN(1),
+      },
     };
 
     const weightLimit = {
@@ -103,13 +93,100 @@ export class AstarXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
-      'polkadotXcm',
-      functionName,
-      destination,
-      beneficiary,
+      'xtokens',
+      'transferMultiasset',
       assets,
-      new BN(0),
+      destination,
       weightLimit
     );
   }
+  // public async getTransferCall(
+  //   from: XcmChain,
+  //   to: XcmChain,
+  //   recipientAddress: string,
+  //   token: Asset,
+  //   amount: BN
+  // ): Promise<ExtrinsicPayload> {
+  //   if (!to.parachainId) {
+  //     throw `Parachain id for ${to.name} is not defined`;
+  //   }
+
+  //   const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+  //   const version = 'V3';
+  //   const isWithdrawAssets = token.id !== this.astarNativeTokenId;
+  //   const functionName = isWithdrawAssets
+  //     ? 'limitedReserveWithdrawAssets'
+  //     : 'limitedReserveTransferAssets';
+
+  //   const destination = {
+  //     [version]: {
+  //       interior: {
+  //         X1: {
+  //           Parachain: new BN(to.parachainId),
+  //         },
+  //       },
+  //       parents: new BN(1),
+  //     },
+  //   };
+
+  //   const isAccountId20 = ethWalletChains.includes(to.name);
+
+  //   const X1_V3 = isAccountId20
+  //     ? {
+  //         AccountKey20: {
+  //           key: recipientAccountId,
+  //         },
+  //       }
+  //     : {
+  //         AccountId32: {
+  //           id: decodeAddress(recipientAccountId),
+  //         },
+  //       };
+
+  //   const beneficiary = {
+  //     [version]: {
+  //       interior: {
+  //         X1: X1_V3,
+  //       },
+  //       parents: new BN(0),
+  //     },
+  //   };
+
+  //   const asset = isWithdrawAssets
+  //     ? {
+  //         Concrete: await this.fetchAssetConfig(from, token),
+  //       }
+  //     : {
+  //         Concrete: {
+  //           interior: 'Here',
+  //           parents: new BN(0),
+  //         },
+  //       };
+
+  //   const assets = {
+  //     [version]: [
+  //       {
+  //         fun: {
+  //           Fungible: new BN(amount),
+  //         },
+  //         id: asset,
+  //       },
+  //     ],
+  //   };
+
+  //   const weightLimit = {
+  //     Unlimited: null,
+  //   };
+
+  //   return await this.buildTxCall(
+  //     from,
+  //     'polkadotXcm',
+  //     functionName,
+  //     destination,
+  //     beneficiary,
+  //     assets,
+  //     new BN(0),
+  //     weightLimit
+  //   );
+  // }
 }

@@ -184,29 +184,6 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    const version = 'V3';
-    const destination = {
-      [version]: {
-        interior: 'Here',
-        parents: new BN(1),
-      },
-    };
-
-    const id = decodeAddress(recipientAccountId);
-    const AccountId32 = {
-      id,
-    };
-
-    const beneficiary = {
-      [version]: {
-        interior: {
-          X1: {
-            AccountId32,
-          },
-        },
-        parents: new BN(0),
-      },
-    };
 
     const asset = {
       Concrete: {
@@ -216,26 +193,98 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      [version]: [
-        {
-          fun: {
-            Fungible: new BN(amount),
-          },
-          id: asset,
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
         },
-      ],
+        id: asset,
+      },
+    };
+
+    const destination = {
+      V3: {
+        interior: {
+          X1: {
+            AccountId32: {
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(1),
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
     };
 
     return await this.buildTxCall(
       from,
-      'polkadotXcm',
-      'reserveWithdrawAssets',
-      destination,
-      beneficiary,
+      'xtokens',
+      'transferMultiasset',
       assets,
-      new BN(0)
+      destination,
+      weightLimit
     );
   }
+  // public async getTransferToOriginChainCall(
+  //   from: XcmChain,
+  //   recipientAddress: string,
+  //   amount: BN
+  // ): Promise<ExtrinsicPayload> {
+  //   const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+  //   const version = 'V3';
+  //   const destination = {
+  //     [version]: {
+  //       interior: 'Here',
+  //       parents: new BN(1),
+  //     },
+  //   };
+
+  //   const id = decodeAddress(recipientAccountId);
+  //   const AccountId32 = {
+  //     id,
+  //   };
+
+  //   const beneficiary = {
+  //     [version]: {
+  //       interior: {
+  //         X1: {
+  //           AccountId32,
+  //         },
+  //       },
+  //       parents: new BN(0),
+  //     },
+  //   };
+
+  //   const asset = {
+  //     Concrete: {
+  //       interior: 'Here',
+  //       parents: new BN(1),
+  //     },
+  //   };
+
+  //   const assets = {
+  //     [version]: [
+  //       {
+  //         fun: {
+  //           Fungible: new BN(amount),
+  //         },
+  //         id: asset,
+  //       },
+  //     ],
+  //   };
+
+  //   return await this.buildTxCall(
+  //     from,
+  //     'polkadotXcm',
+  //     'reserveWithdrawAssets',
+  //     destination,
+  //     beneficiary,
+  //     assets,
+  //     new BN(0)
+  //   );
+  // }
 
   public getTransferCall(
     from: XcmChain,
