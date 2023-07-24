@@ -239,6 +239,7 @@ export class XcmRepository implements IXcmRepository {
     );
   }
 
+  // Memo: Remove this method after implementing Xtokens on Astar
   private async getPolkadotXcmToOriginChainCall(
     from: XcmChain,
     recipientAddress: string,
