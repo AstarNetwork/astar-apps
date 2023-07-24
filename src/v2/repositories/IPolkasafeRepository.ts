@@ -9,4 +9,5 @@ export interface MultisigTransactionParam {
   multisigAddress: string;
   transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
   tip: string;
+  isProxyAccount: boolean;
 }

@@ -158,6 +158,7 @@ export default {
       initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
       noAccounts: 'There are no multisig accounts found',
       goToPokasafe: 'Go to PolkaSafe to create one',
+      proxy: 'Proxy',
     },
   },
   installWallet: {
@@ -315,6 +316,7 @@ export default {
         tiktokAccount: 'TikTok account',
         youtubeAccount: 'YouTube account',
         instagramAccount: 'Instagram account',
+        githubAccount: 'GitHub account',
         communityRequired: 'At least one community link is required.',
       },
       description: 'Description',
