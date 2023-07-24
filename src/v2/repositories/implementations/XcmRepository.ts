@@ -183,6 +183,17 @@ export class XcmRepository implements IXcmRepository {
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
+    const isAstar = from.name === 'Astar';
+    return isAstar
+      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount)
+      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount);
+  }
+
+  private async getXtokensToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
 
     const asset = {
@@ -227,64 +238,70 @@ export class XcmRepository implements IXcmRepository {
       weightLimit
     );
   }
-  // public async getTransferToOriginChainCall(
-  //   from: XcmChain,
-  //   recipientAddress: string,
-  //   amount: BN
-  // ): Promise<ExtrinsicPayload> {
-  //   const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-  //   const version = 'V3';
-  //   const destination = {
-  //     [version]: {
-  //       interior: 'Here',
-  //       parents: new BN(1),
-  //     },
-  //   };
 
-  //   const id = decodeAddress(recipientAccountId);
-  //   const AccountId32 = {
-  //     id,
-  //   };
+  private async getPolkadotXcmToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    const version = 'V3';
+    const destination = {
+      [version]: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
 
-  //   const beneficiary = {
-  //     [version]: {
-  //       interior: {
-  //         X1: {
-  //           AccountId32,
-  //         },
-  //       },
-  //       parents: new BN(0),
-  //     },
-  //   };
+    const id = decodeAddress(recipientAccountId);
+    const AccountId32 = {
+      id,
+    };
 
-  //   const asset = {
-  //     Concrete: {
-  //       interior: 'Here',
-  //       parents: new BN(1),
-  //     },
-  //   };
+    const beneficiary = {
+      [version]: {
+        interior: {
+          X1: {
+            AccountId32,
+          },
+        },
+        parents: new BN(0),
+      },
+    };
 
-  //   const assets = {
-  //     [version]: [
-  //       {
-  //         fun: {
-  //           Fungible: new BN(amount),
-  //         },
-  //         id: asset,
-  //       },
-  //     ],
-  //   };
+    const asset = {
+      Concrete: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
 
-  //   return await this.buildTxCall(
-  //     from,
-  //     'polkadotXcm',
-  //     'reserveWithdrawAssets',
-  //     destination,
-  //     beneficiary,
-  //     assets,
-  //     new BN(0)
-  //   );
-  // }
+    const assets = {
+      [version]: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: asset,
+        },
+      ],
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    return await this.buildTxCall(
+      from,
+      'polkadotXcm',
+      'limitedReserveWithdrawAssets',
+      destination,
+      beneficiary,
+      assets,
+      new BN(0),
+      weightLimit
+    );
+  }
 
   public getTransferCall(
     from: XcmChain,
