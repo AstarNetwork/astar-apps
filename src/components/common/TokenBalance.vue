@@ -2,7 +2,7 @@
   <span>
     {{
       $t(text ? text : 'amountToken', {
-        amount: isTruncate ? $n(truncate(balance, decimals)) : Number(balance),
+        amount: truncatedBalance,
         token: symbol,
       })
     }}
@@ -10,7 +10,8 @@
 </template>
 <script lang="ts">
 import { truncate } from '@astar-network/astar-sdk-core';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -34,8 +35,20 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { n } = useI18n();
+    const truncatedBalance = ref<string>('0');
     const isTruncate = !props.symbol.toUpperCase().includes('BTC');
-    return { truncate, isTruncate };
+
+    if (isTruncate) {
+      const truncated = truncate(props.balance, props.decimals);
+      if (!Number.isNaN(truncated)) {
+        truncatedBalance.value = n(truncated);
+      }
+    } else {
+      truncatedBalance.value = props.balance;
+    }
+
+    return { truncatedBalance };
   },
 });
 </script>
