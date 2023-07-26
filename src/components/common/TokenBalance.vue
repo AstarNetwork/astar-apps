@@ -1,9 +1,8 @@
 <template>
-  <span
-    >x
+  <span>
     {{
       $t(text ? text : 'amountToken', {
-        amount: truncatedBalance,
+        amount: isTruncate ? truncate(balance ? balance : 0, decimals) : Number(balance),
         token: symbol,
       })
     }}
@@ -11,8 +10,7 @@
 </template>
 <script lang="ts">
 import { truncate } from '@astar-network/astar-sdk-core';
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -36,22 +34,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { n } = useI18n();
-    const truncatedBalance = ref<string>('0');
     const isTruncate = !props.symbol.toUpperCase().includes('BTC');
-
-    if (isTruncate) {
-      const truncated = truncate(props.balance, props.decimals);
-      if (!Number.isNaN(truncated)) {
-        truncatedBalance.value = n(truncated);
-      } else {
-        console.error('Invalid balance', props.balance, props.decimals, truncated);
-      }
-    } else {
-      truncatedBalance.value = props.balance;
-    }
-
-    return { truncatedBalance };
+    return { truncate, isTruncate };
   },
 });
 </script>
