@@ -3,7 +3,7 @@
 
 name: Create Firebase Hosting Preview on PR
 on:
-  pull_request:
+  pull_request_target:
     inputs:
       astar_tag:
         description: 'Release tag version for astar collator'

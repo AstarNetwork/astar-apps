@@ -183,6 +183,68 @@ export class XcmRepository implements IXcmRepository {
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
+    const isAstar = from.name === 'Astar';
+    return isAstar
+      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount)
+      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount);
+  }
+
+  private async getXtokensToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+
+    const asset = {
+      Concrete: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+
+    const assets = {
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
+        },
+        id: asset,
+      },
+    };
+
+    const destination = {
+      V3: {
+        interior: {
+          X1: {
+            AccountId32: {
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(1),
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    return await this.buildTxCall(
+      from,
+      'xtokens',
+      'transferMultiasset',
+      assets,
+      destination,
+      weightLimit
+    );
+  }
+
+  // Memo: Remove this method after implementing Xtokens on Astar
+  private async getPolkadotXcmToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const version = 'V3';
     const destination = {
@@ -226,14 +288,19 @@ export class XcmRepository implements IXcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
-      'reserveWithdrawAssets',
+      'limitedReserveWithdrawAssets',
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 
