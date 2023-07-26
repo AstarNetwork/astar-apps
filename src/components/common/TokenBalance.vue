@@ -2,7 +2,7 @@
   <span>
     {{
       $t(text ? text : 'amountToken', {
-        amount: isTruncate ? truncate(balance ? balance : 0, decimals) : Number(balance),
+        amount: isTruncate ? $n(truncate(balance, decimals)) : Number(balance),
         token: symbol,
       })
     }}
