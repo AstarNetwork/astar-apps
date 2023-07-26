@@ -1,5 +1,6 @@
 <template>
-  <span>
+  <span
+    >x
     {{
       $t(text ? text : 'amountToken', {
         amount: truncatedBalance,
@@ -43,6 +44,8 @@ export default defineComponent({
       const truncated = truncate(props.balance, props.decimals);
       if (!Number.isNaN(truncated)) {
         truncatedBalance.value = n(truncated);
+      } else {
+        console.error('Invalid balance', props.balance, props.decimals, truncated);
       }
     } else {
       truncatedBalance.value = props.balance;
