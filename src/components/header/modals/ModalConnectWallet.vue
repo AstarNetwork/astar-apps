@@ -285,7 +285,6 @@ export default defineComponent({
     };
 
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
-      handleExtensions();
       await closeModal();
       props.setWalletModal(source);
     };
