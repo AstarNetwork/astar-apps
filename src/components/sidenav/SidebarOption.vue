@@ -178,7 +178,7 @@ import { computed, defineComponent, ref, reactive } from 'vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import { useStore } from 'src/store';
 import { socialUrl, docsUrl } from 'src/links';
-import { languagesSelector } from 'src/i18n';
+import { CultureCode, languagesSelector } from 'src/i18n';
 import { i18n } from 'src/boot/i18n';
 
 export default defineComponent({
@@ -226,8 +226,8 @@ export default defineComponent({
       goLink(docsUrl.topPage);
     };
 
-    const selectLanguage = (code: string) => {
-      i18n.global.locale = code;
+    const selectLanguage = (code: CultureCode) => {
+      i18n.global.locale.value = code;
     };
 
     const closeMobileNavi = () => {

@@ -13,7 +13,7 @@
                 :key="index"
                 v-close-popup
                 clickable
-                @click="filterBy = item"
+                @click="changeFilter(item)"
               >
                 <q-item-section>
                   <q-item-label>{{ $t(item) }}</q-item-label>
@@ -232,7 +232,6 @@ export default defineComponent({
 
           return '';
         }
-        return '0';
       } catch (error) {
         return '0';
       }
@@ -317,8 +316,17 @@ export default defineComponent({
       }, 700);
     };
 
+    const changeFilter = (filter: Filter): void => {
+      filterBy.value = filter;
+      page.value = 1;
+      changePage(false);
+    };
+
     watchEffect(setDataArray);
-    watchEffect(handlePageUpdate);
+
+    // The below cause problem with not showing the data (after uplift to a new Quasar version) when accessing the page directly
+    // watchEffect(handlePageUpdate);
+
     watch(
       [currentNetworkName],
       async () => {
@@ -347,6 +355,7 @@ export default defineComponent({
       getBorderStyle,
       Filter,
       goDappPageLink,
+      changeFilter,
     };
   },
 });

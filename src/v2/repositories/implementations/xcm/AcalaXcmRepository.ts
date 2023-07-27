@@ -46,7 +46,7 @@ export class AcalaXcmRepository extends XcmRepository {
     const tokenData = this.getTokenData(token);
 
     const destination = {
-      V1: {
+      V3: {
         parents: '1',
         interior: {
           X2: [
@@ -55,9 +55,6 @@ export class AcalaXcmRepository extends XcmRepository {
             },
             {
               AccountId32: {
-                network: {
-                  Any: null,
-                },
                 id: decodeAddress(recipientAddress),
               },
             },
@@ -66,9 +63,7 @@ export class AcalaXcmRepository extends XcmRepository {
       },
     };
 
-    // Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
-    // weight value of 5 * 10^9 is generally good
-    const destWeight = { Limited: '5000000000' };
+    const destWeight = { Unlimited: null };
 
     return await this.buildTxCall(
       from,
