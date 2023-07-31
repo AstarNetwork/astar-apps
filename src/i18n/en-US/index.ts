@@ -513,6 +513,10 @@ export default {
       progress: '{value}%',
       eta: 'ETA {value}',
     },
+    network: {
+      networkStatuses: 'Network Statuses',
+      updatedAgo: 'Updated {time} ago',
+    },
   },
   chart: {
     tvl: {

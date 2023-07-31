@@ -31,9 +31,6 @@
   width: 100%;
   row-gap: 24px;
   column-gap: 32px;
-  @media (min-width: $lg) {
-    flex-direction: row;
-  }
   @media (min-width: $xxl) {
     row-gap: 32px;
   }
@@ -159,6 +156,27 @@
 
 .row {
   padding: 16px 8px 0px 8px;
+}
+
+.container--value-panels-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @media (min-width: $xxl) {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    column-gap: 16px;
+  }
+}
+
+.container--network-status {
+  width: 100%;
+  margin-bottom: 32px;
+
+  @media (min-width: $xxl) {
+    margin-bottom: 0px;
+  }
 }
 
 .body--dark {
