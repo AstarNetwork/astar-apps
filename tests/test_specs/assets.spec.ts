@@ -47,7 +47,13 @@ test.describe('account panel', () => {
   });
 
   test('should copy multisig wallet address', async ({ page, context }) => {
-    await selectMultisigAccount(page, context);
+    await selectMultisigAccount(page, context, false);
+    await page.locator('#copyAddress').click();
+    await expect(page.locator('.noti-content')).toBeVisible();
+  });
+
+  test('should copy multisig proxy wallet address', async ({ page, context }) => {
+    await selectMultisigAccount(page, context, true);
     await page.locator('#copyAddress').click();
     await expect(page.locator('.noti-content')).toBeVisible();
   });

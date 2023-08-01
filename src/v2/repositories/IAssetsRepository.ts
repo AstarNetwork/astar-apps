@@ -19,4 +19,5 @@ export interface IAssetsRepository {
     param: ParamEvmWithdraw
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
   getVestCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+  getNativeBalance(address: string): Promise<string>;
 }

@@ -106,6 +106,18 @@
         </div>
         <div class="row--social-icons">
           <div v-for="(it, index) in communities" :key="index">
+            <button v-if="it.type === CommunityType.GitHub" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.GitHub">
+                    <astar-icon-github />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.github') }}</span>
+              </q-tooltip>
+            </button>
             <button v-if="it.type === CommunityType.Discord" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">

@@ -12,17 +12,17 @@ export class PolkasafeRepository implements IPolkasafeRepository {
     multisigAddress,
     transaction,
     tip,
+    isProxyAccount,
   }: MultisigTransactionParam): Promise<string> {
     Guard.ThrowIfUndefined('multisigAddress', multisigAddress);
     Guard.ThrowIfUndefined('transaction', transaction);
 
-    const isProxy = false;
     const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
     const { data, error } = await polkasafeClient.customTransactionAsMulti(
       multisigAddress,
       transaction,
       undefined,
-      isProxy,
+      isProxyAccount,
       new BN(tip)
     );
     if (error) {

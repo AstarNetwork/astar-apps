@@ -46,7 +46,11 @@
         </div>
         <fieldset>
           <ul role="radiogroup" class="list--account" :style="`max-height: ${windowHeight}px`">
-            <li v-for="(account, index) in multisigAccounts" :key="index">
+            <li
+              v-for="(account, index) in multisigAccounts"
+              :key="index"
+              :data-testid="account.isProxyAccount ? 'proxy-account' : 'not-proxy-account'"
+            >
               <label
                 :class="[
                   'class-radio',
@@ -70,6 +74,9 @@
                         <span>
                           {{ getShortenAddress(account.address, 4) }}
                         </span>
+                        <div v-if="account.isProxyAccount" class="column--proxy">
+                          <span>{{ $t('wallet.multisig.proxy') }}</span>
+                        </div>
                       </div>
                     </div>
                     <div class="row--balance-icons">
@@ -153,7 +160,7 @@ import { useI18n } from 'vue-i18n';
 import { polkasafeUrl } from 'src/links';
 import { SupportMultisig } from 'src/config/wallets';
 import { useExtensions } from 'src/hooks/useExtensions';
-import { MultisigAddress, Multisig } from 'src/modules/multisig';
+import { MultisigAddress, Multisig, addProxyAccounts } from 'src/modules/multisig';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 
 export default defineComponent({
@@ -238,11 +245,8 @@ export default defineComponent({
     );
 
     const previousSelIdx = computed<number | null>(() => {
-      if (substrateAccounts.value && props.currentAccount) {
-        const index = substrateAccounts.value.findIndex(
-          (it: SubstrateAccount) => it.address === props.currentAccount
-        );
-        return index;
+      if (multisigAccounts.value.length > 0 && props.currentAccount) {
+        return multisigAccounts.value.findIndex((it) => it.address === props.currentAccount);
       } else {
         return null;
       }
@@ -281,8 +285,9 @@ export default defineComponent({
         isValidAddressPolkadotAddress(it.address, ASTAR_ADDRESS_PREFIX)
       );
       if (filteredMultisigAccounts.length > 0) {
+        const addedProxyAccounts = addProxyAccounts(filteredMultisigAccounts) as any;
         const updatedAccountMap = await Promise.all(
-          filteredMultisigAccounts.map(async (it: MultisigAddress) => {
+          addedProxyAccounts.map(async (it: MultisigAddress) => {
             const balance = await fetchNativeBalance({
               api: $api as ApiPromise,
               address: it.address,
@@ -328,6 +333,7 @@ export default defineComponent({
           if (isSigned) {
             await setMultisigAccounts(polkasafeClient, signatory);
           } else {
+            container.unbind(Symbols.PolkasafeClient);
             await handleInitializePolkasafe(signatory, injector);
           }
         } catch (error) {

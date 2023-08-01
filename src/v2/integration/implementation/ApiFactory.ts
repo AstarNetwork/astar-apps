@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { injectable } from 'inversify';
+import { castXcmEndpoint } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { IApiFactory, IApi } from 'src/v2/integration';
 import { Api } from 'src/v2/integration/implementation';
@@ -11,14 +12,15 @@ export class ApiFactory implements IApiFactory {
   public async get(endpoint: string): Promise<ApiPromise> {
     Guard.ThrowIfUndefined('endpoint', endpoint);
 
-    let api = this._instances.get(endpoint);
+    const castedEndpoint = castXcmEndpoint(endpoint);
+    let api = this._instances.get(castedEndpoint);
 
     if (api) {
       return await api.getApi();
     }
 
-    api = new Api(endpoint);
-    this._instances.set(endpoint, api);
+    api = new Api(castedEndpoint);
+    this._instances.set(castedEndpoint, api);
 
     return await api.getApi();
   }

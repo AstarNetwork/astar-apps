@@ -17,6 +17,7 @@ export {
   getXcmToken,
   monitorBalanceIncreasing,
   removeEvmName,
+  castXcmEndpoint,
 } from 'src/modules/xcm/utils';
 
 export interface XcmTokenInformation {
@@ -45,13 +46,14 @@ type XcmChainObj = {
   [key in Chain]: XcmChain;
 };
 
-export const xcmChainObj: XcmChainObj = {
+export let xcmChainObj: XcmChainObj = {
   [Chain.POLKADOT]: {
     name: Chain.POLKADOT,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/chain/polkadot.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
+    chopsticksEndpoint: 'ws://localhost:9950',
     subscan: 'https://polkadot.subscan.io',
     isAstarNativeToken: false,
   },
@@ -61,6 +63,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/astar.png'),
     parachainId: parachainIds.ASTAR,
     endpoint: 'wss://rpc.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9944',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
   },
@@ -88,6 +91,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/sdn.png'),
     parachainId: parachainIds.SHIDEN,
     endpoint: 'wss://rpc.shiden.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9961',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
   },
@@ -124,6 +128,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/aca.png'),
     parachainId: parachainIds.ACALA,
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+    chopsticksEndpoint: 'ws://localhost:9946',
     subscan: 'https://acala.subscan.io',
     isAstarNativeToken: true,
   },
@@ -142,6 +147,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/glmr.png'),
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
+    chopsticksEndpoint: 'ws://localhost:9945',
     subscan: 'https://moonbeam.subscan.io',
     isAstarNativeToken: true,
   },
@@ -169,6 +175,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/intr.png'),
     parachainId: parachainIds.INTERLAY,
     endpoint: 'wss://api.interlay.io/parachain',
+    chopsticksEndpoint: 'ws://localhost:9948',
     subscan: 'https://interlay.subscan.io',
     isAstarNativeToken: false,
   },
@@ -205,6 +212,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_POLKADOT,
     endpoint: 'wss://hk.p.bifrost-rpc.liebi.com/ws',
+    chopsticksEndpoint: 'ws://localhost:9947',
     subscan: 'https://bifrost.subscan.io',
     isAstarNativeToken: true,
   },

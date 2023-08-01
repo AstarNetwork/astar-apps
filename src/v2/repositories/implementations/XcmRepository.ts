@@ -67,8 +67,6 @@ export class XcmRepository implements IXcmRepository {
         const decimals = value.decimals.toNumber();
         const isFrozen = value.isFrozen.valueOf();
         const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
-
-        // Todo: get the token data even thought users select `custom-network`
         const registeredData = this.registeredTokens.find((x) => x.assetId === id);
         const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
         const originChain = registeredData ? registeredData.originChain : '';
@@ -185,6 +183,68 @@ export class XcmRepository implements IXcmRepository {
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
+    const isAstar = from.name === 'Astar';
+    return isAstar
+      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount)
+      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount);
+  }
+
+  private async getXtokensToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+
+    const asset = {
+      Concrete: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+
+    const assets = {
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
+        },
+        id: asset,
+      },
+    };
+
+    const destination = {
+      V3: {
+        interior: {
+          X1: {
+            AccountId32: {
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(1),
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    return await this.buildTxCall(
+      from,
+      'xtokens',
+      'transferMultiasset',
+      assets,
+      destination,
+      weightLimit
+    );
+  }
+
+  // Memo: Remove this method after implementing Xtokens on Astar
+  private async getPolkadotXcmToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const version = 'V3';
     const destination = {
@@ -228,14 +288,19 @@ export class XcmRepository implements IXcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
-      'reserveWithdrawAssets',
+      'limitedReserveWithdrawAssets',
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 
@@ -262,7 +327,7 @@ export class XcmRepository implements IXcmRepository {
     try {
       const api = await this.apiFactory.get(chain.endpoint);
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
-      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen));
+      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen ?? data.frozen));
     } catch (e) {
       console.error(e);
       return new BN(0);

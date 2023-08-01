@@ -51,7 +51,13 @@ export const signMessage = async (context: BrowserContext): Promise<void> => {
   await extensionWindow.getByRole('button', { name: 'Sign the message' }).click();
 };
 
-export const selectMultisigAccount = async (page: Page, context: BrowserContext): Promise<void> => {
+export const selectMultisigAccount = async (
+  page: Page,
+  context: BrowserContext,
+  isProxyAccount: boolean
+): Promise<void> => {
+  // Memo: wallet name is defined in PolkaSafe portal
+  const walletName = 'Test multisig';
   await page.locator('.btn--account').click();
   // Todo: update Astar-UI to add a class name at the back button on the modal
   await page
@@ -64,7 +70,10 @@ export const selectMultisigAccount = async (page: Page, context: BrowserContext)
   await page.locator('.row--input').click();
   await page.getByText('Bob').click();
   await signMessage(context);
-  await page.getByLabel('Multisig Bob-Alice').check();
+  await page
+    .getByTestId(isProxyAccount ? 'proxy-account' : 'not-proxy-account')
+    .getByLabel(walletName)
+    .check();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };
 

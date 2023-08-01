@@ -234,3 +234,35 @@ export const addXcmTxHistories = ({
     txs,
   });
 };
+
+// Memo: cast the XCM endpoint to chopsticks endpoint
+export const castXcmEndpoint = (endpoint: string): string => {
+  const extractPort = (e: string): string => {
+    if (!e || e === 'null') {
+      return '';
+    }
+    const urlObject = new URL(e);
+    return urlObject.port;
+  };
+
+  const selectedCustomEndpoint = String(localStorage.getItem(LOCAL_STORAGE.CUSTOM_ENDPOINT));
+  const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+  const selectedEndpoint = JSON.parse(selectedEndpointStored);
+  const isCustomEndpoint =
+    selectedEndpoint && Object.keys(selectedEndpoint)[0] === String(endpointKey.CUSTOM);
+
+  const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
+  const isSelectedChopsticksEndpoint =
+    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
+    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
+
+  if (isCustomEndpoint && isSelectedChopsticksEndpoint) {
+    const chains = Object.values(xcmChainObj);
+    const chain = chains.find((it) => it.endpoint === endpoint);
+    return chain && chain.hasOwnProperty('chopsticksEndpoint')
+      ? String(chain.chopsticksEndpoint)
+      : endpoint;
+  } else {
+    return endpoint;
+  }
+};

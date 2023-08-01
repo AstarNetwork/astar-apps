@@ -18,6 +18,7 @@ import { AbiItem } from 'web3-utils';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { IGasPriceProvider } from 'src/v2/services';
 import { ethers } from 'ethers';
+import { FrameSystemAccountInfo } from './SystemRepository';
 @injectable()
 export class AssetsRepository implements IAssetsRepository {
   constructor(
@@ -79,5 +80,16 @@ export class AssetsRepository implements IAssetsRepository {
   public async getVestCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
     return api.tx.vesting.vest();
+  }
+  public async getNativeBalance(address: string): Promise<string> {
+    try {
+      const api = await this.api.getApi();
+      const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
+      const transferableBal = (data.free.toBn() as BN).sub(new BN(data.miscFrozen ?? data.frozen));
+      return transferableBal.toString();
+    } catch (e) {
+      console.error(e);
+      return '0';
+    }
   }
 }
