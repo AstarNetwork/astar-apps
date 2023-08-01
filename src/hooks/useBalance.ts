@@ -206,7 +206,7 @@ export class AccountData {
   }
 
   public getUsableFeeBalance(): BN {
-    return this.free.sub(this.feeFrozen);
+    return this.free.sub(this.miscFrozen);
   }
 
   public free: BN;
