@@ -327,7 +327,7 @@ export class XcmRepository implements IXcmRepository {
     try {
       const api = await this.apiFactory.get(chain.endpoint);
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
-      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen));
+      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen ?? data.frozen));
     } catch (e) {
       console.error(e);
       return new BN(0);

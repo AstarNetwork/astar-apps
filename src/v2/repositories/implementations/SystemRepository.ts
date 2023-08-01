@@ -32,13 +32,21 @@ export class SystemRepository implements ISystemRepository {
     const api = await this.api.getApi();
     const accountInfo = await api.query.system.account<FrameSystemAccountInfo>(address);
 
+    const miscFrozen = accountInfo.data.miscFrozen
+      ? accountInfo.data.miscFrozen.toBn()
+      : accountInfo.data.frozen.toBn();
+
+    const feeFrozen = accountInfo.data.feeFrozen
+      ? accountInfo.data.feeFrozen.toBn()
+      : accountInfo.data.flags.toBn();
+
     return new AccountInfoModel(
       accountInfo.nonce.toBn(),
       new AccountDataModel(
         accountInfo.data.free.toBn(),
         accountInfo.data.reserved.toBn(),
-        accountInfo.data.miscFrozen.toBn(),
-        accountInfo.data.feeFrozen.toBn()
+        miscFrozen,
+        feeFrozen
       )
     );
   }
