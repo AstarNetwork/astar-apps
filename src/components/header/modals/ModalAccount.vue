@@ -391,10 +391,6 @@ export default defineComponent({
       window.removeEventListener('resize', onHeightChange);
     });
 
-    watchEffect(() => {
-      console.log('substrateAccountsAll', substrateAccountsAll.value);
-    });
-
     return {
       selAccount,
       closeModal,
