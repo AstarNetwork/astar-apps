@@ -328,14 +328,6 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const requestExtensionsIfFirstAccess = (): void => {
-      // Memo: displays wallet's authorization popup
-      const { extensions } = useExtensions($api!!, store);
-      const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
-      store.commit('general/setMetaExtensions', metaExtensions.value);
-      store.commit('general/setExtensionCount', extensionCount.value);
-    };
-
     const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
       localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
       store.commit('general/setIsLedger', isLedger);
@@ -377,8 +369,6 @@ export default defineComponent({
       }
     };
 
-    watch([props.selectedWallet], requestExtensionsIfFirstAccess, { immediate: true });
-
     watch([selAccount], () => {
       toggleIsLedger.value = false;
     });
@@ -399,6 +389,10 @@ export default defineComponent({
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);
+    });
+
+    watchEffect(() => {
+      console.log('substrateAccountsAll', substrateAccountsAll.value);
     });
 
     return {
