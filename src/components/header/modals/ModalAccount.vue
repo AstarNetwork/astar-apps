@@ -146,8 +146,6 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useExtensions } from 'src/hooks/useExtensions';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
 import { astarChain } from 'src/config/chain';
