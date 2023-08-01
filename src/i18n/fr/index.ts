@@ -8,6 +8,7 @@ export default {
   from: 'De',
   to: 'Vers',
   add: 'Ajouter',
+  and: 'et',
   estimated: 'Estimé',
   forget: 'Oublier',
   remove: 'Enlever',
@@ -458,5 +459,37 @@ export default {
       title: 'Nombre de transactions',
       tooltip: "Nombre de transactions appelées à l'adresse du smart contract de la dApp",
     },
+  },
+  links: {
+    goDecentralized: 'Devenez décentralisé!',
+    portalIpfs: 'Le portail est maintenant sur IPFS!',
+    astarHome: 'Accueil Astar',
+    astarDocs: 'Documents Astar',
+  },
+  disclaimer: {
+    disclaimer: 'Avertissement',
+    introduce1: `En accédant et en utilisant les dApps de l'écosystème Astar, vous confirmez que vous êtes autorisé à le
+    faire et vous acceptez `,
+    introduce2: `de la Fondation Astar. Vous comprenez et acceptez que votre utilisation des dApps est à vos propres risques, et elles sont fournies sur une base "en
+    l'état" et "telles quelles" sans aucune garantie expresse ou implicite de quelque nature que ce soit.`,
+    terms: 'Conditions de service',
+    privacy: 'Politique de confidentialité',
+    chapter1: '1. Responsabilité:',
+    para1: `Vous comprenez et acceptez que la Fondation Astar ne puisse être tenue responsable de tout
+    dommage direct, indirect, incident, spécial, consécutif ou exemplaire résultant de
+    votre utilisation des dApps de l'écosystème Astar. Cela inclut, sans s'y limiter, les dommages pour
+    perte de profits, de bonne volonté, d'usage, de données ou d'autres pertes intangibles.`,
+    chapter2: '2. Assomption des risques de réseau:',
+    para2: `Vous comprenez et acceptez que la Fondation Astar ne garantit pas la sécurité des
+    dApps de l'écosystème Astar ni la sécurité de vos informations personnelles, y compris votre portefeuille
+    adresse, historique des transactions, et clés privées. Vous acceptez de prendre des mesures appropriées pour
+    protéger vos informations personnelles et prévenir l'accès non autorisé à votre portefeuille.`,
+    chapter3: '3. Pas de garantie de sécurité:',
+    closeWord: `Vous confirmez également que vous n'êtes pas une "Personne interdite" et que ni vous ni aucune
+    personne ou entité qui contrôle, est contrôlée par, ou est sous contrôle commun avec vous n'est une
+    Personne interdite. Enfin, en cliquant sur "Accepter", vous acceptez les termes et conditions
+    énoncés ci-dessus. Si vous n'êtes pas d'accord, veuillez cliquer sur "Refuser."`,
+    agree: 'Accepter',
+    decline: 'Refuser',
   },
 };

@@ -8,6 +8,7 @@ export default {
   from: 'From',
   to: 'To',
   add: 'Add',
+  and: 'and',
   estimated: 'Estimated',
   forget: 'Forget',
   remove: 'Remove',
@@ -550,11 +551,12 @@ export default {
   },
   disclaimer: {
     disclaimer: 'Disclaimer',
-    introduce: `By accessing and using the Astar ecosystem dApps, you confirm that you are eligible to do
-    so and agree to the Astar Foundation Terms of Service and Privacy Policy. You understand
-    and accept that your use of the dApps is at your own risk, and they are provided on an "as
+    introduce1: `By accessing and using the Astar ecosystem dApps, you confirm that you are eligible to do
+    so and agree to the Astar Foundation`,
+    introduce2: `. You understand and accept that your use of the dApps is at your own risk, and they are provided on an "as
     is" and "as available" basis without any express or implied warranties of any kind.`,
     terms: 'Terms of Services',
+    privacy: 'Privacy Policy',
     chapter1: '1. Liability:',
     para1: `You understand and agree that the Astar Foundation shall not be held liable for any
     direct, indirect, incidental, special, consequential, or exemplary damages arising from

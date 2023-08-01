@@ -11,7 +11,21 @@
     <div class="wrapper--modal-disclaimer">
       <div class="row--description">
         <div class="text--md">
-          {{ $t('disclaimer.introduce') }}
+          {{ $t('disclaimer.introduce1') }}
+          <a
+            class="link--underline"
+            href="https://docs.google.com/document/d/1gxM0PEzFq7nW5VB11pMcDUaaKxfMz3BjTDtmEem_oo4/edit#heading=h.hqbzr87xmci3"
+            target="_blank"
+            >{{ $t('disclaimer.terms') }}</a
+          >
+          {{ $t('and') }}
+          <a
+            class="link--underline"
+            href="https://docs.google.com/document/d/1jEbhRfh292TahRMRdeN4z-8MYNU27dCS_vVopV6xQgk/edit#heading=h.cey5hqakqpbb"
+            target="_blank"
+            >{{ $t('disclaimer.privacy') }}</a
+          >
+          {{ $t('disclaimer.introduce2') }}
         </div>
         <div class="text--title">{{ $t('disclaimer.terms') }}</div>
         <div class="text--lg">{{ $t('disclaimer.chapter1') }}</div>
