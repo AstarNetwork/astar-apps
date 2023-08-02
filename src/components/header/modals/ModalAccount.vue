@@ -146,8 +146,6 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useExtensions } from 'src/hooks/useExtensions';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
 import { astarChain } from 'src/config/chain';
@@ -328,14 +326,6 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const requestExtensionsIfFirstAccess = (): void => {
-      // Memo: displays wallet's authorization popup
-      const { extensions } = useExtensions($api!!, store);
-      const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
-      store.commit('general/setMetaExtensions', metaExtensions.value);
-      store.commit('general/setExtensionCount', extensionCount.value);
-    };
-
     const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
       localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
       store.commit('general/setIsLedger', isLedger);
@@ -376,8 +366,6 @@ export default defineComponent({
         isLedgerReady.value = false;
       }
     };
-
-    watch([props.selectedWallet], requestExtensionsIfFirstAccess, { immediate: true });
 
     watch([selAccount], () => {
       toggleIsLedger.value = false;
