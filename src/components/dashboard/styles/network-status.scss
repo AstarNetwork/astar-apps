@@ -10,7 +10,6 @@
 
 .container--value {
   padding: 8px 16px 32px;
-  // height: 138px;
 
   @media (min-width: $sm) {
     padding: 8px 24px 32px;
@@ -41,6 +40,7 @@
 .row--network {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .column--network-name {
@@ -56,32 +56,54 @@
 }
 
 .container--xcm-restricted {
-  // background: #1d1c21;
-  background: rgba(240, 185, 11, 0.1);
-  // background: $warning-yellow;
+  background: rgba(240, 185, 11, 0.2);
   padding: 8px 16px 8px 16px;
   border-radius: 6px;
+  li {
+    color: $warning-yellow;
+  }
 }
 
 .column--status {
   align-self: flex-end;
   padding: 4px 24px 4px 24px;
   border-radius: 15px;
+  min-width: 110px;
+  text-align: center;
 }
 
 .status--success {
-  background-color: $gray-1;
+  background: rgba(86, 245, 102, 0.2);
   color: $connected-green;
+  font-weight: 500;
 }
 
-// li ::marker {
-//   color: red;
-//   background-color: red;
-// }
+.status--fixing {
+  background: rgba(255, 86, 33, 0.2);
+  color: $warning-red;
+  font-weight: 500;
+}
+
+.status--restricted {
+  background: rgba(240, 185, 11, 0.2);
+  color: $warning-yellow;
+  font-weight: 500;
+}
 
 .body--dark {
   .status--success {
     background: rgba(86, 245, 102, 0.1);
-    // background-color: #060b23;
+    color: $connected-green;
+  }
+  .status--fixing {
+    background: rgba(255, 86, 33, 0.1);
+    color: $warning-red;
+  }
+  .status--restricted {
+    background: rgba(240, 185, 11, 0.1);
+    color: $warning-yellow;
+  }
+  .container--xcm-restricted {
+    background: rgba(240, 185, 11, 0.1);
   }
 }

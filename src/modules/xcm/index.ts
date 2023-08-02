@@ -1,4 +1,5 @@
 import { objToArray } from '@astar-network/astar-sdk-core';
+import { astarChain } from 'src/config/chain';
 import { Chain, parachainIds, XcmChain } from 'src/v2/models';
 
 export {
@@ -254,3 +255,14 @@ export const kusamaParachains = xcmChains.filter(
 export const polkadotParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
 );
+
+// Todo: ideally use a content management to manage it
+export const restrictedNetworks = {
+  [astarChain.ASTAR]: ['XCM withdrawal to Moonbeam network by EVM wallets are temporary disabled'],
+  [astarChain.SHIDEN]: [
+    'XCM withdrawal to Moonriver network by EVM wallets are temporary disabled',
+  ],
+  [astarChain.SHIBUYA]: [],
+  [astarChain.DEVELOPMENT]: [],
+  [astarChain.ROCSTAR]: [],
+};

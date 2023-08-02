@@ -22,7 +22,10 @@
                 </span>
               </div>
             </div>
-            <div class="column--status status--success">
+            <div
+              class="column--status"
+              :class="network.status === 'Working' ? 'status--success' : 'status--fixing'"
+            >
               <span>{{ network.status }}</span>
             </div>
           </div>
@@ -30,7 +33,7 @@
           <div class="row--network">
             <div class="column--network-name">
               <div>
-                <span class="text--accent">dApp Staking</span>
+                <span class="text--accent">{{ $t('common.dappStaking') }}</span>
               </div>
             </div>
             <div class="column--status status--success">
@@ -40,16 +43,18 @@
           <div class="row--network">
             <div class="column--network-name">
               <div>
-                <span class="text--accent">XCM</span>
+                <span class="text--accent">{{ $t('assets.xcm') }}</span>
               </div>
             </div>
-            <div class="column--status status--success">
-              <span>Restricted</span>
+            <div
+              class="column--status"
+              :class="xcmRestrictions.length > 0 ? 'status--restricted' : 'status--success'"
+            >
+              <span>{{ xcmRestrictions.length > 0 ? 'Restricted' : 'Working' }}</span>
             </div>
           </div>
-          <div v-if="true" class="container--xcm-restricted">
-            <li>XCM withdrawal to Moonbeam network by EVM wallets are temporary disabled</li>
-            <li>XCM withdrawal to Moonbeam network by EVM wallets are temporary disabled</li>
+          <div v-if="xcmRestrictions.length > 0" class="container--xcm-restricted">
+            <li v-for="(item, index) in xcmRestrictions" :key="index">{{ item }}</li>
           </div>
         </div>
       </div>
@@ -58,10 +63,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-
+import { restrictedNetworks } from 'src/modules/xcm';
+import { useNetworkInfo } from 'src/hooks';
+import { computed, defineComponent } from 'vue';
 export default defineComponent({
   setup(props) {
+    const { currentNetworkChain } = useNetworkInfo();
+
+    const xcmRestrictions = computed<string[]>(() => {
+      return restrictedNetworks[currentNetworkChain.value] || [];
+    });
+
     const networkStatuses = computed(() => {
       return [
         {
@@ -91,12 +103,12 @@ export default defineComponent({
         },
         {
           name: 'Shibuya Network (EVM)',
-          status: 'Working',
+          status: 'Fixing',
           timeAgo: '24s',
         },
       ];
     });
-    return { networkStatuses };
+    return { networkStatuses, xcmRestrictions };
   },
 });
 </script>
