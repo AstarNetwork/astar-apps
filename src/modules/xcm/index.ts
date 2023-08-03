@@ -258,9 +258,11 @@ export const polkadotParachains = xcmChains.filter(
 
 // Todo: ideally use a content management to manage it
 export const restrictedNetworks = {
-  [astarChain.ASTAR]: ['XCM withdrawal to Moonbeam network by EVM wallets are temporary disabled'],
+  [astarChain.ASTAR]: [
+    'XCM withdrawal to Moonbeam network via EVM wallets are temporarily disabled',
+  ],
   [astarChain.SHIDEN]: [
-    'XCM withdrawal to Moonriver network by EVM wallets are temporary disabled',
+    'XCM withdrawal to Moonriver network via EVM wallets are temporarily disabled',
   ],
   [astarChain.SHIBUYA]: [],
   [astarChain.DEVELOPMENT]: [],

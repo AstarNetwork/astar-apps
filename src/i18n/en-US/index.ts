@@ -116,6 +116,11 @@ export default {
         'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
       goToClassicPortal: 'our Classic Portal',
     },
+    status: {
+      working: 'Working',
+      fixing: 'Fixing',
+      restricted: 'Restricted',
+    },
   },
   sidenavi: {
     community: 'Community',
