@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { restrictedNetworks } from 'src/modules/xcm';
+import { restrictedNetwork } from 'src/modules/xcm';
 import { useNetworkInfo } from 'src/hooks';
 import { computed, defineComponent, ref, Ref, watchEffect } from 'vue';
 import { ApiPromise, WsProvider } from '@polkadot/api';
@@ -111,7 +111,8 @@ export default defineComponent({
     const { currentNetworkChain } = useNetworkInfo();
     const store = useStore();
     const xcmRestrictions = computed<string[]>(() => {
-      return restrictedNetworks[currentNetworkChain.value] || [];
+      const restrictedNetworksArray = restrictedNetwork[currentNetworkChain.value] || [];
+      return restrictedNetworksArray.length > 0 ? restrictedNetworksArray.map((it) => it.memo) : [];
     });
     const isDappStakingDisabled = computed<boolean>(
       () => store.getters['dapps/getIsPalletDisabled']

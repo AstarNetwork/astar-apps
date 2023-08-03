@@ -256,13 +256,27 @@ export const polkadotParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
 );
 
+enum XcmMode {
+  deposit = 'Deposit',
+  withdrawal = 'Withdrawal',
+  evmWithdrawal = 'EVM Withdrawal',
+}
+
 // Todo: ideally use a content management to manage it
-export const restrictedNetworks = {
+export const restrictedNetwork = {
   [astarChain.ASTAR]: [
-    'XCM withdrawal to Moonbeam network via EVM wallets are temporarily disabled',
+    {
+      chain: Chain.MOONBEAM,
+      xcm: XcmMode.evmWithdrawal,
+      memo: 'XCM withdrawal to Moonbeam network via EVM wallets are temporarily disabled',
+    },
   ],
   [astarChain.SHIDEN]: [
-    'XCM withdrawal to Moonriver network via EVM wallets are temporarily disabled',
+    {
+      chain: Chain.MOONRIVER,
+      xcm: XcmMode.evmWithdrawal,
+      memo: 'XCM withdrawal to Moonriver network via EVM wallets are temporarily disabled',
+    },
   ],
   [astarChain.SHIBUYA]: [],
   [astarChain.DEVELOPMENT]: [],
