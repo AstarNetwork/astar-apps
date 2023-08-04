@@ -8,26 +8,29 @@
       >
         <span class="text--title-tab"> {{ $t('assets.transfer') }} </span>
       </div>
-      <div
-        :class="[
-          !isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab',
-          isDisabledXcm && 'option--disabled',
-          isDisabledXcm && 'text-color--disabled',
-        ]"
-        class="box--tab"
-        @click="!isDisabledXcm && setIsLocalTransfer(false)"
-      >
-        <span class="text--title-tab"> {{ $t('assets.transferPage.crossChainTransfer') }} </span>
-        <span class="text--xcm"> {{ $t('assets.transferPage.xcm') }} </span>
-        <q-tooltip
-          v-if="disabledXcmMemo"
-          v-model="isDisplayTooltip"
-          anchor="top middle"
-          :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
-          class="box--tooltip box--tooltip-warning"
+      <div @click="!isDisabledXcm && setIsLocalTransfer(false)">
+        <div
+          v-click-away="setIsMobileDisplayTooltip"
+          :class="[
+            !isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab',
+            isDisabledXcm && 'option--disabled',
+            isDisabledXcm && 'text-color--disabled',
+          ]"
+          class="box--tab"
+          @click="setIsMobileDisplayTooltip"
         >
-          <span class="text--tooltip">{{ disabledXcmMemo }}</span>
-        </q-tooltip>
+          <span class="text--title-tab"> {{ $t('assets.transferPage.crossChainTransfer') }} </span>
+          <span class="text--xcm"> {{ $t('assets.transferPage.xcm') }} </span>
+          <q-tooltip
+            v-if="disabledXcmMemo"
+            v-model="isDisplayTooltip"
+            anchor="top middle"
+            :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
+            class="box--tooltip box--tooltip-warning"
+          >
+            <span class="text--tooltip">{{ disabledXcmMemo }}</span>
+          </q-tooltip>
+        </div>
       </div>
     </div>
   </div>
@@ -59,7 +62,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { isDisplayTooltip } = useTooltip('icon');
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
     const { currentNetworkChain } = useNetworkInfo();
     const { t } = useI18n();
 
@@ -73,7 +76,7 @@ export default defineComponent({
       const text = network.isRestrictedFromNative ? 'xcmIsDisabled' : 'xcmEvmIsDisabled';
       return t(`assets.transferPage.${text}`, { network: network.chain });
     });
-    return { isDisplayTooltip, disabledXcmMemo };
+    return { isDisplayTooltip, disabledXcmMemo, setIsMobileDisplayTooltip };
   },
 });
 </script>

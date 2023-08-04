@@ -270,6 +270,11 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },
+    // {
+    //   chain: Chain.ACALA,
+    //   isRestrictedFromNative: true,
+    //   isRestrictedFromEvm: true,
+    // },
   ],
   [astarChain.SHIDEN]: [
     {
@@ -277,6 +282,11 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },
+    // {
+    //   chain: Chain.KARURA,
+    //   isRestrictedFromNative: true,
+    //   isRestrictedFromEvm: true,
+    // },
   ],
   [astarChain.SHIBUYA]: [],
   [astarChain.DEVELOPMENT]: [],

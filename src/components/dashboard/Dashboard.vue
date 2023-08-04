@@ -12,8 +12,8 @@
           <div class="container--panel">
             <value-panel title="Holders" :value="holders" />
           </div>
-          <div class="container--panel">
-            <value-panel title="Holders" :value="holders" />
+          <div>
+            <collators />
           </div>
           <!-- <div class="container--panel">
             <value-panel title="Holders" :value="holders" />
@@ -63,6 +63,7 @@
 import BlockPanel from 'src/components/dashboard/BlockPanel.vue';
 import CirculatingPanel from 'src/components/dashboard/CirculatingPanel.vue';
 import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
+import Collators from 'src/components/dashboard/Collators.vue';
 import NetworkStatus from 'src/components/dashboard/NetworkStatus.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
@@ -80,6 +81,7 @@ export default defineComponent({
     CirculatingPanel,
     ValuePanel,
     NetworkStatus,
+    Collators,
     // TotalTransactionsChart,
   },
   setup() {
