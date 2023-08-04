@@ -12,6 +12,7 @@
           :is-local-transfer="isLocalTransfer"
           :set-is-local-transfer="handleSetIsLocalTransfer"
           :is-disabled-xcm="isDisabledXcm"
+          :token="token"
           :class="isHighlightRightUi && 'half-opacity'"
         />
         <div v-if="token" class="wrapper-containers">

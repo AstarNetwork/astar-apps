@@ -19,13 +19,25 @@
       >
         <span class="text--title-tab"> {{ $t('assets.transferPage.crossChainTransfer') }} </span>
         <span class="text--xcm"> {{ $t('assets.transferPage.xcm') }} </span>
+        <q-tooltip
+          v-if="disabledXcmMemo"
+          v-model="isDisplayTooltip"
+          anchor="top middle"
+          :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
+          class="box--tooltip box--tooltip-warning"
+        >
+          <span class="text--tooltip">{{ disabledXcmMemo }}</span>
+        </q-tooltip>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import { useNetworkInfo, useTooltip } from 'src/hooks';
+import { defineComponent, computed } from 'vue';
+import { Asset } from 'src/v2/models';
+import { restrictedXcmNetwork } from 'src/modules/xcm';
+import { useI18n } from 'vue-i18n';
 export default defineComponent({
   props: {
     isLocalTransfer: {
@@ -40,6 +52,28 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    token: {
+      type: Asset,
+      required: false,
+      default: undefined,
+    },
+  },
+  setup(props) {
+    const { isDisplayTooltip } = useTooltip('icon');
+    const { currentNetworkChain } = useNetworkInfo();
+    const { t } = useI18n();
+
+    const disabledXcmMemo = computed<string>(() => {
+      if (!props.isDisabledXcm) return '';
+      const restrictedNetworksArray = restrictedXcmNetwork[currentNetworkChain.value] || [];
+      const network =
+        restrictedNetworksArray.length > 0 &&
+        restrictedNetworksArray.find((it) => it.chain === props.token?.originChain);
+      if (!network) return '';
+      const text = network.isRestrictedFromNative ? 'xcmIsDisabled' : 'xcmEvmIsDisabled';
+      return t(`assets.transferPage.${text}`, { network: network.chain });
+    });
+    return { isDisplayTooltip, disabledXcmMemo };
   },
 });
 </script>

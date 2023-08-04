@@ -263,19 +263,19 @@ enum XcmMode {
 }
 
 // Todo: ideally use a content management to manage it
-export const restrictedNetwork = {
+export const restrictedXcmNetwork = {
   [astarChain.ASTAR]: [
     {
       chain: Chain.MOONBEAM,
-      xcm: XcmMode.evmWithdrawal,
-      memo: 'XCM withdrawal to Moonbeam network via EVM wallets are temporarily disabled',
+      isRestrictedFromNative: false,
+      isRestrictedFromEvm: true,
     },
   ],
   [astarChain.SHIDEN]: [
     {
       chain: Chain.MOONRIVER,
-      xcm: XcmMode.evmWithdrawal,
-      memo: 'XCM withdrawal to Moonriver network via EVM wallets are temporarily disabled',
+      isRestrictedFromNative: false,
+      isRestrictedFromEvm: true,
     },
   ],
   [astarChain.SHIBUYA]: [],

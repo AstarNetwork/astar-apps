@@ -57,7 +57,9 @@
           <div class="row--network">
             <div class="column--network-name">
               <div>
-                <span class="text--accent">{{ $t('assets.xcm') }}</span>
+                <span class="text--accent">
+                  {{ $t('dashboard.network.xcmDepositWithdrawalAssets') }}
+                </span>
               </div>
             </div>
             <div
@@ -85,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { restrictedNetwork } from 'src/modules/xcm';
+import { restrictedXcmNetwork } from 'src/modules/xcm';
 import { useNetworkInfo } from 'src/hooks';
 import { computed, defineComponent, ref, Ref, watchEffect } from 'vue';
 import { ApiPromise, WsProvider } from '@polkadot/api';
@@ -93,6 +95,7 @@ import { DateTime } from 'luxon';
 import Web3 from 'web3';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
 
 enum NetworkStatus {
   Working = 'working',
@@ -110,10 +113,18 @@ export default defineComponent({
   setup() {
     const { currentNetworkChain } = useNetworkInfo();
     const store = useStore();
+    const { t } = useI18n();
+
     const xcmRestrictions = computed<string[]>(() => {
-      const restrictedNetworksArray = restrictedNetwork[currentNetworkChain.value] || [];
-      return restrictedNetworksArray.length > 0 ? restrictedNetworksArray.map((it) => it.memo) : [];
+      const restrictedNetworksArray = restrictedXcmNetwork[currentNetworkChain.value] || [];
+      return restrictedNetworksArray.length > 0
+        ? restrictedNetworksArray.map((it) => {
+            const text = it.isRestrictedFromNative ? 'xcmIsDisabled' : 'xcmEvmIsDisabled';
+            return t(`assets.transferPage.${text}`, { network: it.chain });
+          })
+        : [];
     });
+
     const isDappStakingDisabled = computed<boolean>(
       () => store.getters['dapps/getIsPalletDisabled']
     );
