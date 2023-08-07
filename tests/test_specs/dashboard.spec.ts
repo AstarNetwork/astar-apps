@@ -52,8 +52,13 @@ test.describe('on dashboard screen', () => {
     expect(isLightClient).toBe(false);
   });
 
-  test('display network statuses', async ({ page }) => {
+  test('display network statuses panel', async ({ page }) => {
     const ui = page.getByTestId('network-statuses');
+    await expect(ui).toBeVisible();
+  });
+
+  test('display collators panel', async ({ page }) => {
+    const ui = page.getByTestId('collators-panel');
     await expect(ui).toBeVisible();
   });
 });
