@@ -26,9 +26,6 @@
             </span>
           </template>
         </div>
-
-        <div class="divider" />
-        <astar-connection-indicator :connection-type="currentNetworkStatus" :version="version" />
       </button>
     </template>
   </div>
