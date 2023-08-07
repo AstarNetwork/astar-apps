@@ -1,19 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { getApi, checkIsLightClient } from '../common-api';
-import { ApiPromise } from '@polkadot/api';
+import { checkIsLightClient } from '../common-api';
 import { clickPolicyButton } from 'src/modules/playwright';
-
-let api: ApiPromise;
-
-test.beforeAll(async () => {
-  api = await getApi();
-});
-
-test.afterAll(async () => {
-  await api.disconnect();
-});
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/astar/dashboard');
