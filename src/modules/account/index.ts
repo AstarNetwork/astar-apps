@@ -9,6 +9,8 @@ export interface SystemAccount extends Struct {
     reserved: BN;
     miscFrozen: BN;
     feeFrozen: BN;
+    frozen: BN;
+    flags: BN;
   };
 }
 
