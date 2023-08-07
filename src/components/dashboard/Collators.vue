@@ -1,62 +1,59 @@
 <template>
-  <div v-if="isLoadingCollators">
+  <div v-if="!collators">
     <q-skeleton class="skeleton--value-panel" />
   </div>
   <div v-else class="wrapper--value">
-    <collator-value-half :accounts="collators" title="Collators" />
-    <collator-value-half :accounts="validators" title="Validators" />
+    <div class="container container--value">
+      <div class="row">
+        <span class="text--accent container--title--color">{{ $t('dashboard.collators') }}</span>
+      </div>
+      <div class="row--value-icon">
+        <div class="align-right text--xlg">
+          <span class="text--value text-color--neon">
+            {{ collators.length }}
+          </span>
+        </div>
+        <div>
+          <a
+            :href="`${polkadotJsLink}/collators`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link--tips-title"
+          >
+            <button class="icon--primary">
+              <astar-icon-external-link />
+            </button>
+
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('polkadot.js') }}</span>
+            </q-tooltip>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { $api } from 'src/boot/api';
 import { defineComponent, ref, watchEffect } from 'vue';
-import CollatorValueHalf from 'src/components/dashboard/CollatorsValueHalf.vue';
+import { useNetworkInfo } from 'src/hooks';
 export default defineComponent({
-  components: { CollatorValueHalf },
   setup() {
+    const { polkadotJsLink } = useNetworkInfo();
     const collators = ref<string[]>();
-    const validators = ref<string[]>();
     const isLoadingCollators = ref<boolean>(false);
 
     const handleFetchCollators = async (): Promise<void> => {
       try {
         isLoadingCollators.value = true;
-        const [collatorsRaw, validatorsRaw] = await Promise.all([
-          $api!.query.collatorSelection.candidates(),
-          $api!.query.session.validators(),
-        ]);
-
-        const formatCollatorsNames = async () => {
-          return await await Promise.all(
-            // @ts-ignore
-            collatorsRaw.map(async (it: any) => {
-              const item = it.toJSON();
-              const account = await $api!.derive.accounts.info(item.who);
-              return account !== undefined && account.identity.display
-                ? account.identity.display
-                : item.who.toString();
-            })
-          );
-        };
-
-        const formatValidatorsNames = async () => {
-          return await Promise.all(
-            validatorsRaw.map(async (it) => {
-              const account = await $api!.derive.accounts.info(it);
-              return account !== undefined && account.identity.display
-                ? account.identity.display
-                : it.toString();
-            })
-          );
-        };
-
-        const [c, v] = await Promise.all([formatCollatorsNames(), formatValidatorsNames()]);
-        collators.value = c;
-        validators.value = v;
+        const collatorsRaw = (await $api!.query.collatorSelection.candidates()) as any;
+        collators.value = collatorsRaw.map(async (it: any) => {
+          const item = it.toJSON();
+          return item.who.toString();
+        });
       } catch (error) {
         collators.value = [];
-        validators.value = [];
       } finally {
         isLoadingCollators.value = false;
       }
@@ -64,11 +61,11 @@ export default defineComponent({
 
     watchEffect(handleFetchCollators);
 
-    return { collators, validators, isLoadingCollators };
+    return { collators, isLoadingCollators, polkadotJsLink };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dashboard/styles/collators.scss';
+@use 'src/components/dashboard/styles/dashboard.scss';
 </style>

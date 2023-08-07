@@ -183,6 +183,11 @@
   }
 }
 
+.row--value-icon {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .body--dark {
   .filter--tabs {
     border: 1px solid $gray-5-selected-dark;

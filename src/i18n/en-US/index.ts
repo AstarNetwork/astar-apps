@@ -503,6 +503,7 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    collators: 'Collators',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',

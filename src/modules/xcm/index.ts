@@ -256,12 +256,6 @@ export const polkadotParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
 );
 
-enum XcmMode {
-  deposit = 'Deposit',
-  withdrawal = 'Withdrawal',
-  evmWithdrawal = 'EVM Withdrawal',
-}
-
 // Todo: ideally use a content management to manage it
 export const restrictedXcmNetwork = {
   [astarChain.ASTAR]: [
@@ -270,11 +264,6 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },
-    // {
-    //   chain: Chain.ACALA,
-    //   isRestrictedFromNative: true,
-    //   isRestrictedFromEvm: true,
-    // },
   ],
   [astarChain.SHIDEN]: [
     {
@@ -282,11 +271,6 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },
-    // {
-    //   chain: Chain.KARURA,
-    //   isRestrictedFromNative: true,
-    //   isRestrictedFromEvm: true,
-    // },
   ],
   [astarChain.SHIBUYA]: [],
   [astarChain.DEVELOPMENT]: [],

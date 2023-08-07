@@ -12,12 +12,9 @@
           <div class="container--panel">
             <value-panel title="Holders" :value="holders" />
           </div>
-          <div>
+          <div class="container--panel">
             <collators />
           </div>
-          <!-- <div class="container--panel">
-            <value-panel title="Holders" :value="holders" />
-          </div> -->
         </div>
       </div>
       <div class="container--panel">
