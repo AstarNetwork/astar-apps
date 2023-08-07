@@ -2,7 +2,7 @@
   <div v-if="!collators">
     <q-skeleton class="skeleton--value-panel" />
   </div>
-  <div v-else class="wrapper--value">
+  <div v-else class="wrapper--value" data-testid="network-statuses">
     <div class="container container--value">
       <div class="row">
         <span class="text--accent container--title--color">{{ $t('dashboard.collators') }}</span>
