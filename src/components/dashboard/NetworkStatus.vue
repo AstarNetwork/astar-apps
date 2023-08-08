@@ -17,7 +17,7 @@
                 <span class="text--accent">{{ network.name }}</span>
               </div>
               <div>
-                <span class="text--label">
+                <span class="text--label-small">
                   {{ $t('dashboard.network.updatedAgo', { time: network.timeAgo }) }}
                 </span>
               </div>

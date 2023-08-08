@@ -186,6 +186,12 @@
 .row--value-icon {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.link--icon {
+  margin-top: 2px;
 }
 
 .body--dark {

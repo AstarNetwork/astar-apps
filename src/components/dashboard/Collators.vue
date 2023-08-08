@@ -8,18 +8,13 @@
         <span class="text--accent container--title--color">{{ $t('dashboard.collators') }}</span>
       </div>
       <div class="row--value-icon">
-        <div class="align-right text--xlg">
+        <div class="text--xlg">
           <span class="text--value text-color--neon">
             {{ collators.length }}
           </span>
         </div>
-        <div>
-          <a
-            :href="`${polkadotJsLink}/collators`"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="link--tips-title"
-          >
+        <div class="link--icon">
+          <a :href="`${polkadotJsLink}/collators`" target="_blank" rel="noopener noreferrer">
             <button class="icon--primary">
               <astar-icon-external-link />
             </button>
