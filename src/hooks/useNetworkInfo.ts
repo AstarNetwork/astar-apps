@@ -8,6 +8,8 @@ import {
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
+import { polkadotJsUrl } from 'src/links';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';
@@ -58,6 +60,15 @@ export function useNetworkInfo() {
     return !isMainnet.value;
   });
 
+  const polkadotJsLink = computed<string>(() => {
+    const { astar, shiden, shibuya } = polkadotJsUrl.settings;
+    return currentNetworkIdx.value === endpointKey.ASTAR
+      ? astar
+      : currentNetworkIdx.value === endpointKey.SHIDEN
+      ? shiden
+      : shibuya;
+  });
+
   return {
     isMainnet,
     currentNetworkChain,
@@ -66,5 +77,6 @@ export function useNetworkInfo() {
     currentNetworkName,
     nativeTokenSymbol,
     isSupportXvmTransfer,
+    polkadotJsLink,
   };
 }

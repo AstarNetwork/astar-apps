@@ -167,3 +167,6 @@ export const changeNetworkOnEVM = async (page: Page, context: BrowserContext): P
     .getByRole('button', { name: 'Switch network' })
     .click();
 };
+
+// Memo: importing this function from 'connectApi.ts' makes error in the test.
+export const checkIsLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');

@@ -63,6 +63,12 @@ span {
   color: $gray-4;
 }
 
+.text--label-small {
+  font-weight: 400;
+  font-size: 12px;
+  color: $gray-4;
+}
+
 .text--tooltip {
   font-weight: 400;
   font-size: 12px;
@@ -117,7 +123,8 @@ input::placeholder {
   .text-color--neon {
     color: $astar-blue-dark;
   }
-  .text--label {
+  .text--label,
+  .text--label-small {
     color: $gray-3;
   }
   .text-color--disabled {

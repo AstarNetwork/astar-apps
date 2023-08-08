@@ -26,9 +26,6 @@
             </span>
           </template>
         </div>
-
-        <div class="divider" />
-        <astar-connection-indicator :connection-type="currentNetworkStatus" :version="version" />
       </button>
     </template>
   </div>
@@ -53,36 +50,16 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const store = useStore();
     const isNotSelectedEndpoint = localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT) === null;
-    const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const chainInfo = computed(() => store.getters['general/chainInfo']);
-    const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
     const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
     const currentLogo = ref<string>(providerEndpoints[currentNetworkIdx.value].defaultLogo);
     const isLatestChain = ref<boolean>(false);
-    const version = ref<string>('0.0.0');
 
     watch(currentNetworkIdx, (networkIdx) => {
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
       currentLogo.value = providerEndpoints[networkIdx].defaultLogo;
     });
-
-    watch(
-      () => chainInfo.value,
-      () => {
-        version.value = `0.0.${chainInfo.value?.specVersion}`;
-      }
-    );
-
-    watch(
-      () => metaExtensions.value,
-      () => {
-        if (metaExtensions?.value?.extensions.length > 0) {
-          version.value = metaExtensions?.value?.extensions[0].extension.version;
-        }
-      }
-    );
 
     const showNetworkModal = () => {
       emit('show-network');
@@ -90,12 +67,10 @@ export default defineComponent({
 
     return {
       isNotSelectedEndpoint,
-      currentNetworkStatus,
       currentNetworkName,
       currentLogo,
       isLatestChain,
       extensionCount,
-      version,
       width,
       screenSize,
       showNetworkModal,

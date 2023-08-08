@@ -116,6 +116,11 @@ export default {
         'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
       goToClassicPortal: 'our Classic Portal',
     },
+    status: {
+      working: 'Working',
+      fixing: 'Fixing',
+      restricted: 'Restricted',
+    },
   },
   sidenavi: {
     community: 'Community',
@@ -426,6 +431,8 @@ export default {
       noTxRecords: "The account doesn't have any transaction records yet",
       mintTransferAmount: 'Min. transfer amount is {amount} {symbol}',
       howToUsePortal: 'HOW TO USE THE PORTAL',
+      xcmIsDisabled: 'XCM with {network} is disabled temporarily',
+      xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is disabled temporarily',
     },
     modals: {
       max: 'Max',
@@ -496,6 +503,7 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    collators: 'Collators',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
@@ -512,6 +520,11 @@ export default {
       era: 'Era',
       progress: '{value}%',
       eta: 'ETA {value}',
+    },
+    network: {
+      networkStatuses: 'Network Statuses',
+      updatedAgo: 'Updated {time} ago',
+      xcmDepositWithdrawalAssets: 'XCM Deposit/Withdrawal Assets',
     },
   },
   chart: {

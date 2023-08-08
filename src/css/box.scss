@@ -62,11 +62,9 @@
 }
 
 .box--tooltip-warning {
-  background-color: $astar-blue;
-  max-width: 320px;
-  font-size: 14px;
-  font-weight: 500;
+  background-color: $warning-red !important;
 }
+
 .box--tooltip {
   background-color: $astar-blue;
   width: 240px;
@@ -93,8 +91,5 @@
   }
   .box--input {
     background: $gray-6;
-  }
-  .box--tooltip-warning {
-    background-color: $astar-blue;
   }
 }
