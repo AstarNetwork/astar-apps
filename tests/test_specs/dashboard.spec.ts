@@ -2,11 +2,11 @@ import { expect, test } from '@playwright/test';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { checkIsLightClient } from '../common-api';
-import { clickPolicyButton } from 'src/modules/playwright';
+import { clickDisclaimerButton } from 'src/modules/playwright';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/astar/dashboard');
-  await clickPolicyButton(page);
+  await clickDisclaimerButton(page);
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 });
