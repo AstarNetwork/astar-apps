@@ -128,3 +128,5 @@ export const roundUpAndTruncateBigInt = async (
   // Truncate the remaining digits by dividing by power of 10n
   return bigIntValue / powerOf10;
 };
+
+export const checkIsLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');

@@ -10,7 +10,7 @@ import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
 import { usePageReady } from 'src/hooks';
-import { generateMeta, meta } from 'src/config/metadata';
+import { generateMeta } from 'src/config/metadata';
 import { Path } from 'src/router';
 
 export default defineComponent({
