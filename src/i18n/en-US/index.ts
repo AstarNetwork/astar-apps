@@ -8,6 +8,7 @@ export default {
   from: 'From',
   to: 'To',
   add: 'Add',
+  and: 'and',
   estimated: 'Estimated',
   forget: 'Forget',
   remove: 'Remove',
@@ -562,5 +563,31 @@ export default {
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
     astarDocs: 'Astar Docs',
+  },
+  disclaimer: {
+    disclaimer: 'Disclaimer',
+    introduce1: `By accessing and using the Astar ecosystem dApps, you confirm that you are eligible to do
+    so and agree to the Astar Foundation`,
+    introduce2: `. You understand and accept that your use of the dApps is at your own risk, and they are provided on an "as
+    is" and "as available" basis without any express or implied warranties of any kind.`,
+    terms: 'Terms of Services',
+    privacy: 'Privacy Policy',
+    chapter1: '1. Liability:',
+    para1: `You understand and agree that the Astar Foundation shall not be held liable for any
+    direct, indirect, incidental, special, consequential, or exemplary damages arising from
+    your use of the Astar ecosystem dApps. This includes, but is not limited to, damages for
+    loss of profits, goodwill, use, data or other intangible losses.`,
+    chapter2: '2. Assumption of Network Risks:',
+    para2: `You understand and agree that the Astar Foundation does not guarantee the security of the
+    Astar ecosystem dApps or the safety of your personal information, including your wallet
+    address, transaction history, and private keys. You agree to take appropriate measures to
+    protect your personal information and to prevent unauthorized access to your wallet.`,
+    chapter3: '3. No Guarantee of Security:',
+    closeWord: `You also confirm that you are not a "Prohibited Person" and that neither you nor any
+    person or entity that controls, is controlled by, or is under common control with you is a
+    Prohibited Person. Finally, by clicking "Accept," you agree to the terms and conditions
+    set forth above. If you do not agree, please click "Decline."`,
+    agree: 'Agree',
+    decline: 'Decline',
   },
 };
