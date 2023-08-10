@@ -1,8 +1,4 @@
-import {
-  getIndividualClaimTxs,
-  PayloadWithWeight,
-  ExtrinsicPayload,
-} from '@astar-network/astar-sdk-core';
+import { getIndividualClaimTxs, PayloadWithWeight } from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
@@ -75,9 +71,10 @@ export function useClaimAll() {
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
           try {
-            if (it.dapp) {
+            const dappAddress = it.dapp ? it.dapp.address : it.contract.address;
+            if (dappAddress) {
               const transactions = await getIndividualClaimTxs({
-                dappAddress: it?.dapp?.address,
+                dappAddress,
                 api,
                 senderAddress: senderAddressRef,
                 currentEra: era.value,
