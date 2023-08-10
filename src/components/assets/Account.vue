@@ -79,6 +79,11 @@
       </div>
       <native-asset-list v-if="!isH160" />
     </div>
+    <modal-lockdrop-warning
+      v-if="isLockdropAccount && !isH160"
+      :is-modal="isModalLockdropWarning"
+      :handle-modal="handleModalLockdropWarning"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -102,12 +107,14 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
     NativeAssetList,
+    ModalLockdropWarning,
   },
   props: {
     ttlErc20Amount: {
@@ -123,6 +130,7 @@ export default defineComponent({
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
+    const isModalLockdropWarning = ref<boolean>(true);
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName, multisig } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
@@ -154,6 +162,10 @@ export default defineComponent({
       // @ts-ignore
       return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
     });
+
+    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
+      isModalLockdropWarning.value = isOpen;
+    };
 
     const copyAddress = () => {
       copy(currentAccount.value);
@@ -248,6 +260,8 @@ export default defineComponent({
       multisig,
       supportWalletObj,
       signatoryIconWallet,
+      isModalLockdropWarning,
+      handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,
