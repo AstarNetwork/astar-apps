@@ -493,7 +493,7 @@ export default {
       },
       lockdropWarning: {
         message:
-          'Due to an upcoming update, Astar Network will no longer support Lockdrop accounts. Please transfer your funds to another substrate wallet immediately.',
+          'With an upcoming update, Lockdrop accounts will soon be deprecated. Please transfer your funds to another substrate wallet immediately.',
         list1:
           "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
         list2:

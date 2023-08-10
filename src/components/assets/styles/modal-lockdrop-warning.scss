@@ -28,6 +28,10 @@
 
 .box--list {
   margin-bottom: 24px;
+  padding: 0px 14px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
 
 .row--end-date {
@@ -51,6 +55,10 @@
 
 .row--message {
   margin-bottom: 32px;
+  padding: 0px 14px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
 
 .body--dark {
