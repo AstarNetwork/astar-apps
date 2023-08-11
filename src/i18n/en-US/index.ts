@@ -493,7 +493,7 @@ export default {
       },
       lockdropWarning: {
         message:
-          'With an upcoming update, Lockdrop accounts will soon be deprecated. Please transfer your funds to another substrate wallet immediately.',
+          'The Lockdrop account will be deprecated in the upcoming update, as its purpose has been fulfilled. Please transfer your funds to another substrate wallet immediately.',
         list1:
           "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
         list2:
