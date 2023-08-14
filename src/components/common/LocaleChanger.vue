@@ -29,7 +29,6 @@ export default defineComponent({
       () => {
         selectedLang.value =
           languagesSelector.find((lang) => lang.code === locale.value) || languagesSelector[0];
-        console.log(selectedLang.value);
       },
       { immediate: true }
     );

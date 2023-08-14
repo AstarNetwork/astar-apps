@@ -9,6 +9,7 @@ const languageCode = localStorage.getItem(LOCAL_STORAGE.SELECTED_LANGUAGE);
 const i18n = createI18n({
   locale: languageCode || 'en-US',
   fallbackLocale: 'en-US',
+  legacy: false,
   messages,
 });
 

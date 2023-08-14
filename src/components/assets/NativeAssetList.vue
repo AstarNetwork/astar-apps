@@ -263,7 +263,7 @@ export default defineComponent({
     const isModalFaucet = ref<boolean>(false);
     const isModalEvmWithdraw = ref<boolean>(false);
     const isModalVesting = ref<boolean>(false);
-    const bal = ref<number | null>(null);
+    const bal = ref<number>(0);
     const balUsd = ref<number | null>(null);
     const vestingTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);

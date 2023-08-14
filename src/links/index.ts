@@ -28,17 +28,18 @@ export const deepLink = {
 // Memo: use for debugging
 // export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
-//Todo: add decentralized one
 export const productionOrigin = 'https://portal.astar.network';
+// Memo: for debugging
+// export const productionOrigin = devOrigin;
 export const decentralizedOrigin = 'https://decentralized.portal.astar.network';
 
 export const polkasafeUrl = 'https://app.polkasafe.xyz';
 
 export const polkadotJsUrl = {
   settings: {
-    astar: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#/settings',
-    shiden: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#/settings',
-    shibuya: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#/settings',
+    astar: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#',
+    shiden: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#',
+    shibuya: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#',
   },
 };
 

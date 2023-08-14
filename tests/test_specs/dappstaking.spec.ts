@@ -16,25 +16,6 @@ test.describe('init screen', () => {
     await closeButton.click();
     await expect(walletWrapper).toBeHidden();
   });
-  test('should private policy is opened unless accept the policy', async ({ page }) => {
-    await checkPolicyInLocalStorage(page);
-
-    const privatePolicy = page
-      .getByRole('alert')
-      .getByRole('link', { name: 'privacy policy page.' });
-    await expect(privatePolicy).toBeVisible();
-  });
-
-  test('should hide the private policy after accept the policy', async ({ page }) => {
-    await checkPolicyInLocalStorage(page);
-
-    const privatePolicy = page
-      .getByRole('alert')
-      .getByRole('link', { name: 'privacy policy page.' });
-    await expect(privatePolicy).toBeVisible();
-    await page.click('button:has-text("Accept")');
-    await expect(privatePolicy).not.toBeVisible();
-  });
 
   test('should display the connect button', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();

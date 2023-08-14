@@ -6,6 +6,7 @@ import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
   checkIsSupportAstarNativeToken,
   removeEvmName,
+  restrictedXcmNetwork,
   xcmChains,
   xcmToken,
 } from 'src/modules/xcm';
@@ -26,11 +27,6 @@ export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 // e.g.: endpointKey.SHIDEN;
 const disabledXcmChain: endpointKey | undefined = undefined;
-// e.g.: [Chain.INTERLAY, Chain.KINTSUGI]
-const disabledXcmParachains: Chain[] = [];
-
-// e.g: [Chain.MOONBEAM, Chain.MOONRIVER]
-const disabledXcmEvmWithdrawalChain: Chain[] = [Chain.MOONBEAM, Chain.MOONRIVER];
 
 export interface NetworkFromTo {
   from: string;
@@ -57,13 +53,24 @@ export function useTransferRouter() {
     if (!isTransferPage.value || isLocalTransfer.value) return false;
     return to.value.includes(pathEvm);
   });
-  const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
+  const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx, currentNetworkChain } =
+    useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
   const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
   const xcmOpponentChain = computed<Chain>(() => {
     const chain = astarChains.includes(capitalize(from.value) as Chain) ? to.value : from.value;
     return capitalize(chain) as Chain;
+  });
+
+  const disabledXcmParachains = computed<Chain[]>(() => {
+    const restrictedNetworksArray = restrictedXcmNetwork[currentNetworkChain.value] || [];
+    if (restrictedNetworksArray.length === 0) return [];
+    return restrictedNetworksArray
+      .filter(({ isRestrictedFromEvm, isRestrictedFromNative }) =>
+        isH160.value ? isRestrictedFromEvm : isRestrictedFromNative
+      )
+      .map(({ chain }) => chain);
   });
 
   const setNativeTokenBalance = (): void => {
@@ -356,9 +363,7 @@ export function useTransferRouter() {
 
   const checkIsDisabledToken = (originChain: string): boolean => {
     if (!originChain) return false;
-    const isDisabledEvmWithdrawal =
-      isH160.value && !!disabledXcmEvmWithdrawalChain.find((it) => it === originChain);
-    return !!disabledXcmParachains.find((it) => it === originChain) || isDisabledEvmWithdrawal;
+    return !!disabledXcmParachains.value.find((it) => it === originChain);
   };
 
   const isDisableXcmEnvironment = computed<boolean>(() => {
@@ -376,7 +381,7 @@ export function useTransferRouter() {
 
   const checkIsDisabledXcmChain = (from: string, to: string): boolean => {
     if (!from || !to) return false;
-    const chains = disabledXcmParachains.map((it) => it.toLowerCase());
+    const chains = disabledXcmParachains.value.map((it) => it.toLowerCase());
     const isDisabled = chains.find((it) => it === from.toLowerCase() || it === to.toLowerCase());
     return !!isDisabled || isDisableXcmEnvironment.value;
   };

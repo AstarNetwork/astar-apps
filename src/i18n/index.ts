@@ -53,3 +53,5 @@ export default {
   kr,
   it,
 };
+
+export type CultureCode = 'it' | 'en-US' | 'ja' | 'fr' | 'pt' | 'kr' | 'zh' | 'zh-TW';

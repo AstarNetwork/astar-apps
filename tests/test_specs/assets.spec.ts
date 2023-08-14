@@ -1,6 +1,6 @@
+import { clickDisclaimerButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
 import { ApiPromise } from '@polkadot/api';
-import { clickPolicyButton } from 'src/modules/playwright';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
@@ -28,7 +28,7 @@ test.afterAll(async () => {
 test.beforeEach(async ({ page, context }) => {
   // TODO consider moving this into beforeAll
   await page.goto('/astar/assets');
-  await clickPolicyButton(page);
+  await clickDisclaimerButton(page);
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 

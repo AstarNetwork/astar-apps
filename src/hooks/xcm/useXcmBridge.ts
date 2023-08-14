@@ -558,15 +558,14 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     if (isLoadingApi.value) return;
     await setOriginChainNativeBal();
   });
-  watchEffect(async () => {
+
+  watch([isLoadingApi, currentAccount, selectedToken, srcChain], async () => {
     await monitorFromChainBalance();
   });
-  watch(
-    [to, isLoadingApi, isInputDestAddrManually, inputtedAddress, currentAccount, selectedToken],
-    async () => {
-      await monitorDestChainBalance(inputtedAddress.value);
-    }
-  );
+
+  watchEffect(async () => {
+    await monitorDestChainBalance(inputtedAddress.value);
+  });
 
   return {
     amount,

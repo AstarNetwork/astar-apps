@@ -1,0 +1,113 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--value {
+  width: 100%;
+}
+
+.skeleton--value-panel {
+  height: 461px;
+}
+
+.container--value {
+  padding: 8px 16px 32px;
+
+  @media (min-width: $sm) {
+    padding: 8px 24px 32px;
+  }
+  @media (min-width: $xxl) {
+    width: 560px;
+  }
+}
+
+.container--title--color {
+  color: #b1b7c1;
+}
+
+.row-title {
+  padding: 16px 8px 0px 8px;
+}
+
+.box--statuses {
+  padding: 40px 8px 0px 8px;
+}
+
+.row--title {
+  margin-top: 16px;
+}
+
+.row--network-statuses {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
+.row--network {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column--network-name {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+  @media (min-width: $md) {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    padding-right: 8px;
+  }
+}
+
+.container--xcm-restricted {
+  background: rgba(240, 185, 11, 0.2);
+  padding: 8px 16px 8px 16px;
+  border-radius: 6px;
+  li {
+    color: $warning-yellow;
+  }
+}
+
+.column--status {
+  align-self: flex-end;
+  padding: 4px 24px 4px 24px;
+  border-radius: 15px;
+  min-width: 110px;
+  text-align: center;
+}
+
+.status--success {
+  background: rgba(86, 245, 102, 0.2);
+  color: $connected-green;
+  font-weight: 500;
+}
+
+.status--fixing {
+  background: rgba(255, 86, 33, 0.2);
+  color: $warning-red;
+  font-weight: 500;
+}
+
+.status--restricted {
+  background: rgba(240, 185, 11, 0.2);
+  color: $warning-yellow;
+  font-weight: 500;
+}
+
+.body--dark {
+  .status--success {
+    background: rgba(86, 245, 102, 0.1);
+    color: $connected-green;
+  }
+  .status--fixing {
+    background: rgba(255, 86, 33, 0.1);
+    color: $warning-red;
+  }
+  .status--restricted {
+    background: rgba(240, 185, 11, 0.1);
+    color: $warning-yellow;
+  }
+  .container--xcm-restricted {
+    background: rgba(240, 185, 11, 0.1);
+  }
+}
