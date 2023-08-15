@@ -229,6 +229,7 @@ export default defineComponent({
       isLoading,
       width,
       screenSize,
+      nativeTokenSymbol,
       buildTransferPageLink,
       setIsSearch,
       handleModalFaucet,
