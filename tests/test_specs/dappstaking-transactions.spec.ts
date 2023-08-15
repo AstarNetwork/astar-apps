@@ -1,3 +1,4 @@
+import { clickDisclaimerButton } from 'src/modules/playwright';
 import { BrowserContext, Page, expect } from '@playwright/test';
 import {
   ALICE_ACCOUNT_NAME,
@@ -42,8 +43,8 @@ const stake = async (page: Page, context: BrowserContext, amount: bigint): Promi
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/dapp-staking/discover');
 
-  // Close cookies popup
-  await page.getByRole('button', { name: 'Accept' }).click();
+  // Close disclaimer popup
+  await clickDisclaimerButton(page);
 
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
