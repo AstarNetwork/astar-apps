@@ -15,6 +15,5 @@ export const checkInjectedWeb3 = async (page: Page): Promise<JSHandle<boolean>> 
 };
 
 export const clickDisclaimerButton = async (page: Page): Promise<void> => {
-  const acceptPolicy = page.locator('.wrapper--modal-disclaimer > button:has-text("Agree")');
-  await acceptPolicy.click();
+  await page.getByRole('button', { name: 'Agree' }).click();
 };
