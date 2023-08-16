@@ -115,7 +115,7 @@ import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
 import { AbiItem } from 'web3-utils';
-import { dappStakingContract } from 'src/v2/services/implementations';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
 
 export default defineComponent({
   components: {
@@ -277,7 +277,7 @@ export default defineComponent({
           .toString();
         const contract = new $web3.value!.eth.Contract(
           DAPPS_STAKING_ABI as AbiItem[],
-          dappStakingContract
+          evmPrecompiledContract.dappStaking
         );
 
         const encodedData = contract!.methods
@@ -288,7 +288,7 @@ export default defineComponent({
           isNativeToken: false,
           evmGasPrice: evmGasPrice.value,
           fromAddress: currentAccount.value,
-          toAddress: dappStakingContract,
+          toAddress: evmPrecompiledContract.dappStaking,
           web3: $web3.value!,
           value: '0x0',
           encodedData,
