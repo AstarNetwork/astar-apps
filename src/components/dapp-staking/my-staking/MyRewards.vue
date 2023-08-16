@@ -35,10 +35,14 @@
           <astar-button
             :width="80"
             :height="24"
-            :disabled="!canClaim || !canClaimWithoutError"
+            :disabled="!canClaim || !canClaimWithoutError || !isAllowDappStaking"
             @click="claimAll"
-            >{{ $t('myReward.claim') }}</astar-button
           >
+            {{ $t('myReward.claim') }}
+          </astar-button>
+          <q-tooltip v-if="!isAllowDappStaking">
+            <span class="text--tooltip">{{ $t('dappStaking.claimNotReady') }}</span>
+          </q-tooltip>
         </div>
       </div>
       <div v-else class="card">
@@ -91,10 +95,14 @@
           <astar-button
             :width="80"
             :height="24"
-            :disabled="!canClaim || !canClaimWithoutError"
+            :disabled="!canClaim || !canClaimWithoutError || !isAllowDappStaking"
             @click="claimAll"
-            >{{ $t('myReward.claim') }}</astar-button
           >
+            {{ $t('myReward.claim') }}
+          </astar-button>
+          <q-tooltip v-if="!isAllowDappStaking">
+            <span class="text--tooltip">{{ $t('dappStaking.claimNotReady') }}</span>
+          </q-tooltip>
         </div>
       </div>
       <div class="card">
@@ -146,17 +154,19 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
     TokenBalance,
   },
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isEvmDappStaking, currentNetworkIdx } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
       useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+    const store = useStore();
 
     const pendingRewards = ref<number>(0);
     const isLoadingPendingRewards = ref<boolean>(false);
@@ -170,7 +180,12 @@ export default defineComponent({
 
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
     const { currentAccount, senderSs58Account } = useAccount();
-    const { currentNetworkIdx } = useNetworkInfo();
+
+    const isAllowDappStaking = computed<boolean>(() => {
+      const isH160 = store.getters['general/isH160Formatted'];
+      return isH160 ? isEvmDappStaking.value : true;
+    });
+
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const goToSubscan = () => {
       let rootName = 'astar';
@@ -214,6 +229,7 @@ export default defineComponent({
       pendingRewards,
       isLoadingPendingRewards,
       isDappDeveloper,
+      isAllowDappStaking,
     };
   },
 });
