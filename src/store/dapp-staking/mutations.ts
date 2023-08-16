@@ -38,6 +38,7 @@ const mutation: MutationTree<State> & ContractsMutations = {
   },
 
   setClaimedRewardsAmount(state: State, payload: number) {
+    console.log('callled');
     state.claimedRewards = payload;
   },
 
