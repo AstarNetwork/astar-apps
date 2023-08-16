@@ -293,6 +293,7 @@ export class EvmDappStakingService implements IDappStakingService {
       transactionInputs.forEach((it: any) => {
         to.push(dappStaking);
         value.push(0);
+        // Memo: the value doesn't matter
         gasLimit.push(150000);
         const data = this.evmContract.methods['claim_staker'](
           it.args['contract_id'].Evm

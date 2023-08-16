@@ -502,7 +502,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     senderAddress,
     transferableBalance,
   }: ParamClaimAll): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
-    console.log('senderAddress', senderAddress);
     const api = await this.api.getApi();
 
     if (0 >= batchTxs.length) {
@@ -529,7 +528,6 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress);
     const partialFee = info.partialFee.toBn();
-    console.log('transferableBalance.toString()', transferableBalance.toString());
     const balance = new BN(ethers.utils.parseEther(transferableBalance.toString()).toString());
 
     if (balance.sub(partialFee.muln(1.5)).isNeg()) {
