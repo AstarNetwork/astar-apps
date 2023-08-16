@@ -3,10 +3,11 @@ const startPlaywright = require('./start-playwright');
 const setupPreconditions = require('./setup-preconditions-api');
 
 // Define the parameters
-const nodeName = 'astar';
+const nodeName = process.argv[2] || 'astar';
 const networkInfo = {
   nodesByName: {
     astar: { wsUri: 'ws://localhost:9944/' },
+    shiden: { wsUri: 'ws://localhost:9961/' },
   },
 };
 
@@ -27,9 +28,14 @@ const spawnDetached = (cmd) => {
 // Execute the run function with the given parameters
 async function executeRun() {
   try {
-    const childProcess = spawnDetached(
-      'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/moonbeam.yml -p=tests/chopsticks/acala.yml -p=tests/chopsticks/interlay.yml -p=tests/chopsticks/bifrost.yml -r=tests/chopsticks/polkadot.yml'
-    );
+    const childProcess =
+      nodeName === 'astar'
+        ? spawnDetached(
+            'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/moonbeam.yml -p=tests/chopsticks/acala.yml -p=tests/chopsticks/interlay.yml -p=tests/chopsticks/bifrost.yml -r=tests/chopsticks/polkadot.yml'
+          )
+        : spawnDetached(
+            'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/shiden.yml -p=tests/chopsticks/moonriver.yml -r=tests/chopsticks/kusama.yml  '
+          );
     console.info('Chopsticks started with pid:', childProcess.pid);
 
     result = await setupPreconditions.run(nodeName, networkInfo, ['Alice', 'Bob']);
