@@ -269,7 +269,7 @@ export default {
     claimNotReady: 'Claiming rewards is not ready on this network yet',
     stakePage: {
       backToDappList: 'Back to dApps list',
-      whereFundsFrom: 'Where would you like to bring you funds from?',
+      whereFundsFrom: 'Where would you like to bring your funds from?',
     },
     last30days: '(last 30 days)',
     dappPage: {
