@@ -40,7 +40,7 @@
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
-              href="https://docs.astar.network/docs/xcm/faq/#q-where-can-i-find-other-chains-addresses"
+              href="https://docs.astar.network/docs/learn/xcm/faq/#q-where-can-i-find-other-chains-addresses"
               target="_blank"
               rel="noopener noreferrer"
             >
