@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <div class="row__right row__right--evm">
+        <div class="row__right row__right--evm-native-token">
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
@@ -42,7 +42,6 @@
                 {{ $t('assets.bridge') }}
               </button>
             </a>
-
             <button
               v-if="isFaucet"
               class="btn btn--sm"
@@ -61,49 +60,36 @@
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
+import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import { useAccount, useBalance, useBreakpoints, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 
 export default defineComponent({
-  components: { ModalFaucet },
+  components: { ModalFaucet, TokenBalance },
   setup() {
-    const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const isShibuya = ref<boolean>(false);
     const isRocstar = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
-    const isSearch = ref<boolean>(false);
-    const search = ref<string>('');
     const isModalFaucet = ref<boolean>(false);
 
-    const { width, screenSize } = useBreakpoints();
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
-    const { accountData } = useBalance(currentAccount);
-
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
-    const { currentNetworkName, nativeTokenSymbol, isMainnet } = useNetworkInfo();
-
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    // const isListReady = computed<boolean>(() => !!(!isMainnet.value || props.tokens.length > 0));
 
-    const isDisplayNativeToken = computed<boolean>(() => {
-      return (
-        !search.value || nativeTokenSymbol.value.toLowerCase().includes(search.value.toLowerCase())
-      );
-    });
     const updateStates = async (nativeTokenUsd: number): Promise<void> => {
       if (isLoading.value || !nativeTokenSymbol.value || !isH160.value || !$web3.value) return;
       try {
@@ -131,7 +117,6 @@ export default defineComponent({
     };
 
     return {
-      isDisplayNativeToken,
       nativeTokenImg,
       nativeTokenSymbol,
       currentNetworkName,
