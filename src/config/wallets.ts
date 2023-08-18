@@ -86,7 +86,7 @@ export const supportWalletObj = {
     name: 'Polkadot.js',
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
-    guideUrl: 'https://docs.astar.network/docs/user-guides/create-wallet/#create-account',
+    guideUrl: 'https://docs.astar.network/docs/use/user-guides/create-wallet',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
