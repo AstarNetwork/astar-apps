@@ -1,3 +1,4 @@
+import { interfaces } from 'inversify';
 import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
 import { Struct, Vec, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
@@ -40,7 +41,6 @@ export function useCompoundRewards() {
   const { t } = useI18n();
   const { currentAccount, senderSs58Account } = useAccount();
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const { era } = useCurrentEra();
 
   const isSupported = ref<boolean>(false);
@@ -78,9 +78,10 @@ export function useCompoundRewards() {
 
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
     try {
-      const dappStakingService = container.get<IDappStakingService>(
-        isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+      const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+        Symbols.DappStakingServiceFactory
       );
+      const dappStakingService = dappStakingServiceFactory();
       await dappStakingService.setRewardDestination({
         senderAddress: currentAccount.value,
         rewardDestination,

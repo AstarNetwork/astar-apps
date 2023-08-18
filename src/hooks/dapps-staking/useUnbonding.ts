@@ -21,7 +21,6 @@ export function useUnbonding() {
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   const unlockingChunks = ref<ChunkInfo[]>();
   const canWithdraw = ref<boolean>(false);
@@ -41,9 +40,10 @@ export function useUnbonding() {
       };
 
       try {
-        const dappStakingService = container.get<IDappStakingService>(
-          isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+        const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+          Symbols.DappStakingServiceFactory
         );
+        const dappStakingService = dappStakingServiceFactory();
 
         await dappStakingService.withdraw({
           senderAddress: currentAccount.value,

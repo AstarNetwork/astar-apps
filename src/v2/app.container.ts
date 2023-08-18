@@ -89,6 +89,18 @@ export default function buildDependencyContainer(network: endpointKey): void {
     };
   });
 
+  // dApp Staking service factory
+  container
+    .bind<interfaces.Factory<IDappStakingService>>(Symbols.DappStakingServiceFactory)
+    .toFactory(() => {
+      return () =>
+        container.get<IDappStakingService>(
+          currentWalletType === WalletType.Polkadot
+            ? Symbols.DappStakingService
+            : Symbols.EvmDappStakingService
+        );
+    });
+
   // Repositories
   container.addSingleton<IDappStakingRepository>(
     DappStakingRepository,

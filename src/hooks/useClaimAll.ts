@@ -108,9 +108,10 @@ export function useClaimAll() {
   watch([isSendingTx, senderSs58Account, era], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
-    const dappStakingService = container.get<IDappStakingService>(
-      isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+    const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactory
     );
+    const dappStakingService = dappStakingServiceFactory();
 
     const finalizedCallback = (result: ISubmittableResult): void => {
       displayCustomMessage({

@@ -18,7 +18,6 @@ export function useStake() {
   const { currentAccount } = useAccount();
   const { stakingList } = useStakingList();
   const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const addressTransferFrom = ref<string>(currentAccount.value);
   const { t } = useI18n();
   const store = useStore();
@@ -53,9 +52,10 @@ export function useStake() {
     targetContractId: string;
   }) => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount).toString());
-    const dappStakingService = container.get<IDappStakingService>(
-      isH160.value ? Symbols.EvmDappStakingService : Symbols.DappStakingService
+    const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactory
     );
+    const dappStakingService = dappStakingServiceFactory();
     const balance = new BN(formattedTransferFrom.value.item?.balance || '0');
     if (balance.lt(stakeAmount)) {
       store.dispatch('general/showAlertMsg', {
