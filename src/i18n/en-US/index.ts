@@ -62,7 +62,7 @@ export default {
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
-    ledgerNotOpened: 'Ledger has not opened Astar App',
+    ledgerNotOpened: 'Ledger has not opened Astar App. Please open it and refresh this page.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -268,7 +268,7 @@ export default {
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
-      whereFundsFrom: 'Where would you like to bring you funds from?',
+      whereFundsFrom: 'Where would you like to bring your funds from?',
     },
     last30days: '(last 30 days)',
     dappPage: {
