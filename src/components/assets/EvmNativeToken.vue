@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-testid="evm-native-token">
     <div class="rows">
       <div class="row row--details">
         <div class="row__left">
