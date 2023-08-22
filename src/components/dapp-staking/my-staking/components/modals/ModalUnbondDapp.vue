@@ -120,7 +120,7 @@ export default defineComponent({
     });
 
     const isBelowThanMinStaking = computed<boolean>(() => {
-      return Number(maxAmount.value) - Number(amount.value) < minStakingAmount.value;
+      return minStakingAmount.value > Number(maxAmount.value) - Number(amount.value);
     });
 
     const maxAmount = computed<string>(() => {
@@ -150,7 +150,8 @@ export default defineComponent({
 
     const unbound = async (): Promise<void> => {
       await closeModal();
-      await handleUnbound(props.dapp?.dappAddress, amount.value);
+      const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
+      await handleUnbound(props.dapp?.dappAddress, unstakeAmount);
     };
 
     return {
