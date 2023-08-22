@@ -6,7 +6,7 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from 'src/v2/repositories/implementations/XcmRepository';
-import { XcmChain } from 'src/v2/models/XcmModels';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { Struct } from '@polkadot/types';
 
 interface Account extends Struct {
@@ -34,8 +34,7 @@ export class StatemintXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     const destination = {
       [version]: {
         interior: {
@@ -47,16 +46,9 @@ export class StatemintXcmRepository extends XcmRepository {
       },
     };
 
-    const AccountId32 = isV3
-      ? {
-          id: decodeAddress(recipientAddress),
-        }
-      : {
-          id: decodeAddress(recipientAddress),
-          network: {
-            Any: null,
-          },
-        };
+    const AccountId32 = {
+      id: decodeAddress(recipientAddress),
+    };
 
     const beneficiary = {
       [version]: {
@@ -116,6 +108,13 @@ export class StatemintXcmRepository extends XcmRepository {
     token: Asset,
     isNativeToken: boolean
   ): Promise<string> {
+    // Memo: avoid getting a UI error when the `token` is `ASTR` while the `monitorDestChainBalance` function(watch) in useXcmBridge.ts
+    // Reproduce the UI error: assets page -> transfer ASTR -> XCM -> flip the chains -> To: Statemint
+    // Todo: The error is because Statemint doesn't have 'ASTR', we can refactor here later
+    const statemintChains = [Chain.STATEMINT, Chain.STATEMINE];
+    if (!statemintChains.includes(token.originChain as Chain)) {
+      return '0';
+    }
     try {
       const api = await this.apiFactory.get(chain.endpoint);
       const result = await api.query.assets.account<Account>(token.originAssetId, address);

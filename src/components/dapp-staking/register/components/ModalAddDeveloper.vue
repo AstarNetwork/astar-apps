@@ -55,9 +55,9 @@
         <q-file
           v-model="file"
           outlined
-          max-file-size="1000000"
+          max-file-size="30720"
           accept="image/jpeg, .png"
-          :label="$t('dappStaking.modals.builder.image', { size: '1MB' })"
+          :label="$t('dappStaking.modals.builder.image', { size: '30KB' })"
           class="component"
           lazy-rules="ondemand"
           :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.builder.error.builderImageRequired')}`]"

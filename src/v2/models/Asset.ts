@@ -1,8 +1,6 @@
-import { BN } from '@polkadot/util';
-
 export class Asset {
   public userBalanceUsd: number;
-  public balance: BN;
+  public balance: string;
 
   constructor(
     public id: string,
@@ -16,7 +14,7 @@ export class Asset {
     public isXcmCompatible: boolean,
     public userBalance: number
   ) {
-    this.balance = new BN(0);
+    this.balance = '0';
     this.userBalanceUsd = 0;
   }
 }
@@ -27,6 +25,6 @@ export class AssetMetadata {
     public symbol: string,
     public decimals: number,
     public isFrozen: boolean,
-    public deposit: BN
+    public deposit: string
   ) {}
 }

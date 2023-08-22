@@ -1,4 +1,5 @@
 import { objToArray } from '@astar-network/astar-sdk-core';
+import { astarChain } from 'src/config/chain';
 import { Chain, parachainIds, XcmChain } from 'src/v2/models';
 
 export {
@@ -17,6 +18,7 @@ export {
   getXcmToken,
   monitorBalanceIncreasing,
   removeEvmName,
+  castXcmEndpoint,
 } from 'src/modules/xcm/utils';
 
 export interface XcmTokenInformation {
@@ -45,13 +47,14 @@ type XcmChainObj = {
   [key in Chain]: XcmChain;
 };
 
-export const xcmChainObj: XcmChainObj = {
+export let xcmChainObj: XcmChainObj = {
   [Chain.POLKADOT]: {
     name: Chain.POLKADOT,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/chain/polkadot.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
+    chopsticksEndpoint: 'ws://localhost:9950',
     subscan: 'https://polkadot.subscan.io',
     isAstarNativeToken: false,
   },
@@ -61,6 +64,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/astar.png'),
     parachainId: parachainIds.ASTAR,
     endpoint: 'wss://rpc.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9944',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
   },
@@ -88,6 +92,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/sdn.png'),
     parachainId: parachainIds.SHIDEN,
     endpoint: 'wss://rpc.shiden.astar.network',
+    chopsticksEndpoint: 'ws://localhost:9961',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
   },
@@ -114,7 +119,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/token/kar.png'),
     parachainId: parachainIds.KARURA,
-    endpoint: 'wss://karura.api.onfinality.io/public-ws',
+    endpoint: 'wss://karura-rpc-0.aca-api.network',
     subscan: 'https://karura.subscan.io',
     isAstarNativeToken: true,
   },
@@ -123,7 +128,8 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/token/aca.png'),
     parachainId: parachainIds.ACALA,
-    endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+    endpoint: 'wss://acala-rpc-0.aca-api.network',
+    chopsticksEndpoint: 'ws://localhost:9946',
     subscan: 'https://acala.subscan.io',
     isAstarNativeToken: true,
   },
@@ -142,6 +148,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/glmr.png'),
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
+    chopsticksEndpoint: 'ws://localhost:9945',
     subscan: 'https://moonbeam.subscan.io',
     isAstarNativeToken: true,
   },
@@ -169,6 +176,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/intr.png'),
     parachainId: parachainIds.INTERLAY,
     endpoint: 'wss://api.interlay.io/parachain',
+    chopsticksEndpoint: 'ws://localhost:9948',
     subscan: 'https://interlay.subscan.io',
     isAstarNativeToken: false,
   },
@@ -205,6 +213,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_POLKADOT,
     endpoint: 'wss://hk.p.bifrost-rpc.liebi.com/ws',
+    chopsticksEndpoint: 'ws://localhost:9947',
     subscan: 'https://bifrost.subscan.io',
     isAstarNativeToken: true,
   },
@@ -226,6 +235,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://equilibrium.subscan.io',
     isAstarNativeToken: true,
   },
+  [Chain.UNIQUE]: {
+    name: Chain.UNIQUE,
+    relayChain: Chain.POLKADOT,
+    img: require('/src/assets/img/token/unq.svg'),
+    parachainId: parachainIds.UNIQUE,
+    endpoint: 'wss://ws.unique.network',
+    subscan: 'https://unique.subscan.io',
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
@@ -237,3 +255,24 @@ export const kusamaParachains = xcmChains.filter(
 export const polkadotParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
 );
+
+// Todo: ideally use a content management to manage it
+export const restrictedXcmNetwork = {
+  [astarChain.ASTAR]: [
+    {
+      chain: Chain.MOONBEAM,
+      isRestrictedFromNative: false,
+      isRestrictedFromEvm: true,
+    },
+  ],
+  [astarChain.SHIDEN]: [
+    {
+      chain: Chain.MOONRIVER,
+      isRestrictedFromNative: false,
+      isRestrictedFromEvm: true,
+    },
+  ],
+  [astarChain.SHIBUYA]: [],
+  [astarChain.DEVELOPMENT]: [],
+  [astarChain.ROCSTAR]: [],
+};

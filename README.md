@@ -3,7 +3,7 @@
 <div align="center">
 
 [![License](https://img.shields.io/github/license/AstarNetwork/astar-apps?color=green)](https://github.com/AstarNetwork/astar-apps/blob/main/LICENSE)
- <br />
+<br />
 [![Twitter URL](https://img.shields.io/twitter/follow/AstarNetwork?style=social)](https://twitter.com/AstarNetwork)
 [![Twitter URL](https://img.shields.io/twitter/follow/ShidenNetwork?style=social)](https://twitter.com/ShidenNetwork)
 [![YouTube](https://img.shields.io/youtube/channel/subscribers/UC36JgEF6gqatVSK9xlzzrvQ?style=social)](https://www.youtube.com/channel/UC36JgEF6gqatVSK9xlzzrvQ)
@@ -33,3 +33,51 @@ yarn dev
 yarn build
 ```
 
+## E2E Testing
+
+For E2E testing, we utilize [chopsticks](https://github.com/AcalaNetwork/chopsticks) and [playwright](https://playwright.dev/) to mandatorily write test cases that test all of business logic.
+
+### Setup chopsticks
+
+```bash
+npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/acala.yml -r=tests/chopsticks/polkadot.yml
+```
+
+### Running tests locally in debug mode
+
+- Start the portal (the portal should run on http://localhost:8080)
+
+- You need to familiar with Playwright generator by running codegen
+
+```bash
+yarn playwright:codegen
+```
+
+- Run the following
+
+```bash
+yarn playwright
+```
+
+- debug each file individually
+
+```bash
+yarn playwright tests/dappstaking-transactions.spec.ts
+```
+
+### Running test in CI mode
+
+- Start the portal (the portal should run on http://localhost:8080)
+
+- Run the following
+
+```bash
+yarn playwright:ci
+```
+
+### Write test cases
+
+- Create test file or added test cases on existing file in /tests
+  - Simple UI e2e testing : (assets).spec.ts
+  - Native Transaction e2e teting : (assets)-transactions.spec.ts
+  - EVM Transaction e2e testing : (assets)-transactions-evm.spec.ts

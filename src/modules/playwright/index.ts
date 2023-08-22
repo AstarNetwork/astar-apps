@@ -14,7 +14,6 @@ export const checkInjectedWeb3 = async (page: Page): Promise<JSHandle<boolean>> 
   }, undefined);
 };
 
-export const clickPolicyButton = async (page: Page): Promise<void> => {
-  const acceptPolicy = page.locator('.q-banner__actions > button:has-text("Accept")');
-  await acceptPolicy.click();
+export const clickDisclaimerButton = async (page: Page): Promise<void> => {
+  await page.getByRole('button', { name: 'Agree' }).click();
 };

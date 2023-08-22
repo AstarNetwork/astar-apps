@@ -20,6 +20,7 @@ export enum Chain {
   BIFROST_POLKADOT = 'Bifrost-polkadot',
   BIFROST_KUSAMA = 'Bifrost',
   EQUILIBRIUM = 'Equilibrium',
+  UNIQUE = 'Unique',
 }
 
 export enum parachainIds {
@@ -39,6 +40,7 @@ export enum parachainIds {
   BIFROST_POLKADOT = 2030,
   BIFROST_KUSAMA = 2001,
   EQUILIBRIUM = 2011,
+  UNIQUE = 2037,
 }
 
 export interface XcmChain {
@@ -47,6 +49,7 @@ export interface XcmChain {
   img: string;
   parachainId: parachainIds;
   endpoint: string;
+  chopsticksEndpoint?: string;
   subscan: string;
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;

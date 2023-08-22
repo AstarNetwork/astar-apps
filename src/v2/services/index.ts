@@ -8,3 +8,4 @@ export * from './IBalanceFormatterService';
 export * from './IEvmAssetsService';
 export * from './ITokenTransferService';
 export * from './IAutoStakingService';
+export * from './IAssetsService';

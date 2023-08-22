@@ -89,8 +89,8 @@ function useCall(addressRef: Ref<string>) {
     accountDataRef.value = new AccountData(
       accountInfo.data.free,
       accountInfo.data.reserved,
-      accountInfo.data.miscFrozen,
-      accountInfo.data.feeFrozen,
+      accountInfo.data.miscFrozen ?? accountInfo.data.frozen,
+      accountInfo.data.feeFrozen ?? accountInfo.data.flags,
       vestedRef.value,
       extendedVesting,
       vestedClaimable,
@@ -206,7 +206,7 @@ export class AccountData {
   }
 
   public getUsableFeeBalance(): BN {
-    return this.free.sub(this.feeFrozen);
+    return this.free.sub(this.miscFrozen);
   }
 
   public free: BN;

@@ -1,24 +1,27 @@
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
+import { AccountLedger, DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
-import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
+import {
+  IBalanceFormatterService,
+  IDappStakingService,
+  ParamSetRewardDestination,
+} from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
-import { AccountLedger } from 'src/v2/models/DappsStaking';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -137,7 +140,7 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
 
     return stakerInfos.map((x) => {
-      x.totalStakeFormatted = this.balanceFormatter.format(x.totalStake, metadata.decimals);
+      x.totalStakeFormatted = ethers.utils.formatUnits(x.totalStake, metadata.decimals);
       return x;
     });
   }
@@ -231,5 +234,20 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
     return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
+  }
+
+  public async setRewardDestination({
+    rewardDestination,
+    senderAddress,
+    successMessage,
+  }: ParamSetRewardDestination) {
+    const transaction = await this.dappStakingRepository.getSetRewardDestinationCall(
+      rewardDestination
+    );
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+      successMessage,
+    });
   }
 }

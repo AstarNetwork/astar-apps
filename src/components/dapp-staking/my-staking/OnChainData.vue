@@ -5,21 +5,26 @@
     </div>
     <div class="box--data" :class="isShiden && 'box--data-shiden'">
       <div class="row--data-filter">
-        <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
-          <q-list>
-            <q-item
-              v-for="(item, index) in filters"
-              :key="index"
-              v-close-popup
-              clickable
-              @click="filterBy = item"
-            >
-              <q-item-section>
-                <q-item-label>{{ $t(item) }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
+        <div class="column--sort">
+          <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
+            <q-list>
+              <q-item
+                v-for="(item, index) in filters"
+                :key="index"
+                v-close-popup
+                clickable
+                @click="changeFilter(item)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ $t(item) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <div v-if="filterBy !== Filter.tvl" class="text--value">
+            {{ $t('dappStaking.last30days') }}
+          </div>
+        </div>
         <div class="column--sort">
           <div>
             <span class="text--value">{{ $t('sort.sortBy') }}</span>
@@ -51,7 +56,7 @@
         >
           <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
             <div class="row--dapp">
-              <div class="column--dapp-name">
+              <div class="column--dapp-name" @click="goDappPageLink(dapp.address)">
                 <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
                 <div class="column--name">
                   <span class="text--name"> {{ dapp.name }} </span>
@@ -60,10 +65,12 @@
               <div class="column--balance">
                 <span class="text--value">
                   <token-balance
+                    v-if="filterBy === Filter.tvl"
                     :balance="dapp.balance"
                     :symbol="nativeTokenSymbol"
                     :decimals="0"
                   />
+                  <span v-else> {{ dapp.balance }} </span>
                 </span>
               </div>
             </div>
@@ -91,14 +98,21 @@
 </template>
 <script lang="ts">
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
-import { defineComponent, computed, watchEffect, ref } from 'vue';
+import { defineComponent, computed, watchEffect, ref, watch } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
+import { container } from 'src/v2/common';
+import { IDappStakingRepository, DappAggregatedMetrics } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 enum Filter {
   tvl = 'dappStaking.stakingTvl',
+  transactions = 'dappStaking.transactions',
+  uaw = 'dappStaking.uaw',
 }
 enum SortBy {
   alphabeticalAtoZ = 'sort.alphabeticalAtoZ',
@@ -111,6 +125,7 @@ interface Data {
   iconUrl: string;
   name: string;
   balance: string;
+  address: string;
 }
 
 const numItemsTablet = 8;
@@ -123,7 +138,7 @@ const sorts = [
   SortBy.amountLowToHigh,
 ];
 
-const filters = [Filter.tvl];
+const filters = [Filter.tvl, Filter.transactions, Filter.uaw];
 
 export default defineComponent({
   components: {
@@ -141,6 +156,8 @@ export default defineComponent({
     const isDisplay = ref<boolean>(true);
     const goToNext = ref<boolean>(true);
     const sortBy = ref<SortBy>(SortBy.amountHighToLow);
+    const aggregatedData = ref<DappAggregatedMetrics[]>([]);
+    const router = useRouter();
 
     const numItems = computed<number>(() =>
       width.value > screenSize.md ? numItemsTablet : numItemsMobile
@@ -152,6 +169,21 @@ export default defineComponent({
       goToNext.value ? 'animate__fadeOutLeft' : 'animate__fadeOutRight'
     );
     const isShiden = computed<boolean>(() => currentNetworkName.value === 'Shiden');
+
+    const fetchAggregatedData = async () => {
+      if (aggregatedData.value.length === 0) {
+        const repo = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
+        aggregatedData.value = await repo.getAggregatedMetrics(
+          currentNetworkName.value.toLowerCase()
+        );
+      }
+    };
+
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
 
     const getDappStyle = (index: number): string => {
       if (screenSize.md > width.value) {
@@ -181,15 +213,46 @@ export default defineComponent({
       }
     };
 
-    const getBalance = (item: DappCombinedInfo): string => {
+    const getBalance = (item: DappCombinedInfo, filter: Filter): string => {
       try {
-        if (filterBy.value === Filter.tvl) {
+        if (filter === Filter.tvl) {
           return item.stakerInfo.totalStakeFormatted ? item.stakerInfo.totalStakeFormatted : '0';
+        } else {
+          const data = aggregatedData.value.find(
+            (x) =>
+              x.name.toLowerCase() === item?.dapp?.name?.toLowerCase() ||
+              getDomain(x.url.toLowerCase()) === getDomain(item?.dapp?.url?.toLowerCase())
+          );
+
+          if (data) {
+            return filter === Filter.transactions
+              ? data.metrics.transactions.toString()
+              : data.metrics.uaw.toString();
+          }
+
+          return '';
         }
-        return '0';
       } catch (error) {
         return '0';
       }
+    };
+
+    const getDomain = (url: string | undefined): string | undefined => {
+      if (!url) {
+        return undefined;
+      }
+
+      const prefix = /^https?:\/\//i;
+      const domain = /^[^\/:]+/;
+      // Remove any prefix
+      url = url.replace(prefix, '');
+      // Extract just the domain
+      const match = url.match(domain);
+      if (match) {
+        return match[0];
+      }
+
+      return undefined;
     };
 
     const setDataArray = (): void => {
@@ -201,10 +264,15 @@ export default defineComponent({
           }
 
           if (it.dapp && it.stakerInfo) {
-            const balance = getBalance(it);
+            const balance = getBalance(it, filterBy.value);
+            if (!balance) {
+              return undefined;
+            }
+
             return {
               iconUrl: it.dapp.iconUrl,
               name: it.dapp.name,
+              address: it.dapp.address,
               balance,
             };
           } else {
@@ -248,8 +316,25 @@ export default defineComponent({
       }, 700);
     };
 
+    const changeFilter = (filter: Filter): void => {
+      filterBy.value = filter;
+      page.value = 1;
+      changePage(false);
+    };
+
     watchEffect(setDataArray);
-    watchEffect(handlePageUpdate);
+
+    // The below cause problem with not showing the data (after uplift to a new Quasar version) when accessing the page directly
+    // watchEffect(handlePageUpdate);
+
+    watch(
+      [currentNetworkName],
+      async () => {
+        if (!currentNetworkName.value) return;
+        await fetchAggregatedData();
+      },
+      { immediate: true }
+    );
 
     return {
       nativeTokenSymbol,
@@ -268,6 +353,9 @@ export default defineComponent({
       changePage,
       getDappStyle,
       getBorderStyle,
+      Filter,
+      goDappPageLink,
+      changeFilter,
     };
   },
 });

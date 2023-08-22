@@ -12,7 +12,7 @@ export class StakerInfo {
 
   constructor(
     public contractAddress: string,
-    public totalStake: BN,
+    public totalStake: string,
     public stakersCount: number,
     public accountStakingAmount: string
   ) {}
@@ -20,7 +20,7 @@ export class StakerInfo {
   static createDefault(contractAddress: string): StakerInfo {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
 
-    return new StakerInfo(contractAddress, new BN(0), 0, '0');
+    return new StakerInfo(contractAddress, '0', 0, '0');
   }
 }
 

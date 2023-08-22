@@ -45,7 +45,7 @@
         <div class="container--tips">
           <div class="row--tips-title">
             <a
-              :href="polkadotJsLink"
+              :href="`${polkadotJsLink}/settings`"
               target="_blank"
               rel="noopener noreferrer"
               class="link--tips-title"
@@ -140,17 +140,8 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { polkadotJsLink } = useNetworkInfo();
     const { width, screenSize } = useBreakpoints();
-
-    const polkadotJsLink = computed<string>(() => {
-      const { astar, shiden, shibuya } = polkadotJsUrl.settings;
-      return currentNetworkIdx.value === endpointKey.ASTAR
-        ? astar
-        : currentNetworkIdx.value === endpointKey.SHIDEN
-        ? shiden
-        : shibuya;
-    });
 
     const clearLocalStorage = async (): Promise<void> => {
       localStorage.clear();

@@ -15,7 +15,7 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
@@ -54,6 +54,12 @@ export function useClaimAll() {
     return Number(balance);
   });
 
+  const isDappDeveloper = computed<boolean>(() => {
+    return (
+      dapps.value && dapps.value.some((it) => it.contract.developerAddress === senderAddress.value)
+    );
+  });
+
   const updateClaimEras = async (): Promise<void> => {
     try {
       isLoading.value = true;
@@ -65,18 +71,22 @@ export function useClaimAll() {
       if (!senderAddressRef || !era.value || isSendingTx.value) {
         return;
       }
-
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
-          if (it.dapp && !isH160.value) {
-            const transactions = await getIndividualClaimTxs({
-              dappAddress: it?.dapp?.address,
-              api,
-              senderAddress: senderAddressRef,
-              currentEra: era.value,
-            });
-            return transactions.length ? transactions : null;
-          } else {
+          try {
+            if (it.dapp && !isH160.value) {
+              const transactions = await getIndividualClaimTxs({
+                dappAddress: it?.dapp?.address,
+                api,
+                senderAddress: senderAddressRef,
+                currentEra: era.value,
+              });
+              return transactions.length ? transactions : null;
+            } else {
+              return null;
+            }
+          } catch (error) {
+            console.error(error);
             return null;
           }
         })
@@ -169,5 +179,6 @@ export function useClaimAll() {
     canClaimWithoutError,
     isLoading,
     amountOfEras,
+    isDappDeveloper,
   };
 }

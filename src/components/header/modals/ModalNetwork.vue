@@ -133,7 +133,6 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
-import { $endpoint } from 'src/boot/api';
 import {
   checkIsLightClient,
   checkIsSubstrateConnectInstalled,
@@ -214,6 +213,10 @@ export default defineComponent({
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);
+    };
+
+    const setInitialSelEndpoint = (): string => {
+      return JSON.parse(localStorage.getItem(SELECTED_ENDPOINT) || '{}')[props.networkIdx] || '';
     };
 
     const selNetwork = ref<number>(props.networkIdx);
@@ -309,7 +312,7 @@ export default defineComponent({
 
     const setupInitialEndpointOption = (networkIdx: number) => {
       if (networkIdx === endpointKey.ASTAR) {
-        selEndpointAstar.value = $endpoint.value;
+        selEndpointAstar.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ROCSTAR);
@@ -317,7 +320,7 @@ export default defineComponent({
       }
 
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointShiden.value = $endpoint.value;
+        selEndpointShiden.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ROCSTAR);
@@ -325,7 +328,7 @@ export default defineComponent({
       }
 
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointShibuya.value = $endpoint.value;
+        selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.ROCSTAR);
@@ -360,7 +363,7 @@ export default defineComponent({
     };
 
     watch(
-      [$endpoint, selNetwork],
+      [selNetwork],
       () => {
         setupInitialEndpointOption(props.networkIdx);
       },

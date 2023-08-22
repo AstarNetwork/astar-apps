@@ -33,12 +33,100 @@ export class AstarXcmRepository extends XcmRepository {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
     }
+    const isAstar = from.name === 'Astar';
+    return isAstar
+      ? await this.getPolkadotXcmCall(from, to, recipientAddress, token, amount)
+      : await this.getXtokensCall(from, to, recipientAddress, token, amount);
+  }
 
+  private async getXtokensCall(
+    from: XcmChain,
+    to: XcmChain,
+    recipientAddress: string,
+    token: Asset,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    const { version, isV3 } = this.getXcmVersion(from);
-
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
-    const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
+
+    const asset = isWithdrawAssets
+      ? {
+          Concrete: await this.fetchAssetConfig(from, token),
+        }
+      : {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(0),
+          },
+        };
+
+    const assets = {
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
+        },
+        id: asset,
+      },
+    };
+
+    const isAccountId20 = ethWalletChains.includes(to.name);
+
+    const accountId = isAccountId20
+      ? {
+          AccountKey20: {
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
+    const destination = {
+      V3: {
+        interior: {
+          X2: [
+            {
+              Parachain: new BN(to.parachainId),
+            },
+            {
+              ...accountId,
+            },
+          ],
+        },
+        parents: new BN(1),
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    return await this.buildTxCall(
+      from,
+      'xtokens',
+      'transferMultiasset',
+      assets,
+      destination,
+      weightLimit
+    );
+  }
+
+  // Memo: Remove this method after implementing Xtokens on Astar
+  private async getPolkadotXcmCall(
+    from: XcmChain,
+    to: XcmChain,
+    recipientAddress: string,
+    token: Asset,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    const version = 'V3';
+    const isWithdrawAssets = token.id !== this.astarNativeTokenId;
+    const functionName = isWithdrawAssets
+      ? 'limitedReserveWithdrawAssets'
+      : 'limitedReserveTransferAssets';
 
     const destination = {
       [version]: {
@@ -52,19 +140,6 @@ export class AstarXcmRepository extends XcmRepository {
     };
 
     const isAccountId20 = ethWalletChains.includes(to.name);
-    const X1_V1 = isAccountId20
-      ? {
-          AccountKey20: {
-            network: 'Any',
-            key: recipientAccountId,
-          },
-        }
-      : {
-          AccountId32: {
-            network: 'Any',
-            id: decodeAddress(recipientAccountId),
-          },
-        };
 
     const X1_V3 = isAccountId20
       ? {
@@ -81,7 +156,7 @@ export class AstarXcmRepository extends XcmRepository {
     const beneficiary = {
       [version]: {
         interior: {
-          X1: isV3 ? X1_V3 : X1_V1,
+          X1: X1_V3,
         },
         parents: new BN(0),
       },
@@ -109,6 +184,10 @@ export class AstarXcmRepository extends XcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
@@ -116,7 +195,8 @@ export class AstarXcmRepository extends XcmRepository {
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 }

@@ -40,7 +40,7 @@
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
-              href="https://docs.astar.network/docs/xcm/faq/#q-where-can-i-find-other-chains-addresses"
+              href="https://docs.astar.network/docs/learn/xcm/faq/#q-where-can-i-find-other-chains-addresses"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -97,6 +97,7 @@
             </div>
             <div class="box__column--input-amount">
               <input
+                id="amount"
                 :value="amount"
                 inputmode="decimal"
                 type="number"
@@ -116,11 +117,7 @@
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
           </div>
-          <div
-            v-click-away="setIsMobileDisplayTooltip"
-            class="icon--help"
-            @click="setIsMobileDisplayTooltip"
-          >
+          <div v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
             <astar-icon-help size="20" />
             <q-tooltip
               v-model="isDisplayTooltip"

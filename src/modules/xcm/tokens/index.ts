@@ -2,7 +2,6 @@ import { Erc20Token } from 'src/modules/token';
 import { Asset, Chain } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { BN } from '@polkadot/util';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
 
@@ -45,11 +44,11 @@ export const xcmToken = {
       minBridgeAmount: '0.13',
     },
     {
-      symbol: 'AUSD',
+      symbol: 'ASEED',
       isNativeToken: false,
       assetId: '18446744073709551617',
       originAssetId: 'AUSD',
-      logo: require('/src/assets/img/token/ausd.png'),
+      logo: require('/src/assets/img/token/aseed.png'),
       isXcmCompatible: true,
       originChain: Chain.ACALA,
       minBridgeAmount: '0.1',
@@ -134,6 +133,16 @@ export const xcmToken = {
       originChain: Chain.EQUILIBRIUM,
       minBridgeAmount: '0.2',
     },
+    {
+      symbol: 'UNQ',
+      isNativeToken: true,
+      assetId: '18446744073709551631',
+      originAssetId: 'UNQ',
+      logo: require('/src/assets/img/token/unq.svg'),
+      isXcmCompatible: true,
+      originChain: Chain.UNIQUE,
+      minBridgeAmount: '0.1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -147,11 +156,11 @@ export const xcmToken = {
       minBridgeAmount: '0.1',
     },
     {
-      symbol: 'AUSD',
+      symbol: 'ASEED',
       isNativeToken: false,
       assetId: '18446744073709551616',
       originAssetId: 'KUSD',
-      logo: require('/src/assets/img/token/ausd.png'),
+      logo: require('/src/assets/img/token/aseed.png'),
       isXcmCompatible: true,
       originChain: Chain.KARURA,
       minBridgeAmount: '0.1',
@@ -311,7 +320,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   const mappedERC20Addr = astarNativeTokenErcAddr;
   const metadata = {
     decimals: ASTAR_DECIMALS,
-    deposit: new BN(0),
+    deposit: '0',
     isFrozen: false,
     name,
     symbol,
@@ -344,7 +353,7 @@ export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[])
   const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,
-    deposit: new BN(0),
+    deposit: '0',
     isFrozen: false,
     name,
     symbol: t ? t.metadata.symbol : token.symbol,

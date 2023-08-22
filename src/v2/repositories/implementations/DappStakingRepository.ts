@@ -6,7 +6,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
 import { injectable, inject } from 'inversify';
-import { IDappStakingRepository } from 'src/v2/repositories';
+import { DappAggregatedMetrics, IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import {
@@ -96,12 +96,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     @inject(Symbols.EventAggregator) private eventAggregator: EventAggregator
   ) {}
 
-  public async getTvl(): Promise<BN> {
+  public async getTvl(): Promise<string> {
     const api = await this.api.getApi();
     const era = await this.getCurrentEra();
     const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
 
-    return result.unwrap().locked.toBn();
+    return result.unwrap().locked.toString();
   }
 
   public async fetchAccountStakingAmount(
@@ -192,12 +192,12 @@ export class DappStakingRepository implements IDappStakingRepository {
           : '0';
         return new StakerInfo(
           contractAddresses[index],
-          eraStake.total,
+          eraStake.total.toString(),
           eraStake.numberOfStakers.toNumber(),
           accountStakingAmount
         );
       } else {
-        return new StakerInfo('-', new BN(0), 0, '0');
+        return new StakerInfo('-', '0', 0, '0');
       }
     });
   }
@@ -388,6 +388,19 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
+  public async getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=30d`;
+
+    try {
+      const response = await axios.get<DappAggregatedMetrics[]>(url);
+      return response.data;
+    } catch {
+      return [];
+    }
+  }
+
   private async handleGetStakeInfo({
     api,
     dappAddress,
@@ -466,5 +479,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
 
     return undefined;
+  }
+
+  public async getSetRewardDestinationCall(
+    rewardDestination: RewardDestination
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.setRewardDestination(rewardDestination);
   }
 }

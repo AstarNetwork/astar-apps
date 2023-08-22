@@ -1,6 +1,6 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
-import { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
+import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
@@ -18,6 +18,7 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations/SystemRepository';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -60,14 +61,12 @@ export class XcmRepository implements IXcmRepository {
     if (metadata.length > 0) {
       metadata.forEach(([key, value]) => {
         const id = key.args.map((x) => x.toString())[0];
-        const deposit = value.deposit.toBn();
+        const deposit = value.deposit.toString();
         const name = u8aToString(value.name);
         const symbol = u8aToString(value.symbol);
         const decimals = value.decimals.toNumber();
         const isFrozen = value.isFrozen.valueOf();
         const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
-
-        // Todo: get the token data even thought users select `custom-network`
         const registeredData = this.registeredTokens.find((x) => x.assetId === id);
         const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
         const originChain = registeredData ? registeredData.originChain : '';
@@ -103,7 +102,8 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
-    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE, Chain.BIFROST_KUSAMA];
+    // e.g.: [Chain.BIFROST_KUSAMA]
+    const v3s: Chain[] = [];
     const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
     const isV3 = version === 'V3';
     return { version, isV3 };
@@ -120,9 +120,7 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
-
+    const version = 'V3';
     // the target parachain connected to the current relaychain
     const destination = {
       [version]: {
@@ -138,14 +136,9 @@ export class XcmRepository implements IXcmRepository {
     const recipientAddressId = this.getAddress(recipientAddress);
 
     const id = decodeAddress(recipientAddressId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -190,10 +183,70 @@ export class XcmRepository implements IXcmRepository {
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
-    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
-    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
-    const { version, isV3 } = this.getXcmVersion(from);
+    const isAstar = from.name === 'Astar';
+    return isAstar
+      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount)
+      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount);
+  }
 
+  private async getXtokensToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+
+    const asset = {
+      Concrete: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+
+    const assets = {
+      V3: {
+        fun: {
+          Fungible: new BN(amount),
+        },
+        id: asset,
+      },
+    };
+
+    const destination = {
+      V3: {
+        interior: {
+          X1: {
+            AccountId32: {
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(1),
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    return await this.buildTxCall(
+      from,
+      'xtokens',
+      'transferMultiasset',
+      assets,
+      destination,
+      weightLimit
+    );
+  }
+
+  // Memo: Remove this method after implementing Xtokens on Astar
+  private async getPolkadotXcmToOriginChainCall(
+    from: XcmChain,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    const version = 'V3';
     const destination = {
       [version]: {
         interior: 'Here',
@@ -202,14 +255,9 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const id = decodeAddress(recipientAccountId);
-    const AccountId32 = isV3
-      ? {
-          id,
-        }
-      : {
-          network: 'Any',
-          id,
-        };
+    const AccountId32 = {
+      id,
+    };
 
     const beneficiary = {
       [version]: {
@@ -240,14 +288,19 @@ export class XcmRepository implements IXcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
-      'reserveWithdrawAssets',
+      'limitedReserveWithdrawAssets',
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 
@@ -274,7 +327,7 @@ export class XcmRepository implements IXcmRepository {
     try {
       const api = await this.apiFactory.get(chain.endpoint);
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
-      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen));
+      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen ?? data.frozen));
     } catch (e) {
       console.error(e);
       return new BN(0);
@@ -305,12 +358,8 @@ export class XcmRepository implements IXcmRepository {
   }> {
     const api = await this.apiFactory.get(source.endpoint);
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
-
-    // return config.unwrap().v1;
-    const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
-
-    return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
+    return formattedAssetConfig.v3;
   }
 
   protected isAstarNativeToken(token: Asset): boolean {
@@ -328,7 +377,7 @@ export class XcmRepository implements IXcmRepository {
     balancesOption.map((x, index) => {
       if (x.isSome) {
         const balance = x.unwrap();
-        assets[index].balance = balance.balance.toBn();
+        assets[index].balance = balance.balance.toString();
       }
     });
 

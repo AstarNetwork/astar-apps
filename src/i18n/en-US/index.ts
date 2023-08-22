@@ -8,6 +8,7 @@ export default {
   from: 'From',
   to: 'To',
   add: 'Add',
+  and: 'and',
   estimated: 'Estimated',
   forget: 'Forget',
   remove: 'Remove',
@@ -39,6 +40,7 @@ export default {
   select: 'Select',
   help: 'Help',
   share: 'Share',
+  multisig: 'Multisig',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -49,16 +51,18 @@ export default {
   warning: {
     warning: 'Warning',
     insufficientBalance: 'Insufficient {token} balance',
-    insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
+    insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
+    insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
-    ledgerNotOpened: 'Ledger has not opened Astar App',
+    ledgerNotOpened: 'Ledger has not opened Astar App. Please open it and refresh this page.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -69,10 +73,14 @@ export default {
     copyAddressSuccessfully: 'Copy address success!',
     clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
+    approveOnPolkasafe: 'Approve on PolkaSafe',
     success: 'Success',
     note: 'Note',
     error: 'Error',
     copied: 'Copied',
+    info: 'Info',
+    enablePolkasafe:
+      'Please sign on the wallet extension to enable PolkaSafe functionality; the popup may take a while to appear',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -109,6 +117,11 @@ export default {
         'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
       goToClassicPortal: 'our Classic Portal',
     },
+    status: {
+      working: 'Working',
+      fixing: 'Fixing',
+      restricted: 'Restricted',
+    },
   },
   sidenavi: {
     community: 'Community',
@@ -139,6 +152,7 @@ export default {
     select: 'Please select a wallet to connect to this portal',
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
+    multisigAccount: 'Multisig Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -146,19 +160,19 @@ export default {
     },
     showBalance: 'Show {token} balance',
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
+    multisig: {
+      initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
+      noAccounts: 'There are no multisig accounts found',
+      goToPokasafe: 'Go to PolkaSafe to create one',
+      proxy: 'Proxy',
+    },
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} yet?',
+    getWallet: 'Haven’t got {value} yet?',
     installWallet:
-      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
-    installExtension: 'Install {value} extension',
-    howToConnect: 'Learn how to Connect',
-  },
-  updateWallet: {
-    getUpdatedWallet: 'Haven’t updated {value} yet?',
-    updateWallet:
-      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
-    updateExtension: 'Update {value} extension',
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page.",
+    install: 'Install',
+    learn: 'Learn',
   },
   topMetric: {
     build2earn: 'Build2Earn',
@@ -217,7 +231,8 @@ export default {
       'You are still required to claim by yourself but the rewards will automatically re-stake.',
     claimYourselfManual:
       'You are required to claim by yourself and the rewards will be added to transferable balance.',
-    availableToClaim: 'Estimated Rewards',
+    availableToClaim: 'Available to claim',
+    estimatedRewards: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',
@@ -246,6 +261,7 @@ export default {
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
       'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
+    desktopOnlyBanner: 'dApp registration is only available on desktop',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     totalStake: 'Total stake:',
@@ -269,12 +285,15 @@ export default {
     dappStakingEvm: 'dApp Staking is available on EVM',
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
+    transactions: 'Transactions',
+    uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
-      whereFundsFrom: 'Where would you like to bring you funds from?',
+      whereFundsFrom: 'Where would you like to bring your funds from?',
     },
+    last30days: '(last 30 days)',
     dappPage: {
       back: 'Back',
       goBackToTopPage: 'Go back to the top page',
@@ -326,6 +345,7 @@ export default {
         tiktokAccount: 'TikTok account',
         youtubeAccount: 'YouTube account',
         instagramAccount: 'Instagram account',
+        githubAccount: 'GitHub account',
         communityRequired: 'At least one community link is required.',
       },
       description: 'Description',
@@ -416,6 +436,7 @@ export default {
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
+    theSignatory: '{account} is the signatory',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
@@ -434,6 +455,8 @@ export default {
       noTxRecords: "The account doesn't have any transaction records yet",
       mintTransferAmount: 'Min. transfer amount is {amount} {symbol}',
       howToUsePortal: 'HOW TO USE THE PORTAL',
+      xcmIsDisabled: 'XCM with {network} is disabled temporarily',
+      xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is disabled temporarily',
     },
     modals: {
       max: 'Max',
@@ -492,7 +515,6 @@ export default {
         askCommunityDiscord: 'Ask our Discord community',
         askCommunityTip: 'Someone is always there for you.',
       },
-
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',
@@ -500,11 +522,22 @@ export default {
         tooltip:
           'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
+      lockdropWarning: {
+        message:
+          'The Lockdrop account will be deprecated in the upcoming update, as its purpose has been fulfilled. Please transfer your funds to another substrate wallet immediately.',
+        list1:
+          "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
+        list2:
+          'Please note that unstaking in dApp staking will require 10 eras (approximately 10 days).',
+        closeTime: 'UTC 23:59 12th September 2023',
+        gotIt: 'Got it',
+      },
     },
   },
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    collators: 'Collators',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
@@ -521,6 +554,11 @@ export default {
       era: 'Era',
       progress: '{value}%',
       eta: 'ETA {value}',
+    },
+    network: {
+      networkStatuses: 'Network Statuses',
+      updatedAgo: 'Updated {time} ago',
+      xcmDepositWithdrawalAssets: 'XCM Deposit/Withdrawal Assets',
     },
   },
   chart: {
@@ -558,5 +596,31 @@ export default {
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
     astarDocs: 'Astar Docs',
+  },
+  disclaimer: {
+    disclaimer: 'Disclaimer',
+    introduce1: `By accessing and using the Astar ecosystem dApps, you confirm that you are eligible to do
+    so and agree to the Astar Foundation`,
+    introduce2: `. You understand and accept that your use of the dApps is at your own risk, and they are provided on an "as
+    is" and "as available" basis without any express or implied warranties of any kind.`,
+    terms: 'Terms of Services',
+    privacy: 'Privacy Policy',
+    chapter1: '1. Liability:',
+    para1: `You understand and agree that the Astar Foundation shall not be held liable for any
+    direct, indirect, incidental, special, consequential, or exemplary damages arising from
+    your use of the Astar ecosystem dApps. This includes, but is not limited to, damages for
+    loss of profits, goodwill, use, data or other intangible losses.`,
+    chapter2: '2. Assumption of Network Risks:',
+    para2: `You understand and agree that the Astar Foundation does not guarantee the security of the
+    Astar ecosystem dApps or the safety of your personal information, including your wallet
+    address, transaction history, and private keys. You agree to take appropriate measures to
+    protect your personal information and to prevent unauthorized access to your wallet.`,
+    chapter3: '3. No Guarantee of Security:',
+    closeWord: `You also confirm that you are not a "Prohibited Person" and that neither you nor any
+    person or entity that controls, is controlled by, or is under common control with you is a
+    Prohibited Person. Finally, by clicking "Accept," you agree to the terms and conditions
+    set forth above. If you do not agree, please click "Decline."`,
+    agree: 'Agree',
+    decline: 'Decline',
   },
 };

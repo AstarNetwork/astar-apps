@@ -15,7 +15,13 @@
           </div>
         </div>
         <div class="box__row">
-          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+          <img
+            v-if="iconWallet"
+            width="24"
+            :src="iconWallet"
+            alt="wallet-icon"
+            :class="multisig && 'img--polkasafe'"
+          />
           <div class="column--wallet-address">
             <div class="column--wallet-name">
               <span class="text--title">{{ currentAccountName }}</span>
@@ -209,7 +215,7 @@ export default defineComponent({
   },
   setup(props) {
     const { iconWallet } = useWalletIcon();
-    const { currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName, multisig } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
     const t = computed<Asset>(() => props.token);
     const {
@@ -242,7 +248,9 @@ export default defineComponent({
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
       return (
-        currentWallet !== SupportWallet.TalismanEvm && currentWallet !== SupportWallet.SubWalletEvm
+        currentWallet !== SupportWallet.TalismanEvm &&
+        currentWallet !== SupportWallet.SubWalletEvm &&
+        currentWallet !== SupportWallet.OneKeyEvm
       );
     });
 
@@ -275,6 +283,7 @@ export default defineComponent({
       isRequiredCheck,
       isTransferNativeToken,
       isNativeToEvm,
+      multisig,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,
