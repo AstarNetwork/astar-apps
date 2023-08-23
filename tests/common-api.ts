@@ -1,3 +1,4 @@
+import { GeneralStakerInfo, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
 import { AccountLedger } from 'src/hooks';
@@ -34,7 +35,7 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
     balance = BigInt(balanceObj.unwrap().balance.toBigInt());
   } else {
     const balanceObj = (await api.query.system.account(address)) as FrameSystemAccountInfo;
-    balance = BigInt(balanceObj.data.free.toBigInt() - balanceObj.data.feeFrozen.toBigInt());
+    balance = BigInt(balanceObj.data.free.toBigInt() - balanceObj.data.flags.toBigInt());
   }
 
   return balance;
@@ -49,6 +50,25 @@ export const getStakedAmount = async (address: string): Promise<bigint> => {
   );
 
   return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
+};
+
+export const fetchAccountStakingAmount = async (
+  currentAccount: string,
+  dappAddress: string
+): Promise<bigint> => {
+  const api = await getApi();
+  const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+    currentAccount,
+    getDappAddressEnum(dappAddress)
+  );
+  const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+
+  return BigInt(balance);
+};
+
+export const fetchMinimumStakingAmount = async (): Promise<string> => {
+  const api = await getApi();
+  return String(api.consts.dappsStaking.minimumStakingAmount);
 };
 
 export const getAccountLedger = async (address: string): Promise<AccountLedger> => {
