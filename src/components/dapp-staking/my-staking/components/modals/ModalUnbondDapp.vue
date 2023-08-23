@@ -56,7 +56,11 @@
         <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
       </div>
 
-      <div v-if="isBelowThanMinStaking" class="row--box-error box--error">
+      <div
+        v-if="isBelowThanMinStaking"
+        class="row--box-error box--error"
+        data-testid="warning-unstake-all-balance"
+      >
         <span class="color--white">
           {{
             $t('dappStaking.willUnstakeAll', {
