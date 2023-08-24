@@ -15,7 +15,7 @@ import {
   chainDecimals,
   fetchAccountStakingAmount,
   fetchMinimumStakingAmount,
-  forceNewEra,
+  // forceNewEra,
   getAccountLedger,
   getBalance,
   getStakedAmount,
@@ -25,7 +25,6 @@ import { ethers } from 'ethers';
 
 // Memo: Astar Core Contributors
 const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';
-const ASTAR_DEGENS_DAPP_ADDRESS = '0xd59fc6bfd9732ab19b03664a45dc29b8421bda9a';
 
 const stake = async (
   page: Page,
