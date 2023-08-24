@@ -22,15 +22,8 @@ let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
-  const {
-    NETWORK_IDX,
-    CUSTOM_ENDPOINT,
-    SELECTED_ENDPOINT,
-    SELECTED_ADDRESS,
-    SELECTED_WALLET,
-    IS_APPLIED_RANDOM_ENDPOINT,
-    DEFAULT_CURRENCY,
-  } = LOCAL_STORAGE;
+  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } =
+    LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
@@ -78,24 +71,6 @@ export default boot(async ({ store }) => {
 
   if (networkIdx.value === endpointKey.LOCAL) {
     endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
-  }
-
-  // Memo: Temporary solution to reset selected endpoints for users who connected to Astar WSS before implementing the random selection method.
-  // Todo: Remove this code in middle of July'23
-  const isAppliedRandomEndpoint = localStorage.getItem(IS_APPLIED_RANDOM_ENDPOINT) === 'true';
-  if (!isAppliedRandomEndpoint) {
-    const astarWss = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
-    const isResetEndpoint =
-      selectedEndpoint.hasOwnProperty(endpointKey.ASTAR) &&
-      selectedEndpoint[endpointKey.ASTAR] === astarWss;
-    if (isResetEndpoint) {
-      localStorage.removeItem(SELECTED_ENDPOINT);
-      localStorage.removeItem(NETWORK_IDX);
-      localStorage.removeItem(DEFAULT_CURRENCY);
-      localStorage.setItem(IS_APPLIED_RANDOM_ENDPOINT, 'true');
-      window.location.reload();
-    }
-    localStorage.setItem(IS_APPLIED_RANDOM_ENDPOINT, 'true');
   }
 
   // set metadata header
