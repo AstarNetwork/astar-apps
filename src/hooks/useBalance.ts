@@ -86,6 +86,7 @@ function useCall(addressRef: Ref<string>) {
       extendedVesting.push(new ExtendedVestingInfo(v, vested));
     });
 
+    // test
     accountDataRef.value = new AccountData(
       accountInfo.data.free,
       accountInfo.data.reserved,
