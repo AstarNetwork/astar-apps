@@ -31,7 +31,8 @@
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
-          <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" />
+          <!-- Memo: hide xvm panel because AA might replace it -->
+          <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
         </div>
       </div>
@@ -46,7 +47,6 @@ import Account from 'src/components/assets/Account.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
@@ -62,7 +62,6 @@ export default defineComponent({
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
-    XvmNativeAssetList,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -72,7 +71,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -182,7 +181,6 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
-      isSupportXvmTransfer,
     };
   },
 });

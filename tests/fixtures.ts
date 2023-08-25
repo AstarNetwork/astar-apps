@@ -42,6 +42,7 @@ export const expect = test.expect;
 
 export const getWindow = async (title: string, context: BrowserContext): Promise<Page> => {
   return new Promise((resolve, reject) => {
+    // Fixme: doesn't work with `changeNetworkOnEVM`
     context.on('page', async (target) => {
       const pageTitle = await target.title();
       console.info('pageTitle', pageTitle);
