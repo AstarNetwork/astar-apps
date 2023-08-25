@@ -251,6 +251,8 @@ export default {
     claim: 'Claim',
     withdraw: 'Withdraw',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
+    willUnstakeAll:
+      'It will unstake all of your staked balance because the minimum staking amount is {minStakingAmount} {symbol}',
     turnOn: 'Turn on',
     turnOff: 'Turn off',
     on: 'ON',

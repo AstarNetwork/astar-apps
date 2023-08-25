@@ -7,8 +7,6 @@ export interface SystemAccount extends Struct {
   data: {
     free: BN;
     reserved: BN;
-    miscFrozen: BN;
-    feeFrozen: BN;
     frozen: BN;
     flags: BN;
   };

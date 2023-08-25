@@ -72,7 +72,7 @@ yarn playwright tests/dappstaking-transactions.spec.ts
 - Run the following
 
 ```bash
-yarn playwright:ci
+BASE_URL='http://localhost:8080' yarn playwright:ci
 ```
 
 ### Write test cases

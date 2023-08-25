@@ -9,5 +9,5 @@ export class AccountInfoModel {
 }
 
 export class AccountDataModel {
-  constructor(public free: BN, public reserved: BN, public miscFrozen: BN, public feeFrozen: BN) {}
+  constructor(public free: BN, public reserved: BN, public frozen: BN, public flags: BN) {}
 }
