@@ -258,7 +258,7 @@ export const castXcmEndpoint = (endpoint: string): string => {
 
   if (isCustomEndpoint && isSelectedChopsticksEndpoint) {
     const chains = Object.values(xcmChainObj);
-    const chain = chains.find((it) => it.endpoint === endpoint);
+    const chain = chains.find((it) => it.endpoints.find((that) => that === endpoint));
     return chain && chain.hasOwnProperty('chopsticksEndpoint')
       ? String(chain.chopsticksEndpoint)
       : endpoint;

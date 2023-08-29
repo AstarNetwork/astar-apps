@@ -114,7 +114,8 @@ export class XcmRepository implements IXcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -169,6 +170,7 @@ export class XcmRepository implements IXcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'xcmPallet',
       'reserveTransferAssets',
       destination,
@@ -181,18 +183,20 @@ export class XcmRepository implements IXcmRepository {
   public async getTransferToOriginChainCall(
     from: XcmChain,
     recipientAddress: string,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     const isAstar = from.name === 'Astar';
     return isAstar
-      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount)
-      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount);
+      ? await this.getPolkadotXcmToOriginChainCall(from, recipientAddress, amount, endpoint)
+      : await this.getXtokensToOriginChainCall(from, recipientAddress, amount, endpoint);
   }
 
   private async getXtokensToOriginChainCall(
     from: XcmChain,
     recipientAddress: string,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
 
@@ -231,6 +235,7 @@ export class XcmRepository implements IXcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'xtokens',
       'transferMultiasset',
       assets,
@@ -243,7 +248,8 @@ export class XcmRepository implements IXcmRepository {
   private async getPolkadotXcmToOriginChainCall(
     from: XcmChain,
     recipientAddress: string,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const version = 'V3';
@@ -294,6 +300,7 @@ export class XcmRepository implements IXcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'polkadotXcm',
       'limitedReserveWithdrawAssets',
       destination,
@@ -309,7 +316,8 @@ export class XcmRepository implements IXcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     throw 'Not implemented.';
   }
@@ -318,14 +326,15 @@ export class XcmRepository implements IXcmRepository {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
-    return (await this.getNativeBalance(address, chain)).toString();
+    return (await this.getNativeBalance(address, chain, endpoint)).toString();
   }
 
-  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+  public async getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN> {
     try {
-      const api = await this.apiFactory.get(chain.endpoint);
+      const api = await this.apiFactory.get(endpoint);
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
       return (data.free.toBn() as BN).sub(new BN(data.miscFrozen ?? data.frozen));
     } catch (e) {
@@ -336,11 +345,12 @@ export class XcmRepository implements IXcmRepository {
 
   protected async buildTxCall(
     network: XcmChain,
+    endpoint: string,
     extrinsic: string,
     method: string,
     ...args: any[]
   ): Promise<ExtrinsicPayload> {
-    const api = await this.apiFactory.get(network.endpoint);
+    const api = await this.apiFactory.get(endpoint);
     const call = api.tx[extrinsic][method](...args);
     if (call) {
       return call;
@@ -351,12 +361,13 @@ export class XcmRepository implements IXcmRepository {
 
   protected async fetchAssetConfig(
     source: XcmChain,
-    token: Asset
+    token: Asset,
+    endpoint: string
   ): Promise<{
     parents: number;
     interior: Interior;
   }> {
-    const api = await this.apiFactory.get(source.endpoint);
+    const api = await this.apiFactory.get(endpoint);
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
     const formattedAssetConfig = JSON.parse(config.toString());
     return formattedAssetConfig.v3;
