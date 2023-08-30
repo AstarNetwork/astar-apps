@@ -160,11 +160,8 @@ export default defineComponent({
     const classRadioOn = 'class-radio-on';
     const classRadioOff = 'class-radio-off';
 
-    const store = useStore();
     const newEndpoint = ref('');
-    const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
-    newEndpoint.value = customEndpoint.value;
 
     const isClosing = ref<boolean>(false);
 
@@ -197,12 +194,14 @@ export default defineComponent({
       localStorage.setItem(
         SELECTED_ENDPOINT,
         JSON.stringify({
-          [networkIdx]: getSelectedNetwork(networkIdx),
+          [networkIdx]: newEndpoint.value ? newEndpoint.value : getSelectedNetwork(networkIdx),
         })
       );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
+      } else {
+        localStorage.removeItem(CUSTOM_ENDPOINT);
       }
 
       const network = providerEndpoints[networkIdx].networkAlias;

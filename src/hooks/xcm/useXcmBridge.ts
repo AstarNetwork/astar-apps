@@ -44,6 +44,7 @@ import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
 import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
@@ -432,7 +433,14 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         toChain: castChainName(destChain.value.name),
       });
 
-      console.log('transfer originChainApiEndpoint.value', originChainApiEndpoint.value);
+      const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+      const selectedEndpoint = JSON.parse(selectedEndpointStored);
+      const astarEndpoint = selectedEndpoint && Object.values(selectedEndpoint)[0];
+      const isAstarChains =
+        srcChain.value.name.toLowerCase().includes('astar') ||
+        srcChain.value.name.toLowerCase().includes('shiden');
+      const endpoint = isAstarChains ? astarEndpoint : originChainApiEndpoint.value;
+
       await xcmService.transfer({
         from: srcChain.value,
         to: destChain.value,
@@ -442,7 +450,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         amount: Number(amount.value),
         finalizedCallback,
         successMessage,
-        endpoint: originChainApiEndpoint.value,
+        endpoint,
       });
     } catch (error: any) {
       console.error(error.message);
@@ -529,16 +537,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     }
 
     isLoadingApi.value = true;
-    // let endpointIndex = 0;
     const endpoints = getEndpoints();
     for (let index = 0; index < endpoints.length; index++) {
       try {
-        console.log('index', index);
         const endpoint = castXcmEndpoint(endpoints[index]);
-        console.log('endpoint', endpoint);
         await connectOriginChain(endpoint);
         originChainApiEndpoint.value = endpoint;
-        console.log('done');
+        console.info('Connected to ', originChainApiEndpoint.value);
         break;
       } catch (error) {
         console.error(error);
