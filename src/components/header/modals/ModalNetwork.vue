@@ -163,6 +163,15 @@ export default defineComponent({
     const newEndpoint = ref('');
     const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
 
+    const setInitialNewEndpoint = (): string => {
+      const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+      const selectedEndpoint = JSON.parse(selectedEndpointStored);
+      const networkId = Object.keys(selectedEndpoint)[0];
+      const connectedCustomEndpoint = Object.values(selectedEndpoint)[0] as string;
+      return networkId === String(endpointKey.CUSTOM) ? connectedCustomEndpoint : '';
+    };
+    newEndpoint.value = setInitialNewEndpoint();
+
     const isClosing = ref<boolean>(false);
 
     const closeModal = async (): Promise<void> => {
@@ -173,7 +182,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+    const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
     const getSelectedNetwork = (networkIdx: number): string => {
       switch (networkIdx) {
@@ -194,15 +203,12 @@ export default defineComponent({
       localStorage.setItem(
         SELECTED_ENDPOINT,
         JSON.stringify({
-          [networkIdx]: newEndpoint.value ? newEndpoint.value : getSelectedNetwork(networkIdx),
+          [networkIdx]:
+            newEndpoint.value && selNetwork.value === endpointKey.CUSTOM
+              ? newEndpoint.value
+              : getSelectedNetwork(networkIdx),
         })
       );
-      if (newEndpoint.value) {
-        let endpoint = `${newEndpoint.value}`;
-        localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
-      } else {
-        localStorage.removeItem(CUSTOM_ENDPOINT);
-      }
 
       const network = providerEndpoints[networkIdx].networkAlias;
       const url = buildNetworkUrl(network);

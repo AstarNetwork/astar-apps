@@ -291,9 +291,9 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/pha.png'),
     parachainId: parachainIds.PHALA,
     endpoints: [
+      'wss://phala-rpc.dwellir.com',
       'wss://api.phala.network/ws',
       'wss://phala.api.onfinality.io/public-ws',
-      'wss://phala-rpc.dwellir.com',
     ],
     subscan: 'https://phala.subscan.io',
     isAstarNativeToken: true,

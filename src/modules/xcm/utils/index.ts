@@ -245,24 +245,26 @@ export const castXcmEndpoint = (endpoint: string): string => {
     return urlObject.port;
   };
 
-  const selectedCustomEndpoint = String(localStorage.getItem(LOCAL_STORAGE.CUSTOM_ENDPOINT));
   const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
   const selectedEndpoint = JSON.parse(selectedEndpointStored);
   const isCustomEndpoint =
     selectedEndpoint && Object.keys(selectedEndpoint)[0] === String(endpointKey.CUSTOM);
 
-  const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
-  const isSelectedChopsticksEndpoint =
-    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
-    portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
+  if (isCustomEndpoint) {
+    const selectedCustomEndpoint = Object.values(selectedEndpoint)[0] as string;
+    const portSelectedCustomEndpoint = extractPort(selectedCustomEndpoint);
+    const isSelectedChopsticksEndpoint =
+      portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.ASTAR].chopsticksEndpoint!) ||
+      portSelectedCustomEndpoint === extractPort(xcmChainObj[Chain.SHIDEN].chopsticksEndpoint!);
 
-  if (isCustomEndpoint && isSelectedChopsticksEndpoint) {
-    const chains = Object.values(xcmChainObj);
-    const chain = chains.find((it) => it.endpoints.find((that) => that === endpoint));
-    return chain && chain.hasOwnProperty('chopsticksEndpoint')
-      ? String(chain.chopsticksEndpoint)
-      : endpoint;
-  } else {
-    return endpoint;
+    if (isSelectedChopsticksEndpoint) {
+      const chains = Object.values(xcmChainObj);
+      const chain = chains.find((it) => it.endpoints.find((that) => that === endpoint));
+      return chain && chain.hasOwnProperty('chopsticksEndpoint')
+        ? String(chain.chopsticksEndpoint)
+        : endpoint;
+    }
   }
+
+  return endpoint;
 };
