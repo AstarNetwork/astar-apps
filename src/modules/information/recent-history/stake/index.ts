@@ -41,7 +41,7 @@ export const getStakeTxHistories = async ({
   dapps: DappCombinedInfo[];
   subScan: string;
 }): Promise<RecentHistory[]> => {
-  const url = `http://127.0.0.1:5001/astar-token-api/us-central1/app/api/v1/${network}/dapps-staking/stats/user/${address}/1%20years`;
+  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/user/${address}/1%20years`;
   const result = await axios.get<UserStakeHistory[]>(url);
   const numberOfHistories = 5;
   return result.data
