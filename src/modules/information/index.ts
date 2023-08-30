@@ -26,7 +26,8 @@ export type RecentHistoryTxType =
   | 'Transfer'
   | 'BondAndStake'
   | 'NominationTransfer'
-  | 'UnbondAndUnstake';
+  | 'UnbondAndUnstake'
+  | 'Reward';
 
 export interface RecentHistory {
   timestamp: string;
