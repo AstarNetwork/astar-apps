@@ -244,6 +244,7 @@
 .column--buttons--native-token {
   @media (min-width: $xl) {
     display: flex !important;
+    justify-content: flex-end;
     width: 412px;
     column-gap: 24px;
   }
