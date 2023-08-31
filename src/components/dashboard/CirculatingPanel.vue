@@ -3,11 +3,19 @@
     <q-skeleton class="skeleton--value-panel" />
   </div>
   <div v-else class="wrapper--value">
-    <div class="container container--value">
+    <div class="container">
       <div class="row">
-        <span class="text--accent container--title--color">{{
-          $t('dashboard.circulating.circulatingSupply')
-        }}</span>
+        <span class="text--accent container--title--color">{{ $t('dashboard.tokenSupply') }}</span>
+      </div>
+      <div class="text--xlg row">
+        <div>
+          <span class="text--value text-color--neon">
+            {{ formatNumber(totalSupply, 3) }} {{ symbol }}
+          </span>
+        </div>
+      </div>
+      <div class="row chart-row">
+        <doughnut-chart :size="250" :sectors="pieSectors" :token-symbol="symbol" />
       </div>
       <div class="align-right text--xlg">
         <div>
@@ -29,56 +37,54 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
-import { formatNumber, TOKEN_API_URL } from '@astar-network/astar-sdk-core';
-import { defineComponent, ref, watchEffect } from 'vue';
-
-interface StatsData {
-  generatedAt: number;
-  totalSupply: number;
-  circulatingSupply: number;
-}
+import { useTokenDistribution } from 'src/hooks';
+import { formatNumber } from '@astar-network/astar-sdk-core';
+import { defineComponent, watchEffect, ref } from 'vue';
+import DoughnutChart, { Sector } from '../common/DoughnutChart.vue';
 
 export default defineComponent({
+  components: {
+    DoughnutChart,
+  },
   props: {
     symbol: {
       type: String,
       required: true,
     },
-    network: {
-      type: String,
-      required: true,
-    },
   },
   setup(props) {
-    const totalSupply = ref<number>(0);
-    const currentCirculating = ref<number>(0);
+    const { unknown, tvl, treasury, totalSupply, currentCirculating } = useTokenDistribution();
+    const pieSectors = ref<Sector[]>([]);
 
-    const loadStats = async (network: string): Promise<void> => {
-      const url = `${TOKEN_API_URL}/v1/${network}/token/stats`;
-      const result = await axios.get<StatsData>(url);
+    watchEffect(() => {
+      pieSectors.value = [];
 
-      if (result.data) {
-        totalSupply.value = result.data.totalSupply;
-        currentCirculating.value = result.data.circulatingSupply;
-      }
-    };
-
-    watchEffect(async () => {
-      try {
-        if (props.network) {
-          await loadStats(props.network.toLowerCase());
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      pieSectors.value.push({
+        value: tvl.value,
+        label: 'TVL',
+        color: '#0085FF',
+      });
+      pieSectors.value.push({
+        value: treasury.value,
+        label: 'Treasury',
+        color: '#0085FFD9',
+      });
+      pieSectors.value.push({
+        value: unknown.value,
+        label: 'Rest',
+        color: '#0F1C56CC',
+      });
     });
 
-    return { formatNumber, totalSupply, currentCirculating };
+    return { formatNumber, totalSupply, currentCirculating, pieSectors };
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @use 'src/components/dashboard/styles/dashboard.scss';
+
+.chart-row {
+  justify-content: center;
+}
 </style>

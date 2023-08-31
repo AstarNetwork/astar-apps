@@ -517,6 +517,7 @@ export default {
     dashboard: 'Dashboard',
     tvl: 'TVL',
     collators: 'Collators',
+    tokenSupply: 'Token Supply',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',

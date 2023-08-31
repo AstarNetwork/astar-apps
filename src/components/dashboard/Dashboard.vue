@@ -9,38 +9,12 @@
           <div class="container--panel">
             <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
           </div>
-          <div>
-            <doughnut-chart
-              :sectors="[
-                {
-                  value: BigInt(43),
-                  label: 'Thing 1',
-                  color: '#61C0BF',
-                },
-                {
-                  value: BigInt(22),
-                  label: 'Thing Two',
-                  color: '#DA507A',
-                },
-                {
-                  value: BigInt(18),
-                  label: 'Another Thing',
-                  color: '#BB3D49',
-                },
-                {
-                  value: BigInt(32),
-                  label: 'Pineapple',
-                  color: '#DB4547',
-                },
-              ]"
-            />
-          </div>
-          <div class="container--panel">
+          <!-- <div class="container--panel">
             <value-panel title="Holders" :value="holders" />
           </div>
           <div class="container--panel">
             <collators />
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="container--panel">
@@ -89,7 +63,6 @@ import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import Collators from 'src/components/dashboard/Collators.vue';
 import NetworkStatus from 'src/components/dashboard/NetworkStatus.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
-import DoughnutChart from '../common/DoughnutChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
@@ -103,10 +76,9 @@ export default defineComponent({
     TvlChart,
     BlockPanel,
     CirculatingPanel,
-    ValuePanel,
+    // ValuePanel,
     NetworkStatus,
-    Collators,
-    DoughnutChart,
+    // Collators,
     // TotalTransactionsChart,
   },
   setup() {
