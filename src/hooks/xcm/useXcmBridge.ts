@@ -539,13 +539,14 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     isLoadingApi.value = true;
     const endpoints = getEndpoints();
     for (let index = 0; index < endpoints.length; index++) {
+      const endpoint = castXcmEndpoint(endpoints[index]);
       try {
-        const endpoint = castXcmEndpoint(endpoints[index]);
         await connectOriginChain(endpoint);
         originChainApiEndpoint.value = endpoint;
-        console.info('Connected to ', originChainApiEndpoint.value);
+        console.info('Connected to', originChainApiEndpoint.value);
         break;
       } catch (error) {
+        console.info('Failed connecting to', endpoint);
         console.error(error);
       }
     }
