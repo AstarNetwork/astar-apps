@@ -3,8 +3,8 @@
     <q-skeleton class="skeleton--value-panel" />
   </div>
   <div v-else class="wrapper--value">
-    <div class="container">
-      <div class="row">
+    <div class="container container--chart">
+      <div class="row--title">
         <span class="text--accent container--title--color">{{ $t('dashboard.tokenSupply') }}</span>
       </div>
       <div class="text--xlg row">
@@ -84,6 +84,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use 'src/components/dashboard/styles/dashboard.scss';
 
+.container--chart {
+  padding: 8px 16px 32px;
+
+  @media (min-width: $sm) {
+    padding: 22px 24px 32px;
+  }
+  @media (min-width: $xxl) {
+    width: 560px;
+  }
+}
 .chart-row {
   justify-content: center;
 }

@@ -5,16 +5,8 @@
         <div class="container--network-status">
           <network-status />
         </div>
-        <div class="container--value-panel">
-          <div class="container--panel">
-            <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
-          </div>
-          <!-- <div class="container--panel">
-            <value-panel title="Holders" :value="holders" />
-          </div>
-          <div class="container--panel">
-            <collators />
-          </div> -->
+        <div class="container--panel">
+          <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
         </div>
       </div>
       <div class="container--panel">

@@ -141,18 +141,6 @@
   }
 }
 
-.container--circulation--value {
-  padding: 8px 16px 32px;
-  height: 238px;
-
-  @media (min-width: $sm) {
-    padding: 8px 24px 32px;
-  }
-  @media (min-width: $xxl) {
-    width: 560px;
-  }
-}
-
 .container--title--color {
   color: #b1b7c1;
 }

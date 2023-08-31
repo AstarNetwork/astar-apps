@@ -1,7 +1,7 @@
 // Provides an information about tokens allocation
 // Total supply, circulating supply, locked tokens, treasury tokens, etc....
 import { TvlModel } from 'src/v2/models';
-import { ref, watch } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useTokenCirculation } from './useTokenCirculation';
 import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
@@ -26,7 +26,8 @@ export function useTokenDistribution() {
 
   fetchData();
 
-  watch([tvlModel, treasuryBalance, totalSupply], () => {
+  watchEffect(() => {
+    // console.log(tvlModel.value, treasuryBalance.value, totalSupply.value);
     if (tvlModel?.value && treasuryBalance?.value && totalSupply?.value) {
       tvl.value = Math.round(tvlModel?.value?.tvlDefaultUnit ?? 0);
       treasury.value = Math.round(

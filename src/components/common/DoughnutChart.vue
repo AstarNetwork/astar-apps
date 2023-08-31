@@ -20,7 +20,7 @@
       </g>
       <circle fill="none" :cx="size * 0.55" :cy="size * 0.55" :r="size * 0.35" />
       <text
-        fill="white"
+        :fill="textColor"
         :x="size * 0.55"
         :y="size * 0.55 - 34"
         font-size="24"
@@ -31,7 +31,7 @@
       </text>
       <text
         v-if="value > 0"
-        fill="white"
+        :fill="textColor"
         :x="size * 0.55"
         :y="size * 0.52"
         font-size="16"
@@ -42,7 +42,7 @@
       </text>
       <text
         v-if="value > 0"
-        fill="white"
+        :fill="textColor"
         :x="size * 0.55"
         :y="size * 0.55 + 36"
         font-size="26"
@@ -57,8 +57,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { defineComponent, PropType, ref, watch, computed } from 'vue';
 import { formatNumber } from '@astar-network/astar-sdk-core';
+import { useStore } from 'src/store';
 
 interface ProcessedSector extends Sector {
   percentage: number;
@@ -89,6 +90,10 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
+    const textColor = computed<string>(() =>
+      store.getters['general/theme'] === 'DARK' ? 'white' : '#080f2e'
+    );
     const processedSectors = ref<ProcessedSector[]>([]);
     const text = ref<string>('');
     const value = ref<number>(0);
@@ -98,7 +103,7 @@ export default defineComponent({
       height: `${props.size * 1.1}px`,
     };
 
-    const total = () => props.sectors.reduce((t, s) => t + s.value, 0);
+    const total = (): number => props.sectors.reduce((t, s) => t + s.value, 0);
 
     const calculateSectors = () => {
       // This function calculates circle segments for each sector
@@ -162,9 +167,9 @@ export default defineComponent({
     };
 
     watch(
-      props.sectors,
+      [props, textColor],
       () => {
-        console.log('calculating sectors', props.sectors);
+        console.log('calculating sectors', props.sectors, textColor.value);
         if (!props.sectors.find((x) => x.value === 0)) {
           processedSectors.value = [];
           calculateSectors();
@@ -180,6 +185,7 @@ export default defineComponent({
       containerStyle,
       formatNumber,
       total,
+      textColor,
     };
   },
 });
