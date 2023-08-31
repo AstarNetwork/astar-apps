@@ -434,8 +434,8 @@ export default {
       noTxRecords: "The account doesn't have any transaction records yet",
       mintTransferAmount: 'Min. transfer amount is {amount} {symbol}',
       howToUsePortal: 'HOW TO USE THE PORTAL',
-      xcmIsDisabled: 'XCM with {network} is disabled temporarily',
-      xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is disabled temporarily',
+      xcmIsDisabled: 'XCM with {network} is temporarily disabled',
+      xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is temporarily disabled',
     },
     modals: {
       max: 'Max',
@@ -537,7 +537,7 @@ export default {
       eta: 'ETA {value}',
     },
     network: {
-      networkStatuses: 'Network Statuses',
+      networkStatuses: 'Network Status',
       updatedAgo: 'Updated {time} ago',
       xcmDepositWithdrawalAssets: 'XCM Deposit/Withdrawal Assets',
     },
