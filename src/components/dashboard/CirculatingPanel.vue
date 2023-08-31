@@ -17,8 +17,22 @@
       <div class="row chart-row">
         <doughnut-chart :size="250" :sectors="pieSectors" :token-symbol="symbol" />
       </div>
-      <div class="align-right text--xlg">
-        <div>
+      <div class="align-right table--container">
+        <div class="row--container">
+          <div class="row--item">Circulating</div>
+          <div class="row--item">{{ formatNumber(currentCirculating, 3) }}</div>
+          <div class="row--item">
+            ({{ ((currentCirculating / totalSupply) * 100).toFixed(0) }}%)
+          </div>
+        </div>
+        <div class="row--container">
+          <div class="row--item">Other</div>
+          <div class="row--item">{{ formatNumber(totalSupply - currentCirculating, 3) }}</div>
+          <div class="row--item">
+            ({{ (((totalSupply - currentCirculating) / totalSupply) * 100).toFixed(0) }}%)
+          </div>
+        </div>
+        <!-- <div>
           <span class="text--value text-color--neon">
             {{ $n(currentCirculating) }} {{ symbol }}
           </span>
@@ -30,7 +44,7 @@
           <span class="text--label text-color--neon">
             {{ ((currentCirculating / totalSupply) * 100).toFixed(0) }} %
           </span>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -83,12 +97,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/dashboard/styles/dashboard.scss';
+@import 'src/css/quasar.variables.scss';
 
 .container--chart {
   padding: 8px 16px 32px;
+  height: 514px;
 
   @media (min-width: $sm) {
-    padding: 22px 24px 32px;
+    padding: 8px 24px 32px;
   }
   @media (min-width: $xxl) {
     width: 560px;
@@ -96,5 +112,35 @@ export default defineComponent({
 }
 .chart-row {
   justify-content: center;
+}
+
+.table--container {
+  margin-top: 20px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.32px;
+  color: $astar-blue;
+}
+
+.row--container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row--item {
+  flex: 1 1 0px;
+  justify-content: end;
+  padding: 4px;
+  max-width: 80px;
+}
+
+.skeleton--value-panel {
+  height: 514px;
+}
+
+.row--title {
+  padding: 16px 8px 0px 8px;
 }
 </style>

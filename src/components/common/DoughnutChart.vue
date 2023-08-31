@@ -169,7 +169,6 @@ export default defineComponent({
     watch(
       [props, textColor],
       () => {
-        console.log('calculating sectors', props.sectors, textColor.value);
         if (!props.sectors.find((x) => x.value === 0)) {
           processedSectors.value = [];
           calculateSectors();

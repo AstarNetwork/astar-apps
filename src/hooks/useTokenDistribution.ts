@@ -27,7 +27,6 @@ export function useTokenDistribution() {
   fetchData();
 
   watchEffect(() => {
-    // console.log(tvlModel.value, treasuryBalance.value, totalSupply.value);
     if (tvlModel?.value && treasuryBalance?.value && totalSupply?.value) {
       tvl.value = Math.round(tvlModel?.value?.tvlDefaultUnit ?? 0);
       treasury.value = Math.round(
