@@ -71,7 +71,9 @@ export function useNetworkInfo() {
 
   // Memo: delete it after runtime updating on Astar
   const isEvmDappStaking = computed<boolean>(() => {
-    return currentNetworkIdx.value === endpointKey.SHIBUYA;
+    return true;
+    // currentNetworkIdx.value === endpointKey.SHIBUYA ||
+    // currentNetworkIdx.value === endpointKey.SHIDEN
   });
 
   return {

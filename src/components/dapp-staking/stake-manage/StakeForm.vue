@@ -267,11 +267,11 @@ export default defineComponent({
     });
 
     const setEvmGasCost = async (): Promise<void> => {
-      if (!selectedGas.value || !isH160.value) return;
+      if (!selectedGas.value || !isH160.value || !formattedMinStaking.value) return;
       try {
         const amountRaw = Number(amount.value);
-        // Memo: the lowest minimum staking amount is 5SBY
-        const amountPlaceHolder = 5;
+        // const amountPlaceHolder = 5;
+        const amountPlaceHolder = formattedMinStaking.value;
         const stakeAmount = ethers.utils
           .parseEther(String(amountRaw > 0 ? amountRaw : amountPlaceHolder))
           .toString();
