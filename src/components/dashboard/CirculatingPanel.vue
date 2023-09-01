@@ -19,32 +19,19 @@
       </div>
       <div class="align-right table--container">
         <div class="row--container">
-          <div class="row--item">Circulating</div>
+          <div class="row--item">{{ $t('dashboard.circulating.circulating') }}</div>
           <div class="row--item">{{ formatNumber(currentCirculating, 3) }}</div>
           <div class="row--item">
             ({{ ((currentCirculating / totalSupply) * 100).toFixed(0) }}%)
           </div>
         </div>
         <div class="row--container">
-          <div class="row--item">Other</div>
+          <div class="row--item">{{ $t('chart.other') }}</div>
           <div class="row--item">{{ formatNumber(totalSupply - currentCirculating, 3) }}</div>
           <div class="row--item">
             ({{ (((totalSupply - currentCirculating) / totalSupply) * 100).toFixed(0) }}%)
           </div>
         </div>
-        <!-- <div>
-          <span class="text--value text-color--neon">
-            {{ $n(currentCirculating) }} {{ symbol }}
-          </span>
-        </div>
-        <div>
-          <span class="text--label">
-            {{ $t('dashboard.circulating.supply', { totalSupply: formatNumber(totalSupply, 3) }) }}
-          </span>
-          <span class="text--label text-color--neon">
-            {{ ((currentCirculating / totalSupply) * 100).toFixed(0) }} %
-          </span>
-        </div> -->
       </div>
     </div>
   </div>
@@ -55,6 +42,7 @@ import { useTokenDistribution } from 'src/hooks';
 import { formatNumber } from '@astar-network/astar-sdk-core';
 import { defineComponent, watchEffect, ref } from 'vue';
 import DoughnutChart, { Sector } from '../common/DoughnutChart.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -66,7 +54,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
+    const { t } = useI18n();
     const { unknown, tvl, treasury, totalSupply, currentCirculating } = useTokenDistribution();
     const pieSectors = ref<Sector[]>([]);
 
@@ -75,17 +64,17 @@ export default defineComponent({
 
       pieSectors.value.push({
         value: tvl.value,
-        label: 'TVL',
+        label: t('chart.tvl.tooltip'),
         color: '#0085FF',
       });
       pieSectors.value.push({
         value: treasury.value,
-        label: 'Treasury',
+        label: t('chart.treasury'),
         color: '#0085FFD9',
       });
       pieSectors.value.push({
         value: unknown.value,
-        label: 'Rest',
+        label: t('chart.other'),
         color: '#0F1C56CC',
       });
     });

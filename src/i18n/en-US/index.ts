@@ -521,6 +521,7 @@ export default {
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
+      circulating: 'Circulating',
     },
     block: {
       block: 'Block',
@@ -570,6 +571,8 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+    treasury: 'Treasury',
+    other: 'Other',
   },
   links: {
     goDecentralized: 'Go Decentralized!',

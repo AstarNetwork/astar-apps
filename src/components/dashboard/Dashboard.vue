@@ -9,6 +9,14 @@
           <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
         </div>
       </div>
+      <div class="container--value-panels-row row-gap">
+        <div class="container--panel">
+          <value-panel title="Holders" :value="holders" />
+        </div>
+        <div class="container--panel">
+          <collators />
+        </div>
+      </div>
       <div class="container--panel">
         <block-panel />
       </div>
@@ -68,9 +76,9 @@ export default defineComponent({
     TvlChart,
     BlockPanel,
     CirculatingPanel,
-    // ValuePanel,
+    ValuePanel,
     NetworkStatus,
-    // Collators,
+    Collators,
     // TotalTransactionsChart,
   },
   setup() {
