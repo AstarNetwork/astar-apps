@@ -573,6 +573,7 @@ export default {
     },
     treasury: 'Treasury',
     other: 'Other',
+    locked: 'Locked',
   },
   links: {
     goDecentralized: 'Go Decentralized!',

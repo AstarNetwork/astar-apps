@@ -17,7 +17,8 @@ export function useTokenDistribution() {
 
   const tvl = ref<number>(0);
   const treasury = ref<number>(0);
-  const unknown = ref<number>(0);
+  const locked = ref<number>(0);
+  const other = ref<number>(0);
 
   const fetchData = async () => {
     const dappService = container.get<IDappStakingService>(Symbols.DappStakingService);
@@ -28,11 +29,13 @@ export function useTokenDistribution() {
 
   watchEffect(() => {
     if (tvlModel?.value && treasuryBalance?.value && totalSupply?.value) {
-      tvl.value = Math.round(tvlModel?.value?.tvlDefaultUnit ?? 0);
-      treasury.value = Math.round(
-        Number(ethers.utils.formatEther(treasuryBalance.value.toString()))
-      );
-      unknown.value = totalSupply.value - tvl.value - treasury.value;
+      const tvlUnrounded = tvlModel?.value?.tvlDefaultUnit ?? 0;
+      const treasuryUnrounded = Number(ethers.utils.formatEther(treasuryBalance.value.toString()));
+
+      tvl.value = Math.round(tvlUnrounded);
+      treasury.value = Math.round(treasuryUnrounded);
+      other.value = currentCirculating.value - tvlUnrounded - treasuryUnrounded;
+      locked.value = totalSupply.value - currentCirculating.value;
     }
   });
 
@@ -42,6 +45,7 @@ export function useTokenDistribution() {
     totalSupply,
     currentCirculating,
     treasury,
-    unknown,
+    locked,
+    other,
   };
 }

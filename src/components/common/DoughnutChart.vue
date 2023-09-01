@@ -50,7 +50,7 @@
         text-anchor="middle"
         dominant-baseline="hanging"
       >
-        {{ formatNumber((value / total()) * 100, 0) }} %
+        {{ formatNumber((value / total()) * 100, 2) }} %
       </text>
     </svg>
   </div>

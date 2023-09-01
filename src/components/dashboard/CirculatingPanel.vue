@@ -56,7 +56,8 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { unknown, tvl, treasury, totalSupply, currentCirculating } = useTokenDistribution();
+    const { locked, tvl, treasury, other, totalSupply, currentCirculating } =
+      useTokenDistribution();
     const pieSectors = ref<Sector[]>([]);
 
     watchEffect(() => {
@@ -73,8 +74,13 @@ export default defineComponent({
         color: '#0085FFD9',
       });
       pieSectors.value.push({
-        value: unknown.value,
+        value: other.value,
         label: t('chart.other'),
+        color: '#0085FFB2',
+      });
+      pieSectors.value.push({
+        value: locked.value,
+        label: t('chart.locked'),
         color: '#0F1C56CC',
       });
     });
