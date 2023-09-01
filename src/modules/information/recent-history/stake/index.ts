@@ -21,6 +21,8 @@ export const castStakeTxType = (txType: RecentHistoryTxType): string => {
       return 'Nomination Transfer';
     case 'UnbondAndUnstake':
       return 'Unstake';
+    case 'Reward':
+      return 'Reward';
     default:
       return txType;
   }
@@ -47,14 +49,17 @@ export const getStakeTxHistories = async ({
       (it) =>
         it.transaction === 'BondAndStake' ||
         it.transaction === 'NominationTransfer' ||
-        it.transaction === 'UnbondAndUnstake'
+        it.transaction === 'UnbondAndUnstake' ||
+        it.transaction === 'Reward'
     )
     .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
     .slice(0, numberOfHistories)
     .map((it) => {
-      const dapp = dapps.find(
-        (that) => that.contract.address.toLowerCase() === it.contractAddress.toLowerCase()
-      );
+      const dapp =
+        it.contractAddress &&
+        dapps.find(
+          (that) => that.contract.address.toLowerCase() === it.contractAddress.toLowerCase()
+        );
       const note = dapp && dapp.dapp ? dapp.dapp.name : '';
       const explorerUrl = subScan + '/extrinsic/' + it.transactionHash;
       return {
