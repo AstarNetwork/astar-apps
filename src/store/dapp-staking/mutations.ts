@@ -6,6 +6,7 @@ import { DappItem } from '@astar-network/astar-sdk-core';
 
 export interface ContractsMutations<S = State> {
   addDapp(state: S, payload: DappItem): void;
+  updateDapp(state: S, payload: DappItem): void;
   addDappCombinedInfos(state: S, payload: DappCombinedInfo[]): void;
   setMinimumStakingAmount(state: S, payload: string): void;
   setMaxNumberOfStakersPerContract(state: S, payload: number): void;
@@ -15,6 +16,15 @@ export interface ContractsMutations<S = State> {
 const mutation: MutationTree<State> & ContractsMutations = {
   addDappCombinedInfos(state: State, payload: DappCombinedInfo[]) {
     state.dappsCombinedInfo = payload;
+  },
+
+  updateDapp(state: State, payload: DappItem) {
+    let dappIndex = state.dappsCombinedInfo.findIndex(
+      (x) => x.dapp?.address.toLowerCase() === payload.address.toLocaleLowerCase()
+    );
+    if (dappIndex !== -1) {
+      state.dappsCombinedInfo[dappIndex].dapp = payload;
+    }
   },
 
   addDapp(state: State, payload: DappItem) {
