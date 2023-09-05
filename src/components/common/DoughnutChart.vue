@@ -22,7 +22,7 @@
       <text
         :fill="textColor"
         :x="size * 0.55"
-        :y="size * 0.55 - 34"
+        :y="size * 0.55 - 28"
         font-size="24"
         font-weight="700"
         text-anchor="middle"
@@ -44,7 +44,7 @@
         v-if="value > 0"
         :fill="textColor"
         :x="size * 0.55"
-        :y="size * 0.55 + 36"
+        :y="size * 0.55 + 22"
         font-size="26"
         font-weight="700"
         text-anchor="middle"

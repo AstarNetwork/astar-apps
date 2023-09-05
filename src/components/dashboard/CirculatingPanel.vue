@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="row--container">
-          <div class="row--item">{{ $t('chart.other') }}</div>
+          <div class="row--item">{{ $t('chart.others') }}</div>
           <div class="row--item">{{ formatNumber(totalSupply - currentCirculating, 3) }}</div>
           <div class="row--item">
             ({{ (((totalSupply - currentCirculating) / totalSupply) * 100).toFixed(0) }}%)
@@ -65,7 +65,7 @@ export default defineComponent({
 
       pieSectors.value.push({
         value: tvl.value,
-        label: t('chart.tvl.tooltip'),
+        label: t('common.staking'),
         color: '#0085FF',
       });
       pieSectors.value.push({
@@ -75,12 +75,12 @@ export default defineComponent({
       });
       pieSectors.value.push({
         value: other.value,
-        label: t('chart.other'),
+        label: t('dashboard.circulating.circulating'),
         color: '#0085FFB2',
       });
       pieSectors.value.push({
         value: locked.value,
-        label: t('chart.locked'),
+        label: t('chart.others'),
         color: '#0F1C56CC',
       });
     });
