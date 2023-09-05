@@ -64,6 +64,9 @@
           </div>
         </div>
       </div>
+      <div v-if="isH160">
+        <evm-native-token />
+      </div>
       <div v-if="multisig" class="row--details-signatory">
         <div class="column-account-name">
           <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
@@ -107,6 +110,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
@@ -115,6 +119,7 @@ export default defineComponent({
   components: {
     NativeAssetList,
     ModalLockdropWarning,
+    EvmNativeToken,
   },
   props: {
     ttlErc20Amount: {

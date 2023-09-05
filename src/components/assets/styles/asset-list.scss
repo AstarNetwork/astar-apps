@@ -134,6 +134,22 @@
   }
 }
 
+.row__right--evm-native-token {
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 260px 120px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 200px 160px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 212px auto;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 256px auto;
+  }
+}
+
 .column__box {
   display: flex;
   flex-direction: column;
@@ -222,17 +238,19 @@
   }
   @media (min-width: $xl) {
     justify-self: center;
-    // padding-right: 12px;
   }
 }
 
 .column--buttons--native-token {
   @media (min-width: $xl) {
     display: flex !important;
-    padding-right: 0px !important;
-    justify-content: space-evenly;
-    width: 400px;
-    padding-left: 30px;
+    justify-content: flex-end;
+    width: 412px;
+    column-gap: 24px;
+  }
+  @media (min-width: $xxl) {
+    column-gap: 48px;
+    width: 484px;
   }
 }
 

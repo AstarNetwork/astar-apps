@@ -9,7 +9,6 @@ import {
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
-  createMetamaskAccount,
   selectAccount,
   selectMultisigAccount,
 } from '../common';
@@ -65,14 +64,5 @@ test.describe('account panel', () => {
 
     await page.locator('.icon--expand').first().click();
     await expect(transferButton).not.toBeVisible();
-  });
-
-  test('EVM sample', async ({ page }) => {
-    await createMetamaskAccount(
-      page,
-      'bottom drive obey lake curtain smoke basket hold race lonely fit walk',
-      'Test'
-    );
-    await page.goto('/astar/assets');
   });
 });

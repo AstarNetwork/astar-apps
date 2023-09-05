@@ -54,7 +54,7 @@ export const fetchXcmBalance = async ({
     const isAstarNativeToken = checkIsAstarNativeToken(token.mappedERC20Addr);
     if (isAstarNativeToken) {
       const accountInfo = await api.query.system.account<SystemAccount>(userAddress);
-      bal = accountInfo.data.free.sub(accountInfo.data.miscFrozen).toString();
+      bal = accountInfo.data.free.sub(accountInfo.data.frozen).toString();
     } else {
       const result = await api.query.assets.account<Account>(String(token.id), userAddress);
       const data = result.toJSON();

@@ -13,28 +13,36 @@ import {
 import { test } from '../fixtures';
 import {
   chainDecimals,
-  forceNewEra,
+  fetchAccountStakingAmount,
+  fetchMinimumStakingAmount,
+  // forceNewEra,
   getAccountLedger,
   getBalance,
   getStakedAmount,
   setRewardDestination,
 } from '../common-api';
+import { ethers } from 'ethers';
 
 // Memo: Astar Core Contributors
 const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';
 
-const stake = async (page: Page, context: BrowserContext, amount: bigint): Promise<void> => {
-  await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
+const stake = async (
+  page: Page,
+  context: BrowserContext,
+  amount: bigint,
+  dapp = TEST_DAPP_ADDRESS
+): Promise<void> => {
+  await page.goto(`/custom-node/dapp-staking/stake?dapp=${dapp}`);
   await selectAccount(page, ALICE_ACCOUNT_NAME);
   await page.getByPlaceholder('0.0').fill(amount.toString());
   await page.getByRole('button', { name: 'Confirm' }).click();
 
-  const stakedAmountBefore = await getStakedAmount(TEST_DAPP_ADDRESS);
+  const stakedAmountBefore = await getStakedAmount(dapp);
   await signTransaction(context);
   await page.waitForSelector('.four', { state: 'hidden' });
 
   await expect(page.getByText('Success', { exact: true })).toBeVisible();
-  const stakedAmountAfter = await getStakedAmount(TEST_DAPP_ADDRESS);
+  const stakedAmountAfter = await getStakedAmount(dapp);
   expect(stakedAmountAfter - stakedAmountBefore).toEqual(
     amount * BigInt(Math.pow(10, chainDecimals))
   );
@@ -114,6 +122,39 @@ test.describe('dApp staking transactions', () => {
     expect(ledger.unbondingInfo.unlockingChunks[0].amount.toString()).toEqual(
       '1100000000000000000'
     );
+  });
+
+  test('unstake all the staking balance if the resulting staking amount is less than minimum staking amount', async ({
+    page,
+    context,
+  }) => {
+    // Memo:Stake first
+    await stake(page, context, BigInt(1000));
+    await page.goto('/custom-node/dapp-staking/discover');
+    const minimumStakingAmount = await fetchMinimumStakingAmount();
+    const stakingAmount = ethers.utils.formatEther(
+      (await fetchAccountStakingAmount(ALICE_ADDRESS, TEST_DAPP_ADDRESS)).toString()
+    );
+    const unstakeAmount =
+      Number(stakingAmount) - Number(ethers.utils.formatEther(minimumStakingAmount)) + 1;
+    await page.goto('/custom-node/dapp-staking/discover');
+    await page.getByText('My dApps').click();
+    await page.getByRole('button', { name: 'Unbond' }).click();
+    await page.getByPlaceholder('0.0').fill(unstakeAmount.toString());
+
+    const warningMsg = page.getByTestId('warning-unstake-all-balance');
+    await expect(warningMsg).toBeVisible();
+
+    await page.getByRole('button', { name: 'Start unbonding' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+
+    await expect(page.getByText('Success', { exact: true })).toBeVisible();
+
+    const latestStakingAmount = ethers.utils.formatEther(
+      (await fetchAccountStakingAmount(ALICE_ADDRESS, TEST_DAPP_ADDRESS)).toString()
+    );
+    expect(Number(latestStakingAmount)).toEqual(0);
   });
 
   // Test case: DS005
