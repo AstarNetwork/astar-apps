@@ -294,6 +294,12 @@ export default defineComponent({
           encodedData,
         });
       } catch (error) {
+        // Memo: dry run fails due to too many unclaimed eras (staking entries)
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.toast.requiredClaimFirst'),
+          alertType: 'error',
+          root: true,
+        });
         console.error(error);
       }
     };
