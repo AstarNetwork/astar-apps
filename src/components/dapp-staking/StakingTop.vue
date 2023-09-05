@@ -58,7 +58,6 @@ export default defineComponent({
     useMeta(generateMeta(Path.Discover));
     const store = useStore();
     const { isReady } = usePageReady();
-    const { isEvmDappStaking } = useNetworkInfo();
     useDispatchGetDapps();
 
     const { t } = useI18n();
@@ -69,20 +68,6 @@ export default defineComponent({
       const isLoad = dapps.value.length === 0;
       store.commit('general/setLoading', isLoad);
     };
-
-    // Todo: Remove this after Astar runtime updating to support batch transaction(precompiled)
-    watch(
-      [isH160],
-      () => {
-        if (isH160.value && !isEvmDappStaking.value) {
-          store.dispatch('general/showAlertMsg', {
-            msg: t('dappStaking.error.onlySupportsSubstrate'),
-            alertType: 'error',
-          });
-        }
-      },
-      { immediate: true }
-    );
 
     watch(
       [dapps],

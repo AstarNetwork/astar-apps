@@ -35,14 +35,11 @@
           <astar-button
             :width="80"
             :height="24"
-            :disabled="!canClaim || !canClaimWithoutError || !isAllowDappStaking"
+            :disabled="!canClaim || !canClaimWithoutError"
             @click="claimAll"
           >
             {{ $t('myReward.claim') }}
           </astar-button>
-          <q-tooltip v-if="!isAllowDappStaking">
-            <span class="text--tooltip">{{ $t('dappStaking.claimNotReady') }}</span>
-          </q-tooltip>
         </div>
       </div>
       <div v-else class="card">
@@ -95,14 +92,11 @@
           <astar-button
             :width="80"
             :height="24"
-            :disabled="!canClaim || !canClaimWithoutError || !isAllowDappStaking"
+            :disabled="!canClaim || !canClaimWithoutError"
             @click="claimAll"
           >
             {{ $t('myReward.claim') }}
           </astar-button>
-          <q-tooltip v-if="!isAllowDappStaking">
-            <span class="text--tooltip">{{ $t('dappStaking.claimNotReady') }}</span>
-          </q-tooltip>
         </div>
       </div>
       <div class="card">
@@ -162,7 +156,7 @@ export default defineComponent({
     TokenBalance,
   },
   setup() {
-    const { nativeTokenSymbol, isEvmDappStaking, currentNetworkIdx } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
       useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
@@ -180,11 +174,6 @@ export default defineComponent({
 
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
     const { currentAccount, senderSs58Account } = useAccount();
-
-    const isAllowDappStaking = computed<boolean>(() => {
-      const isH160 = store.getters['general/isH160Formatted'];
-      return isH160 ? isEvmDappStaking.value : true;
-    });
 
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const goToSubscan = () => {
@@ -229,7 +218,6 @@ export default defineComponent({
       pendingRewards,
       isLoadingPendingRewards,
       isDappDeveloper,
-      isAllowDappStaking,
     };
   },
 });

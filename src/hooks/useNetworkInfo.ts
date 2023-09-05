@@ -69,13 +69,6 @@ export function useNetworkInfo() {
       : shibuya;
   });
 
-  // Memo: delete it after runtime updating on Astar
-  const isEvmDappStaking = computed<boolean>(() => {
-    return true;
-    // currentNetworkIdx.value === endpointKey.SHIBUYA ||
-    // currentNetworkIdx.value === endpointKey.SHIDEN
-  });
-
   return {
     isMainnet,
     currentNetworkChain,
@@ -85,6 +78,5 @@ export function useNetworkInfo() {
     nativeTokenSymbol,
     isSupportXvmTransfer,
     polkadotJsLink,
-    isEvmDappStaking,
   };
 }

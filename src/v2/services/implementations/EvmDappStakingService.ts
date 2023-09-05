@@ -79,12 +79,14 @@ export class EvmDappStakingService implements IDappStakingService {
     targetContractId,
     address,
     successMessage,
+    failureMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
     successMessage: string;
+    failureMessage: string;
   }): Promise<void> {
     Guard.ThrowIfUndefined('fromContractId', fromContractId);
     Guard.ThrowIfUndefined('targetContractId', targetContractId);
@@ -96,6 +98,7 @@ export class EvmDappStakingService implements IDappStakingService {
         .nomination_transfer(fromContractId, amount, targetContractId)
         .encodeABI(),
       successMessage,
+      failureMessage,
     });
   }
 
@@ -103,7 +106,8 @@ export class EvmDappStakingService implements IDappStakingService {
     contractAddress: string,
     stakerAddress: string,
     amount: BN,
-    successMessage: string
+    successMessage: string,
+    failureMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
@@ -112,6 +116,7 @@ export class EvmDappStakingService implements IDappStakingService {
       to: dappStaking,
       data: this.evmContract.methods.bond_and_stake(contractAddress, amount).encodeABI(),
       successMessage,
+      failureMessage,
     });
   }
 

@@ -7,7 +7,7 @@ import { Path } from 'src/router';
 import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -65,6 +65,8 @@ export function useStake() {
       return;
     }
 
+    const failureMessage = t('dappStaking.toast.requiredClaimFirst');
+
     if (formattedTransferFrom.value.isNominationTransfer) {
       if (!formattedTransferFrom.value.item) return;
       const successMessage = t('dappStaking.toast.successfullyNominationTransfer', {
@@ -77,6 +79,7 @@ export function useStake() {
         address: currentAccount.value,
         amount: stakeAmount,
         successMessage,
+        failureMessage,
       });
     } else {
       const successMessage = t('dappStaking.toast.successfullyStaked', {
@@ -86,7 +89,8 @@ export function useStake() {
         targetContractId,
         currentAccount.value,
         stakeAmount,
-        successMessage
+        successMessage,
+        failureMessage
       );
     }
     isStakePage.value && router.push(Path.DappStaking);

@@ -21,6 +21,7 @@ export interface ParamSendEvmTransaction {
   data: any;
   value?: string;
   successMessage?: string;
+  failureMessage?: string;
 }
 
 export interface ParamSendMultisigTransaction {
@@ -46,6 +47,7 @@ export interface IWalletService {
    * @param data encoded contract methods
    * @param value amount value of ASTR tokens (default value: '0x0')
    * @param successMessage Message to show in case of successful transaction
+   * @param failureMessage Message to show in case of fail transaction
    */
   sendEvmTransaction(param: ParamSendEvmTransaction): Promise<string>;
 }

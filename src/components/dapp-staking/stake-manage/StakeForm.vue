@@ -111,7 +111,7 @@ import {
 } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
 import { AbiItem } from 'web3-utils';
@@ -270,7 +270,6 @@ export default defineComponent({
       if (!selectedGas.value || !isH160.value || !formattedMinStaking.value) return;
       try {
         const amountRaw = Number(amount.value);
-        // const amountPlaceHolder = 5;
         const amountPlaceHolder = formattedMinStaking.value;
         const stakeAmount = ethers.utils
           .parseEther(String(amountRaw > 0 ? amountRaw : amountPlaceHolder))
@@ -283,7 +282,6 @@ export default defineComponent({
         const encodedData = contract!.methods
           .bond_and_stake(props.dapp.dapp.address, stakeAmount)
           .encodeABI();
-
         evmGasCost.value = await getEvmGasCost({
           isNativeToken: false,
           evmGasPrice: evmGasPrice.value,
@@ -294,12 +292,6 @@ export default defineComponent({
           encodedData,
         });
       } catch (error) {
-        // Memo: dry run fails due to too many unclaimed eras (staking entries)
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.toast.requiredClaimFirst'),
-          alertType: 'error',
-          root: true,
-        });
         console.error(error);
       }
     };

@@ -23,12 +23,15 @@ export interface IDappStakingService {
    * @param stakerAddress Staked address.
    * @param amount Amount to stake.
    * @param successMessage Message on the success toast.
+   * @param successMessage Message on the success toast.
+   * @param failureMessage Message on the failed toast.
    */
   stake(
     contractAddress: string,
     stakerAddress: string,
     amount: BN,
-    successMessage: string
+    successMessage: string,
+    failureMessage?: string
   ): Promise<void>;
 
   /**
@@ -52,6 +55,7 @@ export interface IDappStakingService {
    * @param address Staked address.
    * @param amount Amount to stake.
    * @param successMessage Message on the success toast.
+   * @param failureMessage Message on the failed toast.
    */
   nominationTransfer({
     amount,
@@ -59,12 +63,14 @@ export interface IDappStakingService {
     targetContractId,
     address,
     successMessage,
+    failureMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
     successMessage: string;
+    failureMessage?: string;
   }): Promise<void>;
 
   /**
