@@ -59,7 +59,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, computed } from 'vue';
 import { formatNumber } from '@astar-network/astar-sdk-core';
-import { useStore } from 'src/store';
 
 interface ProcessedSector extends Sector {
   percentage: number;
@@ -88,12 +87,13 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    isDarkTheme: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
-    const store = useStore();
-    const textColor = computed<string>(() =>
-      store.getters['general/theme'] === 'DARK' ? 'white' : '#080f2e'
-    );
+    const textColor = computed<string>(() => (props.isDarkTheme ? 'white' : '#080f2e'));
     const processedSectors = ref<ProcessedSector[]>([]);
     const text = ref<string>('');
     const value = ref<number>(0);
