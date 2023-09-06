@@ -17,8 +17,17 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
       </div>
-      <div class="row--links">
+      <!-- <div class="row--links">
         <dynamic-links />
+      </div> -->
+      <rewards />
+      <div>
+        <astar-tokens
+          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+          :is-loading-erc20-amount="isLoading"
+          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
       </div>
       <div>
         <div class="container--account">
@@ -44,6 +53,8 @@
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
+import Rewards from 'src/components/assets/Rewards.vue';
+import AstarTokens from 'src/components/assets/AstarTokens.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -59,6 +70,8 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
+    Rewards,
+    AstarTokens,
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,

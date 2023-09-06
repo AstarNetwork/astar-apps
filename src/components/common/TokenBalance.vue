@@ -1,11 +1,13 @@
 <template>
   <span>
-    {{
-      $t(text ? text : 'amountToken', {
-        amount: isTruncate ? $n(truncate(balance, decimals)) : Number(balance),
-        token: symbol,
-      })
-    }}
+    <span>
+      {{
+        $t(text ? text : 'amountToken', {
+          amount: isTruncate ? $n(truncate(balance, decimals)) : Number(balance),
+          token: symbol,
+        })
+      }}
+    </span>
   </span>
 </template>
 <script lang="ts">

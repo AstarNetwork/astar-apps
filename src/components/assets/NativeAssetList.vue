@@ -1,158 +1,123 @@
 <template>
   <div>
-    <div class="border--separator border--margin" />
-    <div>
-      <div v-if="nativeTokenSymbol" class="rows">
-        <div class="row row--details-native">
-          <div class="row__left--native">
-            <div class="column--currency">
-              <img width="24" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-              <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker--native">
-                <span class="text--title">{{ nativeTokenSymbol }}</span>
-                <span class="text--label">{{ currentNetworkName }}</span>
-              </div>
-              <div v-else>
+    <!-- Total balance -->
+    <div class="tw-px-4 tw-py-3 sm:tw-flex sm:tw-items-center">
+      <div v-if="nativeTokenSymbol" class="tw-flex tw-items-center tw-space-x-1">
+        <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" class="tw-shrink-0" />
+        <span class="tw-font-extrabold tw-text-2xl">{{ nativeTokenSymbol }}</span>
+      </div>
+      <div v-else>
+        <q-skeleton animation="fade" class="skeleton--md" />
+      </div>
+      <div class="sm:tw-flex-1">
+        <div v-if="!isSkeleton" class="tw-flex tw-justify-end tw-items-end tw-space-x-2">
+          <span class="tw-font-extrabold tw-text-2xl">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="tw-font-semibold tw-text-xl">{{ nativeTokenSymbol }}</span>
+        </div>
+        <div v-else class="skeleton--right">
+          <q-skeleton animation="fade" class="skeleton--md" />
+        </div>
+      </div>
+    </div>
+
+    <div class="astar-tokens-divider" />
+
+    <div v-if="nativeTokenSymbol">
+      <!-- Transferable -->
+      <div class="tw-px-4 tw-py-3 sm:tw-flex sm:tw-items-center">
+        <div
+          class="sm:tw-flex sm:tw-items-center sm:tw-w-2/3 sm:tw-pointer-events-none"
+          @click="
+            () =>
+              isFaucet
+                ? handleModalFaucet({ isOpen: true })
+                : $router.push(buildTransferPageLink(nativeTokenSymbol))
+          "
+        >
+          <div class="tw-font-semibold sm:tw-w-1/2">Transferable</div>
+          <div class="sm:tw-w-1/2">
+            <div v-if="!isSkeleton" class="tw-flex tw-justify-end tw-items-end tw-space-x-2">
+              <span class="tw-font-extrabold tw-text-2xl">
+                {{
+                  isTruncate ? $n(truncate(transferableBalance, 3)) : Number(transferableBalance)
+                }}
+              </span>
+              <span class="tw-font-semibold tw-text-xl">{{ nativeTokenSymbol }}</span>
+            </div>
+            <div v-else>
+              <div class="skeleton--right">
                 <q-skeleton animation="fade" class="skeleton--md" />
               </div>
             </div>
           </div>
-          <div class="row__right">
-            <div class="column--balance">
-              <div class="column__box-native">
-                <div v-if="!isSkeleton" class="text--accent">
-                  <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
-                </div>
-                <div v-else class="skeleton--right">
-                  <q-skeleton animation="fade" class="skeleton--md" />
-                </div>
-                <div v-if="!isSkeleton" class="text--label row--transferable">
-                  <div class="screen--phone">
-                    <span>{{ $t('assets.transferableBalance') }}</span>
-                  </div>
-                  <div class="column--transferable-bal">
-                    <span class="screen--sm">{{ $t('assets.transferable') }}</span>
-                    <span>
-                      <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                </div>
-                <div v-else class="skeleton--right">
-                  <q-skeleton animation="fade" class="skeleton--md" />
-                </div>
-              </div>
-            </div>
-
-            <div v-if="isFaucet" class="column--buttons">
-              <button
-                class="btn btn--sm column---title-button"
-                @click="handleModalFaucet({ isOpen: true })"
-              >
-                {{ $t('assets.faucet') }}
-              </button>
-            </div>
-            <div v-else class="column--buttons">
-              <router-link
-                :to="buildTransferPageLink(nativeTokenSymbol)"
-                class="column---title-button"
-              >
-                <button class="btn btn--sm">
-                  {{ $t('assets.transfer') }}
-                </button>
-              </router-link>
-            </div>
-            <div class="row--icon--expand">
-              <div class="column--expand">
-                <button
-                  class="icon--expand"
-                  :class="isExpand && 'icon--collapse'"
-                  @click="expandAsset(isExpand)"
-                >
-                  <astar-icon-expand size="32" />
-                  <q-tooltip>
-                    <span class="text--tooltip">
-                      {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
-                    </span>
-                  </q-tooltip>
-                </button>
-
-                <balloon
-                  class="balloon-native-token"
-                  direction="right"
-                  :is-balloon="isBalloonNativeToken"
-                  :is-balloon-closing="isBalloonNativeTokenClosing"
-                  :handle-close-balloon="handleCloseNativeTokenBalloon"
-                  :title="$t('new')"
-                  :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
-                />
-              </div>
-            </div>
-          </div>
         </div>
+        <div class="tw-hidden sm:tw-flex sm:tw-justify-end sm:tw-w-1/3">
+          <button
+            v-if="isFaucet"
+            class="btn btn--sm column---title-button"
+            @click="handleModalFaucet({ isOpen: true })"
+          >
+            {{ $t('assets.faucet') }}
+          </button>
+          <router-link v-else :to="buildTransferPageLink(nativeTokenSymbol)">
+            <button class="btn btn--sm">
+              {{ $t('assets.transfer') }}
+            </button>
+          </router-link>
+        </div>
+      </div>
 
+      <!-- Locked tokens -->
+      <div
+        class="
+          tw-bg-gray-50 tw-px-4 tw-py-3
+          sm:tw-rounded-2xl sm:tw-flex sm:tw-flex-wrap sm:tw-items-center
+        "
+      >
         <div
-          v-if="numEvmDeposit"
-          class="row--bg--extend-evm-withdraw row--details-native bg--accent"
+          class="sm:tw-flex sm:tw-items-center sm:tw-w-2/3 sm:tw-pointer-events-none"
+          @click="isExpand = !isExpand"
         >
-          <div class="row__left">
-            <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
-          </div>
-          <div class="row__right row__right-collapse">
-            <div class="column--balance">
-              <div v-if="!isSkeleton" class="column__box-native">
-                <span class="text--value">
-                  <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
-                </span>
-              </div>
-              <div v-else class="column__box-native">
-                <div class="skeleton--right">
-                  <q-skeleton animation="fade" class="skeleton--md" />
-                </div>
-              </div>
+          <div class="tw-font-semibold sm:tw-w-1/2">Locked tokens</div>
+          <div class="sm:tw-w-1/2">
+            <div v-if="!isSkeleton" class="tw-flex tw-justify-end tw-items-end tw-space-x-2">
+              <span class="tw-font-extrabold tw-text-2xl">
+                {{ isTruncate ? $n(truncate(vestingTtl, 3)) : Number(vestingTtl) }}
+              </span>
+              <span class="tw-font-semibold tw-text-xl">{{ nativeTokenSymbol }}</span>
             </div>
-            <div class="column--buttons">
-              <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
-                {{ $t('assets.withdraw') }}
-              </button>
+            <div v-else>
+              <div class="skeleton--right">
+                <q-skeleton animation="fade" class="skeleton--md" />
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="expand-container">
-          <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
+        <div class="tw-hidden sm:tw-flex sm:tw-justify-end sm:tw-w-1/3">
+          <button
+            class="icon--expand"
+            :class="isExpand && 'icon--collapse'"
+            @click="isExpand = !isExpand"
+          >
+            <astar-icon-expand size="32" />
+          </button>
+        </div>
+
+        <q-slide-transition>
+          <div v-show="isExpand" class="tw-w-full tw-py-4 tw-space-y-2">
+            <!-- Vesting -->
+            <div class="tw-flex tw-bg-white tw-rounded-xl tw-p-4">
+              <div
+                class="sm:tw-pointer-events-none sm:tw-w-2/3 tw-flex tw-w-full"
+                @click="handleModalVesting({ isOpen: true })"
+              >
+                <div class="tw-font-semibold tw-w-1/2">Vesting</div>
+                <div class="tw-flex-1 tw-w-1/2">
                   <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
-                  </div>
-                </div>
-                <div class="column--buttons">
-                  <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
-                    <button class="btn btn--sm">
-                      {{ $t('assets.transfer') }}
-                    </button>
-                  </router-link>
-                </div>
-              </div>
-            </div>
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
+                    <span class="tw-font-semibold">
                       <token-balance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
                     </span>
                   </div>
@@ -162,22 +127,24 @@
                     </div>
                   </div>
                 </div>
-                <div class="column--buttons">
-                  <button class="btn btn--sm" @click="handleModalVesting({ isOpen: true })">
-                    {{ $t('assets.view') }}
-                  </button>
-                </div>
+              </div>
+              <div class="tw-w-1/3 tw-hidden sm:tw-flex tw-justify-end">
+                <button class="btn btn--sm" @click="handleModalVesting({ isOpen: true })">
+                  {{ $t('assets.view') }}
+                </button>
               </div>
             </div>
 
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.yourStaking') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
+            <!-- Staking -->
+            <div class="tw-flex tw-bg-white tw-rounded-xl tw-p-4">
+              <div
+                class="sm:tw-pointer-events-none sm:tw-w-2/3 tw-flex tw-w-full"
+                @click="() => $router.push(Path.DappStaking)"
+              >
+                <div class="tw-font-semibold tw-w-1/2">Staking</div>
+                <div class="tw-flex-1 tw-w-1/2">
                   <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
+                    <span class="tw-font-semibold">
                       <token-balance
                         :balance="String(lockInDappStaking)"
                         :symbol="nativeTokenSymbol"
@@ -190,34 +157,18 @@
                     </div>
                   </div>
                 </div>
-                <div class="column--buttons">
-                  <router-link :to="Path.DappStaking">
-                    <button class="btn btn--sm">{{ $t('manage') }}</button>
-                  </router-link>
-                </div>
+              </div>
+              <div class="tw-w-1/3 tw-hidden sm:tw-flex tw-justify-end">
+                <router-link :to="Path.DappStaking">
+                  <button class="btn btn--sm">{{ $t('manage') }}</button>
+                </router-link>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row--icon--expand-phone">
-          <button
-            class="icon--expand"
-            :class="isExpand && 'icon--collapse'"
-            @click="expandAsset(isExpand)"
-          >
-            <astar-icon-expand size="32" />
-          </button>
-          <balloon
-            direction="top"
-            :is-balloon="isBalloonNativeToken"
-            :is-balloon-closing="isBalloonNativeTokenClosing"
-            :handle-close-balloon="handleCloseNativeTokenBalloon"
-            :title="$t('new')"
-            :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
-          />
-        </div>
+        </q-slide-transition>
       </div>
     </div>
+
     <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <modal-evm-withdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
@@ -249,6 +200,9 @@ import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import Balloon from 'src/components/common/Balloon.vue';
+import { truncate } from '@astar-network/astar-sdk-core';
+import { $api } from 'src/boot/api';
+import { is } from 'quasar';
 
 export default defineComponent({
   components: {
@@ -256,7 +210,7 @@ export default defineComponent({
     ModalEvmWithdraw,
     ModalVesting,
     TokenBalance,
-    Balloon,
+    // Balloon,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -348,15 +302,17 @@ export default defineComponent({
     });
 
     // Ref: https://stackoverflow.com/questions/48143381/css-expand-contract-animation-to-show-hide-content
-    const expandAsset = async (isOpen: boolean): Promise<void> => {
-      if (isBalloonNativeToken.value) {
-        await handleCloseNativeTokenBalloon();
-      }
-      isExpand.value = !isOpen;
-      const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
-      el && el.classList.toggle('asset-expanded');
-      el && el.classList.toggle('asset-collapsed');
-    };
+    // const expandAsset = async (isOpen: boolean): Promise<void> => {
+    //   if (isBalloonNativeToken.value) {
+    //     await handleCloseNativeTokenBalloon();
+    //   }
+    //   isExpand.value = !isOpen;
+    //   const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
+    //   el && el.classList.toggle('asset-expanded');
+    //   el && el.classList.toggle('asset-collapsed');
+    // };
+
+    const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
     return {
       bal,
@@ -387,8 +343,10 @@ export default defineComponent({
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
-      expandAsset,
+      // expandAsset,
       handleCloseNativeTokenBalloon,
+      truncate,
+      isTruncate,
     };
   },
 });
@@ -396,4 +354,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/asset-list.scss';
+
+.astar-tokens-divider {
+  @apply tw-mx-4;
+  background: linear-gradient(to right, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff);
+  height: 1px;
+}
 </style>
