@@ -45,7 +45,6 @@ export const getWindow = async (title: string, context: BrowserContext): Promise
     // Fixme: doesn't work with `changeNetworkOnEVM`
     context.on('page', async (target) => {
       const pageTitle = await target.title();
-      console.info('pageTitle', pageTitle);
       if (pageTitle === title) {
         resolve(target);
       }

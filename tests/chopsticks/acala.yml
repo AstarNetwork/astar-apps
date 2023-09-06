@@ -1,4 +1,4 @@
-endpoint: wss://acala-rpc.dwellir.com
+endpoint: wss://acala-rpc-0.aca-api.network
 mock-signature-host: true
 block: ${env.ACALA_BLOCK_NUMBER}
 db: ./db.sqlite
