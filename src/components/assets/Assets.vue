@@ -17,12 +17,9 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
       </div>
-      <!-- <div class="row--links">
-        <dynamic-links />
-      </div> -->
-      <rewards />
+      <rewards class="sm:tw-hidden" />
       <div>
-        <astar-tokens
+        <native-asset
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
@@ -47,6 +44,7 @@
       </div>
     </div>
     <div class="column--links">
+      <rewards class="tw-hidden sm:tw-block" />
       <dynamic-links />
     </div>
   </div>
@@ -54,7 +52,7 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import Rewards from 'src/components/assets/Rewards.vue';
-import AstarTokens from 'src/components/assets/AstarTokens.vue';
+import NativeAsset from 'src/components/assets/NativeAsset.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -71,7 +69,7 @@ export default defineComponent({
   components: {
     Account,
     Rewards,
-    AstarTokens,
+    NativeAsset,
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,

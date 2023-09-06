@@ -65,23 +65,15 @@
           </div>
         </div>
       </div>
-      <div v-if="isH160">
-        <!-- <evm-native-token /> -->
-      </div>
+
       <div v-if="multisig" class="row--details-signatory">
         <div class="column-account-name">
           <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-          <span class="text--accent">{{
-            $t('assets.theSignatory', { account: multisig.signatory.name })
-          }}</span>
+          <span class="text--accent">
+            {{ $t('assets.theSignatory', { account: multisig.signatory.name }) }}
+          </span>
         </div>
       </div>
-      <div class="row screen--phone">
-        <span>{{ $t('assets.totalBalance') }}</span>
-        <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
-        <span v-else class="text--total-balance"> ${{ $n(totalBal) }} </span>
-      </div>
-      <!-- <native-asset-list v-if="!isH160" /> -->
     </div>
     <modal-lockdrop-warning
       v-if="isLockdropAccount && !isH160"

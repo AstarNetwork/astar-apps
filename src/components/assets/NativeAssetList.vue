@@ -21,8 +21,7 @@
         </div>
       </div>
     </div>
-
-    <div class="astar-tokens-divider" />
+    <div class="gradient-divider" />
 
     <div v-if="nativeTokenSymbol">
       <!-- Transferable -->
@@ -354,10 +353,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/asset-list.scss';
-
-.astar-tokens-divider {
-  @apply tw-mx-4;
-  background: linear-gradient(to right, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff);
-  height: 1px;
-}
 </style>

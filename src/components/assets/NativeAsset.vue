@@ -1,53 +1,21 @@
 <template>
-  <div>
-    <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
-      <div>
-        <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
-      </div>
-      <ul class="row--warning-list">
-        <li class="text--warning">
-          {{ $t('assets.cantTransferToExcahges') }}
-        </li>
-        <li class="text--warning">{{ $t('assets.noHash') }}</li>
-      </ul>
+  <div
+    class="
+      tw-border-2 tw-border-pink-500 tw-rounded-2xl tw-bg-white tw-shadow tw-mx-2
+      sm:tw-mx-0 sm:tw-px-4
+      tw-py-4 tw-overflow-hidden
+    "
+  >
+    <div v-if="isH160">
+      <evm-native-token />
     </div>
 
-    <div
-      class="
-        tw-border-2 tw-border-pink-500 tw-rounded-2xl tw-bg-white tw-shadow tw-mx-2
-        sm:tw-mx-0 sm:tw-px-4
-        tw-py-4 tw-overflow-hidden
-      "
-    >
-      <div
-        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
-        class="row"
-      >
-        <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
-        <span class="text--switch-account" @click="toggleEvmWalletSchema">
-          {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
-        </span>
-      </div>
-
-      <div v-if="isH160">
-        <evm-native-token />
-      </div>
-      <div v-if="multisig" class="row--details-signatory">
-        <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-          <span class="text--accent">
-            {{ $t('assets.theSignatory', { account: multisig.signatory.name }) }}
-          </span>
-        </div>
-      </div>
-      <native-asset-list v-if="!isH160" />
-    </div>
-
-    <modal-lockdrop-warning
-      v-if="isLockdropAccount && !isH160"
-      :is-modal="isModalLockdropWarning"
-      :handle-modal="handleModalLockdropWarning"
-    />
+    <!-- <div class="row screen--phone">
+      <span>{{ $t('assets.totalBalance') }}</span>
+      <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
+      <span v-else class="text--total-balance"> ${{ $n(totalBal) }} </span>
+    </div> -->
+    <native-asset-list v-if="!isH160" />
   </div>
 </template>
 <script lang="ts">
@@ -79,7 +47,7 @@ import { supportWalletObj } from 'src/config/wallets';
 export default defineComponent({
   components: {
     NativeAssetList,
-    ModalLockdropWarning,
+    // ModalLockdropWarning,
     EvmNativeToken,
   },
   props: {
