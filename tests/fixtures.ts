@@ -41,7 +41,6 @@ export const test = base.extend<{
 export const expect = test.expect;
 
 export const getWindow = async (title: string, context: BrowserContext): Promise<Page> => {
-  console.log(`getWindow: ${title}`);
   return new Promise((resolve, reject) => {
     // Fixme: doesn't work with `changeNetworkOnEVM`
     const timer = setTimeout(() => {

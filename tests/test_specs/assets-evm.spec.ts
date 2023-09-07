@@ -1,9 +1,9 @@
-import { expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { ApiPromise } from '@polkadot/api';
 import { clickDisclaimerButton } from 'src/modules/playwright';
-import { connectWithEVM, createMetamaskAccount, signInMetamask } from '../common';
+import { changeNetworkOnEVM, connectWithEVM, createMetamaskAccount, signInMetamask } from '../common';
 import { getApi } from '../common-api';
-import { test } from '../fixtures';
+import { getWindow, test } from '../fixtures';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -14,8 +14,12 @@ test.afterAll(async () => {
   await api.disconnect();
 });
 
-test.beforeEach(async ({ page, context }) => {
+test.beforeEach(async ({ page, context, browser }) => {
   await page.goto('/astar/assets');
+
+  // memo Metamask tabs gots focus, switch to the portal tab
+  page.bringToFront();
+
   await clickDisclaimerButton(page);
   await createMetamaskAccount(
     page,
@@ -26,10 +30,8 @@ test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
   await page.locator('.btn--connect').click();
   await page.getByText('MetaMask').click();
-  await connectWithEVM(page, context);
-
-  // Fixme: `changeNetworkOnEVM` doesn't work
-  // await changeNetworkOnEVM(page, context);
+  const metamaskWindow = await connectWithEVM(page, context);
+  await changeNetworkOnEVM(page, context, metamaskWindow);
 
   await page.waitForSelector('.modal-close', { state: 'hidden' });
   await expect(page.getByText('Select a Wallet')).toBeHidden();
