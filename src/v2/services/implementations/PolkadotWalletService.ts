@@ -11,14 +11,15 @@ import { AlertMsg } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
-import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
-import { PolkasafeRepository } from 'src/v2/repositories/implementations';
 import {
   IGasPriceProvider,
   IWalletService,
+  ParamSendEvmTransaction,
   ParamSendMultisigTransaction,
   ParamSignAndSend,
 } from 'src/v2/services';
+import { PolkasafeRepository } from 'src/v2/repositories/implementations';
+import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
 import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
@@ -225,6 +226,16 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     isMonitorExtension
       ? window.addEventListener('message', handleDetectSign)
       : window.removeEventListener('message', handleDetectSign);
+  }
+
+  // Memo: This method is not called from this class
+  public async sendEvmTransaction({
+    from,
+    to,
+    value,
+    data,
+  }: ParamSendEvmTransaction): Promise<string> {
+    return '';
   }
 
   private async sendMultisigTransaction({

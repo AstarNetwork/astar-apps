@@ -1,19 +1,19 @@
+import { DappItem } from '@astar-network/astar-sdk-core';
 import { BN } from 'bn.js';
 import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { DappItem } from '@astar-network/astar-sdk-core';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { computed, ref, watch, watchEffect } from 'vue';
 import { container } from 'src/v2/common';
-import { Symbols } from 'src/v2/symbols';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { computed, ref, watch, watchEffect } from 'vue';
 
 export type MyStakeInfo = StakeInfo | DappItem;
 
 export function useStakerInfo() {
-  const { currentAccount } = useAccount();
+  const { senderSs58Account } = useAccount();
   const store = useStore();
 
   store.dispatch('dapps/getStakingInfo');
@@ -33,7 +33,7 @@ export function useStakerInfo() {
       dapps.value.map(async (it: DappCombinedInfo) => {
         const stakeData = await dappStakingService.getStakeInfo(
           it.dapp?.address!,
-          currentAccount.value
+          senderSs58Account.value
         );
         if (stakeData?.hasStake) {
           myData.push({ ...stakeData, ...it.dapp });
@@ -59,7 +59,7 @@ export function useStakerInfo() {
   };
 
   watchEffect(async () => {
-    if (isLoading.value || !dapps.value || !currentAccount.value) {
+    if (isLoading.value || !dapps.value || !senderSs58Account.value) {
       return;
     }
     try {
@@ -69,7 +69,7 @@ export function useStakerInfo() {
     }
   });
 
-  watch([currentAccount, myStakeInfos], setTotalStaked);
+  watch([senderSs58Account, myStakeInfos], setTotalStaked);
 
   return {
     stakeInfos,

@@ -1,3 +1,4 @@
+import { $web3 } from 'boot/api';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { ethers } from 'ethers';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
@@ -27,11 +28,11 @@ export function useStakingList() {
     },
   ]);
 
-  const setStakingList = (): void => {
+  const setStakingList = async (): Promise<void> => {
     const dappsRef = dapps.value;
     const accountDataRef = accountData.value;
     const currentAccountRef = currentAccount.value;
-    if (!accountDataRef || !currentAccountRef || isH160.value) return;
+    if (!accountDataRef || !currentAccountRef) return;
     try {
       const data = dappsRef.map((it) => {
         const accountStakingAmount = it.stakerInfo.accountStakingAmount;
@@ -47,10 +48,14 @@ export function useStakingList() {
         }
       });
 
+      const balance = isH160.value
+        ? await $web3.value!.eth.getBalance(currentAccount.value)
+        : accountDataRef.getUsableFeeBalance().toString();
+
       data.unshift({
         address: currentAccountRef,
         name: 'Transferable Balance',
-        balance: accountDataRef.getUsableFeeBalance().toString(),
+        balance,
         iconUrl: nativeTokenImg.value,
       });
 
@@ -60,11 +65,11 @@ export function useStakingList() {
     }
   };
 
-  watchEffect(() => {
+  watchEffect(async () => {
     if (isLoading.value || !dapps.value) {
       return;
     }
-    setStakingList();
+    await setStakingList();
   });
 
   return {

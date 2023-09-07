@@ -1,10 +1,12 @@
 export const Symbols = {
   PriceRepository: Symbol.for('PriceRepository'),
   WalletFactory: Symbol.for('Factory<IWalletService>'),
+  DappStakingServiceFactory: Symbol.for('DappStakingServiceFactory'),
   EventAggregator: Symbol.for('EventAggregator'),
   DefaultApi: Symbol.for('DefaultApi'),
   ApiFactory: Symbol.for('ApiFactory'),
   GasPriceProvider: Symbol.for('GasPriceProvider'),
+  EvmDappStakingService: Symbol.for('EvmDappStakingService'),
   DappStakingService: Symbol.for('DappStakingService'),
   DappStakingRepository: Symbol.for('DappStakingRepository'),
   MetadataRepository: Symbol.for('MetadataRepository'),
