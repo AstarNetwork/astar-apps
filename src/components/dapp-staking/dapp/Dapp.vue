@@ -12,7 +12,7 @@
     <dapp-stats-charts :dapp="dapp" />
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :disabled="isH160" :height="28" class="btn--stake-switch">
+        <astar-irregular-button :height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>

@@ -54,6 +54,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     selectedTip,
     nativeTipPrice,
     setSelectedTip,
+    isEnableSpeedConfiguration,
   } = useGasPrice();
   const route = useRoute();
   const router = useRouter();
@@ -324,6 +325,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     selectedGas,
     evmGasCost,
     isRequiredCheck,
+    isEnableSpeedConfiguration,
     setSelectedGas,
     setSelectedTip,
     inputHandler,

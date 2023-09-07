@@ -21,6 +21,8 @@ import {
   GeneralStakerInfo,
   checkIsDappRegistered,
   TOKEN_API_URL,
+  PayloadWithWeight,
+  ExtrinsicPayload,
 } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
@@ -34,6 +36,7 @@ import {
   isValidAddressPolkadotAddress,
 } from '@astar-network/astar-sdk-core';
 import { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
+import { ParamClaimAll } from 'src/v2/services';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -486,5 +489,50 @@ export class DappStakingRepository implements IDappStakingRepository {
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
     return api.tx.dappsStaking.setRewardDestination(rewardDestination);
+  }
+
+  public async getWithdrawCall(): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.withdrawUnbonded();
+  }
+
+  public async getClaimCall({
+    batchTxs,
+    maxBatchWeight,
+    senderAddress,
+    transferableBalance,
+  }: ParamClaimAll): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+
+    if (0 >= batchTxs.length) {
+      throw Error('No dApps can be claimed');
+    }
+
+    const txsToExecute: ExtrinsicPayload[] = [];
+    let totalWeight: BN = new BN('0');
+    for (let i = 0; i < batchTxs.length; i++) {
+      const tx = batchTxs[i];
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(maxBatchWeight)) {
+        break;
+      }
+
+      txsToExecute.push(tx.payload as ExtrinsicPayload);
+      totalWeight = totalWeight.add(weight);
+    }
+
+    console.info(
+      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
+    );
+    const transaction = api.tx.utility.batch(txsToExecute);
+
+    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress);
+    const partialFee = info.partialFee.toBn();
+    const balance = new BN(ethers.utils.parseEther(transferableBalance.toString()).toString());
+
+    if (balance.sub(partialFee.muln(1.5)).isNeg()) {
+      throw Error('dappStaking.error.invalidBalance');
+    }
+    return transaction;
   }
 }

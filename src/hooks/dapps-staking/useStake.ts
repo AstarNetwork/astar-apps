@@ -36,7 +36,6 @@ export function useStake() {
 
       const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
       const isNominationTransfer = item.address !== currentAccount.value;
-
       const formattedText = `${name} (${balanceFormatter(item.balance, ASTAR_DECIMALS)})`;
       return { text: formattedText, item, isNominationTransfer };
     } catch (error) {
@@ -53,7 +52,10 @@ export function useStake() {
     targetContractId: string;
   }) => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount).toString());
-    const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactory
+    );
+    const dappStakingService = dappStakingServiceFactory();
     const balance = new BN(formattedTransferFrom.value.item?.balance || '0');
     if (balance.lt(stakeAmount)) {
       store.dispatch('general/showAlertMsg', {
@@ -62,6 +64,8 @@ export function useStake() {
       });
       return;
     }
+
+    const failureMessage = t('dappStaking.toast.requiredClaimFirst');
 
     if (formattedTransferFrom.value.isNominationTransfer) {
       if (!formattedTransferFrom.value.item) return;
@@ -75,6 +79,7 @@ export function useStake() {
         address: currentAccount.value,
         amount: stakeAmount,
         successMessage,
+        failureMessage,
       });
     } else {
       const successMessage = t('dappStaking.toast.successfullyStaked', {
@@ -84,7 +89,8 @@ export function useStake() {
         targetContractId,
         currentAccount.value,
         stakeAmount,
-        successMessage
+        successMessage,
+        failureMessage
       );
     }
     isStakePage.value && router.push(Path.DappStaking);

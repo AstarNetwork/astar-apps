@@ -46,6 +46,7 @@ import {
   EvmAssetsService,
   BalanceFormatterService,
   XcmEvmService,
+  EvmDappStakingService,
   AssetsService,
 } from './services/implementations';
 import { Symbols } from './symbols';
@@ -88,6 +89,18 @@ export default function buildDependencyContainer(network: endpointKey): void {
     };
   });
 
+  // dApp Staking service factory
+  container
+    .bind<interfaces.Factory<IDappStakingService>>(Symbols.DappStakingServiceFactory)
+    .toFactory(() => {
+      return () =>
+        container.get<IDappStakingService>(
+          currentWalletType === WalletType.Polkadot
+            ? Symbols.DappStakingService
+            : Symbols.EvmDappStakingService
+        );
+    });
+
   // Repositories
   container.addSingleton<IDappStakingRepository>(
     DappStakingRepository,
@@ -108,6 +121,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
+  container.addTransient<IDappStakingService>(EvmDappStakingService, Symbols.EvmDappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
   container.addTransient<IXvmService>(XvmService, Symbols.XvmService);

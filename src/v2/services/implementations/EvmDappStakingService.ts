@@ -4,9 +4,14 @@ import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
+import BATCH_ABI from 'src/config/web3/abi/batch-abi.json';
+import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
+import { RewardDestination } from 'src/hooks';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { TvlModel } from 'src/v2/models';
 import { AccountLedger, DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
@@ -16,32 +21,39 @@ import {
   ISystemRepository,
 } from 'src/v2/repositories';
 import {
-  IBalanceFormatterService,
   IDappStakingService,
   ParamClaimAll,
   ParamSetRewardDestination,
   ParamWithdraw,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import Web3 from 'web3';
+import { Contract } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
 import { IWalletService } from '../IWalletService';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+
+const { dappStaking, batch } = evmPrecompiledContract;
 
 @injectable()
-export class DappStakingService implements IDappStakingService {
+export class EvmDappStakingService implements IDappStakingService {
   private readonly wallet: IWalletService;
+  private readonly evmContract: Contract;
+  private readonly batchContract: Contract;
 
   constructor(
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
-    @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
   ) {
     this.wallet = walletFactory();
     this.systemRepository.startBlockSubscription();
     this.dappStakingRepository.starEraSubscription();
+    const web3 = new Web3();
+    this.evmContract = new web3.eth.Contract(DAPPS_STAKING_ABI as AbiItem[], dappStaking);
+    this.batchContract = new web3.eth.Contract(BATCH_ABI as AbiItem[], batch);
   }
 
   public async getTvl(): Promise<TvlModel> {
@@ -67,26 +79,26 @@ export class DappStakingService implements IDappStakingService {
     targetContractId,
     address,
     successMessage,
+    failureMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
     successMessage: string;
+    failureMessage: string;
   }): Promise<void> {
     Guard.ThrowIfUndefined('fromContractId', fromContractId);
     Guard.ThrowIfUndefined('targetContractId', targetContractId);
     Guard.ThrowIfUndefined('stakerAddress', address);
-
-    const stakeCall = await this.dappStakingRepository.getNominationTransferCall({
-      amount,
-      fromContractId,
-      targetContractId,
-    });
-    await this.wallet.signAndSend({
-      extrinsic: stakeCall,
-      senderAddress: address,
+    await this.wallet.sendEvmTransaction({
+      from: address,
+      to: dappStaking,
+      data: this.evmContract.methods
+        .nomination_transfer(fromContractId, amount, targetContractId)
+        .encodeABI(),
       successMessage,
+      failureMessage,
     });
   }
 
@@ -94,16 +106,17 @@ export class DappStakingService implements IDappStakingService {
     contractAddress: string,
     stakerAddress: string,
     amount: BN,
-    successMessage: string
+    successMessage: string,
+    failureMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-
-    const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
-    await this.wallet.signAndSend({
-      extrinsic: stakeCall,
-      senderAddress: stakerAddress,
+    await this.wallet.sendEvmTransaction({
+      from: stakerAddress,
+      to: dappStaking,
+      data: this.evmContract.methods.bond_and_stake(contractAddress, amount).encodeABI(),
       successMessage,
+      failureMessage,
     });
   }
 
@@ -115,14 +128,10 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-
-    const unboundCall = await this.dappStakingRepository.getUnbondAndUnstakeCall(
-      contractAddress,
-      amount
-    );
-    await this.wallet.signAndSend({
-      extrinsic: unboundCall,
-      senderAddress: stakerAddress,
+    await this.wallet.sendEvmTransaction({
+      from: stakerAddress,
+      to: dappStaking,
+      data: this.evmContract.methods.unbond_and_unstake(contractAddress, amount).encodeABI(),
       successMessage,
     });
   }
@@ -236,33 +245,31 @@ export class DappStakingService implements IDappStakingService {
     currentAccount: string
   ): Promise<StakeInfo | undefined> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
     return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
-
   public async setRewardDestination({
     rewardDestination,
     senderAddress,
     successMessage,
   }: ParamSetRewardDestination) {
-    const transaction = await this.dappStakingRepository.getSetRewardDestinationCall(
-      rewardDestination
-    );
-    await this.wallet.signAndSend({
-      extrinsic: transaction,
-      senderAddress,
+    // Ref: Enum from https://github.com/AstarNetwork/astar-frame/blob/polkadot-v0.9.39/frame/dapps-staking/src/lib.rs#L554
+    const destination = rewardDestination === RewardDestination.FreeBalance ? 0 : 1;
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dappStaking,
+      data: this.evmContract.methods.set_reward_destination(destination).encodeABI(),
       successMessage,
     });
   }
 
-  public async withdraw({ senderAddress, finalizedCallback }: ParamWithdraw) {
-    const transaction = await this.dappStakingRepository.getWithdrawCall();
-    await this.wallet.signAndSend({
-      extrinsic: transaction,
-      senderAddress,
-      finalizedCallback: finalizedCallback as any,
+  public async withdraw({ senderAddress }: ParamWithdraw) {
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dappStaking,
+      data: this.evmContract.methods.withdraw_unbonded().encodeABI(),
     });
   }
-
   public async claimAll({
     batchTxs,
     maxBatchWeight,
@@ -281,10 +288,28 @@ export class DappStakingService implements IDappStakingService {
         invalidBalanceMsg,
         h160SenderAddress,
       });
-      await this.wallet.signAndSend({
-        extrinsic: transaction,
-        senderAddress,
-        finalizedCallback: finalizedCallback as any,
+
+      const transactionInputs = (transaction.toHuman() as any).method.args.calls;
+      const to: string[] = [];
+      const callData: string[] = [];
+      const value: number[] = [];
+      const gasLimit: number[] = [];
+
+      transactionInputs.forEach((it: any) => {
+        to.push(dappStaking);
+        value.push(0);
+        // Memo: the value doesn't matter
+        gasLimit.push(150000);
+        const data = this.evmContract.methods['claim_staker'](
+          it.args['contract_id'].Evm
+        ).encodeABI();
+        callData.push(data);
+      });
+
+      await this.wallet.sendEvmTransaction({
+        from: h160SenderAddress || '',
+        to: batch,
+        data: this.batchContract.methods.batchAll(to, value, callData, gasLimit).encodeABI(),
       });
     } catch (error: any) {
       console.error(error);

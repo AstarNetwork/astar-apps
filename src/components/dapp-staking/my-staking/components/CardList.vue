@@ -41,7 +41,6 @@
         </div>
         <astar-button
           v-if="index === hoverIndex || width < widthCardLineUp"
-          :disabled="isH160"
           class="button--stake"
           :width="274"
           :height="24"
@@ -84,7 +83,6 @@ export default defineComponent({
     const hoverIndex = ref<number>(-1);
     const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol } = useNetworkInfo();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const goStakePageLink = (address: string | undefined): void => {
       isToStakePage.value = true;
@@ -108,7 +106,6 @@ export default defineComponent({
       goDappPageLink,
       nativeTokenSymbol,
       widthCardLineUp,
-      isH160,
     };
   },
 });

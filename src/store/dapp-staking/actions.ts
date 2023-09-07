@@ -20,7 +20,13 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import type { Transaction } from 'src/hooks/helper/wallet';
-import { getDappAddressEnum, TOKEN_API_URL, DappItem } from '@astar-network/astar-sdk-core';
+import {
+  getDappAddressEnum,
+  TOKEN_API_URL,
+  DappItem,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -91,10 +97,12 @@ const actions: ActionTree<State, StateInterface> = {
       // Fetch dapps
       const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-
+      const address = isValidEvmAddress(currentAccount)
+        ? toSS58Address(currentAccount)
+        : currentAccount;
       const [dapps, combinedInfo] = await Promise.all([
         axios.get<DappItem[]>(dappsUrl),
-        service.getCombinedInfo(currentAccount),
+        service.getCombinedInfo(address),
       ]);
 
       // Update combined info with dapp info

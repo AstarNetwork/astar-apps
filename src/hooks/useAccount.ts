@@ -1,4 +1,4 @@
-import { wait } from '@astar-network/astar-sdk-core';
+import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
@@ -19,6 +19,13 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
+
+  // Memo: converts EVM wallet address to SS58 for dApp staking queries
+  const senderSs58Account = computed<string>(() => {
+    return isValidEvmAddress(currentAccount.value)
+      ? toSS58Address(currentAccount.value)
+      : currentAccount.value;
+  });
   const isMultisig = computed<boolean>(() => !!localStorage.getItem(LOCAL_STORAGE.MULTISIG));
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
@@ -117,6 +124,7 @@ export const useAccount = () => {
     substrateAccounts,
     currentAccount,
     currentAccountName,
+    senderSs58Account,
     multisig,
     isMultisig,
     disconnectAccount,
