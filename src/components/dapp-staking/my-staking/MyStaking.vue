@@ -106,7 +106,7 @@ export default defineComponent({
       () => {
         currentTab.value = MyStakingTab.MyRewards;
       },
-      { immediate: false }
+      { immediate: true }
     );
 
     return {
