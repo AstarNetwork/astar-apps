@@ -1,7 +1,7 @@
 name: Deploy to Release hotfix-S3
-on: 
+on:
   workflow_dispatch:
-    branches: 
+    branches:
       - release-hotfix
 
 env:
@@ -29,11 +29,3 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/spa  s3://astar-apps --delete
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: 'Merge release-hotfix to main'
-          body: 'This is an auto-generated PR to merge release-hotfix to main'
-          branch: release-hotfix
-          base: main
-          delete-branch: false
