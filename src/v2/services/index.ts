@@ -7,3 +7,4 @@ export * from './IXcmEvmService';
 export * from './IBalanceFormatterService';
 export * from './IEvmAssetsService';
 export * from './IAssetsService';
+export * from './IAccountUnificationService';

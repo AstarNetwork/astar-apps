@@ -36,6 +36,7 @@ import {
   IAssetsService,
   WalletType,
   IXvmService,
+  IAccountUnificationService,
 } from './services';
 import {
   DappStakingService,
@@ -48,6 +49,7 @@ import {
   XcmEvmService,
   EvmDappStakingService,
   AssetsService,
+  AccountUnificationService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -132,6 +134,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.BalanceFormatterService
   );
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
+  container.addSingleton<IAccountUnificationService>(
+    AccountUnificationService,
+    Symbols.AccountUnificationService
+  );
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
