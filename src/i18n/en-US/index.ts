@@ -517,9 +517,11 @@ export default {
     dashboard: 'Dashboard',
     tvl: 'TVL',
     collators: 'Collators',
+    tokenSupply: 'Token Supply',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
+      circulating: 'Circulating',
     },
     block: {
       block: 'Block',
@@ -569,6 +571,10 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+    treasury: 'Treasury',
+    other: 'Other',
+    locked: 'Locked',
+    others: 'Others',
   },
   links: {
     goDecentralized: 'Go Decentralized!',

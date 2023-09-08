@@ -6,6 +6,7 @@ const spawn = (cmd) =>
     const stdout = [];
     cp.stdout.on('data', (data) => {
       stdout.push(data.toString());
+      console.info(data.toString())
 
       if (data.toString().includes('Ctrl+C')) {
         cp.kill(9);
