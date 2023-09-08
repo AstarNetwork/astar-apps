@@ -264,6 +264,8 @@ export class EvmDappStakingService implements IDappStakingService {
   }
 
   public async withdraw({ senderAddress }: ParamWithdraw) {
+    console.log('withdraw');
+    console.log('senderAddress', senderAddress);
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dappStaking,

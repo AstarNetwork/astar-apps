@@ -89,7 +89,7 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { unlockingChunks } = useUnbonding();
     const { myStakeInfos } = useStakerInfo();
-    const { currentAccount } = useAccount();
+    const { senderSs58Account } = useAccount();
 
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData, isLoadingBalance } = useBalance(selectedAddress);
@@ -102,11 +102,11 @@ export default defineComponent({
     });
 
     watch(
-      [currentAccount],
+      [senderSs58Account],
       () => {
         currentTab.value = MyStakingTab.MyRewards;
       },
-      { immediate: false }
+      { immediate: true }
     );
 
     return {
