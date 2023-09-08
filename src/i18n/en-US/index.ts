@@ -574,6 +574,7 @@ export default {
     treasury: 'Treasury',
     other: 'Other',
     locked: 'Locked',
+    others: 'Others',
   },
   links: {
     goDecentralized: 'Go Decentralized!',

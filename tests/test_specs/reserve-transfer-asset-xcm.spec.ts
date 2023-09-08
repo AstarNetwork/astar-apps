@@ -68,6 +68,9 @@ test.describe('Test case: XCM003', () => {
     await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
     await page.getByText('Cross-chain Transfer').click();
 
+    // memo wait for from/to values to switch on UI, because if switch happens after amount is entered, the amount would be cleared
+    page.waitForTimeout(2000);
+
     await page.locator('#amount').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
 

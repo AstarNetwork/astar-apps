@@ -141,7 +141,7 @@ export const signInMetamask = async (page: Page, context: BrowserContext): Promi
   await page.locator('data-testid=popover-close').click();
 };
 
-export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<void> => {
+export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<Page> => {
   const extensionWindow = await getWindow('MetaMask Notification', context);
   await extensionWindow.waitForLoadState('load');
   await extensionWindow.waitForSelector('.permissions-connect-header__title', { state: 'visible' });
@@ -152,10 +152,15 @@ export const connectWithEVM = async (page: Page, context: BrowserContext): Promi
     .click();
 
   await extensionWindow.locator('data-testid=page-container-footer-next').click();
+
+  return extensionWindow;
 };
 
-export const changeNetworkOnEVM = async (page: Page, context: BrowserContext): Promise<void> => {
-  const extensionWindow = await getWindow('MetaMask Notification', context);
+export const changeNetworkOnEVM = async (page: Page, context: BrowserContext, extensionWindow?: Page): Promise<void> => {
+  if (!extensionWindow) {
+    extensionWindow = await getWindow('MetaMask Notification', context);
+  }
+  
   await extensionWindow.waitForLoadState('load');
   await extensionWindow.waitForSelector('.confirmation-page__content', { state: 'visible' });
   await extensionWindow
