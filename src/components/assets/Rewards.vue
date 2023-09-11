@@ -56,21 +56,22 @@
 </template>
 
 <script lang="ts">
+import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
+import { $api } from 'src/boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
-import { $api } from 'src/boot/api';
-import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
       useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+    const store = useStore();
 
     const pendingRewards = ref<number>(0);
     const isLoadingPendingRewards = ref<boolean>(false);
@@ -83,11 +84,9 @@ export default defineComponent({
     };
 
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
-    const { currentAccount } = useAccount();
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentAccount, senderSs58Account } = useAccount();
+
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const store = useStore();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
@@ -105,13 +104,13 @@ export default defineComponent({
       isLoadingPendingRewards.value = true;
       const { stakerPendingRewards } = await estimatePendingRewards({
         api: $api!,
-        walletAddress: currentAccount.value,
+        walletAddress: senderSs58Account.value,
       });
       pendingRewards.value = stakerPendingRewards;
       isLoadingPendingRewards.value = false;
     };
 
-    watch([currentAccount, amountOfEras], setPendingRewards, { immediate: false });
+    watch([senderSs58Account, amountOfEras], setPendingRewards, { immediate: false });
 
     return {
       isLoading,
@@ -127,7 +126,6 @@ export default defineComponent({
       nativeTokenSymbol,
       isLoadingTotalStaked,
       goToSubscan,
-      isH160,
       pendingRewards,
       isLoadingPendingRewards,
       isDappDeveloper,
