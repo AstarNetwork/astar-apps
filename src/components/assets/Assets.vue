@@ -55,6 +55,9 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
+import { container } from 'src/v2/common';
+import { IAccountUnificationService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 
 export default defineComponent({
   components: {
@@ -167,6 +170,13 @@ export default defineComponent({
       const { handler, event } = getAssetEventAndHandler();
       window.removeEventListener(event, handler);
     });
+
+    // Temp account unification test, TODO remove later
+    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+    service.unifyAccounts(
+      '5DUCu1DL27kB8WViDKogZnezzECcTamY7RWjFBNP2SBJXzwS',
+      '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a'
+    );
 
     return {
       evmAssets,

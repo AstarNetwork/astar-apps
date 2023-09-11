@@ -86,8 +86,8 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   // Wallet factory
   container.bind<interfaces.Factory<IWalletService>>(Symbols.WalletFactory).toFactory(() => {
-    return () => {
-      return container.get<IWalletService>(currentWalletType);
+    return (walletType?: WalletType) => {
+      return container.get<IWalletService>(walletType ?? currentWalletType);
     };
   });
 

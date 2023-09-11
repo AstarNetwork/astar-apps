@@ -1,6 +1,5 @@
 import { inject, injectable } from 'inversify';
 import '@polkadot/api-augment';
-// import type { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { Guard } from 'src/v2/common';
 import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';
@@ -54,5 +53,22 @@ export class SystemRepository implements ISystemRepository {
       });
       SystemRepository.isBlockSubscribed = true;
     }
+  }
+
+  public async getChainId(): Promise<number> {
+    const api = await this.api.getApi();
+    const id = Number(api.consts.accounts.chainId.toHuman());
+
+    return id;
+  }
+
+  /**
+   * Gets block hash by block number.
+   * @param blockNumber Block number
+   */
+  public async getBlockHash(blockNumber: number): Promise<string> {
+    const api = await this.api.getApi();
+
+    return (await api.query.system.blockHash(blockNumber)).toString();
   }
 }

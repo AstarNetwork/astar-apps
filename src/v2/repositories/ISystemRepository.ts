@@ -10,4 +10,15 @@ export interface ISystemRepository {
    * Starts subscription to a block change.
    */
   startBlockSubscription(): Promise<void>;
+
+  /**
+   * Gets chain id.
+   */
+  getChainId(): Promise<number>;
+
+  /**
+   * Gets block hash by block number.
+   * @param blockNumber Block number
+   */
+  getBlockHash(blockNumber: number): Promise<string>;
 }

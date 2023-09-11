@@ -170,4 +170,19 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     }
     return AlertMsg.ERROR;
   }
+
+  public async signPayload(payload: string, senderAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('payload', payload);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const web3 = new Web3(this.provider as any);
+    const accounts = await web3.eth.getAccounts();
+
+    return await this.provider
+      .request({
+        method: 'eth_signTypedData_v4',
+        params: [accounts[0], payload],
+      })
+      .toString();
+  }
 }

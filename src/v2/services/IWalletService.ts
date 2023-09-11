@@ -50,4 +50,11 @@ export interface IWalletService {
    * @param failureMessage Message to show in case of fail transaction
    */
   sendEvmTransaction(param: ParamSendEvmTransaction): Promise<string>;
+
+  /**
+   * Signs the given payload
+   * @param payload Payload to sign
+   * @param senderAddress Signer address
+   */
+  signPayload(payload: string, senderAddress: string): Promise<string>;
 }
