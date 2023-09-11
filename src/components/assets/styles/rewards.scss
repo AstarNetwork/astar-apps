@@ -1,0 +1,18 @@
+@import 'src/css/quasar.variables.scss';
+
+.screen--xxl-down {
+  display: block;
+  @media (min-width: $xxxl) {
+    display: none;
+  }
+}
+.rewards__container {
+  @apply tw-relative tw-w-60 tw-h-60 tw-mx-auto tw-flex tw-items-center tw-justify-center;
+  .rewards__animation {
+    @apply tw-animate-ping tw-absolute tw-inline-flex tw-h-36 tw-w-36 tw-rounded-full tw-bg-pink-400 tw-opacity-75 tw-z-0;
+  }
+  .rewards__inner {
+    @apply tw-rounded-full tw-shadow tw-text-white tw-text-center tw-flex tw-flex-col tw-justify-center tw-space-y-4 tw-mx-auto tw-w-60 tw-h-60 tw-relative tw-z-10;
+    background: linear-gradient(180deg, #e0338f 20.63%, rgba(190, 51, 224, 0) 100%);
+  }
+}

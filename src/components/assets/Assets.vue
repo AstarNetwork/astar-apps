@@ -1,50 +1,45 @@
 <template>
-  <div v-if="!isLoading" class="wrapper--assets">
-    <div class="separator--top container--account">
-      <div class="separator" />
-    </div>
+  <div
+    v-if="!isLoading"
+    class="wrapper--assets tw-bg-no-repeat"
+    :style="`background-image: url('${bg_img.astar_gradient}');`"
+  >
     <div class="container--assets">
-      <div class="container--account">
-        <div class="title--account">
+      <!-- <div class="title--account">
           <span class="text--xl">
             {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
           </span>
-        </div>
-        <account
-          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-          :is-loading-erc20-amount="isLoading"
-          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-        />
+        </div> -->
+      <account
+        :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+        :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+        :is-loading-erc20-amount="isLoading"
+        :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+      />
+
+      <rewards v-if="!isH160" class="screen--xxl-down" />
+
+      <div class="asset-container asset-container--native">
+        <evm-native-token v-if="isH160" />
+        <native-asset-list v-if="!isH160" />
       </div>
-      <rewards class="sm:tw-hidden" />
-      <div>
-        <native-asset
-          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-          :is-loading-erc20-amount="isLoading"
-          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-        />
-      </div>
-      <div>
-        <div class="container--account">
-          <div class="separator" />
-        </div>
-        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
-      </div>
-      <div class="container--asset-list">
-        <div v-if="isH160">
+
+      <div class="asset-container asset-container--others">
+        <template v-if="isH160">
           <evm-asset-list :tokens="evmAssets.assets" />
-        </div>
-        <div v-else class="container--assets">
+        </template>
+        <template v-else>
           <!-- Memo: hide xvm panel because AA might replace it -->
           <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-        </div>
+        </template>
       </div>
     </div>
+
     <div class="column--links">
-      <rewards class="tw-hidden sm:tw-block" />
+      <div v-if="!isH160" class="tw-hidden sm:tw-flex tw-justify-end">
+        <rewards />
+      </div>
       <dynamic-links />
     </div>
   </div>
@@ -52,7 +47,6 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import Rewards from 'src/components/assets/Rewards.vue';
-import NativeAsset from 'src/components/assets/NativeAsset.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -64,15 +58,18 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 
 export default defineComponent({
   components: {
     Account,
     Rewards,
-    NativeAsset,
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
+    NativeAssetList,
+    EvmNativeToken,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -105,6 +102,10 @@ export default defineComponent({
         return false;
       }
     });
+
+    const bg_img = {
+      astar_gradient: require('/src/assets/img/assets-page-bg.svg'),
+    };
 
     const handleUpdateNativeTokenAssets = () => {
       if (currentAccount.value && evmNetworkIdx.value) {
@@ -192,6 +193,7 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      bg_img,
     };
   },
 });

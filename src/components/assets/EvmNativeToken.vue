@@ -1,59 +1,78 @@
 <template>
   <div data-testid="evm-native-token">
-    <div class="border--separator border--margin" />
-    <div class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-            <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker">
-              <span class="text--title">{{ nativeTokenSymbol }}</span>
-              <span class="text--label">{{ currentNetworkName }}</span>
-            </div>
-            <div v-else>
-              <q-skeleton animation="fade" class="skeleton--md" />
-            </div>
-          </div>
+    <!-- Total balance -->
+    <div class="row--header">
+      <div class="row__left">
+        <div v-if="nativeTokenSymbol">
+          <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
+          <span>{{ nativeTokenSymbol }}</span>
         </div>
-        <div class="row__right row__right--evm-native-token">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
-              </div>
-              <div class="text--label">
-                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="column--asset-buttons column--buttons--native-token">
-            <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
-              <button class="btn btn--sm">
-                {{ $t('assets.transfer') }}
-              </button>
-            </router-link>
-            <!-- Only SDN is able to bridge via cBridge at this moment -->
-            <a
-              v-if="nativeTokenSymbol === 'SDN'"
-              :href="cbridgeAppLink"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <button class="btn btn--sm">
-                {{ $t('assets.bridge') }}
-              </button>
-            </a>
-            <button
-              v-if="isFaucet"
-              class="btn btn--sm"
-              @click="handleModalFaucet({ isOpen: true })"
-            >
-              {{ $t('assets.faucet') }}
-            </button>
-          </div>
+        <div v-else>
+          <q-skeleton animation="fade" class="skeleton--md" />
+        </div>
+      </div>
+      <div class="row__right">
+        <div v-if="nativeTokenSymbol && currentNetworkName" class="total-balance">
+          <span class="text--amount">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+        </div>
+        <div v-else>
+          <q-skeleton animation="fade" class="skeleton--md" />
         </div>
       </div>
     </div>
+    <div class="gradient-divider" />
+
+    <!-- Transferable -->
+    <div class="row row--transferable">
+      <div
+        class="row__info"
+        @click="
+          () =>
+            isFaucet
+              ? handleModalFaucet({ isOpen: true })
+              : $router.push(buildTransferPageLink(nativeTokenSymbol))
+        "
+      >
+        <div class="tw-font-semibold">Transferable</div>
+        <div>
+          <div v-if="nativeTokenSymbol && currentNetworkName" class="column--amount">
+            <span class="text--amount">
+              {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+            </span>
+            <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          </div>
+          <div v-else>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row__action">
+        <button v-if="isFaucet" class="btn btn--sm" @click="handleModalFaucet({ isOpen: true })">
+          {{ $t('assets.faucet') }}
+        </button>
+        <router-link v-else :to="buildTransferPageLink(nativeTokenSymbol)">
+          <button class="btn btn--sm">
+            {{ $t('assets.transfer') }}
+          </button>
+        </router-link>
+        <!-- Only SDN is able to bridge via cBridge at this moment -->
+        <a
+          v-if="nativeTokenSymbol === 'SDN'"
+          :href="cbridgeAppLink"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button class="btn btn--sm">
+            {{ $t('assets.bridge') }}
+          </button>
+        </a>
+      </div>
+    </div>
+
     <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
 </template>
@@ -69,9 +88,13 @@ import { getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
-  components: { ModalFaucet, TokenBalance },
+  components: {
+    ModalFaucet,
+    // TokenBalance
+  },
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -117,6 +140,8 @@ export default defineComponent({
       isModalFaucet.value = isOpen;
     };
 
+    const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
+
     return {
       nativeTokenImg,
       nativeTokenSymbol,
@@ -128,6 +153,8 @@ export default defineComponent({
       isModalFaucet,
       handleModalFaucet,
       buildTransferPageLink,
+      truncate,
+      isTruncate,
     };
   },
 });

@@ -52,9 +52,18 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 #assets-top {
-  @media (min-width: $lg) {
-    margin-top: 50px;
-    padding: 0 16px;
-  }
+  // @apply tw-pt-4 lg:tw-pt-32;
+  // @media (min-width: $lg) {
+  //   margin-top: 50px;
+  //   padding: 0 16px;
+  // }
+
+  // padding-top: 10px;
+  // @media (min-width: $sm) {
+  //   padding-top: 30px;
+  // }
+  // @media (min-width: $lg) {
+  //   padding-top: 130px;
+  // }
 }
 </style>

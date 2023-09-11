@@ -8,11 +8,19 @@
       <template v-if="screenSize.lg > width">
         <sidebar-mobile />
       </template>
-      <main
+      <!-- <main
         id="assets-top"
         class="
           tw-flex-1 tw-relative tw-z-0
           lg:tw-py-12 lg:tw-overflow-y-auto
+          tw-overflow-x-hidden
+          focus:tw-outline-none
+        "
+      > -->
+      <main
+        class="
+          tw-flex-1 tw-relative tw-z-0
+          lg:tw-overflow-y-auto
           tw-overflow-x-hidden
           focus:tw-outline-none
         "
@@ -70,8 +78,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .wrapper--components {
   @media (min-width: $lg) {
-    padding: 0 40px;
-    padding-top: 12px;
+    padding: 60px 40px;
+    // padding-top: 12px;
   }
 }
 </style>

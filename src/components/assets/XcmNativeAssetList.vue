@@ -1,29 +1,33 @@
 <template>
   <div>
-    <div class="container">
-      <div class="row--menu">
-        <div class="row">
-          <span class="text--title">
-            {{ $t(width > screenSize.sm ? 'assets.xcmAssets' : 'assets.xcmAssetsShort') }}
-          </span>
+    <div class="row--header">
+      <div class="row__left">
+        <div v-if="nativeTokenSymbol">
+          <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
+          <span>{{ $t('assets.assets') }}</span>
         </div>
-        <asset-search-option
-          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
-          :is-hide-small-balances="isHideSmallBalances"
-          :tokens="xcmAssets"
-          :is-import-modal="false"
-          :is-search="isSearch"
-          :set-search="setSearch"
-          :set-is-search="setIsSearch"
-        />
+        <div v-else>
+          <q-skeleton animation="fade" class="skeleton--md" />
+        </div>
       </div>
 
-      <div v-for="t in filteredTokens" :key="t.id">
-        <xcm-currency :token="t" />
-      </div>
-      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
-        <span class="text--xl">{{ $t('assets.noResults') }}</span>
-      </div>
+      <asset-search-option
+        :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+        :is-hide-small-balances="isHideSmallBalances"
+        :tokens="xcmAssets"
+        :is-import-modal="false"
+        :is-search="isSearch"
+        :set-search="setSearch"
+        :set-is-search="setIsSearch"
+      />
+    </div>
+    <div class="gradient-divider" />
+
+    <div v-for="t in filteredTokens" :key="t.id">
+      <xcm-currency :token="t" />
+    </div>
+    <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
+      <span class="text--xl">{{ $t('assets.noResults') }}</span>
     </div>
   </div>
 </template>
@@ -34,6 +38,9 @@ import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
 import { useBreakpoints } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { getTokenImage } from 'src/modules/token';
+
 export default defineComponent({
   components: {
     XcmCurrency,
@@ -83,6 +90,12 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
+    const { nativeTokenSymbol } = useNetworkInfo();
+
+    const nativeTokenImg = computed(() =>
+      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+    );
+
     return {
       filteredTokens,
       search,
@@ -93,6 +106,8 @@ export default defineComponent({
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,
+      nativeTokenSymbol,
+      nativeTokenImg,
     };
   },
 });

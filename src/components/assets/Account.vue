@@ -1,6 +1,5 @@
 <template>
-  <div class="wrapper--account">
-    account start
+  <div>
     <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
       <div>
         <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
@@ -13,74 +12,94 @@
       </ul>
     </div>
 
-    <div class="container">
-      <div
-        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
-        class="row"
-      >
-        <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
-        <span class="text--switch-account" @click="toggleEvmWalletSchema">
-          {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
-        </span>
-      </div>
-
-      <div class="row--details">
-        <div class="column-account-name">
-          <img
-            v-if="iconWallet"
-            width="24"
-            :src="iconWallet"
-            alt="wallet-icon"
-            :class="multisig && 'img--polkasafe'"
-          />
-          <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
+    <div class="wrapper--account">
+      <div class="account-info">
+        <div class="account-icon">
+          <div v-if="isH160">evm</div>
+          <div v-else>native</div>
         </div>
-        <div class="column-address-icons">
-          <div class="column__address">
-            <span>{{ getShortenAddress(currentAccount) }}</span>
-          </div>
-          <div class="row__column--right">
-            <div class="screen--sm" :class="isH160 ? 'column--usd' : 'column--usd-native'">
-              <span class="text--accent">{{ $n(totalBal) }} USD</span>
-            </div>
-            <div class="column__icons">
-              <div>
-                <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
-                  <astar-icon-copy />
-                </button>
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t('copy') }}</span>
-                </q-tooltip>
-              </div>
-              <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-                <button class="icon--primary">
-                  <astar-icon-external-link />
-                </button>
 
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-                </q-tooltip>
-              </a>
-            </div>
+        <div class="account-name-balance">
+          <!-- TODO -->
+          <div class="account-name">Unified Account Name</div>
+
+          <div class="account-balance">
+            {{ $n(totalBal) }}
+            <span>USD</span>
           </div>
         </div>
       </div>
 
-      <div v-if="multisig" class="row--details-signatory">
-        <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-          <span class="text--accent">
-            {{ $t('assets.theSignatory', { account: multisig.signatory.name }) }}
-          </span>
+      <div class="account-icon-buttons">
+        <div>
+          <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
+            <astar-icon-copy />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('copy') }}</span>
+          </q-tooltip>
+        </div>
+        <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+          <button class="icon--primary">
+            <astar-icon-external-link />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+          </q-tooltip>
+        </a>
+        <div>
+          <button class="icon--primary" @click="console.log('TODO: open wallet select modal')">
+            <astar-icon-3dots />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+          </q-tooltip>
         </div>
       </div>
     </div>
+
+    <div
+      v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
+      class="row"
+    >
+      <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
+      <span class="text--switch-account" @click="toggleEvmWalletSchema">
+        {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
+      </span>
+    </div>
+
+    <!-- <div class="column-account-name">
+        <img
+          v-if="iconWallet"
+          width="24"
+          :src="iconWallet"
+          alt="wallet-icon"
+          :class="multisig && 'img--polkasafe'"
+        />
+        <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
+      </div> -->
+    <!-- <div class="column-address-icons">
+      <div class="column__address">
+          <span>{{ getShortenAddress(currentAccount) }}</span>
+        </div>
+    </div> -->
+
+    <div v-if="multisig" class="row--details-signatory">
+      <div class="column-account-name">
+        <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
+        <span class="text--accent">
+          {{ $t('assets.theSignatory', { account: multisig.signatory.name }) }}
+        </span>
+      </div>
+    </div>
+
+    <div class="gradient-divider" />
+
     <modal-lockdrop-warning
       v-if="isLockdropAccount && !isH160"
       :is-modal="isModalLockdropWarning"
       :handle-modal="handleModalLockdropWarning"
     />
-    account end
   </div>
 </template>
 <script lang="ts">
