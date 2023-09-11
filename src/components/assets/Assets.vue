@@ -1,8 +1,7 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
     <div class="assets-bg">
-      <img class="astar-gradient" :src="bg_img.astar_gradient" />
-      <!-- TODO: add stars image -->
+      <img class="astar-stars" :src="bg_img.astar_stars" />
     </div>
 
     <div class="container--assets">
@@ -105,7 +104,7 @@ export default defineComponent({
     });
 
     const bg_img = {
-      astar_gradient: require('/src/assets/img/assets-page-bg.webp'),
+      astar_stars: require('/src/assets/img/assets-page-bg-stars.webp'),
     };
 
     const handleUpdateNativeTokenAssets = () => {

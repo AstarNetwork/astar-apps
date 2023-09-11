@@ -1,8 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
-  @apply tw-px-3 sm:tw-px-6 tw-pt-6 lg:tw-pt-32;
-  position: relative;
+  @apply tw-px-3 sm:tw-px-6 tw-pt-6 lg:tw-pt-32 tw-relative;
   @media (min-width: $lg) {
     // padding-top: 16px;
   }
@@ -12,11 +11,11 @@
   }
   @media (min-width: $lg) {
     margin: -60px -40px;
-    // margin-top: -12px;
   }
 }
 
 .container--assets {
+  @apply tw-relative tw-z-10;
   display: grid;
   row-gap: 32px;
   margin-bottom: 24px;
@@ -93,35 +92,58 @@
   }
 }
 
-.asset-container{
+.asset-container {
   @apply tw-border-2 sm:tw-border tw-rounded-2xl tw-shadow sm:tw-px-4 tw-py-4 tw-overflow-hidden;
   background-color: white;
-  &.asset-container--native{
+  &.asset-container--native {
     border-color: $astar-pink;
   }
-  &.asset-container--others{
+  &.asset-container--others {
     border-color: $astar-purple;
   }
 }
 
 .body--dark {
-  .asset-container{
+  .asset-container {
     background-color: $navy-2;
-    border-color: darken($astar-pink,25%);
-    &.asset-container--native{
-      border-color: darken($astar-pink,25%);
+    border-color: darken($astar-pink, 25%);
+    &.asset-container--native {
+      border-color: darken($astar-pink, 25%);
     }
-    &.asset-container--others{
-      border-color: darken($astar-purple,25%);
+    &.asset-container--others {
+      border-color: darken($astar-purple, 25%);
     }
   }
 }
 
-.assets-bg{
-  @apply tw-absolute tw-z-0 tw-left-0 tw-right-0 tw-top-0;
+.assets-bg {
+  @apply tw-absolute tw-z-0 tw-left-0 tw-right-0 tw-top-0 tw-overflow-hidden;
   z-index: -1;
-  .astar-gradient{
+  height: 372px;
+  background: linear-gradient(
+    120deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  &::before {
+    background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, white);
+    content: '';
+    height: 100%;
+    position: absolute;
     width: 100%;
-    height: 372px;
+    z-index: 0;
+  }
+  .astar-stars {
+    @apply tw-mix-blend-screen tw-absolute tw-left-0 tw-top-0;
+  }
+}
+.body--dark {
+  .assets-bg {
+    &::before {
+      background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, $navy-1);
+    }
   }
 }
