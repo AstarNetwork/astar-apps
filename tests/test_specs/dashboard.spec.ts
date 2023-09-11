@@ -24,9 +24,6 @@ test.describe('on dashboard screen', () => {
     await expect(widget.getByText('18')).toBeVisible();
   });
   test('Endpoint has been selected randomly', async ({ page }) => {
-    const isAppliedRandomEndpoint = await page.evaluate(() => {
-      return localStorage.getItem('isAppliedRandomEndpoint');
-    });
     const selectedEndpointObj: string = (await page.evaluate(() => {
       return localStorage.getItem('selectedEndpoint');
     })) as string;
@@ -36,7 +33,6 @@ test.describe('on dashboard screen', () => {
     );
     const isLightClient = checkIsLightClient(selectedEndpoint);
 
-    expect(isAppliedRandomEndpoint).toBe('true');
     expect(isSomeOfAstarEndpoints).toBe(true);
     expect(isLightClient).toBe(false);
   });

@@ -21,16 +21,52 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "smart_contract",
 				"type": "address"
 			},
 			{
 				"internalType": "uint128",
-				"name": "",
+				"name": "era",
 				"type": "uint128"
 			}
 		],
-		"name": "claim",
+		"name": "claim_dapp",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "smart_contract",
+				"type": "address"
+			}
+		],
+		"name": "claim_staker",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "origin_smart_contract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint128",
+				"name": "amount",
+				"type": "uint128"
+			},
+			{
+				"internalType": "address",
+				"name": "target_smart_contract",
+				"type": "address"
+			}
+		],
+		"name": "nomination_transfer",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -41,43 +77,14 @@
 				"internalType": "address",
 				"name": "contract_id",
 				"type": "address"
-			},
-			{
-				"internalType": "uint32",
-				"name": "era",
-				"type": "uint32"
 			}
 		],
-		"name": "read_contract_era_stake",
+		"name": "read_contract_stake",
 		"outputs": [
 			{
 				"internalType": "uint128",
 				"name": "",
 				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "contract_id",
-				"type": "address"
-			},
-			{
-				"internalType": "uint32",
-				"name": "era",
-				"type": "uint32"
-			}
-		],
-		"name": "read_contract_era_stakers",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "view",
@@ -137,9 +144,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "bytes",
 				"name": "staker",
-				"type": "address"
+				"type": "bytes"
 			}
 		],
 		"name": "read_staked_amount",
@@ -148,6 +155,43 @@
 				"internalType": "uint128",
 				"name": "",
 				"type": "uint128"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "contract_id",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "staker",
+				"type": "bytes"
+			}
+		],
+		"name": "read_staked_amount_on_contract",
+		"outputs": [
+			{
+				"internalType": "uint128",
+				"name": "",
+				"type": "uint128"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "read_unbonding_period",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -169,6 +213,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "enum DappsStaking.RewardDestination",
+				"name": "reward_destination",
+				"type": "uint8"
+			}
+		],
+		"name": "set_reward_destination",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
@@ -180,6 +237,19 @@
 			}
 		],
 		"name": "unbond_and_unstake",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "smart_contract",
+				"type": "address"
+			}
+		],
+		"name": "withdraw_from_unregistered",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
