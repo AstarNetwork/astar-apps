@@ -1,9 +1,10 @@
 <template>
-  <div
-    v-if="!isLoading"
-    class="wrapper--assets tw-bg-no-repeat"
-    :style="`background-image: url('${bg_img.astar_gradient}');`"
-  >
+  <div v-if="!isLoading" class="wrapper--assets">
+    <div class="assets-bg">
+      <img class="astar-gradient" :src="bg_img.astar_gradient" />
+      <!-- TODO: add stars image -->
+    </div>
+
     <div class="container--assets">
       <!-- <div class="title--account">
           <span class="text--xl">
@@ -17,7 +18,7 @@
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
 
-      <rewards v-if="!isH160" class="screen--xxl-down" />
+      <rewards class="screen--xxl-down" />
 
       <div class="asset-container asset-container--native">
         <evm-native-token v-if="isH160" />
@@ -37,7 +38,7 @@
     </div>
 
     <div class="column--links">
-      <div v-if="!isH160" class="tw-hidden sm:tw-flex tw-justify-end">
+      <div class="tw-hidden sm:tw-flex tw-justify-end">
         <rewards />
       </div>
       <dynamic-links />
@@ -104,7 +105,7 @@ export default defineComponent({
     });
 
     const bg_img = {
-      astar_gradient: require('/src/assets/img/assets-page-bg.svg'),
+      astar_gradient: require('/src/assets/img/assets-page-bg.webp'),
     };
 
     const handleUpdateNativeTokenAssets = () => {

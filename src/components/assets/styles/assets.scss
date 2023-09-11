@@ -117,3 +117,11 @@
   }
 }
 
+.assets-bg{
+  @apply tw-absolute tw-z-0 tw-left-0 tw-right-0 tw-top-0;
+  z-index: -1;
+  .astar-gradient{
+    width: 100%;
+    height: 372px;
+  }
+}
