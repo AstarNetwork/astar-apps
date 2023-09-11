@@ -51,7 +51,7 @@
           </div>
         </button>
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('subscan') }}</span>
+          <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
         </q-tooltip>
       </div>
     </div>

@@ -395,7 +395,7 @@ export default {
     expand: 'Expand',
     collapse: 'Collapse',
     transferableBalance: 'Transferable Balance',
-    transferable: '(Transferable)',
+    transferable: 'Transferable',
     yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
@@ -416,6 +416,8 @@ export default {
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
     theSignatory: '{account} is the signatory',
+    lockedTokens: 'Locked tokens',
+    addToFavorite: 'Add to favorite',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',

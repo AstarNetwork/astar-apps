@@ -73,14 +73,14 @@
       <div>
         <button
           class="btn btn--sm btn--icon adjuster--width"
-          @click="console.log('TODO: add to favorite action')"
+          @click="console.log('TODO: need to add a favorite action')"
         >
           <div class="icon--star">
             <span> ★ </span>
           </div>
         </button>
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+          <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
         </q-tooltip>
       </div>
     </div>
@@ -90,7 +90,7 @@
       <div v-show="isExpand" class="row__expand">
         <div class="row__expand-inner">
           <div class="icon-buttons">
-            <button @click="console.log('TODO: add to favorite action')">
+            <button @click="console.log('TODO: need to add a favorite action')">
               <span> ★ </span>
             </button>
             <a :href="explorerLink" target="_blank" rel="noopener noreferrer">

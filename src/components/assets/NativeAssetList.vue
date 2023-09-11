@@ -37,7 +37,7 @@
                 : $router.push(buildTransferPageLink(nativeTokenSymbol))
           "
         >
-          <div class="tw-font-semibold">Transferable</div>
+          <div class="tw-font-semibold">{{ $t('assets.transferable') }}</div>
           <div>
             <div v-if="!isSkeleton" class="column--amount">
               <span class="text--amount">
@@ -70,7 +70,7 @@
       <!-- Locked tokens -->
       <div class="row row--locked-tokens">
         <div class="row__info" @click="isExpand = !isExpand">
-          <div class="tw-font-semibold">Locked tokens</div>
+          <div class="tw-font-semibold">{{ $t('assets.lockedTokens') }}</div>
           <div>
             <div v-if="!isSkeleton" class="column--amount">
               <span class="text--amount">

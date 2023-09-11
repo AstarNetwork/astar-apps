@@ -36,7 +36,7 @@
               : $router.push(buildTransferPageLink(nativeTokenSymbol))
         "
       >
-        <div class="tw-font-semibold">Transferable</div>
+        <div class="tw-font-semibold">{{ $t('assets.transferable') }}</div>
         <div>
           <div v-if="nativeTokenSymbol && currentNetworkName" class="column--amount">
             <span class="text--amount">
@@ -72,6 +72,8 @@
         </a>
       </div>
     </div>
+
+    <!-- TODO: need to add evm locked tokens -->
 
     <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>

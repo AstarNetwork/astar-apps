@@ -20,7 +20,7 @@
         </div>
 
         <div class="account-name-balance">
-          <!-- TODO -->
+          <!-- TODO: need to replace a dynamic account name -->
           <div class="account-name">Unified Account Name</div>
 
           <div class="account-balance">
