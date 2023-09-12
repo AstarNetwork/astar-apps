@@ -1,0 +1,46 @@
+endpoint: wss://kintsugi.api.onfinality.io/public-ws
+mock-signature-host: true
+block: ${env.KINTSUGI_BLOCK_NUMBER}
+db: ./db.sqlite
+# wasm-override: kintsugi_runtime.compact.compressed.wasm
+port: 9964
+
+import-storage:
+  Tokens:
+    Accounts:
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: INTR
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: IBTC
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: IBTC
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: DOT
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: KINT
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: KBTC
+        - free: '100000000000000000000000000000'
+      -
+        -
+          - 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+          - token: KSM
+        - free: '100000000000000000000000000000'
+

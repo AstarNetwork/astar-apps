@@ -34,7 +34,7 @@ async function executeRun() {
             'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/chopsticks/moonbeam.yml -p=tests/chopsticks/acala.yml -p=tests/chopsticks/interlay.yml -p=tests/chopsticks/bifrost.yml -r=tests/chopsticks/polkadot.yml'
           )
         : spawnDetached(
-            'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/shiden.yml -p=tests/chopsticks/moonriver.yml -r=tests/chopsticks/kusama.yml  '
+            'npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/shiden.yml -p=tests/chopsticks/moonriver.yml -p=tests/chopsticks/karura.yml -p=tests/chopsticks/kintsugi.yml -r=tests/chopsticks/kusama.yml'
           );
     console.info('Chopsticks started with pid:', childProcess.pid);
 
