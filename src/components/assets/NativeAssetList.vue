@@ -102,7 +102,7 @@
               <!-- Vesting -->
               <div class="expand__inner-row">
                 <div class="expand__info" @click="handleModalVesting({ isOpen: true })">
-                  <div class="tw-font-semibold">Vesting</div>
+                  <div class="tw-font-semibold">{{ $t('assets.vesting') }}</div>
                   <div class="tw-flex-1">
                     <div v-if="!isSkeleton" class="column__box-native">
                       <span class="tw-font-semibold">
@@ -126,7 +126,7 @@
               <!-- Staking -->
               <div class="expand__inner-row">
                 <div class="expand__info" @click="() => $router.push(Path.DappStaking)">
-                  <div class="tw-font-semibold">Staking</div>
+                  <div class="tw-font-semibold">{{ $t('common.staking') }}</div>
                   <div class="tw-flex-1">
                     <div v-if="!isSkeleton" class="column__box-native">
                       <span class="tw-font-semibold">

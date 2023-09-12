@@ -15,12 +15,17 @@
     <div class="wrapper--account">
       <div class="account-info">
         <div class="account-icon">
-          <div v-if="isH160">evm</div>
-          <div v-else>native</div>
+          <!-- TODO: need to add icon for unified account -->
+          <div v-if="isH160">
+            <img :src="account_icon.evm" />
+          </div>
+          <div v-else>
+            <img :src="account_icon.native" />
+          </div>
         </div>
 
         <div class="account-name-balance">
-          <!-- TODO: need to replace a dynamic account name -->
+          <!-- TODO: need to replace to the dynamic account name -->
           <div class="account-name">Unified Account Name</div>
 
           <div class="account-balance">
@@ -52,7 +57,7 @@
             <astar-icon-3dots />
           </button>
           <q-tooltip>
-            <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+            <span class="text--tooltip">{{ $t('assets.accountDetails') }}</span>
           </q-tooltip>
         </div>
       </div>
@@ -261,6 +266,11 @@ export default defineComponent({
       { immediate: false }
     );
 
+    const account_icon = {
+      native: require('/src/assets/img/logo-polkadot-js.png'),
+      evm: require('/src/assets/img/logo-eth-purple.svg'),
+    };
+
     return {
       iconWallet,
       currentAccountName,
@@ -283,6 +293,7 @@ export default defineComponent({
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,
+      account_icon,
     };
   },
 });

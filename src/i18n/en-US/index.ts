@@ -418,6 +418,8 @@ export default {
     theSignatory: '{account} is the signatory',
     lockedTokens: 'Locked tokens',
     addToFavorite: 'Add to favorite',
+    vesting: 'Vesting',
+    accountDetails: 'Account details',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
