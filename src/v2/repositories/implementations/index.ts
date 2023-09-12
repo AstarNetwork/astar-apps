@@ -18,3 +18,4 @@ export * from './AssetsRepository';
 export * from './xcm/BifrostXcmRepository';
 export * from './xcm/EquilibriumXcmRepository';
 export * from './xcm/UniqueXcmRepository';
+export * from './AccountsRepository';

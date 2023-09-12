@@ -110,6 +110,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       throw Error(error.message);
     }
   }
+
   public async sendEvmTransaction({
     from,
     to,
@@ -171,18 +172,15 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     return AlertMsg.ERROR;
   }
 
-  public async signPayload(payload: string, senderAddress: string): Promise<string> {
+  public async signPayload(payload: unknown, senderAddress: string): Promise<string> {
     Guard.ThrowIfUndefined('payload', payload);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    const web3 = new Web3(this.provider as any);
-    const accounts = await web3.eth.getAccounts();
+    const signature = await this.provider.request({
+      method: 'eth_signTypedData_v4',
+      params: [senderAddress, payload],
+    });
 
-    return await this.provider
-      .request({
-        method: 'eth_signTypedData_v4',
-        params: [accounts[0], payload],
-      })
-      .toString();
+    return signature as string;
   }
 }

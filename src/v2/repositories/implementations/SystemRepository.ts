@@ -57,7 +57,7 @@ export class SystemRepository implements ISystemRepository {
 
   public async getChainId(): Promise<number> {
     const api = await this.api.getApi();
-    const id = Number(api.consts.accounts.chainId.toHuman());
+    const id = Number(api.consts.accounts.chainId.toHuman()?.toString().replace(',', ''));
 
     return id;
   }

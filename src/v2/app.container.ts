@@ -13,6 +13,7 @@ import {
   IXvmRepository,
   IAssetsRepository,
   IPolkasafeRepository,
+  IAccountsRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -24,6 +25,7 @@ import {
   EvmAssetsRepository,
   AssetsRepository,
   PolkasafeRepository,
+  AccountsRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -118,6 +120,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
+  container.addSingleton<IAccountsRepository>(AccountsRepository, Symbols.AccountsRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);

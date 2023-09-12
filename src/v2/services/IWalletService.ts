@@ -56,5 +56,5 @@ export interface IWalletService {
    * @param payload Payload to sign
    * @param senderAddress Signer address
    */
-  signPayload(payload: string, senderAddress: string): Promise<string>;
+  signPayload(payload: unknown, senderAddress: string): Promise<string>;
 }

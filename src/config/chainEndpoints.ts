@@ -125,7 +125,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     blockscout: '',
     evmChainId: '4369',
-    evmEndpoints: ['http://127.0.0.1:9933'],
+    evmEndpoints: ['http://127.0.0.1:9944'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',

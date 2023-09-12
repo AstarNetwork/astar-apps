@@ -154,7 +154,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     return result;
   }
 
-  public async signPayload(payload: string, senderAddress: string): Promise<string> {
+  public async signPayload(payload: unknown, senderAddress: string): Promise<string> {
     throw new Error('Method not implemented.');
   }
 
