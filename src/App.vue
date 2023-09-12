@@ -61,8 +61,9 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAppRouter } from 'src/hooks';
+import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -78,10 +79,14 @@ export default defineComponent({
   setup() {
     useAppRouter();
     const store = useStore();
+    const { currentAccountName } = useAccount();
+
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
     const showDisclaimerModal = ref<boolean>(false);
     if (!localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
       setTimeout(() => {
@@ -124,8 +129,10 @@ export default defineComponent({
     });
 
     // Handle wallet change so we can inject proper wallet
-    watch([isEthWallet, currentWallet], () => {
-      setCurrentWallet(isEthWallet.value, currentWallet.value);
+    watch([isEthWallet, currentWallet, isH160, currentAccountName], () => {
+      // Todo: delete after we remove the lockdrop service
+      const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
+      setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
     });
 
     const removeSplashScreen = () => {
