@@ -1,5 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 
 export enum WalletType {
   Metamask = 'Metamask',
@@ -53,8 +54,13 @@ export interface IWalletService {
 
   /**
    * Signs the given payload
-   * @param payload Payload to sign
-   * @param senderAddress Signer address
+   * @param domain EIP-712 Typed Data
+   * @param types data types to be signed
+   * @param value data to be signed
    */
-  signPayload(payload: unknown, senderAddress: string): Promise<string>;
+  signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string>;
 }

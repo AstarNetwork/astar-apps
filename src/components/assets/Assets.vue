@@ -174,7 +174,7 @@ export default defineComponent({
     // Temp account unification test, TODO remove later
     const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
     service.unifyAccounts(
-      'YWp1X5vvxq33riyqU69NBJuWLPubh45PrzVbsUtpcS1Meg7',
+      'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa',
       '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90'
     );
 

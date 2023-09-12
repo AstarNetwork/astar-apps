@@ -7,6 +7,7 @@ import { ISystemRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { Struct, u32 } from '@polkadot/types';
 import { EventAggregator, NewBlockMessage } from 'src/v2/messaging';
+import { BlockHash } from '@polkadot/types/interfaces';
 
 export interface FrameSystemAccountInfo extends Struct {
   readonly nonce: u32;
@@ -66,9 +67,10 @@ export class SystemRepository implements ISystemRepository {
    * Gets block hash by block number.
    * @param blockNumber Block number
    */
-  public async getBlockHash(blockNumber: number): Promise<string> {
+  public async getBlockHash(blockNumber: number): Promise<BlockHash> {
     const api = await this.api.getApi();
+    const blockHash = await api.rpc.chain.getBlockHash<BlockHash>(blockNumber);
 
-    return (await api.query.system.blockHash(blockNumber)).toString();
+    return blockHash;
   }
 }

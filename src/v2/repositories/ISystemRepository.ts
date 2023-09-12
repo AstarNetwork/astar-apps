@@ -1,3 +1,4 @@
+import { BlockHash } from '@polkadot/types/interfaces';
 import { AccountInfoModel } from 'src/v2/models';
 
 /**
@@ -20,5 +21,5 @@ export interface ISystemRepository {
    * Gets block hash by block number.
    * @param blockNumber Block number
    */
-  getBlockHash(blockNumber: number): Promise<string>;
+  getBlockHash(blockNumber: number): Promise<BlockHash>;
 }

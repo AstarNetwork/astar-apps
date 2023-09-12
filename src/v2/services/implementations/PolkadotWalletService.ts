@@ -3,6 +3,7 @@ import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { Signer } from '@polkadot/types/types';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
@@ -154,7 +155,11 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     return result;
   }
 
-  public async signPayload(payload: unknown, senderAddress: string): Promise<string> {
+  public async signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string> {
     throw new Error('Method not implemented.');
   }
 

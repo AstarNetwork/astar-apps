@@ -10,7 +10,7 @@ export class AccountsRepository implements IAccountsRepository {
 
   public async getClaimEvmAccountCall(
     h160Address: string,
-    signature: number[]
+    signature: string
   ): Promise<ExtrinsicPayload> {
     Guard.ThrowIfUndefined('h160Address', h160Address);
     Guard.ThrowIfUndefined('signature', signature);

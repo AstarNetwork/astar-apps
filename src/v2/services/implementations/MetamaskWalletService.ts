@@ -1,4 +1,6 @@
 import { getEvmGas } from '@astar-network/astar-sdk-core';
+import { ethers } from 'ethers';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
@@ -172,15 +174,19 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     return AlertMsg.ERROR;
   }
 
-  public async signPayload(payload: unknown, senderAddress: string): Promise<string> {
-    Guard.ThrowIfUndefined('payload', payload);
-    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+  public async signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string> {
+    Guard.ThrowIfUndefined('domain', domain);
+    Guard.ThrowIfUndefined('types', types);
+    Guard.ThrowIfUndefined('value', value);
 
-    const signature = await this.provider.request({
-      method: 'eth_signTypedData_v4',
-      params: [senderAddress, payload],
-    });
+    const provider = new ethers.providers.Web3Provider(this.provider);
+    const signer = provider.getSigner();
+    const signature = await signer._signTypedData(domain, types, value);
 
-    return signature as string;
+    return signature;
   }
 }
