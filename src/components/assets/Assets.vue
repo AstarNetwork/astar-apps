@@ -4,6 +4,7 @@
       <div class="separator" />
     </div>
     <div class="container--assets">
+      <astar-button @click="unify()">Unify accounts</astar-button>
       <div class="container--account">
         <div class="title--account">
           <span class="text--xl">
@@ -172,11 +173,14 @@ export default defineComponent({
     });
 
     // Temp account unification test, TODO remove later
-    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
-    service.unifyAccounts(
-      'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa',
-      '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90'
-    );
+    const unify = async () => {
+      const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
+      const evmAddress = '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90';
+      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+      await service.unifyAccounts(nativeAddress, evmAddress);
+      console.log('mapped native', await service.getMappedNativeAddress(evmAddress));
+      console.log('mapped evm', await service.getMappedEvmAddress(nativeAddress));
+    };
 
     return {
       evmAssets,
@@ -191,6 +195,7 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      unify,
     };
   },
 });

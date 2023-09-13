@@ -4,6 +4,7 @@ import { IWalletService, WalletType, IAccountUnificationService } from 'src/v2/s
 import { IAccountsRepository, ISystemRepository } from 'src/v2/repositories';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { Guard } from 'src/v2/common';
 
 @injectable()
 export class AccountUnificationService implements IAccountUnificationService {
@@ -15,11 +16,11 @@ export class AccountUnificationService implements IAccountUnificationService {
     @inject(Symbols.EventAggregator) private eventAggregator: IEventAggregator
   ) {}
 
-  public async unifyAccounts(ss58Address: string, h160Address: string): Promise<void> {
+  public async unifyAccounts(nativeAddress: string, evmAddress: string): Promise<void> {
     try {
       const chainId = await this.systemRepo.getChainId();
       const genesisHash = await this.systemRepo.getBlockHash(0);
-      const publicKey = decodeAddress(ss58Address);
+      const publicKey = decodeAddress(nativeAddress);
 
       const domain = {
         chainId: chainId,
@@ -39,15 +40,12 @@ export class AccountUnificationService implements IAccountUnificationService {
       const signedPayload = await evmWallet.signPayload(domain, types, value);
 
       // Claim account with polkadot wallet.
-      const transaction = await this.accountsRepo.getClaimEvmAccountCall(
-        h160Address,
-        signedPayload
-      );
+      const transaction = await this.accountsRepo.getClaimEvmAccountCall(evmAddress, signedPayload);
       const polkadotWallet = this.walletFactory(WalletType.Polkadot);
 
       await polkadotWallet.signAndSend({
         extrinsic: transaction,
-        senderAddress: ss58Address,
+        senderAddress: nativeAddress,
       });
     } catch (error) {
       const e = error as Error;
@@ -58,5 +56,17 @@ export class AccountUnificationService implements IAccountUnificationService {
         })
       );
     }
+  }
+
+  public async getMappedNativeAddress(evmAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('evmAddress', evmAddress);
+
+    return await this.accountsRepo.getMappedNativeAddress(evmAddress);
+  }
+
+  public async getMappedEvmAddress(nativeAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
+
+    return await this.accountsRepo.getMappedEvmAddress(nativeAddress);
   }
 }

@@ -1,3 +1,5 @@
 export interface IAccountUnificationService {
-  unifyAccounts(ss58Address: string, h160Address: string): Promise<void>;
+  unifyAccounts(nativeAddress: string, evmAddress: string): Promise<void>;
+  getMappedNativeAddress(evmAddress: string): Promise<string>;
+  getMappedEvmAddress(nativeAddress: string): Promise<string>;
 }
