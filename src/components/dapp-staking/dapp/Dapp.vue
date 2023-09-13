@@ -33,8 +33,11 @@ import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks'
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models';
-import { computed, defineComponent } from 'vue';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { computed, defineComponent, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -80,6 +83,33 @@ export default defineComponent({
       }
       return null;
     });
+
+    // Fetch full dApp model from API. Initially, store contains dapp with props required for the main page.
+    const getDapp = async () => {
+      if (dapp.value?.dapp?.description) {
+        // Full dapp model is already loaded to the store. No need to fetch dapp from API.
+        return;
+      }
+      try {
+        store.commit('general/setLoading', true, { root: true });
+        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const loadedDapp = await service.getDapp(dappAddress.value, 'astar');
+        if (loadedDapp) {
+          store.commit('dapps/updateDapp', loadedDapp);
+        }
+      } finally {
+        store.commit('general/setLoading', false, { root: true });
+      }
+    };
+    watch(
+      [dapps],
+      () => {
+        if (dapps.value.length > 0) {
+          getDapp();
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       Path,
