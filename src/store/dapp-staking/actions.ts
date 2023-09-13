@@ -89,7 +89,7 @@ const actions: ActionTree<State, StateInterface> = {
 
     try {
       // Fetch dapps
-      const dappsUrl = `http://127.0.0.1:5001/astar-token-api/us-central1/app/api/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
+      const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
 
       const [dapps, combinedInfo] = await Promise.all([
