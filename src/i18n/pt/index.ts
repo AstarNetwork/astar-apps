@@ -294,7 +294,7 @@ export default {
       requiredClaimFirst: 'Clame suas recompensas antes de enviar a transação',
       requiredClaimFirstCompounding:
         '{message} -Desative a composição, clame suas recompensas e ative a composição novamente',
-      successfullyWithdrew: 'O saldo foi sacado com sucesso',
+      successfullyWithdrawn: 'O saldo foi sacado com sucesso',
       successfullySetRewardDest: 'Você definiu com sucesso o destino da recompensa',
     },
     error: {
