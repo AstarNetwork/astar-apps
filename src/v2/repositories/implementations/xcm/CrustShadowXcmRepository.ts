@@ -55,7 +55,8 @@ export class CrustShadowXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -129,7 +130,7 @@ export class CrustShadowXcmRepository extends XcmRepository {
 
     const asset = isRegisteredAsset
       ? {
-          Concrete: await this.fetchAssetConfig(from, token),
+          Concrete: await this.fetchAssetConfig(from, token, endpoint),
         }
       : {
           Concrete: {
@@ -152,6 +153,7 @@ export class CrustShadowXcmRepository extends XcmRepository {
     if (isWithdrawAssets) {
       return await this.buildTxCall(
         from,
+        endpoint,
         extrinsicName,
         functionName,
         destination,
@@ -166,6 +168,7 @@ export class CrustShadowXcmRepository extends XcmRepository {
       const destWeight = new BN(10).pow(new BN(9)).muln(5);
       return await this.buildTxCall(
         from,
+        endpoint,
         extrinsicName,
         functionName,
         currencyId,
@@ -178,13 +181,14 @@ export class CrustShadowXcmRepository extends XcmRepository {
 
   protected async fetchAssetConfig(
     source: XcmChain,
-    token: Asset
+    token: Asset,
+    endpoint: string
   ): Promise<{
     parents: number;
     interior: Interior;
   }> {
     const symbol = token.metadata.symbol;
-    const api = await this.apiFactory.get(source.endpoint);
+    const api = await this.apiFactory.get(endpoint);
     const config = await api.query.assetManager.assetIdType<Option<AssetConfig>>(
       this.astarTokens[symbol]
     );
@@ -198,10 +202,11 @@ export class CrustShadowXcmRepository extends XcmRepository {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
     const symbol = token.metadata.symbol;
-    const api = await this.apiFactory.get(chain.endpoint);
+    const api = await this.apiFactory.get(endpoint);
 
     try {
       if (this.isAstarNativeToken(token)) {
@@ -213,7 +218,7 @@ export class CrustShadowXcmRepository extends XcmRepository {
       }
 
       if (isNativeToken) {
-        return (await this.getNativeBalance(address, chain)).toString();
+        return (await this.getNativeBalance(address, chain, endpoint)).toString();
       } else {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
           Token: token.originAssetId,
