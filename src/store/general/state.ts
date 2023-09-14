@@ -50,7 +50,6 @@ export interface GeneralStateInterface {
   isLedger: boolean;
   currentEcdsaAccount: EcdsaAccount;
   currentAddress: string;
-  currentCustomEndpoint: string;
   currentTheme: Theme;
   headerName: string;
   currentWallet: string;
@@ -86,7 +85,6 @@ function state(): GeneralStateInterface {
       h160: '',
     },
     currentAddress: '',
-    currentCustomEndpoint: '',
 
     currentTheme:
       //this queries the media setting

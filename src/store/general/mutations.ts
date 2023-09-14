@@ -25,7 +25,6 @@ export interface GeneralMutations<S = State> {
   setCurrentNetworkStatus(state: S, networkStatus: ConnectionType): void;
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
   setCurrentAddress(state: S, address: string): void;
-  setCurrentCustomEndpoint(state: S, endpoint: string): void;
   setHeaderName(state: S, name: string): void;
   setCurrentWallet(state: S, wallet: string): void;
   setGas(state: S, gas: GasTip): void;
@@ -83,9 +82,6 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setCurrentAddress(state, address) {
     state.currentAddress = address;
-  },
-  setCurrentCustomEndpoint(state, endpoint) {
-    state.currentCustomEndpoint = endpoint;
   },
   setTheme(state, theme) {
     if (theme == 'DARK') {
