@@ -300,7 +300,7 @@ export default {
       requiredClaimFirst: "Veuillez réclamer vos récompenses avant d'envoyer une transaction",
       requiredClaimFirstCompounding:
         '{message} -Désactiver la composition, réclamer vos récompenses, puis réactiver la composition',
-      successfullyWithdrew: 'Solde retiré avec succès',
+      successfullyWithdrawn: 'Solde retiré avec succès',
       successfullySetRewardDest: 'Vous avez défini la destination des récompenses avec succès',
     },
     error: {
