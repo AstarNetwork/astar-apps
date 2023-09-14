@@ -29,7 +29,7 @@ import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue'
 import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
-import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
+import { useDappRedirect, useDispatchGetDapps, useNetworkInfo, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
@@ -53,6 +53,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const { currentNetworkName } = useNetworkInfo();
     useDappRedirect();
     useDispatchGetDapps();
     const store = useStore();
@@ -93,7 +94,10 @@ export default defineComponent({
       try {
         store.commit('general/setLoading', true, { root: true });
         const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-        const loadedDapp = await service.getDapp(dappAddress.value, 'astar');
+        const loadedDapp = await service.getDapp(
+          dappAddress.value,
+          currentNetworkName.value.toLowerCase()
+        );
         if (loadedDapp) {
           store.commit('dapps/updateDapp', loadedDapp);
         }
