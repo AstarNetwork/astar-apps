@@ -31,4 +31,6 @@ export const Symbols = {
   AssetsService: Symbol.for('AssetsService'),
   AccountUnificationService: Symbol.for('AccountUnificationService'),
   AccountsRepository: Symbol.for('AccountsRepository'),
+  IdentityRepository: Symbol.for('IdentityRepository'),
+  IdentityService: Symbol.for('IdentityService'),
 };

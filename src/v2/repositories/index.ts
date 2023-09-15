@@ -9,3 +9,4 @@ export * from './IEvmAssetsRepository';
 export * from './IAssetsRepository';
 export * from './IPolkasafeRepository';
 export * from './IAccountsRepository';
+export * from './IIdentityRepository';
