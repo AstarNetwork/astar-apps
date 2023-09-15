@@ -296,7 +296,7 @@ export default {
       requiredClaimFirst: 'Effettua il Claim prima di inviare la transazione',
       requiredClaimFirstCompounding:
         '{message} -Disabilita il compounding,fai il Claim delle ricompense e abilita nuovamente il compounding',
-      successfullyWithdrew: 'Saldo ritirato con successo',
+      successfullyWithdrawn: 'Saldo ritirato con successo',
       successfullySetRewardDest: 'Hai impostato con successo la destinazione delle reward',
     },
     error: {
