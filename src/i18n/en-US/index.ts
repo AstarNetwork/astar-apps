@@ -352,7 +352,7 @@ export default {
       requiredClaimFirst: 'Please claim your rewards before sending transaction',
       requiredClaimFirstCompounding:
         '{message} -Disable compounding, claim your rewards and then enable compounding again',
-      successfullyWithdrew: 'Balance is successfully withdrew',
+      successfullyWithdrawn: 'Balance successfully withdrawn',
       successfullySetRewardDest: 'You successfully set reward destination',
       successfullyStaked: 'You successfully staked to {contractAddress}',
       successfullyUnbond: 'You successfully started unbonding process for {contractAddress}',

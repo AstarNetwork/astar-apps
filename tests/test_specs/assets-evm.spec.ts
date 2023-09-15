@@ -1,7 +1,12 @@
 import { Page, expect } from '@playwright/test';
 import { ApiPromise } from '@polkadot/api';
 import { clickDisclaimerButton } from 'src/modules/playwright';
-import { changeNetworkOnEVM, connectWithEVM, createMetamaskAccount, signInMetamask } from '../common';
+import {
+  changeNetworkOnEVM,
+  connectWithEVM,
+  createMetamaskAccount,
+  signInMetamask,
+} from '../common';
 import { getApi } from '../common-api';
 import { getWindow, test } from '../fixtures';
 
