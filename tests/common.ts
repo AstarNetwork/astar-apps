@@ -156,11 +156,15 @@ export const connectWithEVM = async (page: Page, context: BrowserContext): Promi
   return extensionWindow;
 };
 
-export const changeNetworkOnEVM = async (page: Page, context: BrowserContext, extensionWindow?: Page): Promise<void> => {
+export const changeNetworkOnEVM = async (
+  page: Page,
+  context: BrowserContext,
+  extensionWindow?: Page
+): Promise<void> => {
   if (!extensionWindow) {
     extensionWindow = await getWindow('MetaMask Notification', context);
   }
-  
+
   await extensionWindow.waitForLoadState('load');
   await extensionWindow.waitForSelector('.confirmation-page__content', { state: 'visible' });
   await extensionWindow
