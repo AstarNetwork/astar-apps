@@ -17,7 +17,7 @@
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
 
-      <rewards class="screen--xxl-down" />
+      <rewards class="screen--lg-down" />
 
       <div class="asset-container asset-container--native">
         <evm-native-token v-if="isH160" />

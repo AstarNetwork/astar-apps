@@ -12,7 +12,7 @@
         </div>
         <div>
           <div class="text--title">{{ token.symbol }}</div>
-          <div class="ttext--label">{{ formatTokenName(token.name) }}</div>
+          <div class="text--label">{{ formatTokenName(token.name) }}</div>
         </div>
       </div>
       <div class="column--balance">
@@ -27,22 +27,39 @@
 
     <!-- for desktop -->
     <div class="row__right">
-      <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
-        <button class="btn btn--sm">
-          {{ $t('assets.bridge') }}
-        </button>
-      </a>
-      <router-link :to="buildTransferPageLink(token.symbol)">
-        <button class="btn btn--sm">
-          {{ $t('assets.transfer') }}
-        </button>
-      </router-link>
+      <div>
+        <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
+          <button class="btn icon-button">
+            <astar-icon-bridge />
+          </button>
+        </a>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+        </q-tooltip>
+      </div>
+      <div>
+        <router-link :to="buildTransferPageLink(token.symbol)">
+          <button class="btn icon-button">
+            <!-- TODO: need to create a new icon in AstarUI -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M9.05025 14.6777L14 22.4558L20.364 3.36396L1.27208 9.72792L9.05025 14.6777ZM9.05025 14.6777L14.7071 9.02082"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </router-link>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('assets.transfer') }}</span>
+        </q-tooltip>
+      </div>
       <div>
         <a class="box--explorer" :href="explorerLink" target="_blank" rel="noopener noreferrer">
-          <button class="btn btn--sm btn--explorer adjuster--width">
-            <div class="container--explorer-icon adjuster--width">
-              <astar-icon-external-link />
-            </div>
+          <button class="btn icon-button icon-external-link">
+            <astar-icon-external-link />
           </button>
         </a>
         <q-tooltip>
@@ -51,7 +68,7 @@
       </div>
       <div>
         <button
-          class="btn btn--sm btn--icon adjuster--width"
+          class="btn icon-button icon-plus"
           @click="
             addToEvmProvider({
               tokenAddress: token.address,
@@ -62,22 +79,32 @@
             })
           "
         >
-          <div class="icon--plus">
-            <span> + </span>
-          </div>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
-          </q-tooltip>
+          <!-- <astar-icon-plus /> -->
+          <span>+</span>
         </button>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+        </q-tooltip>
       </div>
       <div>
         <button
-          class="btn btn--sm btn--icon adjuster--width"
+          class="btn icon-button icon-favorite off"
           @click="console.log('TODO: need to add a favorite action')"
         >
-          <div class="icon--star">
-            <span> ★ </span>
-          </div>
+          <!-- TODO: need to create a new icon in AstarUI -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+            />
+          </svg>
         </button>
         <q-tooltip>
           <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
@@ -90,11 +117,27 @@
       <div v-show="isExpand" class="row__expand">
         <div class="row__expand-inner">
           <div class="icon-buttons">
-            <button @click="console.log('TODO: need to add a favorite action')">
-              <span> ★ </span>
+            <button
+              class="btn icon-button icon-favorite off"
+              @click="console.log('TODO: need to add a favorite action')"
+            >
+              <!-- TODO: need to create a new icon in AstarUI -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                />
+              </svg>
             </button>
             <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
-              <button>
+              <button class="btn icon-button icon-external-link">
                 <astar-icon-external-link />
               </button>
             </a>

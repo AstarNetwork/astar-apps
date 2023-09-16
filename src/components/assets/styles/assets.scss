@@ -2,15 +2,21 @@
 
 .wrapper--assets {
   @apply tw-px-3 sm:tw-px-6 tw-pt-6 lg:tw-pt-32 tw-relative;
+  background-color: $gray-1;
   @media (min-width: $lg) {
     // padding-top: 16px;
   }
-  @media (min-width: $xxxl) {
+  @media (min-width: $xl) {
     display: flex;
     justify-content: center;
   }
   @media (min-width: $lg) {
     margin: -60px -40px;
+  }
+}
+.body--dark {
+  .wrapper--assets {
+    background-color: $navy-1;
   }
 }
 
@@ -19,7 +25,7 @@
   display: grid;
   row-gap: 32px;
   margin-bottom: 24px;
-  @media (min-width: $xxxl) {
+  @media (min-width: $xl) {
     width: 100%;
     max-width: $container-max-width;
   }
@@ -74,7 +80,7 @@
 
 .column--links {
   display: none;
-  @media (min-width: $xxxl) {
+  @media (min-width: $xl) {
     display: block;
   }
 }
@@ -118,7 +124,7 @@
 
 .assets-bg {
   @apply tw-absolute tw-z-0 tw-left-0 tw-right-0 tw-top-0 tw-overflow-hidden;
-  z-index: -1;
+  z-index: 0;
   height: 372px;
   background: linear-gradient(
     120deg,
@@ -129,7 +135,7 @@
     #0ae2ff 74.93%
   );
   &::before {
-    background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, white);
+    background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, $gray-1);
     content: '';
     height: 100%;
     position: absolute;
@@ -140,6 +146,7 @@
     @apply tw-mix-blend-screen tw-absolute tw-left-0 tw-top-0;
   }
 }
+
 .body--dark {
   .assets-bg {
     &::before {

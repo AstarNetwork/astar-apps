@@ -1,8 +1,8 @@
 @import 'src/css/quasar.variables.scss';
 
-.screen--xxl-down {
+.screen--lg-down {
   display: block;
-  @media (min-width: $xxxl) {
+  @media (min-width: $xl) {
     display: none;
   }
 }

@@ -8,8 +8,11 @@
   // @media (min-width: $lg) {
   //   padding-right: 26px;
   // }
+  &:hover {
+    background-color: $gray-1;
+  }
   @apply xl:tw-flex xl:tw-items-center tw-px-4 tw-py-3 sm:tw-py-5;
-  &.is-expand{
+  &.is-expand {
     background-color: $gray-1;
   }
 }
@@ -23,7 +26,7 @@
 // }
 
 .row__left {
-  @apply tw-flex tw-items-center xl:tw-w-1/2 xl:tw-pointer-events-none tw-w-full;
+  @apply tw-flex tw-items-center xl:tw-w-2/3 xl:tw-pointer-events-none tw-w-full;
 }
 
 .row__right {
@@ -44,7 +47,7 @@
   // @media (min-width: $xxl) {
   //   grid-template-columns: 400px 290px;
   // }
-  @apply tw-hidden xl:tw-flex xl:tw-justify-end xl:tw-w-1/2 xl:tw-space-x-1;
+  @apply tw-hidden xl:tw-flex xl:tw-justify-end xl:tw-w-1/3 xl:tw-space-x-1.5;
 }
 
 // .row__right--evm {
@@ -238,13 +241,15 @@
   }
   .text-buttons {
     @apply tw-ml-auto tw-flex tw-space-x-2;
-    .btn.btn--sm,a{
+    .btn.btn--sm,
+    a {
       @apply tw-w-24 tw-flex tw-items-center tw-justify-center;
     }
   }
   .icon-buttons {
-    @apply tw-flex tw-space-x-2;
-    button,a {
+    @apply tw-flex tw-space-x-1;
+    button,
+    a {
       @apply tw-w-8 tw-h-8 tw-flex tw-items-center tw-justify-center tw-font-medium tw-text-2xl;
       color: $astar-blue;
       svg {
@@ -252,5 +257,42 @@
         stroke: $astar-blue;
       }
     }
+  }
+}
+
+.icon-button {
+  @apply tw-w-10 tw-h-10 tw-flex tw-justify-center tw-items-center tw-rounded-full hover:tw-text-white;
+  color: $astar-blue;
+  svg {
+    @apply tw-stroke-current tw-w-6 tw-h-6;
+  }
+  &:hover {
+    @apply tw-text-white;
+    background-color: $astar-blue;
+  }
+  @media (max-width: $sm) {
+    @apply tw-bg-transparent;
+    color: $astar-blue;
+  }
+  &.icon-external-link {
+    svg {
+      @apply tw-w-8 tw-h-8;
+    }
+  }
+  &.icon-favorite {
+    &.off {
+      svg {
+        @apply tw-stroke-current;
+        stroke-width: 1.5px;
+      }
+    }
+    &.on {
+      svg {
+        @apply tw-fill-current;
+      }
+    }
+  }
+  &.icon-plus {
+    @apply tw-text-3xl tw-leading-none;
   }
 }
