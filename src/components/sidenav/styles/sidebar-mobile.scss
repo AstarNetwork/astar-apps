@@ -16,19 +16,19 @@
 }
 
 .astar-stars {
-  @apply tw-mix-blend-screen tw-absolute tw-left-0 tw-top-0 tw-h-screen tw-w-screen;
+  @apply tw-mix-blend-screen tw-absolute tw-left-0 tw-top-0 tw-h-screen tw-w-screen tw-z-0;
   background-size: contain;
 }
 
 .nav{
-  @apply tw-px-6 tw-py-12 tw-space-y-5;
+  @apply tw-px-6 tw-py-12 tw-space-y-5 tw-relative;
   .link {
     @apply tw-text-white tw-font-bold tw-text-2xl tw-block;
   }
 }
 
 .external-links {
-  @apply tw-flex tw-justify-between tw-px-6;
+  @apply tw-flex tw-justify-between tw-px-6 tw-relative;
   a{
     @apply tw-block tw-text-white;
   }
@@ -45,7 +45,7 @@
 }
 
 .blog-articles {
-  @apply tw-flex tw-flex-nowrap tw-space-x-2 tw-overflow-x-scroll tw-mt-12;
+  @apply tw-flex tw-flex-nowrap tw-space-x-2 tw-overflow-x-scroll tw-mt-12 tw-relative;
   .card {
     @apply tw-block tw-rounded-xl tw-overflow-hidden tw-flex-shrink-0;
     width: 224.3px;
