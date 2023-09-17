@@ -18,7 +18,18 @@
         />
       </template>
       <network-button @show-network="clickNetworkBtn" />
+
+      <template v-if="screenSize.lg > width">
+        <button type="button" class="text-white tw-ml-2" @click="showMobileNav = !showMobileNav">
+          <astar-icon-3dots />
+        </button>
+      </template>
     </header-comp>
+
+    <!-- <q-slide-transition :duration="150">
+      <sidebar-mobile v-show="showMobileNav" />
+    </q-slide-transition> -->
+    <sidebar-mobile v-if="showMobileNav" />
 
     <!-- Modals -->
     <modal-network
@@ -54,6 +65,7 @@
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     />
+
     <modal-polkasafe
       v-if="modalPolkasafeSelect"
       v-model:isOpen="modalPolkasafeSelect"
@@ -72,6 +84,7 @@ import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
+import SidebarMobile from 'src/components/sidenav/SidebarMobile.vue';
 import TroubleHelp from 'src/components/header/TroubleHelp.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
@@ -100,6 +113,7 @@ export default defineComponent({
     HeaderComp,
     TroubleHelp,
     ModalPolkasafe,
+    SidebarMobile,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -158,6 +172,8 @@ export default defineComponent({
     const path = computed<string>(() => route.path);
     const headerName = ref<string>('');
 
+    const showMobileNav = ref(false);
+
     watch(
       path,
       () => {
@@ -183,6 +199,7 @@ export default defineComponent({
       width,
       screenSize,
       isLoading,
+      showMobileNav,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,

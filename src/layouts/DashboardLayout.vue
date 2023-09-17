@@ -5,9 +5,6 @@
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
       <portal-header />
-      <template v-if="screenSize.lg > width">
-        <sidebar-mobile />
-      </template>
       <!-- <main
         id="assets-top"
         class="
@@ -38,7 +35,6 @@ import { defineComponent, watchEffect } from 'vue';
 import { useBreakpoints, useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
-import SidebarMobile from 'components/sidenav/SidebarMobile.vue';
 import { useQuasar } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
@@ -46,7 +42,6 @@ import { useStore } from 'src/store';
 export default defineComponent({
   components: {
     PortalHeader,
-    SidebarMobile,
     SidebarDesktop,
   },
   setup() {

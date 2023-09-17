@@ -104,6 +104,7 @@ export default {
     instagram: 'Instagram',
     youtube: 'YouTube',
     docs: 'Documentation',
+    home: 'Home',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -138,6 +139,9 @@ export default {
     theme: 'Theme',
     close: 'Close',
     comingsoon: 'Something ink!redible coming soon',
+    myAssets: 'My Assets',
+    data: 'Data',
+    dappsStaking: 'dApp Staking',
   },
   drawer: {
     endpoint: 'Endpoint',

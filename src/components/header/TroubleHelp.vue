@@ -44,9 +44,9 @@ export default defineComponent({
 @import 'src/css/utils.scss';
 
 .wrapper--trouble-help {
-  margin-right: 8px;
-  @media (min-width: $lg) {
-    margin-right: 16px;
+  margin-right: 16px;
+  @media (max-width: $lg) {
+    display: none;
   }
 }
 

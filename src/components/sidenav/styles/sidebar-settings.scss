@@ -1,0 +1,40 @@
+@import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
+.wrapper {
+  @apply tw-flex tw-items-center tw-h-full tw-px-4;
+}
+
+.q-list{
+  @apply tw-w-full;
+}
+
+.ic-item {
+  background: #fff;
+  margin: 16px 0;
+  min-height: 40px;
+  border-radius: 6px;
+  &:focus {
+    border: 1px solid $astar-blue;
+  }
+
+  .icon {
+    margin-right: 8px;
+  }
+}
+
+.icon {
+  width: 20px;
+  color: $astar-blue;
+}
+
+.item-name {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: $navy-1;
+}
+
+.wrapper--sub-item{
+  @apply tw-ml-4;
+}
