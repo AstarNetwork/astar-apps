@@ -1,13 +1,13 @@
-import { Data, Option, Vec } from '@polkadot/types';
+import { Data, Option } from '@polkadot/types';
 import { PalletIdentityIdentityInfo, PalletIdentityRegistration } from '@polkadot/types/lookup';
-import { Tuple } from '@polkadot/types';
+import { IdentityInfoAdditional } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
 import { ExtrinsicPayload, IApi } from 'src/v2/integration';
 import { IdentityData } from 'src/v2/models';
 import { IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { ITuple } from '@polkadot/types/types';
+import { ApiPromise } from '@polkadot/api';
 
 @injectable()
 export class IdentityRepository implements IIdentityRepository {
@@ -36,7 +36,7 @@ export class IdentityRepository implements IIdentityRepository {
       // Update identity.
       switch (true) {
         case !!data.display:
-          registration.info.set('display', new Data(api.registry, { raw: data.display }));
+          registration.info.set('display', this.createRawData(api, data.display));
         case !!data.additional:
           data.additional?.forEach((x) => {
             // Check if additional field already exists in identity.
@@ -44,14 +44,12 @@ export class IdentityRepository implements IIdentityRepository {
               (y) => y[0].value.toHuman() === x.key
             );
             if (additional) {
-              // Update existing additional field value.
-              additional[1] = new Data(api.registry, { raw: x.value });
+              // Update the existing additional field value.
+              additional[1] = this.createRawData(api, x.value);
             } else {
-              // Add new additional field.
-              registration?.info.additional.push(<ITuple<[Data, Data]>>[
-                new Data(api.registry, { raw: x.key }),
-                new Data(api.registry, { raw: x.value }),
-              ]);
+              // Add a new additional field.
+              const additionalItem = this.crateAdditionalData(api, x.key, x.value);
+              registration?.info.additional.push(additionalItem);
             }
           });
       }
@@ -60,18 +58,32 @@ export class IdentityRepository implements IIdentityRepository {
     } else {
       // Create a new identity.
       const additional =
-        data.additional?.map((x) => [
-          new Data(api.registry, { raw: x.key }),
-          new Data(api.registry, { raw: x.value }),
-        ]) ?? [];
+        data.additional?.map((x) => this.crateAdditionalData(api, x.key, x.value)) ?? [];
 
       payload = {
-        display: new Data(api.registry, { raw: data.display }),
+        display: this.createRawData(api, data.display),
         additional,
       } as PalletIdentityIdentityInfo;
     }
     const call = api.tx.identity.setIdentity(payload);
 
     return call;
+  }
+
+  private createRawData(api: ApiPromise, data?: string): Data {
+    return new Data(api.registry, { raw: data });
+  }
+
+  private crateAdditionalData(
+    api: ApiPromise,
+    key?: string,
+    value?: string
+  ): IdentityInfoAdditional {
+    return <IdentityInfoAdditional>(
+      api.registry.createType('IdentityInfoAdditional', [
+        new Data(api.registry, { raw: key }),
+        new Data(api.registry, { raw: value }),
+      ])
+    );
   }
 }
