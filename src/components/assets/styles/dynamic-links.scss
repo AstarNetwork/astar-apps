@@ -67,6 +67,13 @@
       font-style: italic;
       font-weight: 800;
     }
+    .txt--gridlock {
+      font-family: 'Inter';
+      text-align: center;
+      padding-left: 15%;
+      font-weight: 600;
+      color: #e6f5fd;
+    }
 
     @media (min-width: $xxl) {
       flex-basis: unset;
