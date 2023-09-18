@@ -14,6 +14,8 @@ import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from '../useAccount';
 
+const eventWithdrawal = 'SentWithdrawalTransaction';
+
 export function useUnbonding() {
   const store = useStore();
   const { t } = useI18n();
@@ -49,6 +51,7 @@ export function useUnbonding() {
           senderAddress: currentAccount.value,
           finalizedCallback,
         });
+        window.dispatchEvent(new CustomEvent(eventWithdrawal));
       } catch (error: any) {
         console.error(error.message);
       }
@@ -122,5 +125,6 @@ export function useUnbonding() {
     canUnbondWithdraw,
     unlockingChunksCount,
     unbondingPeriod,
+    eventWithdrawal,
   };
 }

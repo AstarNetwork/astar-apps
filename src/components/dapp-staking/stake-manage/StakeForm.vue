@@ -98,9 +98,14 @@
   </div>
 </template>
 <script lang="ts">
-import { getEvmGasCost, getShortenAddress, truncate } from '@astar-network/astar-sdk-core';
+import {
+  getDappAddressEnum,
+  getEvmGasCost,
+  getShortenAddress,
+  truncate,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
-import { $web3 } from 'src/boot/api';
+import { $api, $web3 } from 'src/boot/api';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import {
   useAccount,
@@ -111,10 +116,8 @@ import {
 } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DAPPS_STAKING_ABI from 'src/config/web3/abi/dapps-staking-abi.json';
-import { AbiItem } from 'web3-utils';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 
 export default defineComponent({
@@ -269,27 +272,30 @@ export default defineComponent({
     const setEvmGasCost = async (): Promise<void> => {
       if (!selectedGas.value || !isH160.value || !formattedMinStaking.value) return;
       try {
+        const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
+        const targetContractId = getDappAddressEnum(props.dapp.dapp.address);
         const amountRaw = Number(amount.value);
         const amountPlaceHolder = formattedMinStaking.value;
         const stakeAmount = ethers.utils
-          .parseEther(String(amountRaw > 0 ? amountRaw : amountPlaceHolder))
+          .parseEther(String(amountRaw > amountPlaceHolder ? amountRaw : amountPlaceHolder))
           .toString();
-        const contract = new $web3.value!.eth.Contract(
-          DAPPS_STAKING_ABI as AbiItem[],
-          evmPrecompiledContract.dappStaking
-        );
 
-        const encodedData = contract!.methods
-          .bond_and_stake(props.dapp.dapp.address, stakeAmount)
-          .encodeABI();
+        const transaction = isNominationTransfer
+          ? $api!.tx.dappsStaking.nominationTransfer(
+              getDappAddressEnum(props.formattedTransferFrom.item.address),
+              stakeAmount,
+              targetContractId
+            )
+          : $api!.tx.dappsStaking.bondAndStake(targetContractId, stakeAmount);
+
         evmGasCost.value = await getEvmGasCost({
           isNativeToken: false,
           evmGasPrice: evmGasPrice.value,
           fromAddress: currentAccount.value,
-          toAddress: evmPrecompiledContract.dappStaking,
+          toAddress: evmPrecompiledContract.dispatch,
           web3: $web3.value!,
           value: '0x0',
-          encodedData,
+          encodedData: transaction.method.toHex(),
         });
       } catch (error) {
         console.error(error);
