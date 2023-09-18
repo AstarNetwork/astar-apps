@@ -10,3 +10,4 @@ export * from './IAssetsRepository';
 export * from './IPolkasafeRepository';
 export * from './IAccountsRepository';
 export * from './IIdentityRepository';
+export * from './INftRepository';

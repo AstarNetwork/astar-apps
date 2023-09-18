@@ -6,3 +6,4 @@ export * from './Asset';
 export * from './XcmModels';
 export * from './DappsStaking';
 export * from './Identity';
+export * from './Nft';

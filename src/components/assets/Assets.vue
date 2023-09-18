@@ -60,6 +60,7 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 import { container } from 'src/v2/common';
 import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { INftRepository } from 'src/v2/repositories';
 
 export default defineComponent({
   components: {
@@ -184,6 +185,14 @@ export default defineComponent({
     };
 
     const setIdentity = async () => {
+      const tokenOwnerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a';
+      const nftRepository = container.get<INftRepository>(Symbols.BluezNftRepository);
+      const nfts = await nftRepository.getNftMetadata(
+        '0x7b2152e51130439374672af463b735a59a47ea85',
+        '8893zß'
+      );
+      console.log(nfts);
+
       const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
       const service = container.get<IIdentityService>(Symbols.IdentityService);
       await service.setIdentity(

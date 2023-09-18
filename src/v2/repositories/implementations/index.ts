@@ -19,3 +19,4 @@ export * from './xcm/BifrostXcmRepository';
 export * from './xcm/EquilibriumXcmRepository';
 export * from './xcm/UniqueXcmRepository';
 export * from './AccountsRepository';
+export * from './BluezNftRepository';
