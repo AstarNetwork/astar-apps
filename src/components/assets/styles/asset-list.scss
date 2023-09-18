@@ -533,7 +533,7 @@
 
 // added
 .gradient-divider {
-  @apply tw-mx-4;
+  @apply tw-mx-4 tw-my-2;
   background: linear-gradient(to right, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff);
   height: 1px;
 }
@@ -545,12 +545,12 @@
   .row__left {
     @apply tw-flex-1 tw-flex;
     div {
-      @apply tw-flex tw-items-center tw-space-x-1;
+      @apply tw-flex tw-items-center tw-space-x-4;
       img {
         @apply tw-flex-shrink-0;
       }
       span {
-        @apply tw-font-extrabold tw-text-2xl;
+        @apply tw-font-bold tw-text-xl;
       }
     }
   }
@@ -563,11 +563,11 @@
 }
 
 .rows {
-  @apply tw-mb-0.5;
+  @apply tw-mb-1;
 }
 
 .row {
-  @apply tw-px-4 tw-py-3 sm:tw-py-5 tw-block sm:tw-flex sm:tw-items-center;
+  @apply tw-px-4 tw-py-3 sm:tw-py-6 tw-block sm:tw-flex sm:tw-items-center;
 }
 
 .row--transferable{

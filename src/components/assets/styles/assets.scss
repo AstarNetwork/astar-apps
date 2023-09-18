@@ -1,7 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
-  @apply tw-px-3 sm:tw-px-6 tw-pt-6 lg:tw-pt-32 tw-relative;
+  @apply tw-px-3 lg:tw-px-10 tw-pt-6 lg:tw-pt-32 tw-relative;
   background-color: $gray-1;
   @media (min-width: $lg) {
     // padding-top: 16px;

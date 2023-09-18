@@ -184,12 +184,12 @@
   }
 }
 .account-info {
-  @apply tw-space-y-3 sm:tw-flex-1 sm:tw-flex sm:tw-space-x-4;
+  @apply tw-space-y-3 sm:tw-flex-1 sm:tw-flex sm:tw-items-center sm:tw-space-x-4;
 }
 .account-icon {
-  @apply tw-mx-auto sm:tw-mx-0 tw-w-20 tw-h-20 tw-rounded-full tw-overflow-hidden;
+  @apply tw-mx-auto sm:tw-mx-0 tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden;
   img {
-    @apply tw-w-20 tw-h-20 tw-object-cover;
+    @apply tw-w-16 tw-h-16 tw-object-cover;
   }
 }
 .account-name-balance {
@@ -207,7 +207,7 @@
 .account-icon-buttons {
   @apply tw-flex tw-justify-center tw-space-x-3 tw-pt-4 sm:tw-pt-0;
   button {
-    @apply tw-w-12 tw-h-12 tw-flex tw-justify-center tw-items-center hover:tw-text-white;
+    @apply tw-w-10 tw-h-10 tw-flex tw-justify-center tw-items-center hover:tw-text-white;
     svg {
       @apply tw-stroke-current;
     }
@@ -226,6 +226,6 @@
 }
 
 .badge--new {
-  @apply tw-absolute tw-left-8 tw-top-0 tw-rounded-full tw-block tw-text-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold;
+  @apply tw-absolute tw-left-7 tw-top-0 tw-rounded-full tw-block tw-text-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold;
   background-color: $astar-pink;
 }

@@ -54,7 +54,7 @@
         </a>
         <div class="tw-relative">
           <span class="badge--new">{{ $t('new') }}</span>
-          <button class="icon--primary" @click="console.log('TODO: open wallet select modal')">
+          <button class="icon--primary" @click="handleHalfModalAccountDetails({ isOpen: true })">
             <astar-icon-3dots />
           </button>
           <q-tooltip>
@@ -128,17 +128,13 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
-    // NativeAssetList,
     ModalLockdropWarning,
-    // EvmNativeToken,
   },
   props: {
     ttlErc20Amount: {
@@ -155,6 +151,7 @@ export default defineComponent({
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
+    const isHalfModalAccountDetails = ref<boolean>(false);
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName, multisig } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
@@ -189,6 +186,10 @@ export default defineComponent({
 
     const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
       isModalLockdropWarning.value = isOpen;
+    };
+
+    const handleHalfModalAccountDetails = ({ isOpen }: { isOpen: boolean }) => {
+      isHalfModalAccountDetails.value = isOpen;
     };
 
     const copyAddress = () => {
@@ -295,6 +296,8 @@ export default defineComponent({
       copyAddress,
       toggleEvmWalletSchema,
       account_icon,
+      isHalfModalAccountDetails,
+      handleHalfModalAccountDetails,
     };
   },
 });

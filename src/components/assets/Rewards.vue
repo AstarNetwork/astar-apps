@@ -4,8 +4,12 @@
       <div class="rewards__animation" />
       <div class="rewards__inner">
         <div>
-          <span class="tw-block tw-font-semibold tw-text-xl tw-leading-none">Your </span>
-          <span class="tw-block tw-font-extrabold tw-text-4xl">Reward</span>
+          <span class="tw-block tw-font-semibold tw-text-xl tw-leading-none">
+            {{ $t('myReward.your') }}
+          </span>
+          <span class="tw-block tw-font-extrabold tw-text-4xl">
+            {{ $t('myReward.rewards') }}
+          </span>
         </div>
 
         <template v-if="isDappDeveloper">

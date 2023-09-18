@@ -64,7 +64,7 @@ export default defineComponent({
   );
   border-image-slice: 1;
   @media (min-width: $lg) {
-    background: rgba(247, 247, 248, 0.8);
+    background: rgba(247, 247, 247, 0.3); // #f7f7f7
   }
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;

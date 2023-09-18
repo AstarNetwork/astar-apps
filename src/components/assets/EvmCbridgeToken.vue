@@ -53,7 +53,7 @@
           </button>
         </router-link>
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('assets.transfer') }}</span>
+          <span class="text--tooltip">{{ $t('assets.send') }}</span>
         </q-tooltip>
       </div>
       <div>
@@ -68,7 +68,7 @@
       </div>
       <div>
         <button
-          class="btn icon-button icon-plus"
+          class="btn icon-button"
           @click="
             addToEvmProvider({
               tokenAddress: token.address,
@@ -79,8 +79,9 @@
             })
           "
         >
-          <!-- <astar-icon-plus /> -->
-          <span>+</span>
+          <astar-icon-base>
+            <astar-icon-plus />
+          </astar-icon-base>
         </button>
         <q-tooltip>
           <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
@@ -158,7 +159,7 @@
           <div class="text-buttons">
             <router-link :to="buildTransferPageLink(token.symbol)">
               <button class="btn btn--sm">
-                {{ $t('assets.transfer') }}
+                {{ $t('assets.send') }}
               </button>
             </router-link>
             <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
