@@ -52,7 +52,8 @@
             <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
           </q-tooltip>
         </a>
-        <div>
+        <div class="tw-relative">
+          <span class="badge--new">{{ $t('new') }}</span>
           <button class="icon--primary" @click="console.log('TODO: open wallet select modal')">
             <astar-icon-3dots />
           </button>

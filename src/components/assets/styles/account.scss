@@ -224,3 +224,8 @@
     }
   }
 }
+
+.badge--new {
+  @apply tw-absolute tw-left-8 tw-top-0 tw-rounded-full tw-block tw-text-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold;
+  background-color: $astar-pink;
+}
