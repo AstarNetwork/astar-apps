@@ -20,13 +20,19 @@
       <network-button @show-network="clickNetworkBtn" />
 
       <template v-if="screenSize.lg > width">
-        <button type="button" class="text-white tw-ml-2" @click="showMobileNav = !showMobileNav">
+        <button
+          type="button"
+          class="mobile-nav-trigger"
+          :class="showMobileNav ? 'show' : ''"
+          @click="showMobileNav = !showMobileNav"
+        >
           <astar-icon-3dots />
         </button>
       </template>
     </header-comp>
 
-    <!-- <q-slide-transition :duration="150">
+    <!-- TODO: need to add animation -->
+    <!-- <q-slide-transition>
       <sidebar-mobile v-show="showMobileNav" />
     </q-slide-transition> -->
     <sidebar-mobile v-if="showMobileNav" />
@@ -235,5 +241,12 @@ export default defineComponent({
 
 .cursor--disabled {
   cursor: not-allowed !important;
+}
+
+.mobile-nav-trigger {
+  @apply tw-text-white tw-ml-2 tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-justify-center tw-items-center;
+  &.show {
+    background: $astar-blue;
+  }
 }
 </style>

@@ -89,7 +89,7 @@
         </div>
     </div> -->
 
-    <div v-if="multisig" class="row--details-signatory">
+    <div v-if="multisig" class="row--details-signatory tw-mb-6 sm:tw-mb-0 sm:tw-mt-6 tw-rounded-lg">
       <div class="column-account-name">
         <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
         <span class="text--accent">

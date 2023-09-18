@@ -1,7 +1,10 @@
 <template>
   <!-- TODO: need to hide after moving to another screen -->
   <div class="sidebar-mobile">
-    <div class="astar-stars" :style="{ 'background-image': 'url(' + bg_img.astar_stars + ')' }" />
+    <div
+      class="astar-stars"
+      :style="`background-image: url('${bg_img.astar_stars}'); background-size: contain;`"
+    />
     <nav class="nav">
       <router-link :to="RoutePath.Assets" :class="['link', path === 'assets' && 'active-link']">
         <div class="column--item">
@@ -60,18 +63,21 @@
       </a>
     </div>
 
-    <!-- Blog articles -->
-    <div class="blog-articles">
-      <a
-        v-for="article in articles"
-        :key="article.title"
-        :href="article.link"
-        target="_blank"
+    <!-- Dynamic links -->
+    <div class="dynamic-links">
+      <div
+        v-for="(t, index) in items"
+        :key="index"
         class="card"
+        :style="`background-image: url('${t.background}'); background-size: cover; background-position: center;`"
+        @click="goToLink(t.link)"
       >
-        <img :src="article.image" />
-        <span class="tw-sr-only">{{ article.title }}</span>
-      </a>
+        <div class="card--info">
+          <div class="txt--title" :class="index === 0 ? 'tw-italic' : ''">
+            {{ t.title }}
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Sub navigation -->
@@ -95,13 +101,15 @@ import SidebarCommunity from './SidebarCommunity.vue';
 import { Path as RoutePath } from 'src/router/routes';
 import { IconHome, IconDocs, IconForum, IconEcosystem } from '@astar-network/astar-ui';
 
+import linksData from 'src/data/dynamic_links.json';
 import { useQuery } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
 import { useI18n } from 'vue-i18n';
 
 interface Data {
-  image: string;
+  background: string;
   title: string;
+  subtitle: string;
   link: string;
 }
 
@@ -156,18 +164,31 @@ export default defineComponent({
       },
     ];
 
+    const banners = [
+      require('/src/assets/img/banner/banner01.svg'),
+      require('/src/assets/img/banner/banner02.svg'),
+      require('/src/assets/img/banner/banner03.svg'),
+    ];
+
     // The subsocial space where the news updates come from: https://polkaverse.com/10802
     const astarSpace = 10802;
-    const articles = ref<Data[]>([]);
+    const items = ref<Data[]>([]);
     const { result, error } = useQuery(gql`
       query PostsBySpaceId {
-        posts(where: { space: { id_eq: "${astarSpace}" }, AND: { hidden_not_eq: true } }, orderBy: id_DESC, limit: 3) {
-          image
+        posts(where: { space: { id_eq: "${astarSpace}" }, AND: { hidden_not_eq: true } }, orderBy: id_DESC, limit: 1) {
+          background: image
           title
           link: slug
         }
       }
     `);
+
+    items.value = linksData.map((item, index) => ({
+      background: banners[index],
+      title: t(item.title),
+      subtitle: t(item.subtitle),
+      link: item.link,
+    }));
 
     watch(
       [result, error],
@@ -175,23 +196,21 @@ export default defineComponent({
         if (result.value) {
           const item = result.value.posts.map((x: Data) => {
             return {
-              image: `https://ipfs.subsocial.network/ipfs/${x.image}`,
-              title: x.title,
+              background: `https://ipfs.subsocial.network/ipfs/${x.background}`,
+              title: '', // x.title,
               link: `https://astar.network/blog/${x.link}`,
             };
           });
 
-          // item?.length > 0 && articles.value.push(item[0]);
-
-          if (item?.length > 0) {
-            for (let i = 0; i < item.length; i++) {
-              articles.value.push(item[i]);
-            }
-          }
+          item?.length > 0 && items.value.push(item[0]);
         }
       },
       { immediate: true }
     );
+
+    const goToLink = (link: string): void => {
+      window.open(link, '_blank');
+    };
 
     const handleSettingsDrawer = () => {
       showSettings.value = !showSettings.value;
@@ -215,8 +234,9 @@ export default defineComponent({
       path,
       RoutePath,
       externalLinks,
-      articles,
+      items,
       bg_img,
+      goToLink,
       handleSettingsDrawer,
       handleCommunityDrawer,
     };

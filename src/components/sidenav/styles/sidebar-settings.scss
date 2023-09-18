@@ -5,7 +5,7 @@
   @apply tw-flex tw-items-center tw-h-full tw-px-4;
 }
 
-.q-list{
+.q-list {
   @apply tw-w-full;
 }
 
@@ -17,15 +17,6 @@
   &:focus {
     border: 1px solid $astar-blue;
   }
-
-  .icon {
-    margin-right: 8px;
-  }
-}
-
-.icon {
-  width: 20px;
-  color: $astar-blue;
 }
 
 .item-name {
@@ -35,6 +26,6 @@
   color: $navy-1;
 }
 
-.wrapper--sub-item{
+.wrapper--sub-item {
   @apply tw-ml-4;
 }

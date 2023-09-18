@@ -13,11 +13,13 @@
     #0297fb 58.08%,
     #0ae2ff 74.93%
   );
+  @media (min-width: $lg) {
+    display: none;
+  }
 }
 
 .astar-stars {
   @apply tw-mix-blend-screen tw-absolute tw-left-0 tw-top-0 tw-h-screen tw-w-screen tw-z-0;
-  background-size: contain;
 }
 
 .nav{
@@ -28,7 +30,7 @@
 }
 
 .external-links {
-  @apply tw-flex tw-justify-between tw-px-6 tw-relative;
+  @apply tw-flex tw-px-6 tw-relative tw-space-x-2;
   a{
     @apply tw-block tw-text-white;
   }
@@ -44,10 +46,10 @@
   }
 }
 
-.blog-articles {
+.dynamic-links {
   @apply tw-flex tw-flex-nowrap tw-space-x-2 tw-overflow-x-scroll tw-mt-12 tw-relative;
   .card {
-    @apply tw-block tw-rounded-xl tw-overflow-hidden tw-flex-shrink-0;
+    @apply tw-flex tw-items-center tw-rounded-xl tw-overflow-hidden tw-flex-shrink-0;
     width: 224.3px;
     height: 126px;
     img {
@@ -61,6 +63,9 @@
     &:last-child{
       @apply tw-mr-6;
     }
+    .txt--title{
+      @apply tw-text-white tw-font-bold tw-text-xl tw-px-4;
+    }
   }
 }
 
@@ -68,7 +73,7 @@
   @apply tw-shadow tw-fixed tw-h-full tw-z-50;
   top: 64px;
   right: 0;
-  width: 200px;
+  width: 50vw;
   transition: all 0.2s ease-in-out;
   background: rgba(255, 255, 255, 0.2);
   &.hide{

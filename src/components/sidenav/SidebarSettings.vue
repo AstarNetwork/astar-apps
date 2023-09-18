@@ -12,6 +12,7 @@
             {{ $t('sidenavi.language') }}
           </q-item-section>
         </template>
+
         <div class="wrapper--sub-item">
           <q-item
             v-for="(lang, i) in langs"
@@ -29,7 +30,7 @@
       <div>
         <q-item class="ic-item" clickable active-class="active-item">
           <q-item-section class="item-name">{{ $t('sidenavi.theme') }}</q-item-section>
-          <light-dark-mode />
+          <light-dark-mode-mobile />
         </q-item>
       </div>
       <!-- <div class="button--close" @click="closeMobileNavi">X {{ $t('sidenavi.close') }}</div> -->
@@ -39,14 +40,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, reactive } from 'vue';
-import LightDarkMode from '../common/LightDarkMode.vue';
+import LightDarkModeMobile from '../common/LightDarkModeMobile.vue';
 import { useStore } from 'src/store';
 import { CultureCode, languagesSelector } from 'src/i18n';
 import { i18n } from 'src/boot/i18n';
 
 export default defineComponent({
   components: {
-    LightDarkMode,
+    LightDarkModeMobile,
   },
   emits: ['closeNavi'],
   setup(props, { emit }) {
@@ -57,7 +58,7 @@ export default defineComponent({
       defaultHeader:
         'min-height: 40px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
       activeHeaderLight: 'background: #fff;',
-      activeHeaderDark: 'background: rgba(255, 255, 255, 0.05);',
+      activeHeaderDark: 'background: #fff;',
     });
 
     const selectLanguage = (code: CultureCode) => {
