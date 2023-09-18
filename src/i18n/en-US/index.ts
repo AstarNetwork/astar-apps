@@ -577,6 +577,7 @@ export default {
     others: 'Others',
   },
   links: {
+    gridlockWallet: 'Gridlock Wallet',
     goDecentralized: 'Go Decentralized!',
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
