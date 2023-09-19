@@ -95,7 +95,7 @@ const actions: ActionTree<State, StateInterface> = {
 
     try {
       // Fetch dapps
-      const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps`;
+      const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
       const address = isValidEvmAddress(currentAccount)
         ? toSS58Address(currentAccount)
