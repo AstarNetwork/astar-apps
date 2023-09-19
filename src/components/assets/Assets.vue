@@ -190,6 +190,7 @@ export default defineComponent({
       console.log('mapped evm', await service.getMappedEvmAddress(nativeAddress));
     };
 
+    // Temp set identity test, TODO remove later
     const setIdentity = async () => {
       const tokenOwnerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a';
       const nftRepository = container.get<INftRepository>(Symbols.BluezNftRepository);
