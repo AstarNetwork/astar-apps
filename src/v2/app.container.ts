@@ -16,6 +16,7 @@ import {
   IAccountsRepository,
   IIdentityRepository,
   INftRepository,
+  IAccountUnificationRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -29,6 +30,7 @@ import {
   PolkasafeRepository,
   AccountsRepository,
   BluezNftRepository,
+  AccountUnificationRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -129,6 +131,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addSingleton<IAccountsRepository>(AccountsRepository, Symbols.AccountsRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
   container.addSingleton<INftRepository>(BluezNftRepository, Symbols.BluezNftRepository);
+  container.addSingleton<IAccountUnificationRepository>(
+    AccountUnificationRepository,
+    Symbols.AccountUnificationRepository
+  );
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
