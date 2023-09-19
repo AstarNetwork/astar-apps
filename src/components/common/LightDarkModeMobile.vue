@@ -1,6 +1,6 @@
 <template>
   <div class="row--icons">
-    <button type="button" @click="switchThemeTo('LIGHT')">
+    <button v-if="isDarkTheme" type="button" @click="switchThemeTo('LIGHT')">
       <astar-icon-base
         :class="isDarkTheme ? 'icon' : 'icon--selected'"
         viewBox="0 0 24 24"
@@ -11,9 +11,7 @@
       </astar-icon-base>
     </button>
 
-    <span class="text--slash">/</span>
-
-    <button type="button" class="icon-dark" @click="switchThemeTo('DARK')">
+    <button v-else type="button" class="icon-dark" @click="switchThemeTo('DARK')">
       <astar-icon-base
         :class="isDarkTheme ? 'icon--selected' : 'icon'"
         viewBox="0 0 24 24"
@@ -60,12 +58,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
-
-.text--slash {
-  color: $gray-1;
-  opacity: 0.4;
-}
-
 .row--icons {
   display: flex;
   column-gap: 6px;

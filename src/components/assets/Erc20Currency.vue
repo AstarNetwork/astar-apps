@@ -108,7 +108,7 @@
           class="btn icon-button icon-favorite off"
           @click="console.log('TODO: add to favorite action')"
         >
-          <!-- TODO: need to create a new icon in AstarUI -->
+          <!-- TODO: need to add a new icon to the AstarUI -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
