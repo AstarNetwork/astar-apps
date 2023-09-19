@@ -57,7 +57,7 @@
         </q-tooltip>
       </div>
       <div>
-        <!-- TODO:
+        <!-- TODO: the icon color will change by class name
           class name "off" -> add to favorite
           class name "on" -> remove from favorite
         -->
@@ -93,7 +93,7 @@
       <div v-show="isExpand" class="row__expand">
         <div class="row__expand-inner">
           <div class="icon-buttons">
-            <!-- TODO:
+            <!-- TODO: the icon color will change by class name
               class name "off" -> add to favorite
               class name "on" -> remove from favorite
             -->
