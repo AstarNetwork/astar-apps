@@ -104,9 +104,13 @@
         </q-tooltip>
       </div>
       <div>
+        <!-- TODO:
+          class name "off" -> add to favorite
+          class name "on" -> remove from favorite
+        -->
         <button
           class="btn icon-button icon-favorite off"
-          @click="console.log('TODO: add to favorite action')"
+          @click="console.log('TODO: add to / remove from favorite action')"
         >
           <!-- TODO: need to add a new icon to the AstarUI -->
           <svg
@@ -134,9 +138,13 @@
       <div v-show="isExpand" class="row__expand">
         <div class="row__expand-inner">
           <div class="icon-buttons">
+            <!-- TODO:
+              class name "off" -> add to favorite
+              class name "on" -> remove from favorite
+            -->
             <button
               class="btn icon-button icon-favorite off"
-              @click="console.log('TODO: add to favorite action')"
+              @click="console.log('TODO: add to / remove from favorite action')"
             >
               <!-- TODO: need to create a new icon in AstarUI -->
               <svg

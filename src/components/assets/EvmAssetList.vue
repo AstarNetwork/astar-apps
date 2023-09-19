@@ -31,6 +31,7 @@
         <erc-20-currency :token="t" :data-testid="t.symbol" />
       </div>
     </div>
+
     <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
       <span class="text--xl">{{ $t('assets.noResults') }}</span>
     </div>

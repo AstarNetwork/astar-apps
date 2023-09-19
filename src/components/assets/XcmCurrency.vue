@@ -12,7 +12,7 @@
         </div>
         <div>
           <div class="text--title">{{ token.metadata.symbol }}</div>
-          <div class="ttext--label">{{ token.metadata.name }}</div>
+          <div class="text--label">{{ token.metadata.name }}</div>
         </div>
       </div>
       <div class="column--balance">
@@ -61,7 +61,10 @@
           class name "off" -> add to favorite
           class name "on" -> remove from favorite
         -->
-        <button class="btn icon-button icon-favorite off">
+        <button
+          class="btn icon-button icon-favorite off"
+          @click="console.log('TODO: add to / remove from favorite action')"
+        >
           <span>
             <!-- TODO: need to create a new icon in AstarUI -->
             <svg
@@ -90,7 +93,14 @@
       <div v-show="isExpand" class="row__expand">
         <div class="row__expand-inner">
           <div class="icon-buttons">
-            <button class="btn icon-button icon-favorite off">
+            <!-- TODO:
+              class name "off" -> add to favorite
+              class name "on" -> remove from favorite
+            -->
+            <button
+              class="btn icon-button icon-favorite off"
+              @click="console.log('TODO: add to / remove from favorite action')"
+            >
               <span>
                 <!-- TODO: need to create a new icon in AstarUI -->
                 <svg

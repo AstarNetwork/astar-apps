@@ -54,7 +54,7 @@
         </a>
         <div class="tw-relative">
           <span class="badge--new">{{ $t('new') }}</span>
-          <button class="icon--primary" @click="handleHalfModalAccountDetails({ isOpen: true })">
+          <button class="icon--primary" @click="console.log('TODO: open a modal action')">
             <astar-icon-3dots />
           </button>
           <q-tooltip>
@@ -151,7 +151,6 @@ export default defineComponent({
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
-    const isHalfModalAccountDetails = ref<boolean>(false);
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName, multisig } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
@@ -186,10 +185,6 @@ export default defineComponent({
 
     const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
       isModalLockdropWarning.value = isOpen;
-    };
-
-    const handleHalfModalAccountDetails = ({ isOpen }: { isOpen: boolean }) => {
-      isHalfModalAccountDetails.value = isOpen;
     };
 
     const copyAddress = () => {
@@ -296,8 +291,6 @@ export default defineComponent({
       copyAddress,
       toggleEvmWalletSchema,
       account_icon,
-      isHalfModalAccountDetails,
-      handleHalfModalAccountDetails,
     };
   },
 });
