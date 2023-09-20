@@ -24,6 +24,7 @@ export enum SupportWallet {
   HanaEvm = 'hanaEvm',
   OneKeyEvm = 'OneKeyEvm',
   OneKeyNative = 'OneKey',
+  Snap = 'snap',
 }
 
 export enum SupportMultisig {
@@ -52,6 +53,7 @@ export const WalletModalOption = {
   HanaEvm: SupportWallet.HanaEvm,
   OneKey: SupportWallet.OneKeyNative,
   OneKeyEvm: SupportWallet.OneKeyEvm,
+  Snap: SupportWallet.Snap,
 };
 
 export const SubstrateWallets = [
@@ -66,6 +68,7 @@ export const SubstrateWallets = [
   SupportWallet.Wallet3,
   SupportWallet.HanaNative,
   SupportWallet.OneKeyNative,
+  SupportWallet.Snap,
 ];
 
 export interface Wallet {
@@ -81,6 +84,15 @@ export interface Wallet {
 }
 
 export const supportWalletObj = {
+  [SupportWallet.Snap]: {
+    img: require('/src/assets/img/chain/astar.png'),
+    name: 'MM Astar Snap',
+    source: SupportWallet.Snap,
+    walletUrl: 'https://snaps.metamask.io/snap/npm/cosmsnap/snap/',
+    guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
   [SupportWallet.PolkadotJs]: {
     img: require('/src/assets/img/logo-polkadot-js.png'),
     name: 'Polkadot.js',

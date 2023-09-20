@@ -1415,6 +1415,22 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@chainsafe/metamask-polkadot-adapter@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/metamask-polkadot-adapter/-/metamask-polkadot-adapter-0.5.1.tgz#04ecf78ce6cdcc63ebdc2c97f67d0c1efdb8bee8"
+  integrity sha512-t3/KoGTgayt2qQOmEWj5Gx8UVvqjhEuybMYadInWsvsDvmyhSKUxzGC8JlUSr4ww0Fa8Dzem21Hxo0FT9rxjyg==
+  dependencies:
+    "@polkadot/api" "^10.9.1"
+    "@polkadot/extension-inject" "^0.46.5"
+    "@polkadot/types-augment" "^10.9.1"
+
+"@chainsafe/metamask-polkadot-types@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/metamask-polkadot-types/-/metamask-polkadot-types-0.6.0.tgz#e6e950024c363e076ba6727c3b1b8b57eb6c29b0"
+  integrity sha512-DhLNF2LcybGMOs3aBMh5iIAqEw0/a2W6mb5FccOGVTYQqT6W/lcwKC5Ves4KmpGbH/DtNJdbC0L9YMS0F8bXEg==
+  dependencies:
+    "@polkadot/api" "^10.9.1"
+
 "@depay/solana-web3.js@^1.20.15":
   version "1.20.15"
   resolved "https://registry.yarnpkg.com/@depay/solana-web3.js/-/solana-web3.js-1.20.15.tgz#6e18476209e04cf29dd30761102e58a0a5b98b4d"
@@ -3027,7 +3043,7 @@
   dependencies:
     "@babel/runtime" "^7.9.6"
 
-"@polkadot/extension-inject@0.46.5":
+"@polkadot/extension-inject@0.46.5", "@polkadot/extension-inject@^0.46.5":
   version "0.46.5"
   resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.46.5.tgz#6abee0eb28a73fd1a9461f257cac5875c2e9fc63"
   integrity sha512-QcpkCMuv7iFbWjufkw14JRozpEYFyjP0H8KOJ8IsHGfPd2DPiismQ0NXr+AS7f6U+0I+Rhv9E4dnXxtJPROVMQ==
@@ -3131,7 +3147,7 @@
   dependencies:
     "@types/chrome" "^0.0.171"
 
-"@polkadot/types-augment@10.9.1":
+"@polkadot/types-augment@10.9.1", "@polkadot/types-augment@^10.9.1":
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/@polkadot/types-augment/-/types-augment-10.9.1.tgz#5f1c1225c04ffbfe243629a46087c9c9de25a6b3"
   integrity sha512-OY9/jTMFRFqYdkUnfcGwqMLC64A0Q25bjvCuVQCVjsPFKE3wl0Kt5rNT01eV2UmLXrR6fY0xWbR2w80bLA7CIQ==

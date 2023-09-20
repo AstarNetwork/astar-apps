@@ -27,6 +27,8 @@
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.5",
     "@astar-network/astar-ui": "^0.0.104",
+    "@chainsafe/metamask-polkadot-adapter": "^0.5.1",
+    "@chainsafe/metamask-polkadot-types": "^0.6.0",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^10.9.1",
     "@polkadot/api-contract": "^10.9.1",
