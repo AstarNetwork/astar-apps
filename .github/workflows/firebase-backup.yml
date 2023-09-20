@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Firestore backup
-        uses: lfdm/firestore-backup-gh-action
+        uses: lfdm/firestore-backup-gh-action@v1
         with:
           gcloudAuth: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
           projectId: ${{ secrets.gcloud_project_id }}
