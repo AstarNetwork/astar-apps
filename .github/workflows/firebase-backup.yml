@@ -17,5 +17,5 @@ jobs:
         with:
           gcloudAuth: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
           projectId: ${{ secrets.gcloud_project_id }}
-          storageBucket: gs://astarnetwork-a4924.appspot.com
+          storageBucket: gs://astar-apps-bkp
           collectionIds: "*"
