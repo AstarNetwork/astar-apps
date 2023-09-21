@@ -14,10 +14,10 @@ import { SubstrateAccount } from 'src/store/general/state';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { web3EnablePromise } from '@polkadot/extension-dapp';
-import { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
+import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
-import { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
+import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 
 declare global {
   interface Window {

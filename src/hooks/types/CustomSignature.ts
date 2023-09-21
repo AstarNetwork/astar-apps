@@ -29,10 +29,10 @@ export interface EcdsaAddressFormat {
   h160?: string;
 }
 
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider;
-    talismanEth?: EthereumProvider;
-    SubWallet?: EthereumProvider;
-  }
-}
+// declare global {
+//   interface Window {
+//     ethereum: EthereumProvider;
+//     talismanEth?: EthereumProvider;
+//     SubWallet?: EthereumProvider;
+//   }
+// }
