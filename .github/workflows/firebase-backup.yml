@@ -8,10 +8,8 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-    - uses: google-github-actions/setup-gcloud@v1
-      with:
-        service_account_key: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
-        export_default_credentials: true
-    - run: gcloud info
-    - run: gcloud config set project ${{ secrets.gcloud_project_id }}
-    - run: gcloud firestore export gs://astar-apps-bkp
+      - uses: lfdm/firestore-backup-gh-action@master
+        with:
+          gcloudAuth: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
+          projectId: ${{ secrets.gcloud_project_id }}
+          storageBucket: gs://astar-apps-bkp
