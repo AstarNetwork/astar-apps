@@ -153,6 +153,7 @@ export default {
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
     multisigAccount: 'Multisig Accounts',
+    accountUnification: 'Account Unification',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
