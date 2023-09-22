@@ -12,25 +12,11 @@
             {{ $t('wallet.evmAccount') }}
           </span>
         </div>
-        <div class="wrapper--wallets">
-          <div
-            v-for="(wallet, index) in evmWallets"
-            :key="index"
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === wallet.source && 'border--active'"
-            :wallet="wallet"
-            @click="setEvmWalletModal(wallet.source)"
-          >
-            <div class="box--img">
-              <img :src="wallet.img" />
-            </div>
-            <div>
-              <span>
-                {{ castWalletName(wallet.name) }}
-              </span>
-            </div>
-          </div>
-        </div>
+        <wallets-panel
+          :wallets="evmWallets"
+          :current-wallet="currentWallet"
+          :set-wallet-modal="setEvmWalletModal"
+        />
       </div>
       <div>
         <div class="title--account-type">
@@ -38,24 +24,11 @@
             {{ $t('wallet.nativeAccount') }}
           </span>
         </div>
-        <div class="wrapper--wallets">
-          <div
-            v-for="(wallet, index) in nativeWallets"
-            :key="index"
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === wallet.source && 'border--active'"
-            @click="setSubstrateWalletModal(wallet.source)"
-          >
-            <div class="box--img">
-              <img :src="wallet.img" />
-            </div>
-            <div>
-              <span>
-                {{ castWalletName(wallet.name) }}
-              </span>
-            </div>
-          </div>
-        </div>
+        <wallets-panel
+          :wallets="nativeWallets"
+          :current-wallet="currentWallet"
+          :set-wallet-modal="setSubstrateWalletModal"
+        />
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
             <span class="text--install-title">
@@ -149,8 +122,12 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
+import WalletsPanel from 'src/components/common/WalletsPanel.vue';
 
 export default defineComponent({
+  components: {
+    WalletsPanel,
+  },
   props: {
     isModalConnectWallet: {
       type: Boolean,

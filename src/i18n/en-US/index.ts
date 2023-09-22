@@ -150,6 +150,7 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
+    dialogTitle: 'Select a wallet',
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
     multisigAccount: 'Multisig Accounts',

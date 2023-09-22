@@ -42,6 +42,11 @@
     <div class="column--links">
       <dynamic-links />
     </div>
+    <modal-select-account
+      :is-modal-opened="isModalSelectAccount"
+      :handle-modal-select-account="handleModalSelectAccount"
+      title="Select a wallet"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -61,6 +66,7 @@ import { container } from 'src/v2/common';
 import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { INftRepository } from 'src/v2/repositories';
+import ModalSelectAccount from 'src/components/account-unification/ModalSelectAccount.vue';
 
 export default defineComponent({
   components: {
@@ -68,6 +74,7 @@ export default defineComponent({
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
+    ModalSelectAccount,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -176,18 +183,20 @@ export default defineComponent({
 
     // Temp account unification test, TODO remove later
     const unify = async () => {
-      const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
-      const evmAddress = '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90';
-      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
-      await service.unifyAccounts(
-        nativeAddress,
-        evmAddress,
-        'Bobo',
-        '0x18F6F226c5D0C8124b62b98Ac797dD6208bAFE90',
-        '2000'
-      );
-      console.log('mapped native', await service.getMappedNativeAddress(evmAddress));
-      console.log('mapped evm', await service.getMappedEvmAddress(nativeAddress));
+      // const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
+      // const evmAddress = '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90';
+      // const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+      // await service.unifyAccounts(
+      //   nativeAddress,
+      //   evmAddress,
+      //   'Bobo',
+      //   '0x18F6F226c5D0C8124b62b98Ac797dD6208bAFE90',
+      //   '2000'
+      // );
+      // console.log('mapped native', await service.getMappedNativeAddress(evmAddress));
+      // console.log('mapped evm', await service.getMappedEvmAddress(nativeAddress));
+
+      handleModalSelectAccount({ isOpen: true });
     };
 
     // Temp set identity test, TODO remove later
@@ -211,6 +220,13 @@ export default defineComponent({
       );
     };
 
+    // Temp select wallet, TODO remove later
+    const isModalSelectAccount = ref<boolean>(false);
+
+    const handleModalSelectAccount = ({ isOpen }: { isOpen: boolean }) => {
+      isModalSelectAccount.value = isOpen;
+    };
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -224,6 +240,8 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      isModalSelectAccount,
+      handleModalSelectAccount,
       unify,
       setIdentity,
     };
