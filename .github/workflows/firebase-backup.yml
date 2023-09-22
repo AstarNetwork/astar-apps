@@ -8,7 +8,7 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/setup-gcloud@v1
+    - uses: google-github-actions/setup-gcloud@v1
       with:
         service_account_key: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
         export_default_credentials: true
