@@ -7,15 +7,9 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Firestore backup
-        uses: lfdm/firestore-backup-gh-action@v1
+      - uses: lfdm/firestore-backup-gh-action@master
         with:
           gcloudAuth: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
           projectId: ${{ secrets.gcloud_project_id }}
-          storageBucket: gs://astarnetwork-a4924.appspot.com
-          collectionIds: "*"
+          storageBucket: gs://astar-apps-bkp
