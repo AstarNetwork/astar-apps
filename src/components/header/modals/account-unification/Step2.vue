@@ -14,7 +14,7 @@
     </div>
 
     <!-- Staking balance warning -->
-    <div v-if="stakingBalance" class="warning">
+    <div v-if="isStaking" class="warning">
       <div class="icon-warning">
         <astar-icon-warning />
       </div>
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Actions -->
-    <div v-if="stakingBalance">
+    <div v-if="isStaking">
       <!-- TODO: please add a function to close modal -->
       <astar-button class="btn close">Close</astar-button>
     </div>
@@ -55,6 +55,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isStaking: {
+      type: Boolean,
+      required: true,
+    },
     setWeb3: {
       type: Function,
       required: true,
@@ -66,14 +70,11 @@ export default defineComponent({
       emit('next');
     };
 
-    const stakingBalance = ref<boolean>(false);
-
     const icon_img = {
       metamask: require('/src/assets/img/metamask.png'),
     };
 
     return {
-      stakingBalance,
       icon_img,
       next,
     };

@@ -17,6 +17,7 @@
           :selected-evm-address="selectedEvmAddress"
           :set-web3="setWeb3"
           :is-connected-network="isConnectedNetwork"
+          :is-staking="isStaking"
           @next="updateSteps(3)"
         />
       </div>
@@ -131,7 +132,7 @@ export default defineComponent({
 
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { selectedEvmAddress, isConnectedNetwork, setWeb3 } = useAccountUnification();
+    const { selectedEvmAddress, isConnectedNetwork, isStaking, setWeb3 } = useAccountUnification();
 
     return {
       windowHeight,
@@ -142,6 +143,7 @@ export default defineComponent({
       isH160,
       selectedEvmAddress,
       isConnectedNetwork,
+      isStaking,
       closeModal,
       backModal,
       updateSteps,

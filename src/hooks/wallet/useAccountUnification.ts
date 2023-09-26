@@ -1,11 +1,13 @@
+import { $api } from 'boot/api';
 import { setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks/useAccount';
 import { useStore } from 'src/store';
-import { ref, watch, WatchCallback, watchEffect } from 'vue';
+import { WatchCallback, computed, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { useNetworkInfo } from '../useNetworkInfo';
 
-import { MyStakeInfo, StakeInfo } from 'src/store/dapp-staking/actions';
+import { getIndividualClaimTxs, toSS58Address } from '@astar-network/astar-sdk-core';
+import { MyStakeInfo, useCurrentEra } from 'src/hooks';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
@@ -17,10 +19,14 @@ export const useAccountUnification = () => {
   const web3 = ref<Web3>();
   const selectedEvmAddress = ref<string>('');
   const isConnectedNetwork = ref<boolean>(false);
+  const isStaking = ref<boolean>(true);
 
   const store = useStore();
   const { currentAccount } = useAccount();
   const { evmNetworkIdx } = useNetworkInfo();
+  const { era } = useCurrentEra();
+
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
 
   const getSelectedEvmAddress = async (web3: Web3): Promise<string> => {
     const accounts = await web3.eth.getAccounts();
@@ -69,36 +75,74 @@ export const useAccountUnification = () => {
     });
   };
 
-  // const setStakeInfo = async () => {
-  //   let data: StakeInfo[] = [];
-  //   let myData: MyStakeInfo[] = [];
-  //   const mappedSS58Address = selectedEvmAddress
+  const checkStakerInfo = async () => {
+    if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
+    let isPendingWithdrawal = false;
+    let stakingData: MyStakeInfo[] = [];
+    const mappedSS58Address = toSS58Address(selectedEvmAddress.value);
+    const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
 
-  //   const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-  //   data = await Promise.all<StakeInfo>(
-  //     dapps.value.map(async (it: DappCombinedInfo) => {
-  //       const stakeData = await dappStakingService.getStakeInfo(
-  //         it.dapp?.address!,
-  //         currentAccount.value
-  //       );
-  //       if (stakeData?.hasStake) {
-  //         myData.push({ ...stakeData, ...it.dapp });
-  //       }
-  //       return stakeData;
-  //     })
-  //   );
+    // Memo: check if there are any dapps staked
+    await Promise.all(
+      dapps.value.map(async (it: DappCombinedInfo) => {
+        const stakeData = await dappStakingService.getStakeInfo(
+          it.dapp?.address!,
+          mappedSS58Address
+        );
+        if (stakeData?.hasStake) {
+          stakingData.push({ ...stakeData, ...it.dapp });
+        }
+        return stakeData;
+      })
+    );
 
-  //   stakeInfos.value = data;
-  //   myStakeInfos.value = myData;
-  // };
+    // Memo: check if there are any pending withdrawals
+    const ledger = await dappStakingService.getLedger(mappedSS58Address);
+    if (ledger.unbondingInfo.unlockingChunks) {
+      const pendingWithdrawals = ledger.unbondingInfo.unlockingChunks;
+      isPendingWithdrawal = pendingWithdrawals.length > 0;
+    }
+
+    // Memo: check if there are any rewards need to be claimed
+    const claimTransactions = await Promise.all(
+      dapps.value.map(async (it) => {
+        try {
+          const dappAddress = it.dapp ? it.dapp.address : it.contract.address;
+          if (dappAddress) {
+            const transactions = await getIndividualClaimTxs({
+              dappAddress,
+              api: $api!,
+              senderAddress: mappedSS58Address,
+              currentEra: era.value,
+            });
+            return transactions.length ? transactions : null;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      })
+    );
+    const eraPendingRewards = claimTransactions.filter((it) => it !== null).flat();
+
+    if (isPendingWithdrawal || stakingData.length > 0 || eraPendingRewards.length > 0) {
+      isStaking.value = true;
+    } else {
+      isStaking.value = false;
+    }
+  };
 
   watch([currentAccount], setWeb3, { immediate: true });
   watch([selectedEvmAddress, web3], updateEvmProvider);
+  watch([selectedEvmAddress, dapps, era], checkStakerInfo);
 
   watchEffect(() => {
     console.log('selectedEvmAddress', selectedEvmAddress.value);
     console.log('isConnectedNetwork', isConnectedNetwork.value);
+    console.log('isStaking', isStaking.value);
   });
 
-  return { selectedEvmAddress, isConnectedNetwork, setWeb3 };
+  return { selectedEvmAddress, isConnectedNetwork, isStaking, setWeb3 };
 };
