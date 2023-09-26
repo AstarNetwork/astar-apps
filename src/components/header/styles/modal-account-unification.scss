@@ -1,0 +1,201 @@
+@import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
+.btn {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  height: 52px;
+  @apply tw-rounded-full;
+  &.close {
+    background: transparent;
+    color: $navy-1;
+    border: solid 1px $navy-1;
+  }
+}
+
+.account-name {
+  @apply tw-font-bold tw-flex tw-items-center tw-justify-start tw-text-base;
+  .icon{
+    @apply tw-w-8 tw-h-8 tw-object-cover tw-rounded-full tw-flex-shrink-0 tw-mr-3;
+  }
+}
+.wallet-info__wrapper {
+  background-color: $gray-1;
+  @apply tw-text-left tw-rounded-xl tw-mt-2;
+}
+.wallet-info {
+  @apply tw-flex tw-items-center tw-space-x-3 tw-p-5;
+  .wallet-info__icon {
+    @apply tw-flex-shrink-0;
+    img {
+      @apply tw-w-8 tw-h-8 tw-rounded-full tw-object-cover;
+    }
+  }
+  .wallet-info__address {
+    @apply tw-flex-1;
+  }
+  .wallet-info__actions {
+    @apply tw-flex tw-space-x-3;
+  }
+}
+
+.introduce-au {
+  .introduce-au__text {
+    max-width: 358px;
+    @apply tw-py-16 tw-mx-auto tw-font-extrabold tw-text-3xl;
+    span {
+      background: linear-gradient(
+        60deg,
+        #e6007a -5.88%,
+        #703ac2 15.42%,
+        #0070eb 40.77%,
+        #0297fb 72.21%,
+        #0ae2ff 95.53%
+      );
+      @apply tw-bg-clip-text tw-text-transparent;
+    }
+  }
+}
+
+.wrapper--help {
+  background-color: rgba($astar-blue, 3%);
+  @apply tw-mt-6 tw-rounded-lg tw-text-left tw-p-6;
+}
+.title--help {
+  color: $navy-1;
+  @apply tw-font-semibold tw-text-base;
+}
+.help-faq {
+  dt {
+    @apply tw-mb-2 tw-mt-4;
+  }
+  dd {
+    @apply tw-bg-white tw-py-3 tw-px-4 tw-rounded;
+  }
+  a {
+    color: $astar-blue;
+  }
+}
+
+.warning-check {
+  border: solid 1px $warning-red;
+  background-color: rgba($warning-red, 20%);
+  color: $navy-1;
+  @apply tw-rounded-xl tw-p-4 tw-flex tw-items-start tw-space-x-2 tw-mb-6 tw-text-left;
+  input[type='checkbox'] {
+    @apply tw-h-4 tw-w-4;
+  }
+}
+
+.metamask {
+  background-color: $gray-1;
+  @apply tw-rounded-xl tw-overflow-hidden tw-font-semibold;
+  .metamask-info {
+    @apply tw-py-6;
+    .icon {
+      @apply tw-w-12 tw-h-12 tw-mx-auto tw-my-2;
+    }
+    .address {
+      @apply tw-mt-2;
+    }
+  }
+  .connected {
+    background-color: $astar-blue;
+    @apply tw-text-white tw-p-1;
+  }
+  .connect {
+    @apply tw-px-10 tw-pb-6;
+  }
+}
+
+.warning {
+  border: solid 1px $warning-red;
+  background-color: rgba($warning-red, 20%);
+  color: $navy-1;
+  @apply tw-rounded-xl tw-p-4 tw-flex tw-items-start tw-space-x-2 tw-mb-6 tw-text-left;
+  .icon-warning {
+    color: $warning-red;
+  }
+}
+
+.unified-account-details {
+  @apply tw-space-y-6 tw-text-left;
+  .label {
+    @apply tw-font-semibold tw-mb-2;
+  }
+  input[type='text'],
+  .evm-account,
+  .account-icon {
+    background-color: $gray-1;
+    color: $navy-1;
+    @apply tw-rounded-xl tw-p-5 tw-w-full;
+  }
+  input[type='text'] {
+    &::placeholder {
+      color: $gray-3 !important;
+    }
+  }
+  .evm-account,
+  .account-icon {
+    @apply tw-flex tw-items-center tw-font-semibold tw-space-x-2;
+    .icon {
+      @apply tw-w-8 tw-h-8 tw-object-cover tw-rounded-full tw-flex-shrink-0;
+    }
+  }
+  input[type='text'],
+  .account-icon {
+    &:hover,
+    &:focus {
+      outline: solid 1px $astar-blue;
+    }
+  }
+}
+
+.evm-token-list {
+  @apply tw-space-y-1;
+  .row {
+    @apply tw-flex tw-items-center tw-space-x-4 tw-py-4;
+    span {
+      @apply tw-block;
+    }
+    .column--icon {
+      @apply tw-flex-shrink-0;
+      img {
+        @apply tw-w-8 tw-h-8 tw-rounded-full tw-object-cover;
+      }
+    }
+    .column--balance {
+      @apply tw-flex-1 tw-text-right;
+    }
+    .symbol,
+    .token {
+      @apply tw-font-semibold tw-text-base;
+    }
+    .name,
+    .usd {
+      color: $gray-3;
+    }
+  }
+}
+
+.created-unified-account {
+  .icon {
+    @apply tw-mx-auto tw-w-20 tw-h-20 tw-object-cover tw-rounded-full;
+  }
+  .name {
+    @apply tw-font-bold tw-text-2xl tw-my-4;
+  }
+  .native-account,
+  .evm-account {
+    background-color: $gray-1;
+    @apply tw-p-6;
+  }
+}
+
+.completed {
+  @apply tw-text-xl tw-font-bold tw-space-y-4;
+  .emoji {
+    @apply tw-text-5xl;
+  }
+}

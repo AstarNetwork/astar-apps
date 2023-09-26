@@ -211,7 +211,7 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isAccountUnification = computed<boolean>(() => {
-      return currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName && !isH160.value;
+      return currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName;
     });
 
     const closeModal = async (): Promise<void> => {
