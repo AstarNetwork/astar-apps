@@ -4,6 +4,8 @@
       <div class="separator" />
     </div>
     <div class="container--assets">
+      <astar-button @click="unify()">Unify accounts</astar-button>
+      <astar-button @click="setIdentity()">Set setIdentity</astar-button>
       <div class="container--account">
         <div class="title--account">
           <span class="text--xl">
@@ -53,8 +55,12 @@ import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
-import { Asset } from 'src/v2/models';
+import { Asset, IdentityData } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
+import { container } from 'src/v2/common';
+import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { INftRepository } from 'src/v2/repositories';
 
 export default defineComponent({
   components: {
@@ -168,6 +174,43 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
+    // Temp account unification test, TODO remove later
+    const unify = async () => {
+      const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
+      const evmAddress = '0x68F6F226c5D0C8124b62b98Ac797dD6208bAFE90';
+      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+      await service.unifyAccounts(
+        nativeAddress,
+        evmAddress,
+        'Bobo',
+        '0x18F6F226c5D0C8124b62b98Ac797dD6208bAFE90',
+        '2000'
+      );
+      console.log('mapped native', await service.getMappedNativeAddress(evmAddress));
+      console.log('mapped evm', await service.getMappedEvmAddress(nativeAddress));
+    };
+
+    // Temp set identity test, TODO remove later
+    const setIdentity = async () => {
+      const tokenOwnerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a';
+      const nftRepository = container.get<INftRepository>(Symbols.BluezNftRepository);
+      const nfts = await nftRepository.getNftMetadata(
+        '0x7b2152e51130439374672af463b735a59a47ea85',
+        '8893zß'
+      );
+      console.log(nfts);
+
+      const nativeAddress = 'XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa';
+      const service = container.get<IIdentityService>(Symbols.IdentityService);
+      await service.setIdentity(
+        nativeAddress,
+        new IdentityData('aaa', [
+          { key: 'ContractAddress', value: '0x18F6F226c5D0C8124b62b98Ac797dD6208bAFE90' },
+          { key: 'TokenId', value: '2000' },
+        ])
+      );
+    };
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -181,6 +224,8 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      unify,
+      setIdentity,
     };
   },
 });

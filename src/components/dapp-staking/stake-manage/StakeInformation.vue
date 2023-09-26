@@ -94,18 +94,18 @@ export default defineComponent({
   setup() {
     const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount, isMultisig } = useAccount();
+    const { senderSs58Account, isMultisig } = useAccount();
     const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const subScan = computed<string>(() => `${providerEndpoints[currentNetworkIdx.value].subscan}`);
 
     const setTxHistories = async (): Promise<void> => {
-      if (!currentAccount.value || !currentNetworkName.value) return;
+      if (!senderSs58Account.value || !currentNetworkName.value) return;
       try {
         isLoadingTxHistories.value = true;
         const data = await getStakeTxHistories({
-          address: currentAccount.value,
+          address: senderSs58Account.value,
           network: currentNetworkName.value.toLowerCase(),
           symbol: nativeTokenSymbol.value,
           dapps: dapps.value,

@@ -8,3 +8,7 @@ export * from './IXvmRepository';
 export * from './IEvmAssetsRepository';
 export * from './IAssetsRepository';
 export * from './IPolkasafeRepository';
+export * from './IAccountsRepository';
+export * from './IIdentityRepository';
+export * from './INftRepository';
+export * from './IAccountUnificationRepository';

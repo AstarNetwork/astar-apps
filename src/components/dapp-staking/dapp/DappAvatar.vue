@@ -14,11 +14,7 @@
           </div>
         </div>
         <div class="row--stake">
-          <astar-button
-            :disabled="isH160"
-            class="btn-size--stake"
-            @click="goStakeLink(dapp.dapp.address)"
-          >
+          <astar-button class="btn-size--stake" @click="goStakeLink(dapp.dapp.address)">
             <span class="text--btn-stake">
               {{ $t('dappStaking.stake') }}
             </span>
@@ -59,7 +55,6 @@ export default defineComponent({
     const router = useRouter();
     const { currentAccount } = useAccount();
     const store = useStore();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
 
     const goEditLink = (): void => {
@@ -80,7 +75,6 @@ export default defineComponent({
     return {
       isDisabledEditButton,
       goEditLink,
-      isH160,
       goStakeLink,
       twitterUrl,
     };

@@ -81,8 +81,8 @@ test.describe('account panel', () => {
     await page.goto('/custom-node/assets/transfer?token=astr&mode=local');
     await page.locator('.btn--connect').click();
     await page.getByText('MetaMask').click();
-    await connectWithEVM(page, context);
-    await changeNetworkOnEVM(page, context);
+    const metamaskWindow = await connectWithEVM(page, context);
+    await changeNetworkOnEVM(page, context, metamaskWindow);
     await page.waitForSelector('.modal-close', { state: 'hidden' });
     await expect(page.getByText('Select a Wallet')).toBeHidden();
 

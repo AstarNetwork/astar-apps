@@ -97,7 +97,7 @@ const dispatchUnbondedMessage = ({
       store.dispatch(
         'general/showAlertMsg',
         {
-          msg: t('dappStaking.toast.successfullyWithdrew'),
+          msg: t('dappStaking.toast.successfullyWithdrawn'),
           alertType: 'success',
         },
         { root: true }

@@ -6,20 +6,24 @@ import { $api } from 'boot/api';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { useStore } from 'src/store';
-import { computed, onUnmounted, ref, watch } from 'vue';
 import { container } from 'src/v2/common';
+import { ChunkInfo } from 'src/v2/models';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { ChunkInfo } from 'src/v2/models';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAccount } from '../useAccount';
+
+const eventWithdrawal = 'SentWithdrawalTransaction';
 
 export function useUnbonding() {
   const store = useStore();
   const { t } = useI18n();
-  const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
+  const { senderSs58Account, currentAccount } = useAccount();
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
+
   const unlockingChunks = ref<ChunkInfo[]>();
   const canWithdraw = ref<boolean>(false);
   const totalToWithdraw = ref<BN>(new BN(0));
@@ -27,24 +31,27 @@ export function useUnbonding() {
 
   const withdraw = async (): Promise<void> => {
     try {
-      const transaction = $api!.tx.dappsStaking.withdrawUnbonded();
       const finalizedCallback = (result: ISubmittableResult): void => {
         displayCustomMessage({
           txType: TxType.withdrawUnbonded,
           result,
-          senderAddress: selectedAccountAddress.value,
+          senderAddress: senderSs58Account.value,
           store,
           t,
         });
       };
 
       try {
-        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-        await dappStakingService.sendTx({
-          senderAddress: selectedAccountAddress.value,
-          transaction,
+        const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+          Symbols.DappStakingServiceFactory
+        );
+        const dappStakingService = dappStakingServiceFactory();
+
+        await dappStakingService.withdraw({
+          senderAddress: currentAccount.value,
           finalizedCallback,
         });
+        window.dispatchEvent(new CustomEvent(eventWithdrawal));
       } catch (error: any) {
         console.error(error.message);
       }
@@ -64,12 +71,12 @@ export function useUnbonding() {
   const unsub = subscribeToEraChange();
 
   const getChunks = async (era: u32) => {
-    if (!canUnbondWithdraw.value || !selectedAccountAddress.value) {
+    if (!canUnbondWithdraw.value || !senderSs58Account.value) {
       return;
     }
 
     const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-    const ledger = await service.getLedger(selectedAccountAddress.value);
+    const ledger = await service.getLedger(senderSs58Account.value);
 
     if (ledger.unbondingInfo.unlockingChunks) {
       unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
@@ -92,7 +99,7 @@ export function useUnbonding() {
   };
 
   watch(
-    () => [unlockingChunksCount.value, selectedAccountAddress.value],
+    () => [unlockingChunksCount.value, senderSs58Account.value],
     async (chunks) => {
       // console.log('chunks count changed');
       const era = await $api?.query.dappsStaking.currentEra<u32>();
@@ -118,5 +125,6 @@ export function useUnbonding() {
     canUnbondWithdraw,
     unlockingChunksCount,
     unbondingPeriod,
+    eventWithdrawal,
   };
 }

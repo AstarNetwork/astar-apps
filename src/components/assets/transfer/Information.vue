@@ -105,7 +105,7 @@ export default defineComponent({
     const store = useStore();
     const txHistories = ref<RecentHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount, isMultisig } = useAccount();
+    const { senderSs58Account, isMultisig } = useAccount();
     const { currentNetworkName } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -120,18 +120,18 @@ export default defineComponent({
     });
 
     const setTxHistories = async (): Promise<void> => {
-      if (!currentAccount.value || !currentNetworkName.value) return;
+      if (!senderSs58Account.value || !currentNetworkName.value) return;
       try {
         isLoadingTxHistories.value = true;
         const network = currentNetworkName.value.toLowerCase();
         if (props.transferType === HistoryTxType.Xvm) {
           txHistories.value = await getXvmAssetsTransferHistories({
-            address: currentAccount.value,
+            address: senderSs58Account.value,
             network,
           });
         } else {
           txHistories.value = await getTxHistories({
-            address: currentAccount.value,
+            address: senderSs58Account.value,
             network,
           });
         }

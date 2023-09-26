@@ -3,6 +3,7 @@ import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { Signer } from '@polkadot/types/types';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
@@ -11,14 +12,15 @@ import { AlertMsg } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
-import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
-import { PolkasafeRepository } from 'src/v2/repositories/implementations';
 import {
   IGasPriceProvider,
   IWalletService,
+  ParamSendEvmTransaction,
   ParamSendMultisigTransaction,
   ParamSignAndSend,
 } from 'src/v2/services';
+import { PolkasafeRepository } from 'src/v2/repositories/implementations';
+import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
 import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
@@ -153,6 +155,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     return result;
   }
 
+  public async signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
   private async getAccounts(): Promise<Account[]> {
     await this.checkExtension();
     const metadata = await this.metadataRepository.getChainMetadata();
@@ -225,6 +235,16 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     isMonitorExtension
       ? window.addEventListener('message', handleDetectSign)
       : window.removeEventListener('message', handleDetectSign);
+  }
+
+  // Memo: This method is not called from this class
+  public async sendEvmTransaction({
+    from,
+    to,
+    value,
+    data,
+  }: ParamSendEvmTransaction): Promise<string> {
+    return '';
   }
 
   private async sendMultisigTransaction({

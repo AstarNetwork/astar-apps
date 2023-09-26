@@ -6,7 +6,7 @@
     @close="closeModal()"
   >
     <div class="wrapper--modal--wallet">
-      <div v-if="!isDappStakingPage">
+      <div>
         <div class="title--account-type">
           <span>
             {{ $t('wallet.evmAccount') }}
@@ -164,7 +164,6 @@ import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
 
@@ -204,7 +203,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const route = useRoute();
     const store = useStore();
     const { currentAccountName, disconnectAccount } = useAccount();
     const isClosing = ref<boolean>(false);
@@ -221,7 +219,6 @@ export default defineComponent({
       props.setCloseModal();
     };
 
-    const isDappStakingPage = computed<boolean>(() => route.fullPath.includes('dapp-staking'));
     const nativeWallets = computed(() => {
       return supportWallets
         .map((it) => {
@@ -287,7 +284,6 @@ export default defineComponent({
     return {
       nativeWallets,
       evmWallets,
-      isDappStakingPage,
       isClosing,
       currentWallet,
       currentAccountName,

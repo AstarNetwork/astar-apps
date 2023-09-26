@@ -11,13 +11,15 @@ export interface IXcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload>;
 
   getTransferToOriginChainCall(
     from: XcmChain,
     recipientAddress: string,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload>;
 
   getTransferCall(
@@ -25,17 +27,19 @@ export interface IXcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload>;
 
   getTokenBalance(
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string>;
 
-  getNativeBalance(address: string, chain: XcmChain): Promise<BN>;
+  getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN>;
 
   getXcmVersion(from: XcmChain): { version: string; isV3: boolean };
 }

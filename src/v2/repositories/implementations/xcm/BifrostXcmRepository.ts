@@ -34,7 +34,8 @@ export class BifrostXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -82,6 +83,7 @@ export class BifrostXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'xTokens',
       'transfer',
       tokenData,
@@ -95,12 +97,13 @@ export class BifrostXcmRepository extends XcmRepository {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
-    const api = await this.apiFactory.get(chain.endpoint);
+    const api = await this.apiFactory.get(endpoint);
     try {
       if (token.originAssetId == 'BNC') {
-        return (await this.getNativeBalance(address, chain)).toString();
+        return (await this.getNativeBalance(address, chain, endpoint)).toString();
       } else if (token.originAssetId == 'vDOT') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, vDOT);
         return bal.free.toString();

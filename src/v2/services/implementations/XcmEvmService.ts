@@ -21,9 +21,7 @@ import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AlertMsg } from 'src/modules/toast';
 import { getBlockscoutTx } from 'src/links';
-
-// XCM precompiled contract address
-const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
 
 @injectable()
 export class XcmEvmService implements IXcmEvmService {
@@ -75,7 +73,7 @@ export class XcmEvmService implements IXcmEvmService {
       try {
         const provider = getEvmProvider(this.currentWallet as any);
         const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(ABI as AbiItem[], PRECOMPILED_ADDR);
+        const contract = new web3.eth.Contract(ABI as AbiItem[], evmPrecompiledContract.xcm);
 
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(senderAddress),
@@ -86,7 +84,7 @@ export class XcmEvmService implements IXcmEvmService {
           nonce,
           gasPrice: web3.utils.toHex(gasPrice),
           from: senderAddress,
-          to: PRECOMPILED_ADDR,
+          to: evmPrecompiledContract.xcm,
           value: '0x0',
           data: contract.methods
             .assets_withdraw(

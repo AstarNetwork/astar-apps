@@ -353,7 +353,7 @@ export default {
       requiredClaimFirst: 'Please claim your rewards before sending transaction',
       requiredClaimFirstCompounding:
         '{message} -Disable compounding, claim your rewards and then enable compounding again',
-      successfullyWithdrew: 'Balance is successfully withdrew',
+      successfullyWithdrawn: 'Balance successfully withdrawn',
       successfullySetRewardDest: 'You successfully set reward destination',
       successfullyStaked: 'You successfully staked to {contractAddress}',
       successfullyUnbond: 'You successfully started unbonding process for {contractAddress}',
@@ -518,9 +518,11 @@ export default {
     dashboard: 'Dashboard',
     tvl: 'TVL',
     collators: 'Collators',
+    tokenSupply: 'Token Supply',
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
+      circulating: 'Circulating',
     },
     block: {
       block: 'Block',
@@ -570,8 +572,13 @@ export default {
       title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
+    treasury: 'Treasury',
+    other: 'Other',
+    locked: 'Locked',
+    others: 'Others',
   },
   links: {
+    gridlockWallet: 'Gridlock Wallet',
     goDecentralized: 'Go Decentralized!',
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',

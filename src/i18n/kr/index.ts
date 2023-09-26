@@ -293,7 +293,7 @@ export default {
       requiredClaimFirst: '거래를 전송하기 전에 보상을 클레임하여 주십시오.',
       requiredClaimFirstCompounding:
         '{message} -컴파운딩 기능 해제, 보상을 클레임 한 뒤 다시 컴파운딩 기능을 켜주십시오.',
-      successfullyWithdrew: '해당 잔고가 성공적으로 출금되었습니다.',
+      successfullyWithdrawn: '해당 잔고가 성공적으로 출금되었습니다.',
       successfullySetRewardDest: '보상 받을 위치를 성공적으로 설정하였습니다.',
     },
     error: {

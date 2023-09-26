@@ -233,6 +233,7 @@ export default defineComponent({
       selectedGas,
       evmGasCost,
       isTransferNativeToken,
+      isEnableSpeedConfiguration,
       setSelectedGas,
       inputHandler,
       setSelectedTip,
@@ -245,14 +246,6 @@ export default defineComponent({
     );
 
     const store = useStore();
-    const isEnableSpeedConfiguration = computed<boolean>(() => {
-      const currentWallet = store.getters['general/currentWallet'];
-      return (
-        currentWallet !== SupportWallet.TalismanEvm &&
-        currentWallet !== SupportWallet.SubWalletEvm &&
-        currentWallet !== SupportWallet.OneKeyEvm
-      );
-    });
 
     const transfer = async (): Promise<void> => {
       await transferAsset({

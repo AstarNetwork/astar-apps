@@ -9,7 +9,10 @@
         @click="goToLink(t.link)"
       >
         <div class="card--info">
-          <div class="txt--title" :class="index === 0 ? 'txt--bold' : ''">
+          <div
+            class="txt--title"
+            :class="index === 0 ? 'txt--gridlock' : index === 1 ? 'txt--bold' : ''"
+          >
             {{ t.title }}
           </div>
           <div v-if="t.subtitle" class="txt--subtitle">{{ t.subtitle }}</div>
@@ -38,6 +41,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const banners = [
+      require('/src/assets/img/banner/banner-gridlock.svg'),
       require('/src/assets/img/banner/banner01.svg'),
       require('/src/assets/img/banner/banner02.svg'),
       require('/src/assets/img/banner/banner03.svg'),

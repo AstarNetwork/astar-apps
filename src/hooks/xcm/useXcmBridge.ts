@@ -44,11 +44,13 @@ import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
 import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
 export function useXcmBridge(selectedToken: Ref<Asset>) {
   const originChainApi = ref<ApiPromise | null>(null);
+  const originChainApiEndpoint = ref<string>('');
   const srcChain = ref<XcmChain>(Polkadot);
   const destChain = ref<XcmChain>(Astar);
   const amount = ref<string | null>(null);
@@ -147,12 +149,22 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   };
 
   const getOriginChainNativeBal = async (): Promise<string> => {
-    if (!currentAccount.value || !srcChain.value || !originChainApi.value || isH160.value) {
+    if (
+      !currentAccount.value ||
+      !srcChain.value ||
+      !originChainApi.value ||
+      isH160.value ||
+      !originChainApiEndpoint.value
+    ) {
       return '0';
     }
 
     const xcmService = container.get<IXcmService>(Symbols.XcmService);
-    const balance = await xcmService.getNativeBalance(currentAccount.value, srcChain.value);
+    const balance = await xcmService.getNativeBalance(
+      currentAccount.value,
+      srcChain.value,
+      originChainApiEndpoint.value
+    );
     return balance.toString();
   };
 
@@ -284,24 +296,35 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       !amount.value || Number(amount.value) === 0 || errMsg.value !== '' || !isFulfilledAddress;
   };
 
-  const getEndpoint = (): string => {
+  const getEndpoints = (): string[] => {
     if (isAstarNativeTransfer.value) {
       const isFromAstar = srcChain.value.name === Astar.name || srcChain.value.name === Shiden.name;
       const chainName = isFromAstar ? destChain.value.name : srcChain.value.name;
       const defaultParachainEndpoint = xcmChainObj[chainName];
-      return castXcmEndpoint(defaultParachainEndpoint.endpoint);
+      return defaultParachainEndpoint.endpoints;
     } else {
-      return castXcmEndpoint(originChain.value.endpoint);
+      return originChain.value.endpoints;
     }
   };
 
   const connectOriginChain = async (endpoint: string): Promise<void> => {
+    const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
+
+    const timeoutPromise = new Promise<void>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Connection timed out after 10 seconds'));
+      }, 10 * 1000); // 10 seconds
+    });
+
     try {
-      const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
-      originChainApi.value = await apiFactory.get(endpoint);
+      // Fixme: stop logging multiple `API-WS: disconnected from wss://xxxxx: 1006:: Abnormal Closure` logs when connection error
+      originChainApi.value = (await Promise.race([
+        apiFactory.get(endpoint),
+        timeoutPromise,
+      ])) as ApiPromise;
       isLoadingApi.value = false;
-    } catch (err) {
-      console.error(err);
+    } catch (error: any) {
+      throw Error(error.message);
     }
   };
 
@@ -350,7 +373,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       } else {
         // if: SS58 Withdraw
         const isValidAddress = isValidAddressPolkadotAddress(address);
-        if (!isValidAddress) {
+        if (!isValidAddress || !originChainApiEndpoint.value) {
           return 0;
         }
         const xcmService = container.get<IXcmService>(Symbols.XcmService);
@@ -358,7 +381,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           address,
           destChain.value,
           selectedToken.value,
-          selectedToken.value.isNativeToken
+          selectedToken.value.isNativeToken,
+          originChainApiEndpoint.value
         );
         return Number(ethers.utils.formatUnits(bal, decimals.value).toString());
       }
@@ -409,6 +433,14 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         toChain: castChainName(destChain.value.name),
       });
 
+      const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+      const selectedEndpoint = JSON.parse(selectedEndpointStored);
+      const astarEndpoint = selectedEndpoint && Object.values(selectedEndpoint)[0];
+      const isAstarChains =
+        srcChain.value.name.toLowerCase().includes('astar') ||
+        srcChain.value.name.toLowerCase().includes('shiden');
+      const endpoint = isAstarChains ? astarEndpoint : originChainApiEndpoint.value;
+
       await xcmService.transfer({
         from: srcChain.value,
         to: destChain.value,
@@ -418,6 +450,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         amount: Number(amount.value),
         finalizedCallback,
         successMessage,
+        endpoint,
       });
     } catch (error: any) {
       console.error(error.message);
@@ -434,6 +467,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       !selectedToken.value ||
       !originChainApi.value ||
       !isTransferPage.value ||
+      !originChainApiEndpoint.value ||
       selectedToken.value.metadata.symbol.toLowerCase() !== tokenSymbol.value
     ) {
       return 0;
@@ -446,7 +480,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           address,
           srcChain.value,
           selectedToken.value,
-          selectedToken.value.isNativeToken
+          selectedToken.value.isNativeToken,
+          originChainApiEndpoint.value
         );
 
         return Number(ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString());
@@ -502,11 +537,18 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     }
 
     isLoadingApi.value = true;
-    try {
-      const endpoint = getEndpoint();
-      endpoint && (await connectOriginChain(endpoint));
-    } catch (error) {
-      console.error(error);
+    const endpoints = getEndpoints();
+    for (let index = 0; index < endpoints.length; index++) {
+      const endpoint = castXcmEndpoint(endpoints[index]);
+      try {
+        await connectOriginChain(endpoint);
+        originChainApiEndpoint.value = endpoint;
+        console.info('Connected to', originChainApiEndpoint.value);
+        break;
+      } catch (error) {
+        console.info('Failed connecting to', endpoint);
+        console.error(error);
+      }
     }
   };
 
@@ -559,9 +601,12 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     await setOriginChainNativeBal();
   });
 
-  watch([isLoadingApi, currentAccount, selectedToken, srcChain], async () => {
-    await monitorFromChainBalance();
-  });
+  watch(
+    [isLoadingApi, currentAccount, selectedToken, srcChain, originChainApiEndpoint],
+    async () => {
+      await monitorFromChainBalance();
+    }
+  );
 
   watchEffect(async () => {
     await monitorDestChainBalance(inputtedAddress.value);

@@ -36,7 +36,8 @@ export class PhalaXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -63,17 +64,26 @@ export class PhalaXcmRepository extends XcmRepository {
     };
 
     const destWeight = { refTime: '6000000000', proofSize: '1000000' };
-    return await this.buildTxCall(from, 'xTransfer', 'transfer', asset, destination, destWeight);
+    return await this.buildTxCall(
+      from,
+      endpoint,
+      'xTransfer',
+      'transfer',
+      asset,
+      destination,
+      destWeight
+    );
   }
 
   public async getTokenBalance(
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
     const symbol = token.metadata.symbol;
-    const api = await this.apiFactory.get(chain.endpoint);
+    const api = await this.apiFactory.get(endpoint);
 
     try {
       if (this.isAstarNativeToken(token)) {
@@ -85,7 +95,7 @@ export class PhalaXcmRepository extends XcmRepository {
       }
 
       if (isNativeToken) {
-        return (await this.getNativeBalance(address, chain)).toString();
+        return (await this.getNativeBalance(address, chain, endpoint)).toString();
       }
 
       throw `Token ${symbol} is not defined`;

@@ -60,7 +60,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, watchEffect, onUnmounted } from 'vue';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { useAccount, useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
@@ -87,9 +87,9 @@ export default defineComponent({
     const store = useStore();
     const currentTab = ref<MyStakingTab>(MyStakingTab.MyDapps);
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { unlockingChunks } = useUnbonding();
+    const { unlockingChunks, eventWithdrawal } = useUnbonding();
     const { myStakeInfos } = useStakerInfo();
-    const { currentAccount } = useAccount();
+    const { senderSs58Account } = useAccount();
 
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData, isLoadingBalance } = useBalance(selectedAddress);
@@ -101,13 +101,29 @@ export default defineComponent({
       return Number(balance);
     });
 
+    // Memo: reset the MyStakingTab when the account changes
     watch(
-      [currentAccount],
+      [senderSs58Account],
       () => {
         currentTab.value = MyStakingTab.MyRewards;
       },
-      { immediate: false }
+      { immediate: true }
     );
+
+    const handleOpenMyRewardsTab = () => {
+      currentTab.value = MyStakingTab.MyRewards;
+    };
+
+    // Memo: reset the MyStakingTab when the sending withdrawal transaction
+    const listenWithdrawalTransaction = (): void => {
+      window.addEventListener(eventWithdrawal, handleOpenMyRewardsTab);
+    };
+
+    watchEffect(listenWithdrawalTransaction);
+
+    onUnmounted(() => {
+      window.removeEventListener(eventWithdrawal, listenWithdrawalTransaction);
+    });
 
     return {
       currentTab,

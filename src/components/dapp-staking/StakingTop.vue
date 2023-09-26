@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useDispatchGetDapps, usePageReady } from 'src/hooks';
+import { useDispatchGetDapps, useNetworkInfo, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -68,19 +68,6 @@ export default defineComponent({
       const isLoad = dapps.value.length === 0;
       store.commit('general/setLoading', isLoad);
     };
-
-    watch(
-      [isH160],
-      () => {
-        if (isH160.value) {
-          store.dispatch('general/showAlertMsg', {
-            msg: t('dappStaking.error.onlySupportsSubstrate'),
-            alertType: 'error',
-          });
-        }
-      },
-      { immediate: true }
-    );
 
     watch(
       [dapps],
