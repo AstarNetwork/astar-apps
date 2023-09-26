@@ -85,10 +85,10 @@ export interface Wallet {
 
 export const supportWalletObj = {
   [SupportWallet.Snap]: {
-    img: require('/src/assets/img/chain/astar.png'),
-    name: 'MM Astar Snap',
+    img: require('/src/assets/img/metamask.png'),
+    name: 'Astar Snap',
     source: SupportWallet.Snap,
-    walletUrl: 'https://snaps.metamask.io/snap/npm/cosmsnap/snap/',
+    walletUrl: 'local:http://localhost:8081',
     guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,

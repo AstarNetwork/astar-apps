@@ -13,11 +13,6 @@ import { HistoryTxType } from 'src/modules/account/index';
 import { SubstrateAccount } from 'src/store/general/state';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { web3EnablePromise } from '@polkadot/extension-dapp';
-import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
-import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
-import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 
 declare global {
   interface Window {
@@ -25,60 +20,9 @@ declare global {
   }
 }
 
-export const snapId = 'local:http://localhost:8081'; // TODO: change to real snap id 'npm:@astar-network/snap'
-
-export async function installPolkadotSnap(): Promise<boolean> {
-  try {
-    await enablePolkadotSnap({ networkName: 'westend' }, snapId);
-    console.info('Snap installed!!');
-    return true;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
-
-export async function isPolkadotSnapInstalled(snapId: string): Promise<boolean> {
-  // TODO: use the snapId to check if the snap is installed
-  return !!(await getInjectedMetamaskExtension());
-}
-
-export async function getInjectedMetamaskExtension(): Promise<InjectedMetamaskExtension | null> {
-  const extensions = await web3EnablePromise;
-  return getMetamaskExtension(extensions || []) || null;
-}
-
-function getMetamaskExtension(
-  extensions: InjectedExtension[]
-): InjectedMetamaskExtension | undefined {
-  return extensions.find((item) => item.name === 'metamask-polkadot-snap') as unknown as
-    | InjectedMetamaskExtension
-    | undefined;
-}
-
-export interface SnapInitializationResponse {
-  isSnapInstalled: boolean;
-  snap?: MetamaskPolkadotSnap;
-}
-
-export async function initiatePolkdatodSnap(): Promise<SnapInitializationResponse> {
-  try {
-    console.info('Attempting to connect to snap...');
-    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'westend' }, snapId);
-    console.info('Snap installed!');
-    return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
-  } catch (e) {
-    console.error(e);
-    return { isSnapInstalled: false };
-  }
-}
-
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
   if (selectedAddress != null || forceRequest) {
-    const isInstalled = await isPolkadotSnapInstalled(snapId);
-    console.info('isInstalled', isInstalled);
-
     let extensions = await web3Enable('AstarNetwork/astar-apps');
 
     // const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;

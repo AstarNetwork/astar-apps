@@ -41,6 +41,8 @@ import {
   getSelectedAccount,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
+import { initiatePolkdatodSnap, getInjectedMetamaskExtension } from 'src/hooks/helper/snapUtils';
+// import { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
@@ -204,11 +206,22 @@ export const useConnectWallet = () => {
     modalName.value = wallet;
   };
 
-  const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
+  const requestExtensionsIfFirstAccess = async (wallet: SupportWallet): Promise<void> => {
     // Memo: displays accounts menu for users who use the portal first time
     const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const isFirstAccess = storedAddress === null || storedAddress === ETHEREUM_EXTENSION;
+    console.log('requestExtensionsIfFirstAccess', isFirstAccess, isSubstrateWallet, storedAddress);
+
+    const isSnapInstalled = await initiatePolkdatodSnap();
+    console.log('isSnapInstalled', isSnapInstalled);
+    if (isSnapInstalled) {
+      // const metamaskPolkadotExtension = await web3FromSource("metamask-polkadot-snap");
+    }
+
+    const InjectedExtension = await getInjectedMetamaskExtension();
+    console.log('InjectedExtension', InjectedExtension);
+
     if (isFirstAccess && isSubstrateWallet) {
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
