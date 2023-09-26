@@ -9,6 +9,7 @@ import {
   ConnectionType,
   GeneralStateInterface as State,
   SubstrateAccount,
+  UnifiedAccount,
 } from './state';
 
 export interface GeneralMutations<S = State> {
@@ -30,6 +31,7 @@ export interface GeneralMutations<S = State> {
   setCurrentWallet(state: S, wallet: string): void;
   setGas(state: S, gas: GasTip): void;
   setCurrentBlock(state: S, blockNumber: number): void;
+  setUnifiedAccount(state: S, unifiedAccount: UnifiedAccount): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -109,6 +111,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setCurrentBlock(state, blockNumber) {
     state.currentBlock = blockNumber;
+  },
+  setUnifiedAccount(state, unifiedAccount) {
+    state.unifiedAccount = unifiedAccount;
   },
 };
 

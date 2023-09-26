@@ -4,6 +4,9 @@ import { SupportMultisig } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
+import { container } from 'src/v2/common';
+import { IAccountUnificationService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
@@ -19,6 +22,7 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
@@ -49,6 +53,43 @@ export const useAccount = () => {
       currentAccountName.value = '';
       resolve(true);
     });
+  };
+
+  const checkIfUnified = async (address: string): Promise<void> => {
+    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+
+    const mapped = isValidEvmAddress(address)
+      ? await service.getMappedNativeAddress(address)
+      : await service.getMappedEvmAddress(address);
+
+    if (mapped) {
+      if (isValidEvmAddress(address)) {
+        store.commit('general/setUnifiedAccount', {
+          nativeAddress: mapped,
+          evmAddress: address,
+        });
+      } else {
+        store.commit('general/setUnifiedAccount', {
+          nativeAddress: address,
+          evmAddress: mapped,
+        });
+      }
+    }
+  };
+
+  // TODO Move to separate lib, probably update toSS58Address in astar.js
+  const getSS58Address = async (evmAddress: string): Promise<string> => {
+    if (isValidEvmAddress(evmAddress)) {
+      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+      const ss58Pair = await service.getMappedNativeAddress(evmAddress);
+      if (ss58Pair) {
+        return ss58Pair;
+      } else {
+        return toSS58Address(evmAddress);
+      }
+    }
+
+    return evmAddress;
   };
 
   const currentAccount = ref<string>('');
@@ -98,6 +139,7 @@ export const useAccount = () => {
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
+      await checkIfUnified(currentAddress.value);
       return;
     },
     { immediate: true }
@@ -128,5 +170,6 @@ export const useAccount = () => {
     multisig,
     isMultisig,
     disconnectAccount,
+    getSS58Address,
   };
 };

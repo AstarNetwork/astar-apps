@@ -18,14 +18,14 @@ export class AccountsRepository implements IAccountsRepository {
 
     const api = await this.api.getApi();
 
-    return api.tx.accounts.claimEvmAccount(evmAddress, signature);
+    return api.tx.unifiedAccounts.claimEvmAccount(evmAddress, signature);
   }
 
   public async getMappedNativeAddress(evmAddress: string): Promise<string> {
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
 
     const api = await this.api.getApi();
-    const nativeAddress = await api.query.accounts.nativeAccounts<AccountId32>(evmAddress);
+    const nativeAddress = await api.query.unifiedAccounts.nativeToEvm<AccountId32>(evmAddress);
 
     return nativeAddress.toString();
   }
@@ -34,7 +34,7 @@ export class AccountsRepository implements IAccountsRepository {
     Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
 
     const api = await this.api.getApi();
-    const evmAddress = await api.query.accounts.evmAccounts<H160>(nativeAddress);
+    const evmAddress = await api.query.unifiedAccounts.evmToNative<H160>(nativeAddress);
 
     return evmAddress.toString();
   }

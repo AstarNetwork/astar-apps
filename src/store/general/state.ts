@@ -30,6 +30,11 @@ export type EcdsaAccount = {
   h160: string;
 };
 
+export type UnifiedAccount = {
+  SS58Address: string;
+  H160Address: string;
+};
+
 export type ConnectionType = 'connected' | 'connecting' | 'offline';
 
 export type Theme = 'LIGHT' | 'DARK';
@@ -56,6 +61,7 @@ export interface GeneralStateInterface {
   currentWallet: string;
   gas: GasTip | undefined;
   currentBlock: number;
+  unifiedAccount?: UnifiedAccount;
 }
 
 function state(): GeneralStateInterface {
