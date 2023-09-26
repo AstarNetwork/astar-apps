@@ -93,9 +93,9 @@ export default defineComponent({
     const { t } = useI18n();
     const { currentNetworkIdx } = useNetworkInfo();
 
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
-    const copyAddress = () => {
+    const copyAddress = (): void => {
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
