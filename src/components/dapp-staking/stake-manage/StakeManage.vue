@@ -45,8 +45,6 @@ import ModalSelectFunds from './ModalSelectFunds.vue';
 import SelectFunds from './SelectFunds.vue';
 import StakeForm from './StakeForm.vue';
 import StakeInformation from './StakeInformation.vue';
-// import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
-import { WalletModalOption } from 'src/config/wallets';
 import {
   useBreakpoints,
   useDappRedirect,
@@ -86,7 +84,6 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const dappAddress = computed<string>(() => route.query.dapp as string);
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const handleModalSelectFunds = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectFunds.value = isOpen;
@@ -130,29 +127,6 @@ export default defineComponent({
       await setRightUi('information');
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
-
-    watch(
-      [currentAccount, dapp],
-      async () => {
-        if (!dapp.value) return;
-        // Memo: to avoid opening accounts drawer after changed account
-        await wait(2000);
-        if (!currentAccount.value) {
-          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
-        }
-      },
-      { immediate: true }
-    );
-
-    watch(
-      [isH160],
-      () => {
-        if (isH160.value) {
-          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
-        }
-      },
-      { immediate: true }
-    );
 
     return {
       isHighlightRightUi,

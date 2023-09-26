@@ -8,10 +8,9 @@ export function useClaimedReward() {
   const store = useStore();
   const { isStaker, isDappOwner, isUnclaimedEra, isCompounding, setRewardDestination } =
     useCompoundRewards();
-  const { currentAccount } = useAccount();
+  const { senderSs58Account } = useAccount();
   const pastClaimed = ref<number>(0);
   const isLoadingClaimed = ref<boolean>(false);
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const claimed = computed<number>(() => {
     // Memo: update the number of claimed rewards after users invoking claim action
@@ -27,13 +26,12 @@ export function useClaimedReward() {
 
   const setClaimedAmount = async () => {
     const isLocalNode = currentNetworkName.value === 'Development';
-    const isFetch =
-      currentNetworkName.value && currentAccount.value && !isH160.value && !isLocalNode;
+    const isFetch = currentNetworkName.value && senderSs58Account.value && !isLocalNode;
     try {
       if (isFetch) {
         const result = await getClaimedAmount({
           network: currentNetworkName.value.toLowerCase(),
-          account: currentAccount.value,
+          account: senderSs58Account.value,
         });
         const animationDelay = 2000;
         await wait(animationDelay);

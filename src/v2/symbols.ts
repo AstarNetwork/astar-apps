@@ -1,10 +1,12 @@
 export const Symbols = {
   PriceRepository: Symbol.for('PriceRepository'),
   WalletFactory: Symbol.for('Factory<IWalletService>'),
+  DappStakingServiceFactory: Symbol.for('DappStakingServiceFactory'),
   EventAggregator: Symbol.for('EventAggregator'),
   DefaultApi: Symbol.for('DefaultApi'),
   ApiFactory: Symbol.for('ApiFactory'),
   GasPriceProvider: Symbol.for('GasPriceProvider'),
+  EvmDappStakingService: Symbol.for('EvmDappStakingService'),
   DappStakingService: Symbol.for('DappStakingService'),
   DappStakingRepository: Symbol.for('DappStakingRepository'),
   MetadataRepository: Symbol.for('MetadataRepository'),
@@ -27,4 +29,10 @@ export const Symbols = {
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
   AssetsService: Symbol.for('AssetsService'),
+  AccountUnificationService: Symbol.for('AccountUnificationService'),
+  AccountsRepository: Symbol.for('AccountsRepository'),
+  IdentityRepository: Symbol.for('IdentityRepository'),
+  IdentityService: Symbol.for('IdentityService'),
+  BluezNftRepository: Symbol.for('BluezNftRepository'),
+  AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
 };

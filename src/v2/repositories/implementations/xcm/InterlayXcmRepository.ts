@@ -25,7 +25,8 @@ export class InterlayXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -56,6 +57,7 @@ export class InterlayXcmRepository extends XcmRepository {
     };
     return await this.buildTxCall(
       from,
+      endpoint,
       'xTokens',
       'transfer',
       tokenData,
@@ -69,7 +71,8 @@ export class InterlayXcmRepository extends XcmRepository {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
     // Memo: avoid getting a UI error when the `token` is `ASTR` while the `monitorDestChainBalance` function(watch) in useXcmBridge.ts
     // Reproduce the UI error: assets page -> transfer ASTR -> XCM -> flip the chains -> To: Interlay
@@ -77,7 +80,7 @@ export class InterlayXcmRepository extends XcmRepository {
     if (!interlayChains.includes(token.originChain as Chain)) {
       return '0';
     }
-    const api = await this.apiFactory.get(chain.endpoint);
+    const api = await this.apiFactory.get(endpoint);
 
     try {
       const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
@@ -90,9 +93,9 @@ export class InterlayXcmRepository extends XcmRepository {
     }
   }
 
-  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+  public async getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN> {
     try {
-      const api = await this.apiFactory.get(chain.endpoint);
+      const api = await this.apiFactory.get(endpoint);
       const { token } = api.consts.currency.getNativeCurrencyId.toJSON() as any;
       const originChainNativeBal = await api.query.tokens.accounts<TokensAccounts>(address, {
         Token: token,

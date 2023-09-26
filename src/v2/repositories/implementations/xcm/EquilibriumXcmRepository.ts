@@ -79,7 +79,8 @@ export class EquilibriumXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (from.parachainId !== parachainIds.EQUILIBRIUM) {
       throw new Error('not implemented');
@@ -100,6 +101,7 @@ export class EquilibriumXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'eqBalances',
       isTransferNative ? 'xcmTransferNative' : 'xcmTransfer',
       assetId,
@@ -126,8 +128,8 @@ export class EquilibriumXcmRepository extends XcmRepository {
     );
   }
 
-  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
-    const api = await this.apiFactory.get(chain.endpoint);
+  public async getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN> {
+    const api = await this.apiFactory.get(endpoint);
 
     const accountInfo = (await api.query.system.account(
       address
@@ -152,15 +154,16 @@ export class EquilibriumXcmRepository extends XcmRepository {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
     const symbol = token.metadata.symbol;
 
     if (symbol.toLowerCase() === 'eq' && chain.parachainId === parachainIds.EQUILIBRIUM) {
-      return (await this.getNativeBalance(address, chain)).toString(10);
+      return (await this.getNativeBalance(address, chain, endpoint)).toString(10);
     }
 
-    const api = await this.apiFactory.get(chain.endpoint);
+    const api = await this.apiFactory.get(endpoint);
 
     const accountInfo = (await api.query.system.account(
       address

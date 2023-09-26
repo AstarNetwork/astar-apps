@@ -6,6 +6,7 @@ import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, RewardDestination, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { PayloadWithWeight } from '@astar-network/astar-sdk-core';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -22,12 +23,15 @@ export interface IDappStakingService {
    * @param stakerAddress Staked address.
    * @param amount Amount to stake.
    * @param successMessage Message on the success toast.
+   * @param successMessage Message on the success toast.
+   * @param failureMessage Message on the failed toast.
    */
   stake(
     contractAddress: string,
     stakerAddress: string,
     amount: BN,
-    successMessage: string
+    successMessage: string,
+    failureMessage?: string
   ): Promise<void>;
 
   /**
@@ -51,6 +55,7 @@ export interface IDappStakingService {
    * @param address Staked address.
    * @param amount Amount to stake.
    * @param successMessage Message on the success toast.
+   * @param failureMessage Message on the failed toast.
    */
   nominationTransfer({
     amount,
@@ -58,12 +63,14 @@ export interface IDappStakingService {
     targetContractId,
     address,
     successMessage,
+    failureMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
     successMessage: string;
+    failureMessage?: string;
   }): Promise<void>;
 
   /**
@@ -116,10 +123,27 @@ export interface IDappStakingService {
 
   // Memo: set re-stake to turn it On/Off
   setRewardDestination(param: ParamSetRewardDestination): Promise<void>;
+  withdraw(param: ParamWithdraw): Promise<void>;
+  claimAll(param: ParamClaimAll): Promise<void>;
 }
 
 export interface ParamSetRewardDestination {
   rewardDestination: RewardDestination;
   senderAddress: string;
   successMessage: string;
+}
+
+export interface ParamWithdraw {
+  senderAddress: string;
+  finalizedCallback?: (result: ISubmittableResult) => void;
+}
+
+export interface ParamClaimAll {
+  batchTxs: PayloadWithWeight[];
+  maxBatchWeight: BN;
+  senderAddress: string;
+  transferableBalance: number;
+  invalidBalanceMsg: string;
+  h160SenderAddress: string;
+  finalizedCallback?: (result: ISubmittableResult) => void;
 }

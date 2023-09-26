@@ -1,5 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 
 export enum WalletType {
   Metamask = 'Metamask',
@@ -13,6 +14,15 @@ export interface ParamSignAndSend {
   transactionTip?: number;
   finalizedCallback?: (result?: ISubmittableResult) => void;
   subscan?: string;
+}
+
+export interface ParamSendEvmTransaction {
+  from: string;
+  to: string;
+  data: any;
+  value?: string;
+  successMessage?: string;
+  failureMessage?: string;
 }
 
 export interface ParamSendMultisigTransaction {
@@ -31,4 +41,26 @@ export interface IWalletService {
    * @param transactionTip Transaction tip.
    */
   signAndSend(param: ParamSignAndSend): Promise<string | null>;
+  /**
+   * Signs and sends EVM transaction. Returns transaction hash.
+   * @param from sender address
+   * @param to contract or destination address
+   * @param data encoded contract methods
+   * @param value amount value of ASTR tokens (default value: '0x0')
+   * @param successMessage Message to show in case of successful transaction
+   * @param failureMessage Message to show in case of fail transaction
+   */
+  sendEvmTransaction(param: ParamSendEvmTransaction): Promise<string>;
+
+  /**
+   * Signs the given payload
+   * @param domain EIP-712 Typed Data
+   * @param types data types to be signed
+   * @param value data to be signed
+   */
+  signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string>;
 }

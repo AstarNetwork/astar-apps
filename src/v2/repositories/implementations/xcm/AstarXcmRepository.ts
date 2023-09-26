@@ -28,15 +28,16 @@ export class AstarXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
     }
     const isAstar = from.name === 'Astar';
     return isAstar
-      ? await this.getPolkadotXcmCall(from, to, recipientAddress, token, amount)
-      : await this.getXtokensCall(from, to, recipientAddress, token, amount);
+      ? await this.getPolkadotXcmCall(from, to, recipientAddress, token, amount, endpoint)
+      : await this.getXtokensCall(from, to, recipientAddress, token, amount, endpoint);
   }
 
   private async getXtokensCall(
@@ -44,14 +45,15 @@ export class AstarXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
 
     const asset = isWithdrawAssets
       ? {
-          Concrete: await this.fetchAssetConfig(from, token),
+          Concrete: await this.fetchAssetConfig(from, token, endpoint),
         }
       : {
           Concrete: {
@@ -105,6 +107,7 @@ export class AstarXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'xtokens',
       'transferMultiasset',
       assets,
@@ -119,7 +122,8 @@ export class AstarXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
     const version = 'V3';
@@ -164,7 +168,7 @@ export class AstarXcmRepository extends XcmRepository {
 
     const asset = isWithdrawAssets
       ? {
-          Concrete: await this.fetchAssetConfig(from, token),
+          Concrete: await this.fetchAssetConfig(from, token, endpoint),
         }
       : {
           Concrete: {
@@ -190,6 +194,7 @@ export class AstarXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'polkadotXcm',
       functionName,
       destination,

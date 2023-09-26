@@ -65,9 +65,10 @@
 
       <div class="separator" />
       <speed-configuration
-        :gas-cost="nativeTipPrice"
-        :selected-gas="selectedTip"
-        :set-selected-gas="setSelectedTip"
+        v-if="isEnableSpeedConfiguration"
+        :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
+        :selected-gas="isH160 ? selectedGas : selectedTip"
+        :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
       />
 
       <div class="row--box-warning">
@@ -97,8 +98,14 @@
   </div>
 </template>
 <script lang="ts">
-import { getShortenAddress, truncate } from '@astar-network/astar-sdk-core';
+import {
+  getDappAddressEnum,
+  getEvmGasCost,
+  getShortenAddress,
+  truncate,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
+import { $api, $web3 } from 'src/boot/api';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import {
   useAccount,
@@ -108,8 +115,10 @@ import {
   useWalletIcon,
 } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, ref } from 'vue';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
 
 export default defineComponent({
   components: {
@@ -138,13 +147,23 @@ export default defineComponent({
     const amount = ref<string | null>(null);
     const { iconWallet } = useWalletIcon();
     const { t } = useI18n();
+    const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { minStaking } = useGetMinStaking();
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
+    const {
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
+      evmGasCost,
+      selectedGas,
+      evmGasPrice,
+      setSelectedGas,
+      isEnableSpeedConfiguration,
+    } = useGasPrice();
 
     // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
     const leaveAmountNum = computed<number>(() => {
@@ -159,6 +178,8 @@ export default defineComponent({
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
     };
+
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const leaveAmount = computed<ethers.BigNumber>(() => {
       const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
@@ -248,6 +269,41 @@ export default defineComponent({
       return '';
     });
 
+    const setEvmGasCost = async (): Promise<void> => {
+      if (!selectedGas.value || !isH160.value || !formattedMinStaking.value) return;
+      try {
+        const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
+        const targetContractId = getDappAddressEnum(props.dapp.dapp.address);
+        const amountRaw = Number(amount.value);
+        const amountPlaceHolder = formattedMinStaking.value;
+        const stakeAmount = ethers.utils
+          .parseEther(String(amountRaw > amountPlaceHolder ? amountRaw : amountPlaceHolder))
+          .toString();
+
+        const transaction = isNominationTransfer
+          ? $api!.tx.dappsStaking.nominationTransfer(
+              getDappAddressEnum(props.formattedTransferFrom.item.address),
+              stakeAmount,
+              targetContractId
+            )
+          : $api!.tx.dappsStaking.bondAndStake(targetContractId, stakeAmount);
+
+        evmGasCost.value = await getEvmGasCost({
+          isNativeToken: false,
+          evmGasPrice: evmGasPrice.value,
+          fromAddress: currentAccount.value,
+          toAddress: evmPrecompiledContract.dispatch,
+          web3: $web3.value!,
+          value: '0x0',
+          encodedData: transaction.method.toHex(),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    watchEffect(setEvmGasCost);
+
     return {
       iconWallet,
       currentAccount,
@@ -261,6 +317,11 @@ export default defineComponent({
       maxAmount,
       warningMinAmtMsg,
       warningMsg,
+      evmGasCost,
+      selectedGas,
+      isH160,
+      isEnableSpeedConfiguration,
+      setSelectedGas,
       setSelectedTip,
       toMaxAmount,
       getShortenAddress,

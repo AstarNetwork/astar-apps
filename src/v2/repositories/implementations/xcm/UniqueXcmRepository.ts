@@ -21,7 +21,8 @@ export class UniqueXcmRepository extends XcmRepository {
     to: XcmChain,
     recipientAddress: string,
     token: Asset,
-    amount: BN
+    amount: BN,
+    endpoint: string
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
@@ -57,6 +58,7 @@ export class UniqueXcmRepository extends XcmRepository {
 
     return await this.buildTxCall(
       from,
+      endpoint,
       'xTokens',
       'transfer',
       tokenData,

@@ -51,6 +51,7 @@ export class XcmService implements IXcmService {
     amount,
     finalizedCallback,
     successMessage,
+    endpoint,
   }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
@@ -89,7 +90,8 @@ export class XcmService implements IXcmService {
       call = await this.xcmRepository.getTransferToOriginChainCall(
         from,
         recipientAddress,
-        amountBn
+        amountBn,
+        endpoint
       );
     } else if (isRelayChain(from) && isParachain(to)) {
       // DMP
@@ -98,13 +100,21 @@ export class XcmService implements IXcmService {
         to,
         recipientAddress,
         token,
-        amountBn
+        amountBn,
+        endpoint
       );
     } else if (isParachain(from) && isParachain(to)) {
       // HRMP
       // Dinamically determine parachain repository to use.
       const repository = <IXcmRepository>this.typeFactory.getInstance(from.name);
-      call = await repository.getTransferCall(from, to, recipientAddress, token, amountBn);
+      call = await repository.getTransferCall(
+        from,
+        to,
+        recipientAddress,
+        token,
+        amountBn,
+        endpoint
+      );
     } else {
       throw `Transfer between ${from.name} to ${to.name} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }
@@ -162,15 +172,16 @@ export class XcmService implements IXcmService {
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string> {
     const repository = <IXcmRepository>this.typeFactory.getInstance(chain.name);
-    return repository.getTokenBalance(address, chain, token, isNativeToken);
+    return repository.getTokenBalance(address, chain, token, isNativeToken, endpoint);
   }
 
-  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+  public async getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN> {
     const repository = <IXcmRepository>this.typeFactory.getInstance(chain.name);
-    return repository.getNativeBalance(address, chain);
+    return repository.getNativeBalance(address, chain, endpoint);
   }
 
   private GuardTransfer(amount: number, token: Asset) {

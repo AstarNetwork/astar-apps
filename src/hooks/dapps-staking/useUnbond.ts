@@ -11,15 +11,17 @@ import { useI18n } from 'vue-i18n';
 
 export function useUnbound() {
   const store = useStore();
-  const { currentAccount } = useAccount();
+  const { currentAccount, senderSs58Account } = useAccount();
   const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
-  const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
   const { t } = useI18n();
 
   const handleUnbound = async (contractAddress: string, amount: string | null): Promise<void> => {
     if (amount) {
       const unbondAmount = new BN(ethers.utils.parseEther(amount).toString());
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const dappStakingServiceFactory = container.get<() => IDappStakingService>(
+        Symbols.DappStakingServiceFactory
+      );
+      const dappStakingService = dappStakingServiceFactory();
       const successMessage = t('dappStaking.toast.successfullyUnbond', {
         contractAddress: getShortenAddress(contractAddress, 5),
       });
@@ -30,8 +32,8 @@ export function useUnbound() {
         successMessage
       );
 
-      const ledger = await dappStakingService.getLedger(selectedAccountAddress.value);
-      store.commit('dapps/setUnlockingChunks', ledger.unbondingInfo.unlockingChunks);
+      const ledger = await dappStakingService.getLedger(senderSs58Account.value);
+      store.commit('dapps/setUnlockingChunks', ledger.unbondingInfo.unlockingChunks.length);
     }
   };
 

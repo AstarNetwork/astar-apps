@@ -1,17 +1,22 @@
 [
-    {
-      "title": "links.goDecentralized",
-      "subtitle": "",
-      "link": "https://decentralized.portal.astar.network"
-    },
-    {
-      "title": "links.astarHome",
-      "subtitle": "",
-      "link": "https://astar.network/"
-    },
-    {
-      "title": "links.astarDocs",
-      "subtitle": "",
-      "link": "https://docs.astar.network/"
-    }
-  ]
+  {
+    "title": "links.gridlockWallet",
+    "subtitle": "",
+    "link": "https://gridlock.network/"
+  },
+  {
+    "title": "links.goDecentralized",
+    "subtitle": "",
+    "link": "https://decentralized.portal.astar.network"
+  },
+  {
+    "title": "links.astarHome",
+    "subtitle": "",
+    "link": "https://astar.network/"
+  },
+  {
+    "title": "links.astarDocs",
+    "subtitle": "",
+    "link": "https://docs.astar.network/"
+  }
+]

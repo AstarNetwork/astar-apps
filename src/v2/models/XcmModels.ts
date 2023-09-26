@@ -48,7 +48,7 @@ export interface XcmChain {
   relayChain: Chain;
   img: string;
   parachainId: parachainIds;
-  endpoint: string;
+  endpoints: string[];
   chopsticksEndpoint?: string;
   subscan: string;
   // Note: true if ASTR/SDN is listed on the parachain

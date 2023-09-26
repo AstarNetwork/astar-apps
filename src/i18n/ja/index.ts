@@ -295,7 +295,7 @@ export default {
       requiredClaimFirst: 'トランザクションを送る前に請求(Claim)をしてください。',
       requiredClaimFirstCompounding:
         '{message} -コンパウンドをオフにし、請求(Claim)してから再度オンにしてください。',
-      successfullyWithdrew: '引き出しに成功しました。',
+      successfullyWithdrawn: '引き出しに成功しました。',
       successfullySetRewardDest: 'You successfully set reward destination',
     },
     error: {

@@ -18,10 +18,13 @@ import {
 import {
   IBalanceFormatterService,
   IDappStakingService,
+  ParamClaimAll,
   ParamSetRewardDestination,
+  ParamWithdraw,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -33,7 +36,8 @@ export class DappStakingService implements IDappStakingService {
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
-    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
   ) {
     this.wallet = walletFactory();
     this.systemRepository.startBlockSubscription();
@@ -232,7 +236,6 @@ export class DappStakingService implements IDappStakingService {
     currentAccount: string
   ): Promise<StakeInfo | undefined> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
-
     return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 
@@ -249,5 +252,45 @@ export class DappStakingService implements IDappStakingService {
       senderAddress,
       successMessage,
     });
+  }
+
+  public async withdraw({ senderAddress, finalizedCallback }: ParamWithdraw) {
+    const transaction = await this.dappStakingRepository.getWithdrawCall();
+    await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress,
+      finalizedCallback: finalizedCallback as any,
+    });
+  }
+
+  public async claimAll({
+    batchTxs,
+    maxBatchWeight,
+    senderAddress,
+    transferableBalance,
+    finalizedCallback,
+    invalidBalanceMsg,
+    h160SenderAddress,
+  }: ParamClaimAll): Promise<void> {
+    try {
+      const transaction = await this.dappStakingRepository.getClaimCall({
+        batchTxs,
+        maxBatchWeight,
+        senderAddress,
+        transferableBalance,
+        invalidBalanceMsg,
+        h160SenderAddress,
+      });
+      await this.wallet.signAndSend({
+        extrinsic: transaction,
+        senderAddress,
+        finalizedCallback: finalizedCallback as any,
+      });
+    } catch (error: any) {
+      console.error(error);
+      const message =
+        error.message === 'dappStaking.error.invalidBalance' ? invalidBalanceMsg : error.message;
+      this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
+    }
   }
 }

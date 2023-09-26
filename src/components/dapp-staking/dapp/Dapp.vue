@@ -12,7 +12,7 @@
     <dapp-stats-charts :dapp="dapp" />
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :disabled="isH160" :height="28" class="btn--stake-switch">
+        <astar-irregular-button :height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -29,12 +29,15 @@ import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue'
 import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
-import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
+import { useDappRedirect, useDispatchGetDapps, useNetworkInfo, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models';
-import { computed, defineComponent } from 'vue';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { computed, defineComponent, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -50,6 +53,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const { currentNetworkName } = useNetworkInfo();
     useDappRedirect();
     useDispatchGetDapps();
     const store = useStore();
@@ -80,6 +84,36 @@ export default defineComponent({
       }
       return null;
     });
+
+    // Fetch full dApp model from API. Initially, store contains dapp with props required for the main page.
+    const getDapp = async () => {
+      if (dapp.value?.dapp?.description) {
+        // Full dapp model is already loaded to the store. No need to fetch dapp from API.
+        return;
+      }
+      try {
+        store.commit('general/setLoading', true, { root: true });
+        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const loadedDapp = await service.getDapp(
+          dappAddress.value,
+          currentNetworkName.value.toLowerCase()
+        );
+        if (loadedDapp) {
+          store.commit('dapps/updateDapp', loadedDapp);
+        }
+      } finally {
+        store.commit('general/setLoading', false, { root: true });
+      }
+    };
+    watch(
+      [dapps],
+      () => {
+        if (dapps.value.length > 0) {
+          getDapp();
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       Path,
