@@ -13,7 +13,6 @@ import { HistoryTxType } from 'src/modules/account/index';
 import { SubstrateAccount } from 'src/store/general/state';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
-
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
