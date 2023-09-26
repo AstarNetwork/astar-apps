@@ -209,7 +209,6 @@ export default defineComponent({
     const { currentAccountName, disconnectAccount } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isAccountUnification = computed<boolean>(() => {
       return !!(currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName);
     });

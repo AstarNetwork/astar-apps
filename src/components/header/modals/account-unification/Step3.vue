@@ -6,7 +6,7 @@
         <div class="label">EVM Account</div>
         <div class="evm-account">
           <img :src="icon_img.metamask" class="icon" />
-          <span>0x111122223333</span>
+          <span>{{ selectedEvmAddress }}</span>
         </div>
       </div>
 
@@ -40,6 +40,12 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {},
+  props: {
+    selectedEvmAddress: {
+      type: String,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {

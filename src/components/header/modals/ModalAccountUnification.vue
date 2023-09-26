@@ -13,10 +13,15 @@
         <step1-native v-else @next="updateSteps(2)" />
       </div>
       <div v-else-if="currentStep === 2">
-        <step2 @next="updateSteps(3)" />
+        <step2
+          :selected-evm-address="selectedEvmAddress"
+          :set-web3="setWeb3"
+          :is-connected-network="isConnectedNetwork"
+          @next="updateSteps(3)"
+        />
       </div>
       <div v-else-if="currentStep === 3">
-        <step3 @next="updateSteps(4)" />
+        <step3 :selected-evm-address="selectedEvmAddress" @next="updateSteps(4)" />
       </div>
       <div v-else-if="currentStep === 4">
         <step4 @next="updateSteps(5)" />
@@ -36,7 +41,7 @@
 <script lang="ts">
 import { useStore } from 'src/store';
 import { wait } from '@astar-network/astar-sdk-core';
-import { useBreakpoints } from 'src/hooks';
+import { useAccountUnification, useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
 import Step1Native from 'src/components/header/modals/account-unification/Step1Native.vue';
@@ -126,6 +131,7 @@ export default defineComponent({
 
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { selectedEvmAddress, isConnectedNetwork, setWeb3 } = useAccountUnification();
 
     return {
       windowHeight,
@@ -134,9 +140,12 @@ export default defineComponent({
       currentStep,
       modalTitle,
       isH160,
+      selectedEvmAddress,
+      isConnectedNetwork,
       closeModal,
       backModal,
       updateSteps,
+      setWeb3,
     };
   },
 });
