@@ -1,66 +1,57 @@
 <template>
   <div>
-    <!-- User Account -->
-    <div v-if="currentAccount !== ''">
-      <!-- unified -->
-      <div v-if="isAccountUnified" class="tw-space-y-6">
-        <div class="account-name">
-          <img :src="icon_img.astar_gradient" class="icon" />
-          <div>Unified Account Name</div>
-        </div>
-        <div class="wallet-info__wrapper">
-          <div class="wallet-info">native wallet</div>
-          <div class="wallet-info">evm wallet</div>
-        </div>
-        <div>
-          <astar-button class="btn">Edit</astar-button>
-        </div>
+    <!-- unified -->
+    <div v-if="isAccountUnified" class="tw-space-y-6">
+      <div class="account-name">
+        <img :src="icon_img.astar_gradient" class="icon" />
+        <div>Unified Account Name</div>
+      </div>
+      <div class="wallet-info__wrapper">
+        <div class="wallet-info">native wallet</div>
+        <div class="wallet-info">evm wallet</div>
+      </div>
+      <div>
+        <astar-button class="btn">Edit</astar-button>
+      </div>
+    </div>
+
+    <!-- not unified -->
+    <div v-else>
+      <div class="account-name">
+        {{ isH160 ? 'Astar EVM' : 'Astar Native' }}
       </div>
 
-      <!-- not unified -->
-      <div v-else>
-        <div class="account-name">
-          {{ isH160 ? 'Astar EVM' : 'Astar Native' }}
-        </div>
-
-        <div class="wallet-info__wrapper">
-          <div class="wallet-info">
-            <div class="wallet-info__icon">
-              <img v-if="iconWallet" :src="iconWallet" alt="wallet-icon" />
+      <div class="wallet-info__wrapper">
+        <div class="wallet-info">
+          <div class="wallet-info__icon">
+            <img v-if="iconWallet" :src="iconWallet" alt="wallet-icon" />
+          </div>
+          <div class="wallet-info__address">
+            <div class="text--accent">
+              {{ currentAccount ? currentAccountName : 'My Wallet' }}
             </div>
-            <div class="wallet-info__address">
-              <div class="text--accent">
-                {{ currentAccount ? currentAccountName : 'My Wallet' }}
-              </div>
-              <div>{{ getShortenAddress(currentAccount) }}</div>
+            <div>{{ getShortenAddress(currentAccount) }}</div>
+          </div>
+          <div class="wallet-info__actions">
+            <div>
+              <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
+                <astar-icon-copy />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
             </div>
-            <div class="wallet-info__actions">
-              <div>
-                <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
-                  <astar-icon-copy />
-                </button>
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t('copy') }}</span>
-                </q-tooltip>
-              </div>
-              <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-                <button class="icon--primary">
-                  <astar-icon-external-link />
-                </button>
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-                </q-tooltip>
-              </a>
-            </div>
+            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+              <button class="icon--primary">
+                <astar-icon-external-link />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+              </q-tooltip>
+            </a>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <!-- TODO: please add a function to open a select wallet modal -->
-      <astar-button class="btn">
-        {{ $t('wallet.connectWallet') }}
-      </astar-button>
     </div>
 
     <!-- Introduce Account Unification -->
