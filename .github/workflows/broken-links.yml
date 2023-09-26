@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          args: --verbose --exclude-path "./node_modules/" --exclude-path "./dist/spa/" --exclude-path "./tests/metamask_wallet/" --exclude-path "./tests/polkadot_wallet/" "./**/*.js" "./**/*.ts" "./**/*.html" "./**/*.scss" "./**/*.json" "./**/*.md"
+          args: --verbose "./src/modules/information/faq/dapp-staking/index.ts" "./src/modules/information/faq/transfer/index.ts" "./src/modules/information/faq/xvm-transfer/index.ts" "./src/data/ads.json" "./src/data/dynamic_links.json"
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0

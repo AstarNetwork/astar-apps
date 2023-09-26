@@ -29,11 +29,3 @@ jobs:
       - name: Run 4everland deploy
         run: |
           curl "${{ secrets.HOOK_4EVERLAND }}"
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: 'Merge main to release-hotfix'
-          body: 'This is an auto-generated PR to merge main to release-hotfix'
-          branch: main
-          base: release-hotfix
-          delete-branch: false

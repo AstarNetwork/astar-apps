@@ -73,10 +73,17 @@ import { IdentityRepository } from './repositories/implementations/IdentityRepos
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
+// Todo: delete after we remove the lockdrop service
+let isLockdropAccount = false;
 
-export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+export function setCurrentWallet(
+  isEthWallet: boolean,
+  currentWallet: string,
+  isLockdrop: boolean
+): void {
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
+  isLockdropAccount = isLockdrop;
 
   container.removeConstant(Symbols.CurrentWallet);
   container.addConstant<string>(Symbols.CurrentWallet, currentWalletName);
@@ -107,7 +114,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );

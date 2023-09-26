@@ -22,11 +22,9 @@ let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } =
-    LOCAL_STORAGE;
+  const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
-  const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
   const networkIdx = computed(() => store.getters['general/networkIdx']);
 
@@ -57,16 +55,13 @@ export default boot(async ({ store }) => {
   if (networkIdxStore) {
     store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
-  if (customEndpoint) {
-    store.commit('general/setCurrentCustomEndpoint', customEndpoint);
-  }
 
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
     : defaultEndpoint;
   if (networkIdx.value === endpointKey.CUSTOM) {
-    const customEndpoint = computed(() => store.getters['general/customEndpoint']);
-    endpoint = customEndpoint.value;
+    const inputtedEndpoint = JSON.parse(String(selectedEndpointData));
+    endpoint = Object.values(inputtedEndpoint)[0] as string;
   }
 
   if (networkIdx.value === endpointKey.LOCAL) {

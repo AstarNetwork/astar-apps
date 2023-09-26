@@ -5,13 +5,16 @@ import { Asset } from 'src/v2/models';
 
 export interface IXcmService extends IXcmTransfer {
   getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
+
   getTokenBalance(
     address: string,
     chain: XcmChain,
     token: Asset,
-    isNativeToken: boolean
+    isNativeToken: boolean,
+    endpoint: string
   ): Promise<string>;
-  getNativeBalance(address: string, chain: XcmChain): Promise<BN>;
+
+  getNativeBalance(address: string, chain: XcmChain, endpoint: string): Promise<BN>;
 }
 
 export interface TransferParam {
@@ -23,6 +26,7 @@ export interface TransferParam {
   amount: number;
   successMessage: string;
   finalizedCallback?: (hash: string) => Promise<void>;
+  endpoint: string;
 }
 
 export interface IXcmTransfer {
