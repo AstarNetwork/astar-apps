@@ -15,9 +15,10 @@
       <div v-else-if="currentStep === 2">
         <step2
           :selected-evm-address="selectedEvmAddress"
-          :set-web3="setWeb3"
           :is-connected-network="isConnectedNetwork"
           :is-staking="isStaking"
+          :set-web3="setWeb3"
+          :close-modal="closeModal"
           @next="updateSteps(3)"
         />
       </div>
