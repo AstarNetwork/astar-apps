@@ -3,7 +3,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
+import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -26,8 +26,11 @@ export const useAccount = () => {
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
+    const unifiedAccount = store.getters['general/getUnifiedAccount'] as UnifiedAccount;
     return isValidEvmAddress(currentAccount.value)
-      ? toSS58Address(currentAccount.value)
+      ? unifiedAccount
+        ? unifiedAccount.SS58Address
+        : toSS58Address(currentAccount.value)
       : currentAccount.value;
   });
   const isMultisig = computed<boolean>(() => !!localStorage.getItem(LOCAL_STORAGE.MULTISIG));
