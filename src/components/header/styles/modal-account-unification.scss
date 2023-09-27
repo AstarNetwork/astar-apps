@@ -19,7 +19,7 @@
     border: solid 1px $navy-1;
   }
 }
-body.body--dark {
+.body--dark {
   .btn {
     &.close {
       color: $gray-3;
@@ -52,7 +52,7 @@ body.body--dark {
   text-align: left;
   border: solid 1px transparent;
 }
-body.body--dark {
+.body--dark {
   .wallet-info__wrapper {
     background-color: $navy-2;
     border-color: $gray-4;
@@ -113,7 +113,7 @@ body.body--dark {
   padding: 1.5rem;
   text-align: left;
 }
-body.body--dark {
+.body--dark {
   .wrapper--help {
     background-color: rgba($astar-blue, 10%);
   }
@@ -140,7 +140,7 @@ body.body--dark {
     color: $astar-blue;
   }
 }
-body.body--dark {
+.body--dark {
   .help-faq {
     dd {
       background-color: $navy-1;
@@ -167,7 +167,7 @@ body.body--dark {
     margin-right: 0.75rem;
   }
 }
-body.body--dark {
+.body--dark {
   .warning-check {
     color: white;
   }
@@ -205,7 +205,7 @@ body.body--dark {
     padding-bottom: 1.5rem;
   }
 }
-body.body--dark {
+.body--dark {
   .metamask {
     background-color: $navy-2;
     border-color: $gray-4;
@@ -227,7 +227,7 @@ body.body--dark {
     margin-right: 0.75rem;
   }
 }
-body.body--dark {
+.body--dark {
   .warning {
     color: white;
   }
@@ -280,7 +280,7 @@ body.body--dark {
     }
   }
 }
-body.body--dark {
+.body--dark {
   .unified-account-details {
     input[type='text'],
     .evm-account,
@@ -369,7 +369,7 @@ body.body--dark {
     padding: 1.5rem;
   }
 }
-body.body--dark {
+.body--dark {
   .created-unified-account {
     .native-account,
     .evm-account {
@@ -411,7 +411,7 @@ body.body--dark {
     }
   }
 }
-body.body--dark {
+.body--dark {
   .nft-list {
     .item {
       &.item--selected {
