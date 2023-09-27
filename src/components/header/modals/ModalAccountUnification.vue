@@ -25,6 +25,8 @@
       </div>
       <div v-else-if="currentStep === 3">
         <step3
+          :account-name="accountName"
+          :set-account-name="setAccountName"
           :selected-evm-address="selectedEvmAddress"
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
           @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
@@ -34,7 +36,11 @@
         <step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
       </div>
       <div v-else-if="currentStep === 5">
-        <step5 @next="updateSteps(6)" />
+        <step5
+          :account-name="accountName"
+          :selected-evm-address="selectedEvmAddress"
+          @next="updateSteps(6)"
+        />
       </div>
       <div v-else-if="currentStep === 6">
         <step6 />
@@ -146,6 +152,8 @@ export default defineComponent({
       transferXc20Tokens,
       isFetchingXc20Tokens,
       isLoadingDappStaking,
+      accountName,
+      setAccountName,
       setWeb3,
     } = useAccountUnification();
 
@@ -162,10 +170,12 @@ export default defineComponent({
       transferXc20Tokens,
       isFetchingXc20Tokens,
       isLoadingDappStaking,
+      accountName,
       closeModal,
       backModal,
       updateSteps,
       setWeb3,
+      setAccountName,
     };
   },
 });

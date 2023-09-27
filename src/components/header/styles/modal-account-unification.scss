@@ -367,6 +367,10 @@ body.body--dark {
   .evm-account {
     background-color: $gray-1;
     padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 14px;
   }
 }
 body.body--dark {
@@ -419,4 +423,10 @@ body.body--dark {
       }
     }
   }
+}
+
+.column--account {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }

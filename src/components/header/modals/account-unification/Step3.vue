@@ -13,7 +13,14 @@
       <!-- Account Name -->
       <div>
         <div class="label">Account Name</div>
-        <div><input v-model="accountName" type="text" placeholder="Unified Account Name" /></div>
+        <div>
+          <!-- <input @input="setAccountName" type="text" placeholder="Unified Account Name" /> -->
+          <input
+            type="text"
+            placeholder="Unified Account Name"
+            @input="(event) => setAccountName(event)"
+          />
+        </div>
       </div>
 
       <!-- Account Icon -->
@@ -50,6 +57,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    accountName: {
+      type: String,
+      required: true,
+    },
+    setAccountName: {
+      type: Function,
+      required: true,
+    },
     isFetchingXc20Tokens: {
       type: Boolean,
       required: true,
@@ -61,15 +76,12 @@ export default defineComponent({
       emit('next');
     };
 
-    const accountName = ref<string>('');
-
     const icon_img = {
       astar_gradient: require('/src/assets/img/astar_icon.svg'),
       metamask: require('/src/assets/img/metamask.png'),
     };
 
     return {
-      accountName,
       icon_img,
       next,
     };

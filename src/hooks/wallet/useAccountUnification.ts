@@ -44,6 +44,7 @@ export const useAccountUnification = () => {
   const isReadyUnification = ref<boolean>(false);
   const isFetchingXc20Tokens = ref<boolean>(false);
   const isLoadingDappStaking = ref<boolean>(false);
+  const accountName = ref<string>('');
   const isStaking = ref<boolean>(true);
   const transferXc20CallData = ref<string>('');
   const transferXc20Tokens = ref<TransferXc20Token[]>([]);
@@ -55,6 +56,10 @@ export const useAccountUnification = () => {
 
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+
+  const setAccountName = (event: any) => {
+    accountName.value = event.target.value;
+  };
 
   const getSelectedEvmAddress = async (web3: Web3): Promise<string> => {
     const accounts = await web3.eth.getAccounts();
@@ -272,6 +277,7 @@ export const useAccountUnification = () => {
     console.log('selectedEvmAddress', selectedEvmAddress.value);
     console.log('isConnectedNetwork', isConnectedNetwork.value);
     console.log('isStaking', isStaking.value);
+    console.log('accountName', accountName.value);
   });
 
   return {
@@ -282,6 +288,8 @@ export const useAccountUnification = () => {
     transferXc20Tokens,
     isFetchingXc20Tokens,
     isLoadingDappStaking,
+    accountName,
+    setAccountName,
     setWeb3,
   };
 };
