@@ -116,27 +116,31 @@
 .wrapper--help {
   background-color: rgba($astar-blue, 3%);
   margin-top: 24px;
-  padding: 24px;
+  padding: 24px 16px;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   @media (max-width: $sm) {
     padding: 16px;
+  }
+  a {
+    color: $astar-blue;
   }
 }
 .body--dark {
   .wrapper--help {
     background-color: rgba($astar-blue, 10%);
+    a {
+      color: $astar-blue-dark;
+    }
   }
 }
 
-.title--help {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.help-faq {
+.list--help {
   dt {
-    margin-top: 16px;
     margin-bottom: 8px;
+    font-weight: 600;
   }
   dd {
     background-color: white;
@@ -145,17 +149,11 @@
     padding-top: 12px;
     padding-bottom: 12px;
   }
-  a {
-    color: $astar-blue;
-  }
 }
 .body--dark {
-  .help-faq {
+  .list--help {
     dd {
       background-color: $navy-1;
-    }
-    a {
-      color: $astar-blue-dark;
     }
   }
 }
