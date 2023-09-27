@@ -8,16 +8,29 @@ import { IdentityData } from 'src/v2/models';
 import { IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
+import { u8aToString } from '@polkadot/util';
 
 @injectable()
 export class IdentityRepository implements IIdentityRepository {
   constructor(@inject(Symbols.DefaultApi) private readonly api: IApi) {}
 
-  public async getIdentity(address: string): Promise<IdentityData> {
+  public async getIdentity(address: string): Promise<IdentityData | undefined> {
     Guard.ThrowIfUndefined('address', address);
     const api = await this.api.getApi();
-    const identity = await api.query.identity.identityOf<PalletIdentityRegistration>(address);
-    const data = new IdentityData(identity.info.toString());
+    const result = await api.query.identity.identityOf<Option<PalletIdentityRegistration>>(address);
+
+    if (result.isNone) {
+      return undefined;
+    }
+
+    const identity = result.unwrapOrDefault();
+    const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
+    identity.info.additional.forEach((x) => {
+      data.additional?.push({
+        key: x[0].toHuman() as string,
+        value: x[1].toHuman() as string,
+      });
+    });
 
     return data;
   }
