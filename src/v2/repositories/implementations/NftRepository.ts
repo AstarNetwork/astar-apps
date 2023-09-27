@@ -3,13 +3,14 @@ import axios from 'axios';
 import { injectable } from 'inversify';
 import { NftMetadata } from 'src/v2/models';
 import { INftRepository } from 'src/v2/repositories';
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 
 @injectable()
-export class BluezNftRepository implements INftRepository {
+export class NftRepository implements INftRepository {
   private readonly baseUrl = 'https://api.bluez.app/api/nft/v3/API_KEY';
 
-  public async getOwnedTokens(ownerAddress: string): Promise<NftMetadata[]> {
-    const ownedTokensUrl = `${this.baseUrl}/getNFTsForOwner?owner=${ownerAddress}&pageKey=1&pageSize=100`;
+  public async getOwnedTokens(network: string, ownerAddress: string): Promise<NftMetadata[]> {
+    const ownedTokensUrl = `${TOKEN_API_URL}/v1/${network}/nft/owned/${ownerAddress}?pageKey=1&pageSize=100`;
     const result = await axios.get(ownedTokensUrl);
     // memo we are not handling pagination atm. 100 tokens should be enough for now.
 
@@ -17,10 +18,11 @@ export class BluezNftRepository implements INftRepository {
   }
 
   public async getNftMetadata(
+    network: string,
     contractAddress: string,
     tokenId: string
   ): Promise<NftMetadata | undefined> {
-    const metadataUri = `${this.baseUrl}/getNFTMetadata?contractAddress=${contractAddress}&tokenId=${tokenId}`;
+    const metadataUri = `${TOKEN_API_URL}/v1/${network}/nft/metadata/${contractAddress}/${tokenId}`;
     const result = await axios.get(metadataUri);
 
     return result.data ?? undefined;

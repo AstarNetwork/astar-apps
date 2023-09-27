@@ -7,7 +7,6 @@ import {
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
   sampleEvmWalletAddress,
-  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
@@ -37,7 +36,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const store = useStore();
   const { t } = useI18n();
-  const { currentAccount } = useAccount();
+  const { currentAccount, getSS58Address } = useAccount();
   const { accountData } = useBalance(currentAccount);
 
   const transferableBalance = computed<number>(() => {
@@ -193,7 +192,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
-          ? toSS58Address(toAddress)
+          ? await getSS58Address(toAddress)
           : toAddress;
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
@@ -241,7 +240,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
 
     const isSendToH160 = isValidEvmAddress(toAddress.value);
-    const destAddress = isSendToH160 ? toSS58Address(toAddress.value) : toAddress.value;
+    const destAddress = isSendToH160 ? await getSS58Address(toAddress.value) : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
     if (isTransferNativeToken.value) {
