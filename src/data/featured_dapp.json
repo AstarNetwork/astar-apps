@@ -7,6 +7,14 @@
     "link": "https://docs.astar.network/docs/build/dapp-staking/#what-is-dapp-staking"
   },
   {
+    "img": "https://storage.googleapis.com/astarnetwork-a4924.appspot.com/astar-dapps%2F0xe785a37c9d5f3377cbb5b8bf7e9db03ddd440449_MoonFit%20logo%20(1).png",
+    "category": "Exclusive Free Mint NFT",
+    "title": "MoonFit",
+    "subtitle": "Join MoonFit dApp staking to mint your MoonFit NFTs",
+    "link": "https://twitter.com/MoonFitOfficial/status/1706295586620907633",
+    "gradient": ["#e17b7b", "#53cbc9"]
+  },
+  {
     "img": "",
     "category": "EVM Staking",
     "title": "Algem",
