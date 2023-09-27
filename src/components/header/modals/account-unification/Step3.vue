@@ -13,9 +13,7 @@
       <!-- Account Name -->
       <div>
         <div class="label">Account Name</div>
-        <div class="evm-account">
-          <span>{{ currentAccountName }}</span>
-        </div>
+        <div><input v-model="accountName" type="text" placeholder="Unified Account Name" /></div>
       </div>
 
       <!-- Account Icon -->
@@ -32,13 +30,12 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">Next</astar-button>
+      <astar-button class="btn" :disabled="accountName === ''" @click="next()">Next</astar-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { useAccount } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -55,7 +52,7 @@ export default defineComponent({
       emit('next');
     };
 
-    const { currentAccountName } = useAccount();
+    const accountName = ref<string>('');
 
     const icon_img = {
       astar_gradient: require('/src/assets/img/astar_icon.svg'),
@@ -63,8 +60,8 @@ export default defineComponent({
     };
 
     return {
+      accountName,
       icon_img,
-      currentAccountName,
       next,
     };
   },
