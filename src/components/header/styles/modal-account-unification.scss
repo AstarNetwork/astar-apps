@@ -1,49 +1,97 @@
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
+.wrapper--account-unification {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
 .btn {
   width: 100%;
   font-size: 20px;
   font-weight: 600;
   height: 52px;
-  @apply tw-rounded-full;
+  border-radius: 9999px;
   &.close {
     background: transparent;
     color: $navy-1;
     border: solid 1px $navy-1;
   }
 }
-
-.account-name {
-  @apply tw-font-bold tw-flex tw-items-center tw-justify-start tw-text-base;
-  .icon{
-    @apply tw-w-8 tw-h-8 tw-object-cover tw-rounded-full tw-flex-shrink-0 tw-mr-3;
+body.body--dark {
+  .btn {
+    &.close {
+      color: $gray-3;
+      border-color: $gray-4;
+    }
   }
 }
+
+.account-name {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  .icon {
+    margin-right: 0.75rem;
+    height: 2rem;
+    width: 2rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    object-fit: cover;
+  }
+}
+
 .wallet-info__wrapper {
   background-color: $gray-1;
-  @apply tw-text-left tw-rounded-xl tw-mt-2;
+  margin-top: 0.5rem;
+  border-radius: 0.75rem;
+  text-align: left;
+  border: solid 1px transparent;
 }
+body.body--dark {
+  .wallet-info__wrapper {
+    background-color: $navy-2;
+    border-color: $gray-4;
+  }
+}
+
 .wallet-info {
-  @apply tw-flex tw-items-center tw-space-x-3 tw-p-5;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   .wallet-info__icon {
-    @apply tw-flex-shrink-0;
+    flex-shrink: 0;
     img {
-      @apply tw-w-8 tw-h-8 tw-rounded-full tw-object-cover;
+      height: 2rem;
+      width: 2rem;
+      border-radius: 9999px;
+      object-fit: cover;
     }
   }
   .wallet-info__address {
-    @apply tw-flex-1;
+    flex: 1 1 0%;
   }
   .wallet-info__actions {
-    @apply tw-flex tw-space-x-3;
+    display: flex;
+    gap: 0.75rem;
   }
 }
 
 .introduce-au {
   .introduce-au__text {
     max-width: 358px;
-    @apply tw-py-16 tw-mx-auto tw-font-extrabold tw-text-3xl;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 800;
     span {
       background: linear-gradient(
         60deg,
@@ -53,28 +101,53 @@
         #0297fb 72.21%,
         #0ae2ff 95.53%
       );
-      @apply tw-bg-clip-text tw-text-transparent;
+      color: transparent;
+      background-clip: text;
     }
   }
 }
 
 .wrapper--help {
   background-color: rgba($astar-blue, 3%);
-  @apply tw-mt-6 tw-rounded-lg tw-text-left tw-p-6;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  text-align: left;
 }
+body.body--dark {
+  .wrapper--help {
+    background-color: rgba($astar-blue, 10%);
+  }
+}
+
 .title--help {
-  color: $navy-1;
-  @apply tw-font-semibold tw-text-base;
+  font-size: 1rem;
+  font-weight: 600;
 }
+
 .help-faq {
   dt {
-    @apply tw-mb-2 tw-mt-4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
   }
   dd {
-    @apply tw-bg-white tw-py-3 tw-px-4 tw-rounded;
+    background-color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
   a {
     color: $astar-blue;
+  }
+}
+body.body--dark {
+  .help-faq {
+    dd {
+      background-color: $navy-1;
+    }
+    a {
+      color: $astar-blue-dark;
+    }
   }
 }
 
@@ -82,30 +155,60 @@
   border: solid 1px $warning-red;
   background-color: rgba($warning-red, 20%);
   color: $navy-1;
-  @apply tw-rounded-xl tw-p-4 tw-flex tw-items-start tw-space-x-2 tw-mb-6 tw-text-left;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
   input[type='checkbox'] {
-    @apply tw-h-4 tw-w-4;
+    height: 1rem;
+    width: 1rem;
+    cursor: pointer;
+    margin-right: 0.75rem;
+  }
+}
+body.body--dark {
+  .warning-check {
+    color: white;
   }
 }
 
 .metamask {
   background-color: $gray-1;
-  @apply tw-rounded-xl tw-overflow-hidden tw-font-semibold;
+  border: solid 1px transparent;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  font-weight: 600;
   .metamask-info {
-    @apply tw-py-6;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
     .icon {
-      @apply tw-w-12 tw-h-12 tw-mx-auto tw-my-2;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      height: 3rem;
+      width: 3rem;
     }
     .address {
-      @apply tw-mt-2;
+      margin-top: 0.5rem;
     }
   }
   .connected {
     background-color: $astar-blue;
-    @apply tw-text-white tw-p-1;
+    padding: 0.25rem;
+    color: white;
   }
   .connect {
-    @apply tw-px-10 tw-pb-6;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+body.body--dark {
+  .metamask {
+    background-color: $navy-2;
+    border-color: $gray-4;
   }
 }
 
@@ -113,23 +216,41 @@
   border: solid 1px $warning-red;
   background-color: rgba($warning-red, 20%);
   color: $navy-1;
-  @apply tw-rounded-xl tw-p-4 tw-flex tw-items-start tw-space-x-2 tw-mb-6 tw-text-left;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: left;
   .icon-warning {
     color: $warning-red;
+    margin-right: 0.75rem;
+  }
+}
+body.body--dark {
+  .warning {
+    color: white;
   }
 }
 
 .unified-account-details {
-  @apply tw-space-y-6 tw-text-left;
+  text-align: left;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
   .label {
-    @apply tw-font-semibold tw-mb-2;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
   }
   input[type='text'],
   .evm-account,
   .account-icon {
     background-color: $gray-1;
     color: $navy-1;
-    @apply tw-rounded-xl tw-p-5 tw-w-full;
+    width: 100%;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: solid 1px transparent;
   }
   input[type='text'] {
     &::placeholder {
@@ -138,39 +259,87 @@
   }
   .evm-account,
   .account-icon {
-    @apply tw-flex tw-items-center tw-font-semibold tw-space-x-2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
     .icon {
-      @apply tw-w-8 tw-h-8 tw-object-cover tw-rounded-full tw-flex-shrink-0;
+      margin-right: 0.75rem;
+      height: 2rem;
+      width: 2rem;
+      flex-shrink: 0;
+      border-radius: 9999px;
+      object-fit: cover;
     }
   }
   input[type='text'],
   .account-icon {
     &:hover,
     &:focus {
-      outline: solid 1px $astar-blue;
+      border-color: $astar-blue;
+      outline-width: 0;
+    }
+  }
+}
+body.body--dark {
+  .unified-account-details {
+    input[type='text'],
+    .evm-account,
+    .account-icon {
+      background-color: $navy-2;
+      color: white;
+      border-color: $gray-4;
+    }
+    input[type='text'] {
+      &::placeholder {
+        color: $gray-4 !important;
+      }
+    }
+    input[type='text'],
+    .account-icon {
+      &:hover,
+      &:focus {
+        border-color: $astar-blue-dark;
+      }
     }
   }
 }
 
+.text {
+  font-weight: 600;
+  text-align: left;
+}
+
 .evm-token-list {
-  @apply tw-space-y-1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
   .row {
-    @apply tw-flex tw-items-center tw-space-x-4 tw-py-4;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     span {
-      @apply tw-block;
+      display: block;
     }
     .column--icon {
-      @apply tw-flex-shrink-0;
+      flex-shrink: 0;
       img {
-        @apply tw-w-8 tw-h-8 tw-rounded-full tw-object-cover;
+        height: 2rem;
+        width: 2rem;
+        border-radius: 9999px;
+        object-fit: cover;
       }
     }
     .column--balance {
-      @apply tw-flex-1 tw-text-right;
+      flex: 1 1 0%;
+      text-align: right;
     }
     .symbol,
     .token {
-      @apply tw-font-semibold tw-text-base;
+      font-size: 1rem;
+      font-weight: 600;
     }
     .name,
     .usd {
@@ -181,21 +350,73 @@
 
 .created-unified-account {
   .icon {
-    @apply tw-mx-auto tw-w-20 tw-h-20 tw-object-cover tw-rounded-full;
+    margin-left: auto;
+    margin-right: auto;
+    height: 5rem;
+    width: 5rem;
+    border-radius: 9999px;
+    object-fit: cover;
   }
   .name {
-    @apply tw-font-bold tw-text-2xl tw-my-4;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
   }
   .native-account,
   .evm-account {
     background-color: $gray-1;
-    @apply tw-p-6;
+    padding: 1.5rem;
+  }
+}
+body.body--dark {
+  .created-unified-account {
+    .native-account,
+    .evm-account {
+      background-color: $navy-2;
+    }
   }
 }
 
 .completed {
-  @apply tw-text-xl tw-font-bold tw-space-y-4;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   .emoji {
-    @apply tw-text-5xl;
+    font-size: 3rem;
+  }
+}
+
+.nft-list {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  .item {
+    border-radius: 16px;
+    overflow: hidden;
+    &:hover {
+      opacity: 90%;
+      cursor: pointer;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+    }
+    &.item--selected {
+      outline: solid 2px $astar-blue;
+    }
+  }
+}
+body.body--dark {
+  .nft-list {
+    .item {
+      &.item--selected {
+        outline-color: $astar-blue-dark;
+      }
+    }
   }
 }

@@ -1,22 +1,19 @@
 <template>
   <div class="wrapper--account-unification">
-    <p class="text">
-      Now xcTokens are sent and you are ready to unify both accounts! Please check below before
-      confirm.
-    </p>
-
-    <div class="created-unified-account">
-      <div><img :src="icon_img.astar_gradient" class="icon" /></div>
-      <div class="name">Unified Account Name</div>
-      <div>
-        <div class="native-account">native account info</div>
-        <div class="evm-account">evm account info</div>
+    <div class="nft-list">
+      <div
+        v-for="nft in nfts"
+        :key="nft.img"
+        class="item"
+        :class="nft.isSelected && 'item--selected'"
+      >
+        <img :src="nft.img" alt="NFT" />
       </div>
     </div>
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">Submit</astar-button>
+      <astar-button class="btn">Next</astar-button>
     </div>
   </div>
 </template>
@@ -36,8 +33,15 @@ export default defineComponent({
       astar_gradient: require('/src/assets/img/astar_icon.svg'),
     };
 
+    const nfts = [
+      { img: icon_img.astar_gradient, isSelected: true },
+      { img: icon_img.astar_gradient, isSelected: false },
+      { img: icon_img.astar_gradient, isSelected: false },
+      { img: icon_img.astar_gradient, isSelected: false },
+    ];
+
     return {
-      icon_img,
+      nfts,
       next,
     };
   },

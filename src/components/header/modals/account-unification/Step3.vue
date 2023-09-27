@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-space-y-6">
+  <div class="wrapper--account-unification">
     <div class="unified-account-details">
       <!-- EVM Account -->
       <div>

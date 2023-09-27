@@ -8,12 +8,6 @@
       </p>
       <p>No need EVM deposit anymore!</p>
     </div>
-
-    <!-- Action -->
-    <div>
-      <!-- TODO: please add a function to close modal -->
-      <astar-button class="btn close">Close</astar-button>
-    </div>
   </div>
 </template>
 

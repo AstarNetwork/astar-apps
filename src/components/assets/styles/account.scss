@@ -162,3 +162,10 @@
     background-color: $body-bg-dark;
   }
 }
+
+.icon--primary.icon--account{
+  fill: $astar-blue;
+  &:hover{
+    fill: white;
+  }
+}

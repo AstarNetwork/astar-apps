@@ -80,7 +80,7 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const currentStep = ref<number>(0);
 
-    const modalTitle = computed(() => {
+    const modalTitle = computed((): string => {
       if (currentStep.value === 1) {
         return 'Create Unified Account';
       } else if (currentStep.value === 2) {
@@ -126,12 +126,13 @@ export default defineComponent({
       window.removeEventListener('resize', onHeightChange);
     });
 
-    const updateSteps = (step: number) => {
+    const updateSteps = (step: number): void => {
       currentStep.value = step;
     };
 
     const store = useStore();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
     const { selectedEvmAddress, isConnectedNetwork, isStaking, setWeb3 } = useAccountUnification();
 
     return {

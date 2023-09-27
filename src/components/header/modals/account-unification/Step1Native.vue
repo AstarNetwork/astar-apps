@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-space-y-6">
+  <div class="wrapper--account-unification">
     <div class="tw-font-bold tw-text-left">Please read carefully</div>
     <!-- TODO: need to add static texts here -->
     <div class="warning-check">

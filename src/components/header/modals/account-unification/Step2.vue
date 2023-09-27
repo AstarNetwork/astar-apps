@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-space-y-6">
+  <div class="wrapper--account-unification">
     <!-- Connect to metamask -->
     <div class="metamask">
       <div class="metamask-info">
