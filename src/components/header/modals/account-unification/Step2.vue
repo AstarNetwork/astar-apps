@@ -24,9 +24,7 @@
       </p>
     </div>
 
-    <!-- Actions -->
     <div v-if="isStaking">
-      <!-- TODO: please add a function to close modal -->
       <astar-button class="btn close" @click="closeModal()">Close</astar-button>
     </div>
     <div v-else>
