@@ -33,6 +33,6 @@ export const Symbols = {
   AccountsRepository: Symbol.for('AccountsRepository'),
   IdentityRepository: Symbol.for('IdentityRepository'),
   IdentityService: Symbol.for('IdentityService'),
-  BluezNftRepository: Symbol.for('BluezNftRepository'),
+  NftRepository: Symbol.for('NftRepository'),
   AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
 };

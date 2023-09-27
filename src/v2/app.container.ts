@@ -29,7 +29,7 @@ import {
   AssetsRepository,
   PolkasafeRepository,
   AccountsRepository,
-  BluezNftRepository,
+  NftRepository,
   AccountUnificationRepository,
 } from './repositories/implementations';
 import {
@@ -130,7 +130,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
   container.addSingleton<IAccountsRepository>(AccountsRepository, Symbols.AccountsRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
-  container.addSingleton<INftRepository>(BluezNftRepository, Symbols.BluezNftRepository);
+  container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
   container.addSingleton<IAccountUnificationRepository>(
     AccountUnificationRepository,
     Symbols.AccountUnificationRepository
