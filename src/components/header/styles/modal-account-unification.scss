@@ -4,7 +4,7 @@
 .wrapper--account-unification {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 48px;
 }
 
 .btn {
@@ -32,13 +32,13 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 700;
   .icon {
-    margin-right: 0.75rem;
-    height: 2rem;
-    width: 2rem;
+    margin-right: 12px;
+    height: 32px;
+    width: 32px;
     flex-shrink: 0;
     border-radius: 9999px;
     object-fit: cover;
@@ -47,8 +47,8 @@
 
 .wallet-info__wrapper {
   background-color: $gray-1;
-  margin-top: 0.5rem;
-  border-radius: 0.75rem;
+  margin-top: 8px;
+  border-radius: 12px;
   text-align: left;
   border: solid 1px transparent;
 }
@@ -60,15 +60,15 @@
 }
 
 .wallet-info {
-  padding: 1.25rem;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
   .wallet-info__icon {
     flex-shrink: 0;
     img {
-      height: 2rem;
-      width: 2rem;
+      height: 32px;
+      width: 32px;
       border-radius: 9999px;
       object-fit: cover;
     }
@@ -78,7 +78,7 @@
   }
   .wallet-info__actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 12px;
   }
 }
 
@@ -87,10 +87,9 @@
     max-width: 358px;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
+    padding-top: 64px;
+    padding-bottom: 64px;
+    font-size: 30px;
     font-weight: 800;
     span {
       background: linear-gradient(
@@ -109,8 +108,8 @@
 
 .wrapper--help {
   background-color: rgba($astar-blue, 3%);
-  margin-top: 1.5rem;
-  padding: 1.5rem;
+  margin-top: 24px;
+  padding: 24px;
   text-align: left;
 }
 .body--dark {
@@ -120,21 +119,21 @@
 }
 
 .title--help {
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .help-faq {
   dt {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    margin-top: 16px;
+    margin-bottom: 8px;
   }
   dd {
     background-color: white;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
   a {
     color: $astar-blue;
@@ -155,16 +154,16 @@
   border: solid 1px $warning-red;
   background-color: rgba($warning-red, 20%);
   color: $navy-1;
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 16px;
   text-align: left;
   display: flex;
   align-items: flex-start;
   input[type='checkbox'] {
-    height: 1rem;
-    width: 1rem;
+    height: 16px;
+    width: 16px;
     cursor: pointer;
-    margin-right: 0.75rem;
+    margin-right: 12px;
   }
 }
 .body--dark {
@@ -177,32 +176,32 @@
   background-color: $gray-1;
   border: solid 1px transparent;
   overflow: hidden;
-  border-radius: 0.75rem;
+  border-radius: 12px;
   font-weight: 600;
   .metamask-info {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: 24px;
+    padding-bottom: 24px;
     .icon {
       margin-left: auto;
       margin-right: auto;
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-      height: 3rem;
-      width: 3rem;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      height: 48px;
+      width: 48px;
     }
     .address {
-      margin-top: 0.5rem;
+      margin-top: 8px;
     }
   }
   .connected {
     background-color: $astar-blue;
-    padding: 0.25rem;
+    padding: 4px;
     color: white;
   }
   .connect {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-    padding-bottom: 1.5rem;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 24px;
   }
 }
 .body--dark {
@@ -216,15 +215,15 @@
   border: solid 1px $warning-red;
   background-color: rgba($warning-red, 20%);
   color: $navy-1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
   display: flex;
   align-items: flex-start;
-  border-radius: 0.75rem;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 16px;
   text-align: left;
   .icon-warning {
     color: $warning-red;
-    margin-right: 0.75rem;
+    margin-right: 12px;
   }
 }
 .body--dark {
@@ -235,11 +234,11 @@
 
 .unified-account-details {
   text-align: left;
-  gap: 2rem;
+  gap: 32px;
   display: flex;
   flex-direction: column;
   .label {
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
     font-weight: 600;
   }
   input[type='text'],
@@ -248,8 +247,8 @@
     background-color: $gray-1;
     color: $navy-1;
     width: 100%;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
+    border-radius: 12px;
+    padding: 20px;
     border: solid 1px transparent;
   }
   input[type='text'] {
@@ -263,9 +262,9 @@
     display: flex;
     align-items: center;
     .icon {
-      margin-right: 0.75rem;
-      height: 2rem;
-      width: 2rem;
+      margin-right: 12px;
+      height: 32px;
+      width: 32px;
       flex-shrink: 0;
       border-radius: 9999px;
       object-fit: cover;
@@ -312,22 +311,22 @@
 .evm-token-list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
   text-align: left;
   .row {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 16px;
+    padding-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 16px;
     span {
       display: block;
     }
     .column--icon {
       flex-shrink: 0;
       img {
-        height: 2rem;
-        width: 2rem;
+        height: 32px;
+        width: 32px;
         border-radius: 9999px;
         object-fit: cover;
       }
@@ -338,7 +337,7 @@
     }
     .symbol,
     .token {
-      font-size: 1rem;
+      font-size: 16px;
       font-weight: 600;
     }
     .name,
@@ -352,21 +351,21 @@
   .icon {
     margin-left: auto;
     margin-right: auto;
-    height: 5rem;
-    width: 5rem;
+    height: 80px;
+    width: 80px;
     border-radius: 9999px;
     object-fit: cover;
   }
   .name {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    font-size: 24px;
     font-weight: 700;
   }
   .native-account,
   .evm-account {
     background-color: $gray-1;
-    padding: 1.5rem;
+    padding: 24px;
   }
 }
 .body--dark {
@@ -379,13 +378,13 @@
 }
 
 .completed {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
   .emoji {
-    font-size: 3rem;
+    font-size: 48px;
   }
 }
 
