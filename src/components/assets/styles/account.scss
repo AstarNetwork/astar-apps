@@ -100,9 +100,12 @@
   display: flex;
   justify-content: flex-end;
   column-gap: 24px;
-  @media (min-width: $xl) {
-    column-gap: 80px;
+  @media (max-width: $sm) {
+    column-gap: 16px;
   }
+  // @media (min-width: $xl) {
+  //   column-gap: 80px;
+  // }
 }
 
 .text--switch-account {

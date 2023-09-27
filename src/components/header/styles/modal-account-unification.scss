@@ -50,7 +50,7 @@
 
 .wallet-info__wrapper {
   background-color: $gray-1;
-  margin-top: 8px;
+  margin: 8px 0 24px 0;
   border-radius: 12px;
   text-align: left;
   border: solid 1px transparent;
@@ -91,14 +91,12 @@
 .introduce-au {
   .introduce-au__text {
     max-width: 358px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 64px 0;
+    margin: 64px auto;
     font-size: 30px;
     line-height: 1.25;
     font-weight: 800;
     @media (max-width: $sm) {
-      padding: 48px 0;
+      margin: 48px auto;
     }
     span {
       background: linear-gradient(
