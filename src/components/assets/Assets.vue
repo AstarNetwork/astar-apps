@@ -193,8 +193,9 @@ export default defineComponent({
     // Temp set identity test, TODO remove later
     const setIdentity = async () => {
       const tokenOwnerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a';
-      const nftRepository = container.get<INftRepository>(Symbols.BluezNftRepository);
+      const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
       const nfts = await nftRepository.getNftMetadata(
+        'astar',
         '0x7b2152e51130439374672af463b735a59a47ea85',
         '8893zß'
       );
