@@ -30,7 +30,12 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" :disabled="accountName === ''" @click="next()">Next</astar-button>
+      <astar-button
+        class="btn"
+        :disabled="accountName === '' || isFetchingXc20Tokens"
+        @click="next()"
+        >Next</astar-button
+      >
     </div>
   </div>
 </template>
@@ -43,6 +48,10 @@ export default defineComponent({
   props: {
     selectedEvmAddress: {
       type: String,
+      required: true,
+    },
+    isFetchingXc20Tokens: {
+      type: Boolean,
       required: true,
     },
   },

@@ -17,16 +17,21 @@
           :selected-evm-address="selectedEvmAddress"
           :is-connected-network="isConnectedNetwork"
           :is-staking="isStaking"
+          :is-loading-dapp-staking="isLoadingDappStaking"
           :set-web3="setWeb3"
           :close-modal="closeModal"
           @next="updateSteps(3)"
         />
       </div>
       <div v-else-if="currentStep === 3">
-        <step3 :selected-evm-address="selectedEvmAddress" @next="updateSteps(4)" />
+        <step3
+          :selected-evm-address="selectedEvmAddress"
+          :is-fetching-xc20-tokens="isFetchingXc20Tokens"
+          @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
+        />
       </div>
       <div v-else-if="currentStep === 4">
-        <step4 @next="updateSteps(5)" />
+        <step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
       </div>
       <div v-else-if="currentStep === 5">
         <step5 @next="updateSteps(6)" />
@@ -134,7 +139,15 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
-    const { selectedEvmAddress, isConnectedNetwork, isStaking, setWeb3 } = useAccountUnification();
+    const {
+      selectedEvmAddress,
+      isConnectedNetwork,
+      isStaking,
+      transferXc20Tokens,
+      isFetchingXc20Tokens,
+      isLoadingDappStaking,
+      setWeb3,
+    } = useAccountUnification();
 
     return {
       windowHeight,
@@ -146,6 +159,9 @@ export default defineComponent({
       selectedEvmAddress,
       isConnectedNetwork,
       isStaking,
+      transferXc20Tokens,
+      isFetchingXc20Tokens,
+      isLoadingDappStaking,
       closeModal,
       backModal,
       updateSteps,

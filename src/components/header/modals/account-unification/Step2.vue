@@ -14,7 +14,7 @@
     </div>
 
     <!-- Staking balance warning -->
-    <div v-if="isStaking" class="warning">
+    <div v-if="isStaking && !isLoadingDappStaking" class="warning">
       <div class="icon-warning">
         <astar-icon-warning />
       </div>
@@ -24,17 +24,19 @@
       </p>
     </div>
 
-    <div v-if="isStaking">
+    <div v-if="isStaking && !isLoadingDappStaking">
       <astar-button class="btn close" @click="closeModal()">Close</astar-button>
     </div>
     <div v-else>
       <astar-button
+        v-if="!isLoadingDappStaking"
         class="btn"
         :disabled="!selectedEvmAddress || !isConnectedNetwork"
         @click="next()"
       >
         Next
       </astar-button>
+      <astar-button v-else class="btn" :disabled="true"> Loading... </astar-button>
     </div>
   </div>
 </template>
@@ -54,6 +56,10 @@ export default defineComponent({
       required: true,
     },
     isStaking: {
+      type: Boolean,
+      required: true,
+    },
+    isLoadingDappStaking: {
       type: Boolean,
       required: true,
     },

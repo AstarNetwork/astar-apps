@@ -17,7 +17,6 @@ import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-
 import { BN } from '@polkadot/util';
 import ABI from 'src/config/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
@@ -25,12 +24,15 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
+import { ethers } from 'ethers';
 
 const provider = window.ethereum;
 
 export interface TransferXc20Token {
   assetId: string;
   balance: string;
+  formattedBalance: number;
+  name: string;
   symbol: string;
   tokenImage: string;
 }
@@ -40,9 +42,11 @@ export const useAccountUnification = () => {
   const selectedEvmAddress = ref<string>('');
   const isConnectedNetwork = ref<boolean>(false);
   const isReadyUnification = ref<boolean>(false);
+  const isFetchingXc20Tokens = ref<boolean>(false);
+  const isLoadingDappStaking = ref<boolean>(false);
   const isStaking = ref<boolean>(true);
   const transferXc20CallData = ref<string>('');
-  const transferXc20tokens = ref<TransferXc20Token[]>([]);
+  const transferXc20Tokens = ref<TransferXc20Token[]>([]);
 
   const store = useStore();
   const { currentAccount } = useAccount();
@@ -103,6 +107,7 @@ export const useAccountUnification = () => {
   const checkStakerInfo = async () => {
     if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
     try {
+      isLoadingDappStaking.value = true;
       let isPendingWithdrawal = false;
       let stakingData: MyStakeInfo[] = [];
       const mappedSS58Address = toSS58Address(selectedEvmAddress.value);
@@ -148,6 +153,8 @@ export const useAccountUnification = () => {
           } catch (error) {
             console.error(error);
             return null;
+          } finally {
+            isLoadingDappStaking.value = false;
           }
         })
       );
@@ -168,6 +175,7 @@ export const useAccountUnification = () => {
   const setTransferXc20CallData = async (): Promise<void> => {
     const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 transactions
     try {
+      isFetchingXc20Tokens.value = true;
       console.log('xcmAssets.value', xcmAssets.value);
       if (!currentAccount.value || !xcmAssets.value.assets.length || !web3.value) {
         return;
@@ -184,6 +192,8 @@ export const useAccountUnification = () => {
             const evmData = {
               assetId: asset.id,
               balance,
+              formattedBalance: Number(ethers.utils.formatUnits(balance, asset.metadata.decimals)),
+              name: asset.metadata.name,
               symbol: asset.metadata.symbol,
               tokenImage: asset.tokenImage,
             };
@@ -195,12 +205,11 @@ export const useAccountUnification = () => {
         })
       );
 
-      transferXc20tokens.value = xc20tokens.filter((it) => it !== null) as TransferXc20Token[];
-      console.log('transferXc20tokens.value ', transferXc20tokens.value);
+      transferXc20Tokens.value = xc20tokens.filter((it) => it !== null) as TransferXc20Token[];
 
       const unifiedSs58Address = currentAccount.value;
 
-      const transactions = transferXc20tokens.value
+      const transactions = transferXc20Tokens.value
         .map((it) => {
           if (!it) return null;
           const assetId = it.assetId;
@@ -234,10 +243,11 @@ export const useAccountUnification = () => {
         transferXc20CallData.value = batchedTx.method.toHex();
       } else {
         transferXc20CallData.value = '';
-        transferXc20tokens.value = [];
+        transferXc20Tokens.value = [];
         isReadyUnification.value = true;
       }
 
+      // Memo: delete it later
       console.log('transferXc20CallData.value', transferXc20CallData.value);
       // step1: use dispatch precompiled to send the calldata
       // step2: check the 'xc20tokens' balance again. Repeat the process again if there still have some balance
@@ -245,8 +255,10 @@ export const useAccountUnification = () => {
     } catch (error) {
       console.error(error);
       transferXc20CallData.value = '';
-      transferXc20tokens.value = [];
+      transferXc20Tokens.value = [];
       isReadyUnification.value = false;
+    } finally {
+      isFetchingXc20Tokens.value = false;
     }
   };
 
@@ -262,5 +274,14 @@ export const useAccountUnification = () => {
     console.log('isStaking', isStaking.value);
   });
 
-  return { selectedEvmAddress, isConnectedNetwork, isStaking, isReadyUnification, setWeb3 };
+  return {
+    selectedEvmAddress,
+    isConnectedNetwork,
+    isStaking,
+    isReadyUnification,
+    transferXc20Tokens,
+    isFetchingXc20Tokens,
+    isLoadingDappStaking,
+    setWeb3,
+  };
 };
