@@ -442,3 +442,70 @@
     }
   }
 }
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: left;
+  strong {
+    color: $astar-blue;
+  }
+  ul {
+    list-style: disc;
+    padding-left: 12px;
+    margin-top: 8px;
+  }
+}
+.body--dark {
+  .instructions {
+    strong {
+      color: $astar-blue-dark;
+    }
+  }
+}
+
+.info--create-unified-account {
+  border: solid 1px $astar-blue;
+  background-color: rgba($astar-blue, 10%);
+  border-radius: 6px;
+  padding: 16px;
+  font-weight: 600;
+}
+.body--dark {
+  .info--create-unified-account {
+    background-color: rgba($astar-blue, 20%);
+  }
+}
+
+.box {
+  padding: 24px 16px;
+  border-radius: 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  &.box--have {
+    background-color: $gray-1;
+    margin: 24px 0;
+  }
+  &.box--not-have {
+    background-color: rgba($astar-blue, 3%);
+  }
+  a {
+    color: $astar-blue;
+  }
+}
+.body--dark {
+  .box {
+    &.box--have {
+      background-color: $navy-2;
+    }
+    &.box--not-have {
+      background-color: rgba($astar-blue, 10%);
+    }
+    a {
+      color: $astar-blue-dark;
+    }
+  }
+}

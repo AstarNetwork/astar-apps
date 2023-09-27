@@ -74,24 +74,6 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const currentStep = ref<number>(0);
 
-    const modalTitle = computed((): string => {
-      if (currentStep.value === 1) {
-        return 'Create Unified Account';
-      } else if (currentStep.value === 2) {
-        return 'Create Unified Account : 1';
-      } else if (currentStep.value === 3) {
-        return 'Create Unified Account : 2';
-      } else if (currentStep.value === 4) {
-        return 'Create Unified Account : 3';
-      } else if (currentStep.value === 5) {
-        return 'Create Unified Account : 4';
-      } else if (currentStep.value === 6) {
-        return '';
-      } else {
-        return 'Your Account';
-      }
-    });
-
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
       const animationDuration = 500;
@@ -126,6 +108,28 @@ export default defineComponent({
 
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+    const modalTitle = computed((): string => {
+      if (currentStep.value === 1) {
+        if (isH160.value) {
+          return 'Create Unified Account';
+        } else {
+          return 'Please read carefully';
+        }
+      } else if (currentStep.value === 2) {
+        return 'Create Unified Account : 1';
+      } else if (currentStep.value === 3) {
+        return 'Create Unified Account : 2';
+      } else if (currentStep.value === 4) {
+        return 'Create Unified Account : 3';
+      } else if (currentStep.value === 5) {
+        return 'Create Unified Account : 4';
+      } else if (currentStep.value === 6) {
+        return '';
+      } else {
+        return 'Your Account';
+      }
+    });
 
     return {
       windowHeight,
