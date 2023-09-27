@@ -14,7 +14,6 @@
       <div>
         <div class="label">Account Name</div>
         <div>
-          <!-- <input @input="setAccountName" type="text" placeholder="Unified Account Name" /> -->
           <input
             type="text"
             placeholder="Unified Account Name"
@@ -30,7 +29,8 @@
         </div>
         <!-- TODO: open a select NFT modal -->
         <button type="button" class="account-icon">
-          <img :src="icon_img.astar_gradient" class="icon" />
+          <!-- <img :src="icon_img.astar_gradient" class="icon" /> -->
+          <jazzicon :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
     </div>
@@ -48,10 +48,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { useAccount } from 'src/hooks';
+import { defineComponent } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
-  components: {},
+  components: { [Jazzicon.name]: Jazzicon },
   props: {
     selectedEvmAddress: {
       type: String,
@@ -76,13 +78,15 @@ export default defineComponent({
       emit('next');
     };
 
+    const { currentAccount } = useAccount();
+
     const icon_img = {
-      astar_gradient: require('/src/assets/img/astar_icon.svg'),
       metamask: require('/src/assets/img/metamask.png'),
     };
 
     return {
       icon_img,
+      currentAccount,
       next,
     };
   },
