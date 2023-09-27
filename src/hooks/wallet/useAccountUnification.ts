@@ -43,6 +43,7 @@ export const useAccountUnification = () => {
     }
     isConnectedNetwork.value = provider.chainId === chainId;
   };
+
   const updateEvmProvider: WatchCallback<[string, Web3?]> = (
     [selectedEvmAddress, web3],
     _,
@@ -125,6 +126,7 @@ export const useAccountUnification = () => {
         }
       })
     );
+
     const eraPendingRewards = claimTransactions.filter((it) => it !== null).flat();
 
     if (isPendingWithdrawal || stakingData.length > 0 || eraPendingRewards.length > 0) {
@@ -138,6 +140,7 @@ export const useAccountUnification = () => {
   watch([selectedEvmAddress, web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
 
+  // Memo: delete it later
   watchEffect(() => {
     console.log('selectedEvmAddress', selectedEvmAddress.value);
     console.log('isConnectedNetwork', isConnectedNetwork.value);
