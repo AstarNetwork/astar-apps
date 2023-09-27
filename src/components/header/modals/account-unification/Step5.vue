@@ -1,6 +1,6 @@
 <template>
-  <div class="tw-space-y-8">
-    <p class="tw-font-semibold tw-text-left">
+  <div class="wrapper--account-unification">
+    <p class="text">
       Now xcTokens are sent and you are ready to unify both accounts! Please check below before
       confirm.
     </p>

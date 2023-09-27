@@ -1,6 +1,6 @@
 <template>
-  <div class="tw-space-y-6 tw-text-left">
-    <p class="tw-font-semibold">Your balance in the EVM account are going to be transferred.</p>
+  <div class="wrapper--account-unification">
+    <p class="text">Your balance in the EVM account are going to be transferred.</p>
     <div class="evm-token-list">
       <div class="row">
         <div class="column--icon">

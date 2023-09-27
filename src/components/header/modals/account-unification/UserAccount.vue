@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- unified -->
-    <div v-if="isAccountUnified" class="tw-space-y-6">
+    <div v-if="isAccountUnified">
       <div class="account-name">
         <img :src="icon_img.astar_gradient" class="icon" />
         <div>Unified Account Name</div>
