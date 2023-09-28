@@ -5,7 +5,8 @@ import { useStore } from 'src/store';
 import { WatchCallback, computed, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { useNetworkInfo } from '../useNetworkInfo';
-
+import { get } from 'lodash-es';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import {
   ExtrinsicPayload,
   PayloadWithWeight,
@@ -26,7 +27,8 @@ import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { ethers } from 'ethers';
 
-const provider = window.ethereum;
+// const provider = window.ethereum;
+const provider = get(window, 'ethereum');
 
 export interface TransferXc20Token {
   assetId: string;
@@ -68,7 +70,8 @@ export const useAccountUnification = () => {
 
   const setWeb3 = async (): Promise<void> => {
     if (!provider || typeof window.ethereum === 'undefined') return;
-    web3.value = new Web3(window.ethereum as any);
+    web3.value = new Web3(provider as any);
+    console.log('await getSelectedEvmAddress(web3.value)', await getSelectedEvmAddress(web3.value));
     selectedEvmAddress.value = await getSelectedEvmAddress(web3.value);
     const chainId = `0x${evmNetworkIdx.value.toString(16)}`;
     if (provider.chainId !== chainId) {
