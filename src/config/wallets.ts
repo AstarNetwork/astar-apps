@@ -24,7 +24,7 @@ export enum SupportWallet {
   HanaEvm = 'hanaEvm',
   OneKeyEvm = 'OneKeyEvm',
   OneKeyNative = 'OneKey',
-  Snap = 'snap',
+  Snap = 'Snap',
 }
 
 export enum SupportMultisig {
