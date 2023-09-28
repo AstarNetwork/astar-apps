@@ -69,9 +69,9 @@ export const useAccountUnification = () => {
 
   const setWeb3 = async (): Promise<void> => {
     if (!provider || typeof window.ethereum === 'undefined') return;
+    const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
     web3.value = new Web3(provider as any);
-    console.log('await getSelectedEvmAddress(web3.value)', await getSelectedEvmAddress(web3.value));
-    selectedEvmAddress.value = await getSelectedEvmAddress(web3.value);
+    selectedEvmAddress.value = address;
     const chainId = `0x${evmNetworkIdx.value.toString(16)}`;
     if (provider.chainId !== chainId) {
       await setupNetwork({ network: evmNetworkIdx.value, provider });
