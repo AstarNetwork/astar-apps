@@ -26,12 +26,17 @@ export const useAccount = () => {
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
-    const unifiedAccount = store.getters['general/getUnifiedAccount'] as UnifiedAccount;
-    return isValidEvmAddress(currentAccount.value)
-      ? unifiedAccount
-        ? unifiedAccount.SS58Address
-        : toSS58Address(currentAccount.value)
-      : currentAccount.value;
+    if (isValidEvmAddress(currentAccount.value)) {
+      const unifiedAccount = computed<UnifiedAccount>(
+        () => store.getters['general/getUnifiedAccount']
+      );
+
+      return unifiedAccount.value?.nativeAddress
+        ? unifiedAccount.value.nativeAddress
+        : toSS58Address(currentAccount.value);
+    }
+
+    return currentAccount.value;
   });
   const isMultisig = computed<boolean>(() => !!localStorage.getItem(LOCAL_STORAGE.MULTISIG));
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
@@ -142,7 +147,6 @@ export const useAccount = () => {
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
-      await checkIfUnified(currentAddress.value);
       return;
     },
     { immediate: true }
@@ -152,6 +156,11 @@ export const useAccount = () => {
     [currentAddress],
     async () => {
       await wait(DELAY);
+
+      if (currentAddress.value) {
+        await checkIfUnified(currentAddress.value);
+      }
+
       const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
       if (storedWallet === SupportMultisig.Polkasafe) {
         currentAccount.value = currentAddress.value;
