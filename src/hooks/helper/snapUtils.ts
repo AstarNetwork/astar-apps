@@ -8,6 +8,7 @@ import {
   isPolkadotSnapInstalled,
 } from '@chainsafe/metamask-polkadot-adapter/build/utils';
 import type { UnitConfiguration } from '@chainsafe/metamask-polkadot-types';
+import { injectExtension } from '@polkadot/extension-inject';
 
 export type SnapNetworks = 'astar' | 'shiden' | 'shibuya';
 export interface SnapConfig {
@@ -77,7 +78,7 @@ export async function getInjectedMetamaskExtension(): Promise<InjectedMetamaskEx
 function getMetamaskExtension(
   extensions: InjectedExtension[]
 ): InjectedMetamaskExtension | undefined {
-  return extensions.find((item) => item.name === 'metamask-polkadot-snap') as unknown as
+  return extensions.find((item) => item.name === 'metamask-astar-snap') as unknown as
     | InjectedMetamaskExtension
     | undefined;
 }
@@ -101,3 +102,15 @@ export async function initiatePolkdatodSnap(): Promise<SnapInitializationRespons
 
 // const isSnapInstalled = await initiatePolkdatodSnap(); // Got the authorisation to use the snap on Portal
 // console.info('isSnapInstalled', isSnapInstalled);
+
+export async function injectMetamaskPolkadotSnapProvider(
+  isSnapInstalled: boolean,
+  snap: MetamaskPolkadotSnap
+): Promise<void> {
+  if (isSnapInstalled) {
+    injectExtension( snap, {
+      name: 'metmask-astar-snap',
+      version: '1.0.0',
+    });
+  }
+}
