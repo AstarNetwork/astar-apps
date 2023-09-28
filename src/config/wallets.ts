@@ -84,21 +84,22 @@ export interface Wallet {
 }
 
 export const supportWalletObj = {
-  [SupportWallet.Snap]: {
-    img: require('/src/assets/img/metamask.png'),
-    name: 'Astar Snap',
-    source: SupportWallet.Snap,
-    walletUrl: 'local:http://localhost:8081',
-    guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
-    isSupportBrowserExtension: true,
-    isSupportMobileApp: false,
-  },
   [SupportWallet.PolkadotJs]: {
     img: require('/src/assets/img/logo-polkadot-js.png'),
     name: 'Polkadot.js',
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
     guideUrl: 'https://docs.astar.network/docs/use/user-guides/create-wallet',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.Snap]: {
+    img: require('/src/assets/img/metamask.png'),
+    name: 'Astar Snap',
+    source: SupportWallet.Snap,
+    // Todo: update URLs
+    walletUrl: 'https://metamask.io/flask/',
+    guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },

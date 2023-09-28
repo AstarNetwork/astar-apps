@@ -1,10 +1,12 @@
 import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportMultisig } from 'src/config/wallets';
+import { SupportMultisig, SupportWallet } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, ref, watch } from 'vue';
+import { useNetworkInfo } from './useNetworkInfo';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -13,12 +15,14 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const { currentNetworkIdx } = useNetworkInfo();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const isSnapEnabled = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
@@ -120,6 +124,16 @@ export const useAccount = () => {
     { immediate: true }
   );
 
+  const checkIsResetSnap = async (): Promise<void> => {
+    const storedWallet = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET));
+    if (!isSnapEnabled.value && storedWallet === SupportWallet.Snap) {
+      await disconnectAccount();
+      window.location.reload();
+    }
+  };
+
+  watch([currentAddress], checkIsResetSnap, { immediate: true });
+
   return {
     substrateAccounts,
     currentAccount,
@@ -127,6 +141,7 @@ export const useAccount = () => {
     senderSs58Account,
     multisig,
     isMultisig,
+    isSnapEnabled,
     disconnectAccount,
   };
 };
