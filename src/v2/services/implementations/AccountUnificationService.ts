@@ -1,11 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService, WalletType, IAccountUnificationService } from 'src/v2/services';
-import {
-  IAccountUnificationRepository,
-  IAccountsRepository,
-  ISystemRepository,
-} from 'src/v2/repositories';
+import { IAccountUnificationRepository, ISystemRepository } from 'src/v2/repositories';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Guard } from 'src/v2/common';
@@ -17,7 +13,6 @@ export class AccountUnificationService implements IAccountUnificationService {
     @inject(Symbols.WalletFactory)
     private walletFactory: (walletType?: WalletType) => IWalletService,
     @inject(Symbols.SystemRepository) private systemRepo: ISystemRepository,
-    @inject(Symbols.AccountsRepository) private accountsRepo: IAccountsRepository,
     @inject(Symbols.AccountUnificationRepository)
     private unificationRepo: IAccountUnificationRepository,
     @inject(Symbols.EventAggregator) private eventAggregator: IEventAggregator
@@ -79,13 +74,13 @@ export class AccountUnificationService implements IAccountUnificationService {
   public async getMappedNativeAddress(evmAddress: string): Promise<string> {
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
 
-    return await this.accountsRepo.getMappedNativeAddress(evmAddress);
+    return await this.unificationRepo.getMappedNativeAddress(evmAddress);
   }
 
   public async getMappedEvmAddress(nativeAddress: string): Promise<string> {
     Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
 
-    return await this.accountsRepo.getMappedEvmAddress(nativeAddress);
+    return await this.unificationRepo.getMappedEvmAddress(nativeAddress);
   }
 
   private createIdentityData(

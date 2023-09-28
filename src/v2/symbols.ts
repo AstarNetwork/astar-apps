@@ -30,7 +30,6 @@ export const Symbols = {
   AssetsRepository: Symbol.for('AssetsRepository'),
   AssetsService: Symbol.for('AssetsService'),
   AccountUnificationService: Symbol.for('AccountUnificationService'),
-  AccountsRepository: Symbol.for('AccountsRepository'),
   IdentityRepository: Symbol.for('IdentityRepository'),
   IdentityService: Symbol.for('IdentityService'),
   NftRepository: Symbol.for('NftRepository'),
