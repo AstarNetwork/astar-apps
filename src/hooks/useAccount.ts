@@ -27,10 +27,6 @@ export const useAccount = () => {
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
     if (isValidEvmAddress(currentAccount.value)) {
-      const unifiedAccount = computed<UnifiedAccount>(
-        () => store.getters['general/getUnifiedAccount']
-      );
-
       return unifiedAccount.value?.nativeAddress
         ? unifiedAccount.value.nativeAddress
         : toSS58Address(currentAccount.value);
