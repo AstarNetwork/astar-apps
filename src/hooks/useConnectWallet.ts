@@ -42,7 +42,7 @@ import {
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
 import { initiatePolkdatodSnap, getInjectedMetamaskExtension } from 'src/hooks/helper/snapUtils';
-// import { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter';
+import { initPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
@@ -216,6 +216,7 @@ export const useConnectWallet = () => {
     const isSnapInstalled = await initiatePolkdatodSnap();
     console.log('isSnapInstalled', isSnapInstalled);
     if (isSnapInstalled) {
+      initPolkadotSnap();
       // const metamaskPolkadotExtension = await web3FromSource("metamask-polkadot-snap");
     }
 

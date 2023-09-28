@@ -103,14 +103,14 @@ export async function initiatePolkdatodSnap(): Promise<SnapInitializationRespons
 // const isSnapInstalled = await initiatePolkdatodSnap(); // Got the authorisation to use the snap on Portal
 // console.info('isSnapInstalled', isSnapInstalled);
 
-export async function injectMetamaskPolkadotSnapProvider(
-  isSnapInstalled: boolean,
-  snap: MetamaskPolkadotSnap
-): Promise<void> {
-  if (isSnapInstalled) {
-    injectExtension( snap, {
-      name: 'metmask-astar-snap',
-      version: '1.0.0',
-    });
-  }
-}
+// export async function injectMetamaskPolkadotSnapProvider(
+//   isSnapInstalled: boolean,
+//   injected: MetamaskPolkadotSnap
+// ): Promise<void> {
+//   if (isSnapInstalled) {
+//     injectExtension( injected.getMetamaskSnapApi, {
+//       name: 'metmask-astar-snap',
+//       version: '1.0.0',
+//     });
+//   }
+// }

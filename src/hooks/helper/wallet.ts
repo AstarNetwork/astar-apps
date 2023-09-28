@@ -23,7 +23,7 @@ export const getInjectedExtensions = async (forceRequest = false): Promise<any[]
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
   if (selectedAddress != null || forceRequest) {
     let extensions = await web3Enable('AstarNetwork/astar-apps');
-
+    console.log('extensions', extensions);
     // const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     // Memo: Firefox takes some time to load the wallet extensions at the boot time.
     // Below code is for reference
