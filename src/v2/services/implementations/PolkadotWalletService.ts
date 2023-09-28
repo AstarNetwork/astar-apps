@@ -24,6 +24,7 @@ import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
 import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
 import { IApi } from 'src/v2/integration';
+import { SupportWallet } from 'src/config/wallets';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -59,10 +60,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
+    const isSnap =
+      String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET)) === SupportWallet.Snap;
+    const isDetectExtensionsAction = !isMobileDevice || !isSnap;
+
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve) => {
-        !isMobileDevice && this.detectExtensionsAction(true);
+        isDetectExtensionsAction && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
         if (!tip) {
@@ -101,7 +106,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             },
             (result) => {
               try {
-                !isMobileDevice && this.detectExtensionsAction(false);
+                isDetectExtensionsAction && this.detectExtensionsAction(false);
+                isSnap && this.eventAggregator.publish(new BusyMessage(true));
                 if (result.isCompleted) {
                   if (!this.isExtrinsicFailed(result.events)) {
                     if (result.isError) {
@@ -123,7 +129,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                       );
                     }
                   }
-
                   this.eventAggregator.publish(new BusyMessage(false));
                   if (finalizedCallback) {
                     finalizedCallback(result);
