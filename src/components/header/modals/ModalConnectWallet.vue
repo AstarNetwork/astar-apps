@@ -208,7 +208,10 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
     const isAccountUnification = computed<boolean>(() => {
-      return !!(currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName);
+      return !!(
+        (currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName) ||
+        currentNetworkIdx.value === endpointKey.LOCAL
+      );
     });
 
     const closeModal = async (): Promise<void> => {

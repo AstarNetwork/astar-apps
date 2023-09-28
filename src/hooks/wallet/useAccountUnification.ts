@@ -6,7 +6,6 @@ import { WatchCallback, computed, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { get } from 'lodash-es';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import {
   ExtrinsicPayload,
   PayloadWithWeight,
