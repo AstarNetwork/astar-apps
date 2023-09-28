@@ -28,7 +28,7 @@
         <div class="label">
           Account icon (EVM NFT can only be selected after creating the account)
         </div>
-        <!-- TODO: open a select NFT modal -->
+        <!-- TODO: open the select NFT modal (SelectNft.vue) -->
         <button type="button" class="box--account-icon">
           <jazzicon :address="currentAccount" :diameter="32" class="icon" />
         </button>

@@ -51,7 +51,6 @@
 
 .box--wallet-list {
   background-color: $gray-1;
-  // margin: 8px 0 24px 0;
   border-radius: 12px;
   text-align: left;
   border: solid 1px transparent;
@@ -382,7 +381,7 @@
   }
 }
 
-.nft-list {
+.list--nfts {
   display: grid;
   gap: 8px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -405,7 +404,7 @@
   }
 }
 .body--dark {
-  .nft-list {
+  .list--nfts {
     .item {
       &.item--selected {
         outline-color: $astar-blue-dark;

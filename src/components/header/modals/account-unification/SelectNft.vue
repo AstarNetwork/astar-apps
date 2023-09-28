@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account-unification">
-    <div class="nft-list">
+    <div class="list--nfts">
       <div
         v-for="nft in nfts"
         :key="nft.img"
