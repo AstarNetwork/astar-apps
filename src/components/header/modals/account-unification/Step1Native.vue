@@ -2,36 +2,33 @@
   <div class="wrapper--account-unification">
     <div class="wrapper--instructions">
       <div>
-        <div class="text--title">General</div>
+        <div class="text--title">{{ $t('wallet.unifiedAccount.general') }}</div>
         <ul>
-          <li>Once accounts are unified, they will not be separated.</li>
+          <li>{{ $t('wallet.unifiedAccount.onceUnified') }}</li>
         </ul>
       </div>
       <div>
-        <div class="text--title">EVM wallet (Metamask only)</div>
+        <div class="text--title">{{ $t('wallet.unifiedAccount.evmWallet') }}</div>
         <ul>
-          <li><strong>A brand-new empty account is recommended.</strong></li>
           <li>
-            If the EVM account holds any staked ASTR token, those need to be unstataked first, it
-            will not be merged automatically.
+            <strong>{{ $t('wallet.unifiedAccount.brandNewAccount') }}</strong>
           </li>
           <li>
-            If you have custom xcTokens or any xcTokens are not listed on Astar EVM Portal, you must
-            transfer them to a different account first. We will not able to find those tokens
-            therefore unable to move them to the new account.
+            {{ $t('wallet.unifiedAccount.unstakedFirst') }}
           </li>
           <li>
-            All other already listed xcTokens as well as ERC20 tokens will be automatically
-            transferred to new unified account.
+            {{ $t('wallet.unifiedAccount.xcTokens') }}
+          </li>
+          <li>
+            {{ $t('wallet.unifiedAccount.automaticallyTransferred') }}
           </li>
         </ul>
       </div>
       <div>
-        <div class="text--title">Native Account</div>
+        <div class="text--title">{{ $t('assets.nativeAccount') }}</div>
         <ul>
           <li>
-            If you already have an account ID that is created on Polkadot.js app, this account
-            unification information will override.
+            {{ $t('wallet.unifiedAccount.override') }}
           </li>
         </ul>
       </div>
@@ -41,10 +38,12 @@
       <div>
         <input v-model="isChecked" type="checkbox" class="checkbox" />
       </div>
-      <div>I have read all and I would like to proceed to create a unified account please.</div>
+      <div>{{ $t('wallet.unifiedAccount.agreeToProceed') }}</div>
     </div>
     <div>
-      <astar-button class="btn" :disabled="!isChecked" @click="next()">Next</astar-button>
+      <astar-button class="btn" :disabled="!isChecked" @click="next()">
+        {{ $t('next') }}
+      </astar-button>
     </div>
   </div>
 </template>

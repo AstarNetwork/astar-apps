@@ -3,10 +3,8 @@
     <div class="wrapper--completed">
       <p class="emoji--completed">🍾</p>
       <p>
-        Congrats!!<br />
-        Your account is unified!
+        {{ $t('wallet.unifiedAccount.congrats') }}
       </p>
-      <p>No need EVM deposit anymore!</p>
     </div>
   </div>
 </template>

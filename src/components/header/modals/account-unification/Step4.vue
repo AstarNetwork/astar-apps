@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account-unification">
-    <p class="text">Your balance in the EVM account are going to be transferred.</p>
+    <p class="text">{{ $t('wallet.unifiedAccount.balanceTransferred') }}</p>
     <div class="list--evm-tokens">
       <div v-for="t in transferXc20Tokens" :key="t.assetId" class="row">
         <div class="column--icon">
@@ -30,7 +30,9 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">Transfer</astar-button>
+      <astar-button class="btn" @click="next()">
+        {{ $t('assets.transfer') }}
+      </astar-button>
     </div>
   </div>
 </template>

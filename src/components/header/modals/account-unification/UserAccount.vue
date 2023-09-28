@@ -2,6 +2,7 @@
   <div>
     <!-- unified -->
     <div v-if="isAccountUnified">
+      <!-- TODO: add unified account info -->
       <div class="text--account-name">
         <img :src="icon_img.astar_gradient" class="text--account-name__icon" />
         <div>Unified Account Name</div>
@@ -11,14 +12,14 @@
         <div class="row--wallet">evm wallet</div>
       </div>
       <div class="btn--edit">
-        <astar-button class="btn">Edit</astar-button>
+        <astar-button class="btn">{{ $t('dappStaking.edit') }}</astar-button>
       </div>
     </div>
 
     <!-- not unified -->
     <div v-else>
       <div class="text--account-name">
-        {{ isH160 ? 'Astar EVM' : 'Astar Native' }}
+        {{ $t(isH160 ? 'wallet.unifiedAccount.astarEvm' : 'wallet.unifiedAccount.astarNative') }}
       </div>
 
       <div class="box--wallet-list">
@@ -57,7 +58,7 @@
     <!-- Introduce Account Unification -->
     <div v-if="!isAccountUnified" class="wrapper--introduce-au">
       <div class="text--introduce-au">
-        <span>Introducing new technology, unified account</span>
+        <span>{{ $t('wallet.unifiedAccount.introduce') }}</span>
       </div>
       <astar-button class="btn" :disabled="currentAccount === ''" @click="next()">
         Create an Unified Account

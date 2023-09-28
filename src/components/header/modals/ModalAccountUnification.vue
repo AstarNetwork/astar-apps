@@ -56,6 +56,7 @@ import { useStore } from 'src/store';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useAccountUnification, useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
 import Step1Native from 'src/components/header/modals/account-unification/Step1Native.vue';
 import Step1Evm from 'src/components/header/modals/account-unification/Step1Evm.vue';
@@ -139,25 +140,27 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
+    const { t } = useI18n();
+
     const modalTitle = computed((): string => {
       if (currentStep.value === 1) {
         if (isH160.value) {
-          return 'Create Unified Account';
+          return t('wallet.unifiedAccount.create');
         } else {
-          return 'Please read carefully';
+          return t('wallet.unifiedAccount.readCarefully');
         }
       } else if (currentStep.value === 2) {
-        return 'Create Unified Account : 1';
+        return `${t('wallet.unifiedAccount.create')} : 1`;
       } else if (currentStep.value === 3) {
-        return 'Create Unified Account : 2';
+        return `${t('wallet.unifiedAccount.create')} : 2`;
       } else if (currentStep.value === 4) {
-        return 'Create Unified Account : 3';
+        return `${t('wallet.unifiedAccount.create')} : 3`;
       } else if (currentStep.value === 5) {
-        return 'Create Unified Account : 4';
+        return `${t('wallet.unifiedAccount.create')} : 4`;
       } else if (currentStep.value === 6) {
         return '';
       } else {
-        return 'Your Account';
+        return t('wallet.unifiedAccount.yourAccount');
       }
     });
 

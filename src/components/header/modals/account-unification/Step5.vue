@@ -1,8 +1,7 @@
 <template>
   <div class="wrapper--account-unification">
     <p class="text">
-      Now xcTokens are sent and you are ready to unify both accounts! Please check below before
-      confirm.
+      {{ $t('wallet.unifiedAccount.readyToUnify') }}
     </p>
 
     <div class="wrapper--unified-account">
@@ -32,7 +31,9 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">Submit</astar-button>
+      <astar-button class="btn" @click="next()">
+        {{ $t('dappStaking.modals.submit') }}
+      </astar-button>
     </div>
   </div>
 </template>

@@ -4,10 +4,12 @@
     <div class="box--metamask">
       <div class="row--metamask">
         <img :src="icon_img.metamask" class="row--metamask__icon" />
-        <div>Metamask</div>
+        <div>{{ $t('metamask') }}</div>
         <div v-if="selectedEvmAddress" class="row--metamask__address">{{ selectedEvmAddress }}</div>
       </div>
-      <div v-if="selectedEvmAddress && isConnectedNetwork" class="btn--connected">Connected</div>
+      <div v-if="selectedEvmAddress && isConnectedNetwork" class="btn--connected">
+        {{ $t('connected') }}
+      </div>
       <div v-else class="btn--connect">
         <astar-button class="btn" @click="setWeb3()">{{ $t('connect') }}</astar-button>
       </div>
@@ -19,13 +21,12 @@
         <astar-icon-warning />
       </div>
       <p>
-        You have some Staking balance. Those staked token will not be merged to the unified account.
-        Please unstake first.
+        {{ $t('wallet.unifiedAccount.haveStakingBalance') }}
       </p>
     </div>
 
     <div v-if="isStaking && !isLoadingDappStaking">
-      <astar-button class="btn btn--close" @click="closeModal()">Close</astar-button>
+      <astar-button class="btn btn--close" @click="closeModal()">{{ $t('close') }}</astar-button>
     </div>
     <div v-else>
       <astar-button
@@ -34,7 +35,7 @@
         :disabled="!selectedEvmAddress || !isConnectedNetwork"
         @click="next()"
       >
-        Next
+        {{ $t('next') }}
       </astar-button>
       <astar-button v-else class="btn" :disabled="true"> Loading... </astar-button>
     </div>

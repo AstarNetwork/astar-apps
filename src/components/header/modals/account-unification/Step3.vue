@@ -3,7 +3,7 @@
     <div class="wrapper--au-details">
       <!-- EVM Account -->
       <div>
-        <div class="label">EVM Account</div>
+        <div class="label">{{ $t('assets.evmAccount') }}</div>
         <div class="box--evm-account">
           <img :src="icon_img.metamask" class="icon" />
           <span>{{ selectedEvmAddress }}</span>
@@ -12,12 +12,12 @@
 
       <!-- Account Name -->
       <div>
-        <div class="label">Account Name</div>
+        <div class="label">{{ $t('wallet.unifiedAccount.unifiedAccountName') }}</div>
         <div>
           <input
             class="box--input-form"
             type="text"
-            placeholder="Unified Account Name"
+            :placeholder="$t('wallet.unifiedAccount.unifiedAccountName')"
             @input="(event) => setAccountName(event)"
           />
         </div>
