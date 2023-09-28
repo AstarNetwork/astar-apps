@@ -4,9 +4,9 @@
 .wrapper--account-unification {
   display: flex;
   flex-direction: column;
-  gap: 48px;
-  @media (max-width: $sm) {
-    gap: 32px;
+  gap: 32px;
+  @media (min-width: $sm) {
+    gap: 48px;
   }
 }
 
@@ -63,12 +63,12 @@
 }
 
 .row--wallet {
-  padding: 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  @media (max-width: $sm) {
-    padding: 16px;
+  @media (min-width: $sm) {
+    padding: 20px;
   }
   .column--icon {
     flex-shrink: 0;
@@ -91,12 +91,12 @@
 .wrapper--introduce-au {
   .text--introduce-au {
     max-width: 358px;
-    margin: 64px auto;
+    margin: 48px auto;
     font-size: 30px;
     line-height: 1.25;
     font-weight: 800;
-    @media (max-width: $sm) {
-      margin: 48px auto;
+    @media (min-width: $sm) {
+      margin: 64px auto;
     }
     span {
       background: linear-gradient(
@@ -113,20 +113,21 @@
   }
 }
 
-.btn--edit{
+.btn--edit {
   margin-top: 24px;
 }
 
 .wrapper--help {
   background-color: rgba($astar-blue, 3%);
   margin-top: 24px;
-  padding: 24px 16px;
+  padding: 16px;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  @media (max-width: $sm) {
-    padding: 16px;
+  @media (min-width: $sm) {
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
   a {
     color: $astar-blue;
@@ -169,9 +170,9 @@
   border-radius: 12px;
   font-weight: 600;
   .row--metamask {
-    padding: 24px 0;
-    @media (max-width: $sm) {
-      padding: 20px 0;
+    padding: 20px 0;
+    @media (min-width: $sm) {
+      padding: 24px 0;
     }
     .row--metamask__icon {
       margin-left: auto;
@@ -182,7 +183,8 @@
       width: 48px;
     }
     .row--metamask__address {
-      margin-top: 8px;
+      margin: 8px 20px 0 20px;
+      word-break: break-all;
     }
   }
   .btn--connected {
@@ -191,9 +193,11 @@
     color: white;
   }
   .btn--connect {
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 24px;
+    padding: 0 20px 24px 20px;
+    @media (min-width: $sm) {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
   }
 }
 .body--dark {
@@ -238,7 +242,7 @@
     margin-bottom: 8px;
     font-weight: 600;
   }
-  input[type='text'],
+  .box--input-form,
   .box--evm-account,
   .box--account-icon {
     background-color: $gray-1;
@@ -246,12 +250,13 @@
     width: 100%;
     border-radius: 12px;
     border: solid 1px transparent;
+    word-break: break-all;
   }
-  input[type='text'] {
-    padding: 24px 20px;
-    @media (max-width: $sm) {
-      padding-left: 16px;
-      padding-right: 16px;
+  .box--input-form {
+    padding: 24px 16px;
+    @media (min-width: $sm) {
+      padding-left: 20px;
+      padding-right: 20px;
     }
     &::placeholder {
       color: $gray-3 !important;
@@ -262,10 +267,10 @@
     font-weight: 600;
     display: flex;
     align-items: center;
-    padding: 20px;
-    @media (max-width: $sm) {
-      padding-left: 16px;
-      padding-right: 16px;
+    padding: 20px 16px;
+    @media (min-width: $sm) {
+      padding-left: 20px;
+      padding-right: 20px;
     }
     .icon {
       margin-right: 12px;
