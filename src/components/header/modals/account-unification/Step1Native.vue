@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account-unification">
-    <div class="instructions">
+    <div class="wrapper--instructions">
       <div>
         <div class="text--title">General</div>
         <ul>
@@ -37,9 +37,9 @@
       </div>
     </div>
 
-    <div class="warning-check">
+    <div class="box--warning">
       <div>
-        <input v-model="isChecked" type="checkbox" />
+        <input v-model="isChecked" type="checkbox" class="checkbox" />
       </div>
       <div>I have read all and I would like to proceed to create a unified account please.</div>
     </div>

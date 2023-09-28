@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--account-unification">
     <p class="text">Your balance in the EVM account are going to be transferred.</p>
-    <div class="evm-token-list">
+    <div class="list--evm-tokens">
       <div v-for="t in transferXc20Tokens" :key="t.assetId" class="row">
         <div class="column--icon">
           <jazzicon

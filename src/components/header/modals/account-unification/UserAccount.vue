@@ -2,37 +2,37 @@
   <div>
     <!-- unified -->
     <div v-if="isAccountUnified">
-      <div class="account-name">
-        <img :src="icon_img.astar_gradient" class="icon" />
+      <div class="text--account-name">
+        <img :src="icon_img.astar_gradient" class="text--account-name__icon" />
         <div>Unified Account Name</div>
       </div>
-      <div class="wallet-info__wrapper">
-        <div class="wallet-info">native wallet</div>
-        <div class="wallet-info">evm wallet</div>
+      <div class="box--wallet-list">
+        <div class="row--wallet">native wallet</div>
+        <div class="row--wallet">evm wallet</div>
       </div>
-      <div>
+      <div class="btn--edit">
         <astar-button class="btn">Edit</astar-button>
       </div>
     </div>
 
     <!-- not unified -->
     <div v-else>
-      <div class="account-name">
+      <div class="text--account-name">
         {{ isH160 ? 'Astar EVM' : 'Astar Native' }}
       </div>
 
-      <div class="wallet-info__wrapper">
-        <div class="wallet-info">
-          <div class="wallet-info__icon">
-            <img v-if="iconWallet" :src="iconWallet" alt="wallet-icon" />
+      <div class="box--wallet-list">
+        <div class="row--wallet">
+          <div class="column--icon">
+            <img v-if="iconWallet" :src="iconWallet" alt="wallet icon" />
           </div>
-          <div class="wallet-info__address">
+          <div class="column--address">
             <div class="text--accent">
               {{ currentAccount ? currentAccountName : 'My Wallet' }}
             </div>
             <div>{{ getShortenAddress(currentAccount) }}</div>
           </div>
-          <div class="wallet-info__actions">
+          <div class="column--actions">
             <div>
               <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
                 <astar-icon-copy />
@@ -55,8 +55,8 @@
     </div>
 
     <!-- Introduce Account Unification -->
-    <div v-if="!isAccountUnified" class="introduce-au">
-      <div class="introduce-au__text">
+    <div v-if="!isAccountUnified" class="wrapper--introduce-au">
+      <div class="text--introduce-au">
         <span>Introducing new technology, unified account</span>
       </div>
       <astar-button class="btn" :disabled="currentAccount === ''" @click="next()">

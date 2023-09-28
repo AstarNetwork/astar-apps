@@ -5,24 +5,27 @@
       confirm.
     </p>
 
-    <div class="created-unified-account">
+    <div class="wrapper--unified-account">
       <div>
         <!-- Todo: check the account's NFT image -->
-        <!-- <img :src="icon_img.astar_gradient" class="icon" /> -->
-        <jazzicon :address="currentAccount" :diameter="80" class="icon" />
+        <jazzicon :address="currentAccount" :diameter="80" class="icon--unified-account" />
       </div>
-      <div class="name">{{ accountName }}</div>
-      <div>
-        <div class="native-account">
-          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
-          <div class="column--account">
-            <span class="text--title">{{ currentAccountName }}</span>
-            <span class="text--title">{{ getShortenAddress(currentAccount, 10) }}</span>
+      <div class="text--unified-account">{{ accountName }}</div>
+      <div class="box--wallet-list">
+        <div class="row--wallet">
+          <div class="column--icon">
+            <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+          </div>
+          <div class="column--address">
+            <div class="text--accent">{{ currentAccountName }}</div>
+            <div>{{ getShortenAddress(currentAccount, 10) }}</div>
           </div>
         </div>
-        <div class="evm-account">
-          <img width="24" :src="require('/src/assets/img/metamask.png')" alt="wallet-icon" />
-          <span class="text--title">{{ getShortenAddress(selectedEvmAddress, 10) }}</span>
+        <div class="row--wallet">
+          <div class="column--icon">
+            <img width="24" :src="require('/src/assets/img/metamask.png')" alt="wallet-icon" />
+          </div>
+          <div>{{ getShortenAddress(selectedEvmAddress, 10) }}</div>
         </div>
       </div>
     </div>

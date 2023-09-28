@@ -16,7 +16,7 @@
   font-weight: 600;
   height: 52px;
   border-radius: 9999px;
-  &.close {
+  &.btn--close {
     background: transparent;
     color: $navy-1;
     border: solid 1px $navy-1;
@@ -24,21 +24,22 @@
 }
 .body--dark {
   .btn {
-    &.close {
+    &.btn--close {
       color: $gray-3;
       border-color: $gray-4;
     }
   }
 }
 
-.account-name {
+.text--account-name {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
-  .icon {
+  margin-bottom: 8px;
+  .text--account-name__icon {
     margin-right: 12px;
     height: 32px;
     width: 32px;
@@ -48,21 +49,21 @@
   }
 }
 
-.wallet-info__wrapper {
+.box--wallet-list {
   background-color: $gray-1;
-  margin: 8px 0 24px 0;
+  // margin: 8px 0 24px 0;
   border-radius: 12px;
   text-align: left;
   border: solid 1px transparent;
 }
 .body--dark {
-  .wallet-info__wrapper {
+  .box--wallet-list {
     background-color: $navy-2;
     border-color: $gray-4;
   }
 }
 
-.wallet-info {
+.row--wallet {
   padding: 20px;
   display: flex;
   align-items: center;
@@ -70,7 +71,7 @@
   @media (max-width: $sm) {
     padding: 16px;
   }
-  .wallet-info__icon {
+  .column--icon {
     flex-shrink: 0;
     img {
       height: 32px;
@@ -79,17 +80,17 @@
       object-fit: cover;
     }
   }
-  .wallet-info__address {
+  .column--address {
     flex: 1 1 0%;
   }
-  .wallet-info__actions {
+  .column--actions {
     display: flex;
     gap: 12px;
   }
 }
 
-.introduce-au {
-  .introduce-au__text {
+.wrapper--introduce-au {
+  .text--introduce-au {
     max-width: 358px;
     margin: 64px auto;
     font-size: 30px;
@@ -111,6 +112,10 @@
       background-clip: text;
     }
   }
+}
+
+.btn--edit{
+  margin-top: 24px;
 }
 
 .wrapper--help {
@@ -158,40 +163,18 @@
   }
 }
 
-.warning-check {
-  border: solid 1px $warning-red;
-  background-color: rgba($warning-red, 20%);
-  color: $navy-1;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: left;
-  display: flex;
-  align-items: flex-start;
-  input[type='checkbox'] {
-    height: 16px;
-    width: 16px;
-    cursor: pointer;
-    margin-right: 12px;
-  }
-}
-.body--dark {
-  .warning-check {
-    color: white;
-  }
-}
-
-.metamask {
+.box--metamask {
   background-color: $gray-1;
   border: solid 1px transparent;
   overflow: hidden;
   border-radius: 12px;
   font-weight: 600;
-  .metamask-info {
+  .row--metamask {
     padding: 24px 0;
     @media (max-width: $sm) {
       padding: 20px 0;
     }
-    .icon {
+    .row--metamask__icon {
       margin-left: auto;
       margin-right: auto;
       margin-top: 8px;
@@ -199,50 +182,55 @@
       height: 48px;
       width: 48px;
     }
-    .address {
+    .row--metamask__address {
       margin-top: 8px;
     }
   }
-  .connected {
+  .btn--connected {
     background-color: $astar-blue;
     padding: 4px;
     color: white;
   }
-  .connect {
+  .btn--connect {
     padding-left: 40px;
     padding-right: 40px;
     padding-bottom: 24px;
   }
 }
 .body--dark {
-  .metamask {
+  .box--metamask {
     background-color: $navy-2;
     border-color: $gray-4;
   }
 }
 
-.warning {
+.box--warning {
   border: solid 1px $warning-red;
   background-color: rgba($warning-red, 20%);
   color: $navy-1;
-  margin-bottom: 24px;
   display: flex;
   align-items: flex-start;
   border-radius: 12px;
   padding: 16px;
   text-align: left;
-  .icon-warning {
+  .checkbox {
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+    margin-right: 12px;
+  }
+  .icon--warning {
     color: $warning-red;
     margin-right: 12px;
   }
 }
 .body--dark {
-  .warning {
+  .box--warning {
     color: white;
   }
 }
 
-.unified-account-details {
+.wrapper--au-details {
   text-align: left;
   gap: 32px;
   display: flex;
@@ -252,8 +240,8 @@
     font-weight: 600;
   }
   input[type='text'],
-  .evm-account,
-  .account-icon {
+  .box--evm-account,
+  .box--account-icon {
     background-color: $gray-1;
     color: $navy-1;
     width: 100%;
@@ -270,8 +258,8 @@
       color: $gray-3 !important;
     }
   }
-  .evm-account,
-  .account-icon {
+  .box--evm-account,
+  .box--account-icon {
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -289,8 +277,8 @@
       object-fit: cover;
     }
   }
-  input[type='text'],
-  .account-icon {
+  .box--input-form,
+  .box--account-icon {
     &:hover,
     &:focus {
       border-color: $astar-blue;
@@ -299,21 +287,21 @@
   }
 }
 .body--dark {
-  .unified-account-details {
-    input[type='text'],
-    .evm-account,
-    .account-icon {
+  .wrapper--au-details {
+    .box--input-form,
+    .box--evm-account,
+    .box--account-icon {
       background-color: $navy-2;
       color: white;
       border-color: $gray-4;
     }
-    input[type='text'] {
+    .box--input-form {
       &::placeholder {
         color: $gray-4 !important;
       }
     }
-    input[type='text'],
-    .account-icon {
+    .box--input-form,
+    .box--account-icon {
       &:hover,
       &:focus {
         border-color: $astar-blue-dark;
@@ -327,7 +315,7 @@
   text-align: left;
 }
 
-.evm-token-list {
+.list--evm-tokens {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -366,8 +354,8 @@
   }
 }
 
-.created-unified-account {
-  .icon {
+.wrapper--unified-account {
+  .icon--unified-account {
     margin-left: auto;
     margin-right: auto;
     height: 80px;
@@ -375,38 +363,21 @@
     border-radius: 9999px;
     object-fit: cover;
   }
-  .name {
+  .text--unified-account {
     margin-top: 16px;
     margin-bottom: 16px;
     font-size: 24px;
     font-weight: 700;
   }
-  .native-account,
-  .evm-account {
-    background-color: $gray-1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 14px;
-    padding: 24px;
-  }
-}
-.body--dark {
-  .created-unified-account {
-    .native-account,
-    .evm-account {
-      background-color: $navy-2;
-    }
-  }
 }
 
-.completed {
+.wrapper--completed {
   font-size: 20px;
   font-weight: 700;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  .emoji {
+  .emoji--completed {
     font-size: 48px;
   }
 }
@@ -449,7 +420,7 @@
   align-items: flex-start;
 }
 
-.instructions {
+.wrapper--instructions {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -464,14 +435,14 @@
   }
 }
 .body--dark {
-  .instructions {
+  .wrapper--instructions {
     strong {
       color: $astar-blue-dark;
     }
   }
 }
 
-.info--create-unified-account {
+.box--info {
   border: solid 1px $astar-blue;
   background-color: rgba($astar-blue, 10%);
   border-radius: 6px;
@@ -479,7 +450,7 @@
   font-weight: 600;
 }
 .body--dark {
-  .info--create-unified-account {
+  .box--info {
     background-color: rgba($astar-blue, 20%);
   }
 }

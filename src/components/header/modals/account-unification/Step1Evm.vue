@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="info--create-unified-account">
+    <div class="box--info">
       To create an unified account, both Substrate and EVM wallet extension are required and
       currently not possible from mobile apps.
     </div>
@@ -11,8 +11,7 @@
         Unified account is owned by an Astar Native account. Please connect with a desired address
         and create an account.
       </p>
-      <!-- TODO: please add a function to open a select wallet modal -->
-      <astar-button class="btn">Select a wallet</astar-button>
+      <astar-button class="btn" @click="handleBack()">Select a wallet</astar-button>
     </div>
 
     <div class="box box--not-have">
@@ -36,7 +35,12 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {},
-
+  props: {
+    handleBack: {
+      type: Function,
+      required: true,
+    },
+  },
   setup() {
     return {};
   },

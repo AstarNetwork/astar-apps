@@ -9,7 +9,7 @@
   >
     <div class="wrapper--modal-account">
       <div v-if="currentStep === 1">
-        <step1-evm v-if="isH160" />
+        <step1-evm v-if="isH160" :handle-back="backModal" />
         <step1-native v-else @next="updateSteps(2)" />
       </div>
       <div v-else-if="currentStep === 2">

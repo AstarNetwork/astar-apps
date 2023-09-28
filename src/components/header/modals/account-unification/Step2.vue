@@ -1,21 +1,21 @@
 <template>
   <div class="wrapper--account-unification">
     <!-- Connect to metamask -->
-    <div class="metamask">
-      <div class="metamask-info">
-        <img :src="icon_img.metamask" class="icon" />
+    <div class="box--metamask">
+      <div class="row--metamask">
+        <img :src="icon_img.metamask" class="row--metamask__icon" />
         <div>Metamask</div>
-        <div v-if="selectedEvmAddress" class="address">{{ selectedEvmAddress }}</div>
+        <div v-if="selectedEvmAddress" class="row--metamask__address">{{ selectedEvmAddress }}</div>
       </div>
-      <div v-if="selectedEvmAddress && isConnectedNetwork" class="connected">Connected</div>
-      <div v-else class="connect">
+      <div v-if="selectedEvmAddress && isConnectedNetwork" class="btn--connected">Connected</div>
+      <div v-else class="btn--connect">
         <astar-button class="btn" @click="setWeb3()">{{ $t('connect') }}</astar-button>
       </div>
     </div>
 
     <!-- Staking balance warning -->
-    <div v-if="isStaking && !isLoadingDappStaking" class="warning">
-      <div class="icon-warning">
+    <div v-if="isStaking && !isLoadingDappStaking" class="box--warning">
+      <div class="icon--warning">
         <astar-icon-warning />
       </div>
       <p>
@@ -25,7 +25,7 @@
     </div>
 
     <div v-if="isStaking && !isLoadingDappStaking">
-      <astar-button class="btn close" @click="closeModal()">Close</astar-button>
+      <astar-button class="btn btn--close" @click="closeModal()">Close</astar-button>
     </div>
     <div v-else>
       <astar-button

@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper--account-unification">
-    <div class="unified-account-details">
+    <div class="wrapper--au-details">
       <!-- EVM Account -->
       <div>
         <div class="label">EVM Account</div>
-        <div class="evm-account">
+        <div class="box--evm-account">
           <img :src="icon_img.metamask" class="icon" />
           <span>{{ selectedEvmAddress }}</span>
         </div>
@@ -15,6 +15,7 @@
         <div class="label">Account Name</div>
         <div>
           <input
+            class="box--input-form"
             type="text"
             placeholder="Unified Account Name"
             @input="(event) => setAccountName(event)"
@@ -28,8 +29,7 @@
           Account icon (EVM NFT can only be selected after creating the account)
         </div>
         <!-- TODO: open a select NFT modal -->
-        <button type="button" class="account-icon">
-          <!-- <img :src="icon_img.astar_gradient" class="icon" /> -->
+        <button type="button" class="box--account-icon">
           <jazzicon :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>

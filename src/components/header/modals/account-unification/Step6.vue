@@ -1,7 +1,7 @@
 <template>
-  <div class="tw-space-y-8">
-    <div class="completed">
-      <p class="emoji">🍾</p>
+  <div class="wrapper--account-unification">
+    <div class="wrapper--completed">
+      <p class="emoji--completed">🍾</p>
       <p>
         Congrats!!<br />
         Your account is unified!
