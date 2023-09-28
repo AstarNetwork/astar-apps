@@ -5,16 +5,16 @@
       <div class="metamask-info">
         <img :src="icon_img.metamask" class="icon" />
         <div>Metamask</div>
-        <div v-if="isConnected" class="address">0x111122223333</div>
+        <div v-if="selectedEvmAddress" class="address">{{ selectedEvmAddress }}</div>
       </div>
-      <div v-if="isConnected" class="connected">Connected</div>
+      <div v-if="selectedEvmAddress && isConnectedNetwork" class="connected">Connected</div>
       <div v-else class="connect">
-        <astar-button class="btn">{{ $t('connect') }}</astar-button>
+        <astar-button class="btn" @click="setWeb3()">{{ $t('connect') }}</astar-button>
       </div>
     </div>
 
     <!-- Staking balance warning -->
-    <div v-if="stakingBalance" class="warning">
+    <div v-if="isStaking && !isLoadingDappStaking" class="warning">
       <div class="icon-warning">
         <astar-icon-warning />
       </div>
@@ -24,13 +24,19 @@
       </p>
     </div>
 
-    <!-- Actions -->
-    <div v-if="stakingBalance">
-      <!-- TODO: please add a function to close modal -->
-      <astar-button class="btn close">Close</astar-button>
+    <div v-if="isStaking && !isLoadingDappStaking">
+      <astar-button class="btn close" @click="closeModal()">Close</astar-button>
     </div>
     <div v-else>
-      <astar-button class="btn" :disabled="!isConnected" @click="next()">Next</astar-button>
+      <astar-button
+        v-if="!isLoadingDappStaking"
+        class="btn"
+        :disabled="!selectedEvmAddress || !isConnectedNetwork"
+        @click="next()"
+      >
+        Next
+      </astar-button>
+      <astar-button v-else class="btn" :disabled="true"> Loading... </astar-button>
     </div>
   </div>
 </template>
@@ -40,22 +46,43 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {},
+  props: {
+    selectedEvmAddress: {
+      type: String,
+      required: true,
+    },
+    isConnectedNetwork: {
+      type: Boolean,
+      required: true,
+    },
+    isStaking: {
+      type: Boolean,
+      required: true,
+    },
+    isLoadingDappStaking: {
+      type: Boolean,
+      required: true,
+    },
+    setWeb3: {
+      type: Function,
+      required: true,
+    },
+    closeModal: {
+      type: Function,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
-    const next = () => {
+    const next = (): void => {
       emit('next');
     };
-
-    const isConnected = ref<boolean>(true);
-    const stakingBalance = ref<boolean>(false);
 
     const icon_img = {
       metamask: require('/src/assets/img/metamask.png'),
     };
 
     return {
-      isConnected,
-      stakingBalance,
       icon_img,
       next,
     };

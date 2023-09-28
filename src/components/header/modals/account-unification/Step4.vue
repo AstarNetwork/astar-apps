@@ -2,30 +2,28 @@
   <div class="wrapper--account-unification">
     <p class="text">Your balance in the EVM account are going to be transferred.</p>
     <div class="evm-token-list">
-      <div class="row">
+      <div v-for="t in transferXc20Tokens" :key="t.assetId" class="row">
         <div class="column--icon">
-          <img :src="icon_img.astar_gradient" />
+          <jazzicon
+            v-if="t.tokenImage.includes('custom-token')"
+            :address="t.assetId"
+            :diameter="24"
+          />
+          <img v-else :src="t.tokenImage" alt="logo" />
         </div>
         <div class="column--name">
-          <span class="symbol">DOT</span>
-          <span class="name">Polkadot</span>
+          <span class="symbol">{{ t.symbol }}</span>
+          <span class="name">{{ t.name }}</span>
         </div>
         <div class="column--balance">
-          <span class="token">2,000,000.000 DOT</span>
-          <span class="usd">2,000,000.000 USD</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="column--icon">
-          <img :src="icon_img.astar_gradient" />
-        </div>
-        <div class="column--name">
-          <span class="symbol">DOT</span>
-          <span class="name">Polkadot</span>
-        </div>
-        <div class="column--balance">
-          <span class="token">2,000,000.000 DOT</span>
-          <span class="usd">2,000,000.000 USD</span>
+          <span class="token">
+            {{
+              $t('amountToken', {
+                amount: t.formattedBalance,
+                token: t.symbol,
+              })
+            }}
+          </span>
         </div>
       </div>
     </div>
@@ -38,22 +36,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { TransferXc20Token } from 'src/hooks';
+import { defineComponent, PropType } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
-  components: {},
+  components: { [Jazzicon.name]: Jazzicon },
+  props: {
+    transferXc20Tokens: {
+      type: Object as PropType<TransferXc20Token[]>,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {
       emit('next');
     };
 
-    const icon_img = {
-      astar_gradient: require('/src/assets/img/astar_icon.svg'),
-    };
-
     return {
-      icon_img,
       next,
     };
   },

@@ -13,16 +13,34 @@
         <step1-native v-else @next="updateSteps(2)" />
       </div>
       <div v-else-if="currentStep === 2">
-        <step2 @next="updateSteps(3)" />
+        <step2
+          :selected-evm-address="selectedEvmAddress"
+          :is-connected-network="isConnectedNetwork"
+          :is-staking="isStaking"
+          :is-loading-dapp-staking="isLoadingDappStaking"
+          :set-web3="setWeb3"
+          :close-modal="closeModal"
+          @next="updateSteps(3)"
+        />
       </div>
       <div v-else-if="currentStep === 3">
-        <step3 @next="updateSteps(4)" />
+        <step3
+          :account-name="accountName"
+          :set-account-name="setAccountName"
+          :selected-evm-address="selectedEvmAddress"
+          :is-fetching-xc20-tokens="isFetchingXc20Tokens"
+          @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
+        />
       </div>
       <div v-else-if="currentStep === 4">
-        <step4 @next="updateSteps(5)" />
+        <step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
       </div>
       <div v-else-if="currentStep === 5">
-        <step5 @next="updateSteps(6)" />
+        <step5
+          :account-name="accountName"
+          :selected-evm-address="selectedEvmAddress"
+          @next="updateSteps(6)"
+        />
       </div>
       <div v-else-if="currentStep === 6">
         <step6 />
@@ -36,7 +54,7 @@
 <script lang="ts">
 import { useStore } from 'src/store';
 import { wait } from '@astar-network/astar-sdk-core';
-import { useBreakpoints } from 'src/hooks';
+import { useAccountUnification, useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
 import Step1Native from 'src/components/header/modals/account-unification/Step1Native.vue';
@@ -73,6 +91,18 @@ export default defineComponent({
     const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
     const currentStep = ref<number>(0);
+
+    const {
+      selectedEvmAddress,
+      isConnectedNetwork,
+      isStaking,
+      transferXc20Tokens,
+      isFetchingXc20Tokens,
+      isLoadingDappStaking,
+      accountName,
+      setAccountName,
+      setWeb3,
+    } = useAccountUnification();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -138,9 +168,18 @@ export default defineComponent({
       currentStep,
       modalTitle,
       isH160,
+      selectedEvmAddress,
+      isConnectedNetwork,
+      isStaking,
+      transferXc20Tokens,
+      isFetchingXc20Tokens,
+      isLoadingDappStaking,
+      accountName,
       closeModal,
       backModal,
       updateSteps,
+      setWeb3,
+      setAccountName,
     };
   },
 });

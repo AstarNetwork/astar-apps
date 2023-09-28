@@ -6,14 +6,20 @@
         <div class="label">EVM Account</div>
         <div class="evm-account">
           <img :src="icon_img.metamask" class="icon" />
-          <span>0x111122223333</span>
+          <span>{{ selectedEvmAddress }}</span>
         </div>
       </div>
 
       <!-- Account Name -->
       <div>
         <div class="label">Account Name</div>
-        <div><input v-model="accountName" type="text" placeholder="Unified Account Name" /></div>
+        <div>
+          <input
+            type="text"
+            placeholder="Unified Account Name"
+            @input="(event) => setAccountName(event)"
+          />
+        </div>
       </div>
 
       <!-- Account Icon -->
@@ -23,39 +29,64 @@
         </div>
         <!-- TODO: open a select NFT modal -->
         <button type="button" class="account-icon">
-          <img :src="icon_img.astar_gradient" class="icon" />
+          <!-- <img :src="icon_img.astar_gradient" class="icon" /> -->
+          <jazzicon :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
     </div>
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" :disabled="accountName === ''" @click="next()">Next</astar-button>
+      <astar-button
+        class="btn"
+        :disabled="accountName === '' || isFetchingXc20Tokens"
+        @click="next()"
+        >Next</astar-button
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { useAccount } from 'src/hooks';
+import { defineComponent } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
-  components: {},
+  components: { [Jazzicon.name]: Jazzicon },
+  props: {
+    selectedEvmAddress: {
+      type: String,
+      required: true,
+    },
+    accountName: {
+      type: String,
+      required: true,
+    },
+    setAccountName: {
+      type: Function,
+      required: true,
+    },
+    isFetchingXc20Tokens: {
+      type: Boolean,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {
       emit('next');
     };
 
-    const accountName = ref<string>('');
+    const { currentAccount } = useAccount();
 
     const icon_img = {
-      astar_gradient: require('/src/assets/img/astar_icon.svg'),
       metamask: require('/src/assets/img/metamask.png'),
     };
 
     return {
-      accountName,
       icon_img,
+      currentAccount,
       next,
     };
   },
