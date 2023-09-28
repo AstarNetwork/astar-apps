@@ -2,7 +2,7 @@ import { $api } from 'boot/api';
 import { setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks/useAccount';
 import { useStore } from 'src/store';
-import { WatchCallback, computed, ref, watch, watchEffect } from 'vue';
+import { WatchCallback, computed, ref, watch } from 'vue';
 import Web3 from 'web3';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { get } from 'lodash-es';
@@ -26,7 +26,6 @@ import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { ethers } from 'ethers';
 
-// const provider = window.ethereum;
 const provider = get(window, 'ethereum');
 
 export interface TransferXc20Token {
@@ -79,20 +78,13 @@ export const useAccountUnification = () => {
     isConnectedNetwork.value = provider.chainId === chainId;
   };
 
-  const updateEvmProvider: WatchCallback<[string, Web3?]> = (
-    [selectedEvmAddress, web3],
-    _,
-    registerCleanup
-  ) => {
+  const updateEvmProvider: WatchCallback<[Web3?]> = ([web3], _, registerCleanup) => {
     if (!currentAccount || !web3 || !provider || typeof window.ethereum === 'undefined') {
       return;
     }
 
-    const handleAccountsChanged = async (accounts: string[]): Promise<void> => {
-      const account = await getSelectedEvmAddress(web3);
-      if (account !== selectedEvmAddress) {
-        await setWeb3();
-      }
+    const handleAccountsChanged = async (): Promise<void> => {
+      await setWeb3();
     };
 
     const handleChainChanged = () => {
@@ -183,7 +175,6 @@ export const useAccountUnification = () => {
     const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 transactions
     try {
       isFetchingXc20Tokens.value = true;
-      console.log('xcmAssets.value', xcmAssets.value);
       if (!currentAccount.value || !xcmAssets.value.assets.length || !web3.value) {
         return;
       }
@@ -269,18 +260,10 @@ export const useAccountUnification = () => {
     }
   };
 
-  watch([currentAccount], setWeb3, { immediate: true });
-  watch([selectedEvmAddress, web3], updateEvmProvider);
+  watch([currentAccount], setWeb3);
+  watch([web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
   watch([xcmAssets, web3], setTransferXc20CallData);
-
-  // Memo: delete it later
-  watchEffect(() => {
-    console.log('selectedEvmAddress', selectedEvmAddress.value);
-    console.log('isConnectedNetwork', isConnectedNetwork.value);
-    console.log('isStaking', isStaking.value);
-    console.log('accountName', accountName.value);
-  });
 
   return {
     selectedEvmAddress,
