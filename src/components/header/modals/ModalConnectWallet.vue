@@ -145,7 +145,7 @@ import {
   supportWallets,
 } from 'src/config/wallets';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { initiatePolkdatodSnap } from 'src/hooks/helper/snapUtils';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
@@ -184,7 +184,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount } = useAccount();
+    const { currentAccountName, disconnectAccount, isSnapEnabled } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
 
@@ -200,6 +200,9 @@ export default defineComponent({
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          if (it.source === SupportWallet.Snap) {
+            return isSnapEnabled.value ? it : undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {

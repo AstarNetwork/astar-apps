@@ -9,6 +9,8 @@ import {
 } from '@chainsafe/metamask-polkadot-adapter/build/utils';
 import type { UnitConfiguration } from '@chainsafe/metamask-polkadot-types';
 
+// Todo: move to Astar.js
+
 export type SnapNetworks = 'astar' | 'shiden' | 'shibuya';
 export interface SnapConfig {
   networkName: SnapNetworks;
