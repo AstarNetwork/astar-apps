@@ -133,23 +133,24 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
+import { initPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import { $api } from 'src/boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import {
+  SupportMultisig,
+  SupportWallet,
+  Wallet,
   supportAllWalletsObj,
   supportEvmWallets,
-  SupportWallet,
   supportWallets,
-  Wallet,
-  SupportMultisig,
 } from 'src/config/wallets';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { initiatePolkdatodSnap } from 'src/hooks/helper/snapUtils';
+import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
-
+import { PropType, computed, defineComponent, ref } from 'vue';
 export default defineComponent({
   props: {
     isModalConnectWallet: {
@@ -237,6 +238,14 @@ export default defineComponent({
     };
 
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      if (source === SupportWallet.Snap) {
+        const isSnapInstalled = await initiatePolkdatodSnap();
+        if (isSnapInstalled) {
+          await initPolkadotSnap();
+          useExtensions($api!!, store);
+          await getInjectedExtensions(true);
+        }
+      }
       await closeModal();
       props.setWalletModal(source);
     };

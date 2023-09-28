@@ -8,7 +8,6 @@ import {
   isPolkadotSnapInstalled,
 } from '@chainsafe/metamask-polkadot-adapter/build/utils';
 import type { UnitConfiguration } from '@chainsafe/metamask-polkadot-types';
-import { injectExtension } from '@polkadot/extension-inject';
 
 export type SnapNetworks = 'astar' | 'shiden' | 'shibuya';
 export interface SnapConfig {
@@ -91,6 +90,7 @@ export interface SnapInitializationResponse {
 export async function initiatePolkdatodSnap(): Promise<SnapInitializationResponse> {
   try {
     console.info('Attempting to connect to snap...');
+    // Todo: update network params
     const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'shibuya' }, snapId);
     console.info('Snap installed!');
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
