@@ -39,6 +39,7 @@
         <step5
           :account-name="accountName"
           :selected-evm-address="selectedEvmAddress"
+          :is-busy="isLoading"
           @next="updateSteps(6)"
         />
       </div>
@@ -93,6 +94,7 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const currentStep = ref<number>(0);
     const { currentAccount } = useAccount();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const {
       selectedEvmAddress,
@@ -193,6 +195,7 @@ export default defineComponent({
       isFetchingXc20Tokens,
       isLoadingDappStaking,
       accountName,
+      isLoading,
       closeModal,
       backModal,
       updateSteps,
