@@ -33,7 +33,12 @@
         />
       </div>
       <div v-else-if="currentStep === 4">
-        <step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
+        <step4
+          :transfer-xc20-tokens="transferXc20Tokens"
+          :handle-transfer-xc20-tokens="handleTransferXc20Tokens"
+          :is-sending-xc20-tokens="isSendingXc20Tokens"
+          @next="updateSteps(5)"
+        />
       </div>
       <div v-else-if="currentStep === 5">
         <step5
@@ -101,8 +106,10 @@ export default defineComponent({
       isFetchingXc20Tokens,
       isLoadingDappStaking,
       accountName,
+      isSendingXc20Tokens,
       setAccountName,
       setWeb3,
+      handleTransferXc20Tokens,
     } = useAccountUnification();
 
     const closeModal = async (): Promise<void> => {
@@ -178,11 +185,13 @@ export default defineComponent({
       isFetchingXc20Tokens,
       isLoadingDappStaking,
       accountName,
+      isSendingXc20Tokens,
       closeModal,
       backModal,
       updateSteps,
       setWeb3,
       setAccountName,
+      handleTransferXc20Tokens,
     };
   },
 });

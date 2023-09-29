@@ -437,6 +437,7 @@ export default {
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
+    syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
     manage: 'Manage',
