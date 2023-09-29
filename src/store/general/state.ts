@@ -31,8 +31,8 @@ export type EcdsaAccount = {
 };
 
 export type UnifiedAccount = {
-  SS58Address: string;
-  H160Address: string;
+  nativeAddress: string;
+  evmAddress: string;
 };
 
 export type ConnectionType = 'connected' | 'connecting' | 'offline';

@@ -13,7 +13,6 @@ import {
   IXvmRepository,
   IAssetsRepository,
   IPolkasafeRepository,
-  IAccountsRepository,
   IIdentityRepository,
   INftRepository,
   IAccountUnificationRepository,
@@ -28,7 +27,6 @@ import {
   EvmAssetsRepository,
   AssetsRepository,
   PolkasafeRepository,
-  AccountsRepository,
   NftRepository,
   AccountUnificationRepository,
 } from './repositories/implementations';
@@ -135,7 +133,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
-  container.addSingleton<IAccountsRepository>(AccountsRepository, Symbols.AccountsRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
   container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
   container.addSingleton<IAccountUnificationRepository>(
