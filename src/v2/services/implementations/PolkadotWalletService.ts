@@ -62,7 +62,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
     let result: string | null = null;
     try {
-      return new Promise<string>(async (resolve) => {
+      return new Promise<string>(async (resolve, reject) => {
         !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
@@ -139,6 +139,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               } catch (error) {
                 this.eventAggregator.publish(new BusyMessage(false));
                 unsub();
+                reject(error as Error);
               }
             }
           );

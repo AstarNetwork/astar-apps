@@ -54,7 +54,7 @@
 <script lang="ts">
 import { useStore } from 'src/store';
 import { wait } from '@astar-network/astar-sdk-core';
-import { useAccountUnification, useBreakpoints } from 'src/hooks';
+import { useAccount, useAccountUnification, useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
@@ -92,6 +92,7 @@ export default defineComponent({
     const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
     const currentStep = ref<number>(0);
+    const { currentAccount } = useAccount();
 
     const {
       selectedEvmAddress,
@@ -103,6 +104,7 @@ export default defineComponent({
       accountName,
       setAccountName,
       setWeb3,
+      unifyAccounts,
     } = useAccountUnification();
 
     const closeModal = async (): Promise<void> => {
@@ -133,7 +135,20 @@ export default defineComponent({
       window.removeEventListener('resize', onHeightChange);
     });
 
-    const updateSteps = (step: number): void => {
+    const updateSteps = async (step: number): Promise<void> => {
+      if (step === 6) {
+        // Make a call to unify accounts
+        const success = await unifyAccounts(
+          currentAccount.value,
+          selectedEvmAddress.value,
+          accountName.value
+        );
+
+        if (!success) {
+          return;
+        }
+      }
+
       currentStep.value = step;
     };
 
