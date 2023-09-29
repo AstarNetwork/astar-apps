@@ -31,7 +31,7 @@
     <!-- Action -->
     <div>
       <astar-button :disabled="isSendingXc20Tokens" class="btn" @click="transferTokens">
-        {{ isSendingXc20Tokens ? $t('assets.transfer') : $t('assets.syncing') }}
+        {{ isSendingXc20Tokens ? $t('assets.syncing') : $t('assets.transfer') }}
       </astar-button>
     </div>
   </div>
