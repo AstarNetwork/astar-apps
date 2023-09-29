@@ -43,6 +43,7 @@
       :connect-ethereum-wallet="connectEthereumWallet"
       :selected-wallet="selectedWallet"
       :open-polkasafe-modal="openPolkasafeModal"
+      :open-account-unification-modal="openAccountUnificationModal"
     />
 
     <modal-account
@@ -62,6 +63,11 @@
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     />
+    <modal-account-unification
+      v-if="modalAccountUnificationSelect"
+      v-model:isOpen="modalAccountUnificationSelect"
+      :open-select-modal="openSelectModal"
+    />
   </div>
 </template>
 
@@ -79,6 +85,7 @@ import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
+import ModalAccountUnification from 'src/components/header/modals/ModalAccountUnification.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
@@ -100,6 +107,7 @@ export default defineComponent({
     HeaderComp,
     TroubleHelp,
     ModalPolkasafe,
+    ModalAccountUnification,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -117,6 +125,7 @@ export default defineComponent({
       selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
+      modalAccountUnificationSelect,
       setCloseModal,
       setWalletModal,
       openSelectModal,
@@ -124,6 +133,7 @@ export default defineComponent({
       connectEthereumWallet,
       disconnectAccount,
       openPolkasafeModal,
+      openAccountUnificationModal,
     } = useConnectWallet();
 
     const clickAccountBtn = (): void => {
@@ -183,6 +193,7 @@ export default defineComponent({
       width,
       screenSize,
       isLoading,
+      modalAccountUnificationSelect,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
@@ -192,6 +203,7 @@ export default defineComponent({
       connectEthereumWallet,
       disconnectAccount,
       openPolkasafeModal,
+      openAccountUnificationModal,
     };
   },
 });
