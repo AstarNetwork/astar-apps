@@ -90,7 +90,7 @@ export default defineComponent({
         } else {
           return require('/src/assets/img/ic_astar_farm.svg');
         }
-      } else if (index === 1) {
+      } else if (index === 2) {
         return require('/src/assets/img/ic_algem_staking.svg');
       } else {
         return img;
