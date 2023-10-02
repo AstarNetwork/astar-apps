@@ -239,7 +239,6 @@ export const useAccountUnification = () => {
           `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
         );
 
-        // const batchedTx = $api?.tx.utility.batch(transactions) as SubmittableExtrinsic<
         const batchedTx = $api?.tx.utility.batch(txsToExecute) as SubmittableExtrinsic<
           'promise',
           ISubmittableResult
