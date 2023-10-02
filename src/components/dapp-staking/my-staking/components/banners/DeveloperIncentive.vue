@@ -74,7 +74,7 @@ export default defineComponent({
   justify-content: center;
   flex-basis: 50%;
   background: #d9d9d9;
-  min-height: 127px; /* Changed from height to min-height */
+  min-height: 127px;
   border-radius: 5px;
   padding: 24px;
   background-image: url('src/assets/img/banner/banner-01-light.png');

@@ -46,7 +46,8 @@
   }
   .card {
     flex-basis: 47%;
-    height: 100%;
+    min-height: 127px;
+    min-width: 170px !important; // Ensures that min-width is at least 170px
     cursor: pointer;
     background: rgba(196, 196, 196, 0.1);
     backdrop-filter: blur(50px);
@@ -95,8 +96,12 @@
     }
 
     @media (min-width: $md) {
-      min-width: 191px;
+      min-width: max(170px, 191px);
       flex-basis: 48%;
+    }
+
+    @media (min-width: $lg) {
+      min-width: 170px; // Adjust this value as necessary
     }
   }
 

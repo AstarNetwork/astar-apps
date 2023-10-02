@@ -41,7 +41,7 @@ export default defineComponent({
   cursor: pointer;
   background: #d9d9d9;
   background-size: cover;
-  height: 127px;
+  min-height: 127px;
   border-radius: 5px;
   padding: 24px 46px;
   background-image: url('src/assets/img/banner/banner-algem.png');
