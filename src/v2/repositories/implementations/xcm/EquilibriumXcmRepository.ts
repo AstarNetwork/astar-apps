@@ -117,7 +117,6 @@ export class EquilibriumXcmRepository extends XcmRepository {
                 },
                 {
                   AccountId32: {
-                    Network: 'Any',
                     id: pub,
                   },
                 },
