@@ -239,7 +239,8 @@ export const useAccountUnification = () => {
           `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
         );
 
-        const batchedTx = $api?.tx.utility.batch(transactions) as SubmittableExtrinsic<
+        // const batchedTx = $api?.tx.utility.batch(transactions) as SubmittableExtrinsic<
+        const batchedTx = $api?.tx.utility.batch(txsToExecute) as SubmittableExtrinsic<
           'promise',
           ISubmittableResult
         >;
@@ -263,6 +264,7 @@ export const useAccountUnification = () => {
     if (!web3.value || !transferXc20CallData.value) return;
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     try {
+      isSendingXc20Tokens.value = true;
       const from = selectedEvmAddress.value;
       const [nonce, gasPrice] = await Promise.all([
         web3.value.eth.getTransactionCount(from),
