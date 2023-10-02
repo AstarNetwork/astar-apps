@@ -15,7 +15,7 @@ import {
 import { MyStakeInfo, useCurrentEra } from 'src/hooks';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IDappStakingService } from 'src/v2/services';
+import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { BN } from '@polkadot/util';
 import ABI from 'src/config/abi/ERC20.json';
@@ -260,6 +260,18 @@ export const useAccountUnification = () => {
     }
   };
 
+  const unifyAccounts = async (
+    nativeAddress: string,
+    evmAddress: string,
+    accountName: string
+  ): Promise<boolean> => {
+    const unificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
+
+    return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
+  };
+
   watch([currentAccount], setWeb3);
   watch([web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
@@ -276,5 +288,6 @@ export const useAccountUnification = () => {
     accountName,
     setAccountName,
     setWeb3,
+    unifyAccounts,
   };
 };
