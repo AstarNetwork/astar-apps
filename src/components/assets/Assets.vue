@@ -156,8 +156,8 @@ export default defineComponent({
     watch([currentAccount], handleUpdateEvmAssets, { immediate: isH160.value });
     watchEffect(handleImportingCustomToken);
 
-    const isEnableXcm = computed(
-      () => !isShibuya.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
+    const isEnableXcm = computed<boolean>(
+      () => xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
 
     const handleEvmAssetLoader = (): void => {

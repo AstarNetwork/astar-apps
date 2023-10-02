@@ -1,11 +1,3 @@
-import { $api } from 'boot/api';
-import { setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks/useAccount';
-import { useStore } from 'src/store';
-import { WatchCallback, computed, ref, watch } from 'vue';
-import Web3 from 'web3';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { get } from 'lodash-es';
 import {
   ExtrinsicPayload,
   GasTip,
@@ -14,23 +6,32 @@ import {
   getIndividualClaimTxs,
   toSS58Address,
 } from '@astar-network/astar-sdk-core';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { BN } from '@polkadot/util';
+import { $api } from 'boot/api';
+import { ethers } from 'ethers';
+import { get } from 'lodash-es';
+import ABI from 'src/config/abi/ERC20.json';
+import { setupNetwork } from 'src/config/web3';
 import { MyStakeInfo, useCurrentEra } from 'src/hooks';
+import { useAccount } from 'src/hooks/useAccount';
+import { getBlockscoutTx } from 'src/links';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
+import { AlertMsg } from 'src/modules/toast';
+import { useStore } from 'src/store';
+import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { Asset } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { BN } from '@polkadot/util';
-import ABI from 'src/config/abi/ERC20.json';
+import { WatchCallback, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { XcmAssets } from 'src/store/assets/state';
-import { Asset } from 'src/v2/models';
-import { ethers } from 'ethers';
-import { evmPrecompiledContract } from 'src/modules/precompiled';
-import { getBlockscoutTx } from 'src/links';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { AlertMsg } from 'src/modules/toast';
+import { useNetworkInfo } from '../useNetworkInfo';
 
 const provider = get(window, 'ethereum');
 
@@ -60,6 +61,7 @@ export const useAccountUnification = () => {
   const { currentAccount } = useAccount();
   const { evmNetworkIdx } = useNetworkInfo();
   const { era } = useCurrentEra();
+  const { t } = useI18n();
 
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
@@ -90,7 +92,7 @@ export const useAccountUnification = () => {
       await setWeb3();
     };
 
-    const handleChainChanged = () => {
+    const handleChainChanged = (): void => {
       // Memo: refresh the page if the user changes the network
       window.location.reload();
     };
@@ -106,7 +108,7 @@ export const useAccountUnification = () => {
     });
   };
 
-  const checkStakerInfo = async () => {
+  const checkStakerInfo = async (): Promise<void> => {
     if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
     try {
       isLoadingDappStaking.value = true;
@@ -278,11 +280,10 @@ export const useAccountUnification = () => {
       await web3.value.eth
         .sendTransaction({ ...rawTx, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
-          console.log('transactionHash', transactionHash);
           eventAggregator.publish(
             new ExtrinsicStatusMessage({
               success: true,
-              message: 'Start sending XC20 tokens, please wait...',
+              message: t('wallet.unifiedAccount.sendingXc20'),
             })
           );
         })
@@ -292,7 +293,6 @@ export const useAccountUnification = () => {
             new ExtrinsicStatusMessage({
               success: true,
               message: AlertMsg.SUCCESS,
-              // message: successMessage ? successMessage : AlertMsg.SUCCESS,
               explorerUrl,
             })
           );
