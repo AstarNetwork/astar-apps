@@ -30,8 +30,8 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">
-        {{ $t('assets.transfer') }}
+      <astar-button :disabled="isSendingXc20Tokens" class="btn" @click="transferTokens">
+        {{ isSendingXc20Tokens ? $t('assets.syncing') : $t('assets.transfer') }}
       </astar-button>
     </div>
   </div>
@@ -49,15 +49,30 @@ export default defineComponent({
       type: Object as PropType<TransferXc20Token[]>,
       required: true,
     },
+    handleTransferXc20Tokens: {
+      type: Function,
+      required: true,
+    },
+    isSendingXc20Tokens: {
+      type: Boolean,
+      required: true,
+    },
   },
   emits: ['next'],
   setup(props, { emit }) {
-    const next = () => {
+    const next = (): void => {
       emit('next');
     };
 
+    const transferTokens = async (): Promise<void> => {
+      await props.handleTransferXc20Tokens();
+      if (props.transferXc20Tokens.length === 0) {
+        next();
+      }
+    };
+
     return {
-      next,
+      transferTokens,
     };
   },
 });

@@ -219,6 +219,7 @@ export default {
       userTutorials: 'User tutorials',
       aboutForUsers: 'About the unified accounts for users',
       techDocs: 'Tech docs',
+      sendingXc20: 'Start sending XC20 tokens, please wait...',
     },
   },
   installWallet: {
@@ -438,6 +439,7 @@ export default {
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
+    syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
     manage: 'Manage',

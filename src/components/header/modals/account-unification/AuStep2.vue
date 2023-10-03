@@ -37,13 +37,13 @@
       >
         {{ $t('next') }}
       </astar-button>
-      <astar-button v-else class="btn" :disabled="true"> Loading... </astar-button>
+      <astar-button v-else class="btn" :disabled="true"> {{ $t('assets.syncing') }} </astar-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {},

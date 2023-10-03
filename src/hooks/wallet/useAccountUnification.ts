@@ -1,30 +1,37 @@
-import { $api } from 'boot/api';
-import { setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks/useAccount';
-import { useStore } from 'src/store';
-import { WatchCallback, computed, ref, watch } from 'vue';
-import Web3 from 'web3';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { get } from 'lodash-es';
 import {
   ExtrinsicPayload,
+  GasTip,
   PayloadWithWeight,
+  getEvmGas,
   getIndividualClaimTxs,
   toSS58Address,
 } from '@astar-network/astar-sdk-core';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { BN } from '@polkadot/util';
+import { $api } from 'boot/api';
+import { ethers } from 'ethers';
+import { get } from 'lodash-es';
+import ABI from 'src/config/abi/ERC20.json';
+import { setupNetwork } from 'src/config/web3';
 import { MyStakeInfo, useCurrentEra } from 'src/hooks';
+import { useAccount } from 'src/hooks/useAccount';
+import { getBlockscoutTx } from 'src/links';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
+import { AlertMsg } from 'src/modules/toast';
+import { useStore } from 'src/store';
+import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { Asset } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { BN } from '@polkadot/util';
-import ABI from 'src/config/abi/ERC20.json';
+import { WatchCallback, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { XcmAssets } from 'src/store/assets/state';
-import { Asset } from 'src/v2/models';
-import { ethers } from 'ethers';
+import { useNetworkInfo } from '../useNetworkInfo';
 
 const provider = get(window, 'ethereum');
 
@@ -43,6 +50,7 @@ export const useAccountUnification = () => {
   const isConnectedNetwork = ref<boolean>(false);
   const isReadyUnification = ref<boolean>(false);
   const isFetchingXc20Tokens = ref<boolean>(false);
+  const isSendingXc20Tokens = ref<boolean>(false);
   const isLoadingDappStaking = ref<boolean>(false);
   const accountName = ref<string>('');
   const isStaking = ref<boolean>(true);
@@ -53,17 +61,14 @@ export const useAccountUnification = () => {
   const { currentAccount } = useAccount();
   const { evmNetworkIdx } = useNetworkInfo();
   const { era } = useCurrentEra();
+  const { t } = useI18n();
 
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+  const gas = computed<GasTip>(() => store.getters['general/getGas']);
 
   const setAccountName = (event: any) => {
     accountName.value = event.target.value;
-  };
-
-  const getSelectedEvmAddress = async (web3: Web3): Promise<string> => {
-    const accounts = await web3.eth.getAccounts();
-    return accounts[0];
   };
 
   const setWeb3 = async (): Promise<void> => {
@@ -87,7 +92,7 @@ export const useAccountUnification = () => {
       await setWeb3();
     };
 
-    const handleChainChanged = () => {
+    const handleChainChanged = (): void => {
       // Memo: refresh the page if the user changes the network
       window.location.reload();
     };
@@ -103,7 +108,7 @@ export const useAccountUnification = () => {
     });
   };
 
-  const checkStakerInfo = async () => {
+  const checkStakerInfo = async (): Promise<void> => {
     if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
     try {
       isLoadingDappStaking.value = true;
@@ -234,7 +239,7 @@ export const useAccountUnification = () => {
           `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
         );
 
-        const batchedTx = $api?.tx.utility.batch(transactions) as SubmittableExtrinsic<
+        const batchedTx = $api?.tx.utility.batch(txsToExecute) as SubmittableExtrinsic<
           'promise',
           ISubmittableResult
         >;
@@ -244,12 +249,6 @@ export const useAccountUnification = () => {
         transferXc20Tokens.value = [];
         isReadyUnification.value = true;
       }
-
-      // Memo: delete it later
-      console.log('transferXc20CallData.value', transferXc20CallData.value);
-      // step1: use dispatch precompiled to send the calldata
-      // step2: check the 'xc20tokens' balance again. Repeat the process again if there still have some balance
-      // step3: add this logic to Astar.js
     } catch (error) {
       console.error(error);
       transferXc20CallData.value = '';
@@ -257,6 +256,63 @@ export const useAccountUnification = () => {
       isReadyUnification.value = false;
     } finally {
       isFetchingXc20Tokens.value = false;
+    }
+  };
+
+  const handleTransferXc20Tokens = async (): Promise<void> => {
+    if (!web3.value || !transferXc20CallData.value) return;
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    try {
+      isSendingXc20Tokens.value = true;
+      const from = selectedEvmAddress.value;
+      const [nonce, gasPrice] = await Promise.all([
+        web3.value.eth.getTransactionCount(from),
+        getEvmGas(web3.value, gas.value.evmGasPrice.fast),
+      ]);
+      const rawTx = {
+        nonce,
+        gasPrice: web3.value.utils.toHex(gasPrice),
+        from,
+        to: evmPrecompiledContract.dispatch,
+        value: '0x0',
+        data: transferXc20CallData.value,
+      };
+      const estimatedGas = await web3.value.eth.estimateGas(rawTx);
+      await web3.value.eth
+        .sendTransaction({ ...rawTx, gas: estimatedGas })
+        .once('transactionHash', (transactionHash) => {
+          eventAggregator.publish(
+            new ExtrinsicStatusMessage({
+              success: true,
+              message: t('wallet.unifiedAccount.sendingXc20'),
+            })
+          );
+        })
+        .then(({ transactionHash }) => {
+          const explorerUrl = getBlockscoutTx(transactionHash);
+          eventAggregator.publish(
+            new ExtrinsicStatusMessage({
+              success: true,
+              message: AlertMsg.SUCCESS,
+              explorerUrl,
+            })
+          );
+          return transactionHash;
+        })
+        .catch((error: any) => {
+          console.error(error);
+          eventAggregator.publish(
+            new ExtrinsicStatusMessage({
+              success: false,
+              message: error.message || AlertMsg.ERROR,
+            })
+          );
+        });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await setTransferXc20CallData();
+      isSendingXc20Tokens.value = false;
     }
   };
 
@@ -286,8 +342,10 @@ export const useAccountUnification = () => {
     isFetchingXc20Tokens,
     isLoadingDappStaking,
     accountName,
+    isSendingXc20Tokens,
     setAccountName,
     setWeb3,
+    handleTransferXc20Tokens,
     unifyAccounts,
   };
 };
