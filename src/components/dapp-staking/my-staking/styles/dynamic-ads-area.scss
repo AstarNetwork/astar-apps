@@ -11,7 +11,7 @@
 }
 .wrapper-item {
   flex: 1 1 0px;
-  height: 211px;
+  min-height: 211px;
 }
 
 .news-area {
@@ -46,7 +46,8 @@
   }
   .card {
     flex-basis: 47%;
-    height: 100%;
+    min-height: 127px;
+    min-width: 170px !important; // Ensures that min-width is at least 170px
     cursor: pointer;
     background: rgba(196, 196, 196, 0.1);
     backdrop-filter: blur(50px);
@@ -77,7 +78,6 @@
       font-weight: 600;
       font-size: 14px;
       line-height: 18px;
-      white-space: nowrap;
       color: #fff;
     }
     .txt--title {
@@ -96,8 +96,12 @@
     }
 
     @media (min-width: $md) {
-      min-width: 191px;
+      min-width: max(170px, 191px);
       flex-basis: 48%;
+    }
+
+    @media (min-width: $lg) {
+      min-width: 170px; // Adjust this value as necessary
     }
   }
 
@@ -120,10 +124,10 @@
 .wrapper--shiden {
   .card:first-child {
     background: linear-gradient(
-      129.32deg, 
-      #170d29 -4.43%, 
-      #481e94 31.93%, 
-      #6d2cae 74.44%, 
+      129.32deg,
+      #170d29 -4.43%,
+      #481e94 31.93%,
+      #6d2cae 74.44%,
       #0a010d 133.31%
     );
   }
