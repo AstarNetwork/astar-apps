@@ -31,7 +31,7 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn" @click="next()">
+      <astar-button :disabled="isBusy" class="btn" @click="next()">
         {{ $t('dappStaking.modals.submit') }}
       </astar-button>
     </div>
@@ -53,6 +53,10 @@ export default defineComponent({
     },
     accountName: {
       type: String,
+      required: true,
+    },
+    isBusy: {
+      type: Boolean,
       required: true,
     },
   },

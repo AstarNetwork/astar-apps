@@ -5,7 +5,7 @@
     </div>
 
     <div class="box box--have">
-      <div class="text--title">😎 {{ $t('wallet.unifiedAccount.haveAstarNative') }}</div>
+      <div class="text--title">{{ $t('wallet.unifiedAccount.haveAstarNative') }}</div>
       <p>
         {{ $t('wallet.unifiedAccount.connectAstarNative') }}
       </p>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="box box--not-have">
-      <div class="text--title">🥲 {{ $t('wallet.unifiedAccount.notHaveAstarNative') }}</div>
+      <div class="text--title">{{ $t('wallet.unifiedAccount.notHaveAstarNative') }}</div>
       <p>
         {{ $t('wallet.unifiedAccount.withoutUnifying') }}
       </p>

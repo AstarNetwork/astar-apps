@@ -5,7 +5,7 @@ export interface IAccountUnificationService {
     accountName: string,
     avatarNftAddress?: string,
     avatarNftId?: string
-  ): Promise<void>;
+  ): Promise<boolean>;
   getMappedNativeAddress(evmAddress: string): Promise<string>;
   getMappedEvmAddress(nativeAddress: string): Promise<string>;
 }

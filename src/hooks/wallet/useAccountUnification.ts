@@ -25,7 +25,7 @@ import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IDappStakingService } from 'src/v2/services';
+import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { WatchCallback, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -316,6 +316,18 @@ export const useAccountUnification = () => {
     }
   };
 
+  const unifyAccounts = async (
+    nativeAddress: string,
+    evmAddress: string,
+    accountName: string
+  ): Promise<boolean> => {
+    const unificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
+
+    return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
+  };
+
   watch([currentAccount], setWeb3);
   watch([web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
@@ -334,5 +346,6 @@ export const useAccountUnification = () => {
     setAccountName,
     setWeb3,
     handleTransferXc20Tokens,
+    unifyAccounts,
   };
 };

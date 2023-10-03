@@ -192,11 +192,11 @@ export default {
         'I have read all and I would like to proceed to create a unified account please.',
       requirement:
         'To create an unified account, both Substrate and EVM wallet extension are required and currently not possible from mobile apps.',
-      haveAstarNative: 'I HAVE an Astar Native account',
+      haveAstarNative: '😎 I HAVE an Astar Native account',
       connectAstarNative:
         'Unified account is owned by an Astar Native account. Please connect with a desired address and create an account.',
       selectWallet: 'Select a wallet',
-      notHaveAstarNative: 'I DON’T HAVE an Astar Native account',
+      notHaveAstarNative: '🥲 I DON’T HAVE an Astar Native account',
       withoutUnifying:
         'You can receive full benefit while you are connecting with EVM account without unifying. So nothing to worry if you don’t own a Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
       howToCreate: 'How to create a Astar Native account',
@@ -206,6 +206,7 @@ export default {
       haveStakingBalance:
         'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
+      accountIcon: 'Account icon (EVM NFT can only be selected after creating the account)',
       balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
