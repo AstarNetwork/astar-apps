@@ -72,7 +72,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  ref,
+  watch,
+  onMounted,
+  onUnmounted,
+} from 'vue';
 import { useAccount, useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -90,6 +99,9 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
+import { container } from 'src/v2/common';
+import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
+import { Symbols } from 'src/v2/symbols';
 
 interface Modal {
   modalNetwork: boolean;
@@ -167,6 +179,17 @@ export default defineComponent({
     const route = useRoute();
     const path = computed<string>(() => route.path);
     const headerName = ref<string>('');
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+
+    onMounted(() => {
+      eventAggregator.subscribe(UnifyAccountMessage.name, () => {
+        modalAccountUnificationSelect.value = true;
+      });
+    });
+
+    onUnmounted(() => {
+      eventAggregator.unsubscribe(UnifyAccountMessage.name, () => {});
+    });
 
     watch(
       path,

@@ -5,6 +5,8 @@ import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
+import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
+import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
@@ -62,20 +64,27 @@ export const useAccount = () => {
   const checkIfUnified = async (address: string): Promise<void> => {
     const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
 
-    const mapped = isValidEvmAddress(address)
+    const isEvmAddress = isValidEvmAddress(address);
+    const mapped = isEvmAddress
       ? await service.getMappedNativeAddress(address)
       : await service.getMappedEvmAddress(address);
 
     if (mapped) {
+      const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);
+      const identity = await identityRepository.getIdentity(isEvmAddress ? mapped : address);
+      const name = identity?.display || '';
+
       if (isValidEvmAddress(address)) {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: mapped,
           evmAddress: address,
+          name,
         });
       } else {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: address,
           evmAddress: mapped,
+          name,
         });
       }
     }
@@ -94,6 +103,11 @@ export const useAccount = () => {
     }
 
     return evmAddress;
+  };
+
+  const showAccountUnificationModal = (): void => {
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    eventAggregator.publish(new UnifyAccountMessage());
   };
 
   const currentAccount = ref<string>('');
@@ -139,7 +153,7 @@ export const useAccount = () => {
       if (!account) return;
 
       currentAccount.value = account.address;
-      currentAccountName.value = account.name;
+      currentAccountName.value = unifiedAccount.value ? unifiedAccount.value.name : account.name;
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
@@ -179,5 +193,6 @@ export const useAccount = () => {
     isMultisig,
     disconnectAccount,
     getSS58Address,
+    showAccountUnificationModal,
   };
 };

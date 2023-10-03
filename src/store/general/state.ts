@@ -33,6 +33,7 @@ export type EcdsaAccount = {
 export type UnifiedAccount = {
   nativeAddress: string;
   evmAddress: string;
+  name: string;
 };
 
 export type ConnectionType = 'connected' | 'connecting' | 'offline';
