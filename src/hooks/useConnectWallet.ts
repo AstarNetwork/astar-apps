@@ -180,25 +180,6 @@ export const useConnectWallet = () => {
     await loadEvmWallet({ ss58, currentWallet: wallet });
   };
 
-  const toggleEvmWalletSchema = async () => {
-    const accounts = await requestAccounts();
-    const loadingAddr = checkSumEvmAddress(accounts[0]);
-    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
-    const signature = await requestSignature(loginMsg, loadingAddr);
-    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
-    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
-
-    if (isH160.value) {
-      store.commit('general/setIsH160Formatted', false);
-      store.commit('general/setCurrentEcdsaAccount', {
-        ethereum: loadingAddr,
-        ss58: ss58Address,
-      });
-    } else {
-      await loadEvmWallet({ currentWallet: selectedWallet.value as SupportWallet });
-    }
-  };
-
   const setWallet = (wallet: SupportWallet): void => {
     selectedWallet.value = wallet;
     modalName.value = wallet;
@@ -389,7 +370,6 @@ export const useConnectWallet = () => {
     setCloseModal,
     setWalletModal,
     disconnectAccount,
-    toggleEvmWalletSchema,
     changeAccount,
     connectEthereumWallet,
     openPolkasafeModal,
