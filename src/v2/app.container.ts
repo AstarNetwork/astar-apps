@@ -61,17 +61,10 @@ import { XvmService } from 'src/v2/services/implementations/XvmService';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
-// Todo: delete after we remove the lockdrop service
-let isLockdropAccount = false;
 
-export function setCurrentWallet(
-  isEthWallet: boolean,
-  currentWallet: string,
-  isLockdrop: boolean
-): void {
+export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
-  isLockdropAccount = isLockdrop;
 
   container.removeConstant(Symbols.CurrentWallet);
   container.addConstant<string>(Symbols.CurrentWallet, currentWalletName);
@@ -102,7 +95,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot || isLockdropAccount
+          currentWalletType === WalletType.Polkadot
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );
