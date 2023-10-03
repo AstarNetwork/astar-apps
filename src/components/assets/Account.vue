@@ -44,8 +44,11 @@
             </div>
             <div class="column__icons">
               <div>
-                <!-- TODO: open the account unification modal -->
-                <button type="button" class="icon--primary icon--account">
+                <button
+                  type="button"
+                  class="icon--primary icon--account"
+                  @click="showAccountUnificationModal()"
+                >
                   <!-- TODO: will move a new icon to the AstarUI later -->
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="icon">
                     <path
@@ -151,7 +154,8 @@ export default defineComponent({
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
     const { toggleEvmWalletSchema } = useConnectWallet();
-    const { currentAccount, currentAccountName, multisig } = useAccount();
+    const { currentAccount, currentAccountName, multisig, showAccountUnificationModal } =
+      useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -284,6 +288,7 @@ export default defineComponent({
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,
+      showAccountUnificationModal,
     };
   },
 });
