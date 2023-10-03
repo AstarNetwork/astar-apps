@@ -9,11 +9,11 @@
   >
     <div class="wrapper--modal-account">
       <div v-if="currentStep === 1">
-        <step1-evm v-if="isH160" :handle-back="backModal" />
-        <step1-native v-else @next="updateSteps(2)" />
+        <au-step1-evm v-if="isH160" :handle-back="backModal" />
+        <au-step1-native v-else @next="updateSteps(2)" />
       </div>
       <div v-else-if="currentStep === 2">
-        <step2
+        <au-step2
           :selected-evm-address="selectedEvmAddress"
           :is-connected-network="isConnectedNetwork"
           :is-staking="isStaking"
@@ -24,7 +24,7 @@
         />
       </div>
       <div v-else-if="currentStep === 3">
-        <step3
+        <au-step3
           :account-name="accountName"
           :set-account-name="setAccountName"
           :selected-evm-address="selectedEvmAddress"
@@ -33,10 +33,10 @@
         />
       </div>
       <div v-else-if="currentStep === 4">
-        <step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
+        <au-step4 :transfer-xc20-tokens="transferXc20Tokens" @next="updateSteps(5)" />
       </div>
       <div v-else-if="currentStep === 5">
-        <step5
+        <au-step5
           :account-name="accountName"
           :selected-evm-address="selectedEvmAddress"
           :is-busy="isLoading"
@@ -44,7 +44,7 @@
         />
       </div>
       <div v-else-if="currentStep === 6">
-        <step6 />
+        <au-step6 />
       </div>
       <div v-else>
         <user-account @next="updateSteps(1)" />
@@ -59,24 +59,24 @@ import { useAccount, useAccountUnification, useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
-import Step1Native from 'src/components/header/modals/account-unification/Step1Native.vue';
-import Step1Evm from 'src/components/header/modals/account-unification/Step1Evm.vue';
-import Step2 from 'src/components/header/modals/account-unification/Step2.vue';
-import Step3 from 'src/components/header/modals/account-unification/Step3.vue';
-import Step4 from 'src/components/header/modals/account-unification/Step4.vue';
-import Step5 from 'src/components/header/modals/account-unification/Step5.vue';
-import Step6 from 'src/components/header/modals/account-unification/Step6.vue';
+import AuStep1Native from 'src/components/header/modals/account-unification/AuStep1Native.vue';
+import AuStep1Evm from 'src/components/header/modals/account-unification/AuStep1Evm.vue';
+import AuStep2 from 'src/components/header/modals/account-unification/AuStep2.vue';
+import AuStep3 from 'src/components/header/modals/account-unification/AuStep3.vue';
+import AuStep4 from 'src/components/header/modals/account-unification/AuStep4.vue';
+import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vue';
+import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
 
 export default defineComponent({
   components: {
     UserAccount,
-    Step1Native,
-    Step1Evm,
-    Step2,
-    Step3,
-    Step4,
-    Step5,
-    Step6,
+    AuStep1Native,
+    AuStep1Evm,
+    AuStep2,
+    AuStep3,
+    AuStep4,
+    AuStep5,
+    AuStep6,
   },
   props: {
     isOpen: {
