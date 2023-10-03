@@ -134,6 +134,7 @@
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { initPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
+import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import {
@@ -141,13 +142,14 @@ import {
   SupportWallet,
   Wallet,
   supportAllWalletsObj,
+  supportEvmWalletObj,
   supportEvmWallets,
   supportWallets,
 } from 'src/config/wallets';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, ref } from 'vue';
@@ -240,14 +242,23 @@ export default defineComponent({
       }
     };
 
+    const handleMetaMaskSnap = async (): Promise<void> => {
+      const provider = get(window, supportEvmWalletObj[SupportWallet.MetaMask].ethExtension);
+      const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
+      if (!address) return;
+      const isSnapInstalled = await initiatePolkdatodSnap();
+      if (isSnapInstalled) {
+        await initPolkadotSnap();
+        useExtensions($api!!, store);
+        const extensions = await getInjectedExtensions(true);
+        const isExtensionsUpdated = extensions.some((it) => it.name === SupportWallet.Snap);
+        // Memo: Sync the metamask extension for users who visit our portal first time
+        !isExtensionsUpdated && (await wait(3000));
+      }
+    };
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
       if (source === SupportWallet.Snap) {
-        const isSnapInstalled = await initiatePolkdatodSnap();
-        if (isSnapInstalled) {
-          await initPolkadotSnap();
-          useExtensions($api!!, store);
-          await getInjectedExtensions(true);
-        }
+        await handleMetaMaskSnap();
       }
       await closeModal();
       props.setWalletModal(source);
