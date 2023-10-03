@@ -26,7 +26,7 @@
       <!-- Account Icon -->
       <div>
         <div class="label">
-          Account icon (EVM NFT can only be selected after creating the account)
+          {{ $t('wallet.unifiedAccount.accountIcon') }}
         </div>
         <!-- TODO: open the select NFT modal (SelectNft.vue) -->
         <button type="button" class="box--account-icon">

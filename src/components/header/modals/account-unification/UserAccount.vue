@@ -61,7 +61,7 @@
         <span>{{ $t('wallet.unifiedAccount.introduce') }}</span>
       </div>
       <astar-button class="btn" :disabled="currentAccount === ''" @click="next()">
-        Create an Unified Account
+        {{ $t('wallet.unifiedAccount.create') }}
       </astar-button>
     </div>
 

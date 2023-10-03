@@ -206,6 +206,7 @@ export default {
       haveStakingBalance:
         'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
+      accountIcon: 'Account icon (EVM NFT can only be selected after creating the account)',
       balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
