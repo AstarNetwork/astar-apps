@@ -1,10 +1,10 @@
-import { inject, injectable } from 'inversify';
-import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
-import { ExtrinsicPayload, IApi } from 'src/v2/integration';
-import { Symbols } from 'src/v2/symbols';
-import { IdentityData } from 'src/v2/models';
-import { Guard } from 'src/v2/common';
 import { AccountId32, H160 } from '@polkadot/types/interfaces';
+import { inject, injectable } from 'inversify';
+import { Guard } from 'src/v2/common';
+import { ExtrinsicPayload, IApi } from 'src/v2/integration';
+import { IdentityData } from 'src/v2/models';
+import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class AccountUnificationRepository implements IAccountUnificationRepository {
@@ -29,7 +29,10 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
 
     const api = await this.api.getApi();
-    const nativeAddress = await api.query.unifiedAccounts.nativeToEvm<AccountId32>(evmAddress);
+    // Todo: update the function name once Shibuya runtime has been updated.
+    const nativeAddress = api.query.hasOwnProperty('unifiedAccounts')
+      ? await api.query.unifiedAccounts.nativeToEvm<AccountId32>(evmAddress)
+      : '';
 
     return nativeAddress.toString();
   }
@@ -38,7 +41,10 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
 
     const api = await this.api.getApi();
-    const evmAddress = await api.query.unifiedAccounts.evmToNative<H160>(nativeAddress);
+    // Todo: update the function name once Shibuya runtime has been updated.
+    const evmAddress = api.query.hasOwnProperty('unifiedAccounts')
+      ? await api.query.unifiedAccounts.evmToNative<H160>(nativeAddress)
+      : '';
 
     return evmAddress.toString();
   }

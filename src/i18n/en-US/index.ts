@@ -190,6 +190,7 @@ export default {
         'If you already have an account ID that is created on Polkadot.js app, this account unification information will override.',
       agreeToProceed:
         'I have read all and I would like to proceed to create a unified account please.',
+      agreeToSubmit: 'I understand that once accounts have been unified, they cannot be separated.',
       requirement:
         'To create an unified account, both Substrate and EVM wallet extension are required and currently not possible from mobile apps.',
       haveAstarNative: '😎 I HAVE an Astar Native account',
@@ -206,7 +207,7 @@ export default {
       haveStakingBalance:
         'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
-      accountIcon: 'Account icon (EVM NFT can only be selected after creating the account)',
+      accountIcon: 'Account icon (we are working on adding your own NFT as an account icon)',
       balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',

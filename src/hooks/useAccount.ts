@@ -3,13 +3,15 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
-import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
+import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
+import { useNetworkInfo } from './useNetworkInfo';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -18,6 +20,7 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const { currentNetworkIdx } = useNetworkInfo();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -25,6 +28,13 @@ export const useAccount = () => {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
+
+  const isAccountUnification = computed<boolean>(() => {
+    return !!(
+      (currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName) ||
+      currentNetworkIdx.value === endpointKey.LOCAL
+    );
+  });
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
@@ -191,6 +201,7 @@ export const useAccount = () => {
     senderSs58Account,
     multisig,
     isMultisig,
+    isAccountUnification,
     disconnectAccount,
     getSS58Address,
     showAccountUnificationModal,

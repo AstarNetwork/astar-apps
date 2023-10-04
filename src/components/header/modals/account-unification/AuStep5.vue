@@ -28,10 +28,16 @@
         </div>
       </div>
     </div>
+    <div class="box--warning">
+      <div>
+        <input v-model="isChecked" type="checkbox" class="checkbox" />
+      </div>
+      <div>{{ $t('wallet.unifiedAccount.agreeToSubmit') }}</div>
+    </div>
 
     <!-- Action -->
     <div>
-      <astar-button :disabled="isBusy" class="btn" @click="next()">
+      <astar-button :disabled="isBusy || !isChecked" class="btn" @click="next()">
         {{ $t('dappStaking.modals.submit') }}
       </astar-button>
     </div>
@@ -40,7 +46,7 @@
 
 <script lang="ts">
 import { useAccount, useWalletIcon } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
@@ -62,7 +68,9 @@ export default defineComponent({
   },
   emits: ['next'],
   setup(props, { emit }) {
-    const next = () => {
+    const isChecked = ref<boolean>(false);
+
+    const next = (): void => {
       emit('next');
     };
     const { currentAccount, currentAccountName } = useAccount();
@@ -72,6 +80,7 @@ export default defineComponent({
       currentAccount,
       currentAccountName,
       iconWallet,
+      isChecked,
       getShortenAddress,
       next,
     };
