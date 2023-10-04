@@ -190,7 +190,7 @@ export default {
         'If you already have an account ID that is created on Polkadot.js app, this account unification information will override.',
       agreeToProceed:
         'I have read all and I would like to proceed to create a unified account please.',
-      agreeToSubmit: 'I understand this action will not be canceled.',
+      agreeToSubmit: 'I understand that once accounts have been unified, they cannot be separated.',
       requirement:
         'To create an unified account, both Substrate and EVM wallet extension are required and currently not possible from mobile apps.',
       haveAstarNative: '😎 I HAVE an Astar Native account',
