@@ -267,7 +267,7 @@ export default defineComponent({
   color: $navy-1;
 
   @media (min-width: $md) {
-    bottom: 35px;
+    bottom: 48px;
   }
 }
 .colum--current-page {
