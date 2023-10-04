@@ -43,7 +43,7 @@
               <span class="text--accent">{{ $n(totalBal) }} USD</span>
             </div>
             <div class="column__icons">
-              <div>
+              <div v-if="isAccountUnification">
                 <button
                   type="button"
                   class="icon--primary icon--account"
@@ -154,8 +154,13 @@ export default defineComponent({
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
     const { toggleEvmWalletSchema } = useConnectWallet();
-    const { currentAccount, currentAccountName, multisig, showAccountUnificationModal } =
-      useAccount();
+    const {
+      currentAccount,
+      currentAccountName,
+      multisig,
+      showAccountUnificationModal,
+      isAccountUnification,
+    } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -284,6 +289,7 @@ export default defineComponent({
       supportWalletObj,
       signatoryIconWallet,
       isModalLockdropWarning,
+      isAccountUnification,
       handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,

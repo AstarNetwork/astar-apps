@@ -204,15 +204,9 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount } = useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
-    const isAccountUnification = computed<boolean>(() => {
-      return !!(
-        (currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName) ||
-        currentNetworkIdx.value === endpointKey.LOCAL
-      );
-    });
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
