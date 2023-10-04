@@ -5,6 +5,7 @@ import {
   getEvmGas,
   getIndividualClaimTxs,
   toSS58Address,
+  wait,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -53,7 +54,7 @@ export const useAccountUnification = () => {
   const isSendingXc20Tokens = ref<boolean>(false);
   const isLoadingDappStaking = ref<boolean>(false);
   const accountName = ref<string>('');
-  const isStaking = ref<boolean>(true);
+  const isStaking = ref<boolean>(false);
   const transferXc20CallData = ref<string>('');
   const transferXc20Tokens = ref<TransferXc20Token[]>([]);
 
@@ -158,6 +159,8 @@ export const useAccountUnification = () => {
             console.error(error);
             return null;
           } finally {
+            // Memo: give some time to sync in modals UI
+            await wait(500);
             isLoadingDappStaking.value = false;
           }
         })
@@ -328,7 +331,6 @@ export const useAccountUnification = () => {
     return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
   };
 
-  watch([currentAccount], setWeb3);
   watch([web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
   watch([xcmAssets, web3], setTransferXc20CallData);
