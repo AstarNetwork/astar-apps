@@ -30,12 +30,9 @@ export function useDispatchGetDapps() {
   };
 
   const getDapps = async (): Promise<void> => {
-    console.log('currentAccount', currentAccount.value);
     const isConnectedWallet = currentNetworkName.value && currentAccount.value;
-    // if (isConnectedWallet && dapps.value.length === 0) {
     if (isConnectedWallet) {
       const address = !currentAccount.value ? '' : currentAccount.value;
-      console.log('address', address);
       store.dispatch('dapps/getDapps', {
         network: currentNetworkName.value.toLowerCase(),
         currentAccount: address,
