@@ -1,13 +1,12 @@
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
-import { computed, watchEffect } from 'vue';
+import { computed, watch } from 'vue';
 
 export function useDispatchGetDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
   const { currentAccount } = useAccount();
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
   // Memo: invoke this function whenever the users haven't connect to wallets
@@ -32,7 +31,7 @@ export function useDispatchGetDapps() {
 
   const getDapps = async (): Promise<void> => {
     const isConnectedWallet = currentNetworkName.value && currentAccount.value;
-    if (isConnectedWallet && dapps.value.length === 0) {
+    if (isConnectedWallet) {
       const address = !currentAccount.value ? '' : currentAccount.value;
       store.dispatch('dapps/getDapps', {
         network: currentNetworkName.value.toLowerCase(),
@@ -43,7 +42,5 @@ export function useDispatchGetDapps() {
     }
   };
 
-  watchEffect(async () => {
-    await getDapps();
-  });
+  watch([currentAccount, currentNetworkName], getDapps);
 }
