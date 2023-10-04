@@ -1,33 +1,41 @@
 <template>
-  <div v-if="isListReady" class="container--assets">
-    <div class="container">
-      <div class="row">
-        <div>
-          <span class="text--title">{{ $t('assets.assets') }}</span>
+  <div v-if="isListReady">
+    <div class="row--header">
+      <div class="row--header__left">
+        <div class="column--token-name">
+          <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
+          <span class="text--title">
+            {{ $t('assets.assets') }}
+          </span>
         </div>
-
-        <asset-search-option
-          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
-          :is-hide-small-balances="isHideSmallBalances"
-          :tokens="tokens"
-          :is-import-modal="true"
-          :is-search="isSearch"
-          :set-search="setSearch"
-          :set-is-search="setIsSearch"
-        />
       </div>
 
+      <asset-search-option
+        :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+        :is-hide-small-balances="isHideSmallBalances"
+        :tokens="tokens"
+        :is-import-modal="true"
+        :is-search="isSearch"
+        :set-search="setSearch"
+        :set-is-search="setIsSearch"
+      />
+    </div>
+
+    <div class="separator" />
+
+    <div class="rows">
       <div v-for="t in filteredTokens" :key="t.symbol">
-        <div v-if="checkIsCbridgeToken(t)">
+        <template v-if="checkIsCbridgeToken(t)">
           <evm-cbridge-token :token="t" :data-testid="t.symbol" />
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
           <erc-20-currency :token="t" :data-testid="t.symbol" />
-        </div>
+        </template>
       </div>
-      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
-        <span class="text--xl">{{ $t('assets.noResults') }}</span>
-      </div>
+    </div>
+
+    <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
+      <span class="text--xl">{{ $t('assets.noResults') }}</span>
     </div>
   </div>
 </template>
@@ -39,6 +47,7 @@ import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { PropType, computed, defineComponent, ref } from 'vue';
+import { getTokenImage } from 'src/modules/token';
 
 export default defineComponent({
   components: {
@@ -94,6 +103,11 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
+    const { nativeTokenSymbol } = useNetworkInfo();
+    const nativeTokenImg = computed<string>(() =>
+      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+    );
+
     return {
       symbol,
       token,
@@ -103,6 +117,8 @@ export default defineComponent({
       filteredTokens,
       cbridgeAppLink,
       isHideSmallBalances,
+      nativeTokenSymbol,
+      nativeTokenImg,
       setIsSearch,
       checkIsCbridgeToken,
       toggleIsHideSmallBalances,
