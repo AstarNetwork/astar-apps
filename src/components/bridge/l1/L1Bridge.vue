@@ -58,9 +58,10 @@
               <img width="24" alt="token-logo" :src="icon.ethereum" />
             </div>
             <span class="text--title">ETH</span>
-            <div class="icon--expand">
+            <!-- Memo: use this incase we need to bridge more tokens -->
+            <!-- <div class="icon--expand">
               <astar-icon-expand size="20" />
-            </div>
+            </div> -->
           </div>
           <div class="box__column--input-amount">
             <input
