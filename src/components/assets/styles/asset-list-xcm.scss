@@ -211,6 +211,8 @@
   font-size: 12px;
   color: $gray-3;
   font-weight: 500;
+  display: block;
+  text-align: center;
   @media (min-width: $sm) {
     display: none;
   }

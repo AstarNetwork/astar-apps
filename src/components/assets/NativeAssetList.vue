@@ -38,7 +38,7 @@
                 : $router.push(buildTransferPageLink(nativeTokenSymbol))
           "
         >
-          <div class="text--label">Transferable</div>
+          <div class="text--label">{{ $t('assets.transferable') }}</div>
           <div>
             <div v-if="!isSkeleton" class="column--balance">
               <span class="text--amount">
@@ -97,7 +97,7 @@
               </button>
             </router-link>
             <q-tooltip>
-              <span class="text--tooltip">Send</span>
+              <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
           </div>
         </div>
@@ -106,7 +106,7 @@
       <!-- Locked tokens -->
       <div class="row row--locked-tokens">
         <div class="row__info" @click="width <= screenSize.sm && (isExpand = !isExpand)">
-          <div class="text--label">Locked tokens</div>
+          <div class="text--label">{{ $t('assets.lockedTokens') }}</div>
           <div>
             <div v-if="!isSkeleton" class="column--balance">
               <span class="text--amount">
@@ -141,7 +141,7 @@
                   class="row--expand__info"
                   @click="width <= screenSize.sm && handleModalVesting({ isOpen: true })"
                 >
-                  <div class="text--label">Vesting</div>
+                  <div class="text--label">{{ $t('assets.vesting') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
                       <span class="text--amount">

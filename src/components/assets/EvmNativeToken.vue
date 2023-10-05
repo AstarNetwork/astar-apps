@@ -37,7 +37,7 @@
               : $router.push(buildTransferPageLink(nativeTokenSymbol))
         "
       >
-        <div class="text--label">Transferable</div>
+        <div class="text--label">{{ $t('assets.transferable') }}</div>
         <div>
           <div v-if="nativeTokenSymbol && currentNetworkName" class="column--balance">
             <span class="text--amount">
@@ -92,7 +92,7 @@
             </button>
           </router-link>
           <q-tooltip>
-            <span class="text--tooltip">Send</span>
+            <span class="text--tooltip">{{ $t('assets.send') }}</span>
           </q-tooltip>
         </div>
         <!-- Only SDN is able to bridge via cBridge at this moment -->

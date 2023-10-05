@@ -29,7 +29,7 @@
           <!-- TODO: unified account icon -->
           <div class="text--title">
             <span v-if="isUnifiedAccount">Unified Account Name</span>
-            <span v-else>{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
+            <span v-else>{{ currentAccount ? currentAccountName : $t('assets.myWallet') }}</span>
           </div>
           <div class="text--balance">
             {{ $n(totalBal) }}
@@ -40,6 +40,7 @@
 
       <div class="row--actions">
         <div>
+          <!-- TODO: add logic -->
           <button class="btn--icon">
             <!-- TODO: use AstarUI icon -->
             <svg

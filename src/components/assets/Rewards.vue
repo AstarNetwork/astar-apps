@@ -3,8 +3,8 @@
     <div class="container--rewards">
       <div>
         <div>
-          <div class="text--label">Your Staking</div>
-          <div class="text--title">Reward</div>
+          <div class="text--label">{{ $t('assets.yourStaking') }}</div>
+          <div class="text--title">{{ $t('assets.reward') }}</div>
         </div>
 
         <template v-if="isDappDeveloper">
