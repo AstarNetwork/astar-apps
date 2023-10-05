@@ -40,8 +40,14 @@
       </div>
       <div>{{ $t('wallet.unifiedAccount.agreeToProceed') }}</div>
     </div>
+    <div class="box--warning box--warning--deposit">
+      <div>
+        <input v-model="isCheckedDeposit" type="checkbox" class="checkbox" />
+      </div>
+      <div>{{ $t('wallet.unifiedAccount.agreeToDeposit', { cost: totalCost }) }}</div>
+    </div>
     <div>
-      <astar-button class="btn" :disabled="!isChecked" @click="next()">
+      <astar-button class="btn" :disabled="!isChecked || !isCheckedDeposit" @click="next()">
         {{ $t('next') }}
       </astar-button>
     </div>
@@ -52,16 +58,23 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: {},
+  props: {
+    totalCost: {
+      type: String,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {
       emit('next');
     };
     const isChecked = ref<boolean>(false);
+    const isCheckedDeposit = ref<boolean>(false);
 
     return {
       isChecked,
+      isCheckedDeposit,
       next,
     };
   },
@@ -70,4 +83,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/modal-account-unification.scss';
+
+.box--warning--deposit {
+  margin-top: -20px;
+}
 </style>

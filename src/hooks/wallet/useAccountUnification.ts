@@ -33,6 +33,7 @@ import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
+import { IIdentityRepository } from 'src/v2/repositories';
 
 const provider = get(window, 'ethereum');
 
@@ -60,7 +61,7 @@ export const useAccountUnification = () => {
 
   const store = useStore();
   const { currentAccount } = useAccount();
-  const { evmNetworkIdx } = useNetworkInfo();
+  const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
   const { era } = useCurrentEra();
   const { t } = useI18n();
 
@@ -331,6 +332,15 @@ export const useAccountUnification = () => {
     return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
   };
 
+  const getCost = async (): Promise<string> => {
+    const TOTAL_FIELDS = 5; // account name, avatar address key, avatar address value, token id key, token id value
+    const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
+    const depositInfo = await identityRepository.getDepositInfo();
+    const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS);
+
+    return `${ethers.utils.formatEther(totalDeposit.toString())} ${nativeTokenSymbol.value}`;
+  };
+
   watch([web3], updateEvmProvider);
   watch([selectedEvmAddress, dapps, era], checkStakerInfo);
   watch([xcmAssets, web3], setTransferXc20CallData);
@@ -349,5 +359,6 @@ export const useAccountUnification = () => {
     setWeb3,
     handleTransferXc20Tokens,
     unifyAccounts,
+    getCost,
   };
 };

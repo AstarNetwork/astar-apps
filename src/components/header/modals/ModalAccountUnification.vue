@@ -10,7 +10,7 @@
     <div class="wrapper--modal-account">
       <div v-if="currentStep === 1">
         <au-step1-evm v-if="isH160" :handle-back="backModal" />
-        <au-step1-native v-else @next="updateSteps(2)" />
+        <au-step1-native v-else :total-cost="totalCost" @next="updateSteps(2)" />
       </div>
       <div v-else-if="currentStep === 2">
         <au-step2
@@ -67,7 +67,7 @@
 import { useStore } from 'src/store';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useAccount, useAccountUnification, useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, onUnmounted, ref } from 'vue';
+import { computed, defineComponent, onUnmounted, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import UserAccount from 'src/components/header/modals/account-unification/UserAccount.vue';
 import AuStep1Native from 'src/components/header/modals/account-unification/AuStep1Native.vue';
@@ -106,6 +106,7 @@ export default defineComponent({
     const currentStep = ref<number>(0);
     const { currentAccount } = useAccount();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const totalCost = ref<string>('');
 
     const {
       selectedEvmAddress,
@@ -120,6 +121,7 @@ export default defineComponent({
       setWeb3,
       handleTransferXc20Tokens,
       unifyAccounts,
+      getCost,
     } = useAccountUnification();
 
     const closeModal = async (): Promise<void> => {
@@ -145,6 +147,10 @@ export default defineComponent({
 
     window.addEventListener('resize', onHeightChange);
     onHeightChange();
+
+    onMounted(async () => {
+      totalCost.value = await getCost();
+    });
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);
@@ -210,6 +216,7 @@ export default defineComponent({
       accountName,
       isSendingXc20Tokens,
       isLoading,
+      totalCost,
       closeModal,
       backModal,
       updateSteps,

@@ -12,3 +12,8 @@ export class IdentityData {
     this.additional = additional;
   }
 }
+
+export interface Deposit {
+  basic: bigint;
+  field: bigint;
+}
