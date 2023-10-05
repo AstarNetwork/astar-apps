@@ -82,7 +82,6 @@ import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
@@ -94,7 +93,6 @@ import { truncate } from '@astar-network/astar-sdk-core';
 export default defineComponent({
   components: {
     ModalFaucet,
-    // TokenBalance
   },
   setup() {
     const bal = ref<number>(0);

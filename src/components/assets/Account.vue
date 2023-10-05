@@ -119,17 +119,13 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
-    // NativeAssetList,
     ModalLockdropWarning,
-    // EvmNativeToken,
   },
   props: {
     ttlErc20Amount: {
