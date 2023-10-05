@@ -57,9 +57,11 @@
   background-color: white;
   margin-bottom: 24px;
   @media (min-width: $sm) {
-    border-width: 1px;
     padding-left: 24px;
     padding-right: 24px;
+  }
+  @media (min-width: $lg) {
+    border-width: 1px;
   }
   &.container--native {
     border-color: $astar-pink;

@@ -105,7 +105,7 @@
 
       <!-- Locked tokens -->
       <div class="row row--locked-tokens">
-        <div class="row__info" @click="isExpand = !isExpand">
+        <div class="row__info" @click="width <= screenSize.sm && (isExpand = !isExpand)">
           <div class="text--label">Locked tokens</div>
           <div>
             <div v-if="!isSkeleton" class="column--balance">
@@ -137,7 +137,10 @@
             <div class="rows--expand">
               <!-- Vesting -->
               <div class="row--expand">
-                <div class="row--expand__info" @click="handleModalVesting({ isOpen: true })">
+                <div
+                  class="row--expand__info"
+                  @click="width <= screenSize.sm && handleModalVesting({ isOpen: true })"
+                >
                   <div class="text--label">Vesting</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
@@ -162,7 +165,10 @@
 
               <!-- Staking -->
               <div class="row--expand">
-                <div class="row--expand__info" @click="() => $router.push(Path.DappStaking)">
+                <div
+                  class="row--expand__info"
+                  @click="() => width <= screenSize.sm && $router.push(Path.DappStaking)"
+                >
                   <div class="text--label">{{ $t('common.staking') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
@@ -211,7 +217,14 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { useBalance, useBalloons, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
+import {
+  useBalance,
+  useBalloons,
+  useEvmDeposit,
+  useNetworkInfo,
+  usePrice,
+  useBreakpoints,
+} from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from '@astar-network/astar-sdk-core';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
@@ -222,17 +235,13 @@ import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue'
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import Balloon from 'src/components/common/Balloon.vue';
 
 export default defineComponent({
   components: {
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
-    // TokenBalance,
-    // Balloon,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -336,6 +345,8 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
+    const { width, screenSize } = useBreakpoints();
+
     return {
       bal,
       nativeTokenSymbol,
@@ -362,6 +373,8 @@ export default defineComponent({
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
       isTruncate,
+      width,
+      screenSize,
       truncate,
       buildTransferPageLink,
       handleModalVesting,

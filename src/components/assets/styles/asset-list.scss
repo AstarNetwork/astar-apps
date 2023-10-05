@@ -375,10 +375,12 @@
     flex-direction: column;
     width: 100%;
     gap: 8px;
+    cursor: pointer;
     @media (min-width: $sm) {
       flex-direction: row;
       justify-content: space-between;
       width: 50%;
+      cursor: default;
     }
   }
   .row__actions {
@@ -406,10 +408,12 @@
   background-color: white;
   border-radius: 8px;
   padding: 16px;
+  cursor: pointer;
   @media (min-width: $sm) {
     padding: 24px;
     justify-content: space-between;
     border-radius: 16px;
+    cursor: default;
   }
 }
 .body--dark{
@@ -423,7 +427,6 @@
   align-items: center;
   @media (min-width: $sm) {
     width: 50%;
-    pointer-events: none;
   }
 }
 .row--expand__action {
