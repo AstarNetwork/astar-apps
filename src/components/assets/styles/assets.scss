@@ -57,6 +57,7 @@
   background-color: white;
   margin-bottom: 24px;
   @media (min-width: $sm) {
+    border-width: 1px;
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -70,14 +71,7 @@
 
 .body--dark {
   .container {
-    background-color: $navy-2;
-    border-color: darken($astar-pink, 25%);
-    &.container--native {
-      border-color: darken($astar-pink, 25%);
-    }
-    &.container--others {
-      border-color: darken($astar-purple, 25%);
-    }
+    background-color: $navy-4;
   }
 }
 
