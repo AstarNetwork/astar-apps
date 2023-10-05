@@ -8,6 +8,9 @@
     margin-right: 20px;
     column-gap: 12px;
   }
+  @media (min-width: $sm) {
+    column-gap: 16px;
+  }
 }
 
 .box--search {

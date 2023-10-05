@@ -241,11 +241,15 @@
 
 .icon--expand {
   color: $astar-blue;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   transition: all 0.4s ease 0s;
   border-radius: 100%;
+  svg{
+    width: 26px;
+    height: 26px;
+  }
   &:hover {
     color: white;
     background-color: $astar-blue;
