@@ -29,7 +29,7 @@
         </a>
       </div>
     </div>
-    <div v-if="!isMultisig" id="history" class="container--information">
+    <div v-if="isHistory && !isMultisig" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -99,6 +99,11 @@ export default defineComponent({
     transferType: {
       type: String as PropType<HistoryTxType>,
       required: true,
+    },
+    isHistory: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   setup(props) {

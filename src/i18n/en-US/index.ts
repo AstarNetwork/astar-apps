@@ -609,4 +609,8 @@ export default {
     agree: 'Agree',
     decline: 'Decline',
   },
+  bridge: {
+    bridge: 'Bridge',
+    history: 'History',
+  },
 };

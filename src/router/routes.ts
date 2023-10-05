@@ -1,6 +1,8 @@
 import Assets from 'components/assets/Assets.vue';
+import L1 from 'components/bridge/l1/L1.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
+import BridgePage from 'pages/BridgePage.vue';
 import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -22,6 +24,8 @@ export const networkParam =
 
 export enum Path {
   Assets = '/assets',
+  Bridge = '/bridge',
+  L1 = '/l1',
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
   Discover = '/discover',
@@ -41,6 +45,11 @@ const routes: RouteRecordRaw[] = [
     path: Path.Assets,
     redirect: networkParam + Path.Assets,
   },
+  {
+    path: Path.Bridge,
+    redirect: networkParam + Path.Bridge + Path.L1,
+  },
+
   {
     path: Path.Dashboard,
     redirect: networkParam + Path.Dashboard,
@@ -77,6 +86,17 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'xvm-transfer',
         component: XvmTransfer,
+      },
+    ],
+  },
+  {
+    path: '/:network' + Path.Bridge,
+    name: 'Bridge',
+    component: BridgePage,
+    children: [
+      {
+        path: 'l1',
+        component: L1,
       },
     ],
   },
