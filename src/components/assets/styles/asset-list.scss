@@ -494,3 +494,22 @@
   flex-direction: column;
   gap: 2px;
 }
+
+.btn--icon {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: $astar-blue;
+  margin: auto;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  &:hover {
+    color: white;
+    background-color: $astar-blue;
+  }
+}
