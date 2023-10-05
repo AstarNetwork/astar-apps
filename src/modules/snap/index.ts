@@ -65,11 +65,6 @@ export async function installPolkadotSnap(): Promise<boolean> {
   }
 }
 
-// export async function isPolkadotSnapInstalled(snapId: string): Promise<boolean> {
-//   // TODO: use the snapId to check if the snap is installed
-//   return !!(await getInjectedMetamaskExtension());
-// }
-
 export async function getInjectedMetamaskExtension(): Promise<InjectedMetamaskExtension | null> {
   const extensions = await web3EnablePromise;
   return getMetamaskExtension(extensions || []) || null;
@@ -100,18 +95,3 @@ export async function initiatePolkdatodSnap(): Promise<SnapInitializationRespons
     return { isSnapInstalled: false };
   }
 }
-
-// const isSnapInstalled = await initiatePolkdatodSnap(); // Got the authorisation to use the snap on Portal
-// console.info('isSnapInstalled', isSnapInstalled);
-
-// export async function injectMetamaskPolkadotSnapProvider(
-//   isSnapInstalled: boolean,
-//   injected: MetamaskPolkadotSnap
-// ): Promise<void> {
-//   if (isSnapInstalled) {
-//     injectExtension( injected.getMetamaskSnapApi, {
-//       name: 'metmask-astar-snap',
-//       version: '1.0.0',
-//     });
-//   }
-// }
