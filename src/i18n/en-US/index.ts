@@ -92,7 +92,6 @@ export default {
     staking: 'Staking',
     contract: 'Contract',
     ecosystem: 'Ecosystem',
-    plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
     telegram: 'Telegram',
@@ -380,7 +379,6 @@ export default {
     xvmAssets: 'XVM (Cross Virtual Machine) ERC-20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
-    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
@@ -399,8 +397,6 @@ export default {
     yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
-    lockdropAccount: 'Lockdrop Account',
-    inLockdropAccount: 'You are in a Lockdrop account',
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
@@ -500,16 +496,6 @@ export default {
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
-      },
-      lockdropWarning: {
-        message:
-          'The Lockdrop account will be deprecated in the upcoming update, as its purpose has been fulfilled. Please transfer your funds to another substrate wallet immediately.',
-        list1:
-          "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
-        list2:
-          'Please note that unstaking in dApp staking will require 10 eras (approximately 10 days).',
-        closeTime: 'UTC 23:59 12th September 2023',
-        gotIt: 'Got it',
       },
     },
   },
