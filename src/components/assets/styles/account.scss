@@ -59,7 +59,7 @@
 .body--dark {
   .wrapper--account {
     @media (min-width: $sm) {
-      background: rgba(8, 15, 46, 0.5);
+      background: rgba(8, 15, 46, 0.3);
     }
   }
 }
@@ -89,8 +89,8 @@
   }
 }
 .text--balance {
-  font-size: 32px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
   text-align: center;
   @media (min-width: $sm) {
     text-align: left;
