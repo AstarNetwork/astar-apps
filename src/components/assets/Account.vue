@@ -13,16 +13,6 @@
     </div>
 
     <div class="container">
-      <div
-        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
-        class="row"
-      >
-        <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
-        <span class="text--switch-account" @click="toggleEvmWalletSchema">
-          {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
-        </span>
-      </div>
-
       <div class="row--details">
         <div class="column-account-name">
           <img
@@ -113,14 +103,7 @@ import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import {
-  useAccount,
-  useBalance,
-  useConnectWallet,
-  useNetworkInfo,
-  usePrice,
-  useWalletIcon,
-} from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice, useWalletIcon } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
@@ -153,7 +136,6 @@ export default defineComponent({
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
-    const { toggleEvmWalletSchema } = useConnectWallet();
     const {
       currentAccount,
       currentAccountName,
@@ -293,7 +275,6 @@ export default defineComponent({
       handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
-      toggleEvmWalletSchema,
       showAccountUnificationModal,
     };
   },

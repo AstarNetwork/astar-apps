@@ -31,7 +31,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     const api = await this.api.getApi();
     // Todo: update the function name once Shibuya runtime has been updated.
     const nativeAddress = api.query.hasOwnProperty('unifiedAccounts')
-      ? await api.query.unifiedAccounts.nativeToEvm<AccountId32>(evmAddress)
+      ? await api.query.unifiedAccounts.evmToNative<AccountId32>(evmAddress)
       : '';
 
     return nativeAddress.toString();
@@ -43,7 +43,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     const api = await this.api.getApi();
     // Todo: update the function name once Shibuya runtime has been updated.
     const evmAddress = api.query.hasOwnProperty('unifiedAccounts')
-      ? await api.query.unifiedAccounts.evmToNative<H160>(nativeAddress)
+      ? await api.query.unifiedAccounts.nativeToEvm<H160>(nativeAddress)
       : '';
 
     return evmAddress.toString();
