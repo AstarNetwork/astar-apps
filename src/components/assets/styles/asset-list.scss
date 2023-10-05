@@ -378,13 +378,13 @@
     @media (min-width: $sm) {
       flex-direction: row;
       justify-content: space-between;
-      width: 66.66%;
+      width: 50%;
     }
   }
   .row__actions {
     display: none;
     @media (min-width: $sm) {
-      width: 33.33%;
+      width: 50%;
       display: flex;
       justify-content: flex-end;
     }
@@ -422,14 +422,14 @@
   display: flex;
   align-items: center;
   @media (min-width: $sm) {
-    width: 66.66%;
+    width: 50%;
     pointer-events: none;
   }
 }
 .row--expand__action {
   display: none;
   @media (min-width: $sm) {
-    width: 33.33%;
+    width: 50%;
     display: flex;
     justify-content: flex-end;
   }
