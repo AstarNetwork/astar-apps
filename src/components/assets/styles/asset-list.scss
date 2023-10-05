@@ -460,7 +460,14 @@
   align-items: flex-end;
   gap: 8px;
   width: 100%;
+  color: $navy-1;
 }
+.body--dark{
+  .column--balance {
+    color: white;
+  }
+}
+
 .row--expand{
   .column--balance {
     gap: 4px;

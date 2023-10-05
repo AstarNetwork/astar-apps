@@ -69,10 +69,17 @@
   align-items: center;
   flex-direction: column;
   gap: 16px;
+  color: $navy-1;
   @media (min-width: $sm) {
     flex-direction: row;
   }
 }
+.body--dark {
+  .row--account-info {
+    color: white;
+  }
+}
+
 .column--account-icon {
   img {
     width: 60px;
