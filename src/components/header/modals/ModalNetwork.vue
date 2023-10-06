@@ -45,7 +45,11 @@
                   </div>
                   <div v-else>
                     <div
-                      v-if="selNetwork === index && providerEndpoints[index].endpoints"
+                      v-if="
+                        selNetwork === index &&
+                        providerEndpoints[index].endpoints &&
+                        provider.key !== endpointKey.AKIBA
+                      "
                       class="box--endpoints"
                     >
                       <div>
@@ -141,7 +145,6 @@ import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainE
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
-import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
 
 export default defineComponent({
@@ -192,6 +195,8 @@ export default defineComponent({
           return selEndpointShiden.value;
         case endpointKey.SHIBUYA:
           return selEndpointShibuya.value;
+        case endpointKey.AKIBA:
+          return selEndpointAkiba.value;
 
         default:
           return selEndpointAstar.value;
@@ -227,6 +232,7 @@ export default defineComponent({
     const selEndpointAstar = ref<string>('');
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
+    const selEndpointAkiba = ref<string>('');
 
     const isDisabled = computed<boolean>(() => {
       if (isSelectLightClient.value) {
@@ -261,7 +267,9 @@ export default defineComponent({
         ? selEndpointAstar.value === endpoint
         : index === endpointKey.SHIDEN
         ? selEndpointShiden.value === endpoint
-        : selEndpointShibuya.value === endpoint;
+        : index === endpointKey.SHIBUYA
+        ? selEndpointShibuya.value === endpoint
+        : selEndpointAkiba.value === endpoint;
     };
 
     const setSelEndpoint = ({
@@ -278,6 +286,8 @@ export default defineComponent({
         selEndpointShiden.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.SHIBUYA) {
         selEndpointShibuya.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.AKIBA) {
+        selEndpointAkiba.value = endpointObj.endpoint;
       }
     };
 
@@ -298,6 +308,9 @@ export default defineComponent({
       if (networkIdx === endpointKey.SHIBUYA) {
         selEndpointShibuya.value = getRandomizedEndpoint(endpointKey.SHIBUYA);
       }
+      if (networkIdx === endpointKey.AKIBA) {
+        selEndpointAkiba.value = getRandomizedEndpoint(endpointKey.AKIBA);
+      }
     };
 
     const setupInitialEndpointOption = (networkIdx: number) => {
@@ -305,6 +318,7 @@ export default defineComponent({
         selEndpointAstar.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.AKIBA);
         return;
       }
 
@@ -312,6 +326,7 @@ export default defineComponent({
         selEndpointShiden.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.AKIBA);
         return;
       }
 
@@ -319,6 +334,14 @@ export default defineComponent({
         selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.AKIBA);
+        return;
+      }
+      if (networkIdx === endpointKey.AKIBA) {
+        selEndpointShibuya.value = setInitialSelEndpoint();
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
         return;
       }
     };

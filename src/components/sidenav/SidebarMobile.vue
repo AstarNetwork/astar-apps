@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="header">
@@ -21,13 +20,24 @@
           </div>
         </router-link>
         <router-link
-          v-if="network.isStoreEnabled"
+          v-if="network.isStoreEnabled && !isZkEvm"
           :to="RoutePath.DappStaking"
           :class="['link', path === 'dapp-staking' && 'active-link']"
         >
           <div class="column--item">
             <span class="text--link">
               {{ $t('common.staking') }}
+            </span>
+          </div>
+        </router-link>
+        <router-link
+          v-else-if="isZkEvm"
+          :to="RoutePath.Bridge"
+          :class="['link', path === 'dapp-staking' && 'active-link']"
+        >
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('assets.bridge') }}
             </span>
           </div>
         </router-link>
@@ -65,6 +75,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SidebarOption from './SidebarOption.vue';
 import { Path as RoutePath } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -72,6 +83,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { isZkEvm } = useNetworkInfo();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const showOption = ref(false);
@@ -97,6 +109,7 @@ export default defineComponent({
       getIndicatorClass,
       path,
       RoutePath,
+      isZkEvm,
     };
   },
 });

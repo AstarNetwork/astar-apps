@@ -1,15 +1,14 @@
 import {
-  astarChain,
   ASTAR_CHAIN,
   ASTAR_EVM_NETWORK_IDX,
   ASTAR_NATIVE_TOKEN,
   ASTAR_NETWORK_IDX,
+  astarChain,
 } from 'src/config/chain';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { polkadotJsUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
-import { polkadotJsUrl } from 'src/links';
-import { endpointKey } from 'src/config/chainEndpoints';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';
@@ -25,13 +24,22 @@ export function useNetworkInfo() {
     return !isTestnet;
   });
 
+  const isZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.AKIBA);
+
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
+    if (isZkEvm.value) {
+      return providerEndpoints[currentNetworkIdx.value].displayName;
+    }
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return chain;
   });
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
+    const networkIdx = store.getters['general/networkIdx'];
+    if (networkIdx === endpointKey.AKIBA) {
+      return networkIdx;
+    }
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
@@ -42,6 +50,9 @@ export function useNetworkInfo() {
   });
 
   const currentNetworkName = computed<string>(() => {
+    if (isZkEvm.value) {
+      return providerEndpoints[currentNetworkIdx.value].displayName.replace(' Network', '');
+    }
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return chain === astarChain.SHIBUYA
@@ -52,12 +63,15 @@ export function useNetworkInfo() {
   });
 
   const nativeTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
+    if (isZkEvm.value) {
+      return 'ETH';
+    }
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
   const isSupportXvmTransfer = computed<boolean>(() => {
-    return !isMainnet.value;
+    return !isMainnet.value && !isZkEvm.value;
   });
 
   const polkadotJsLink = computed<string>(() => {
@@ -78,5 +92,6 @@ export function useNetworkInfo() {
     nativeTokenSymbol,
     isSupportXvmTransfer,
     polkadotJsLink,
+    isZkEvm,
   };
 }

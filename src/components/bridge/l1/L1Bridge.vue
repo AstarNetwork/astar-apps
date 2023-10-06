@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="icon.ethereum" alt="wallet-icon" />
+          <img width="24" :src="icon.shibuya" alt="wallet-icon" />
           <div class="column--wallet-address">
             <div class="column--wallet-name">
               <span class="text--title">Akiba</span>
@@ -112,6 +112,7 @@ export default defineComponent({
 
     const icon = {
       ethereum: require('/src/assets/img/ethereum.png'),
+      shibuya: require('src/assets/img/chain/shibuya.png'),
     };
 
     return {

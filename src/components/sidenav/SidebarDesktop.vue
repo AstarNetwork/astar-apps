@@ -40,7 +40,7 @@
       </div>
       <div>
         <router-link
-          v-if="network.isStoreEnabled"
+          v-if="network.isStoreEnabled && !isZkEvm"
           :to="RoutePath.DappStaking"
           :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
@@ -53,6 +53,22 @@
           </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
+          </div>
+        </router-link>
+        <router-link
+          v-else-if="isZkEvm"
+          :to="RoutePath.Bridge"
+          :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
+        >
+          <astar-icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            icon-color="currentColor"
+            icon-name="staking"
+          >
+            <astar-icon-dapp-staking />
+          </astar-icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('assets.bridge') }}</astar-text>
           </div>
         </router-link>
         <div v-else class="dummy-row" />
@@ -114,7 +130,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
-import { useSidebar } from 'src/hooks';
+import { useNetworkInfo, useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
@@ -136,6 +152,7 @@ export default defineComponent({
   },
   setup() {
     const { isOpen } = useSidebar();
+    const { isZkEvm } = useNetworkInfo();
 
     const store = useStore();
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
@@ -169,6 +186,7 @@ export default defineComponent({
       network,
       isShiden,
       getIndicatorClass,
+      isZkEvm,
       router,
       path,
       RoutePath,

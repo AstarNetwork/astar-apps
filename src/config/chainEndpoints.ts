@@ -27,9 +27,10 @@ export enum endpointKey {
   ASTAR = 0,
   SHIDEN = 1,
   SHIBUYA = 2,
-  LOCAL = 3,
-  CUSTOM = 4,
-  ROCSTAR = 5,
+  AKIBA = 3,
+  LOCAL = 4,
+  CUSTOM = 5,
+  ROCSTAR = 6,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -115,6 +116,22 @@ export const providerEndpoints: ChainProvider[] = [
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
   {
+    networkAlias: 'akiba-testnet',
+    displayName: 'Akiba Network',
+    endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
+    isSupportContract: false,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.AKIBA,
+    isStoreEnabled: true,
+    subscan: 'https://shibuya.subscan.io',
+    blockscout: 'http://161.35.17.216:4004',
+    evmChainId: '7759',
+    evmEndpoints: ['http://161.35.17.216:8545'],
+    faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
+  },
+  {
     networkAlias: 'development',
     displayName: 'Local Network',
     endpoints: [{ name: 'Local Network', endpoint: 'ws://127.0.0.1:9944' }],
@@ -148,6 +165,7 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
+
   {
     networkAlias: 'rocstar',
     displayName: 'Rocstar',

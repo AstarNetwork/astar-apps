@@ -21,6 +21,7 @@ const chain = {
   astar: providerEndpoints.find((it) => it.key === endpointKey.ASTAR),
   localNode: providerEndpoints.find((it) => it.key === endpointKey.LOCAL),
   rocstar: providerEndpoints.find((it) => it.key === endpointKey.ROCSTAR),
+  akiba: providerEndpoints.find((it) => it.key === endpointKey.AKIBA),
 };
 
 export enum EVM {
