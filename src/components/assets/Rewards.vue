@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container--rewards">
-      <div>
+      <div class="container--rewards__inner">
         <div>
           <div class="text--label">{{ $t('assets.yourStaking') }}</div>
           <div class="text--title">{{ $t('assets.reward') }}</div>

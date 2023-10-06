@@ -9,7 +9,7 @@
 }
 
 .container--rewards {
-  background: linear-gradient(180deg, #e0338f 20.63%, rgba(190, 51, 224, 0) 100%);
+  background: linear-gradient(to bottom, #e0338f 10%, rgba(190, 51, 224, 0) 100%);
   width: 240px;
   height: 240px;
   border-radius: 9999px;
@@ -22,32 +22,69 @@
   margin: auto;
   z-index: 1;
   position: relative;
+  overflow: hidden;
+  &::before,
+  &::after {
+    position: absolute;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    content: '';
+    animation: wave linear 6s infinite;
+    z-index: 0;
+  }
+  &::before {
+    bottom: -156%;
+    border-radius: 50% 50% / 50% 70%;
+    opacity: 0.3;
+    background: linear-gradient(to right, #e6007a, #703ac2, #0070eb);
+    animation-delay: 0.4s;
+  }
+  &::after {
+    bottom: -160%;
+    border-radius: 30% 70% / 30% 50%;
+    opacity: 0.3;
+    background-color: #e0338f;
+  }
+}
+@keyframes wave {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.text--label{
+.container--rewards__inner{
+  position: relative;
+  z-index: 1;
+}
+
+.text--label {
   font-size: 18px;
   font-weight: 600;
   color: white;
 }
 
-.text--title{
+.text--title {
   font-weight: 800;
   font-size: 40px;
   line-height: 1;
   color: white;
 }
 
-.row--reward{
+.row--reward {
   margin: 12px 0;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  .row--reward__amount{
+  .row--reward__amount {
     font-size: 36px;
     font-weight: 800;
     line-height: 1;
   }
-  .row--reward__symbol{
+  .row--reward__symbol {
     margin-left: 4px;
     font-size: 18px;
     font-weight: 600;
