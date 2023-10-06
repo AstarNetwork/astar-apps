@@ -13,10 +13,10 @@
       </div>
       <div class="row--header__right">
         <div v-if="!isSkeleton" class="column--balance">
-          <span class="text--amount">
+          <div class="column--amount text--amount">
             {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
-          </span>
-          <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          </div>
+          <div class="column--symbol text--symbol">{{ nativeTokenSymbol }}</div>
         </div>
         <div v-else>
           <q-skeleton animation="fade" class="skeleton--md" />
@@ -38,20 +38,16 @@
                 : $router.push(buildTransferPageLink(nativeTokenSymbol))
           "
         >
-          <div class="text--label">{{ $t('assets.transferable') }}</div>
-          <div>
-            <div v-if="!isSkeleton" class="column--balance">
-              <span class="text--amount">
-                {{
-                  isTruncate ? $n(truncate(transferableBalance, 3)) : Number(transferableBalance)
-                }}
-              </span>
-              <span class="text--symbol">{{ nativeTokenSymbol }}</span>
-            </div>
-            <div v-else>
-              <div class="skeleton--right">
-                <q-skeleton animation="fade" class="skeleton--md" />
-              </div>
+          <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+          <div v-if="!isSkeleton" class="column--balance">
+            <span class="column--amount text--amount">
+              {{ isTruncate ? $n(truncate(transferableBalance, 3)) : Number(transferableBalance) }}
+            </span>
+            <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
+          </div>
+          <div v-else>
+            <div class="skeleton--right">
+              <q-skeleton animation="fade" class="skeleton--md" />
             </div>
           </div>
         </div>
@@ -108,18 +104,17 @@
       <!-- Locked tokens -->
       <div class="row row--locked-tokens">
         <div class="row__info" @click="width <= screenSize.sm && (isExpand = !isExpand)">
-          <div class="text--label">{{ $t('assets.lockedTokens') }}</div>
-          <div>
-            <div v-if="!isSkeleton" class="column--balance">
-              <span class="text--amount">
-                {{ isTruncate ? $n(truncate(vestingTtl, 3)) : Number(vestingTtl) }}
-              </span>
-              <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          <div class="column--label text--label">{{ $t('assets.lockedTokens') }}</div>
+
+          <div v-if="!isSkeleton" class="column--balance">
+            <div class="column--amount text--amount">
+              {{ isTruncate ? $n(truncate(vestingTtl, 3)) : Number(vestingTtl) }}
             </div>
-            <div v-else>
-              <div class="skeleton--right">
-                <q-skeleton animation="fade" class="skeleton--md" />
-              </div>
+            <div class="column--symbol text--symbol">{{ nativeTokenSymbol }}</div>
+          </div>
+          <div v-else>
+            <div class="skeleton--right">
+              <q-skeleton animation="fade" class="skeleton--md" />
             </div>
           </div>
         </div>
@@ -143,13 +138,13 @@
                   class="row--expand__info"
                   @click="width <= screenSize.sm && handleModalVesting({ isOpen: true })"
                 >
-                  <div class="text--label">{{ $t('assets.vesting') }}</div>
+                  <div class="column--label text--label">{{ $t('assets.vesting') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
-                      <span class="text--amount">
+                      <div class="column--amount text--amount">
                         {{ isTruncate ? $n(truncate(vestingTtl, 3)) : Number(vestingTtl) }}
-                      </span>
-                      <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+                      </div>
+                      <div class="column--symbol text--symbol">{{ nativeTokenSymbol }}</div>
                     </template>
                     <template v-else>
                       <div class="skeleton--right">
@@ -171,17 +166,17 @@
                   class="row--expand__info"
                   @click="() => width <= screenSize.sm && $router.push(Path.DappStaking)"
                 >
-                  <div class="text--label">{{ $t('common.staking') }}</div>
+                  <div class="column--label text--label">{{ $t('common.staking') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
-                      <span class="text--amount">
+                      <div class="column--amount text--amount">
                         {{
                           isTruncate
                             ? $n(truncate(lockInDappStaking, 3))
                             : Number(lockInDappStaking)
                         }}
-                      </span>
-                      <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+                      </div>
+                      <div class="column--symbol text--symbol">{{ nativeTokenSymbol }}</div>
                     </template>
                     <template v-else>
                       <div class="skeleton--right">

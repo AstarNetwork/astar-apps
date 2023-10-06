@@ -17,11 +17,21 @@
           </div>
         </div>
         <div class="column--balance">
-          <div class="text--title">
-            <token-balance :balance="token.userBalance" :symbol="token.metadata.symbol" />
+          <div class="column--balance__row text--title">
+            <div class="column--amount">
+              {{ isTruncate ? $n(truncate(token.userBalance, 3)) : Number(token.userBalance) }}
+            </div>
+            <div class="column--symbol">
+              {{ token.metadata.symbol }}
+            </div>
           </div>
-          <div class="text--label">
-            <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
+          <div class="column--balance__row text--label">
+            <div class="column--amount">
+              {{ $n(Number(token.userBalanceUsd)) }}
+            </div>
+            <div class="column--symbol">
+              {{ $t('usd') }}
+            </div>
           </div>
         </div>
       </div>
@@ -101,10 +111,10 @@ import { buildTransferPageLink } from 'src/router/routes';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useBreakpoints } from 'src/hooks';
+import { truncate } from '@astar-network/astar-sdk-core';
 export default defineComponent({
-  components: { [Jazzicon.name]: Jazzicon, TokenBalance },
+  components: { [Jazzicon.name]: Jazzicon },
   props: {
     token: {
       type: Object as PropType<Asset>,
@@ -133,6 +143,8 @@ export default defineComponent({
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
+    const isTruncate = !props.token.metadata.symbol.toUpperCase().includes('BTC');
+
     const isFavorite = ref<boolean>(false);
 
     return {
@@ -141,7 +153,9 @@ export default defineComponent({
       isExpand,
       width,
       screenSize,
+      isTruncate,
       isFavorite,
+      truncate,
       buildTransferPageLink,
     };
   },

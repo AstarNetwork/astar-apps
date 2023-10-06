@@ -56,6 +56,9 @@
     width: 50%;
     justify-content: flex-end;
     padding: 0;
+    gap: 8px;
+  }
+  @media (min-width: $md) {
     gap: 16px;
   }
 }
@@ -68,7 +71,18 @@
 
 .column--balance {
   width: 50%;
-  text-align: right;
+  .column--balance__row{
+    display: flex;
+    gap: 8px;
+  }
+  .column--amount{
+    width: 70%;
+    text-align: right;
+  }
+  .column--symbol{
+    width: 30%;
+    text-align: left;
+  }
 }
 
 .column--three-buttons {

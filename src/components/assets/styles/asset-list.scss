@@ -325,6 +325,7 @@
   align-items: center;
   justify-content: space-between;
   .row--header__left {
+    width: 50%;
     .column--token-name {
       display: flex;
       align-items: center;
@@ -336,6 +337,9 @@
         flex-shrink: 0;
       }
     }
+  }
+  .row--header__right{
+    width: 50%;
   }
 }
 
@@ -392,6 +396,24 @@
     }
   }
 }
+.column--label{
+  width: 50%;
+}
+.column--amount{
+  width: 70%;
+  text-align: right;
+}
+.column--symbol{
+  width: 30%;
+  text-align: left;
+}
+.row--transferable > .row__info > .column--balance > .column--symbol,
+.row--locked-tokens > .row__info > .column--balance > .column--symbol{
+  width: 15%;
+  @media (min-width: $sm) {
+    width: 30%;
+  }
+}
 
 .wrapper--expand {
   width: 100%;
@@ -407,10 +429,10 @@
   align-items: center;
   background-color: white;
   border-radius: 8px;
-  padding: 16px;
+  padding: 16px 0;
   cursor: pointer;
   @media (min-width: $sm) {
-    padding: 24px;
+    padding: 24px 0;
     justify-content: space-between;
     border-radius: 16px;
     cursor: default;
@@ -425,8 +447,10 @@
   width: 100%;
   display: flex;
   align-items: center;
+  padding-left: 16px;
   @media (min-width: $sm) {
     width: 50%;
+    padding-left: 24px;
   }
 }
 .row--expand__action {
@@ -464,16 +488,31 @@
   gap: 8px;
   width: 100%;
   color: $navy-1;
+  @media (min-width: $sm) {
+    width: 50%;
+  }
 }
 .body--dark{
   .column--balance {
     color: white;
   }
 }
+.row--header .column--balance{
+  @media (min-width: $sm) {
+    width: 100%;
+  }
+  .column--amount,
+  .column--symbol{
+    @media (min-width: $sm) {
+      width: auto;
+    }
+  }
+}
 
 .row--expand{
   .column--balance {
     gap: 4px;
+    width: 50%;
     @media (min-width: $sm) {
       gap: 8px;
     }

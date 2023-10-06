@@ -13,10 +13,10 @@
       </div>
       <div class="row--header__right">
         <div v-if="nativeTokenSymbol && currentNetworkName" class="column--balance">
-          <span class="text--amount">
+          <span class="column--amount text--amount">
             {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
           </span>
-          <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
         </div>
         <div v-else>
           <q-skeleton animation="fade" class="skeleton--md" />
@@ -37,17 +37,15 @@
               : $router.push(buildTransferPageLink(nativeTokenSymbol))
         "
       >
-        <div class="text--label">{{ $t('assets.transferable') }}</div>
-        <div>
-          <div v-if="nativeTokenSymbol && currentNetworkName" class="column--balance">
-            <span class="text--amount">
-              {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
-            </span>
-            <span class="text--symbol">{{ nativeTokenSymbol }}</span>
-          </div>
-          <div v-else>
-            <q-skeleton animation="fade" class="skeleton--md" />
-          </div>
+        <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+        <div v-if="nativeTokenSymbol && currentNetworkName" class="column--balance">
+          <span class="column--amount text--amount">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
+        </div>
+        <div v-else>
+          <q-skeleton animation="fade" class="skeleton--md" />
         </div>
       </div>
 

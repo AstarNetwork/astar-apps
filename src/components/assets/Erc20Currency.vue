@@ -17,11 +17,21 @@
           </div>
         </div>
         <div class="column--balance">
-          <div class="text--title">
-            <token-balance :balance="token.userBalance" :symbol="token.symbol" />
+          <div class="column--balance__row text--title">
+            <div class="column--amount">
+              {{ isTruncate ? $n(truncate(token.userBalance, 3)) : Number(token.userBalance) }}
+            </div>
+            <div class="column--symbol">
+              {{ token.symbol }}
+            </div>
           </div>
-          <div class="text--label">
-            <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
+          <div class="column--balance__row text--label">
+            <div class="column--amount">
+              {{ $n(Number(token.userBalanceUsd)) }}
+            </div>
+            <div class="column--symbol">
+              {{ $t('usd') }}
+            </div>
           </div>
         </div>
       </div>
@@ -145,7 +155,6 @@
   </div>
 </template>
 <script lang="ts">
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
@@ -161,10 +170,10 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { useBreakpoints } from 'src/hooks';
+import { truncate } from '@astar-network/astar-sdk-core';
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
-    TokenBalance,
   },
   props: {
     token: {
@@ -206,6 +215,8 @@ export default defineComponent({
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
     };
 
+    const isTruncate = !token.symbol.toUpperCase().includes('BTC');
+
     const isFavorite = ref<boolean>(false);
 
     return {
@@ -215,7 +226,9 @@ export default defineComponent({
       isExpand,
       width,
       screenSize,
+      isTruncate,
       isFavorite,
+      truncate,
       buildTransferPageLink,
       addToEvmProvider,
       handleDeleteStoredToken,
