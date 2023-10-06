@@ -4,7 +4,7 @@ import { IdentityInfoAdditional } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
 import { ExtrinsicPayload, IApi } from 'src/v2/integration';
-import { IdentityData } from 'src/v2/models';
+import { Deposit, IdentityData } from 'src/v2/models';
 import { IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
@@ -13,6 +13,20 @@ import { u8aToString } from '@polkadot/util';
 @injectable()
 export class IdentityRepository implements IIdentityRepository {
   constructor(@inject(Symbols.DefaultApi) private readonly api: IApi) {}
+
+  public async getDepositInfo(): Promise<Deposit> {
+    const api = await this.api.getApi();
+
+    const [basic, field] = await Promise.all([
+      api.consts.identity.basicDeposit.toBigInt(),
+      api.consts.identity.fieldDeposit.toBigInt(),
+    ]);
+
+    return {
+      basic,
+      field,
+    };
+  }
 
   public async getIdentity(address: string): Promise<IdentityData | undefined> {
     Guard.ThrowIfUndefined('address', address);

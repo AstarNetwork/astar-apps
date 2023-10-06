@@ -18,6 +18,7 @@
             class="box--input-form"
             type="text"
             :placeholder="$t('wallet.unifiedAccount.unifiedAccountName')"
+            :maxlength="32"
             @input="(event) => setAccountName(event)"
           />
         </div>
