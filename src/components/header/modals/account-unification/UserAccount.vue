@@ -4,12 +4,76 @@
     <div v-if="isAccountUnified">
       <!-- TODO: add unified account info -->
       <div class="text--account-name">
-        <img :src="icon_img.astar_gradient" class="text--account-name__icon" />
-        <div>Unified Account Name</div>
+        <jazzicon
+          class="text--account-name__icon"
+          :address="unifiedAccount?.nativeAddress"
+          :diameter="32"
+        />
+        <div>{{ unifiedAccount?.name }}</div>
       </div>
       <div class="box--wallet-list">
-        <div class="row--wallet">native wallet</div>
-        <div class="row--wallet">evm wallet</div>
+        <div class="row--wallet">
+          <div class="column--icon">
+            <img :src="walletIcons.substrate" alt="wallet icon" />
+          </div>
+          <div class="column--address">
+            <div>{{ getShortenAddress(unifiedAccount?.nativeAddress ?? '') }}</div>
+          </div>
+          <div class="column--actions">
+            <div>
+              <button
+                id="copyAddress"
+                type="button"
+                class="icon--primary"
+                @click="copyAddress(unifiedAccount?.nativeAddress ?? '')"
+              >
+                <astar-icon-copy />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
+            </div>
+            <a :href="subScan" target="_blank" rel="noopener noreferrer">
+              <button class="icon--primary">
+                <astar-icon-external-link />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('subscan') }}</span>
+              </q-tooltip>
+            </a>
+          </div>
+        </div>
+        <div class="row--wallet">
+          <div class="column--icon">
+            <img :src="walletIcons.evm" alt="wallet icon" />
+          </div>
+          <div class="column--address">
+            <div>{{ getShortenAddress(unifiedAccount?.evmAddress ?? '') }}</div>
+          </div>
+          <div class="column--actions">
+            <div>
+              <button
+                id="copyAddress"
+                type="button"
+                class="icon--primary"
+                @click="copyAddress(unifiedAccount?.evmAddress ?? '')"
+              >
+                <astar-icon-copy />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
+            </div>
+            <a :href="blockscout" target="_blank" rel="noopener noreferrer">
+              <button class="icon--primary">
+                <astar-icon-external-link />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('blockscout') }}</span>
+              </q-tooltip>
+            </a>
+          </div>
+        </div>
       </div>
       <div class="btn--edit">
         <astar-button class="btn">{{ $t('dappStaking.edit') }}</astar-button>
@@ -35,7 +99,12 @@
           </div>
           <div class="column--actions">
             <div>
-              <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
+              <button
+                id="copyAddress"
+                type="button"
+                class="icon--primary"
+                @click="copyAddress(currentAccount)"
+              >
                 <astar-icon-copy />
               </button>
               <q-tooltip>
@@ -79,9 +148,12 @@ import copy from 'copy-to-clipboard';
 import { useI18n } from 'vue-i18n';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import Help from 'src/components/header/modals/account-unification/Help.vue';
+import { UnifiedAccount } from 'src/store/general/state';
+import Jazzicon from 'vue3-jazzicon/src/components';
+import { uniqueId } from 'lodash-es';
 
 export default defineComponent({
-  components: { Help },
+  components: { Help, [Jazzicon.name]: Jazzicon },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {
@@ -95,9 +167,17 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const unifiedAccount = computed<UnifiedAccount | undefined>(
+      () => store.getters['general/getUnifiedAccount']
+    );
+    const isAccountUnified = computed<boolean>(() => unifiedAccount.value !== undefined);
+    const walletIcons = {
+      substrate: require('/src/assets/img/logo-polkadot-js.png'),
+      evm: require('/src/assets/img/ethereum.png'),
+    };
 
-    const copyAddress = (): void => {
-      copy(currentAccount.value);
+    const copyAddress = (address: string): void => {
+      copy(address);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
         alertType: 'copied',
@@ -106,14 +186,17 @@ export default defineComponent({
 
     const blockscout = computed<string>(
       () =>
-        `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
+        `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${
+          unifiedAccount.value ? unifiedAccount.value.evmAddress : currentAccount.value
+        }`
     );
 
     const subScan = computed<string>(
-      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
+      () =>
+        `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
+          unifiedAccount.value ? unifiedAccount.value.nativeAddress : currentAccount.value
+        }`
     );
-
-    const isAccountUnified = ref<boolean>(false);
 
     const icon_img = {
       astar_gradient: require('/src/assets/img/astar_icon.svg'),
@@ -128,6 +211,8 @@ export default defineComponent({
       subScan,
       isAccountUnified,
       icon_img,
+      unifiedAccount,
+      walletIcons,
       getShortenAddress,
       copyAddress,
       next,
