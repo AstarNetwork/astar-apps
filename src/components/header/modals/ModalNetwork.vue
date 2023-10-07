@@ -4,87 +4,93 @@
       <div class="wrapper--select-network">
         <fieldset>
           <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
-            <li
-              v-for="(provider, index) in providerEndpoints.filter(
-                (it) => it.networkAlias !== 'rocstar'
-              )"
-              :key="index"
-            >
-              <label
-                :class="[
-                  'class-radio',
-                  selNetwork === index ? 'class-radio-on' : 'class-radio-off',
-                  provider.key === endpointKey.CUSTOM &&
-                    isCustomNetwork &&
-                    'class-radio--custom-network',
-                ]"
+            <li v-for="(provider, index) in providerEndpoints" :key="index">
+              <!-- Todo: remove this 'div' when we public astar-zkevm -->
+              <div
+                v-if="
+                  provider.networkAlias !== 'astar-zkevm' && provider.networkAlias !== 'rocstar'
+                "
               >
-                <astar-radio-btn
-                  class="ip--network"
-                  :checked="selNetwork === index"
-                  @change="selNetwork = index"
-                />
-                <div class="wrapper--network-detail">
-                  <div class="box--radio-network">
-                    <img v-if="provider.defaultLogo" width="24" :src="provider.defaultLogo" />
-                    <p class="box--display-name">
-                      {{ provider.displayName }}
-                    </p>
-                  </div>
-                  <div v-if="index === endpointKey.CUSTOM">
-                    <input
-                      v-if="selNetwork === index"
-                      v-model="newEndpoint"
-                      type="text"
-                      placeholder="IP Address / Domain"
-                      class="ip-input"
-                    />
-                  </div>
-                  <div v-else-if="index === endpointKey.LOCAL">
-                    <div />
-                  </div>
-                  <div v-else>
-                    <div
-                      v-if="
-                        selNetwork === index &&
-                        providerEndpoints[index].endpoints &&
-                        provider.key !== endpointKey.AKIBA
-                      "
-                      class="box--endpoints"
-                    >
-                      <div>
-                        <span class="text--md">{{ $t('drawer.endpoint') }}</span>
-                      </div>
-                      <div class="column--options">
-                        <div
-                          v-for="(endpointObj, i) in providerEndpoints[index].endpoints"
-                          :key="i"
-                        >
+                <label
+                  :class="[
+                    'class-radio',
+                    selNetwork === index ? 'class-radio-on' : 'class-radio-off',
+                    provider.key === endpointKey.CUSTOM &&
+                      isCustomNetwork &&
+                      'class-radio--custom-network',
+                  ]"
+                >
+                  <astar-radio-btn
+                    class="ip--network"
+                    :checked="selNetwork === index"
+                    @change="selNetwork = index"
+                  />
+                  <div class="wrapper--network-detail">
+                    <div class="box--radio-network">
+                      <img v-if="provider.defaultLogo" width="24" :src="provider.defaultLogo" />
+                      <p class="box--display-name">
+                        {{ provider.displayName }}
+                      </p>
+                    </div>
+                    <div v-if="index === endpointKey.CUSTOM">
+                      <input
+                        v-if="selNetwork === index"
+                        v-model="newEndpoint"
+                        type="text"
+                        placeholder="IP Address / Domain"
+                        class="ip-input"
+                      />
+                    </div>
+                    <div v-else-if="index === endpointKey.LOCAL">
+                      <div />
+                    </div>
+                    <div v-else>
+                      <div
+                        v-if="
+                          selNetwork === index &&
+                          providerEndpoints[index].endpoints &&
+                          provider.key !== endpointKey.AKIBA &&
+                          provider.key !== endpointKey.ASTAR_ZKEVM
+                        "
+                        class="box--endpoints"
+                      >
+                        <div>
+                          <span class="text--md">{{ $t('drawer.endpoint') }}</span>
+                        </div>
+                        <div class="column--options">
                           <div
-                            v-if="checkIsDisplayEndpoint(provider, endpointObj.endpoint)"
-                            class="column--network-option"
-                            @click="setSelEndpoint({ endpointObj, networkIdx: index })"
+                            v-for="(endpointObj, i) in providerEndpoints[index].endpoints"
+                            :key="i"
                           >
-                            <div class="box-input--endpoint">
-                              <input
-                                name="choose_endpoint"
-                                type="radio"
-                                :checked="
-                                  checkIsCheckedEndpoint({ index, endpoint: endpointObj.endpoint })
-                                "
-                                class="input--endpoint"
-                              />
+                            <div
+                              v-if="checkIsDisplayEndpoint(provider, endpointObj.endpoint)"
+                              class="column--network-option"
+                              @click="setSelEndpoint({ endpointObj, networkIdx: index })"
+                            >
+                              <div class="box-input--endpoint">
+                                <input
+                                  name="choose_endpoint"
+                                  type="radio"
+                                  :checked="
+                                    checkIsCheckedEndpoint({
+                                      index,
+                                      endpoint: endpointObj.endpoint,
+                                    })
+                                  "
+                                  class="input--endpoint"
+                                />
+                              </div>
+                              <span class="text--md">{{
+                                $t('drawer.viaEndpoint', { value: endpointObj.name })
+                              }}</span>
                             </div>
-                            <span class="text--md">{{
-                              $t('drawer.viaEndpoint', { value: endpointObj.name })
-                            }}</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </label>
+                </label>
+              </div>
             </li>
           </ul>
         </fieldset>
@@ -197,6 +203,8 @@ export default defineComponent({
           return selEndpointShibuya.value;
         case endpointKey.AKIBA:
           return selEndpointAkiba.value;
+        case endpointKey.ASTAR_ZKEVM:
+          return selEndpointAstarZkevm.value;
 
         default:
           return selEndpointAstar.value;
@@ -232,6 +240,7 @@ export default defineComponent({
     const selEndpointAstar = ref<string>('');
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
+    const selEndpointAstarZkevm = ref<string>('');
     const selEndpointAkiba = ref<string>('');
 
     const isDisabled = computed<boolean>(() => {
@@ -269,6 +278,8 @@ export default defineComponent({
         ? selEndpointShiden.value === endpoint
         : index === endpointKey.SHIBUYA
         ? selEndpointShibuya.value === endpoint
+        : index === endpointKey.ASTAR_ZKEVM
+        ? selEndpointAstarZkevm.value === endpoint
         : selEndpointAkiba.value === endpoint;
     };
 
@@ -286,6 +297,8 @@ export default defineComponent({
         selEndpointShiden.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.SHIBUYA) {
         selEndpointShibuya.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.ASTAR_ZKEVM) {
+        selEndpointAstarZkevm.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.AKIBA) {
         selEndpointAkiba.value = endpointObj.endpoint;
       }
@@ -308,6 +321,9 @@ export default defineComponent({
       if (networkIdx === endpointKey.SHIBUYA) {
         selEndpointShibuya.value = getRandomizedEndpoint(endpointKey.SHIBUYA);
       }
+      if (networkIdx === endpointKey.ASTAR_ZKEVM) {
+        selEndpointAstarZkevm.value = getRandomizedEndpoint(endpointKey.ASTAR_ZKEVM);
+      }
       if (networkIdx === endpointKey.AKIBA) {
         selEndpointAkiba.value = getRandomizedEndpoint(endpointKey.AKIBA);
       }
@@ -318,6 +334,7 @@ export default defineComponent({
         selEndpointAstar.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         randomizedEndpoint(endpointKey.AKIBA);
         return;
       }
@@ -326,6 +343,7 @@ export default defineComponent({
         selEndpointShiden.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         randomizedEndpoint(endpointKey.AKIBA);
         return;
       }
@@ -334,6 +352,15 @@ export default defineComponent({
         selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
+        randomizedEndpoint(endpointKey.AKIBA);
+        return;
+      }
+      if (networkIdx === endpointKey.ASTAR_ZKEVM) {
+        selEndpointShibuya.value = setInitialSelEndpoint();
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.AKIBA);
         return;
       }
@@ -342,6 +369,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         return;
       }
     };

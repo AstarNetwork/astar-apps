@@ -271,6 +271,7 @@ export const xcmToken = {
   [endpointKey.LOCAL]: [],
   [endpointKey.CUSTOM]: [],
   [endpointKey.ROCSTAR]: [],
+  [endpointKey.ASTAR_ZKEVM]: [],
   [endpointKey.AKIBA]: [],
 };
 

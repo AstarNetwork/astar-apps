@@ -71,7 +71,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -81,7 +81,6 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
-    const isAkiba = computed<boolean>(() => currentNetworkIdx.value === endpointKey.AKIBA);
 
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const xvmAssets = computed<XvmAssets>(() => store.getters['assets/getAllXvmAssets']);
@@ -154,7 +153,7 @@ export default defineComponent({
     const isEnableXcm = computed(
       () =>
         !isShibuya.value &&
-        !isAkiba.value &&
+        !isZkEvm.value &&
         xcmAssets.value.assets &&
         xcmAssets.value.assets.length > 0
     );

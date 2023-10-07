@@ -24,7 +24,11 @@ export function useNetworkInfo() {
     return !isTestnet;
   });
 
-  const isZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.AKIBA);
+  const isZkEvm = computed<boolean>(
+    () =>
+      currentNetworkIdx.value === endpointKey.AKIBA ||
+      currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
+  );
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -37,7 +41,7 @@ export function useNetworkInfo() {
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
     const networkIdx = store.getters['general/networkIdx'];
-    if (networkIdx === endpointKey.AKIBA) {
+    if (networkIdx === endpointKey.AKIBA || networkIdx === endpointKey.ASTAR_ZKEVM) {
       return networkIdx;
     }
     const chainInfo = store.getters['general/chainInfo'];

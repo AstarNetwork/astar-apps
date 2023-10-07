@@ -74,25 +74,6 @@
   display: grid;
 }
 
-.column--wallet-address {
-  display: flex;
-  column-gap: 8px;
-  align-items: center;
-  @media (min-width: $xs) {
-    column-gap: 12px;
-  }
-}
-
-.column--from-name {
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  @media (min-width: $xs) {
-    max-width: 110px;
-  }
-}
-
 .text--to--balance {
   font-weight: 400;
   font-size: 12px;

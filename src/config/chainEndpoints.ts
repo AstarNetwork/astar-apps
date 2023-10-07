@@ -27,10 +27,11 @@ export enum endpointKey {
   ASTAR = 0,
   SHIDEN = 1,
   SHIBUYA = 2,
-  AKIBA = 3,
-  LOCAL = 4,
-  CUSTOM = 5,
-  ROCSTAR = 6,
+  ASTAR_ZKEVM = 3,
+  AKIBA = 4,
+  LOCAL = 5,
+  CUSTOM = 6,
+  ROCSTAR = 7,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -115,9 +116,26 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
+  // Memo: It's dummy data. To be updated
+  {
+    networkAlias: 'astar-zkevm',
+    displayName: 'Astar zkEVM Network',
+    endpoints: [{ name: 'Astar', endpoint: 'wss://rpc.astar.network' }],
+    isSupportContract: false,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ASTAR_ZKEVM,
+    isStoreEnabled: true,
+    subscan: 'https://astar.subscan.io',
+    blockscout: 'http://161.35.17.216:4004',
+    evmChainId: '7759',
+    evmEndpoints: ['http://161.35.17.216:8545'],
+    faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
+  },
   {
     networkAlias: 'akiba-testnet',
-    displayName: 'Akiba Network',
+    displayName: 'Akiba zkEVM Network',
     endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
