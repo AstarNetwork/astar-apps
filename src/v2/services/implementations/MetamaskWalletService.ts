@@ -136,7 +136,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         data,
       };
       const estimatedGas = await web3.eth.estimateGas(rawTx);
-      await web3.eth
+      const transactionHash = await web3.eth
         .sendTransaction({ ...rawTx, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
@@ -162,7 +162,9 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
               message: error.message || AlertMsg.ERROR,
             })
           );
+          return AlertMsg.ERROR;
         });
+      return transactionHash;
     } catch (error: any) {
       this.eventAggregator.publish(
         new ExtrinsicStatusMessage({
@@ -170,8 +172,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           message: failureMessage || error.message,
         })
       );
+      return AlertMsg.ERROR;
     }
-    return AlertMsg.ERROR;
   }
 
   public async signPayload(

@@ -224,7 +224,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (!apiRef || !address || !web3Ref) return 0;
     if (isValidAddressPolkadotAddress(address)) {
       const { data } = await apiRef.query.system.account(address);
-      return Number(ethers.utils.formatEther(data.free.toString()));
+      const transferableBalance = data.free.sub(data.frozen);
+      return Number(ethers.utils.formatEther(transferableBalance.toString()));
     }
     if (ethers.utils.isAddress(address)) {
       const balance = await web3Ref.eth.getBalance(address);
@@ -249,6 +250,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
         ? buildEvmAddress(toAddress.value)
         : toAddress.value;
+
       const balance = await getTokenBal({
         srcChainId,
         address,
