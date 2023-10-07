@@ -127,6 +127,17 @@ export const getTokenDetails = async ({
   return { decimals, symbol };
 };
 
+export const getNativeBalance = async ({
+  address,
+  srcChainId,
+}: {
+  address: string;
+  srcChainId: number;
+}): Promise<string> => {
+  const web3 = buildWeb3Instance(srcChainId);
+  const bal = await web3!.eth.getBalance(address);
+  return web3!.utils.fromWei(bal, 'ether');
+};
 export const getTokenBal = async ({
   address,
   tokenAddress,

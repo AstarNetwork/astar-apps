@@ -9,6 +9,7 @@ export {
   getTokenExplorer,
   fetchErc20TokenInfo,
   getTokenDetails,
+  getNativeBalance,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';
@@ -132,7 +133,7 @@ export const nativeCurrency = {
 
 export const rpcUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
-  [EVM.SEPOLIA_TESTNET]: ['https://rpc.sepolia.dev'],
+  [EVM.SEPOLIA_TESTNET]: ['https://ethereum-sepolia.publicnode.com'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
   [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.evmEndpoints[0]],

@@ -1,16 +1,40 @@
+import { endpointKey } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { EVM, getNativeBalance } from 'src/config/web3';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Web3 from 'web3';
 
 export enum BridgeNetworkName {
   'Sepolia' = 'Sepolia Testnet',
   'Akiba' = 'Akiba zkEVM Testnet',
+  'Ethereum' = 'Ethereum Mainnet',
+  'Astar' = 'Astar zkEVM Mainnet',
 }
 
+const chainId = {
+  [BridgeNetworkName.Sepolia]: EVM.SEPOLIA_TESTNET,
+  [BridgeNetworkName.Ethereum]: EVM.ETHEREUM_MAINNET,
+  [BridgeNetworkName.Akiba]: EVM.AKIBA_TESTNET,
+  [BridgeNetworkName.Astar]: EVM.ASTAR_ZKEVM_MAINNET,
+};
+
 export function useL1Bridge() {
-  const l1Network = computed<string>(() => BridgeNetworkName.Sepolia);
-  const l2Network = computed<string>(() => BridgeNetworkName.Akiba);
+  const l1Network = computed<string>(() => {
+    const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+    return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
+      ? BridgeNetworkName.Ethereum
+      : BridgeNetworkName.Sepolia;
+  });
+
+  const l2Network = computed<string>(() => {
+    const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+    return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
+      ? BridgeNetworkName.Astar
+      : BridgeNetworkName.Akiba;
+  });
 
   const transferAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
@@ -35,6 +59,24 @@ export function useL1Bridge() {
   const inputHandler = (event: any): void => {
     transferAmt.value = event.target.value;
     errMsg.value = '';
+  };
+
+  const setBridgeBalance = async () => {
+    const fromChainId = chainId[fromChainName.value as BridgeNetworkName];
+    const toChainId = chainId[toChainName.value as BridgeNetworkName];
+
+    const [fromBal, toBal] = await Promise.all([
+      getNativeBalance({
+        address: currentAccount.value,
+        srcChainId: fromChainId,
+      }),
+      getNativeBalance({
+        address: currentAccount.value,
+        srcChainId: toChainId,
+      }),
+    ]);
+    fromBridgeBalance.value = Number(fromBal);
+    toBridgeBalance.value = Number(toBal);
   };
 
   const resetStates = (): void => {
@@ -68,8 +110,9 @@ export function useL1Bridge() {
   const handleBridge = async (): Promise<void> => {};
 
   watchEffect(setErrorMsg);
+  watch([fromChainName, toChainName], setBridgeBalance, { immediate: true });
 
-  watchEffect(() => {
+  watchEffect(async () => {
     console.log('transferAmt', transferAmt.value);
     console.log('errMsg', errMsg.value);
     console.log('isDisabledBridge', isDisabledBridge.value);
