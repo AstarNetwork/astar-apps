@@ -144,7 +144,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'http://161.35.17.216:4004',
     evmChainId: '7759',
-    evmEndpoints: ['http://161.35.17.216:8545'],
+    evmEndpoints: ['https://akiba-rpc.astar.network'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',

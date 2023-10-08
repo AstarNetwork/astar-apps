@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="icon[fromChainName]" alt="chain-icon" />
+          <img width="24" :src="zkBridgeIcon[fromChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ fromChainName }}</span>
@@ -45,7 +45,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="icon[toChainName]" alt="chain-icon" />
+          <img width="24" :src="zkBridgeIcon[toChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ toChainName }}</span>
@@ -70,9 +70,9 @@
         <div class="box__row">
           <div class="box__row cursor-pointer">
             <div class="token-logo">
-              <img width="24" alt="token-logo" :src="icon[BridgeNetworkName.Sepolia]" />
+              <img width="24" alt="token-logo" :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]" />
             </div>
-            <span class="text--title">ETH</span>
+            <span class="text--title">{{ nativeTokenSymbol }}</span>
             <!-- Memo: use this incase we need to bridge more tokens -->
             <!-- <div class="icon--expand">
               <astar-icon-expand size="20" />
@@ -80,7 +80,7 @@
           </div>
           <div class="box__column--input-amount">
             <input
-              :value="transferAmt"
+              :value="bridgeAmt"
               inputmode="decimal"
               type="number"
               min="0"
@@ -110,9 +110,9 @@
 </template>
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useL1Bridge, BridgeNetworkName } from 'src/hooks';
-import { useStore } from 'src/store';
+import { useAccount, useL1Bridge } from 'src/hooks';
 import { defineComponent } from 'vue';
+import { zkBridgeIcon, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {
@@ -121,7 +121,7 @@ export default defineComponent({
   setup(props) {
     const { currentAccount } = useAccount();
     const {
-      transferAmt,
+      bridgeAmt,
       errMsg,
       isDisabledBridge,
       fromBridgeBalance,
@@ -134,24 +134,17 @@ export default defineComponent({
       handleBridge,
     } = useL1Bridge();
 
-    const store = useStore();
-
-    const icon = {
-      [BridgeNetworkName.Sepolia]: require('/src/assets/img/ethereum.png'),
-      [BridgeNetworkName.Akiba]: require('src/assets/img/chain/shibuya.png'),
-    } as any;
-
     return {
-      icon,
+      zkBridgeIcon,
       currentAccount,
-      transferAmt,
+      bridgeAmt,
       isDisabledBridge,
       errMsg,
       fromBridgeBalance,
       toBridgeBalance,
       fromChainName,
       toChainName,
-      BridgeNetworkName,
+      EthBridgeNetworkName,
       nativeTokenSymbol,
       inputHandler,
       reverseChain,

@@ -46,7 +46,7 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const store = useStore();
-  const { requestAccounts, requestSignature } = useEvmAccount();
+  const { requestAccounts } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
 

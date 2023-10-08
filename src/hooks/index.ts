@@ -44,6 +44,7 @@ export * from './ui/useTooltip';
 export * from './ui/usePageReady';
 export * from './ui/useBalloons';
 export * from './bridge/useL1Bridge';
+export * from './bridge/useL1History';
 export * from './dapps-staking/useCompoundRewards';
 export * from './useTokenDistribution';
 export * from './useTokenCirculation';

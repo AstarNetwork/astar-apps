@@ -73,6 +73,10 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.ASTAR_MAINNET;
   } else if (currentNetworkIdx === endpointKey.LOCAL) {
     return EVM.ASTAR_LOCAL_NODE;
+  } else if (currentNetworkIdx === endpointKey.ASTAR_ZKEVM) {
+    return EVM.ASTAR_ZKEVM_MAINNET;
+  } else if (currentNetworkIdx === endpointKey.AKIBA) {
+    return EVM.AKIBA_TESTNET;
   }
   return EVM.SHIBUYA_TESTNET;
 };

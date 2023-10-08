@@ -150,7 +150,7 @@
   border: 1px solid $gray-4;
   cursor: pointer !important;
   margin-top: -24px;
-  background: $body-bg-light;
+  background: transparent;
   transition: all 0.3s ease 0s;
   &:hover {
     border: 1px solid $astar-blue !important;
