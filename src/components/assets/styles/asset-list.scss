@@ -12,6 +12,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 8px
 }
 
 .rows {
@@ -315,7 +316,7 @@
 
 .separator {
   margin: 8px 16px;
-  background: linear-gradient(to right, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff);
+  background-color: $navy-3;
   height: 1px;
 }
 
@@ -364,6 +365,8 @@
   background-color: $gray-1;
   @media (min-width: $sm) {
     border-radius: 16px;
+    border-color: $navy-3;
+    border-width: 1px;
   }
 }
 .body--dark {
@@ -419,7 +422,7 @@
   width: 100%;
 }
 .rows--expand {
-  padding: 16px 0;
+  padding-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -429,12 +432,11 @@
   align-items: center;
   background-color: white;
   border-radius: 8px;
-  padding: 16px 0;
   cursor: pointer;
   @media (min-width: $sm) {
     padding: 24px 0;
     justify-content: space-between;
-    border-radius: 16px;
+    border-radius: 8px;
     cursor: default;
   }
 }
@@ -447,7 +449,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  padding-left: 16px;
+  padding: 16px;
   @media (min-width: $sm) {
     width: 50%;
     padding-left: 24px;

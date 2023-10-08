@@ -2,7 +2,7 @@
 
 .screen--lg-down {
   display: block;
-  margin: 24px 0;
+  margin: 40px 0;
   @media (min-width: $xl) {
     display: none;
   }
@@ -62,14 +62,14 @@
 }
 
 .text--label {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
 }
 
 .text--title {
   font-weight: 800;
-  font-size: 40px;
+  font-size: 32px;
   line-height: 1;
   color: white;
 }
@@ -80,13 +80,13 @@
   justify-content: center;
   align-items: flex-end;
   .row--reward__amount {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 800;
     line-height: 1;
   }
   .row--reward__symbol {
     margin-left: 4px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
   }
 }

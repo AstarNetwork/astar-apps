@@ -39,6 +39,7 @@
   display: none;
   @media (min-width: $xl) {
     display: block;
+    margin-top: 196px;
   }
 }
 
@@ -50,12 +51,12 @@
 .container {
   overflow: hidden;
   border-radius: 16px;
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
+  border-color: #fff;
   padding: 16px 0 24px 0;
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
   background-color: white;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
   @media (min-width: $sm) {
     padding-left: 24px;
     padding-right: 24px;
@@ -64,16 +65,19 @@
     border-width: 1px;
   }
   &.container--native {
-    border-color: $astar-pink;
+    border-color: $navy-2;
   }
   &.container--others {
-    border-color: $astar-purple;
+    border-color: $navy-2;
   }
 }
 
 .body--dark {
   .container {
-    background-color: $navy-4;
+    background-color: $navy-2;
+  }
+  &.container--native {
+    border-color: $navy-2;
   }
 }
 

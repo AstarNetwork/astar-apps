@@ -91,7 +91,7 @@ export default defineComponent({
 
 .body--dark {
   .header {
-    background: rgba(8, 15, 46, 0.4);
+    background: rgba(8, 15, 46, 0.1);
     backdrop-filter: blur(200px);
     border-bottom: 1px solid !important;
     border-image: linear-gradient(
