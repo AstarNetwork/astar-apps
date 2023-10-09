@@ -19,7 +19,8 @@
             type="text"
             :placeholder="$t('wallet.unifiedAccount.unifiedAccountName')"
             :maxlength="32"
-            @input="(event) => setAccountName(event)"
+            :value="accountName"
+            @input="(event) => updateAccountName(event)"
           />
         </div>
       </div>
@@ -40,9 +41,9 @@
     <div>
       <astar-button
         class="btn"
-        :disabled="accountName === '' || isFetchingXc20Tokens"
+        :disabled="accountName === '' || isFetchingXc20Tokens || !accountNameSet"
         @click="next()"
-        >Next</astar-button
+        >{{ isEdit ? $t('wallet.unifiedAccount.save') : $t('next') }}</astar-button
       >
     </div>
   </div>
@@ -50,7 +51,7 @@
 
 <script lang="ts">
 import { useAccount } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -72,6 +73,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['next'],
   setup(props, { emit }) {
@@ -80,15 +85,23 @@ export default defineComponent({
     };
 
     const { currentAccount } = useAccount();
+    const accountNameSet = ref<boolean>(false);
 
     const icon_img = {
       metamask: require('/src/assets/img/metamask.png'),
     };
 
+    const updateAccountName = (event: any) => {
+      accountNameSet.value = true;
+      props.setAccountName(event);
+    };
+
     return {
       icon_img,
       currentAccount,
+      accountNameSet,
       next,
+      updateAccountName,
     };
   },
 });

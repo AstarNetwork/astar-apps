@@ -26,7 +26,7 @@ import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
+import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { WatchCallback, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -70,7 +70,7 @@ export const useAccountUnification = () => {
   const gas = computed<GasTip>(() => store.getters['general/getGas']);
 
   const setAccountName = (event: any) => {
-    accountName.value = event.target.value;
+    accountName.value = typeof event === 'string' ? event : event.target.value;
   };
 
   const setWeb3 = async (): Promise<void> => {
@@ -332,6 +332,13 @@ export const useAccountUnification = () => {
     return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
   };
 
+  const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {
+    console.log('updateAccount', nativeAddress, accountName);
+    const identityService = container.get<IIdentityService>(Symbols.IdentityService);
+
+    await identityService.setIdentity(nativeAddress, { display: accountName });
+  };
+
   const getCost = async (): Promise<string> => {
     const TOTAL_FIELDS = 5; // account name, avatar address key, avatar address value, token id key, token id value
     const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
@@ -360,5 +367,6 @@ export const useAccountUnification = () => {
     handleTransferXc20Tokens,
     unifyAccounts,
     getCost,
+    updateAccount,
   };
 };

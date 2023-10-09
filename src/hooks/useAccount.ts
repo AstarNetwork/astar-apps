@@ -97,6 +97,8 @@ export const useAccount = () => {
           name,
         });
       }
+    } else {
+      store.commit('general/setUnifiedAccount', undefined);
     }
   };
 
@@ -194,6 +196,12 @@ export const useAccount = () => {
     { immediate: true }
   );
 
+  watch([unifiedAccount], () => {
+    if (unifiedAccount.value) {
+      currentAccountName.value = unifiedAccount.value.name;
+    }
+  });
+
   return {
     substrateAccounts,
     currentAccount,
@@ -202,8 +210,10 @@ export const useAccount = () => {
     multisig,
     isMultisig,
     isAccountUnification,
+    isH160Formatted,
     disconnectAccount,
     getSS58Address,
     showAccountUnificationModal,
+    checkIfUnified,
   };
 };

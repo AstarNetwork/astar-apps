@@ -2,7 +2,6 @@
   <div>
     <!-- unified -->
     <div v-if="isAccountUnified">
-      <!-- TODO: add unified account info -->
       <div class="text--account-name">
         <jazzicon
           class="text--account-name__icon"
@@ -76,7 +75,9 @@
         </div>
       </div>
       <div class="btn--edit">
-        <astar-button class="btn">{{ $t('dappStaking.edit') }}</astar-button>
+        <astar-button :disabled="isH160" class="btn" @click="edit()">{{
+          $t('dappStaking.edit')
+        }}</astar-button>
       </div>
     </div>
 
@@ -124,7 +125,6 @@
       </div>
     </div>
 
-    <!-- Introduce Account Unification -->
     <div v-if="!isAccountUnified" class="wrapper--introduce-au">
       <div class="text--introduce-au">
         <span>{{ $t('wallet.unifiedAccount.introduce') }}</span>
@@ -142,7 +142,7 @@
 <script lang="ts">
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
-import { useAccount, useWalletIcon, useNetworkInfo } from 'src/hooks';
+import { useAccount, useWalletIcon, useNetworkInfo, useAccountUnification } from 'src/hooks';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import copy from 'copy-to-clipboard';
 import { useI18n } from 'vue-i18n';
@@ -150,10 +150,15 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import Help from 'src/components/header/modals/account-unification/Help.vue';
 import { UnifiedAccount } from 'src/store/general/state';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { uniqueId } from 'lodash-es';
 
 export default defineComponent({
   components: { Help, [Jazzicon.name]: Jazzicon },
+  props: {
+    setAccountName: {
+      type: Function,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
     const next = () => {
@@ -182,6 +187,11 @@ export default defineComponent({
         msg: t('toast.copyAddressSuccessfully'),
         alertType: 'copied',
       });
+    };
+
+    const edit = (): void => {
+      props.setAccountName(unifiedAccount.value?.name ?? '');
+      next();
     };
 
     const blockscout = computed<string>(
@@ -216,6 +226,7 @@ export default defineComponent({
       getShortenAddress,
       copyAddress,
       next,
+      edit,
     };
   },
 });

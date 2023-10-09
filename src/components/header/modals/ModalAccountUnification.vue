@@ -29,7 +29,18 @@
           :set-account-name="setAccountName"
           :selected-evm-address="selectedEvmAddress"
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
+          :is-edit="false"
           @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
+        />
+      </div>
+      <div v-else-if="currentStep === 100 && unifiedAccount">
+        <au-step3
+          :account-name="accountName"
+          :set-account-name="setAccountName"
+          :selected-evm-address="unifiedAccount.evmAddress"
+          :is-fetching-xc20-tokens="false"
+          :is-edit="true"
+          @next="updateSteps(101)"
         />
       </div>
       <div v-else-if="currentStep === 4">
@@ -58,7 +69,10 @@
         <au-step6 />
       </div>
       <div v-else>
-        <user-account @next="updateSteps(1)" />
+        <user-account
+          :set-account-name="setAccountName"
+          @next="unifiedAccount ? updateSteps(100) : updateSteps(1)"
+        />
       </div>
     </div>
   </astar-modal-drawer>
@@ -77,6 +91,7 @@ import AuStep3 from 'src/components/header/modals/account-unification/AuStep3.vu
 import AuStep4 from 'src/components/header/modals/account-unification/AuStep4.vue';
 import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vue';
 import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
+import { UnifiedAccount } from 'src/store/general/state';
 
 export default defineComponent({
   components: {
@@ -107,6 +122,9 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const totalCost = ref<string>('');
+    const unifiedAccount = computed<UnifiedAccount>(
+      () => store.getters['general/getUnifiedAccount']
+    );
 
     const {
       selectedEvmAddress,
@@ -122,7 +140,10 @@ export default defineComponent({
       handleTransferXc20Tokens,
       unifyAccounts,
       getCost,
+      updateAccount,
     } = useAccountUnification();
+
+    const { checkIfUnified } = useAccount();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -168,6 +189,10 @@ export default defineComponent({
         if (!success) {
           return;
         }
+      } else if (step === 101) {
+        // Make a call to update unified account identity
+        await updateAccount(unifiedAccount.value.nativeAddress, accountName.value);
+        await checkIfUnified(unifiedAccount.value.nativeAddress);
       }
 
       currentStep.value = step;
@@ -195,6 +220,8 @@ export default defineComponent({
         return `${t('wallet.unifiedAccount.create')} : 4`;
       } else if (currentStep.value === 6) {
         return '';
+      } else if (currentStep.value === 100) {
+        return t('wallet.unifiedAccount.editUnifiedAccount');
       } else {
         return t('wallet.unifiedAccount.yourAccount');
       }
@@ -217,6 +244,7 @@ export default defineComponent({
       isSendingXc20Tokens,
       isLoading,
       totalCost,
+      unifiedAccount,
       closeModal,
       backModal,
       updateSteps,
