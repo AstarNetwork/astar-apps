@@ -53,7 +53,7 @@ export function useTransferRouter() {
     if (!isTransferPage.value || isLocalTransfer.value) return false;
     return to.value.includes(pathEvm);
   });
-  const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx, currentNetworkChain } =
+  const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx, currentNetworkChain, isZkEvm } =
     useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
@@ -288,7 +288,9 @@ export function useTransferRouter() {
         // if: SS58 local transfer
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
         selectableTokens = xcmAssets.value.assets;
-        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        tokens = selectableTokens.filter(
+          ({ isXcmCompatible, userBalance }) => isXcmCompatible || userBalance
+        );
         tokens.push(nativeTokenAsset);
       }
     }
@@ -328,6 +330,7 @@ export function useTransferRouter() {
     isLocalTransfer.value = mode.value === 'local';
     const isRedirect =
       !isCustomNetwork &&
+      !isZkEvm.value &&
       !network.value.toLowerCase().includes(currentNetworkName.value.toLowerCase());
 
     if (isRedirect) return redirect();

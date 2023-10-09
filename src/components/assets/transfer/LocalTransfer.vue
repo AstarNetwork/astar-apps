@@ -185,16 +185,14 @@
   </div>
 </template>
 <script lang="ts">
+import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { SupportWallet } from 'src/config/wallets';
-import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
-import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
-import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType } from 'vue';
-import Jazzicon from 'vue3-jazzicon/src/components';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useAccount, useNetworkInfo, useTokenTransfer, useWalletIcon } from 'src/hooks';
+import { Asset } from 'src/v2/models';
+import { PropType, computed, defineComponent, watchEffect } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
@@ -244,8 +242,6 @@ export default defineComponent({
     const isNativeToEvm = computed<boolean>(
       () => !isH160.value && isValidEvmAddress(toAddress.value)
     );
-
-    const store = useStore();
 
     const transfer = async (): Promise<void> => {
       await transferAsset({

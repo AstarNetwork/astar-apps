@@ -54,6 +54,7 @@ export interface BridgeHistory {
   metadata: string;
   ready_for_claim: boolean;
   timestamp?: number;
+  isActionRequired?: boolean;
 }
 
 export enum ZkNetworkId {

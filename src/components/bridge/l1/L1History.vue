@@ -5,29 +5,23 @@
         <div v-for="(history, index) in histories" :key="history.tx_hash">
           <div v-if="syncIndex !== index" class="card--history box--hover--active">
             <div class="row--date">
-              <div v-if="history.timestamp">
-                <span class="text--label">{{ displayTime(history.timestamp) }}</span>
+              <div>
+                <span class="text--label">{{ displayTime(history.timestamp!) }}</span>
               </div>
-              <div v-if="checkIsClaimRequired(history)">
+              <div v-if="history.isActionRequired">
                 <span class="text--error">{{ $t('bridge.actionRequired') }}</span>
               </div>
-              <div
-                v-else-if="
-                  checkStatus(history) === $t('bridge.inProgress') && !history.ready_for_claim
-                "
-              >
-                <div class="row--sync">
-                  <button
-                    class="icon--sync cursor-pointer"
-                    @click="
-                      async () => {
-                        await handleUpdateHistory(index);
-                      }
-                    "
-                  >
-                    <astar-icon-sync size="20" />
-                  </button>
-                </div>
+              <div v-else-if="checkIsRefresh(history)" class="row--sync">
+                <button
+                  class="icon--sync cursor-pointer"
+                  @click="
+                    async () => {
+                      await handleUpdateHistory(index);
+                    }
+                  "
+                >
+                  <astar-icon-sync size="20" />
+                </button>
               </div>
             </div>
             <div class="row--summary">
@@ -100,7 +94,7 @@
                   </div>
                 </a>
                 <button
-                  v-else-if="checkIsClaimRequired(history)"
+                  v-else-if="history.isActionRequired"
                   class="action-button link-button status--claim"
                 >
                   {{ $t('bridge.claim') }}
@@ -185,6 +179,10 @@ export default defineComponent({
       return DateTime.fromMillis(Number(timestamp) * 1000).toFormat('HH:mm dd-MMM yyyy');
     };
 
+    const checkIsRefresh = (history: BridgeHistory): boolean => {
+      return history.claim_tx_hash === '' && !history.ready_for_claim;
+    };
+
     const checkStatus = (history: BridgeHistory): string => {
       return history.claim_tx_hash !== ''
         ? t(`bridge.${TxStatus.Completed}`)
@@ -193,12 +191,6 @@ export default defineComponent({
 
     const checkStatusStyle = (history: BridgeHistory): string => {
       return history.claim_tx_hash !== '' ? 'status--complete' : 'status--in-progress';
-    };
-
-    const checkIsClaimRequired = (history: BridgeHistory): boolean => {
-      return (
-        history.claim_tx_hash === '' && !checkIsL1(history.network_id) && history.ready_for_claim
-      );
     };
 
     return {
@@ -212,8 +204,8 @@ export default defineComponent({
       checkIsL1,
       checkStatus,
       checkStatusStyle,
-      checkIsClaimRequired,
       handleUpdateHistory,
+      checkIsRefresh,
     };
   },
 });

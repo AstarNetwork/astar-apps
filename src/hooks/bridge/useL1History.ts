@@ -10,8 +10,7 @@ import {
   checkIsL1,
   zkEvmApi,
 } from 'src/modules/zk-evm-bridge';
-import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
-import { useEthProvider } from '../custom-signature/useEthProvider';
+import { computed, onUnmounted, ref, watch } from 'vue';
 
 export const useL1History = () => {
   const l1Network = computed<string>(() => {
@@ -33,7 +32,6 @@ export const useL1History = () => {
   const isFetchAutomatically = ref<boolean>(false);
 
   const { currentAccount } = useAccount();
-  const { web3Provider, ethProvider } = useEthProvider();
 
   const fetchUserHistory = async (): Promise<void> => {
     const address = currentAccount.value;
@@ -70,7 +68,10 @@ export const useL1History = () => {
 
           const block = await web3.eth.getBlock(transaction.blockNumber);
           const timestamp = Number(block.timestamp);
-          return { ...it, timestamp };
+          const isActionRequired =
+            it.claim_tx_hash === '' && !checkIsL1(it.network_id) && it.ready_for_claim;
+
+          return { ...it, timestamp, isActionRequired };
         })
       );
 
