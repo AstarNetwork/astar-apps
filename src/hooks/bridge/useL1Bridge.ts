@@ -8,6 +8,7 @@ import {
   EthBridgeChainId,
   EthBridgeNetworkName,
   ZK_EVM_BRIDGE_ABI,
+  ZkNetworkId,
 } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
@@ -138,7 +139,7 @@ export const useL1Bridge = () => {
         toChainName.value === EthBridgeNetworkName.Ethereum ||
         toChainName.value === EthBridgeNetworkName.Sepolia;
       // Todo: Ask if `0` is L1 and `1` is L1
-      const destinationNetwork = isToL1 ? 0 : 1;
+      const destinationNetwork = isToL1 ? ZkNetworkId.L1 : ZkNetworkId.L2;
       const destinationAddress = currentAccount.value;
       const amount = ethers.utils.parseEther(String(bridgeAmt.value)).toString();
       const token = astarNativeTokenErcAddr;

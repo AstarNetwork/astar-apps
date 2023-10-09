@@ -3,35 +3,49 @@
     <div class="container--bridge">
       <bridge-mode-tab :is-bridge="isBridge" :set-is-bridge="setIsBridge" />
       <div class="wrapper-containers">
-        <div v-if="isBridge">
-          <l1-bridge />
-        </div>
-        <div v-else>history</div>
+        <l1-bridge
+          v-if="isBridge"
+          :fetch-user-history="fetchUserHistory"
+          :set-is-bridge="setIsBridge"
+        />
+        <l1-history
+          v-else
+          :histories="histories"
+          :is-loading-histories="isLoadingHistories"
+          :l1-network="l1Network"
+          :l2-network="l2Network"
+          :fetch-user-history="fetchUserHistory"
+        />
         <information :transfer-type="HistoryTxType.Transfer" :is-history="false" />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { useAccount } from 'src/hooks';
+import { useAccount, useL1History } from 'src/hooks';
 import { defineComponent, ref, computed, watch } from 'vue';
 import { HistoryTxType } from 'src/modules/account';
 import Information from 'src/components/assets/transfer/Information.vue';
 import BridgeModeTab from 'src/components/bridge/l1/BridgeModeTab.vue';
 import L1Bridge from 'src/components/bridge/l1/L1Bridge.vue';
+import L1History from 'src/components/bridge/l1/L1History.vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type BridgeTabMode = 'bridge' | 'history';
 
 export default defineComponent({
-  components: { Information, BridgeModeTab, L1Bridge },
+  components: { Information, BridgeModeTab, L1Bridge, L1History },
   setup() {
     const isBridge = ref<boolean>(true);
 
+    const { histories, isLoadingHistories, l1Network, l2Network, fetchUserHistory } =
+      useL1History();
+    const { currentAccount } = useAccount();
     const router = useRouter();
     const route = useRoute();
     const network = computed<string>(() => route.params.network as string);
     const tab = computed<BridgeTabMode>(() => route.query.tab as BridgeTabMode);
+
     const setIsBridge = (result: boolean): void => {
       isBridge.value = result;
       router.push({
@@ -41,7 +55,6 @@ export default defineComponent({
         },
       });
     };
-    const { currentAccount } = useAccount();
 
     watch(
       [tab],
@@ -53,7 +66,17 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { currentAccount, isBridge, HistoryTxType, setIsBridge };
+    return {
+      currentAccount,
+      isBridge,
+      HistoryTxType,
+      histories,
+      isLoadingHistories,
+      l1Network,
+      l2Network,
+      setIsBridge,
+      fetchUserHistory,
+    };
   },
 });
 </script>

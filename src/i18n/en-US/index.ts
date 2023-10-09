@@ -104,6 +104,7 @@ export default {
     instagram: 'Instagram',
     youtube: 'YouTube',
     docs: 'Documentation',
+    loading: 'Loading...',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -611,6 +612,11 @@ export default {
   },
   bridge: {
     bridge: 'Bridge',
-    history: 'History',
+    history: 'Recent History',
+    actionRequired: 'Action Required',
+    claim: 'Claim',
+    noHistory: 'No histories found',
+    completed: 'Completed',
+    inProgress: 'In Progress',
   },
 };

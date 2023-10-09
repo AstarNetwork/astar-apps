@@ -26,7 +26,7 @@ export const useGasPrice = (isFetch = false) => {
 
   const store = useStore();
   const gas = computed(() => store.getters['general/getGas']);
-  const { currentNetworkName, isMainnet } = useNetworkInfo();
+  const { currentNetworkName, isMainnet, isZkEvm } = useNetworkInfo();
   const network = computed<string>(() => {
     return isMainnet ? currentNetworkName.value.toLowerCase() : 'shibuya';
   });
@@ -93,7 +93,8 @@ export const useGasPrice = (isFetch = false) => {
   watch(
     [network, $web3],
     async () => {
-      if (isFetch && network.value && !gas.value && $web3.value) {
+      // Todo: update the logic for zkEVM
+      if (isFetch && network.value && !gas.value && $web3.value && !isZkEvm.value) {
         // console.info('gas price', network.value, gas.value);
         await dispatchGasPrice(network.value);
       }

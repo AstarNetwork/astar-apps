@@ -62,7 +62,7 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromBridgeBalance)"
-                symbol="ETH"
+                :symbol="nativeTokenSymbol"
               />
             </span>
           </div>
@@ -100,7 +100,7 @@
         <astar-button
           class="button--confirm btn-size-adjust"
           :disabled="isDisabledBridge"
-          @click="handleBridge"
+          @click="bridge"
         >
           {{ $t('confirm') }}
         </astar-button>
@@ -118,6 +118,16 @@ export default defineComponent({
   components: {
     TokenBalance,
   },
+  props: {
+    fetchUserHistory: {
+      type: Function,
+      required: true,
+    },
+    setIsBridge: {
+      type: Function,
+      required: true,
+    },
+  },
   setup(props) {
     const { currentAccount } = useAccount();
     const {
@@ -134,6 +144,12 @@ export default defineComponent({
       handleBridge,
     } = useL1Bridge();
 
+    const bridge = async (): Promise<void> => {
+      await handleBridge();
+      await props.fetchUserHistory();
+      props.setIsBridge(false);
+    };
+
     return {
       zkBridgeIcon,
       currentAccount,
@@ -148,7 +164,7 @@ export default defineComponent({
       nativeTokenSymbol,
       inputHandler,
       reverseChain,
-      handleBridge,
+      bridge,
     };
   },
 });
