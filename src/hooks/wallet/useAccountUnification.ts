@@ -333,9 +333,7 @@ export const useAccountUnification = () => {
   };
 
   const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {
-    console.log('updateAccount', nativeAddress, accountName);
     const identityService = container.get<IIdentityService>(Symbols.IdentityService);
-
     await identityService.setIdentity(nativeAddress, { display: accountName });
   };
 
