@@ -6,8 +6,8 @@ export const ZK_EVM_BRIDGE_ABI = ABI_ZK_EVM_BRIDGE;
 
 // Todo: update to https
 export const zkEvmApi = {
-  testnet: 'http://161.35.17.216:8081',
-  mainnet: 'http://161.35.17.216:8081',
+  testnet: 'https://akiba-bridge-api.astar.network',
+  mainnet: 'https://akiba-bridge-api.astar.network',
 };
 
 export enum EthBridgeNetworkName {
