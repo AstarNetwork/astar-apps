@@ -115,7 +115,7 @@ export default defineComponent({
 
 .body--dark {
   .btn--account {
-    border: 1px solid $gray-4;
+    border: 1px solid white;
     &:hover {
       background: $astar-blue !important;
       border: 1px solid transparent;
@@ -126,7 +126,7 @@ export default defineComponent({
   }
 
   .iconbase {
-    color: $gray-3;
+    color: white;
   }
 
   .m-btn--account {

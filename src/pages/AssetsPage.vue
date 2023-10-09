@@ -54,7 +54,7 @@ export default defineComponent({
 #assets-top {
   padding: 0 16px;
   @media (min-width: $lg) {
-    padding: 120px 40px 40px 40px;
+    padding: 104px 40px 40px 40px;
   }
 }
 </style>

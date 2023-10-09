@@ -112,7 +112,7 @@ export default defineComponent({
   .btn--connect {
     background: transparent;
     color: #fff;
-    border: 1px solid $gray-4;
+    border: 1px solid white;
   }
   .btn--connect:hover {
     background: $astar-blue !important;
@@ -122,7 +122,7 @@ export default defineComponent({
     }
   }
   .iconbase {
-    color: $gray-3;
+    color: white;
   }
 
   .m-btn--connect {

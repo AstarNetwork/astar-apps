@@ -128,7 +128,7 @@ export default defineComponent({
   .btn--help {
     background: transparent;
     color: #fff;
-    border: 1px solid $gray-4;
+    border: 1px solid white;
   }
   .btn--help:hover {
     background: $astar-blue;
@@ -138,12 +138,12 @@ export default defineComponent({
     }
   }
   .icon--help {
-    color: $gray-3;
+    color: white;
   }
 
   .m-btn--help {
     background: transparent;
-    color: $gray-3;
+    color: white;
     border: 1px solid $gray-4;
   }
   .m-btn--help:hover {
