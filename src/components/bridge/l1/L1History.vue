@@ -196,7 +196,9 @@ export default defineComponent({
     };
 
     const checkIsClaimRequired = (history: BridgeHistory): boolean => {
-      return history.claim_tx_hash === '' && history.ready_for_claim;
+      return (
+        history.claim_tx_hash === '' && !checkIsL1(history.network_id) && history.ready_for_claim
+      );
     };
 
     return {
