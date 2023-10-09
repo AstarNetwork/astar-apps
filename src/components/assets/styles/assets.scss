@@ -51,8 +51,6 @@
 .container {
   overflow: hidden;
   border-radius: 16px;
-  border-width: 1px;
-  border-style: solid;
   border-color: #fff;
   padding: 16px 0 24px 0;
   background-color: white;
@@ -61,23 +59,11 @@
     padding-left: 24px;
     padding-right: 24px;
   }
-  @media (min-width: $lg) {
-    border-width: 1px;
-  }
-  &.container--native {
-    border-color: $navy-2;
-  }
-  &.container--others {
-    border-color: $navy-2;
-  }
 }
 
 .body--dark {
   .container {
     background-color: $navy-2;
-  }
-  &.container--native {
-    border-color: $navy-2;
   }
 }
 
