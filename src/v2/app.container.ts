@@ -12,6 +12,7 @@ import {
   IEvmAssetsRepository,
   IXvmRepository,
   IAssetsRepository,
+  IZkBridgeRepository,
   IPolkasafeRepository,
 } from './repositories';
 import {
@@ -23,6 +24,7 @@ import {
   XcmRepository,
   EvmAssetsRepository,
   AssetsRepository,
+  ZkBridgeRepository,
   PolkasafeRepository,
 } from './repositories/implementations';
 import {
@@ -34,6 +36,7 @@ import {
   IXcmService,
   IEvmAssetsService,
   IAssetsService,
+  IZkBridgeService,
   WalletType,
   IXvmService,
 } from './services';
@@ -48,6 +51,7 @@ import {
   XcmEvmService,
   EvmDappStakingService,
   AssetsService,
+  ZkBridgeService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -123,6 +127,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
+  container.addTransient<IZkBridgeRepository>(ZkBridgeRepository, Symbols.ZkBridgeRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
@@ -139,6 +144,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.BalanceFormatterService
   );
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
+  container.addTransient<IZkBridgeService>(ZkBridgeService, Symbols.ZkBridgeService);
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),

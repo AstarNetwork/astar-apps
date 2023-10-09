@@ -28,5 +28,7 @@ export const Symbols = {
   EvmAssetsService: Symbol.for('EvmAssetsService'),
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
+  ZkBridgeRepository: Symbol.for('ZkBridgeRepository'),
   AssetsService: Symbol.for('AssetsService'),
+  ZkBridgeService: Symbol.for('ZkBridgeService'),
 };

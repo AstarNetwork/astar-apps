@@ -17,6 +17,14 @@ export enum EthBridgeNetworkName {
   'Astar' = 'Astar zkEVM',
 }
 
+// Todo: check mainnet contract
+export const EthBridgeContract = {
+  [EthBridgeNetworkName.Sepolia]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
+  [EthBridgeNetworkName.Ethereum]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
+  [EthBridgeNetworkName.Akiba]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
+  [EthBridgeNetworkName.Astar]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
+};
+
 export const EthBridgeChainId = {
   [EthBridgeNetworkName.Sepolia]: EVM.SEPOLIA_TESTNET,
   [EthBridgeNetworkName.Ethereum]: EVM.ETHEREUM_MAINNET,

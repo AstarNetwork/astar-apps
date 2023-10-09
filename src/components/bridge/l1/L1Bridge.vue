@@ -113,6 +113,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useL1Bridge } from 'src/hooks';
 import { defineComponent } from 'vue';
 import { zkBridgeIcon, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
+import { isHex } from '@polkadot/util';
 
 export default defineComponent({
   components: {
@@ -145,9 +146,11 @@ export default defineComponent({
     } = useL1Bridge();
 
     const bridge = async (): Promise<void> => {
-      await handleBridge();
-      await props.fetchUserHistory();
-      props.setIsBridge(false);
+      const transactionHash = await handleBridge();
+      if (isHex(transactionHash)) {
+        await props.fetchUserHistory();
+        props.setIsBridge(false);
+      }
     };
 
     return {
