@@ -316,8 +316,13 @@
 
 .separator {
   margin: 8px 16px;
-  background-color: $navy-3;
+  background-color: $gray-3;
   height: 1px;
+}
+.body--dark{
+  .separator {
+    background-color: $navy-3;
+  }
 }
 
 .row--header {
@@ -365,13 +370,13 @@
   background-color: $gray-1;
   @media (min-width: $sm) {
     border-radius: 16px;
-    border-color: $navy-3;
-    border-width: 1px;
+    border: solid 1px $gray-2;
   }
 }
 .body--dark {
   .row--locked-tokens {
     background-color: $navy-2;
+    border-color: $navy-3;
   }
 }
 
