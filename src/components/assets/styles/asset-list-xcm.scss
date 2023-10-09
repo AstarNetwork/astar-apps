@@ -203,7 +203,7 @@
       color: $astar-blue;
     }
     &.off {
-      color: $navy-3;
+      color: $gray-3;
     }
   }
   &:hover {
@@ -216,6 +216,22 @@
       &.on,
       &.off {
         color: white;
+      }
+    }
+  }
+}
+.body--dark{
+  .btn--icon {
+    .icon--favorite {
+      &.off {
+        color: $navy-3;
+      }
+    }
+    &:hover {
+      .icon--favorite {
+        &.off {
+          color: white;
+        }
       }
     }
   }
