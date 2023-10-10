@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="container--rewards">
+    <button
+      class="container--rewards"
+      :disabled="!canClaim || !canClaimWithoutError"
+      @click="claimAll"
+    >
       <div class="container--rewards__inner">
         <div>
           <div class="text--label">{{ $t('assets.yourStaking') }}</div>
@@ -27,22 +31,14 @@
             <span class="row--reward__amount">{{ $n(pendingRewards) }}</span>
             <span class="row--reward__symbol">{{ nativeTokenSymbol }}</span>
           </div>
-          <div>
-            <astar-button
-              :width="80"
-              :height="24"
-              :disabled="!canClaim || !canClaimWithoutError"
-              @click="claimAll"
-            >
-              {{ $t('myReward.claim') }}
-            </astar-button>
-          </div>
         </template>
       </div>
-    </div>
+    </button>
 
-    <div v-if="!canClaimWithoutError" class="claim-warning">
-      <q-icon name="warning" size="20px" class="q-mr-sm" />
+    <div v-if="!canClaimWithoutError" class="box--warning">
+      <div class="icon--warning">
+        <astar-icon-warning />
+      </div>
       <div>{{ $t('dappStaking.cantClaimWihtoutError') }}</div>
     </div>
   </div>
@@ -61,8 +57,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 export default defineComponent({
   setup() {
     const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
-    const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
-      useClaimAll();
+    const { claimAll, canClaim, isLoading, canClaimWithoutError, isDappDeveloper } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
     const store = useStore();
 
@@ -90,7 +85,7 @@ export default defineComponent({
     };
 
     const setPendingRewards = async (): Promise<void> => {
-      if (!currentAccount.value || !amountOfEras.value) {
+      if (!currentAccount.value) {
         pendingRewards.value = 0;
         return;
       }
@@ -103,11 +98,10 @@ export default defineComponent({
       isLoadingPendingRewards.value = false;
     };
 
-    watch([senderSs58Account, amountOfEras], setPendingRewards, { immediate: false });
+    watch([senderSs58Account], setPendingRewards, { immediate: false });
 
     return {
       isLoading,
-      amountOfEras,
       canClaim,
       canClaimWithoutError,
       claimAll,

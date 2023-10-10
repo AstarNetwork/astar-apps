@@ -90,3 +90,29 @@
     font-weight: 600;
   }
 }
+
+.box--warning {
+  position: relative;
+  z-index: 1;
+  border: solid 1px $warning-red;
+  background-color: rgba($warning-red, 20%);
+  color: $navy-1;
+  display: flex;
+  align-items: flex-start;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: left;
+  margin-top: 12px;
+  @media (min-width: $xl) {
+    width: 240px;
+  }
+  .icon--warning {
+    color: $warning-red;
+    margin-right: 8px;
+  }
+}
+.body--dark {
+  .box--warning {
+    color: white;
+  }
+}
