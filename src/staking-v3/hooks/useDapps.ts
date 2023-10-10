@@ -19,5 +19,13 @@ export function useDapps() {
     }
   };
 
-  return { getDapps };
+  const stake = async (dappAddress: string, amount: number): Promise<void> => {
+    console.log(`Staking ${amount} to ${dappAddress}`);
+  };
+
+  const unstake = async (dappAddress: string, amount: number): Promise<void> => {
+    console.log(`Unstaking ${amount} from ${dappAddress}`);
+  };
+
+  return { getDapps, stake, unstake };
 }
