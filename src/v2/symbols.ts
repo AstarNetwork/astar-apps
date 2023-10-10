@@ -29,4 +29,9 @@ export const Symbols = {
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
   AssetsService: Symbol.for('AssetsService'),
+  AccountUnificationService: Symbol.for('AccountUnificationService'),
+  IdentityRepository: Symbol.for('IdentityRepository'),
+  IdentityService: Symbol.for('IdentityService'),
+  NftRepository: Symbol.for('NftRepository'),
+  AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
 };

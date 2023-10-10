@@ -31,7 +31,8 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <div v-if="token.isXC20" />
+            <!-- Memo: test checking if styling won't break -->
+            <!-- <div v-if="token.isXC20" /> -->
             <router-link :to="buildTransferPageLink(token.symbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
