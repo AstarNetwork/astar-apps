@@ -31,6 +31,13 @@ export const useL1History = () => {
   const isLoadingHistories = ref<boolean>(false);
   const isFetchAutomatically = ref<boolean>(false);
 
+  const isActionRequired = computed<boolean>(() => {
+    if (histories.value.length === 0) {
+      return false;
+    }
+    return histories.value.some((it) => it.isActionRequired);
+  });
+
   const { currentAccount } = useAccount();
 
   const fetchUserHistory = async (): Promise<void> => {
@@ -51,6 +58,7 @@ export const useL1History = () => {
       const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Chain as EthBridgeNetworkName]);
 
       let numberInProgress = 0;
+      let numberIsActionRequired = 0;
       const formattedResult = await Promise.all(
         data.map(async (it) => {
           const isL1 = checkIsL1(it['network_id']);
@@ -97,5 +105,12 @@ export const useL1History = () => {
     clearInterval(autoFetchHistoryHandler);
   });
 
-  return { l1Network, l2Network, histories, isLoadingHistories, fetchUserHistory };
+  return {
+    l1Network,
+    l2Network,
+    histories,
+    isLoadingHistories,
+    isActionRequired,
+    fetchUserHistory,
+  };
 };

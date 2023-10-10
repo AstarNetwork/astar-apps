@@ -1,7 +1,11 @@
 <template>
   <div v-if="currentAccount" class="wrapper--bridge">
     <div class="container--bridge">
-      <bridge-mode-tab :is-bridge="isBridge" :set-is-bridge="setIsBridge" />
+      <bridge-mode-tab
+        :is-action-required="isActionRequired"
+        :is-bridge="isBridge"
+        :set-is-bridge="setIsBridge"
+      />
       <div class="wrapper-containers">
         <l1-bridge
           v-if="isBridge"
@@ -38,8 +42,14 @@ export default defineComponent({
   setup() {
     const isBridge = ref<boolean>(true);
 
-    const { histories, isLoadingHistories, l1Network, l2Network, fetchUserHistory } =
-      useL1History();
+    const {
+      histories,
+      isLoadingHistories,
+      l1Network,
+      l2Network,
+      isActionRequired,
+      fetchUserHistory,
+    } = useL1History();
     const { currentAccount } = useAccount();
     const router = useRouter();
     const route = useRoute();
@@ -74,6 +84,7 @@ export default defineComponent({
       isLoadingHistories,
       l1Network,
       l2Network,
+      isActionRequired,
       setIsBridge,
       fetchUserHistory,
     };

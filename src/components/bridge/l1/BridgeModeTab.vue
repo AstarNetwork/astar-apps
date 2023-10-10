@@ -8,10 +8,14 @@
       >
         <span class="text--title-tab"> {{ $t('bridge.bridge') }} </span>
       </div>
-      <div @click="setIsBridge(false)">
+      <div class="box--history-tab">
+        <div v-if="isActionRequired">
+          <flag-action-required />
+        </div>
         <div
           :class="[!isBridge ? 'selected-tab text--selected' : 'unselected-tab']"
           class="box--tab"
+          @click="setIsBridge(false)"
         >
           <span class="text--title-tab"> {{ $t('bridge.history') }} </span>
         </div>
@@ -20,9 +24,16 @@
   </div>
 </template>
 <script lang="ts">
+import FlagActionRequired from 'src/components/bridge/l1/FlagActionRequired.vue';
 import { defineComponent } from 'vue';
+
 export default defineComponent({
+  components: { FlagActionRequired },
   props: {
+    isActionRequired: {
+      type: Boolean,
+      required: true,
+    },
     isBridge: {
       type: Boolean,
       required: true,
