@@ -32,9 +32,10 @@
         class="row__info"
         @click="
           () =>
-            isFaucet
+            width <= screenSize.sm &&
+            (isFaucet
               ? handleModalFaucet({ isOpen: true })
-              : $router.push(buildTransferPageLink(nativeTokenSymbol))
+              : $router.push(buildTransferPageLink(nativeTokenSymbol)))
         "
       >
         <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
@@ -108,7 +109,7 @@ import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePrice, useBreakpoints } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
@@ -166,6 +167,8 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
+    const { width, screenSize } = useBreakpoints();
+
     return {
       nativeTokenImg,
       nativeTokenSymbol,
@@ -176,6 +179,8 @@ export default defineComponent({
       isFaucet,
       isModalFaucet,
       isTruncate,
+      width,
+      screenSize,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,

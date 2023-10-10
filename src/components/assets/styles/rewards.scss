@@ -2,7 +2,6 @@
 
 .screen--lg-down {
   display: block;
-  margin: 24px 0;
   @media (min-width: $xl) {
     display: none;
   }
