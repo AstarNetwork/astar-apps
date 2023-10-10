@@ -288,7 +288,9 @@ export function useTransferRouter() {
         // if: SS58 local transfer
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
         selectableTokens = xcmAssets.value.assets;
-        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        tokens = selectableTokens.filter(
+          ({ isXcmCompatible, userBalance }) => isXcmCompatible || userBalance
+        );
         tokens.push(nativeTokenAsset);
       }
     }

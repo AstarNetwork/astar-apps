@@ -7,6 +7,7 @@ import {
   AlertBox,
   EcdsaAccount,
   SubstrateAccount,
+  UnifiedAccount,
 } from './state';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
@@ -32,6 +33,7 @@ export interface GeneralGetters {
   currentWallet(state: State): string;
   getGas(state: State): GasTip | undefined;
   getCurrentBlock(state: State): number;
+  getUnifiedAccount(state: State): UnifiedAccount | undefined;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -57,6 +59,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   currentWallet: (state: State) => state.currentWallet,
   getGas: (state: State) => state.gas,
   getCurrentBlock: (state: State) => state.currentBlock,
+  getUnifiedAccount: (state: State) => state.unifiedAccount,
 };
 
 export default getters;

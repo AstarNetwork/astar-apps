@@ -13,6 +13,9 @@ import {
   IXvmRepository,
   IAssetsRepository,
   IPolkasafeRepository,
+  IIdentityRepository,
+  INftRepository,
+  IAccountUnificationRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -24,6 +27,8 @@ import {
   EvmAssetsRepository,
   AssetsRepository,
   PolkasafeRepository,
+  NftRepository,
+  AccountUnificationRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -36,6 +41,8 @@ import {
   IAssetsService,
   WalletType,
   IXvmService,
+  IAccountUnificationService,
+  IIdentityService,
 } from './services';
 import {
   DappStakingService,
@@ -48,6 +55,8 @@ import {
   XcmEvmService,
   EvmDappStakingService,
   AssetsService,
+  AccountUnificationService,
+  IdentityService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -58,6 +67,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
+import { IdentityRepository } from './repositories/implementations/IdentityRepository';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -84,8 +94,8 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   // Wallet factory
   container.bind<interfaces.Factory<IWalletService>>(Symbols.WalletFactory).toFactory(() => {
-    return () => {
-      return container.get<IWalletService>(currentWalletType);
+    return (walletType?: WalletType) => {
+      return container.get<IWalletService>(walletType ?? currentWalletType);
     };
   });
 
@@ -116,6 +126,12 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
+  container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
+  container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
+  container.addSingleton<IAccountUnificationRepository>(
+    AccountUnificationRepository,
+    Symbols.AccountUnificationRepository
+  );
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
@@ -132,6 +148,11 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.BalanceFormatterService
   );
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
+  container.addSingleton<IAccountUnificationService>(
+    AccountUnificationService,
+    Symbols.AccountUnificationService
+  );
+  container.addSingleton<IIdentityService>(IdentityService, Symbols.IdentityService);
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
