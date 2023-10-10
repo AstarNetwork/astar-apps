@@ -4,40 +4,42 @@
       <img class="bg--assets__stars" :src="bg_img.astar_stars" />
     </div>
 
-    <div class="container--assets">
-      <account
-        :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-        :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-        :is-loading-erc20-amount="isLoading"
-        :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-      />
+    <div class="wrapper--assets__inner">
+      <div class="container--assets">
+        <account
+          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+          :is-loading-erc20-amount="isLoading"
+          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
 
-      <div class="separator" />
+        <div class="separator" />
 
-      <rewards class="screen--lg-down" />
+        <rewards class="screen--lg-down" />
 
-      <div class="container container--native">
-        <evm-native-token v-if="isH160" />
-        <native-asset-list v-if="!isH160" />
-      </div>
-
-      <div class="container container--others">
-        <div v-if="isH160">
-          <evm-asset-list :tokens="evmAssets.assets" />
+        <div class="container container--native">
+          <evm-native-token v-if="isH160" />
+          <native-asset-list v-if="!isH160" />
         </div>
-        <div v-else>
-          <!-- Memo: hide xvm panel because AA might replace it -->
-          <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+
+        <div class="container container--others">
+          <div v-if="isH160">
+            <evm-asset-list :tokens="evmAssets.assets" />
+          </div>
+          <div v-else>
+            <!-- Memo: hide xvm panel because AA might replace it -->
+            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="column--links">
-      <div class="column--links__rewards">
-        <rewards />
+      <div class="column--links">
+        <div class="column--links__rewards">
+          <rewards />
+        </div>
+        <dynamic-links />
       </div>
-      <dynamic-links />
     </div>
   </div>
 </template>

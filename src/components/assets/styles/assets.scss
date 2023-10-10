@@ -4,10 +4,6 @@
   padding: 24px 10px 0 10px;
   position: relative;
   background-color: $gray-1;
-  @media (min-width: $xl) {
-    display: flex;
-    justify-content: center;
-  }
   @media (min-width: $lg) {
     margin: -60px -40px;
   }
@@ -15,6 +11,16 @@
 .body--dark {
   .wrapper--assets {
     background-color: $navy-1;
+  }
+}
+
+.wrapper--assets__inner{
+  width: 100%;
+  max-width: $container-max-width;
+  margin: auto;
+  @media (min-width: $xl) {
+    display: flex;
+    justify-content: center;
   }
 }
 
@@ -26,10 +32,6 @@
   flex-direction: column;
   row-gap: 32px;
   margin-bottom: 24px;
-  @media (min-width: $xxxl) {
-    width: 100%;
-    max-width: $container-max-width;
-  }
 }
 
 .container--account {
