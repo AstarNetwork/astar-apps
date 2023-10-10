@@ -15,7 +15,6 @@
     <div class="wrapper--account">
       <div class="row--account-info">
         <div class="column--account-icon">
-          <!-- TODO: unified account icon -->
           <img
             v-if="iconWallet"
             width="24"
@@ -26,10 +25,8 @@
         </div>
 
         <div>
-          <!-- TODO: unified account icon -->
           <div class="text--title">
-            <span v-if="isUnifiedAccount">Unified Account Name</span>
-            <span v-else>{{ currentAccount ? currentAccountName : $t('assets.myWallet') }}</span>
+            <span>{{ currentAccount ? currentAccountName : $t('assets.myWallet') }}</span>
           </div>
           <div class="text--balance">
             {{ $n(totalBal) }}
@@ -40,7 +37,6 @@
 
       <div class="row--actions">
         <div v-if="isAccountUnification">
-          <!-- TODO: add logic -->
           <button class="btn--icon" @click="showAccountUnificationModal()">
             <!-- TODO: use AstarUI icon -->
             <svg
@@ -143,7 +139,6 @@ export default defineComponent({
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
-    const isUnifiedAccount = ref<boolean>(false);
     const {
       currentAccount,
       currentAccountName,
@@ -279,7 +274,6 @@ export default defineComponent({
       supportWalletObj,
       signatoryIconWallet,
       isModalLockdropWarning,
-      isUnifiedAccount,
       isAccountUnification,
       handleModalLockdropWarning,
       getShortenAddress,
