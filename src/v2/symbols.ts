@@ -29,4 +29,5 @@ export const Symbols = {
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
   AssetsService: Symbol.for('AssetsService'),
+  DappStakingRepositoryV3: Symbol.for('DappStakingRepositoryV3'),
 };

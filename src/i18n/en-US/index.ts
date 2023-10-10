@@ -609,4 +609,7 @@ export default {
     agree: 'Agree',
     decline: 'Decline',
   },
+  stakingV3: {
+    title: 'dApp Staking v3',
+  },
 };

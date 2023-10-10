@@ -49,6 +49,10 @@ import {
   EvmDappStakingService,
   AssetsService,
 } from './services/implementations';
+import {
+  IDappStakingRepository as IDappStakingRepositoryV3,
+  DappStakingRepository as DappStakingRepositoryV3,
+} from 'src/staking-v3';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
@@ -154,4 +158,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
+
+  //dApp staking v3
+  container.addTransient<IDappStakingRepositoryV3>(
+    DappStakingRepositoryV3,
+    Symbols.DappStakingRepositoryV3
+  );
 }

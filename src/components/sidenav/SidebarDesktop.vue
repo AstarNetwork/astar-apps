@@ -57,6 +57,25 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
+      <div>
+        <router-link
+          v-if="network.isStoreEnabled"
+          :to="RoutePath.DappStakingV3"
+          :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
+        >
+          <astar-icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            icon-color="currentColor"
+            icon-name="staking"
+          >
+            <astar-icon-dapp-staking />
+          </astar-icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('stakingV3.title') }}</astar-text>
+          </div>
+        </router-link>
+        <div v-else class="dummy-row" />
+      </div>
       <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
         <router-link
           to="#"
