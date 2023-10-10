@@ -38,7 +38,8 @@
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <div v-if="token.isXC20" />
+          <!-- Memo: test checking if styling won't break -->
+          <!-- <div v-if="token.isXC20" /> -->
 
           <div>
             <router-link :to="buildTransferPageLink(token.symbol)">

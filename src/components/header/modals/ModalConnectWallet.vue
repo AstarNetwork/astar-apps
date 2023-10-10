@@ -125,6 +125,24 @@
           </div>
         </div>
       </div>
+      <!-- temporarily disable until we implement account selection UI -->
+      <!-- <div v-if="isAccountUnification">
+        <div class="title--account-type">
+          <span>
+            {{ $t('wallet.accountUnification') }}
+          </span>
+        </div>
+        <div class="wrapper--wallets">
+          <div class="box__row--wallet box--hover--active" @click="setAccountUnificationModal()">
+            <div class="box--img astar-account">
+              <img :src="require('src/assets/img/token/astr.png')" />
+            </div>
+            <div>
+              <span> Astar Account </span>
+            </div>
+          </div>
+        </div>
+      </div> -->
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
@@ -172,6 +190,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    openAccountUnificationModal: {
+      type: Function,
+      required: true,
+    },
     isNoExtension: {
       type: Boolean,
       required: true,
@@ -183,7 +205,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount } = useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
 
@@ -247,6 +269,10 @@ export default defineComponent({
       props.openPolkasafeModal();
     };
 
+    const setAccountUnificationModal = async (): Promise<void> => {
+      props.openAccountUnificationModal();
+    };
+
     const setEvmWalletModal = async (source: string): Promise<void> => {
       await closeModal();
       props.connectEthereumWallet(source);
@@ -267,8 +293,10 @@ export default defineComponent({
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
+      setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,
+      isAccountUnification,
     };
   },
 });

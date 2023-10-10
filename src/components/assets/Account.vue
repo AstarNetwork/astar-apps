@@ -39,9 +39,9 @@
       </div>
 
       <div class="row--actions">
-        <div>
+        <div v-if="isAccountUnification">
           <!-- TODO: add logic -->
-          <button class="btn--icon">
+          <button class="btn--icon" @click="showAccountUnificationModal()">
             <!-- TODO: use AstarUI icon -->
             <svg
               width="24"
@@ -61,7 +61,7 @@
             </svg>
           </button>
           <q-tooltip>
-            <span class="text--tooltip">Unify accounts</span>
+            <span class="text--tooltip">{{ $t('assets.unifyAccounts') }}</span>
           </q-tooltip>
         </div>
 
@@ -144,7 +144,13 @@ export default defineComponent({
     const isLockdropAccount = ref<boolean>(false);
     const isModalLockdropWarning = ref<boolean>(true);
     const isUnifiedAccount = ref<boolean>(false);
-    const { currentAccount, currentAccountName, multisig } = useAccount();
+    const {
+      currentAccount,
+      currentAccountName,
+      multisig,
+      showAccountUnificationModal,
+      isAccountUnification,
+    } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -274,9 +280,11 @@ export default defineComponent({
       signatoryIconWallet,
       isModalLockdropWarning,
       isUnifiedAccount,
+      isAccountUnification,
       handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
+      showAccountUnificationModal,
     };
   },
 });
