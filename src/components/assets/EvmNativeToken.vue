@@ -80,7 +80,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
     const store = useStore();
@@ -88,7 +88,11 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+      getTokenImage({
+        isNativeToken: true,
+        symbol: nativeTokenSymbol.value,
+        isZkEvm: isZkEvm.value,
+      })
     );
 
     const updateStates = async (nativeTokenUsd: number): Promise<void> => {

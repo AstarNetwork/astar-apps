@@ -5,11 +5,19 @@
         <fieldset>
           <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
             <li v-for="(provider, index) in providerEndpoints" :key="index">
-              <!-- Todo: remove this 'div' when we public astar-zkevm -->
-              <div
+              <q-tooltip
+                v-if="checkIsDisabledZkOption(provider)"
+                anchor="top middle"
+                class="box--tooltip"
+              >
+                <span class="text--tooltip">{{ $t('drawer.zkNetworkTip') }}</span>
+              </q-tooltip>
+              <button
                 v-if="
                   provider.networkAlias !== 'astar-zkevm' && provider.networkAlias !== 'rocstar'
                 "
+                class="button--network-column"
+                :disabled="checkIsDisabledZkOption(provider)"
               >
                 <label
                   :class="[
@@ -23,6 +31,7 @@
                   <astar-radio-btn
                     class="ip--network"
                     :checked="selNetwork === index"
+                    :disabled="checkIsDisabledZkOption(provider)"
                     @change="selNetwork = index"
                   />
                   <div class="wrapper--network-detail">
@@ -90,7 +99,7 @@
                     </div>
                   </div>
                 </label>
-              </div>
+              </button>
             </li>
           </ul>
         </fieldset>
@@ -152,6 +161,8 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   props: {
@@ -171,6 +182,14 @@ export default defineComponent({
 
     const newEndpoint = ref('');
     const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
+
+    const { isZkEvm } = useNetworkInfo();
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+    const checkIsDisabledZkOption = (provider: ChainProvider): boolean => {
+      return !isH160.value && provider.displayName.includes('zk');
+    };
 
     const setInitialNewEndpoint = (): string => {
       const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
@@ -428,11 +447,14 @@ export default defineComponent({
       windowHeight,
       isSelectLightClient,
       isLightClientExtension,
+      isZkEvm,
+      isH160,
       closeModal,
       setSelEndpoint,
       checkIsCheckedEndpoint,
       selectNetwork,
       checkIsDisplayEndpoint,
+      checkIsDisabledZkOption,
     };
   },
 });

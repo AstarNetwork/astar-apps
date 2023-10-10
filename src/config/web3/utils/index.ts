@@ -36,24 +36,28 @@ export const setupNetwork = async ({
         // Memo:
         // 1. Try to switch the network
         // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
+        // 2a. Avoid duplicating changing network request if users reject the request
         try {
           await provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId }],
           });
-        } catch (error) {
-          await provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId,
-                chainName,
-                nativeCurrency,
-                rpcUrls,
-                blockExplorerUrls,
-              },
-            ],
-          });
+        } catch (error: any) {
+          const codeUserRejected = 4001;
+          if (error.code !== codeUserRejected) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId,
+                  chainName,
+                  nativeCurrency,
+                  rpcUrls,
+                  blockExplorerUrls,
+                },
+              ],
+            });
+          }
         }
       }
 

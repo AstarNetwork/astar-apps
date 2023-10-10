@@ -13,7 +13,7 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             v-for="(wallet, index) in evmWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
@@ -29,7 +29,7 @@
                 {{ castWalletName(wallet.name) }}
               </span>
             </div>
-          </div>
+          </button>
         </div>
       </div>
       <div>
@@ -39,11 +39,12 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
+            :disabled="isZkEvm"
             @click="setSubstrateWalletModal(wallet.source)"
           >
             <div class="box--img">
@@ -54,7 +55,7 @@
                 {{ castWalletName(wallet.name) }}
               </span>
             </div>
-          </div>
+          </button>
         </div>
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
@@ -108,7 +109,7 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             class="box__row--wallet box--hover--active"
             :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
             @click="setPolkasafeModal()"
@@ -122,7 +123,7 @@
             <div>
               <span> PolkaSafe </span>
             </div>
-          </div>
+          </button>
         </div>
       </div>
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
@@ -185,7 +186,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccountName, disconnectAccount } = useAccount();
     const isClosing = ref<boolean>(false);
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -269,6 +270,7 @@ export default defineComponent({
       setPolkasafeModal,
       currentNetworkIdx,
       endpointKey,
+      isZkEvm,
     };
   },
 });

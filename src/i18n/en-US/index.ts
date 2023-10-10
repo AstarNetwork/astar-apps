@@ -147,6 +147,7 @@ export default {
     shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
     takeLongerTimeToConnect: 'It might take a longer time to load data from chains',
     takeLongerTimeToSend: 'It might take a longer time or fail in sending transactions',
+    zkNetworkTip: 'Please connect to EVM wallets first',
   },
   wallet: {
     connectWallet: 'Connect Wallet',

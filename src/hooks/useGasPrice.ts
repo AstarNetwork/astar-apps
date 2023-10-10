@@ -86,7 +86,8 @@ export const useGasPrice = (isFetch = false) => {
     return (
       currentWallet !== SupportWallet.TalismanEvm &&
       currentWallet !== SupportWallet.SubWalletEvm &&
-      currentWallet !== SupportWallet.OneKeyEvm
+      currentWallet !== SupportWallet.OneKeyEvm &&
+      !isZkEvm.value
     );
   });
 
