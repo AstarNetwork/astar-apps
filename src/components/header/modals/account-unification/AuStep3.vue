@@ -91,7 +91,7 @@ export default defineComponent({
       metamask: require('/src/assets/img/metamask.png'),
     };
 
-    const updateAccountName = (event: any) => {
+    const updateAccountName = (event: any): void => {
       accountNameSet.value = true;
       props.setAccountName(event);
     };
