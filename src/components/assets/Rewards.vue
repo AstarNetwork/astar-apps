@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!isDappDeveloper">
     <button
       class="container--rewards"
       :disabled="!canClaim || !canClaimWithoutError"
@@ -10,28 +10,13 @@
           <div class="text--label">{{ $t('assets.yourStaking') }}</div>
           <div class="text--title">{{ $t('assets.reward') }}</div>
         </div>
-
-        <template v-if="isDappDeveloper">
-          <div>
-            <astar-button
-              :width="80"
-              :height="24"
-              :disabled="!canClaim || !canClaimWithoutError"
-              @click="claimAll"
-            >
-              {{ $t('myReward.claim') }}
-            </astar-button>
-          </div>
-        </template>
-        <template v-else>
-          <div v-if="isLoadingPendingRewards" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="row--reward">
-            <span class="row--reward__amount">{{ $n(pendingRewards) }}</span>
-            <span class="row--reward__symbol">{{ nativeTokenSymbol }}</span>
-          </div>
-        </template>
+        <div v-if="isLoadingPendingRewards" class="loading">
+          <q-skeleton type="rect" animation="fade" />
+        </div>
+        <div v-else class="row--reward">
+          <span class="row--reward__amount">{{ $n(pendingRewards) }}</span>
+          <span class="row--reward__symbol">{{ nativeTokenSymbol }}</span>
+        </div>
       </div>
     </button>
 
@@ -42,6 +27,7 @@
       <div>{{ $t('dappStaking.cantClaimWihtoutError') }}</div>
     </div>
   </div>
+  <div v-else />
 </template>
 
 <script lang="ts">
@@ -51,15 +37,13 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   setup() {
     const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const { claimAll, canClaim, isLoading, canClaimWithoutError, isDappDeveloper } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
-    const store = useStore();
 
     const pendingRewards = ref<number>(0);
     const isLoadingPendingRewards = ref<boolean>(false);
@@ -98,7 +82,7 @@ export default defineComponent({
       isLoadingPendingRewards.value = false;
     };
 
-    watch([senderSs58Account], setPendingRewards, { immediate: false });
+    watch([senderSs58Account], setPendingRewards, { immediate: true });
 
     return {
       isLoading,

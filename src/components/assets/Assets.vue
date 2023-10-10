@@ -80,6 +80,8 @@ export default defineComponent({
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
+    const dapps = computed(() => store.getters['dapps/getAllDapps']);
+
     const evmNetworkId = computed(() => {
       return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
     });
@@ -164,9 +166,13 @@ export default defineComponent({
         const isAssets = evmAssets.value.assets.length > 0;
         store.commit('general/setLoading', !isAssets);
       }
+      const isLoad = dapps.value.length === 0;
+      store.commit('general/setLoading', isLoad);
     };
 
-    watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
+    watch([evmAssets, xcmAssets, isH160, isMainnet, dapps], handleEvmAssetLoader, {
+      immediate: true,
+    });
 
     onUnmounted(() => {
       const { handler, event } = getAssetEventAndHandler();
