@@ -222,6 +222,8 @@ export default {
       aboutForUsers: 'About the unified accounts for users',
       techDocs: 'Tech docs',
       sendingXc20: 'Start sending XC20 tokens, please wait...',
+      editUnifiedAccount: 'Edit Unified Account',
+      save: 'Save',
     },
   },
   installWallet: {

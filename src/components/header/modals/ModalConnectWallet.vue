@@ -125,7 +125,8 @@
           </div>
         </div>
       </div>
-      <div v-if="isAccountUnification">
+      <!-- temporarily disable until we implement account selection UI -->
+      <!-- <div v-if="isAccountUnification">
         <div class="title--account-type">
           <span>
             {{ $t('wallet.accountUnification') }}
@@ -141,7 +142,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
