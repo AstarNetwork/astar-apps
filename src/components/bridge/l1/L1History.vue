@@ -96,6 +96,7 @@
                 <button
                   v-else-if="history.isActionRequired"
                   class="action-button link-button status--claim"
+                  @click="async () => await claim(history)"
                 >
                   {{ $t('bridge.claim') }}
                 </button>
@@ -116,6 +117,7 @@
   </div>
 </template>
 <script lang="ts">
+import { isHex } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { DateTime } from 'luxon';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
@@ -153,6 +155,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleClaim: {
+      type: Function,
+      required: true,
+    },
     histories: {
       type: Object as PropType<BridgeHistory[]>,
       required: true,
@@ -172,6 +178,13 @@ export default defineComponent({
         console.error(error);
       } finally {
         syncIndex.value = undefined;
+      }
+    };
+
+    const claim = async (withdrawal: BridgeHistory): Promise<void> => {
+      const transactionHash = await props.handleClaim(withdrawal);
+      if (isHex(transactionHash)) {
+        await props.fetchUserHistory();
       }
     };
 
@@ -206,6 +219,7 @@ export default defineComponent({
       checkStatusStyle,
       handleUpdateHistory,
       checkIsRefresh,
+      claim,
     };
   },
 });

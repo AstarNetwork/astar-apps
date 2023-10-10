@@ -19,6 +19,7 @@
           :l1-network="l1Network"
           :l2-network="l2Network"
           :fetch-user-history="fetchUserHistory"
+          :handle-claim="handleClaim"
         />
         <information :transfer-type="HistoryTxType.Transfer" :is-history="false" />
       </div>
@@ -49,6 +50,7 @@ export default defineComponent({
       l2Network,
       isActionRequired,
       fetchUserHistory,
+      handleClaim,
     } = useL1History();
     const { currentAccount } = useAccount();
     const router = useRouter();
@@ -87,6 +89,7 @@ export default defineComponent({
       isActionRequired,
       setIsBridge,
       fetchUserHistory,
+      handleClaim,
     };
   },
 });

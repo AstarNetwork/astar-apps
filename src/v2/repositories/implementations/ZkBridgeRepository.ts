@@ -6,8 +6,10 @@ import {
   EthBridgeNetworkName,
   ZK_EVM_BRIDGE_ABI,
   ZkNetworkId,
+  fetchMerkleProof,
+  getContractFromNetId,
 } from 'src/modules/zk-evm-bridge';
-import { ParamBridgeAsset } from 'src/v2/services';
+import { ParamBridgeAsset, ParamClaim } from 'src/v2/services';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
@@ -59,6 +61,46 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
       from: param.senderAddress,
       to: contractAddress,
       value: amount,
+      data,
+    };
+  }
+
+  public async getClaimData({
+    param,
+    web3,
+  }: {
+    param: ParamClaim;
+    web3: Web3;
+  }): Promise<TransactionConfig> {
+    const { deposit_cnt, orig_net, orig_addr, dest_net, dest_addr, amount, metadata, network_id } =
+      param.withdrawal;
+    const { main_exit_root, merkle_proof, rollup_exit_root } = await fetchMerkleProof(
+      deposit_cnt,
+      Number(network_id)
+    );
+
+    const contractAddress = getContractFromNetId(network_id);
+    // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/abis/bridge.json
+    const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
+
+    const data = contract.methods
+      .claimAsset(
+        merkle_proof,
+        Number(deposit_cnt),
+        main_exit_root,
+        rollup_exit_root,
+        orig_net,
+        orig_addr,
+        dest_net,
+        dest_addr,
+        amount,
+        metadata
+      )
+      .encodeABI();
+
+    return {
+      from: param.senderAddress,
+      to: contractAddress,
       data,
     };
   }

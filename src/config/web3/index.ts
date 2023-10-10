@@ -10,6 +10,7 @@ export {
   fetchErc20TokenInfo,
   getTokenDetails,
   getNativeBalance,
+  getTransactionTimestamp,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';

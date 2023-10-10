@@ -240,3 +240,20 @@ export const fetchErc20TokenInfo = async ({
     return null;
   }
 };
+
+export const getTransactionTimestamp = async ({
+  web3,
+  transactionHash,
+}: {
+  web3: Web3;
+  transactionHash: string;
+}): Promise<number> => {
+  const transaction = await web3.eth.getTransaction(transactionHash);
+  if (!transaction || !transaction.blockNumber) {
+    console.error('Transaction not found', transaction);
+    return 0;
+  }
+
+  const block = await web3.eth.getBlock(transaction.blockNumber);
+  return Number(block.timestamp);
+};

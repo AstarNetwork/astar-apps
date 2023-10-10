@@ -1,16 +1,20 @@
-import axios from 'axios';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { buildWeb3Instance } from 'src/config/web3';
+import { EVM, buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import {
   BridgeHistory,
   EthBridgeChainId,
   EthBridgeNetworkName,
   checkIsL1,
-  zkEvmApi,
+  fetchAccountHistory,
+  getChainIdFromNetId,
 } from 'src/modules/zk-evm-bridge';
+import { container } from 'src/v2/common';
+import { IZkBridgeService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export const useL1History = () => {
   const l1Network = computed<string>(() => {
@@ -39,26 +43,34 @@ export const useL1History = () => {
   });
 
   const { currentAccount } = useAccount();
+  const { web3Provider, ethProvider } = useEthProvider();
+
+  const handleNetwork = async (chainId: EVM): Promise<void> => {
+    if (!web3Provider.value || !ethProvider.value) return;
+    const connectedNetwork = await web3Provider.value!.eth.net.getId();
+    if (connectedNetwork !== chainId) {
+      await setupNetwork({ network: chainId, provider: ethProvider.value });
+    }
+  };
+
+  const handleClaim = async (withdrawal: BridgeHistory): Promise<String> => {
+    const toChainId = getChainIdFromNetId(withdrawal.dest_net);
+    await handleNetwork(toChainId);
+    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    return await zkBridgeService.claimAsset({
+      withdrawal,
+      senderAddress: currentAccount.value,
+    });
+  };
 
   const fetchUserHistory = async (): Promise<void> => {
-    const address = currentAccount.value;
-    const l1Chain = l1Network.value;
-    const l2Chain = l2Network.value;
-
     try {
       isLoadingHistories.value = true;
-      const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
-      const network = networkIdxStore === String(endpointKey.ASTAR_ZKEVM) ? 'mainnet' : 'testnet';
-      const base = zkEvmApi[network];
-      const limit = 25;
-      const url = `${base}/bridges/${address}?limit=${limit}&offset=0`;
-      const result = await axios.get<{ deposits: BridgeHistory[] }>(url);
-      const data = result.data.deposits;
-      const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Chain as EthBridgeNetworkName]);
-      const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Chain as EthBridgeNetworkName]);
+      const data = await fetchAccountHistory(currentAccount.value);
+      const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Network.value as EthBridgeNetworkName]);
+      const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Network.value as EthBridgeNetworkName]);
 
       let numberInProgress = 0;
-      let numberIsActionRequired = 0;
       const formattedResult = await Promise.all(
         data.map(async (it) => {
           const isL1 = checkIsL1(it['network_id']);
@@ -67,15 +79,7 @@ export const useL1History = () => {
           if (it.claim_tx_hash === '') {
             numberInProgress++;
           }
-          const txHash = it['tx_hash'];
-          const transaction = await web3.eth.getTransaction(txHash);
-          if (!transaction || !transaction.blockNumber) {
-            console.error('Transaction not found', transaction);
-            return it;
-          }
-
-          const block = await web3.eth.getBlock(transaction.blockNumber);
-          const timestamp = Number(block.timestamp);
+          const timestamp = await getTransactionTimestamp({ web3, transactionHash: it['tx_hash'] });
           const isActionRequired =
             it.claim_tx_hash === '' && !checkIsL1(it.network_id) && it.ready_for_claim;
 
@@ -111,6 +115,7 @@ export const useL1History = () => {
     histories,
     isLoadingHistories,
     isActionRequired,
+    handleClaim,
     fetchUserHistory,
   };
 };
