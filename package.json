@@ -45,7 +45,7 @@
     "@polkadot/wasm-crypto": "^7.2.1",
     "@polkadot/x-randomvalues": "^12.3.2",
     "@quasar/app-webpack": "^3.11.2",
-    "@quasar/extras": "^1.16.6",
+    "@quasar/extras": "^1.16.7",
     "@vue/apollo-composable": "^4.0.0-beta.4",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",
