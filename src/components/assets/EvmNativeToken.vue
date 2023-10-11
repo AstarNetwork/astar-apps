@@ -27,6 +27,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native-token">
+            <router-link v-if="isZkEvm" :to="buildL1BridgePageLink()">
+              <button class="btn btn--sm">
+                {{ $t('assets.bridge') }}
+              </button>
+            </router-link>
             <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
@@ -66,7 +71,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { buildTransferPageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildL1BridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
@@ -130,8 +135,10 @@ export default defineComponent({
       cbridgeAppLink,
       isFaucet,
       isModalFaucet,
+      isZkEvm,
       handleModalFaucet,
       buildTransferPageLink,
+      buildL1BridgePageLink,
     };
   },
 });

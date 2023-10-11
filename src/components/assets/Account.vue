@@ -73,6 +73,7 @@
       </div>
       <div v-if="isH160">
         <evm-native-token />
+        <zk-astr v-if="isZkEvm" />
       </div>
       <div v-if="multisig" class="row--details-signatory">
         <div class="column-account-name">
@@ -111,6 +112,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
+import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
@@ -120,6 +122,7 @@ export default defineComponent({
     NativeAssetList,
     ModalLockdropWarning,
     EvmNativeToken,
+    ZkAstr,
   },
   props: {
     ttlErc20Amount: {
@@ -143,6 +146,7 @@ export default defineComponent({
       showAccountUnificationModal,
       isAccountUnification,
     } = useAccount();
+
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -155,7 +159,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -272,6 +276,7 @@ export default defineComponent({
       signatoryIconWallet,
       isModalLockdropWarning,
       isAccountUnification,
+      isZkEvm,
       handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,

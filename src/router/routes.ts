@@ -14,7 +14,12 @@ import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
-export { buildTransferPageLink, getHeaderName, buildXvmTransferPageLink } from 'src/router/utils';
+export {
+  buildTransferPageLink,
+  getHeaderName,
+  buildXvmTransferPageLink,
+  buildL1BridgePageLink,
+} from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
 

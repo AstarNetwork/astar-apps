@@ -24,6 +24,10 @@ export const buildTransferPageLink = (symbol: string): string => {
   return `${base}?token=${symbol.toLowerCase()}&mode=local`;
 };
 
+export const buildL1BridgePageLink = (): string => {
+  return networkParam + Path.Bridge + Path.L1;
+};
+
 export const buildXvmTransferPageLink = (symbol: string): string => {
   const base = networkParam + Path.Assets + Path.XvmTransfer;
   return `${base}?token=${symbol.toLowerCase()}`;
