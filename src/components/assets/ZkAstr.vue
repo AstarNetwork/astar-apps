@@ -5,7 +5,7 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img class="token-logo" :src="nativeTokenImg" :alt="astrTokenSymbol" />
+            <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
             <div v-if="astrTokenSymbol && networkNameSubstrate" class="column--ticker">
               <span class="text--title">{{ astrTokenSymbol }}</span>
               <span class="text--label">{{ networkNameSubstrate }}</span>
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native-token">
-            <router-link v-if="isZkEvm" to="/">
+            <router-link to="/">
               <button class="btn btn--sm" :disabled="true">
                 {{ $t('assets.bridge') }}
               </button>
@@ -45,12 +45,10 @@
 </template>
 <script lang="ts">
 import { getUsdBySymbol } from '@astar-network/astar-sdk-core';
-import { cbridgeAppLink } from 'src/c-bridge';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
-import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
+import { useNetworkInfo } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { buildL1BridgePageLink, buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
@@ -60,7 +58,7 @@ export default defineComponent({
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
 
-    const { networkNameSubstrate, isZkEvm, isMainnet } = useNetworkInfo();
+    const { networkNameSubstrate, isMainnet } = useNetworkInfo();
     const store = useStore();
 
     const astrTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
@@ -68,7 +66,7 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const nativeTokenImg = computed<string>(() =>
+    const astrTokenImg = computed<string>(() =>
       getTokenImage({
         isNativeToken: true,
         symbol: astrTokenSymbol.value,
@@ -93,15 +91,11 @@ export default defineComponent({
     watchEffect(handleAstrPrice);
 
     return {
-      nativeTokenImg,
+      astrTokenImg,
       astrTokenSymbol,
       networkNameSubstrate,
       bal,
       balUsd,
-      cbridgeAppLink,
-      isZkEvm,
-      buildTransferPageLink,
-      buildL1BridgePageLink,
     };
   },
 });
