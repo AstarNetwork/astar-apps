@@ -40,7 +40,7 @@
       </div>
       <div>
         <router-link
-          v-if="network.isStoreEnabled && !isZkEvm"
+          v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
           :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
@@ -55,23 +55,23 @@
             <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
           </div>
         </router-link>
+      </div>
+      <div>
         <router-link
-          v-else-if="isZkEvm"
           :to="RoutePath.Bridge"
-          :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'bridge' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
             icon-color="currentColor"
-            icon-name="staking"
+            icon-name="bridge"
           >
-            <astar-icon-dapp-staking />
+            <astar-icon-bridge />
           </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('assets.bridge') }}</astar-text>
           </div>
         </router-link>
-        <div v-else class="dummy-row" />
       </div>
       <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
         <router-link
@@ -176,6 +176,8 @@ export default defineComponent({
           return 'menu__assets';
         case 'dapp-staking':
           return 'menu__staking';
+        case 'bridge':
+          return 'menu__bridge';
         default:
           return 'menu__staking';
       }

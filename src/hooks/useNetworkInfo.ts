@@ -53,10 +53,8 @@ export function useNetworkInfo() {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId) as ASTAR_EVM_NETWORK_IDX;
   });
 
-  const currentNetworkName = computed<string>(() => {
-    if (isZkEvm.value) {
-      return providerEndpoints[currentNetworkIdx.value].displayName.replace(' Network', '');
-    }
+  // Memo: for showing substrate data if users connect to zkEVM network
+  const networkNameSubstrate = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return chain === astarChain.SHIBUYA
@@ -64,6 +62,14 @@ export function useNetworkInfo() {
       : chain === astarChain.ROCSTAR
       ? 'Rocstar'
       : chain;
+  });
+
+  const currentNetworkName = computed<string>(() => {
+    if (isZkEvm.value) {
+      return providerEndpoints[currentNetworkIdx.value].displayName.replace(' Network', '');
+    } else {
+      return networkNameSubstrate.value;
+    }
   });
 
   const nativeTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
@@ -97,5 +103,6 @@ export function useNetworkInfo() {
     isSupportXvmTransfer,
     polkadotJsLink,
     isZkEvm,
+    networkNameSubstrate,
   };
 }

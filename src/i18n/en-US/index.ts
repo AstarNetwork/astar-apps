@@ -422,6 +422,7 @@ export default {
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      notSupportZkEvm: "dApp staking doesn't support zkEVM networks",
       notEnoughMinAmount:
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:

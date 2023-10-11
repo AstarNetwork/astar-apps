@@ -20,7 +20,7 @@
           </div>
         </router-link>
         <router-link
-          v-if="network.isStoreEnabled && !isZkEvm"
+          v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
           :class="['link', path === 'dapp-staking' && 'active-link']"
         >
@@ -30,11 +30,7 @@
             </span>
           </div>
         </router-link>
-        <router-link
-          v-else-if="isZkEvm"
-          :to="RoutePath.Bridge"
-          :class="['link', path === 'dapp-staking' && 'active-link']"
-        >
+        <router-link :to="RoutePath.Bridge" :class="['link', path === 'bridge' && 'active-link']">
           <div class="column--item">
             <span class="text--link">
               {{ $t('assets.bridge') }}
@@ -75,7 +71,6 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SidebarOption from './SidebarOption.vue';
 import { Path as RoutePath } from 'src/router/routes';
-import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -83,7 +78,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { isZkEvm } = useNetworkInfo();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const showOption = ref(false);
@@ -98,6 +92,8 @@ export default defineComponent({
           return 'tabs__assets';
         case 'dapp-staking':
           return 'tabs__staking';
+        case 'bridge':
+          return 'menu__bridge';
         default:
           return 'tabs__staking';
       }
@@ -109,7 +105,6 @@ export default defineComponent({
       getIndicatorClass,
       path,
       RoutePath,
-      isZkEvm,
     };
   },
 });

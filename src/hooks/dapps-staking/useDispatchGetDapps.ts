@@ -1,11 +1,11 @@
-import { useAccount, useNetworkInfo } from 'src/hooks';
 import { wait } from '@astar-network/astar-sdk-core';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, watch } from 'vue';
 
 export function useDispatchGetDapps() {
   const store = useStore();
-  const { currentNetworkName } = useNetworkInfo();
+  const { isZkEvm, networkNameSubstrate } = useNetworkInfo();
   const { currentAccount } = useAccount();
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
@@ -18,23 +18,23 @@ export function useDispatchGetDapps() {
     const isBrowsingOnly = !!(
       dapps.value.length === 0 &&
       !currentAccount.value &&
-      currentNetworkName.value
+      networkNameSubstrate.value
     );
 
-    if (isBrowsingOnly) {
+    if (isBrowsingOnly || isZkEvm.value) {
       store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
+        network: networkNameSubstrate.value.toLowerCase(),
         currentAccount: '',
       });
     }
   };
 
   const getDapps = async (): Promise<void> => {
-    const isConnectedWallet = currentNetworkName.value && currentAccount.value;
-    if (isConnectedWallet) {
+    const isConnectedWallet = networkNameSubstrate.value && currentAccount.value;
+    if (isConnectedWallet && !isZkEvm.value) {
       const address = !currentAccount.value ? '' : currentAccount.value;
       store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
+        network: networkNameSubstrate.value.toLowerCase(),
         currentAccount: address,
       });
     } else {
@@ -42,5 +42,5 @@ export function useDispatchGetDapps() {
     }
   };
 
-  watch([currentAccount, currentNetworkName], getDapps);
+  watch([currentAccount, networkNameSubstrate], getDapps);
 }
