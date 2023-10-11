@@ -7,7 +7,6 @@ import {
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
   sampleEvmWalletAddress,
-  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
@@ -37,7 +36,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const store = useStore();
   const { t } = useI18n();
-  const { currentAccount } = useAccount();
+  const { currentAccount, getSS58Address } = useAccount();
   const { accountData } = useBalance(currentAccount);
 
   const transferableBalance = computed<number>(() => {
@@ -193,7 +192,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
-          ? toSS58Address(toAddress)
+          ? await getSS58Address(toAddress)
           : toAddress;
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
@@ -225,7 +224,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (!apiRef || !address || !web3Ref) return 0;
     if (isValidAddressPolkadotAddress(address)) {
       const { data } = await apiRef.query.system.account(address);
-      return Number(ethers.utils.formatEther(data.free.toString()));
+      const transferableBalance = data.free.sub(data.frozen);
+      return Number(ethers.utils.formatEther(transferableBalance.toString()));
     }
     if (ethers.utils.isAddress(address)) {
       const balance = await web3Ref.eth.getBalance(address);
@@ -241,7 +241,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
 
     const isSendToH160 = isValidEvmAddress(toAddress.value);
-    const destAddress = isSendToH160 ? toSS58Address(toAddress.value) : toAddress.value;
+    const destAddress = isSendToH160 ? await getSS58Address(toAddress.value) : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
     if (isTransferNativeToken.value && !isZkEvm.value) {
@@ -250,6 +250,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
         ? buildEvmAddress(toAddress.value)
         : toAddress.value;
+
       const balance = await getTokenBal({
         srcChainId,
         address,

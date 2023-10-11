@@ -4,7 +4,14 @@ import { SupportMultisig } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
+import { container } from 'src/v2/common';
+import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
+import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
+import { IAccountUnificationService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
+import { useNetworkInfo } from './useNetworkInfo';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -13,18 +20,31 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const { currentNetworkIdx } = useNetworkInfo();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
+
+  const isAccountUnification = computed<boolean>(() => {
+    return !!(
+      (currentNetworkIdx.value === endpointKey.SHIBUYA && currentAccountName) ||
+      currentNetworkIdx.value === endpointKey.LOCAL
+    );
+  });
 
   // Memo: converts EVM wallet address to SS58 for dApp staking queries
   const senderSs58Account = computed<string>(() => {
-    return isValidEvmAddress(currentAccount.value)
-      ? toSS58Address(currentAccount.value)
-      : currentAccount.value;
+    if (isValidEvmAddress(currentAccount.value)) {
+      return unifiedAccount.value?.nativeAddress
+        ? unifiedAccount.value.nativeAddress
+        : toSS58Address(currentAccount.value);
+    }
+
+    return currentAccount.value;
   });
   const isMultisig = computed<boolean>(() => !!localStorage.getItem(LOCAL_STORAGE.MULTISIG));
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
@@ -49,6 +69,57 @@ export const useAccount = () => {
       currentAccountName.value = '';
       resolve(true);
     });
+  };
+
+  const checkIfUnified = async (address: string): Promise<void> => {
+    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+
+    const isEvmAddress = isValidEvmAddress(address);
+    const mapped = isEvmAddress
+      ? await service.getMappedNativeAddress(address)
+      : await service.getMappedEvmAddress(address);
+
+    if (mapped) {
+      const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);
+      const identity = await identityRepository.getIdentity(isEvmAddress ? mapped : address);
+      const name = identity?.display || '';
+
+      if (isValidEvmAddress(address)) {
+        store.commit('general/setUnifiedAccount', {
+          nativeAddress: mapped,
+          evmAddress: address,
+          name,
+        });
+      } else {
+        store.commit('general/setUnifiedAccount', {
+          nativeAddress: address,
+          evmAddress: mapped,
+          name,
+        });
+      }
+    } else {
+      store.commit('general/setUnifiedAccount', undefined);
+    }
+  };
+
+  // TODO Move to separate lib, probably update toSS58Address in astar.js
+  const getSS58Address = async (evmAddress: string): Promise<string> => {
+    if (isValidEvmAddress(evmAddress)) {
+      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+      const ss58Pair = await service.getMappedNativeAddress(evmAddress);
+      if (ss58Pair) {
+        return ss58Pair;
+      } else {
+        return toSS58Address(evmAddress);
+      }
+    }
+
+    return evmAddress;
+  };
+
+  const showAccountUnificationModal = (): void => {
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    eventAggregator.publish(new UnifyAccountMessage());
   };
 
   const currentAccount = ref<string>('');
@@ -94,7 +165,7 @@ export const useAccount = () => {
       if (!account) return;
 
       currentAccount.value = account.address;
-      currentAccountName.value = account.name;
+      currentAccountName.value = unifiedAccount.value ? unifiedAccount.value.name : account.name;
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
@@ -107,6 +178,11 @@ export const useAccount = () => {
     [currentAddress],
     async () => {
       await wait(DELAY);
+
+      if (currentAddress.value) {
+        await checkIfUnified(currentAddress.value);
+      }
+
       const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
       if (storedWallet === SupportMultisig.Polkasafe) {
         currentAccount.value = currentAddress.value;
@@ -120,6 +196,12 @@ export const useAccount = () => {
     { immediate: true }
   );
 
+  watch([unifiedAccount], () => {
+    if (unifiedAccount.value) {
+      currentAccountName.value = unifiedAccount.value.name;
+    }
+  });
+
   return {
     substrateAccounts,
     currentAccount,
@@ -127,6 +209,11 @@ export const useAccount = () => {
     senderSs58Account,
     multisig,
     isMultisig,
+    isAccountUnification,
+    isH160Formatted,
     disconnectAccount,
+    getSS58Address,
+    showAccountUnificationModal,
+    checkIfUnified,
   };
 };

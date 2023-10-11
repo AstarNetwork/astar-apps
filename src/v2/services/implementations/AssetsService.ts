@@ -1,17 +1,15 @@
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { IEventAggregator } from 'src/v2/messaging';
 import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
-import { IWalletService, IAssetsService } from 'src/v2/services';
-import { Symbols } from 'src/v2/symbols';
-import Web3 from 'web3';
-import { getEvmExplorerUrl } from 'src/links';
-import { AlertMsg } from 'src/modules/toast';
+import { IAssetsService, IWalletService } from 'src/v2/services';
 import {
   ParamAssetTransfer,
   ParamEvmTransfer,
   ParamEvmWithdraw,
 } from 'src/v2/services/IAssetsService';
+import { Symbols } from 'src/v2/symbols';
+import Web3 from 'web3';
 
 @injectable()
 export class AssetsService implements IAssetsService {
@@ -45,34 +43,16 @@ export class AssetsService implements IAssetsService {
       web3,
     });
 
-    const estimatedGas = await web3.eth.estimateGas(rawTx);
-    await web3.eth
-      .sendTransaction({ ...rawTx, gas: estimatedGas })
-      .once('transactionHash', (transactionHash) => {
-        this.eventAggregator.publish(new BusyMessage(true));
-      })
-      .then(async ({ transactionHash }) => {
-        const explorerUrl = await getEvmExplorerUrl(transactionHash, web3);
-        this.eventAggregator.publish(new BusyMessage(false));
-        this.eventAggregator.publish(
-          new ExtrinsicStatusMessage({
-            success: true,
-            message: param.successMessage,
-            explorerUrl,
-          })
-        );
-        param.finalizedCallback(transactionHash);
-      })
-      .catch((error: any) => {
-        console.error(error);
-        this.eventAggregator.publish(new BusyMessage(false));
-        this.eventAggregator.publish(
-          new ExtrinsicStatusMessage({
-            success: false,
-            message: error.message || AlertMsg.ERROR,
-          })
-        );
-      });
+    const isErc20 = !!rawTx.data;
+
+    const transactionHash = await this.wallet.sendEvmTransaction({
+      from: param.senderAddress,
+      to: isErc20 ? param.contractAddress : param.toAddress,
+      value: isErc20 ? '0x0' : String(rawTx.value),
+      data: isErc20 ? rawTx.data : null,
+    });
+
+    param.finalizedCallback(transactionHash);
   }
 
   public async evmWithdraw({ amount, senderAddress }: ParamEvmWithdraw): Promise<void> {

@@ -42,7 +42,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
     seconds: 0,
   });
 
-  const { currentAccount } = useAccount();
+  const { senderSs58Account } = useAccount();
   const store = useStore();
   const { currentNetworkIdx } = useNetworkInfo();
 
@@ -80,7 +80,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
   };
 
   const requestFaucet = async (recaptchaResponse: string): Promise<void> => {
-    if (!currentAccount.value) {
+    if (!senderSs58Account.value) {
       throw Error('Address is empty');
     }
 
@@ -93,7 +93,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
 
       const url = `${endpoint}/drip`;
       const { data } = await axios.post<{ hash: string }>(url, {
-        destination: currentAccount.value,
+        destination: senderSs58Account.value,
         recaptchaResponse,
       });
 
@@ -142,14 +142,14 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
   });
 
   watch(
-    [hash, currentAccount, currentNetworkIdx, isModalFaucet],
+    [hash, senderSs58Account, currentNetworkIdx, isModalFaucet],
     async () => {
-      const currentAccountRef = currentAccount.value;
+      const senderSs58AccountRef = senderSs58Account.value;
       const isModalFaucetRef = isModalFaucet && isModalFaucet.value;
-      if (!currentAccountRef || !isModalFaucetRef) return;
+      if (!senderSs58AccountRef || !isModalFaucetRef) return;
       const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
 
-      const data = await getFaucetInfo({ account: currentAccountRef, endpoint });
+      const data = await getFaucetInfo({ account: senderSs58AccountRef, endpoint });
       if (!data) return;
       const hotWalletBal = await fetchNativeBalance({
         address: data.faucet.faucetAddress,

@@ -26,7 +26,6 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     param: ParamBridgeAsset;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    const nonce = await web3.eth.getTransactionCount(param.senderAddress);
     const contractAddress = EthBridgeContract[param.fromChainName];
     // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/abis/bridge.json
     const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
@@ -57,7 +56,6 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
       .encodeABI();
 
     return {
-      nonce,
       from: param.senderAddress,
       to: contractAddress,
       value: amount,

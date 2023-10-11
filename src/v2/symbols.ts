@@ -31,4 +31,9 @@ export const Symbols = {
   ZkBridgeRepository: Symbol.for('ZkBridgeRepository'),
   AssetsService: Symbol.for('AssetsService'),
   ZkBridgeService: Symbol.for('ZkBridgeService'),
+  AccountUnificationService: Symbol.for('AccountUnificationService'),
+  IdentityRepository: Symbol.for('IdentityRepository'),
+  IdentityService: Symbol.for('IdentityService'),
+  NftRepository: Symbol.for('NftRepository'),
+  AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
 };

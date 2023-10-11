@@ -10,3 +10,5 @@ export * from './EvmAssetsService';
 export * from './EvmDappStakingService';
 export * from './AssetsService';
 export * from './ZkBridgeService';
+export * from './AccountUnificationService';
+export * from './IdentityService';
