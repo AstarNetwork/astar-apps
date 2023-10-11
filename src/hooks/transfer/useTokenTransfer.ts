@@ -58,7 +58,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer, currentNetworkName } =
+    useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -189,6 +190,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           decimals,
           finalizedCallback,
           successMessage,
+          network: currentNetworkName.value.toLowerCase(),
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)

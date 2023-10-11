@@ -21,6 +21,7 @@ export interface ParamEvmTransfer {
   contractAddress: string;
   decimals: number;
   successMessage: string;
+  network: string;
   finalizedCallback: (hash: string) => void;
 }
 

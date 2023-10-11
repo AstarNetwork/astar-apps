@@ -43,10 +43,13 @@ export class AssetsRepository implements IAssetsRepository {
     param: ParamEvmTransfer;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    const { contractAddress, senderAddress, toAddress, amount, decimals } = param;
+    const { contractAddress, senderAddress, toAddress, amount, decimals, network } = param;
+    // memo: don't use gas station for Shibuya, because it gives wrong gas price.
+    const gas = network === 'shibuya' ? '0' : this.gasPriceProvider.getGas().price;
     const [nonce, gasPrice] = await Promise.all([
       web3.eth.getTransactionCount(senderAddress),
-      getEvmGas(web3, this.gasPriceProvider.getGas().price),
+      // if gas === 0 the method will use gas value from RPC endpoint.
+      getEvmGas(web3, gas),
     ]);
     if (contractAddress === astarNativeTokenErcAddr) {
       return {
