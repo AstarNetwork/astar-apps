@@ -5,7 +5,7 @@ import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
 import { IWalletService, IAssetsService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { getBlockscoutTx } from 'src/links';
+import { getEvmExplorerUrl } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 import {
   ParamAssetTransfer,
@@ -51,8 +51,8 @@ export class AssetsService implements IAssetsService {
       .once('transactionHash', (transactionHash) => {
         this.eventAggregator.publish(new BusyMessage(true));
       })
-      .then(({ transactionHash }) => {
-        const explorerUrl = getBlockscoutTx(transactionHash);
+      .then(async ({ transactionHash }) => {
+        const explorerUrl = await getEvmExplorerUrl(transactionHash, web3);
         this.eventAggregator.publish(new BusyMessage(false));
         this.eventAggregator.publish(
           new ExtrinsicStatusMessage({

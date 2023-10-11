@@ -22,7 +22,7 @@ export const useL1Bridge = () => {
   const l2Network = computed<EthBridgeNetworkName>(() => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
     return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
-      ? EthBridgeNetworkName.Astar
+      ? EthBridgeNetworkName.AstarZk
       : EthBridgeNetworkName.Akiba;
   });
 

@@ -27,7 +27,7 @@ export const useL1History = () => {
   const l2Network = computed<string>(() => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
     return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
-      ? EthBridgeNetworkName.Astar
+      ? EthBridgeNetworkName.AstarZk
       : EthBridgeNetworkName.Akiba;
   });
 
@@ -73,17 +73,25 @@ export const useL1History = () => {
       let numberInProgress = 0;
       const formattedResult = await Promise.all(
         data.map(async (it) => {
-          const isL1 = checkIsL1(it['network_id']);
-          const web3 = isL1 ? l1Web3 : l2Web3;
-          if (!web3) return it;
-          if (it.claim_tx_hash === '') {
-            numberInProgress++;
+          try {
+            const isL1 = checkIsL1(it['network_id']);
+            const web3 = isL1 ? l1Web3 : l2Web3;
+            if (!web3) return it;
+            if (it.claim_tx_hash === '') {
+              numberInProgress++;
+            }
+            const timestamp = await getTransactionTimestamp({
+              web3,
+              transactionHash: it['tx_hash'],
+            });
+            const isActionRequired =
+              it.claim_tx_hash === '' && !checkIsL1(it.network_id) && it.ready_for_claim;
+            return { ...it, timestamp, isActionRequired };
+          } catch (error) {
+            console.info('something went wrong: ', it);
+            console.error(error);
+            return { ...it, timestamp: 0, isActionRequired: false };
           }
-          const timestamp = await getTransactionTimestamp({ web3, transactionHash: it['tx_hash'] });
-          const isActionRequired =
-            it.claim_tx_hash === '' && !checkIsL1(it.network_id) && it.ready_for_claim;
-
-          return { ...it, timestamp, isActionRequired };
         })
       );
 

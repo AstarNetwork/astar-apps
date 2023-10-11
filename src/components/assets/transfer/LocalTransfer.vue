@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <div class="separator" />
+      <div v-if="isEnableSpeedConfiguration" class="separator" />
 
       <speed-configuration
         v-if="isEnableSpeedConfiguration"

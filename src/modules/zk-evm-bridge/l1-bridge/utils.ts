@@ -32,7 +32,7 @@ export const getContractFromNetId = (zkNetwork: ZkNetworkId): string => {
   if (network === 'mainnet') {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeContract[EthBridgeNetworkName.Ethereum]
-      : EthBridgeContract[EthBridgeNetworkName.Astar];
+      : EthBridgeContract[EthBridgeNetworkName.AstarZk];
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeContract[EthBridgeNetworkName.Sepolia]
@@ -45,7 +45,7 @@ export const getChainIdFromNetId = (zkNetwork: ZkNetworkId): EVM => {
   if (network === 'mainnet') {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeChainId[EthBridgeNetworkName.Ethereum]
-      : EthBridgeChainId[EthBridgeNetworkName.Astar];
+      : EthBridgeChainId[EthBridgeNetworkName.AstarZk];
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeChainId[EthBridgeNetworkName.Sepolia]

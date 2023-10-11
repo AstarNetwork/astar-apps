@@ -72,7 +72,17 @@
                 <span>{{ checkStatus(history) }}</span>
               </div>
               <div class="record__buttons">
-                <a href="/" class="action-button link-button">
+                <a
+                  :href="
+                    getExplorerUrl(
+                      checkIsL1(history.network_id) ? l1Network : l2Network,
+                      history.tx_hash
+                    )
+                  "
+                  class="action-button link-button"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <span>
                     {{
                       (checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
@@ -83,7 +93,18 @@
                   </div>
                 </a>
 
-                <a v-if="history.claim_tx_hash" href="/" class="action-button link-button">
+                <a
+                  v-if="history.claim_tx_hash"
+                  :href="
+                    getExplorerUrl(
+                      !checkIsL1(history.network_id) ? l1Network : l2Network,
+                      history.claim_tx_hash
+                    )
+                  "
+                  class="action-button link-button"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <span>
                     {{
                       (!checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
@@ -121,6 +142,7 @@ import { isHex } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { DateTime } from 'luxon';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { EVM, blockExplorerUrls } from 'src/config/web3';
 import { useNetworkInfo } from 'src/hooks';
 import {
   BridgeHistory,
@@ -206,6 +228,23 @@ export default defineComponent({
       return history.claim_tx_hash !== '' ? 'status--complete' : 'status--in-progress';
     };
 
+    const getExplorerUrl = (networkName: string, txHash: string) => {
+      const txUrl = '/tx/' + txHash;
+      switch (networkName) {
+        case EthBridgeNetworkName.Ethereum:
+          return blockExplorerUrls[EVM.ETHEREUM_MAINNET] + txUrl;
+        case EthBridgeNetworkName.Sepolia:
+          return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
+        case EthBridgeNetworkName.Akiba:
+          return blockExplorerUrls[EVM.AKIBA_TESTNET] + txUrl;
+        case EthBridgeNetworkName.AstarZk:
+          return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
+
+        default:
+          return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
+      }
+    };
+
     return {
       zkBridgeIcon,
       EthBridgeNetworkName,
@@ -220,6 +259,7 @@ export default defineComponent({
       handleUpdateHistory,
       checkIsRefresh,
       claim,
+      getExplorerUrl,
     };
   },
 });

@@ -41,7 +41,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
@@ -70,7 +70,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shiden.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
@@ -98,7 +98,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'The test network of the layer 2 scaling blockchain',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
@@ -120,7 +120,13 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'astar-zkevm',
     displayName: 'Astar zkEVM Network',
-    endpoints: [{ name: 'Astar', endpoint: 'wss://rpc.astar.network' }],
+    endpoints: [
+      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
+      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
+    ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR_ZKEVM,
@@ -134,9 +140,13 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
   },
   {
-    networkAlias: 'akiba-testnet',
+    networkAlias: 'akiba-zkevm',
     displayName: 'Akiba zkEVM Network',
-    endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
+    endpoints: [
+      { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
+    ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.AKIBA,

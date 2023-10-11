@@ -1,4 +1,6 @@
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { blockExplorerUrls } from 'src/config/web3';
+import Web3 from 'web3';
 
 export const docsUrl = {
   topPage: 'https://docs.astar.network',
@@ -62,11 +64,8 @@ export const getSubscanExtrinsic = ({
   }
 };
 
-export const getBlockscoutTx = (hash: string): string => {
-  const pathname = window.location.pathname;
-  let network = pathname.split('/')[1];
-  if (network === providerEndpoints[endpointKey.SHIBUYA].networkAlias) {
-    network = 'shibuya';
-  }
-  return `https://blockscout.com/${network}/tx/${hash}`;
+export const getEvmExplorerUrl = async (hash: string, web3: Web3): Promise<string> => {
+  const connectedChainId = await web3.eth.net.getId();
+  const blockExplorerUrl = blockExplorerUrls[connectedChainId];
+  return `${blockExplorerUrl}/tx/${hash}`;
 };
