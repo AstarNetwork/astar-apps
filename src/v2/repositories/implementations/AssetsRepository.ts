@@ -13,7 +13,7 @@ import { IAssetsRepository } from './../IAssetsRepository';
 import { BN } from '@polkadot/util';
 import { TransactionConfig } from 'web3-eth';
 import Web3 from 'web3';
-import { buildEvmAddress, getEvmGas } from '@astar-network/astar-sdk-core';
+import { buildEvmAddress } from '@astar-network/astar-sdk-core';
 import { AbiItem } from 'web3-utils';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { IGasPriceProvider } from 'src/v2/services';
@@ -43,18 +43,9 @@ export class AssetsRepository implements IAssetsRepository {
     param: ParamEvmTransfer;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    const { contractAddress, senderAddress, toAddress, amount, decimals, network } = param;
-    // memo: don't use gas station for Shibuya, because it gives wrong gas price.
-    const gas = network === 'shibuya' ? '0' : this.gasPriceProvider.getGas().price;
-    const [nonce, gasPrice] = await Promise.all([
-      web3.eth.getTransactionCount(senderAddress),
-      // if gas === 0 the method will use gas value from RPC endpoint.
-      getEvmGas(web3, gas),
-    ]);
+    const { contractAddress, senderAddress, toAddress, amount, decimals } = param;
     if (contractAddress === astarNativeTokenErcAddr) {
       return {
-        nonce,
-        gasPrice: web3.utils.toHex(gasPrice),
         from: senderAddress,
         to: toAddress,
         value: web3.utils.toWei(String(amount), 'ether'),
@@ -63,8 +54,6 @@ export class AssetsRepository implements IAssetsRepository {
       const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], contractAddress);
       const amt = ethers.utils.parseUnits(String(amount), decimals).toString();
       return {
-        nonce,
-        gasPrice: web3.utils.toHex(gasPrice),
         from: senderAddress,
         to: contractAddress,
         value: '0x0',
