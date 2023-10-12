@@ -1,36 +1,34 @@
 <template>
-  <div class="main-wrapper">
-    <p>Hello from dApp Staking v3</p>
-    <div v-for="(dapp, index) in dapps" :key="index">
+  <div class="main--wrapper">
+    <h4>Hello from dApp Staking v3</h4>
+    <div v-for="(dapp, index) in dappsBasic" :key="index">
       <button @click="stake(dapp.address, 10)">Stake</button> |
       <button @click="unstake(dapp.address, 10)">Unstake</button> |
+      <button @click="fetchDappToStore(dapp.address)">Details</button> |
       <b>{{ dapp.name }}</b>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import StakeFormVue from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { useDapps } from '../hooks';
-import { DappBase } from '../logic';
 
 export default defineComponent({
   setup() {
-    const { getDapps, stake, unstake } = useDapps();
-    const dapps = ref<DappBase[]>([]);
+    const { dappsBasic, fetchDappsToStore, fetchDappToStore, stake, unstake } = useDapps();
 
     onMounted(async () => {
-      dapps.value = await getDapps();
+      await fetchDappsToStore();
     });
 
-    return { dapps, stake, unstake };
+    return { dappsBasic, stake, unstake, fetchDappToStore };
   },
 });
 </script>
 
 <style scoped>
-.main-wrapper {
+.main--wrapper {
   margin-top: 40px;
 }
 </style>
