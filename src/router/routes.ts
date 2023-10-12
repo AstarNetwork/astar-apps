@@ -3,6 +3,7 @@ import L1 from 'components/bridge/l1/L1.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
 import BridgePage from 'pages/BridgePage.vue';
+import BridgeSelection from 'src/components/bridge/BridgeSelection.vue';
 import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -52,7 +53,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: Path.Bridge,
-    redirect: networkParam + Path.Bridge + Path.L1,
+    redirect: networkParam + Path.Bridge,
   },
 
   {
@@ -99,6 +100,10 @@ const routes: RouteRecordRaw[] = [
     name: 'Bridge',
     component: BridgePage,
     children: [
+      {
+        path: '',
+        component: BridgeSelection,
+      },
       {
         path: 'l1',
         component: L1,

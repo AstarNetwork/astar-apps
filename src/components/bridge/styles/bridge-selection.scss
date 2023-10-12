@@ -1,0 +1,85 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--bridge-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-top: 48px;
+  margin-bottom: 48px;
+  @media (min-width: $xl) {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+.container--selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 24px;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 16px;
+  }
+  @media (min-width: $xl) {
+    flex-direction: row;
+    column-gap: 56px;
+  }
+}
+
+.button--bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
+  border: 1px solid $gray-4;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  row-gap: 24px;
+  padding: 16px;
+  @media (min-width: $lg) {
+    width: 254px;
+    height: 254px;
+  }
+  @media (min-width: $xl) {
+    width: 300px;
+    height: 300px;
+  }
+  &:hover {
+    border: 1px solid $astar-blue !important;
+    transition: all 0.3s ease 0s;
+  }
+}
+
+.row--title {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  @media (min-width: $lg) {
+    column-gap: 4px;
+  }
+  @media (min-width: $xl) {
+    column-gap: 8px;
+  }
+}
+
+.img--logo {
+  width: 32px;
+  height: 32px;
+  @media (min-width: $lg) {
+    width: 30px;
+    height: 30px;
+  }
+  @media (min-width: $xl) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.body--dark {
+}

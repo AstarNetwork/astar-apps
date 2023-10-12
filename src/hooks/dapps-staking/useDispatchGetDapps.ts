@@ -42,5 +42,5 @@ export function useDispatchGetDapps() {
     }
   };
 
-  watch([currentAccount, networkNameSubstrate], getDapps);
+  watch([currentAccount, networkNameSubstrate], getDapps, { immediate: true });
 }
