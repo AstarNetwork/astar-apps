@@ -18,6 +18,7 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { checkIsSetGasByWallet } from 'src/config/web3';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -127,17 +128,21 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         web3.eth.getTransactionCount(from),
         getEvmGas(web3, this.gasPriceProvider.getGas().price),
       ]);
+
       const rawTx = {
         nonce,
-        gasPrice: web3.utils.toHex(gasPrice),
         from,
         to,
         value: value ? value : '0x0',
         data,
       };
-      const estimatedGas = await web3.eth.estimateGas(rawTx);
+
+      const connectedChainId = await web3.eth.net.getId();
+      const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
+      const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };
+      const estimatedGas = await web3.eth.estimateGas(txParam);
       const transactionHash = await web3.eth
-        .sendTransaction({ ...rawTx, gas: estimatedGas })
+        .sendTransaction({ ...txParam, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })

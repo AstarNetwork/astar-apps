@@ -9,6 +9,7 @@ export {
   getTokenExplorer,
   fetchErc20TokenInfo,
   getTokenDetails,
+  checkIsSetGasByWallet,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';
