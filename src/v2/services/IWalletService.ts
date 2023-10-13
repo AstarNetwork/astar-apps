@@ -23,7 +23,6 @@ export interface ParamSendEvmTransaction {
   value?: string;
   successMessage?: string;
   failureMessage?: string;
-  isSetGasByWallet?: boolean;
 }
 
 export interface ParamSendMultisigTransaction {

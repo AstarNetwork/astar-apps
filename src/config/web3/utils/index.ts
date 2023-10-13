@@ -241,6 +241,19 @@ export const fetchErc20TokenInfo = async ({
   }
 };
 
+export const checkIsSetGasByWallet = (chainId: EVM): boolean => {
+  switch (chainId) {
+    case EVM.SHIBUYA_TESTNET:
+      return true;
+    case EVM.AKIBA_TESTNET:
+      return true;
+    case EVM.ASTAR_ZKEVM_MAINNET:
+      return true;
+    default:
+      return false;
+  }
+};
+
 export const getTransactionTimestamp = async ({
   web3,
   transactionHash,

@@ -47,7 +47,6 @@ export class ZkBridgeService implements IZkBridgeService {
       to: String(rawTx.to),
       value: String(rawTx.value),
       data: String(rawTx.data),
-      isSetGasByWallet: true,
     });
     return transactionHash;
   }
@@ -77,7 +76,6 @@ export class ZkBridgeService implements IZkBridgeService {
       from: String(rawTx.from),
       to: String(rawTx.to),
       data: String(rawTx.data),
-      isSetGasByWallet: true,
     });
     return transactionHash;
   }

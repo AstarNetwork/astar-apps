@@ -18,6 +18,7 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { checkIsSetGasByWallet } from 'src/config/web3';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -120,7 +121,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     data,
     successMessage,
     failureMessage,
-    isSetGasByWallet,
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
@@ -136,6 +136,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         value: value ? value : '0x0',
         data,
       };
+      const connectedChainId = await web3.eth.net.getId();
+      const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
       const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };
       const estimatedGas = await web3.eth.estimateGas(txParam);
       const transactionHash = await web3.eth
