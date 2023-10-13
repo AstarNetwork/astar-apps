@@ -31,7 +31,7 @@
           {{ $t('wallet.unifiedAccount.accountIcon') }}
         </div>
         <!-- TODO: open the select NFT modal (SelectNft.vue) -->
-        <button type="button" class="box--account-icon">
+        <button type="button" class="box--account-icon" @click="selectNft">
           <jazzicon :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
@@ -78,10 +78,14 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['next'],
+  emits: ['next', 'onSelectNft'],
   setup(props, { emit }) {
     const next = () => {
       emit('next');
+    };
+
+    const selectNft = () => {
+      emit('onSelectNft');
     };
 
     const { currentAccount } = useAccount();
@@ -102,6 +106,7 @@ export default defineComponent({
       accountNameSet,
       next,
       updateAccountName,
+      selectNft,
     };
   },
 });

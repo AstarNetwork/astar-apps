@@ -31,6 +31,7 @@
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
           :is-edit="false"
           @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
+          @on-select-nft="updateSteps(200)"
         />
       </div>
       <div v-else-if="currentStep === 100 && unifiedAccount">
@@ -68,6 +69,9 @@
       <div v-else-if="currentStep === 6">
         <au-step6 />
       </div>
+      <div v-else-if="currentStep === 200">
+        <select-nft :evm-address="selectedEvmAddress" @next="updateSteps(3)" />
+      </div>
       <div v-else>
         <user-account
           :set-account-name="setAccountName"
@@ -91,6 +95,7 @@ import AuStep3 from 'src/components/header/modals/account-unification/AuStep3.vu
 import AuStep4 from 'src/components/header/modals/account-unification/AuStep4.vue';
 import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vue';
 import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
+import SelectNft from './account-unification/SelectNft.vue';
 import { UnifiedAccount } from 'src/store/general/state';
 
 export default defineComponent({
@@ -103,6 +108,7 @@ export default defineComponent({
     AuStep4,
     AuStep5,
     AuStep6,
+    SelectNft,
   },
   props: {
     isOpen: {
@@ -193,6 +199,7 @@ export default defineComponent({
         // Make a call to update unified account identity
         await updateAccount(unifiedAccount.value.nativeAddress, accountName.value);
         await checkIfUnified(unifiedAccount.value.nativeAddress);
+      } else if (step === 200) {
       }
 
       currentStep.value = step;

@@ -13,21 +13,34 @@
 
     <!-- Action -->
     <div>
-      <astar-button class="btn">Next</astar-button>
+      <astar-button class="btn" @click="next">Next</astar-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { useNft } from 'src/hooks/useNft';
+import { defineComponent, onMounted } from 'vue';
 
 export default defineComponent({
   components: {},
+  props: {
+    evmAddress: {
+      type: String,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
+    const { ownedNfts, getOwnedNfts } = useNft();
+
     const next = () => {
       emit('next');
     };
+
+    onMounted(() => {
+      getOwnedNfts(props.evmAddress);
+    });
 
     const icon_img = {
       astar_gradient: require('/src/assets/img/astar_icon.svg'),
