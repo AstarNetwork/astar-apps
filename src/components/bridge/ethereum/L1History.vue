@@ -266,5 +266,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/l1/styles/l1-history.scss';
+@use 'src/components/bridge/ethereum/styles/l1-history.scss';
 </style>

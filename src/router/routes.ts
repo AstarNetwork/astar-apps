@@ -1,5 +1,5 @@
 import Assets from 'components/assets/Assets.vue';
-import L1 from 'components/bridge/l1/L1.vue';
+import L1 from 'components/bridge/ethereum/L1.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
 import BridgePage from 'pages/BridgePage.vue';
@@ -19,7 +19,7 @@ export {
   buildTransferPageLink,
   getHeaderName,
   buildXvmTransferPageLink,
-  buildL1BridgePageLink,
+  buildEthereumBridgePageLink,
 } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
@@ -31,7 +31,7 @@ export const networkParam =
 export enum Path {
   Assets = '/assets',
   Bridge = '/bridge',
-  L1 = '/l1',
+  Ethereum = '/ethereum',
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
   Discover = '/discover',
@@ -105,7 +105,7 @@ const routes: RouteRecordRaw[] = [
         component: BridgeSelection,
       },
       {
-        path: 'l1',
+        path: 'ethereum',
         component: L1,
       },
     ],

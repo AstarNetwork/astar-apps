@@ -680,5 +680,17 @@ export default {
     noHistory: 'No histories found',
     completed: 'Completed',
     inProgress: 'In Progress',
+    ethereumBridge: {
+      title: 'Ethereum Bridge',
+      text: 'Bridge assets between {l1} and {l2}',
+    },
+    astarBridge: {
+      title: 'Astar Bridge',
+      text: 'Bridge assets between {substrateNetwork} Polkadot EVM and {l2}',
+    },
+    celetBridge: {
+      title: 'Celer Bridge',
+      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
+    },
   },
 };

@@ -24,7 +24,7 @@
   </div>
 </template>
 <script lang="ts">
-import FlagActionRequired from 'src/components/bridge/l1/FlagActionRequired.vue';
+import FlagActionRequired from 'src/components/bridge/ethereum/FlagActionRequired.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -50,5 +50,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/l1/styles/bridge-mode-tab.scss';
+@use 'src/components/bridge/ethereum/styles/bridge-mode-tab.scss';
 </style>

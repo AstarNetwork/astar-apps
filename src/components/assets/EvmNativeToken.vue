@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native-token">
-            <router-link v-if="isZkEvm" :to="buildL1BridgePageLink()">
+            <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
               </button>
@@ -71,7 +71,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { buildTransferPageLink, buildL1BridgePageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
@@ -138,7 +138,7 @@ export default defineComponent({
       isZkEvm,
       handleModalFaucet,
       buildTransferPageLink,
-      buildL1BridgePageLink,
+      buildEthereumBridgePageLink,
     };
   },
 });

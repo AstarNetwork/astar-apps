@@ -2,25 +2,29 @@
   <div class="wrapper--bridge-selection">
     <div class="container--selection">
       <button :disabled="!isEnableEthBridge">
-        <router-link :to="buildL1BridgePageLink()" class="button--bridge">
+        <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
           <div class="row--title">
             <img class="img--logo" :src="require('src/assets/img/ethereum.png')" alt="ethereum" />
-            <span class="text--xl">Ethereum Bridge</span>
+            <span class="text--xl">{{ $t('bridge.ethereumBridge.title') }}</span>
           </div>
-          <span class="text--lg">Bridge assets between Ethereum and Astar zkEVM</span>
+          <span class="text--lg">{{
+            $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name })
+          }}</span>
         </router-link>
       </button>
       <button :disabled="!isEnableAstrBridge">
-        <router-link :to="buildL1BridgePageLink()" class="button--bridge">
+        <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
           <div class="row--title">
             <img
               class="img--logo"
               :src="require('src/assets/img/chain/astar.png')"
               alt="ethereum"
             />
-            <span class="text--xl">Astar Bridge</span>
+            <span class="text--xl">{{ $t('bridge.astarBridge.title') }}</span>
           </div>
-          <span class="text--lg">Bridge assets between Astar Polkadot EVM and Astar zkEVM</span>
+          <span class="text--lg">{{
+            $t('bridge.astarBridge.text', { substrateNetwork: substrateNetwork, l2: l2Name })
+          }}</span>
         </router-link>
       </button>
       <button>
@@ -31,9 +35,11 @@
               :src="require('src/assets/img/cbridge_logo.svg')"
               alt="ethereum"
             />
-            <span class="text--xl">Celer Bridge</span>
+            <span class="text--xl">{{ $t('bridge.celetBridge.title') }}</span>
           </div>
-          <span class="text--lg">Bridge assets to Astar Polkadot EVM via cBridge</span>
+          <span class="text--lg">{{
+            $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName })
+          }}</span>
         </a>
       </button>
     </div>
@@ -43,14 +49,34 @@
 import { cbridgeAppLink } from 'src/c-bridge';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
-import { Path as RoutePath, buildL1BridgePageLink } from 'src/router/routes';
+import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, currentNetworkName } = useNetworkInfo();
+    const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
+
+    const l1Name = computed<string>(() => {
+      return currentNetworkName.value === EthBridgeNetworkName.Akiba
+        ? EthBridgeNetworkName.Sepolia
+        : EthBridgeNetworkName.Ethereum;
+    });
+
+    const l2Name = computed<string>(() => {
+      return currentNetworkName.value === EthBridgeNetworkName.Akiba
+        ? EthBridgeNetworkName.Akiba
+        : EthBridgeNetworkName.AstarZk;
+    });
+
+    const substrateNetwork = computed<string>(() => {
+      return currentNetworkName.value === EthBridgeNetworkName.Akiba ? 'Shibuya' : 'Astar';
+    });
+
+    const cbridgeNetworkName = computed<string>(() => {
+      return !isZkEvm.value && isMainnet.value ? networkNameSubstrate.value : 'Astar';
+    });
 
     const isEnableEthBridge = computed<boolean>(() => {
       if (!isZkEvm.value || currentNetworkName.value === EthBridgeNetworkName.AstarZk) {
@@ -70,7 +96,11 @@ export default defineComponent({
       RoutePath,
       isEnableAstrBridge,
       isEnableEthBridge,
-      buildL1BridgePageLink,
+      l1Name,
+      l2Name,
+      substrateNetwork,
+      cbridgeNetworkName,
+      buildEthereumBridgePageLink,
     };
   },
 });

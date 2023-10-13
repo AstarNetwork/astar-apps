@@ -31,9 +31,9 @@ import { useAccount, useL1History } from 'src/hooks';
 import { defineComponent, ref, computed, watch } from 'vue';
 import { HistoryTxType } from 'src/modules/account';
 import Information from 'src/components/assets/transfer/Information.vue';
-import BridgeModeTab from 'src/components/bridge/l1/BridgeModeTab.vue';
-import L1Bridge from 'src/components/bridge/l1/L1Bridge.vue';
-import L1History from 'src/components/bridge/l1/L1History.vue';
+import BridgeModeTab from 'src/components/bridge/ethereum/BridgeModeTab.vue';
+import L1Bridge from 'src/components/bridge/ethereum/L1Bridge.vue';
+import L1History from 'src/components/bridge/ethereum/L1History.vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type BridgeTabMode = 'bridge' | 'history';
@@ -61,7 +61,7 @@ export default defineComponent({
     const setIsBridge = (result: boolean): void => {
       isBridge.value = result;
       router.push({
-        path: `/${network.value}/bridge/l1`,
+        path: `/${network.value}/bridge/ethereum`,
         query: {
           tab: result ? 'bridge' : 'history',
         },
@@ -96,5 +96,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/l1/styles/l1.scss';
+@use 'src/components/bridge/ethereum/styles/l1.scss';
 </style>

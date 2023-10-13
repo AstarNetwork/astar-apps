@@ -174,5 +174,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/l1/styles/l1-bridge.scss';
+@use 'src/components/bridge/ethereum/styles/l1-bridge.scss';
 </style>
