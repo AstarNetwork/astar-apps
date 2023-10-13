@@ -79,6 +79,10 @@ export function setCurrentWallet(
   currentWallet: string,
   isLockdrop: boolean
 ): void {
+  if (!currentWallet) {
+    return;
+  }
+
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
   isLockdropAccount = isLockdrop;

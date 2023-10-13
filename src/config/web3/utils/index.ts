@@ -221,3 +221,12 @@ export const fetchErc20TokenInfo = async ({
     return null;
   }
 };
+
+export const checkIsSetGasByWallet = (chainId: EVM): boolean => {
+  switch (chainId) {
+    case EVM.SHIBUYA_TESTNET:
+      return true;
+    default:
+      return false;
+  }
+};
