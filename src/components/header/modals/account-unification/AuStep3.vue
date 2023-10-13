@@ -20,7 +20,7 @@
             :placeholder="$t('wallet.unifiedAccount.unifiedAccountName')"
             :maxlength="32"
             :value="accountName"
-            @input="(event) => updateAccountName(event)"
+            @input="(event) => setAccountName(event)"
           />
         </div>
       </div>
@@ -41,7 +41,7 @@
     <div>
       <astar-button
         class="btn"
-        :disabled="accountName === '' || isFetchingXc20Tokens || !accountNameSet"
+        :disabled="accountName === '' || isFetchingXc20Tokens"
         @click="next()"
         >{{ isEdit ? $t('wallet.unifiedAccount.save') : $t('next') }}</astar-button
       >
@@ -94,23 +94,15 @@ export default defineComponent({
     };
 
     const { currentAccount } = useAccount();
-    const accountNameSet = ref<boolean>(false);
 
     const icon_img = {
       metamask: require('/src/assets/img/metamask.png'),
     };
 
-    const updateAccountName = (event: any): void => {
-      accountNameSet.value = true;
-      props.setAccountName(event);
-    };
-
     return {
       icon_img,
       currentAccount,
-      accountNameSet,
       next,
-      updateAccountName,
       selectNft,
     };
   },

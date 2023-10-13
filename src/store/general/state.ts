@@ -34,6 +34,7 @@ export type UnifiedAccount = {
   nativeAddress: string;
   evmAddress: string;
   name: string;
+  avatarUrl?: string;
 };
 
 export type ConnectionType = 'connected' | 'connecting' | 'offline';

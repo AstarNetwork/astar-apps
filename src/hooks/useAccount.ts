@@ -12,6 +12,8 @@ import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { INftRepository } from 'src/v2/repositories';
+import { useNft } from './useNft';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -20,6 +22,7 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
+  const { getProxiedUrl } = useNft();
   const { currentNetworkIdx } = useNetworkInfo();
   const multisig = ref<Multisig>();
 
@@ -81,20 +84,38 @@ export const useAccount = () => {
 
     if (mapped) {
       const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);
+      const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
       const identity = await identityRepository.getIdentity(isEvmAddress ? mapped : address);
       const name = identity?.display || '';
+
+      let avatarUrl: string | undefined;
+      const avatarContractAddress = identity?.getAvatarContractAddress();
+      const avatarTokenId = identity?.getAvatarTokenId();
+      if (avatarContractAddress && avatarTokenId) {
+        const nft = await nftRepository.getNftMetadata(
+          'astar', // TODO replace with currentNetworkName.value.toLowerCase(),
+          avatarContractAddress,
+          avatarTokenId
+        );
+
+        if (nft) {
+          avatarUrl = getProxiedUrl(nft.image);
+        }
+      }
 
       if (isValidEvmAddress(address)) {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: mapped,
           evmAddress: address,
           name,
+          avatarUrl,
         });
       } else {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: address,
           evmAddress: mapped,
           name,
+          avatarUrl,
         });
       }
     } else {

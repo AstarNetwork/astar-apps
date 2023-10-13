@@ -24,7 +24,7 @@ import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset } from 'src/v2/models';
+import { Asset, IdentityData } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -341,8 +341,9 @@ export const useAccountUnification = () => {
   };
 
   const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {
+    // TODO update avatar also
     const identityService = container.get<IIdentityService>(Symbols.IdentityService);
-    await identityService.setIdentity(nativeAddress, { display: accountName });
+    await identityService.setIdentity(nativeAddress, new IdentityData(accountName));
   };
 
   const getCost = async (): Promise<string> => {

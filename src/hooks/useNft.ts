@@ -13,18 +13,18 @@ export function useNft() {
   const getOwnedNfts = async (ownerAddress: string): Promise<void> => {
     const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
 
-    ownerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a';
+    ownerAddress = '0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a'; // TODO: remove this line
 
     try {
       isBusy.value = true;
       const nfts = await nftRepository.getOwnedTokens(
-        'astar', //currentNetworkName.value.toLowerCase(),
+        'astar', //TODO currentNetworkName.value.toLowerCase(),
         ownerAddress
       );
 
       // Update image uri to use IPFS gateway
       ownedNfts.value = nfts.map((nft) => {
-        nft.image = nft.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+        nft.image = getProxiedUrl(nft.image);
         return nft;
       });
 
@@ -36,5 +36,9 @@ export function useNft() {
     }
   };
 
-  return { ownedNfts, isBusy, getOwnedNfts };
+  const getProxiedUrl = (ipfsUri: string): string => {
+    return ipfsUri.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+  };
+
+  return { ownedNfts, isBusy, getOwnedNfts, getProxiedUrl };
 }
