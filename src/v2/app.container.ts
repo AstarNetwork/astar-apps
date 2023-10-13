@@ -73,6 +73,10 @@ let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
 
 export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+  if (!currentWallet) {
+    return;
+  }
+
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
 
