@@ -101,7 +101,14 @@
           </div>
         </div>
       </div>
-      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
+      <div
+        v-if="
+          currentNetworkIdx === endpointKey.ASTAR &&
+          (!$route?.query?.multisigWallets ||
+            ($route?.query?.multisigWallets &&
+              $route?.query?.multisigWallets?.includes('polkasafe')))
+        "
+      >
         <div class="title--account-type">
           <span>
             {{ $t('wallet.multisigAccount') }}
@@ -164,9 +171,11 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
+import { LocationQuery, useRoute } from 'vue-router';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   props: {
@@ -208,6 +217,46 @@ export default defineComponent({
     const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
+    const route = useRoute();
+
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+    const substrateAccounts = computed<SubstrateAccount[]>(
+      () => store.getters['general/substrateAccounts']
+    );
+
+    const checkValidSourceParameter = (source: string) => {
+      return Object.values(SupportWallet).includes(source as SupportWallet);
+    };
+
+    const handleSelectedWalletInQuery = (params: LocationQuery, accounts: SubstrateAccount[]) => {
+      if (
+        params?.selectedWallet &&
+        params?.selectedWalletType &&
+        checkValidSourceParameter(params?.selectedWallet as string) &&
+        !isClosing.value
+      ) {
+        if (route?.query?.selectedWalletType === 'native') {
+          if (accounts?.length === 1) {
+            const substrateAccount = accounts[0];
+            store.commit('general/setCurrentAddress', substrateAccount.address);
+            localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, substrateAccount.source);
+            localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
+            window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
+            closeModal();
+          } else if (accounts?.length) {
+            setSubstrateWalletModal(params.selectedWallet as string);
+          }
+        }
+        if (params?.selectedWalletType === 'evm') {
+          setEvmWalletModal(params.selectedWallet as string);
+        }
+      }
+    };
+
+    // the route is updated asynchronously
+    watch([route, substrateAccounts], ([newRoute, accounts]) => {
+      handleSelectedWalletInQuery(newRoute.query, accounts);
+    });
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -221,6 +270,16 @@ export default defineComponent({
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          // filter wallets based on query params
+          if (
+            route?.query?.nativeWallets &&
+            !(route?.query?.nativeWallets as string)
+              ?.split(',') // convert query param string to array
+              .filter((source) => checkValidSourceParameter(source))
+              .includes(it.source)
+          ) {
+            return undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
@@ -234,6 +293,16 @@ export default defineComponent({
       return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          // filter wallets based on query params
+          if (
+            route?.query?.evmWallets &&
+            !(route?.query?.evmWallets as string)
+              ?.split(',')
+              .filter((source) => checkValidSourceParameter(source))
+              .includes(it.source)
+          ) {
+            return undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
@@ -242,11 +311,6 @@ export default defineComponent({
         })
         .filter((it) => it !== undefined) as Wallet[];
     });
-
-    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
-    const substrateAccounts = computed<SubstrateAccount[]>(
-      () => store.getters['general/substrateAccounts']
-    );
 
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
