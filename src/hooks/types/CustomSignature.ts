@@ -28,11 +28,3 @@ export interface EcdsaAddressFormat {
   ss58?: string;
   h160?: string;
 }
-
-// declare global {
-//   interface Window {
-//     ethereum: EthereumProvider;
-//     talismanEth?: EthereumProvider;
-//     SubWallet?: EthereumProvider;
-//   }
-// }
