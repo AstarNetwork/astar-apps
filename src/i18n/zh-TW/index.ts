@@ -14,7 +14,6 @@ export default {
     darkMode: '夜間模式',
     dApps: 'dApps',
     store: 'Store',
-    plasmLockdrop: 'Plasm 鎖倉空投',
     closeSidebar: '關閉側邊欄',
     twitter: 'Twitter',
     telegram: 'Telegram',

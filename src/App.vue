@@ -130,9 +130,7 @@ export default defineComponent({
 
     // Handle wallet change so we can inject proper wallet
     watch([isEthWallet, currentWallet, isH160, currentAccountName], () => {
-      // Todo: delete after we remove the lockdrop service
-      const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
-      setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
+      setCurrentWallet(isEthWallet.value, currentWallet.value);
     });
 
     const removeSplashScreen = () => {
