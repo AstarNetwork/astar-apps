@@ -30,9 +30,9 @@
         <div class="label">
           {{ $t('wallet.unifiedAccount.accountIcon') }}
         </div>
-        <!-- TODO: open the select NFT modal (SelectNft.vue) -->
         <button type="button" class="box--account-icon" @click="selectNft">
-          <jazzicon :address="currentAccount" :diameter="32" class="icon" />
+          <img v-if="avatar" :src="avatar.image" class="icon" />
+          <jazzicon v-else :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
     </div>
@@ -51,7 +51,8 @@
 
 <script lang="ts">
 import { useAccount } from 'src/hooks';
-import { defineComponent, ref } from 'vue';
+import { NftMetadata } from 'src/v2/models';
+import { defineComponent, ref, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -76,6 +77,10 @@ export default defineComponent({
     isEdit: {
       type: Boolean,
       default: false,
+    },
+    avatar: {
+      type: Object as PropType<NftMetadata | undefined>,
+      default: undefined,
     },
   },
   emits: ['next', 'onSelectNft'],

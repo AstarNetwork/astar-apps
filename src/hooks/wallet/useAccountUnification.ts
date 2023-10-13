@@ -323,13 +323,21 @@ export const useAccountUnification = () => {
   const unifyAccounts = async (
     nativeAddress: string,
     evmAddress: string,
-    accountName: string
+    accountName: string,
+    avatarContractAddress?: string,
+    avatarId?: string
   ): Promise<boolean> => {
     const unificationService = container.get<IAccountUnificationService>(
       Symbols.AccountUnificationService
     );
 
-    return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
+    return unificationService.unifyAccounts(
+      nativeAddress,
+      evmAddress,
+      accountName,
+      avatarContractAddress,
+      avatarId
+    );
   };
 
   const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {

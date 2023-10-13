@@ -30,6 +30,7 @@
           :selected-evm-address="selectedEvmAddress"
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
           :is-edit="false"
+          :avatar="avatar"
           @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
           @on-select-nft="updateSteps(200)"
         />
@@ -70,7 +71,7 @@
         <au-step6 />
       </div>
       <div v-else-if="currentStep === 200">
-        <select-nft :evm-address="selectedEvmAddress" @next="updateSteps(3)" />
+        <select-nft :evm-address="selectedEvmAddress" @next="setAvatar" />
       </div>
       <div v-else>
         <user-account
@@ -97,6 +98,7 @@ import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vu
 import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
 import SelectNft from './account-unification/SelectNft.vue';
 import { UnifiedAccount } from 'src/store/general/state';
+import { NftMetadata } from 'src/v2/models';
 
 export default defineComponent({
   components: {
@@ -128,6 +130,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const totalCost = ref<string>('');
+    const avatar = ref<NftMetadata | undefined>(undefined);
     const unifiedAccount = computed<UnifiedAccount>(
       () => store.getters['general/getUnifiedAccount']
     );
@@ -183,13 +186,20 @@ export default defineComponent({
       window.removeEventListener('resize', onHeightChange);
     });
 
+    const setAvatar = async (nft: NftMetadata): Promise<void> => {
+      avatar.value = nft;
+      await updateSteps(3);
+    };
+
     const updateSteps = async (step: number): Promise<void> => {
       if (step === 6) {
         // Make a call to unify accounts
         const success = await unifyAccounts(
           currentAccount.value,
           selectedEvmAddress.value,
-          accountName.value
+          accountName.value,
+          avatar.value?.contractAddress,
+          avatar.value?.tokenId
         );
 
         if (!success) {
@@ -229,6 +239,8 @@ export default defineComponent({
         return '';
       } else if (currentStep.value === 100) {
         return t('wallet.unifiedAccount.editUnifiedAccount');
+      } else if (currentStep.value === 200) {
+        return t('wallet.unifiedAccount.selectAvatar');
       } else {
         return t('wallet.unifiedAccount.yourAccount');
       }
@@ -252,12 +264,14 @@ export default defineComponent({
       isLoading,
       totalCost,
       unifiedAccount,
+      avatar,
       closeModal,
       backModal,
       updateSteps,
       setWeb3,
       setAccountName,
       handleTransferXc20Tokens,
+      setAvatar,
     };
   },
 });

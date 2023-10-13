@@ -2,12 +2,17 @@
   <div class="wrapper--account-unification">
     <div class="list--nfts">
       <div
-        v-for="nft in nfts"
-        :key="nft.img"
+        v-for="(nft, index) in ownedNfts"
+        :key="`nft-${index}`"
         class="item"
-        :class="nft.isSelected && 'item--selected'"
+        :class="selectedIndex === index && 'item--selected'"
+        @click="selectedIndex = index"
       >
-        <img :src="nft.img" alt="NFT" />
+        <img :src="nft.image" :alt="nft.name" />
+      </div>
+      <div v-if="ownedNfts.length === 0 && !isBusy" class="item">
+        You don't have NFTs minted at the moment. When you mint some you will be able to update your
+        unified account with a NFT. For the moment default icon will be used.
       </div>
     </div>
 
@@ -20,7 +25,7 @@
 
 <script lang="ts">
 import { useNft } from 'src/hooks/useNft';
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 export default defineComponent({
   components: {},
@@ -32,29 +37,25 @@ export default defineComponent({
   },
   emits: ['next'],
   setup(props, { emit }) {
-    const { ownedNfts, getOwnedNfts } = useNft();
+    const { ownedNfts, isBusy, getOwnedNfts } = useNft();
+    const selectedIndex = ref<number>(-1);
 
     const next = () => {
-      emit('next');
+      if (selectedIndex.value > -1) {
+        emit('next', ownedNfts.value[selectedIndex.value]);
+      } else {
+        emit('next');
+      }
     };
 
     onMounted(() => {
       getOwnedNfts(props.evmAddress);
     });
 
-    const icon_img = {
-      astar_gradient: require('/src/assets/img/astar_icon.svg'),
-    };
-
-    const nfts = [
-      { img: icon_img.astar_gradient, isSelected: true },
-      { img: icon_img.astar_gradient, isSelected: false },
-      { img: icon_img.astar_gradient, isSelected: false },
-      { img: icon_img.astar_gradient, isSelected: false },
-    ];
-
     return {
-      nfts,
+      ownedNfts,
+      selectedIndex,
+      isBusy,
       next,
     };
   },
