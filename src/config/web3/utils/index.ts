@@ -8,6 +8,7 @@ import { AbiItem } from 'web3-utils';
 import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -138,14 +139,17 @@ export const getTokenDetails = async ({
 export const getNativeBalance = async ({
   address,
   srcChainId,
+  web3,
 }: {
   address: string;
   srcChainId: number;
+  web3?: Web3;
 }): Promise<string> => {
-  const web3 = buildWeb3Instance(srcChainId);
-  const bal = await web3!.eth.getBalance(address);
-  return web3!.utils.fromWei(bal, 'ether');
+  const web3Provider = web3 ? web3 : buildWeb3Instance(srcChainId);
+  const bal = await web3Provider!.eth.getBalance(address);
+  return web3Provider!.utils.fromWei(bal, 'ether');
 };
+
 export const getTokenBal = async ({
   address,
   tokenAddress,
@@ -162,18 +166,17 @@ export const getTokenBal = async ({
     if (!web3) {
       throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
     }
-    const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 
-    const isCheckNativeBal = tokenSymbol && srcChainId;
-    if (isCheckNativeBal && nativeCurrency[srcChainId].name === tokenSymbol) {
-      const balance = await web3.eth.getBalance(address);
-      return web3.utils.fromWei(balance, 'ether');
+    const isCheckNativeBal = tokenAddress === astarNativeTokenErcAddr;
+    if (isCheckNativeBal && nativeCurrency[srcChainId].symbol === tokenSymbol) {
+      return await getNativeBalance({ address, srcChainId, web3 });
+    } else {
+      const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const decimals = await contract.methods.decimals().call();
+      const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
+      const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
+      return formattedBalance;
     }
-
-    const decimals = await contract.methods.decimals().call();
-    const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
-    const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
-    return formattedBalance;
   } catch (error: any) {
     console.error(error.message);
     return '0';

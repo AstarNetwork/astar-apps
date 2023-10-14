@@ -11,6 +11,19 @@
           v-if="isBridge"
           :fetch-user-history="fetchUserHistory"
           :set-is-bridge="setIsBridge"
+          :selected-token="selectedToken"
+          :set-right-ui="setRightUi"
+          :bridge-amt="String(bridgeAmt)"
+          :err-msg="errMsg"
+          :is-disabled-bridge="isDisabledBridge"
+          :from-bridge-balance="fromBridgeBalance"
+          :to-bridge-balance="toBridgeBalance"
+          :from-chain-name="fromChainName"
+          :to-chain-name="toChainName"
+          :native-token-symbol="nativeTokenSymbol"
+          :input-handler="inputHandler"
+          :reverse-chain="reverseChain"
+          :handle-bridge="handleBridge"
         />
         <l1-history
           v-else
@@ -21,28 +34,52 @@
           :fetch-user-history="fetchUserHistory"
           :handle-claim="handleClaim"
         />
-        <information :transfer-type="HistoryTxType.Transfer" :is-history="false" />
+        <information
+          v-if="rightUi === 'information'"
+          :transfer-type="HistoryTxType.Transfer"
+          :is-history="false"
+        />
+        <select-token
+          v-if="rightUi === 'select-token'"
+          v-click-away="cancelHighlight"
+          :set-token="handleSetToken"
+          :tokens="zkTokens"
+          :input-import-token-handler="inputImportTokenHandler"
+          :import-token-address="importTokenAddress"
+          :from-chain-id="fromChainId"
+          :from-chain-name="fromChainName"
+          :to-chain-name="toChainName"
+          :set-zk-tokens="setZkTokens"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useL1History } from 'src/hooks';
-import { defineComponent, ref, computed, watch } from 'vue';
-import { HistoryTxType } from 'src/modules/account';
+import { wait } from '@astar-network/astar-sdk-core';
 import Information from 'src/components/assets/transfer/Information.vue';
+import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
+import SelectToken from 'src/components/bridge/common/SelectToken.vue';
 import BridgeModeTab from 'src/components/bridge/ethereum/BridgeModeTab.vue';
 import L1Bridge from 'src/components/bridge/ethereum/L1Bridge.vue';
 import L1History from 'src/components/bridge/ethereum/L1History.vue';
+import { useAccount, useBreakpoints, useL1Bridge, useL1History } from 'src/hooks';
+import { HistoryTxType } from 'src/modules/account';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { ZkToken } from 'src/modules/zk-evm-bridge';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type BridgeTabMode = 'bridge' | 'history';
 
 export default defineComponent({
-  components: { Information, BridgeModeTab, L1Bridge, L1History },
+  components: { Information, BridgeModeTab, L1Bridge, L1History, SelectToken },
   setup() {
     const isBridge = ref<boolean>(true);
+    const rightUi = ref<RightUi>('information');
+    const isModalSelectToken = ref<boolean>(false);
 
+    const { screenSize, width } = useBreakpoints();
     const {
       histories,
       isLoadingHistories,
@@ -52,11 +89,65 @@ export default defineComponent({
       fetchUserHistory,
       handleClaim,
     } = useL1History();
+
+    const {
+      bridgeAmt,
+      errMsg,
+      isDisabledBridge,
+      fromBridgeBalance,
+      toBridgeBalance,
+      fromChainName,
+      toChainName,
+      nativeTokenSymbol,
+      importTokenAddress,
+      fromChainId,
+      zkTokens,
+      selectedToken,
+      inputHandler,
+      reverseChain,
+      handleBridge,
+      inputImportTokenHandler,
+      setZkTokens,
+      setSelectedToken,
+    } = useL1Bridge();
+
     const { currentAccount } = useAccount();
     const router = useRouter();
     const route = useRoute();
     const network = computed<string>(() => route.params.network as string);
     const tab = computed<BridgeTabMode>(() => route.query.tab as BridgeTabMode);
+    const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
+
+    const setRightUi = async (ui: RightUi): Promise<void> => {
+      if (width.value > screenSize.md) {
+        // Memo: tricky way to work with `cancelHighlight` function
+        await wait(100);
+        rightUi.value = ui;
+      } else {
+        if (ui === 'select-token') {
+          isModalSelectToken.value = true;
+        }
+      }
+    };
+
+    const cancelHighlight = async (e: any): Promise<void> => {
+      const openClass = 'container--select-chain';
+      if (isHighlightRightUi.value && e.target.className !== openClass) {
+        await setRightUi('information');
+        const mockBlankInputEvent = { target: { value: '' } };
+        inputImportTokenHandler(mockBlankInputEvent);
+      }
+    };
+
+    const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
+      isModalSelectToken.value = isOpen;
+    };
+
+    const handleSetToken = async (t: ZkToken): Promise<void> => {
+      setSelectedToken(t);
+      await setRightUi('information');
+      isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
+    };
 
     const setIsBridge = (result: boolean): void => {
       isBridge.value = result;
@@ -87,9 +178,33 @@ export default defineComponent({
       l1Network,
       l2Network,
       isActionRequired,
+      isModalSelectToken,
+      rightUi,
+      isHighlightRightUi,
+      zkTokens,
+      selectedToken,
+      importTokenAddress,
+      bridgeAmt,
+      errMsg,
+      isDisabledBridge,
+      fromBridgeBalance,
+      toBridgeBalance,
+      fromChainName,
+      toChainName,
+      nativeTokenSymbol,
+      fromChainId,
+      inputImportTokenHandler,
+      cancelHighlight,
+      handleSetToken,
+      setRightUi,
       setIsBridge,
       fetchUserHistory,
       handleClaim,
+      inputHandler,
+      reverseChain,
+      handleBridge,
+      setZkTokens,
+      setSelectedToken,
     };
   },
 });

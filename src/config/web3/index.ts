@@ -73,7 +73,7 @@ export const nativeCurrency = {
   },
   [EVM.SEPOLIA_TESTNET]: {
     name: 'SepoliaETH',
-    symbol: 'SETH',
+    symbol: 'ETH',
     decimals: 18,
   },
   [EVM.SHIDEN_MAINNET]: {
@@ -136,6 +136,7 @@ export const nativeCurrency = {
 export const rpcUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
   [EVM.SEPOLIA_TESTNET]: ['https://eth-sepolia.public.blastapi.io'],
+  // [EVM.SEPOLIA_TESTNET]: ['https://rpc.sepolia.online'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
   [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.evmEndpoints[0]],

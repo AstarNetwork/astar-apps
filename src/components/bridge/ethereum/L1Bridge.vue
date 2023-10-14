@@ -9,7 +9,7 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
@@ -39,7 +39,7 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(toBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
@@ -62,21 +62,21 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row cursor-pointer">
+          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
               <img width="24" alt="token-logo" :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]" />
             </div>
-            <span class="text--title">{{ nativeTokenSymbol }}</span>
+            <span class="text--title">{{ selectedToken.symbol }}</span>
             <!-- Memo: use this incase we need to bridge more tokens -->
-            <!-- <div class="icon--expand">
+            <div class="icon--expand">
               <astar-icon-expand size="20" />
-            </div> -->
+            </div>
           </div>
           <div class="box__column--input-amount">
             <input
@@ -87,7 +87,7 @@
               pattern="^[0-9]*(\.)?[0-9]*$"
               placeholder="0.0"
               class="input--amount input--no-spin"
-              @input="inputHandler"
+              @input="(e) => inputHandler(e)"
             />
           </div>
         </div>
@@ -111,8 +111,8 @@
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useL1Bridge } from 'src/hooks';
-import { defineComponent } from 'vue';
-import { zkBridgeIcon, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
+import { defineComponent, PropType } from 'vue';
+import { zkBridgeIcon, EthBridgeNetworkName, ZkToken } from 'src/modules/zk-evm-bridge';
 import { isHex } from '@polkadot/util';
 
 export default defineComponent({
@@ -128,25 +128,64 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
+    selectedToken: {
+      type: Object as PropType<ZkToken>,
+      required: true,
+    },
+    bridgeAmt: {
+      type: String,
+      required: true,
+    },
+    errMsg: {
+      type: String,
+      required: true,
+    },
+    isDisabledBridge: {
+      type: Boolean,
+      required: true,
+    },
+    fromBridgeBalance: {
+      type: Number,
+      required: true,
+    },
+    toBridgeBalance: {
+      type: Number,
+      required: true,
+    },
+    fromChainName: {
+      type: String,
+      required: true,
+    },
+    toChainName: {
+      type: String,
+      required: true,
+    },
+    nativeTokenSymbol: {
+      type: String,
+      required: true,
+    },
+    inputHandler: {
+      type: Function,
+      required: true,
+    },
+    reverseChain: {
+      type: Function,
+      required: true,
+    },
+    handleBridge: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const {
-      bridgeAmt,
-      errMsg,
-      isDisabledBridge,
-      fromBridgeBalance,
-      toBridgeBalance,
-      fromChainName,
-      toChainName,
-      nativeTokenSymbol,
-      inputHandler,
-      reverseChain,
-      handleBridge,
-    } = useL1Bridge();
 
     const bridge = async (): Promise<void> => {
-      const transactionHash = await handleBridge();
+      const transactionHash = await props.handleBridge();
       if (isHex(transactionHash)) {
         await props.fetchUserHistory();
         props.setIsBridge(false);
@@ -156,17 +195,7 @@ export default defineComponent({
     return {
       zkBridgeIcon,
       currentAccount,
-      bridgeAmt,
-      isDisabledBridge,
-      errMsg,
-      fromBridgeBalance,
-      toBridgeBalance,
-      fromChainName,
-      toChainName,
       EthBridgeNetworkName,
-      nativeTokenSymbol,
-      inputHandler,
-      reverseChain,
       bridge,
     };
   },

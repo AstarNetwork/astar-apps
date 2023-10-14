@@ -61,8 +61,8 @@
               <div>
                 <span class="text--accent">
                   <token-balance
-                    :balance="ethers.utils.formatEther(history.amount.toString())"
-                    :symbol="nativeTokenSymbol"
+                    :balance="ethers.utils.formatUnits(history.amount.toString(), history.decimal)"
+                    :symbol="history.symbol ?? ''"
                   />
                 </span>
               </div>

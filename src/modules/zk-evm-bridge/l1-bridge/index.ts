@@ -55,9 +55,22 @@ export interface BridgeHistory {
   ready_for_claim: boolean;
   timestamp?: number;
   isActionRequired?: boolean;
+  symbol?: string;
+  name?: string;
+  decimal?: number;
 }
 
 export enum ZkNetworkId {
   L1 = 0,
   L2 = 1,
+}
+
+export interface ZkToken {
+  symbol: string;
+  decimal: number;
+  address: string;
+  name: string;
+  toChainTokenAddress?: string;
+  fromChainBalance?: number;
+  toChainBalance?: number;
 }
