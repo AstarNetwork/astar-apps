@@ -34,11 +34,12 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
       param.toChainName === EthBridgeNetworkName.Ethereum ||
       param.toChainName === EthBridgeNetworkName.Sepolia;
 
+    const isNativeToken = param.tokenAddress === astarNativeTokenErcAddr;
+
     // Todo: Ask if `0` is L1 and `1` is L1
     const destinationNetwork = isToL1 ? ZkNetworkId.L1 : ZkNetworkId.L2;
     const destinationAddress = param.senderAddress;
     const amount = ethers.utils.parseEther(String(param.amount)).toString();
-    const token = astarNativeTokenErcAddr;
 
     // Todo: Ask if we need to care about `forceUpdateGlobalExitRoot` and `permitData`
     const forceUpdateGlobalExitRoot = true;
@@ -49,7 +50,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
         destinationNetwork,
         destinationAddress,
         amount,
-        token,
+        param.tokenAddress,
         forceUpdateGlobalExitRoot,
         permitData
       )
@@ -58,7 +59,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     return {
       from: param.senderAddress,
       to: contractAddress,
-      value: amount,
+      value: isNativeToken ? amount : '0x0',
       data,
     };
   }

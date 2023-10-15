@@ -182,7 +182,7 @@ export const useL1Bridge = () => {
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
-          token: 'ETH',
+          token: selectedToken.value.symbol,
         });
       } else {
         errMsg.value = '';
@@ -210,20 +210,23 @@ export const useL1Bridge = () => {
   };
 
   const handleBridge = async (): Promise<String> => {
-    if (!bridgeAmt.value) return '';
+    if (!bridgeAmt.value || !selectedToken.value.address) return '';
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
     return await zkBridgeService.bridgeAsset({
       amount: bridgeAmt.value,
       fromChainName: fromChainName.value,
       toChainName: toChainName.value,
       senderAddress: currentAccount.value,
+      tokenAddress: selectedToken.value.address,
     });
   };
 
   watchEffect(setErrorMsg);
-  watch([fromChainName, toChainName, currentAccount], setBridgeBalance, { immediate: true });
+  watch([fromChainName, toChainName, currentAccount, selectedToken], setBridgeBalance, {
+    immediate: true,
+  });
   watch([fromChainName, toChainName], handleNetwork, { immediate: true });
-  watch([currentAccount], initZkTokens, { immediate: true });
+  watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
 
   return {
     bridgeAmt,

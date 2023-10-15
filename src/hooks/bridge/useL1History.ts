@@ -77,8 +77,8 @@ export const useL1History = () => {
       const formattedResult = await Promise.all(
         data.map(async (it) => {
           try {
-            const isL1 = checkIsL1(it['network_id']);
-            const web3 = isL1 ? l1Web3 : l2Web3;
+            const isOriginL1 = checkIsL1(it['orig_net']);
+            const web3 = isOriginL1 ? l1Web3 : l2Web3;
             if (!web3) return it;
             if (it.claim_tx_hash === '') {
               numberInProgress++;

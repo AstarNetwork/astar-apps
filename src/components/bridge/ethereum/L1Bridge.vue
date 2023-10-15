@@ -70,7 +70,13 @@
         <div class="box__row">
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <img width="24" alt="token-logo" :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]" />
+              <img
+                v-if="selectedToken.symbol == 'ETH'"
+                width="24"
+                alt="token-logo"
+                :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
+              />
+              <jazzicon v-else :address="selectedToken.name" :diameter="24" class="item-logo" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>
             <!-- Memo: use this incase we need to bridge more tokens -->
@@ -114,10 +120,12 @@ import { useAccount, useL1Bridge } from 'src/hooks';
 import { defineComponent, PropType } from 'vue';
 import { zkBridgeIcon, EthBridgeNetworkName, ZkToken } from 'src/modules/zk-evm-bridge';
 import { isHex } from '@polkadot/util';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
     TokenBalance,
+    [Jazzicon.name]: Jazzicon,
   },
   props: {
     fetchUserHistory: {

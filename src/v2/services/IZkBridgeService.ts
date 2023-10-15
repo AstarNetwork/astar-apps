@@ -10,6 +10,7 @@ export interface ParamBridgeAsset {
   amount: string;
   fromChainName: EthBridgeNetworkName;
   toChainName: EthBridgeNetworkName;
+  tokenAddress: string;
 }
 
 export interface ParamClaim {

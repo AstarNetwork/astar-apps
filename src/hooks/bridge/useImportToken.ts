@@ -2,6 +2,7 @@ import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import ABI from 'src/config/abi/ERC20.json';
 import { buildWeb3Instance, getTokenBal } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
   EthBridgeChainId,
   EthBridgeContract,
@@ -66,9 +67,23 @@ export const useImportToken = ({
           ? ZkNetworkId.L1
           : ZkNetworkId.L2;
 
-      const toChainTokenAddress = await toChainContract.methods
-        .precalculatedWrapperAddress(networkId, importTokenAddress.value, name, symbol, decimal)
+      let toChainTokenAddress;
+
+      // Memo: check if the bridge token is wrapped token
+      const data = await toChainContract.methods
+        .wrappedTokenToTokenInfo(importTokenAddress.value)
         .call();
+      const originTokenAddress = data[1];
+
+      // Bridge the original ERC20 token
+      if (originTokenAddress === astarNativeTokenErcAddr) {
+        toChainTokenAddress = await toChainContract.methods
+          .precalculatedWrapperAddress(networkId, importTokenAddress.value, name, symbol, decimal)
+          .call();
+      } else {
+        // Memo: bridge wrapped token
+        toChainTokenAddress = originTokenAddress;
+      }
 
       const toChainUserBalance = await getTokenBal({
         address: currentAccount.value,
