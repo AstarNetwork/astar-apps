@@ -209,7 +209,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } = useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } =
+      useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx } = useNetworkInfo();
 
