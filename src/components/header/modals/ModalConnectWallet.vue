@@ -172,6 +172,8 @@ import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, ref } from 'vue';
+import { productionOrigin } from 'src/links';
+
 export default defineComponent({
   props: {
     isModalConnectWallet: {
@@ -223,7 +225,7 @@ export default defineComponent({
     };
 
     const checkIsDisabledWallet = (source: SupportWallet): boolean => {
-      if (!process.env.DEV && source === SupportWallet.Snap) {
+      if (source === SupportWallet.Snap && window.location.origin === productionOrigin) {
         return true;
       }
       return false;
