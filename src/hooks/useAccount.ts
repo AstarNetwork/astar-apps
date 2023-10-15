@@ -12,7 +12,6 @@ import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
-import { endpointKey } from 'src/config/chainEndpoints';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
