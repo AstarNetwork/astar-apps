@@ -1,14 +1,15 @@
+name: Firestore backup
+
 on:
   schedule:
-    - cron: "*/15 * * * *"
-name: Firestore backup
+    - cron: "0 1 * * *"
+
 jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - uses: lfdm/firestore-backup-gh-action
+      - uses: lfdm/firestore-backup-gh-action@master
         with:
           gcloudAuth: ${{ secrets.FIREBASE_BACKUP_GCLOUD_AUTH }}
           projectId: ${{ secrets.gcloud_project_id }}
-          storageBucket: gs://astarnetwork-a4924.appspot.com
-          collectionIds: 
+          storageBucket: gs://astar-apps-bkp

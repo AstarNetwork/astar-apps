@@ -15,10 +15,10 @@ import { useI18n } from 'vue-i18n';
 export function useStake() {
   const router = useRouter();
   const route = useRoute();
-  const { currentAccount } = useAccount();
+  const { currentAccount, senderSs58Account } = useAccount();
   const { stakingList } = useStakingList();
   const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
-  const addressTransferFrom = ref<string>(currentAccount.value);
+  const addressTransferFrom = ref<string>(senderSs58Account.value);
   const { t } = useI18n();
   const store = useStore();
 
@@ -34,8 +34,8 @@ export function useStake() {
       const item = stakingListRef.find((it) => it.address === addressTransferFrom.value);
       if (!item) return defaultData;
 
-      const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
-      const isNominationTransfer = item.address !== currentAccount.value;
+      const name = item.name === senderSs58Account.value ? 'Transferable Balance' : item.name;
+      const isNominationTransfer = item.address !== senderSs58Account.value;
       const formattedText = `${name} (${balanceFormatter(item.balance, ASTAR_DECIMALS)})`;
       return { text: formattedText, item, isNominationTransfer };
     } catch (error) {
@@ -97,9 +97,9 @@ export function useStake() {
   };
 
   watch(
-    [currentAccount],
+    [senderSs58Account],
     () => {
-      addressTransferFrom.value = currentAccount.value;
+      addressTransferFrom.value = senderSs58Account.value;
     },
     { immediate: true }
   );

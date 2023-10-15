@@ -1,28 +1,6 @@
 <template>
   <div class="wrapper--account">
-    <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
-      <div>
-        <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
-      </div>
-      <ul class="row--warning-list">
-        <li class="text--warning">
-          {{ $t('assets.cantTransferToExcahges') }}
-        </li>
-        <li class="text--warning">{{ $t('assets.noHash') }}</li>
-      </ul>
-    </div>
-
     <div class="container">
-      <div
-        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
-        class="row"
-      >
-        <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
-        <span class="text--switch-account" @click="toggleEvmWalletSchema">
-          {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
-        </span>
-      </div>
-
       <div class="row--details">
         <div class="column-account-name">
           <img
@@ -43,6 +21,23 @@
               <span class="text--accent">{{ $n(totalBal) }} USD</span>
             </div>
             <div class="column__icons">
+              <div v-if="isAccountUnification">
+                <button
+                  type="button"
+                  class="icon--primary icon--account"
+                  @click="showAccountUnificationModal()"
+                >
+                  <!-- TODO: will move a new icon to the AstarUI later -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="icon">
+                    <path
+                      d="M480-492.309q-57.749 0-98.874-41.124-41.125-41.125-41.125-98.874 0-57.75 41.125-98.874 41.125-41.125 98.874-41.125 57.749 0 98.874 41.125 41.125 41.124 41.125 98.874 0 57.749-41.125 98.874-41.125 41.124-98.874 41.124ZM180.001-187.694v-88.922q0-29.384 15.962-54.422 15.961-25.038 42.653-38.5 59.308-29.077 119.654-43.615T480-427.691q61.384 0 121.73 14.538 60.346 14.538 119.654 43.615 26.692 13.462 42.653 38.5 15.962 25.038 15.962 54.422v88.922H180.001ZM240-247.693h480v-28.923q0-12.154-7.039-22.5-7.038-10.346-19.115-16.885-51.692-25.461-105.418-38.577Q534.702-367.693 480-367.693t-108.428 13.115q-53.726 13.116-105.418 38.577-12.077 6.539-19.115 16.885Q240-288.77 240-276.616v28.923Zm240-304.614q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.614Z"
+                    />
+                  </svg>
+                </button>
+                <q-tooltip>
+                  <span class="text--tooltip">Unify accounts</span>
+                </q-tooltip>
+              </div>
               <div>
                 <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
                   <astar-icon-copy />
@@ -82,11 +77,6 @@
       </div>
       <native-asset-list v-if="!isH160" />
     </div>
-    <modal-lockdrop-warning
-      v-if="isLockdropAccount && !isH160"
-      :is-modal="isModalLockdropWarning"
-      :handle-modal="handleModalLockdropWarning"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -96,14 +86,7 @@ import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import {
-  useAccount,
-  useBalance,
-  useConnectWallet,
-  useNetworkInfo,
-  usePrice,
-  useWalletIcon,
-} from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice, useWalletIcon } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
@@ -111,14 +94,12 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
     NativeAssetList,
-    ModalLockdropWarning,
     EvmNativeToken,
   },
   props: {
@@ -134,10 +115,13 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
-    const isLockdropAccount = ref<boolean>(false);
-    const isModalLockdropWarning = ref<boolean>(true);
-    const { toggleEvmWalletSchema } = useConnectWallet();
-    const { currentAccount, currentAccountName, multisig } = useAccount();
+    const {
+      currentAccount,
+      currentAccountName,
+      multisig,
+      showAccountUnificationModal,
+      isAccountUnification,
+    } = useAccount();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -167,10 +151,6 @@ export default defineComponent({
       // @ts-ignore
       return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
     });
-
-    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
-      isModalLockdropWarning.value = isOpen;
-    };
 
     const copyAddress = () => {
       copy(currentAccount.value);
@@ -220,7 +200,6 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
-          isLockdropAccount.value = false;
           return;
         }
         if (
@@ -235,14 +214,8 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
-          if (Number(data.free.toString()) > 0) {
-            isLockdropAccount.value = true;
-          } else {
-            isLockdropAccount.value = false;
-          }
         } catch (error: any) {
           console.error(error.message);
-          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -258,18 +231,16 @@ export default defineComponent({
       isH160,
       isEthWallet,
       balUsd,
-      isLockdropAccount,
       isSkeleton,
       totalBal,
       ETHEREUM_EXTENSION,
       multisig,
       supportWalletObj,
       signatoryIconWallet,
-      isModalLockdropWarning,
-      handleModalLockdropWarning,
+      isAccountUnification,
       getShortenAddress,
       copyAddress,
-      toggleEvmWalletSchema,
+      showAccountUnificationModal,
     };
   },
 });

@@ -48,6 +48,7 @@ export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const modalPolkasafeSelect = ref<boolean>(false);
+  const modalAccountUnificationSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
 
@@ -88,6 +89,12 @@ export const useConnectWallet = () => {
   const openPolkasafeModal = (): void => {
     modalName.value = WalletModalOption.Polkasafe;
     modalPolkasafeSelect.value = true;
+    return;
+  };
+
+  const openAccountUnificationModal = (): void => {
+    modalName.value = WalletModalOption.AccountUnification;
+    modalAccountUnificationSelect.value = true;
     return;
   };
 
@@ -178,25 +185,6 @@ export const useConnectWallet = () => {
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
     await loadEvmWallet({ ss58, currentWallet: wallet });
-  };
-
-  const toggleEvmWalletSchema = async () => {
-    const accounts = await requestAccounts();
-    const loadingAddr = checkSumEvmAddress(accounts[0]);
-    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
-    const signature = await requestSignature(loginMsg, loadingAddr);
-    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
-    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
-
-    if (isH160.value) {
-      store.commit('general/setIsH160Formatted', false);
-      store.commit('general/setCurrentEcdsaAccount', {
-        ethereum: loadingAddr,
-        ss58: ss58Address,
-      });
-    } else {
-      await loadEvmWallet({ currentWallet: selectedWallet.value as SupportWallet });
-    }
   };
 
   const setWallet = (wallet: SupportWallet): void => {
@@ -386,13 +374,14 @@ export const useConnectWallet = () => {
     isH160,
     isConnectedNetwork,
     isEthWallet,
+    modalAccountUnificationSelect,
     openSelectModal,
     setCloseModal,
     setWalletModal,
     disconnectAccount,
-    toggleEvmWalletSchema,
     changeAccount,
     connectEthereumWallet,
     openPolkasafeModal,
+    openAccountUnificationModal,
   };
 };

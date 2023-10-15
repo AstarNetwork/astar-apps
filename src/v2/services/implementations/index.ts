@@ -9,3 +9,5 @@ export * from './BalanceFormatterService';
 export * from './EvmAssetsService';
 export * from './EvmDappStakingService';
 export * from './AssetsService';
+export * from './AccountUnificationService';
+export * from './IdentityService';

@@ -1,4 +1,6 @@
 import { getEvmGas } from '@astar-network/astar-sdk-core';
+import { ethers } from 'ethers';
+import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
@@ -16,6 +18,7 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { checkIsSetGasByWallet } from 'src/config/web3';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -110,6 +113,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       throw Error(error.message);
     }
   }
+
   public async sendEvmTransaction({
     from,
     to,
@@ -124,17 +128,21 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         web3.eth.getTransactionCount(from),
         getEvmGas(web3, this.gasPriceProvider.getGas().price),
       ]);
+
       const rawTx = {
         nonce,
-        gasPrice: web3.utils.toHex(gasPrice),
         from,
         to,
         value: value ? value : '0x0',
         data,
       };
-      const estimatedGas = await web3.eth.estimateGas(rawTx);
-      await web3.eth
-        .sendTransaction({ ...rawTx, gas: estimatedGas })
+
+      const connectedChainId = await web3.eth.net.getId();
+      const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
+      const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };
+      const estimatedGas = await web3.eth.estimateGas(txParam);
+      const transactionHash = await web3.eth
+        .sendTransaction({ ...txParam, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })
@@ -159,7 +167,9 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
               message: error.message || AlertMsg.ERROR,
             })
           );
+          return AlertMsg.ERROR;
         });
+      return transactionHash;
     } catch (error: any) {
       this.eventAggregator.publish(
         new ExtrinsicStatusMessage({
@@ -167,7 +177,23 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           message: failureMessage || error.message,
         })
       );
+      return AlertMsg.ERROR;
     }
-    return AlertMsg.ERROR;
+  }
+
+  public async signPayload(
+    domain: TypedDataDomain,
+    types: Record<string, Array<TypedDataField>>,
+    value: Record<string, any>
+  ): Promise<string> {
+    Guard.ThrowIfUndefined('domain', domain);
+    Guard.ThrowIfUndefined('types', types);
+    Guard.ThrowIfUndefined('value', value);
+
+    const provider = new ethers.providers.Web3Provider(this.provider);
+    const signer = provider.getSigner();
+    const signature = await signer._signTypedData(domain, types, value);
+
+    return signature;
   }
 }

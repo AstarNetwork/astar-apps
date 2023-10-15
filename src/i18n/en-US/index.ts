@@ -3,6 +3,7 @@ export default {
   cancel: 'Cancel',
   change: 'Change',
   connect: 'Connect',
+  connected: 'Connected',
   disconnect: 'Disconnect',
   copy: 'Copy',
   from: 'From',
@@ -31,6 +32,7 @@ export default {
   evm: 'EVM',
   wasm: 'WASM',
   new: 'NEW',
+  next: 'Next',
   addressFormat: '{network} Wallet Address',
   addressPlaceholder: 'Destination {network} Address',
   evmAddressPlaceholder: 'Destination EVM address',
@@ -92,7 +94,6 @@ export default {
     staking: 'Staking',
     contract: 'Contract',
     ecosystem: 'Ecosystem',
-    plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
     telegram: 'Telegram',
@@ -153,6 +154,7 @@ export default {
     nativeAccount: 'Native Accounts',
     evmAccount: 'EVM Accounts',
     multisigAccount: 'Multisig Accounts',
+    accountUnification: 'Account Unification',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -165,6 +167,62 @@ export default {
       noAccounts: 'There are no multisig accounts found',
       goToPokasafe: 'Go to PolkaSafe to create one',
       proxy: 'Proxy',
+    },
+    unifiedAccount: {
+      create: 'Create Unified Account',
+      readCarefully: 'Please read carefully',
+      yourAccount: 'Your Account',
+      astarNative: 'Astar Native',
+      astarEvm: 'Astar EVM',
+      introduce: 'Introducing new technology, unified account',
+      general: 'General',
+      onceUnified: 'Once accounts are unified, they will not be separated.',
+      evmWallet: 'EVM wallet (Metamask only)',
+      brandNewAccount: 'A brand-new empty account is recommended.',
+      unstakedFirst:
+        'If the EVM account holds any staked ASTR token, those need to be unstaked first, it will not be merged automatically.',
+      xcTokens:
+        'If you have custom xcTokens or any xcTokens are not listed on Astar EVM Portal, you must transfer them to a different account first. We will not able to find those tokens therefore unable to move them to the new account.',
+      automaticallyTransferred:
+        'All other already listed xcTokens as well as ERC20 tokens will be automatically transferred to new unified account.',
+      override:
+        'If you already have an account ID that is created on Polkadot.js app, this account unification information will override.',
+      agreeToProceed:
+        'I have read all and I would like to proceed to create a unified account please.',
+      agreeToDeposit: 'Creating unified account costs {cost}',
+      agreeToSubmit: 'I understand that once accounts have been unified, they cannot be separated.',
+      requirement:
+        'To create an unified account, both Substrate and EVM wallet extension are required and currently not possible from mobile apps.',
+      haveAstarNative: '😎 I HAVE an Astar Native account',
+      connectAstarNative:
+        'Unified account is owned by an Astar Native account. Please connect with a desired address and create an account.',
+      selectWallet: 'Select a wallet',
+      notHaveAstarNative: '🥲 I DON’T HAVE an Astar Native account',
+      withoutUnifying:
+        'You can receive full benefit while you are connecting with EVM account without unifying. So nothing to worry if you don’t own a Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
+      howToCreate: 'How to create a Astar Native account',
+      findSubstrateWallets:
+        'You could also find Substrate based wallets which might be friendlier. ',
+      checkNativeWallets: 'Check our Native wallets.',
+      haveStakingBalance:
+        'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
+      unifiedAccountName: 'Unified Account Name',
+      accountIcon: 'Account icon (we are working on adding your own NFT as an account icon)',
+      balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
+      readyToUnify:
+        'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
+      congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
+      needHelp: 'Need help?',
+      whichAddress: {
+        q: 'I don’t know which address I need to use?',
+        a: 'You don’t need to think of which one, balance of the both accounts are the same. You don’t need to think of which one, balance of the both accounts are the same.',
+      },
+      userTutorials: 'User tutorials',
+      aboutForUsers: 'About the unified accounts for users',
+      techDocs: 'Tech docs',
+      sendingXc20: 'Start sending XC20 tokens, please wait...',
+      editUnifiedAccount: 'Edit Unified Account',
+      save: 'Save',
     },
   },
   installWallet: {
@@ -380,10 +438,10 @@ export default {
     xvmAssets: 'XVM (Cross Virtual Machine) ERC-20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
-    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
+    syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
     manage: 'Manage',
@@ -399,8 +457,6 @@ export default {
     yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
-    lockdropAccount: 'Lockdrop Account',
-    inLockdropAccount: 'You are in a Lockdrop account',
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
@@ -500,16 +556,6 @@ export default {
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
-      },
-      lockdropWarning: {
-        message:
-          'The Lockdrop account will be deprecated in the upcoming update, as its purpose has been fulfilled. Please transfer your funds to another substrate wallet immediately.',
-        list1:
-          "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
-        list2:
-          'Please note that unstaking in dApp staking will require 10 eras (approximately 10 days).',
-        closeTime: 'UTC 23:59 12th September 2023',
-        gotIt: 'Got it',
       },
     },
   },
