@@ -123,9 +123,6 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
-      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
-      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
-      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -145,7 +142,6 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
-      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,

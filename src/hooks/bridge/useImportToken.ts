@@ -2,6 +2,7 @@ import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import ABI from 'src/config/abi/ERC20.json';
 import { buildWeb3Instance, getTokenBal } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
+import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
   EthBridgeChainId,
@@ -100,7 +101,24 @@ export const useImportToken = ({
         toChainBalance: Number(toChainUserBalance),
         toChainTokenAddress,
       };
-      await handleWrappedTokenInfo();
+      const wrappedTokenAddress = await handleWrappedTokenInfo();
+      if (
+        toChainName === EthBridgeNetworkName.Akiba ||
+        toChainName === EthBridgeNetworkName.AstarZk
+      ) {
+        const t: Erc20Token = {
+          srcChainId: toChainId,
+          address: wrappedTokenAddress,
+          decimal: decimal,
+          symbol: symbol,
+          name,
+          image: '',
+          isWrappedToken: false,
+          isXC20: false,
+          wrapUrl: null,
+        };
+        storeImportedERC20Token(t);
+      }
     } catch (error) {
       console.error(error);
       zkToken.value = undefined;
@@ -110,13 +128,13 @@ export const useImportToken = ({
     }
   };
 
-  const handleWrappedTokenInfo = async (): Promise<void> => {
+  const handleWrappedTokenInfo = async (): Promise<string> => {
     const contractAddress = EthBridgeContract[toChainName as EthBridgeNetworkName];
     const contract = new toWeb3Provider.value.eth.Contract(
       ZK_EVM_BRIDGE_ABI as AbiItem[],
       contractAddress
     );
-    toChainTokenAddress.value = await contract.methods
+    const address = await contract.methods
       .precalculatedWrapperAddress(
         0,
         importTokenAddress.value,
@@ -125,6 +143,8 @@ export const useImportToken = ({
         zkToken.value?.decimal
       )
       .call();
+    toChainTokenAddress.value = address;
+    return address;
   };
 
   watch([importTokenAddress], setZkToken, { immediate: true });

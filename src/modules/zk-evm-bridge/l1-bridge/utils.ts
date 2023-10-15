@@ -60,8 +60,8 @@ const getApiUrl = (): string => {
 
 export const fetchAccountHistory = async (address: string): Promise<BridgeHistory[]> => {
   const base = getApiUrl();
-  // const limit = 10;
-  const limit = 5;
+  const limit = 10;
+  // const limit = 5;
   const url = `${base}/bridges/${address}?limit=${limit}&offset=0`;
   const result = await axios.get<{ deposits: BridgeHistory[] }>(url);
   return result.data.deposits;

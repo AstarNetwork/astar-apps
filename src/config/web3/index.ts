@@ -135,7 +135,8 @@ export const nativeCurrency = {
 
 export const rpcUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
-  [EVM.SEPOLIA_TESTNET]: ['https://eth-sepolia.public.blastapi.io'],
+  [EVM.SEPOLIA_TESTNET]: ['https://sepolia-01.astar.network'],
+  // [EVM.SEPOLIA_TESTNET]: ['https://eth-sepolia.public.blastapi.io'],
   // [EVM.SEPOLIA_TESTNET]: ['https://rpc.sepolia.online'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
