@@ -139,10 +139,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
       const connectedChainId = await web3.eth.net.getId();
       const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
-      console.log('isSetGasByWallet', isSetGasByWallet);
       const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };
       const estimatedGas = await web3.eth.estimateGas(txParam);
-      console.log('estimatedGas', estimatedGas);
       const transactionHash = await web3.eth
         .sendTransaction({ ...txParam, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
