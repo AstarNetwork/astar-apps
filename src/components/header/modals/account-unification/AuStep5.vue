@@ -74,7 +74,7 @@ export default defineComponent({
     },
   },
   emits: ['next'],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const isChecked = ref<boolean>(false);
 
     const next = (): void => {
