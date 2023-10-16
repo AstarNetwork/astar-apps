@@ -382,5 +382,5 @@ export const restrictedXcmNetwork = {
   [astarChain.DEVELOPMENT]: [],
   [astarChain.ROCSTAR]: [],
   [astarChain.ASTAR_ZKEVM]: [],
-  [astarChain.AKIBA]: [],
+  [astarChain.ZKATANA]: [],
 };

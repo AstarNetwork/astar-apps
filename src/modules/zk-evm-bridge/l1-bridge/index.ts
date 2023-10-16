@@ -6,36 +6,36 @@ export const ZK_EVM_BRIDGE_ABI = ABI_ZK_EVM_BRIDGE;
 
 // Todo: update to https
 export const zkEvmApi = {
-  testnet: 'https://akiba-bridge-api.astar.network',
+  testnet: 'https://bridge-api.zkatana.gelato.digital',
   mainnet: 'https://akiba-bridge-api.astar.network',
 };
 
 export enum EthBridgeNetworkName {
   'Sepolia' = 'Sepolia',
-  'Akiba' = 'Akiba zkEVM',
+  'Zkatana' = 'zKatana',
   'Ethereum' = 'Ethereum',
   'AstarZk' = 'Astar zkEVM',
 }
 
 // Todo: check mainnet contract
 export const EthBridgeContract = {
-  [EthBridgeNetworkName.Sepolia]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
-  [EthBridgeNetworkName.Ethereum]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
-  [EthBridgeNetworkName.Akiba]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
-  [EthBridgeNetworkName.AstarZk]: '0xE3583F529aA992D21A8fae3f3c37d94900339C7F',
+  [EthBridgeNetworkName.Sepolia]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.Ethereum]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.Zkatana]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.AstarZk]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
 };
 
 export const EthBridgeChainId = {
   [EthBridgeNetworkName.Sepolia]: EVM.SEPOLIA_TESTNET,
   [EthBridgeNetworkName.Ethereum]: EVM.ETHEREUM_MAINNET,
-  [EthBridgeNetworkName.Akiba]: EVM.AKIBA_TESTNET,
+  [EthBridgeNetworkName.Zkatana]: EVM.ZKATANA_TESTNET,
   [EthBridgeNetworkName.AstarZk]: EVM.ASTAR_ZKEVM_MAINNET,
 };
 
 export const zkBridgeIcon = {
   [EthBridgeNetworkName.Sepolia]: require('/src/assets/img/ethereum.png'),
   [EthBridgeNetworkName.Ethereum]: require('/src/assets/img/ethereum.png'),
-  [EthBridgeNetworkName.Akiba]: require('src/assets/img/chain/shibuya.png'),
+  [EthBridgeNetworkName.Zkatana]: require('src/assets/img/chain/shibuya.png'),
   [EthBridgeNetworkName.AstarZk]: require('src/assets/img/chain/shibuya.png'),
 } as any;
 

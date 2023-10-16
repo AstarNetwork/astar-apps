@@ -272,7 +272,7 @@ export const xcmToken = {
   [endpointKey.CUSTOM]: [],
   [endpointKey.ROCSTAR]: [],
   [endpointKey.ASTAR_ZKEVM]: [],
-  [endpointKey.AKIBA]: [],
+  [endpointKey.ZKATANA]: [],
 };
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY

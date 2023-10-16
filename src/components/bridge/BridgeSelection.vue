@@ -59,19 +59,19 @@ export default defineComponent({
     const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Akiba
+      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
         ? EthBridgeNetworkName.Sepolia
         : EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Akiba
-        ? EthBridgeNetworkName.Akiba
+      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
+        ? EthBridgeNetworkName.Zkatana
         : EthBridgeNetworkName.AstarZk;
     });
 
     const substrateNetwork = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Akiba ? 'Shibuya' : 'Astar';
+      return currentNetworkName.value === EthBridgeNetworkName.Zkatana ? 'Shibuya' : 'Astar';
     });
 
     const cbridgeNetworkName = computed<string>(() => {

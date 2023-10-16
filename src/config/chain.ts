@@ -6,7 +6,7 @@ export enum astarChain {
   ASTAR = 'Astar',
   DEVELOPMENT = 'Development',
   ASTAR_ZKEVM = 'Astar zkEVM',
-  AKIBA = 'Akiba zkEVM Testnet',
+  ZKATANA = 'zKatana Testnet',
   ROCSTAR = 'Rocstar Testnet',
 }
 
@@ -15,7 +15,7 @@ export type ASTAR_CHAIN =
   | astarChain.ASTAR
   | astarChain.SHIBUYA
   | astarChain.ASTAR_ZKEVM
-  | astarChain.AKIBA
+  | astarChain.ZKATANA
   | astarChain.DEVELOPMENT
   | astarChain.ROCSTAR;
 
@@ -24,7 +24,7 @@ export type ASTAR_NETWORK_IDX =
   | endpointKey.SHIDEN
   | endpointKey.SHIBUYA
   | endpointKey.ASTAR_ZKEVM
-  | endpointKey.AKIBA
+  | endpointKey.ZKATANA
   | endpointKey.LOCAL
   | endpointKey.ROCSTAR;
 
