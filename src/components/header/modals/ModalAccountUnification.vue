@@ -75,7 +75,11 @@
         <au-step6 />
       </div>
       <div v-else-if="currentStep === 200">
-        <select-nft :evm-address="selectedEvmAddress" :avatar-metadata="avatar" @next="setAvatar" />
+        <select-nft
+          :evm-address="unifiedAccount ? unifiedAccount.evmAddress : selectedEvmAddress"
+          :avatar-metadata="avatar"
+          @next="setAvatar"
+        />
       </div>
       <div v-else>
         <user-account
@@ -216,8 +220,8 @@ export default defineComponent({
           await updateAccount(
             unifiedAccount.value.nativeAddress,
             accountName.value,
-            unifiedAccount.value.avatarMetadata?.contractAddress,
-            unifiedAccount.value.avatarMetadata?.tokenId
+            avatar.value?.contractAddress,
+            avatar.value?.tokenId
           );
           await checkIfUnified(unifiedAccount.value?.nativeAddress);
         }

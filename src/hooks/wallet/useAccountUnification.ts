@@ -352,11 +352,11 @@ export const useAccountUnification = () => {
     avatarContractAddress?: string,
     avatarTokenId?: string
   ): Promise<void> => {
-    const identity = new IdentityData(accountName, []);
-    identity.additional?.push({ avatarNftAddres: avatarContractAddress! });
-    identity.additional?.push({ avatarNftId: avatarTokenId! });
     const identityService = container.get<IIdentityService>(Symbols.IdentityService);
-    await identityService.setIdentity(nativeAddress, identity);
+    await identityService.setIdentity(
+      nativeAddress,
+      identityService.createIdentityData(accountName, avatarContractAddress, avatarTokenId)
+    );
   };
 
   const getCost = async (): Promise<string> => {
