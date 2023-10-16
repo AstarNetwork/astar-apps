@@ -1,6 +1,7 @@
 import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportMultisig } from 'src/config/wallets';
+import { SupportMultisig, SupportWallet } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
@@ -11,7 +12,6 @@ import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
@@ -31,6 +31,7 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const isSnapEnabled = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
   const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
 
   const isAccountUnification = computed<boolean>(() => {
@@ -222,6 +223,15 @@ export const useAccount = () => {
     { immediate: true }
   );
 
+  const checkIsResetSnap = async (): Promise<void> => {
+    const storedWallet = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET));
+    if (!isSnapEnabled.value && storedWallet === SupportWallet.Snap) {
+      await disconnectAccount();
+      window.location.reload();
+    }
+  };
+
+  watch([currentAddress], checkIsResetSnap, { immediate: true });
   watch([unifiedAccount], () => {
     if (unifiedAccount.value) {
       currentAccountName.value = unifiedAccount.value.name;
@@ -235,6 +245,7 @@ export const useAccount = () => {
     senderSs58Account,
     multisig,
     isMultisig,
+    isSnapEnabled,
     isAccountUnification,
     isH160Formatted,
     disconnectAccount,

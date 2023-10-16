@@ -36,7 +36,7 @@ import { useNetworkInfo } from '../useNetworkInfo';
 import { IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 
-const provider = get(window, 'ethereum');
+const provider = get(window, 'ethereum') as any;
 
 export interface TransferXc20Token {
   assetId: string;
