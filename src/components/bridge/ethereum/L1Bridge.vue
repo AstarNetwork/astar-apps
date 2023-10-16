@@ -150,7 +150,7 @@ export default defineComponent({
       const transactionHash = await handleBridge();
       if (isHex(transactionHash)) {
         // Memo: gives some time for synching in the bridge API
-        await wait(6 * 1000);
+        await wait(3 * 1000);
         await props.fetchUserHistory();
         props.setIsBridge(false);
       }
