@@ -114,6 +114,7 @@ import { useAccount, useL1Bridge } from 'src/hooks';
 import { defineComponent } from 'vue';
 import { zkBridgeIcon, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { isHex } from '@polkadot/util';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -148,6 +149,8 @@ export default defineComponent({
     const bridge = async (): Promise<void> => {
       const transactionHash = await handleBridge();
       if (isHex(transactionHash)) {
+        // Memo: gives some time for synching in the bridge API
+        await wait(6 * 1000);
         await props.fetchUserHistory();
         props.setIsBridge(false);
       }
