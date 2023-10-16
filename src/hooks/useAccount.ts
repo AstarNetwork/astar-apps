@@ -12,9 +12,12 @@ import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
+<<<<<<< HEAD
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
+=======
+>>>>>>> main
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
