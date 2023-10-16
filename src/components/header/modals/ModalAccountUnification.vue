@@ -67,6 +67,7 @@
         <au-step5
           :account-name="accountName"
           :selected-evm-address="selectedEvmAddress"
+          :avatar-url="avatar?.image ?? ''"
           :is-busy="isLoading"
           @next="updateSteps(6)"
         />

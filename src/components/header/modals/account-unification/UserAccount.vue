@@ -3,7 +3,10 @@
     <!-- unified -->
     <div v-if="isAccountUnified">
       <div class="text--account-name">
-        <au-icon :unified-account="unifiedAccount" />
+        <au-icon
+          :native-address="unifiedAccount?.nativeAddress"
+          :icon-url="unifiedAccount?.avatarUrl"
+        />
         <div>{{ unifiedAccount?.name }}</div>
       </div>
       <div class="box--wallet-list">

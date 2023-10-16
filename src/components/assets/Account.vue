@@ -15,7 +15,11 @@
     <div class="container">
       <div class="row--details">
         <div class="column-account-name">
-          <au-icon v-if="isAccountUnified" :unified-account="unifiedAccount" />
+          <au-icon
+            v-if="isAccountUnified"
+            :native-address="unifiedAccount?.nativeAddress"
+            :icon-url="unifiedAccount?.avatarUrl"
+          />
           <img
             v-else-if="iconWallet"
             width="24"

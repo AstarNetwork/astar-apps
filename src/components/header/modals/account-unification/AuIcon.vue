@@ -1,15 +1,6 @@
 <template>
-  <img
-    v-if="unifiedAccount?.avatarUrl"
-    :src="unifiedAccount?.avatarUrl"
-    class="text--account-name__icon"
-  />
-  <jazzicon
-    v-else
-    class="text--account-name__icon"
-    :address="unifiedAccount?.nativeAddress"
-    :diameter="32"
-  />
+  <img v-if="iconUrl" :src="iconUrl" class="text--account-name__icon" />
+  <jazzicon v-else class="text--account-name__icon" :address="nativeAddress" :diameter="32" />
 </template>
 
 <script lang="ts">
@@ -20,9 +11,15 @@ import Jazzicon from 'vue3-jazzicon/src/components';
 export default defineComponent({
   components: { [Jazzicon.name]: Jazzicon },
   props: {
-    unifiedAccount: {
-      type: Object as PropType<UnifiedAccount | undefined>,
-      required: true,
+    nativeAddress: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    iconUrl: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
 
