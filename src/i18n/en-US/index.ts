@@ -224,6 +224,8 @@ export default {
       editUnifiedAccount: 'Edit Unified Account',
       selectAvatar: 'Select Avatar',
       save: 'Save',
+      noNfts:
+        "You don't have NFTs minted at the moment. When you mint some you will be able to update your unified account with a NFT. For the moment default icon will be used.",
     },
   },
   installWallet: {

@@ -12,8 +12,7 @@
       </div>
     </div>
     <div v-if="ownedNfts.length === 0 && !isBusy" class="item">
-      You don't have NFTs minted at the moment. When you mint some you will be able to update your
-      unified account with a NFT. For the moment default icon will be used.
+      {{ $t('wallet.unifiedAccount.noNfts') }}
     </div>
 
     <!-- Action -->
