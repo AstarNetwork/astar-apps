@@ -253,11 +253,8 @@ export default defineComponent({
       supportWalletObj,
       signatoryIconWallet,
       isAccountUnification,
-<<<<<<< HEAD
       unifiedAccount,
       isAccountUnified,
-=======
->>>>>>> 372fe9b5 (Lockdrop logic removed (#954))
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
