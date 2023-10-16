@@ -19,7 +19,8 @@ export interface SnapConfig {
   unit?: UnitConfiguration;
 }
 
-export const snapId = 'local:http://localhost:8081'; // TODO: change to real snap id 'npm:@astar-network/snap'
+export const snapId = process.env.DEV ? 'local:http://localhost:8081' : 'npm:@astar-network/snap';
+console.info('snapId', snapId);
 
 export async function enablePolkadotSnap(
   config: SnapConfig = { networkName: 'shibuya' },
