@@ -18,7 +18,7 @@ import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
-import { initPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();

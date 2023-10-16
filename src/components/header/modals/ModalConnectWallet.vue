@@ -152,7 +152,7 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import { initPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';

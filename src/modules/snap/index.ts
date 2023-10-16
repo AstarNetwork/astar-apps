@@ -1,13 +1,13 @@
 import { web3EnablePromise } from '@polkadot/extension-dapp';
-import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
+import type { InjectedMetamaskExtension } from '@astar-network/metamask-astar-adapter/src/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { SnapInstallationParamNames } from '@chainsafe/metamask-polkadot-adapter';
-import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
+import { SnapInstallationParamNames } from '@astar-network/metamask-astar-adapter';
+import type { MetamaskPolkadotSnap } from '@astar-network/metamask-astar-adapter/build/snap';
 import {
   isMetamaskSnapsSupported,
   isPolkadotSnapInstalled,
-} from '@chainsafe/metamask-polkadot-adapter/build/utils';
-import type { UnitConfiguration } from '@chainsafe/metamask-polkadot-types';
+} from '@astar-network/metamask-astar-adapter/build/utils';
+import type { UnitConfiguration } from '@astar-network/metamask-astar-types';
 
 // Todo: move to Astar.js
 
