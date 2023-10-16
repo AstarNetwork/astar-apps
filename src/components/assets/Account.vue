@@ -15,8 +15,9 @@
     <div class="container">
       <div class="row--details">
         <div class="column-account-name">
+          <au-icon v-if="isAccountUnified" :unified-account="unifiedAccount" />
           <img
-            v-if="iconWallet"
+            v-else-if="iconWallet"
             width="24"
             :src="iconWallet"
             alt="wallet-icon"
@@ -103,7 +104,14 @@ import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { useAccount, useBalance, useNetworkInfo, usePrice, useWalletIcon } from 'src/hooks';
+import {
+  useAccount,
+  useAccountUnification,
+  useBalance,
+  useNetworkInfo,
+  usePrice,
+  useWalletIcon,
+} from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
@@ -114,12 +122,14 @@ import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
+import AuIcon from '../header/modals/account-unification/AuIcon.vue';
 
 export default defineComponent({
   components: {
     NativeAssetList,
     ModalLockdropWarning,
     EvmNativeToken,
+    AuIcon,
   },
   props: {
     ttlErc20Amount: {
@@ -147,6 +157,7 @@ export default defineComponent({
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
+    const { unifiedAccount, isAccountUnified } = useAccountUnification();
 
     const store = useStore();
     const { t } = useI18n();
@@ -272,6 +283,8 @@ export default defineComponent({
       signatoryIconWallet,
       isModalLockdropWarning,
       isAccountUnification,
+      unifiedAccount,
+      isAccountUnified,
       handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,

@@ -10,10 +10,10 @@
       >
         <img :src="nft.image" :alt="nft.name" />
       </div>
-      <div v-if="ownedNfts.length === 0 && !isBusy" class="item">
-        You don't have NFTs minted at the moment. When you mint some you will be able to update your
-        unified account with a NFT. For the moment default icon will be used.
-      </div>
+    </div>
+    <div v-if="ownedNfts.length === 0 && !isBusy" class="item">
+      You don't have NFTs minted at the moment. When you mint some you will be able to update your
+      unified account with a NFT. For the moment default icon will be used.
     </div>
 
     <!-- Action -->
@@ -25,7 +25,8 @@
 
 <script lang="ts">
 import { useNft } from 'src/hooks/useNft';
-import { defineComponent, onMounted, ref } from 'vue';
+import { NftMetadata } from 'src/v2/models';
+import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
 export default defineComponent({
   components: {},
@@ -33,6 +34,10 @@ export default defineComponent({
     evmAddress: {
       type: String,
       required: true,
+    },
+    avatarMetadata: {
+      type: Object as PropType<NftMetadata | undefined>,
+      default: undefined,
     },
   },
   emits: ['next'],
@@ -50,6 +55,14 @@ export default defineComponent({
 
     onMounted(() => {
       getOwnedNfts(props.evmAddress);
+    });
+
+    watch([ownedNfts], () => {
+      selectedIndex.value = ownedNfts.value.findIndex(
+        (nft) =>
+          nft.contractAddress === props.avatarMetadata?.contractAddress &&
+          nft.tokenId === props.avatarMetadata?.tokenId
+      );
     });
 
     return {

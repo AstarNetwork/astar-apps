@@ -18,7 +18,7 @@ export function useNft() {
     try {
       isBusy.value = true;
       const nfts = await nftRepository.getOwnedTokens(
-        'astar', //TODO currentNetworkName.value.toLowerCase(),
+        currentNetworkName.value.toLowerCase(),
         ownerAddress
       );
 

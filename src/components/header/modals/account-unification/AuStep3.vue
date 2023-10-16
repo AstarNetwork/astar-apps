@@ -41,7 +41,7 @@
     <div>
       <astar-button
         class="btn"
-        :disabled="accountName === '' || isFetchingXc20Tokens"
+        :disabled="accountName === '' || isFetchingXc20Tokens || isBusy"
         @click="next()"
         >{{ isEdit ? $t('wallet.unifiedAccount.save') : $t('next') }}</astar-button
       >
@@ -71,6 +71,10 @@ export default defineComponent({
       required: true,
     },
     isFetchingXc20Tokens: {
+      type: Boolean,
+      required: true,
+    },
+    isBusy: {
       type: Boolean,
       required: true,
     },

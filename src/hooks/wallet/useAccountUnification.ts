@@ -34,6 +34,7 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { IIdentityRepository } from 'src/v2/repositories';
+import { UnifiedAccount } from 'src/store/general/state';
 
 const provider = get(window, 'ethereum');
 
@@ -68,6 +69,11 @@ export const useAccountUnification = () => {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
   const gas = computed<GasTip>(() => store.getters['general/getGas']);
+
+  const unifiedAccount = computed<UnifiedAccount | undefined>(
+    () => store.getters['general/getUnifiedAccount']
+  );
+  const isAccountUnified = computed<boolean>(() => unifiedAccount.value !== undefined);
 
   const setAccountName = (event: any) => {
     accountName.value = typeof event === 'string' ? event : event.target.value;
@@ -340,10 +346,17 @@ export const useAccountUnification = () => {
     );
   };
 
-  const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {
-    // TODO update avatar also
+  const updateAccount = async (
+    nativeAddress: string,
+    accountName: string,
+    avatarContractAddress?: string,
+    avatarTokenId?: string
+  ): Promise<void> => {
+    const identity = new IdentityData(accountName, []);
+    identity.additional?.push({ avatarNftAddres: avatarContractAddress! });
+    identity.additional?.push({ avatarNftId: avatarTokenId! });
     const identityService = container.get<IIdentityService>(Symbols.IdentityService);
-    await identityService.setIdentity(nativeAddress, new IdentityData(accountName));
+    await identityService.setIdentity(nativeAddress, identity);
   };
 
   const getCost = async (): Promise<string> => {
@@ -369,6 +382,8 @@ export const useAccountUnification = () => {
     isLoadingDappStaking,
     accountName,
     isSendingXc20Tokens,
+    unifiedAccount,
+    isAccountUnified,
     setAccountName,
     setWeb3,
     handleTransferXc20Tokens,

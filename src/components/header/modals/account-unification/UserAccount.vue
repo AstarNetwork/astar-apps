@@ -3,11 +3,7 @@
     <!-- unified -->
     <div v-if="isAccountUnified">
       <div class="text--account-name">
-        <jazzicon
-          class="text--account-name__icon"
-          :address="unifiedAccount?.nativeAddress"
-          :diameter="32"
-        />
+        <au-icon :unified-account="unifiedAccount" />
         <div>{{ unifiedAccount?.name }}</div>
       </div>
       <div class="box--wallet-list">
@@ -141,18 +137,17 @@
 
 <script lang="ts">
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useAccount, useWalletIcon, useNetworkInfo, useAccountUnification } from 'src/hooks';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import copy from 'copy-to-clipboard';
 import { useI18n } from 'vue-i18n';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import Help from 'src/components/header/modals/account-unification/Help.vue';
-import { UnifiedAccount } from 'src/store/general/state';
-import Jazzicon from 'vue3-jazzicon/src/components';
+import AuIcon from './AuIcon.vue';
 
 export default defineComponent({
-  components: { Help, [Jazzicon.name]: Jazzicon },
+  components: { Help, AuIcon },
   props: {
     setAccountName: {
       type: Function,
@@ -170,12 +165,9 @@ export default defineComponent({
     const { currentAccount, currentAccountName } = useAccount();
     const { t } = useI18n();
     const { currentNetworkIdx } = useNetworkInfo();
+    const { unifiedAccount, isAccountUnified } = useAccountUnification();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const unifiedAccount = computed<UnifiedAccount | undefined>(
-      () => store.getters['general/getUnifiedAccount']
-    );
-    const isAccountUnified = computed<boolean>(() => unifiedAccount.value !== undefined);
     const walletIcons = {
       substrate: require('/src/assets/img/logo-polkadot-js.png'),
       evm: require('/src/assets/img/ethereum.png'),

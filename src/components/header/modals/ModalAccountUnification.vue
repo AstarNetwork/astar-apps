@@ -30,6 +30,7 @@
           :selected-evm-address="selectedEvmAddress"
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
           :is-edit="false"
+          :is-busy="isLoading"
           :avatar="avatar"
           @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
           @on-select-nft="updateSteps(200)"
@@ -42,7 +43,10 @@
           :selected-evm-address="unifiedAccount.evmAddress"
           :is-fetching-xc20-tokens="false"
           :is-edit="true"
+          :is-busy="isLoading"
+          :avatar="avatar"
           @next="updateSteps(101)"
+          @on-select-nft="updateSteps(200)"
         />
       </div>
       <div v-else-if="currentStep === 4">
@@ -71,7 +75,7 @@
         <au-step6 />
       </div>
       <div v-else-if="currentStep === 200">
-        <select-nft :evm-address="selectedEvmAddress" @next="setAvatar" />
+        <select-nft :evm-address="selectedEvmAddress" :avatar-metadata="avatar" @next="setAvatar" />
       </div>
       <div v-else>
         <user-account
@@ -97,7 +101,6 @@ import AuStep4 from 'src/components/header/modals/account-unification/AuStep4.vu
 import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vue';
 import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
 import SelectNft from './account-unification/SelectNft.vue';
-import { UnifiedAccount } from 'src/store/general/state';
 import { NftMetadata } from 'src/v2/models';
 
 export default defineComponent({
@@ -131,9 +134,6 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const totalCost = ref<string>('');
     const avatar = ref<NftMetadata | undefined>(undefined);
-    const unifiedAccount = computed<UnifiedAccount>(
-      () => store.getters['general/getUnifiedAccount']
-    );
 
     const {
       selectedEvmAddress,
@@ -144,6 +144,7 @@ export default defineComponent({
       isLoadingDappStaking,
       accountName,
       isSendingXc20Tokens,
+      unifiedAccount,
       setAccountName,
       setWeb3,
       handleTransferXc20Tokens,
@@ -180,6 +181,10 @@ export default defineComponent({
 
     onMounted(async () => {
       totalCost.value = await getCost();
+
+      if (unifiedAccount.value?.avatarMetadata) {
+        avatar.value = unifiedAccount.value?.avatarMetadata;
+      }
     });
 
     onUnmounted(() => {
@@ -188,7 +193,7 @@ export default defineComponent({
 
     const setAvatar = async (nft: NftMetadata): Promise<void> => {
       avatar.value = nft;
-      await updateSteps(3);
+      await updateSteps(unifiedAccount.value ? 100 : 3);
     };
 
     const updateSteps = async (step: number): Promise<void> => {
@@ -207,9 +212,15 @@ export default defineComponent({
         }
       } else if (step === 101) {
         // Make a call to update unified account identity
-        await updateAccount(unifiedAccount.value.nativeAddress, accountName.value);
-        await checkIfUnified(unifiedAccount.value.nativeAddress);
-      } else if (step === 200) {
+        if (unifiedAccount.value) {
+          await updateAccount(
+            unifiedAccount.value.nativeAddress,
+            accountName.value,
+            unifiedAccount.value.avatarMetadata?.contractAddress,
+            unifiedAccount.value.avatarMetadata?.tokenId
+          );
+          await checkIfUnified(unifiedAccount.value?.nativeAddress);
+        }
       }
 
       currentStep.value = step;
