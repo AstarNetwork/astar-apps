@@ -34,8 +34,9 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { IIdentityRepository } from 'src/v2/repositories';
+import { EthereumProvider } from '../types/CustomSignature';
 
-const provider = get(window, 'ethereum');
+const provider = get(window, 'ethereum') as any;
 
 export interface TransferXc20Token {
   assetId: string;

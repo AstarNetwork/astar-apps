@@ -192,11 +192,12 @@ export const useConnectWallet = () => {
     modalName.value = wallet;
   };
 
-  const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
+  const requestExtensionsIfFirstAccess = async (wallet: SupportWallet): Promise<void> => {
     // Memo: displays accounts menu for users who use the portal first time
     const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const isFirstAccess = storedAddress === null || storedAddress === ETHEREUM_EXTENSION;
+
     if (isFirstAccess && isSubstrateWallet) {
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;

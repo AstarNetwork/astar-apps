@@ -1,17 +1,5 @@
 <template>
   <div>
-    <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
-      <div>
-        <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
-      </div>
-      <ul class="row--warning-list">
-        <li class="text--warning">
-          {{ $t('assets.cantTransferToExcahges') }}
-        </li>
-        <li class="text--warning">{{ $t('assets.noHash') }}</li>
-      </ul>
-    </div>
-
     <div class="wrapper--account">
       <div class="row--account-info">
         <div class="column--account-icon">
@@ -79,12 +67,6 @@
     </div>
 
     <native-asset-list v-if="!isH160" />
-
-    <modal-lockdrop-warning
-      v-if="isLockdropAccount && !isH160"
-      :is-modal="isModalLockdropWarning"
-      :handle-modal="handleModalLockdropWarning"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -100,14 +82,11 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
-  components: {
-    ModalLockdropWarning,
-  },
+  components: {},
   props: {
     ttlErc20Amount: {
       type: Number,
@@ -121,8 +100,6 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
-    const isLockdropAccount = ref<boolean>(false);
-    const isModalLockdropWarning = ref<boolean>(true);
     const {
       currentAccount,
       currentAccountName,
@@ -159,10 +136,6 @@ export default defineComponent({
       // @ts-ignore
       return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
     });
-
-    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
-      isModalLockdropWarning.value = isOpen;
-    };
 
     const copyAddress = () => {
       copy(currentAccount.value);
@@ -212,7 +185,6 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
-          isLockdropAccount.value = false;
           return;
         }
         if (
@@ -227,14 +199,8 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
-          if (Number(data.free.toString()) > 0) {
-            isLockdropAccount.value = true;
-          } else {
-            isLockdropAccount.value = false;
-          }
         } catch (error: any) {
           console.error(error.message);
-          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -250,16 +216,13 @@ export default defineComponent({
       isH160,
       isEthWallet,
       balUsd,
-      isLockdropAccount,
       isSkeleton,
       totalBal,
       ETHEREUM_EXTENSION,
       multisig,
       supportWalletObj,
       signatoryIconWallet,
-      isModalLockdropWarning,
       isAccountUnification,
-      handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
