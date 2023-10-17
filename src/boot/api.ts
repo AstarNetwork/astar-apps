@@ -19,6 +19,7 @@ import Web3 from 'web3';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
+import { useNetworkInfo } from 'src/hooks';
 
 let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
@@ -26,6 +27,7 @@ const $web3 = ref<Web3>();
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
+  const { isZkEvm } = useNetworkInfo();
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
   const networkIdx = computed(() => store.getters['general/networkIdx']);
@@ -128,9 +130,8 @@ export default boot(async ({ store }) => {
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
     const networkIdx = store.getters['general/networkIdx'];
-    const isZkEvm = networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM;
 
-    if (isZkEvm) {
+    if (isZkEvm.value) {
       await setWeb3(networkIdx);
     } else {
       if (chainInfo.value?.chain) {

@@ -116,6 +116,10 @@
   height: 46px;
 }
 
+.link--disabled {
+  text-align: left;
+}
+
 .body--dark {
   .menu__indicator {
     background: $navy-3;
