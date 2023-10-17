@@ -101,14 +101,10 @@
           </div>
 
           <div v-if="isImportedToken">
-            <button
-              class="btn btn--sm btn--delete adjuster--width"
-              @click="handleDeleteStoredToken(token.address)"
-            >
-              <div class="adjuster--width icon--delete">
-                <astar-icon-delete size="22" />
-              </div>
+            <button class="btn btn--icon" @click="handleDeleteStoredToken(token.address)">
+              <astar-icon-delete size="22" />
             </button>
+            <span class="text--expand-menu">{{ $t('remove') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('remove') }}</span>
             </q-tooltip>
