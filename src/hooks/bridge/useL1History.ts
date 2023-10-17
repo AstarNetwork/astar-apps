@@ -31,7 +31,7 @@ export const useL1History = () => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
     return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
       ? EthBridgeNetworkName.AstarZk
-      : EthBridgeNetworkName.Akiba;
+      : EthBridgeNetworkName.Zkatana;
   });
 
   const histories = ref<BridgeHistory[]>([]);

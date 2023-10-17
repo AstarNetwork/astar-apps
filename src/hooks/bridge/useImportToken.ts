@@ -103,7 +103,7 @@ export const useImportToken = ({
       };
       const wrappedTokenAddress = await handleWrappedTokenInfo();
       if (
-        toChainName === EthBridgeNetworkName.Akiba ||
+        toChainName === EthBridgeNetworkName.Zkatana ||
         toChainName === EthBridgeNetworkName.AstarZk
       ) {
         const t: Erc20Token = {

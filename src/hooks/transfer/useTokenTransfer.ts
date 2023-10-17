@@ -126,13 +126,13 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     try {
-      if (transferAmtRef > fromAddressBalance.value) {
+      if (transferAmtRef && transferAmtRef > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: selectedToken.value.metadata.symbol,
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
-      } else if (!transferableBalance.value && !isH160.value) {
+      } else if (transferAmtRef && !transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
         });

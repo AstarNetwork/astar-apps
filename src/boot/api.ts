@@ -16,7 +16,9 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
-import { supportWalletObj } from 'src/config/wallets';
+import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
@@ -126,7 +128,7 @@ export default boot(async ({ store }) => {
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
     const networkIdx = store.getters['general/networkIdx'];
-    const isZkEvm = networkIdx === endpointKey.AKIBA || networkIdx === endpointKey.ASTAR_ZKEVM;
+    const isZkEvm = networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM;
 
     if (isZkEvm) {
       await setWeb3(networkIdx);
@@ -142,6 +144,12 @@ export default boot(async ({ store }) => {
   // execute extension process automatically if selectedAddress is linked or mobile device
   const wallet = String(localStorage.getItem(SELECTED_WALLET));
   const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+
+  if (wallet === SupportWallet.Snap) {
+    const isSnapInstalled = await initiatePolkdatodSnap();
+    isSnapInstalled && (await initPolkadotSnap());
+  }
+
   if (isSubstrateWallet) {
     if (selectedAddress !== null || isMobileDevice) {
       const { extensions } = useExtensions(api, store);

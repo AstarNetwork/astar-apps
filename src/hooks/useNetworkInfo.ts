@@ -26,7 +26,7 @@ export function useNetworkInfo() {
 
   const isZkEvm = computed<boolean>(
     () =>
-      currentNetworkIdx.value === endpointKey.AKIBA ||
+      currentNetworkIdx.value === endpointKey.ZKATANA ||
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
@@ -41,7 +41,7 @@ export function useNetworkInfo() {
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
     const networkIdx = store.getters['general/networkIdx'];
-    if (networkIdx === endpointKey.AKIBA || networkIdx === endpointKey.ASTAR_ZKEVM) {
+    if (networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM) {
       return networkIdx;
     }
     const chainInfo = store.getters['general/chainInfo'];

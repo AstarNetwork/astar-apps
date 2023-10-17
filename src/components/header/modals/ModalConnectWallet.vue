@@ -42,10 +42,10 @@
           <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
+            :disabled="checkIsDisabledWallet(wallet.source) || isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
-            :disabled="isZkEvm"
-            @click="setSubstrateWalletModal(wallet.source)"
+            @click="!checkIsDisabledWallet(wallet.source) && setSubstrateWalletModal(wallet.source)"
           >
             <div class="box--img">
               <img :src="wallet.img" />
@@ -152,22 +152,27 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
+import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import {
-  supportAllWalletsObj,
-  supportEvmWallets,
-  SupportWallet,
-  supportWallets,
-  Wallet,
   SupportMultisig,
+  SupportWallet,
+  Wallet,
+  supportAllWalletsObj,
+  supportEvmWalletObj,
+  supportEvmWallets,
+  supportWallets,
 } from 'src/config/wallets';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
+import { PropType, computed, defineComponent, ref } from 'vue';
+import { productionOrigin } from 'src/links';
 
 export default defineComponent({
   props: {
@@ -206,7 +211,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } =
+      useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
@@ -218,10 +224,20 @@ export default defineComponent({
       props.setCloseModal();
     };
 
+    const checkIsDisabledWallet = (source: SupportWallet): boolean => {
+      if (source === SupportWallet.Snap && window.location.origin === productionOrigin) {
+        return true;
+      }
+      return false;
+    };
+
     const nativeWallets = computed(() => {
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          if (it.source === SupportWallet.Snap) {
+            return isSnapEnabled.value ? it : undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
@@ -259,7 +275,24 @@ export default defineComponent({
       }
     };
 
+    const handleMetaMaskSnap = async (): Promise<void> => {
+      const provider = get(window, supportEvmWalletObj[SupportWallet.MetaMask].ethExtension);
+      const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
+      if (!address) return;
+      const isSnapInstalled = await initiatePolkdatodSnap();
+      if (isSnapInstalled) {
+        await initPolkadotSnap();
+        useExtensions($api!!, store);
+        const extensions = await getInjectedExtensions(true);
+        const isExtensionsUpdated = extensions.some((it) => it.name === SupportWallet.Snap);
+        // Memo: Sync the metamask extension for users who visit our portal first time
+        !isExtensionsUpdated && (await wait(3000));
+      }
+    };
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      if (source === SupportWallet.Snap) {
+        await handleMetaMaskSnap();
+      }
       await closeModal();
       props.setWalletModal(source);
     };
@@ -294,6 +327,7 @@ export default defineComponent({
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
+      checkIsDisabledWallet,
       setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,

@@ -80,8 +80,8 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.ASTAR_LOCAL_NODE;
   } else if (currentNetworkIdx === endpointKey.ASTAR_ZKEVM) {
     return EVM.ASTAR_ZKEVM_MAINNET;
-  } else if (currentNetworkIdx === endpointKey.AKIBA) {
-    return EVM.AKIBA_TESTNET;
+  } else if (currentNetworkIdx === endpointKey.ZKATANA) {
+    return EVM.ZKATANA_TESTNET;
   }
   return EVM.SHIBUYA_TESTNET;
 };
@@ -248,7 +248,11 @@ export const checkIsSetGasByWallet = (chainId: EVM): boolean => {
   switch (chainId) {
     case EVM.SHIBUYA_TESTNET:
       return true;
-    case EVM.AKIBA_TESTNET:
+    case EVM.ZKATANA_TESTNET:
+      return true;
+    case EVM.SEPOLIA_TESTNET:
+      return true;
+    case EVM.ETHEREUM_MAINNET:
       return true;
     case EVM.ASTAR_ZKEVM_MAINNET:
       return true;

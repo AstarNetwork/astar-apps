@@ -36,7 +36,7 @@ export const getContractFromNetId = (zkNetwork: ZkNetworkId): string => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeContract[EthBridgeNetworkName.Sepolia]
-      : EthBridgeContract[EthBridgeNetworkName.Akiba];
+      : EthBridgeContract[EthBridgeNetworkName.Zkatana];
   }
 };
 
@@ -49,7 +49,7 @@ export const getChainIdFromNetId = (zkNetwork: ZkNetworkId): EVM => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeChainId[EthBridgeNetworkName.Sepolia]
-      : EthBridgeChainId[EthBridgeNetworkName.Akiba];
+      : EthBridgeChainId[EthBridgeNetworkName.Zkatana];
   }
 };
 
@@ -60,8 +60,7 @@ const getApiUrl = (): string => {
 
 export const fetchAccountHistory = async (address: string): Promise<BridgeHistory[]> => {
   const base = getApiUrl();
-  const limit = 10;
-  // const limit = 5;
+  const limit = 15;
   const url = `${base}/bridges/${address}?limit=${limit}&offset=0`;
   const result = await axios.get<{ deposits: BridgeHistory[] }>(url);
   return result.data.deposits;

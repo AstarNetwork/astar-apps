@@ -235,8 +235,8 @@ export default defineComponent({
           return blockExplorerUrls[EVM.ETHEREUM_MAINNET] + txUrl;
         case EthBridgeNetworkName.Sepolia:
           return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
-        case EthBridgeNetworkName.Akiba:
-          return blockExplorerUrls[EVM.AKIBA_TESTNET] + txUrl;
+        case EthBridgeNetworkName.Zkatana:
+          return blockExplorerUrls[EVM.ZKATANA_TESTNET] + txUrl;
         case EthBridgeNetworkName.AstarZk:
           return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
 

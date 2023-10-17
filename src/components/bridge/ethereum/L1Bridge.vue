@@ -115,11 +115,12 @@
   </div>
 </template>
 <script lang="ts">
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useL1Bridge } from 'src/hooks';
-import { defineComponent, PropType } from 'vue';
-import { zkBridgeIcon, EthBridgeNetworkName, ZkToken } from 'src/modules/zk-evm-bridge';
+import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useAccount } from 'src/hooks';
+import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { PropType, defineComponent } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -194,7 +195,10 @@ export default defineComponent({
 
     const bridge = async (): Promise<void> => {
       const transactionHash = await props.handleBridge();
-      if (isHex(transactionHash)) {
+      const isTransactionSuccessful = isHex(transactionHash);
+      if (isTransactionSuccessful) {
+        // Memo: gives some time for updating in the bridge API
+        await wait(3 * 1000);
         await props.fetchUserHistory();
         props.setIsBridge(false);
       }

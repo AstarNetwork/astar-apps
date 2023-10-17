@@ -58,7 +58,7 @@
                         v-if="
                           selNetwork === index &&
                           providerEndpoints[index].endpoints &&
-                          provider.key !== endpointKey.AKIBA &&
+                          provider.key !== endpointKey.ZKATANA &&
                           provider.key !== endpointKey.ASTAR_ZKEVM
                         "
                         class="box--endpoints"
@@ -220,8 +220,8 @@ export default defineComponent({
           return selEndpointShiden.value;
         case endpointKey.SHIBUYA:
           return selEndpointShibuya.value;
-        case endpointKey.AKIBA:
-          return selEndpointAkiba.value;
+        case endpointKey.ZKATANA:
+          return selEndpointZkatana.value;
         case endpointKey.ASTAR_ZKEVM:
           return selEndpointAstarZkevm.value;
 
@@ -260,7 +260,7 @@ export default defineComponent({
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
     const selEndpointAstarZkevm = ref<string>('');
-    const selEndpointAkiba = ref<string>('');
+    const selEndpointZkatana = ref<string>('');
 
     const isDisabled = computed<boolean>(() => {
       if (isSelectLightClient.value) {
@@ -299,7 +299,7 @@ export default defineComponent({
         ? selEndpointShibuya.value === endpoint
         : index === endpointKey.ASTAR_ZKEVM
         ? selEndpointAstarZkevm.value === endpoint
-        : selEndpointAkiba.value === endpoint;
+        : selEndpointZkatana.value === endpoint;
     };
 
     const setSelEndpoint = ({
@@ -318,8 +318,8 @@ export default defineComponent({
         selEndpointShibuya.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.ASTAR_ZKEVM) {
         selEndpointAstarZkevm.value = endpointObj.endpoint;
-      } else if (networkIdx === endpointKey.AKIBA) {
-        selEndpointAkiba.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.ZKATANA) {
+        selEndpointZkatana.value = endpointObj.endpoint;
       }
     };
 
@@ -343,8 +343,8 @@ export default defineComponent({
       if (networkIdx === endpointKey.ASTAR_ZKEVM) {
         selEndpointAstarZkevm.value = getRandomizedEndpoint(endpointKey.ASTAR_ZKEVM);
       }
-      if (networkIdx === endpointKey.AKIBA) {
-        selEndpointAkiba.value = getRandomizedEndpoint(endpointKey.AKIBA);
+      if (networkIdx === endpointKey.ZKATANA) {
+        selEndpointZkatana.value = getRandomizedEndpoint(endpointKey.ZKATANA);
       }
     };
 
@@ -354,7 +354,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.AKIBA);
+        randomizedEndpoint(endpointKey.ZKATANA);
         return;
       }
 
@@ -363,7 +363,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.AKIBA);
+        randomizedEndpoint(endpointKey.ZKATANA);
         return;
       }
 
@@ -372,7 +372,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.AKIBA);
+        randomizedEndpoint(endpointKey.ZKATANA);
         return;
       }
       if (networkIdx === endpointKey.ASTAR_ZKEVM) {
@@ -380,10 +380,10 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
-        randomizedEndpoint(endpointKey.AKIBA);
+        randomizedEndpoint(endpointKey.ZKATANA);
         return;
       }
-      if (networkIdx === endpointKey.AKIBA) {
+      if (networkIdx === endpointKey.ZKATANA) {
         selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);

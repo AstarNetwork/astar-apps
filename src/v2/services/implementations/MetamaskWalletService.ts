@@ -136,6 +136,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         value: value ? value : '0x0',
         data,
       };
+
       const connectedChainId = await web3.eth.net.getId();
       const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
       const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };

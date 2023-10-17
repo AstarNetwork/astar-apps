@@ -61,7 +61,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
       String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId ||
       String(srcChainId) === providerEndpoints[endpointKey.ROCSTAR].evmChainId ||
       String(srcChainId) === providerEndpoints[endpointKey.ASTAR_ZKEVM].evmChainId ||
-      String(srcChainId) === providerEndpoints[endpointKey.AKIBA].evmChainId ||
+      String(srcChainId) === providerEndpoints[endpointKey.ZKATANA].evmChainId ||
       String(srcChainId) === providerEndpoints[endpointKey.LOCAL].evmChainId
     ) {
       return [];
