@@ -5,11 +5,14 @@
         <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
           <div class="row--title">
             <img class="img--logo" :src="require('src/assets/img/ethereum.png')" alt="ethereum" />
-            <span class="text--xl">{{ $t('bridge.ethereumBridge.title') }}</span>
+            <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
           </div>
-          <span class="text--lg">{{
-            $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name })
-          }}</span>
+          <div class="box--text-bridge">
+            <span class="text--bridge"
+              >{{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
+            </span>
+            <span class="text--bridge">{{ $t('bridge.ethereumBridge.text2') }} </span>
+          </div>
         </router-link>
       </button>
       <button :disabled="!isEnableAstrBridge">
@@ -20,11 +23,16 @@
               :src="require('src/assets/img/chain/astar.png')"
               alt="ethereum"
             />
-            <span class="text--xl">{{ $t('bridge.astarBridge.title') }}</span>
+            <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
           </div>
-          <span class="text--lg">{{
-            $t('bridge.astarBridge.text', { substrateNetwork: substrateNetwork, l2: l2Name })
-          }}</span>
+          <div class="box--text-bridge">
+            <span class="text--bridge">
+              {{
+                $t('bridge.astarBridge.text', { substrateNetwork: substrateNetwork, l2: l2Name })
+              }}
+            </span>
+            <span class="text--bridge">{{ $t('bridge.astarBridge.text2') }} </span>
+          </div>
         </router-link>
       </button>
       <button>
@@ -35,9 +43,9 @@
               :src="require('src/assets/img/cbridge_logo.svg')"
               alt="ethereum"
             />
-            <span class="text--xl">{{ $t('bridge.celetBridge.title') }}</span>
+            <span class="text--bridge-title">{{ $t('bridge.celetBridge.title') }}</span>
           </div>
-          <span class="text--lg">{{
+          <span class="text--bridge">{{
             $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName })
           }}</span>
         </a>
