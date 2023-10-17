@@ -9,6 +9,7 @@ import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { Contract } from 'web3-eth-contract';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -19,6 +20,20 @@ export const getChainData = (chainId: number) => {
     rpcUrls: rpcUrls[chainId],
     blockExplorerUrls: blockExplorerUrls[chainId],
   };
+};
+
+export const buildErc20Contract = ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: EVM;
+}): Contract => {
+  const web3 = buildWeb3Instance(srcChainId);
+  if (!web3) {
+    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
+  }
+  return new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 };
 
 export const setupNetwork = async ({
@@ -124,11 +139,7 @@ export const getTokenDetails = async ({
   tokenAddress: string;
   srcChainId: number;
 }): Promise<{ decimals: string; symbol: string }> => {
-  const web3 = buildWeb3Instance(srcChainId);
-  if (!web3) {
-    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
-  }
-  const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+  const contract = buildErc20Contract({ tokenAddress, srcChainId });
   const [decimals, symbol] = await Promise.all([
     contract.methods.decimals().call(),
     contract.methods.symbol().call(),
@@ -276,4 +287,19 @@ export const getTransactionTimestamp = async ({
 
   const block = await web3.eth.getBlock(transaction.blockNumber);
   return Number(block.timestamp);
+};
+
+export const checkAllowance = async ({
+  senderAddress,
+  contractAddress,
+  tokenAddress,
+  srcChainId,
+}: {
+  senderAddress: string;
+  contractAddress: string;
+  tokenAddress: string;
+  srcChainId: EVM;
+}): Promise<string> => {
+  const contract = buildErc20Contract({ tokenAddress, srcChainId });
+  return await contract.methods.allowance(senderAddress, contractAddress).call();
 };

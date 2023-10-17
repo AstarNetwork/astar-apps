@@ -52,6 +52,7 @@
         :from-chain-name="fromChainName"
         :to-chain-name="toChainName"
         :set-zk-tokens="setZkTokens"
+        :tokens="tokens"
       />
     </div>
   </div>
@@ -105,8 +106,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
-    return { nativeTokenSymbol, truncate, getShortenAddress };
+    return { truncate, getShortenAddress };
   },
 });
 </script>

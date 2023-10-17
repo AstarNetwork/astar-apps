@@ -1,5 +1,5 @@
 <template>
-  <div v-if="importTokenAddress && !isValidAddress">
+  <div v-if="isTokenNotExists">
     <span>Invalid token address</span>
   </div>
   <div v-else-if="isLoadingToken">
@@ -83,9 +83,13 @@
         <div class="icon--warning">
           <astar-icon-warning size="24" />
         </div>
-        <span class="text--error">Interact carefully with new or suspicious token</span>
+        <span v-if="isAddedToken" class="text--error">The token has been added already</span>
+        <span v-else-if="isBlackListToken" class="text--error">
+          This token isn't supported on zkEVM
+        </span>
+        <span v-else class="text--error">Interact carefully with new or suspicious tokens</span>
       </div>
-      <astar-button :disabled="false" class="button--confirm" @click="handleAddToken">
+      <astar-button :disabled="!!isDisabledButton" class="button--confirm" @click="handleAddToken">
         {{ $t('add') }}
       </astar-button>
     </div>
@@ -93,15 +97,15 @@
 </template>
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, truncate } from '@astar-network/astar-sdk-core';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { useImportToken } from 'src/hooks';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { zkBridgeIcon, EthBridgeNetworkName, ZkToken } from 'src/modules/zk-evm-bridge';
+import { ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {
-    TokenBalance,
+    // TokenBalance,
     [Jazzicon.name]: Jazzicon,
   },
   props: {
@@ -125,18 +129,38 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    tokens: {
+      type: Object as PropType<ZkToken[]>,
+      required: true,
+    },
   },
   setup(props) {
     const tokenAddress = computed<string>(() => props.importTokenAddress);
     const isValidAddress = computed<Boolean>(() => isValidEvmAddress(props.importTokenAddress));
+    const isTokenNotExists = computed<Boolean>(
+      () =>
+        !!(props.importTokenAddress && !isValidAddress.value) ||
+        !!(props.importTokenAddress && !isLoadingToken.value && !zkToken.value)
+    );
+
+    const isAddedToken = computed<Boolean>(() =>
+      props.tokens.some((it) => it.address.toLowerCase() === props.importTokenAddress.toLowerCase())
+    );
+
+    const isBlackListToken = computed<Boolean>(() => false);
+
+    const isDisabledButton = computed<Boolean>(() => isAddedToken.value || isBlackListToken.value);
+
     const { isLoadingToken, zkToken } = useImportToken({
       fromChainName: props.fromChainName,
       toChainName: props.toChainName,
       importTokenAddress: tokenAddress,
     });
+
     const handleAddToken = async (): Promise<void> => {
       await props.setZkTokens(zkToken.value);
     };
+
     return {
       truncate,
       getShortenAddress,
@@ -145,6 +169,10 @@ export default defineComponent({
       zkToken,
       zkBridgeIcon,
       handleAddToken,
+      isTokenNotExists,
+      isAddedToken,
+      isDisabledButton,
+      isBlackListToken,
     };
   },
 });

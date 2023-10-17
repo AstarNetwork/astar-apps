@@ -104,11 +104,27 @@
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <astar-button
+          v-if="isApproved"
           class="button--confirm btn-size-adjust"
           :disabled="isDisabledBridge"
           @click="bridge"
         >
           {{ $t('confirm') }}
+        </astar-button>
+        <astar-button
+          v-else-if="isApproving"
+          class="button--confirm btn-size-adjust"
+          :disabled="true"
+        >
+          {{ $t('approving') }}
+        </astar-button>
+        <astar-button
+          v-else
+          class="button--confirm btn-size-adjust"
+          :disabled="isDisabledBridge"
+          @click="approve"
+        >
+          {{ $t('approve') }}
         </astar-button>
       </div>
     </div>
@@ -120,7 +136,7 @@ import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
-import { PropType, defineComponent } from 'vue';
+import { PropType, defineComponent, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -157,6 +173,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isApproved: {
+      type: Boolean,
+      required: true,
+    },
     fromBridgeBalance: {
       type: Number,
       required: true,
@@ -189,9 +209,14 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleApprove: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const isApproving = ref<boolean>(false);
 
     const bridge = async (): Promise<void> => {
       const transactionHash = await props.handleBridge();
@@ -204,11 +229,21 @@ export default defineComponent({
       }
     };
 
+    const approve = async (): Promise<void> => {
+      const transactionHash = await props.handleApprove();
+      const isTransactionSuccessful = isHex(transactionHash);
+      if (isTransactionSuccessful) {
+        isApproving.value = true;
+      }
+    };
+
     return {
       zkBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
+      isApproving,
       bridge,
+      approve,
     };
   },
 });

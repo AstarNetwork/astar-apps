@@ -12,6 +12,7 @@ export {
   getNativeBalance,
   getTransactionTimestamp,
   checkIsSetGasByWallet,
+  checkAllowance,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';

@@ -21,9 +21,11 @@
           :from-chain-name="fromChainName"
           :to-chain-name="toChainName"
           :native-token-symbol="nativeTokenSymbol"
+          :is-approved="isApproved"
           :input-handler="inputHandler"
           :reverse-chain="reverseChain"
           :handle-bridge="handleBridge"
+          :handle-approve="handleApprove"
         />
         <l1-history
           v-else
@@ -103,12 +105,14 @@ export default defineComponent({
       fromChainId,
       zkTokens,
       selectedToken,
+      isApproved,
       inputHandler,
       reverseChain,
       handleBridge,
       inputImportTokenHandler,
       setZkTokens,
       setSelectedToken,
+      handleApprove,
     } = useL1Bridge();
 
     const { currentAccount } = useAccount();
@@ -193,6 +197,7 @@ export default defineComponent({
       toChainName,
       nativeTokenSymbol,
       fromChainId,
+      isApproved,
       inputImportTokenHandler,
       cancelHighlight,
       handleSetToken,
@@ -205,6 +210,7 @@ export default defineComponent({
       handleBridge,
       setZkTokens,
       setSelectedToken,
+      handleApprove,
     };
   },
 });

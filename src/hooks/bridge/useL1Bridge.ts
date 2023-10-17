@@ -1,17 +1,23 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getNativeBalance, getTokenBal, setupNetwork } from 'src/config/web3';
+import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { EthBridgeChainId, EthBridgeNetworkName, ZkToken } from 'src/modules/zk-evm-bridge';
+import {
+  EthBridgeChainId,
+  EthBridgeContract,
+  EthBridgeNetworkName,
+  ZkToken,
+} from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { wait } from '@astar-network/astar-sdk-core';
+import { ethers } from 'ethers';
 
 const eth = {
   symbol: 'ETH',
@@ -47,6 +53,7 @@ export const useL1Bridge = () => {
   const errMsg = ref<string>('');
   const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
   const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
+  const isApproved = ref<boolean>(false);
 
   const store = useStore();
   const { t } = useI18n();
@@ -70,6 +77,38 @@ export const useL1Bridge = () => {
 
   const setSelectedToken = (token: ZkToken): void => {
     selectedToken.value = token;
+  };
+
+  const setIsApproved = async (): Promise<void> => {
+    const fromChainIdRef = fromChainId.value;
+    const senderAddress = currentAccount.value;
+    const contractAddress = EthBridgeContract[fromChainName.value];
+    const tokenAddress = selectedToken.value.address;
+    const decimals = selectedToken.value.decimal;
+    const amount = bridgeAmt.value ?? '0';
+    if (!decimals || !Number(amount)) {
+      return;
+    }
+    try {
+      if (tokenAddress === astarNativeTokenErcAddr) {
+        isApproved.value = true;
+        return;
+      }
+      const amountAllowance = await checkAllowance({
+        srcChainId: fromChainIdRef,
+        senderAddress,
+        contractAddress,
+        tokenAddress,
+      });
+      const parsedBridgeAmount = ethers.utils.parseUnits(amount, decimals).toString();
+      console.log('amountAllowance', amountAllowance);
+      console.log('parsedBridgeAmount', parsedBridgeAmount);
+      isApproved.value = Number(parsedBridgeAmount) >= Number(amountAllowance);
+      console.log('isApproved.value', isApproved.value);
+    } catch (error) {
+      console.error(error);
+      isApproved.value = false;
+    }
   };
 
   const initZkTokens = async (): Promise<void> => {
@@ -209,6 +248,19 @@ export const useL1Bridge = () => {
     }
   };
 
+  const handleApprove = async (): Promise<String> => {
+    if (!bridgeAmt.value || !selectedToken.value.address) return '';
+    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    return await zkBridgeService.approve({
+      amount: bridgeAmt.value,
+      fromChainName: fromChainName.value,
+      toChainName: toChainName.value,
+      senderAddress: currentAccount.value,
+      tokenAddress: selectedToken.value.address,
+      decimal: selectedToken.value.decimal,
+    });
+  };
+
   const handleBridge = async (): Promise<String> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return '';
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
@@ -218,6 +270,7 @@ export const useL1Bridge = () => {
       toChainName: toChainName.value,
       senderAddress: currentAccount.value,
       tokenAddress: selectedToken.value.address,
+      decimal: selectedToken.value.decimal,
     });
   };
 
@@ -227,6 +280,21 @@ export const useL1Bridge = () => {
   });
   watch([fromChainName, toChainName], handleNetwork, { immediate: true });
   watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
+  watch([selectedToken, fromChainId, currentAccount], setIsApproved);
+
+  const autoFetchAllowanceHandler = setInterval(async () => {
+    if (!isApproved.value) {
+      await setIsApproved();
+    }
+  }, 30 * 1000);
+
+  onUnmounted(() => {
+    clearInterval(autoFetchAllowanceHandler);
+  });
+
+  watchEffect(() => {
+    console.log('isApproved', isApproved.value);
+  });
 
   return {
     bridgeAmt,
@@ -242,6 +310,7 @@ export const useL1Bridge = () => {
     toChainId,
     zkTokens,
     selectedToken,
+    isApproved,
     setSelectedToken,
     setZkTokens,
     inputHandler,
@@ -249,5 +318,6 @@ export const useL1Bridge = () => {
     resetStates,
     reverseChain,
     handleBridge,
+    handleApprove,
   };
 };

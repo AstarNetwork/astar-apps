@@ -15,6 +15,7 @@ import {
 import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 
 export const useImportToken = ({
   fromChainName,
@@ -45,6 +46,7 @@ export const useImportToken = ({
         return;
 
       const contract = new fromChainWeb3.eth.Contract(ABI as AbiItem[], tokenAddress);
+
       const [decimal, name, symbol, userBalance] = await Promise.all([
         contract.methods.decimals().call(),
         contract.methods.name().call(),
@@ -101,7 +103,7 @@ export const useImportToken = ({
         toChainBalance: Number(toChainUserBalance),
         toChainTokenAddress,
       };
-      const wrappedTokenAddress = await handleWrappedTokenInfo();
+      const wrappedTokenAddress = await handleWrappedTokenInfo(toChainContract);
       if (
         toChainName === EthBridgeNetworkName.Zkatana ||
         toChainName === EthBridgeNetworkName.AstarZk
@@ -128,13 +130,8 @@ export const useImportToken = ({
     }
   };
 
-  const handleWrappedTokenInfo = async (): Promise<string> => {
-    const contractAddress = EthBridgeContract[toChainName as EthBridgeNetworkName];
-    const contract = new toWeb3Provider.value.eth.Contract(
-      ZK_EVM_BRIDGE_ABI as AbiItem[],
-      contractAddress
-    );
-    const address = await contract.methods
+  const handleWrappedTokenInfo = async (toChainContract: Contract): Promise<string> => {
+    const address = await toChainContract.methods
       .precalculatedWrapperAddress(
         0,
         importTokenAddress.value,

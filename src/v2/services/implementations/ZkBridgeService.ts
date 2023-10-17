@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { EVM } from 'src/config/web3';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthBridgeChainId, getChainIdFromNetId } from 'src/modules/zk-evm-bridge';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -21,13 +22,9 @@ export class ZkBridgeService implements IZkBridgeService {
     this.wallet = walletFactory();
   }
 
-  public async bridgeAsset(param: ParamBridgeAsset): Promise<String> {
-    const provider = getEvmProvider(this.currentWallet as any);
-    const web3 = new Web3(provider as any);
-
+  private async checkConnectedNetwork(chainId: EVM, web3: Web3): Promise<void> {
     const connectedNetwork = await web3.eth.net.getId();
-    const fromChainId = EthBridgeChainId[param.fromChainName];
-    if (connectedNetwork !== fromChainId) {
+    if (connectedNetwork !== chainId) {
       const errMsg = "Connected Network doesn't match";
       this.eventAggregator.publish(
         new ExtrinsicStatusMessage({
@@ -37,6 +34,35 @@ export class ZkBridgeService implements IZkBridgeService {
       );
       throw Error(errMsg);
     }
+    return;
+  }
+
+  public async approve(param: ParamBridgeAsset): Promise<String> {
+    const provider = getEvmProvider(this.currentWallet as any);
+    const web3 = new Web3(provider as any);
+
+    const fromChainId = EthBridgeChainId[param.fromChainName];
+    await this.checkConnectedNetwork(fromChainId, web3);
+
+    const rawTx = await this.ZkBridgeRepository.getApproveData({
+      param,
+      web3,
+    });
+    const transactionHash = await this.wallet.sendEvmTransaction({
+      from: String(rawTx.from),
+      to: String(rawTx.to),
+      value: String(rawTx.value),
+      data: String(rawTx.data),
+    });
+    return transactionHash;
+  }
+
+  public async bridgeAsset(param: ParamBridgeAsset): Promise<String> {
+    const provider = getEvmProvider(this.currentWallet as any);
+    const web3 = new Web3(provider as any);
+
+    const fromChainId = EthBridgeChainId[param.fromChainName];
+    await this.checkConnectedNetwork(fromChainId, web3);
 
     const rawTx = await this.ZkBridgeRepository.getBridgeAssetData({
       param,
@@ -55,18 +81,8 @@ export class ZkBridgeService implements IZkBridgeService {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 
-    const connectedNetwork = await web3.eth.net.getId();
     const toChainId = getChainIdFromNetId(param.withdrawal.dest_net);
-    if (connectedNetwork !== toChainId) {
-      const errMsg = "Connected Network doesn't match";
-      this.eventAggregator.publish(
-        new ExtrinsicStatusMessage({
-          success: false,
-          message: errMsg,
-        })
-      );
-      throw Error(errMsg);
-    }
+    await this.checkConnectedNetwork(toChainId, web3);
 
     const rawTx = await this.ZkBridgeRepository.getClaimData({
       param,

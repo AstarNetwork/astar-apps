@@ -14,11 +14,31 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { IZkBridgeRepository } from '../IZkBridgeRepository';
+import ERC20_ABI from 'src/config/abi/ERC20.json';
 
 @injectable()
 export class ZkBridgeRepository implements IZkBridgeRepository {
   constructor() {}
 
+  public async getApproveData({
+    param,
+    web3,
+  }: {
+    param: ParamBridgeAsset;
+    web3: Web3;
+  }): Promise<TransactionConfig> {
+    const contractAddress = EthBridgeContract[param.fromChainName];
+    const tokenAddress = param.tokenAddress;
+    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
+    const amount = ethers.utils.parseUnits(param.amount, param.decimal).toString();
+    const data = contract.methods.approve(contractAddress, amount).encodeABI();
+    return {
+      from: param.senderAddress,
+      to: tokenAddress,
+      value: '0x0',
+      data,
+    };
+  }
   public async getBridgeAssetData({
     param,
     web3,
@@ -39,8 +59,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     // Todo: Ask if `0` is L1 and `1` is L1
     const destinationNetwork = isToL1 ? ZkNetworkId.L1 : ZkNetworkId.L2;
     const destinationAddress = param.senderAddress;
-    const amount = ethers.utils.parseEther(String(param.amount)).toString();
-
+    const amount = ethers.utils.parseUnits(String(param.amount), param.decimal).toString();
     // Todo: Ask if we need to care about `forceUpdateGlobalExitRoot` and `permitData`
     const forceUpdateGlobalExitRoot = true;
     const permitData = '0x';
