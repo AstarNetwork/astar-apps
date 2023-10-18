@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="wrapper--account">
+  <div class="wrapper--account">
+    <div class="box--account">
       <div class="row--account-info">
         <div class="column--account-icon">
           <img

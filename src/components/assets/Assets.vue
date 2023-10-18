@@ -6,16 +6,15 @@
 
     <div class="wrapper--assets__inner">
       <div class="container--assets">
-        <account
-          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-          :is-loading-erc20-amount="isLoading"
-          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-        />
-
-        <div class="separator" />
-
-        <rewards class="screen--lg-down" />
+        <div class="container--account">
+          <account
+            :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+            :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+            :is-loading-erc20-amount="isLoading"
+            :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+          />
+          <rewards />
+        </div>
 
         <div class="container container--native">
           <evm-native-token v-if="isH160" />
@@ -35,9 +34,6 @@
       </div>
 
       <div class="column--links">
-        <div class="column--links__rewards">
-          <rewards />
-        </div>
         <dynamic-links />
       </div>
     </div>

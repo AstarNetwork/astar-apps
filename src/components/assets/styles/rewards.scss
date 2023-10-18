@@ -1,12 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-.screen--lg-down {
-  display: block;
-  @media (min-width: $xl) {
-    display: none;
-  }
-}
-
 .container--rewards {
   background: linear-gradient(to bottom, #e0338f 10%, rgba(190, 51, 224, 0) 100%);
   width: 240px;

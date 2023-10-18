@@ -14,7 +14,7 @@
   }
 }
 
-.wrapper--assets__inner{
+.wrapper--assets__inner {
   width: 100%;
   max-width: $container-max-width;
   margin: auto;
@@ -49,11 +49,6 @@
   @media (min-width: $xl) {
     display: block;
   }
-}
-
-.column--links__rewards {
-  display: flex;
-  justify-content: flex-end;
 }
 
 .container {
@@ -124,10 +119,11 @@
   }
 }
 
-.separator {
-  background: linear-gradient(to right, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff);
-  height: 1px;
+.container--account {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   @media (min-width: $lg) {
-    display: none;
+    flex-direction: row;
   }
 }
