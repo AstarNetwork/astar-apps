@@ -86,9 +86,7 @@ export const useL1Bridge = () => {
     const tokenAddress = selectedToken.value.address;
     const decimals = selectedToken.value.decimal;
     const amount = bridgeAmt.value ?? '0';
-    if (!decimals || !Number(amount)) {
-      return;
-    }
+    if (!decimals) return;
     try {
       if (tokenAddress === astarNativeTokenErcAddr) {
         isApproved.value = true;
@@ -101,10 +99,8 @@ export const useL1Bridge = () => {
         tokenAddress,
       });
       const parsedBridgeAmount = ethers.utils.parseUnits(amount, decimals).toString();
-      console.log('amountAllowance', amountAllowance);
-      console.log('parsedBridgeAmount', parsedBridgeAmount);
-      isApproved.value = Number(parsedBridgeAmount) >= Number(amountAllowance);
-      console.log('isApproved.value', isApproved.value);
+      isApproved.value =
+        Number(amountAllowance) !== 0 && Number(amountAllowance) >= Number(parsedBridgeAmount);
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -158,9 +154,9 @@ export const useL1Bridge = () => {
     let newDataObj;
     if (tokensData.hasOwnProperty(address)) {
       const addressData = tokensData[address];
-      newDataObj = { ...tokensData, [address]: { ...addressData, storeTokenData } };
+      newDataObj = { ...tokensData, [address]: { ...addressData, ...storeTokenData } };
     } else {
-      newDataObj = { ...tokensData, [address]: storeTokenData };
+      newDataObj = { ...tokensData, [address]: { ...storeTokenData } };
     }
     localStorage.setItem(LOCAL_STORAGE.ZK_Bridge_IMPORT_TOKENS, JSON.stringify(newDataObj));
 

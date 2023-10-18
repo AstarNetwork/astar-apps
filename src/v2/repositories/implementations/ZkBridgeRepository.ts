@@ -1,5 +1,6 @@
-import { ethers } from 'ethers';
+import { ethers, constants as ethersConstants } from 'ethers';
 import { injectable } from 'inversify';
+import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
 import {
   EthBridgeContract,
@@ -14,7 +15,6 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { IZkBridgeRepository } from '../IZkBridgeRepository';
-import ERC20_ABI from 'src/config/abi/ERC20.json';
 
 @injectable()
 export class ZkBridgeRepository implements IZkBridgeRepository {
@@ -30,7 +30,10 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const contractAddress = EthBridgeContract[param.fromChainName];
     const tokenAddress = param.tokenAddress;
     const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
-    const amount = ethers.utils.parseUnits(param.amount, param.decimal).toString();
+
+    // Todo: create a check UI for selecting either max amount or a specific amount
+    // const amount = ethers.utils.parseUnits(param.amount, param.decimal).toString();
+    const amount = ethersConstants.MaxUint256;
     const data = contract.methods.approve(contractAddress, amount).encodeABI();
     return {
       from: param.senderAddress,
