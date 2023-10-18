@@ -88,6 +88,7 @@ import {
   getTxHistories,
   hotTopics,
   RecentHistory,
+  faqZkEthereumBridge,
 } from 'src/modules/information';
 import { getXvmAssetsTransferHistories } from 'src/modules/information/recent-history';
 import { useStore } from 'src/store';
@@ -120,6 +121,9 @@ export default defineComponent({
       }
       if (props.transferType === HistoryTxType.Xcm) {
         return isH160.value ? faqH160XcmBridge : faqSs58XcmBridge;
+      }
+      if (props.transferType === HistoryTxType.ZK_ETHEREUM_BRIDGE) {
+        return faqZkEthereumBridge;
       }
       return faqSs58XvmTransfer;
     });

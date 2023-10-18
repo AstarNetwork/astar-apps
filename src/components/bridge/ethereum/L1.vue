@@ -21,7 +21,7 @@
           :fetch-user-history="fetchUserHistory"
           :handle-claim="handleClaim"
         />
-        <information :transfer-type="HistoryTxType.Transfer" :is-history="false" />
+        <information :transfer-type="HistoryTxType.ZK_ETHEREUM_BRIDGE" :is-history="false" />
       </div>
     </div>
   </div>
