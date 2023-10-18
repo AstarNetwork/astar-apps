@@ -30,6 +30,8 @@ export function useNetworkInfo() {
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
+  const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
+
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
       return providerEndpoints[currentNetworkIdx.value].displayName;
@@ -104,5 +106,6 @@ export function useNetworkInfo() {
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,
+    isZkatana,
   };
 }

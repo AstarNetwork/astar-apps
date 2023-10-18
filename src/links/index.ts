@@ -23,6 +23,8 @@ export const deepLinkPath = {
   metamask: '#/assets/deeplink-metamask',
 };
 
+export const faucetSethLink = 'https://sepoliafaucet.com/';
+
 export const deepLink = {
   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
 };

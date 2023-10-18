@@ -48,8 +48,13 @@
                 {{ $t('assets.bridge') }}
               </button>
             </a>
+            <a v-if="isZkatana" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
+              <button class="btn btn--sm">
+                {{ $t('assets.faucet') }}
+              </button>
+            </a>
             <button
-              v-if="isFaucet"
+              v-else-if="isFaucet"
               class="btn btn--sm"
               @click="handleModalFaucet({ isOpen: true })"
             >
@@ -74,6 +79,7 @@ import { getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { faucetSethLink } from 'src/links';
 
 export default defineComponent({
   components: { ModalFaucet, TokenBalance },
@@ -85,7 +91,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
     const store = useStore();
@@ -136,6 +142,8 @@ export default defineComponent({
       isFaucet,
       isModalFaucet,
       isZkEvm,
+      isZkatana,
+      faucetSethLink,
       handleModalFaucet,
       buildTransferPageLink,
       buildEthereumBridgePageLink,

@@ -2,7 +2,19 @@
   <div>
     <div class="header">
       <nav class="tabs">
+        <button
+          v-if="isZkatana"
+          :disabled="true"
+          :class="['link', path === 'dashboard' && 'active-link']"
+        >
+          <div class="column--item column--item--dashboard">
+            <span class="text--link">
+              {{ $t('dashboard.dashboard') }}
+            </span>
+          </div>
+        </button>
         <router-link
+          v-else
           :to="RoutePath.Dashboard"
           :class="['link', path === 'dashboard' && 'active-link']"
         >
@@ -71,6 +83,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SidebarOption from './SidebarOption.vue';
 import { Path as RoutePath } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -83,6 +96,7 @@ export default defineComponent({
     const showOption = ref(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+    const { isZkatana } = useNetworkInfo();
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -105,6 +119,7 @@ export default defineComponent({
       getIndicatorClass,
       path,
       RoutePath,
+      isZkatana,
     };
   },
 });

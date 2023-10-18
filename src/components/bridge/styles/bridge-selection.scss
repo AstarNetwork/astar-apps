@@ -81,5 +81,27 @@
   }
 }
 
+.text--bridge-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: $navy-1;
+}
+
+.text--bridge {
+  font-weight: 400;
+  font-size: 14px;
+  color: $navy-1;
+}
+
+.box--text-bridge {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
 .body--dark {
+  .text--bridge-title,
+  .text--bridge {
+    color: $gray-1;
+  }
 }
