@@ -137,7 +137,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://161.35.17.216:8545'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
     networkAlias: 'zkatana-zkevm',
@@ -157,7 +157,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
     networkAlias: 'development',
