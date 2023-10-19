@@ -31,7 +31,7 @@
           {{ $t('wallet.unifiedAccount.accountIcon') }}
         </div>
         <button type="button" class="box--account-icon" @click="selectNft">
-          <img v-if="avatar" :src="avatar.image" class="icon" />
+          <img v-if="avatar?.image" :src="avatar.image" class="icon" />
           <jazzicon v-else :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
