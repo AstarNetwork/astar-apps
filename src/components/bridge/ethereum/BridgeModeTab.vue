@@ -9,14 +9,14 @@
         <span class="text--title-tab"> {{ $t('bridge.bridge') }} </span>
       </div>
       <div class="box--history-tab">
-        <div v-if="isActionRequired">
-          <flag-action-required />
-        </div>
         <div
           :class="[!isBridge ? 'selected-tab text--selected' : 'unselected-tab']"
           class="box--tab"
           @click="setIsBridge(false)"
         >
+          <div v-if="isActionRequired">
+            <flag-action-required class="icon" />
+          </div>
           <span class="text--title-tab"> {{ $t('bridge.history') }} </span>
         </div>
       </div>
@@ -51,4 +51,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/bridge/ethereum/styles/bridge-mode-tab.scss';
+
+.icon {
+  margin-right: 8px;
+}
 </style>
