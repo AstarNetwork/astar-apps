@@ -670,11 +670,12 @@ export default {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
       text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
+        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH.',
+      lean: '(learn more)',
     },
     astarBridge: {
       title: 'Astar Bridge',
-      text: 'Bridge assets between {substrateNetwork} Polkadot EVM and {l2}',
+      text: 'Bridge ASTR token and assets to {l2} from {substrateNetwork} EVM',
       text2: 'Currently under development',
     },
     celetBridge: {
