@@ -1,55 +1,77 @@
 <template>
   <div class="wrapper--bridge-selection">
     <div class="container--selection">
-      <button :disabled="!isEnableEthBridge">
-        <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
-          <div class="row--title">
-            <img class="img--logo" :src="require('src/assets/img/ethereum.png')" alt="ethereum" />
-            <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
-          </div>
-          <div class="box--text-bridge">
-            <span class="text--bridge"
-              >{{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
-            </span>
-            <span class="text--bridge">{{ $t('bridge.ethereumBridge.text2') }} </span>
-          </div>
-        </router-link>
-      </button>
-      <button :disabled="!isEnableAstrBridge">
-        <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
-          <div class="row--title">
-            <img
-              class="img--logo"
-              :src="require('src/assets/img/chain/astar.png')"
-              alt="ethereum"
-            />
-            <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
-          </div>
-          <div class="box--text-bridge">
-            <span class="text--bridge">
-              {{
-                $t('bridge.astarBridge.text', { substrateNetwork: substrateNetwork, l2: l2Name })
-              }}
-            </span>
-            <span class="text--bridge">{{ $t('bridge.astarBridge.text2') }} </span>
-          </div>
-        </router-link>
-      </button>
-      <button>
-        <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer" class="button--bridge">
-          <div class="row--title">
-            <img
-              class="img--logo"
-              :src="require('src/assets/img/cbridge_logo.svg')"
-              alt="ethereum"
-            />
-            <span class="text--bridge-title">{{ $t('bridge.celetBridge.title') }}</span>
-          </div>
-          <span class="text--bridge">{{
-            $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName })
-          }}</span>
-        </a>
-      </button>
+      <div class="column--selection">
+        <button :disabled="!isEnableEthBridge">
+          <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
+            <div class="row--title">
+              <img class="img--logo" :src="require('src/assets/img/ethereum.png')" alt="ethereum" />
+              <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
+            </div>
+            <div class="box--text-bridge">
+              <span class="text--bridge">
+                {{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
+              </span>
+            </div>
+          </router-link>
+        </button>
+        <p class="text--bridge">
+          {{ $t('bridge.ethereumBridge.text2') }}
+          <a
+            href="https://docs.astar.network/docs/build/zkEVM/bridge-to-zkevm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t('bridge.ethereumBridge.lean') }}
+          </a>
+        </p>
+      </div>
+
+      <div class="column--selection">
+        <button :disabled="!isEnableAstrBridge">
+          <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
+            <div class="row--title">
+              <img
+                class="img--logo"
+                :src="require('src/assets/img/chain/astar.png')"
+                alt="ethereum"
+              />
+              <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
+            </div>
+            <div class="box--text-bridge">
+              <span class="text--bridge">
+                {{
+                  $t('bridge.astarBridge.text', { substrateNetwork: substrateNetwork, l2: l2Name })
+                }}
+              </span>
+            </div>
+          </router-link>
+        </button>
+        <p class="text--bridge">{{ $t('bridge.astarBridge.text2') }}</p>
+      </div>
+
+      <div class="column--selection">
+        <button>
+          <a
+            :href="cbridgeAppLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button--bridge"
+          >
+            <div class="row--title">
+              <img
+                class="img--logo"
+                :src="require('src/assets/img/cbridge_logo.svg')"
+                alt="ethereum"
+              />
+              <span class="text--bridge-title">{{ $t('bridge.celetBridge.title') }}</span>
+            </div>
+            <span class="text--bridge">{{
+              $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName })
+            }}</span>
+          </a>
+        </button>
+      </div>
     </div>
   </div>
 </template>
