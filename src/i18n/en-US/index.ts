@@ -212,14 +212,8 @@ export default {
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
       congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
-      needHelp: 'Need help?',
-      whichAddress: {
-        q: 'I don’t know which address I need to use?',
-        a: 'You don’t need to think of which one, balance of the both accounts are the same. You don’t need to think of which one, balance of the both accounts are the same.',
-      },
-      userTutorials: 'User tutorials',
-      aboutForUsers: 'About the unified accounts for users',
-      techDocs: 'Tech docs',
+      onlyShibuya: 'This feature is only available for Shibuya testnet.',
+      userTutorials: 'Documentation and tutorials',
       sendingXc20: 'Start sending XC20 tokens, please wait...',
       editUnifiedAccount: 'Edit Unified Account',
       save: 'Save',

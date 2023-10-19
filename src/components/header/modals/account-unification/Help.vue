@@ -1,22 +1,13 @@
 <template>
   <div class="wrapper--help">
-    <div class="text--title">{{ $t('wallet.unifiedAccount.needHelp') }}</div>
-    <dl class="list--help">
-      <dt>{{ $t('wallet.unifiedAccount.whichAddress.q') }}</dt>
-      <dd>
-        {{ $t('wallet.unifiedAccount.whichAddress.a') }}
-        <br /><a href="#">{{ $t('wallet.unifiedAccount.userTutorials') }}</a>
-      </dd>
-    </dl>
+    <div class="text--title">{{ $t('wallet.unifiedAccount.onlyShibuya') }}</div>
     <ul>
       <li>
-        <a href="#">{{ $t('wallet.unifiedAccount.userTutorials') }}</a>
-      </li>
-      <li>
-        <a href="#">{{ $t('wallet.unifiedAccount.aboutForUsers') }}</a>
-      </li>
-      <li>
-        <a href="#">{{ $t('wallet.unifiedAccount.techDocs') }}</a>
+        <a
+          href="https://docs.astar.network/docs/build/astar-beta-labs/account-unification/"
+          target="_blank"
+          >{{ $t('wallet.unifiedAccount.userTutorials') }}</a
+        >
       </li>
     </ul>
   </div>
