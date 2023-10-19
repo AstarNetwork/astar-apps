@@ -149,9 +149,6 @@ import { useI18n } from 'vue-i18n';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
 import { astarChain } from 'src/config/chain';
-import { IAccountUnificationRepository } from 'src/v2/repositories';
-import { Symbols } from 'src/v2/symbols';
-import { container } from 'src/v2/common';
 
 export default defineComponent({
   components: {
@@ -301,17 +298,13 @@ export default defineComponent({
 
     const updateAccountMap = async (): Promise<void> => {
       isLoadingBalance.value = true;
-      const repository = container.get<IAccountUnificationRepository>(
-        Symbols.AccountUnificationRepository
-      );
       const updatedAccountMap = await Promise.all(
         substrateAccountsAll.value.map(async (it) => {
           const balance = await fetchNativeBalance({
             api: $api as ApiPromise,
             address: it.address,
           });
-          const evmAddress = await repository.getMappedEvmAddress(it.address);
-          return { ...it, balance, evmAddress };
+          return { ...it, balance };
         })
       );
       // Memo: we use local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
