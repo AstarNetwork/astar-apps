@@ -5,7 +5,7 @@
         <div class="column--account-icon">
           <img
             v-if="iconWallet"
-            width="24"
+            width="48"
             :src="iconWallet"
             alt="wallet-icon"
             :class="multisig && 'img--polkasafe'"
