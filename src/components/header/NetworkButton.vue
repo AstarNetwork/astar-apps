@@ -92,7 +92,7 @@ export default defineComponent({
   font-weight: 600;
   font-size: 16px;
   border-radius: 20px;
-  padding: 0;
+  padding: 4px;
   transition: all 0.2s ease;
   border: solid 1px transparent;
   margin-right: 8px;
