@@ -36,24 +36,28 @@ export const setupNetwork = async ({
         // Memo:
         // 1. Try to switch the network
         // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
+        // 2a. Avoid duplicating changing network request if users reject the request
         try {
           await provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId }],
           });
-        } catch (error) {
-          await provider.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId,
-                chainName,
-                nativeCurrency,
-                rpcUrls,
-                blockExplorerUrls,
-              },
-            ],
-          });
+        } catch (error: any) {
+          const codeUserRejected = 4001;
+          if (error.code !== codeUserRejected) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId,
+                  chainName,
+                  nativeCurrency,
+                  rpcUrls,
+                  blockExplorerUrls,
+                },
+              ],
+            });
+          }
         }
       }
 
@@ -73,6 +77,10 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.ASTAR_MAINNET;
   } else if (currentNetworkIdx === endpointKey.LOCAL) {
     return EVM.ASTAR_LOCAL_NODE;
+  } else if (currentNetworkIdx === endpointKey.ASTAR_ZKEVM) {
+    return EVM.ASTAR_ZKEVM_MAINNET;
+  } else if (currentNetworkIdx === endpointKey.ZKATANA) {
+    return EVM.ZKATANA_TESTNET;
   }
   return EVM.SHIBUYA_TESTNET;
 };
@@ -127,6 +135,17 @@ export const getTokenDetails = async ({
   return { decimals, symbol };
 };
 
+export const getNativeBalance = async ({
+  address,
+  srcChainId,
+}: {
+  address: string;
+  srcChainId: number;
+}): Promise<string> => {
+  const web3 = buildWeb3Instance(srcChainId);
+  const bal = await web3!.eth.getBalance(address);
+  return web3!.utils.fromWei(bal, 'ether');
+};
 export const getTokenBal = async ({
   address,
   tokenAddress,
@@ -226,7 +245,32 @@ export const checkIsSetGasByWallet = (chainId: EVM): boolean => {
   switch (chainId) {
     case EVM.SHIBUYA_TESTNET:
       return true;
+    case EVM.ZKATANA_TESTNET:
+      return true;
+    case EVM.SEPOLIA_TESTNET:
+      return true;
+    case EVM.ETHEREUM_MAINNET:
+      return true;
+    case EVM.ASTAR_ZKEVM_MAINNET:
+      return true;
     default:
       return false;
   }
+};
+
+export const getTransactionTimestamp = async ({
+  web3,
+  transactionHash,
+}: {
+  web3: Web3;
+  transactionHash: string;
+}): Promise<number> => {
+  const transaction = await web3.eth.getTransaction(transactionHash);
+  if (!transaction || !transaction.blockNumber) {
+    console.error('Transaction not found', transaction);
+    return 0;
+  }
+
+  const block = await web3.eth.getBlock(transaction.blockNumber);
+  return Number(block.timestamp);
 };

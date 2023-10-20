@@ -58,7 +58,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer, isZkEvm } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -244,7 +244,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const destAddress = isSendToH160 ? await getSS58Address(toAddress.value) : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
-    if (isTransferNativeToken.value) {
+    if (isTransferNativeToken.value && !isZkEvm.value) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
