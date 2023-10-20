@@ -159,10 +159,6 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
-    const bg_img = {
-      astar_stars: require('/src/assets/img/assets-page-bg-stars.webp'),
-    };
-
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -176,7 +172,6 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
-      bg_img,
     };
   },
 });
