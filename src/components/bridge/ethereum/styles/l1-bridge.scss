@@ -29,15 +29,10 @@
   margin-bottom: 8px;
 }
 
-.btn-margin-adjuster {
-  margin-top: 24px;
-}
-
 .row--box-error {
   padding: 10px 20px;
   border-radius: 6px;
   width: 344px;
-  margin-bottom: 24px;
   border: 1px solid $warning-red;
   background: $box-red;
   text-align: left;
@@ -126,6 +121,7 @@
 }
 
 .button--confirm {
+  margin-top: 24px;
   font-size: 22px;
   font-weight: 600;
   height: 44px;
@@ -171,5 +167,25 @@
 
   .row--box-error {
     background: $box-red-dark;
+  }
+}
+
+.container--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  border: 1px solid $border-yellow;
+  padding: 8px 0;
+  padding-left: 24px;
+  width: 344px;
+  border-radius: 6px;
+  background: $transparent-yellow;
+  color: $warning-yellow;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+
+  ul {
+    list-style-type: disc;
   }
 }

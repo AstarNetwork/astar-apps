@@ -96,7 +96,14 @@
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
-      <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
+
+      <div class="container--warning">
+        <ul>
+          <li>{{ $t('bridge.warning32blocks') }}</li>
+          <li>{{ $t('bridge.warning2steps') }}</li>
+        </ul>
+      </div>
+      <div class="wrapper__row--button">
         <astar-button
           class="button--confirm btn-size-adjust"
           :disabled="isDisabledBridge"
