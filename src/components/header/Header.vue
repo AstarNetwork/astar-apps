@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <header-comp :title="width >= screenSize.lg ? headerName : ''">
+    <header-comp :title="width >= screenSize.lg ? headerName : ''" :network="currentNetworkIdx">
       <template #left>
         <div class="icon"><logo /></div>
       </template>

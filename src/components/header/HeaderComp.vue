@@ -1,5 +1,8 @@
 <template>
-  <div class="header" :class="isDecentralized && 'margin--decentralized'">
+  <div
+    class="header"
+    :class="`${isDecentralized && 'margin--decentralized'} header__border-${network}`"
+  >
     <div class="header-left">
       <div v-if="title">{{ title }}</div>
       <div v-else>
@@ -22,6 +25,10 @@ export default defineComponent({
     title: {
       type: String,
       default: '',
+    },
+    network: {
+      type: Number,
+      default: 0,
     },
   },
   setup() {
@@ -53,7 +60,7 @@ export default defineComponent({
   height: 4rem;
   padding-left: 16px;
   padding-right: 16px;
-  border-bottom: 5px solid transparent !important;
+  border-bottom: 5px solid transparent;
   border-image: linear-gradient(
     121.48deg,
     #e6007a -5.77%,
@@ -66,6 +73,27 @@ export default defineComponent({
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;
     height: 6rem;
+  }
+
+  // astar native
+  &.header__border-0 {
+    border-bottom: 5px solid transparent;
+    border-image: linear-gradient(270deg, #e6007a 25%, #ff9dd1 100%);
+    border-image-slice: 1;
+  }
+
+  // shiden
+  &.header__border-1 {
+    border-bottom: 5px solid transparent;
+    border-image: linear-gradient(270deg, #5928b1 25%, #b092ea 100%);
+    border-image-slice: 1;
+  }
+
+  // shibuya
+  &.header__border-2 {
+    border-bottom: 5px solid transparent;
+    border-image: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+    border-image-slice: 1;
   }
 }
 
