@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account">
-    <div class="box--account">
+    <div class="container container--account">
       <div class="row--account-info">
         <div class="column--account-icon">
           <img
@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <div v-if="isH160">
+    <div v-if="isH160" class="container">
       <evm-native-token />
     </div>
 
@@ -66,7 +66,9 @@
       </div>
     </div>
 
-    <native-asset-list v-if="!isH160" />
+    <div v-if="!isH160" class="container">
+      <native-asset-list />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -84,9 +86,14 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 
 export default defineComponent({
-  components: {},
+  components: {
+    NativeAssetList,
+    EvmNativeToken,
+  },
   props: {
     ttlErc20Amount: {
       type: Number,

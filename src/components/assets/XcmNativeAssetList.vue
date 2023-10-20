@@ -3,7 +3,6 @@
     <div class="row--header">
       <div class="row--header__left">
         <div class="column--token-name">
-          <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
           <span class="text--title">
             {{ $t('assets.assets') }}
           </span>

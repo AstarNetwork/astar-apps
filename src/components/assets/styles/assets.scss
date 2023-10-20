@@ -3,18 +3,12 @@
 .wrapper--assets {
   padding: 24px 10px 0 10px;
   position: relative;
-  background-color: $gray-1;
   @media (min-width: $lg) {
     margin: -60px -40px;
   }
 }
-.body--dark {
-  .wrapper--assets {
-    background-color: $navy-1;
-  }
-}
 
-.wrapper--assets__inner {
+.container--assets {
   width: 100%;
   max-width: $container-max-width;
   margin: auto;
@@ -24,20 +18,13 @@
   }
 }
 
-.container--assets {
+.column--main {
   flex: 1;
   z-index: 1;
   position: relative;
   display: flex;
   flex-direction: column;
   row-gap: 32px;
-}
-
-.container--account {
-  padding: 0 16px;
-  @media (min-width: $lg) {
-    padding: 0;
-  }
 }
 
 .title--account {
@@ -53,77 +40,18 @@
 
 .container {
   overflow: hidden;
-  border-radius: 16px;
-  border-width: 2px;
-  border-style: solid;
+  border-radius: 30px;
   padding: 16px 0 24px 0;
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
   background-color: white;
   @media (min-width: $sm) {
     padding-left: 24px;
     padding-right: 24px;
-  }
-  @media (min-width: $lg) {
-    border-width: 1px;
-  }
-  &.container--native {
-    border-color: $astar-pink;
-  }
-  &.container--others {
-    border-color: $astar-purple;
   }
 }
 
 .body--dark {
   .container {
     background-color: $navy-4;
-  }
-}
-
-.bg--assets {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  overflow: hidden;
-  z-index: 0;
-  height: 372px;
-  background: linear-gradient(
-    120deg,
-    #e6007a -5.77%,
-    #703ac2 13.57%,
-    #0070eb 34.18%,
-    #0297fb 58.08%,
-    #0ae2ff 74.93%
-  );
-  &::before {
-    background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, $gray-1);
-    content: '';
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    z-index: 0;
-  }
-  .bg--assets__stars {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    mix-blend-mode: screen;
-  }
-}
-.body--dark {
-  .bg--assets {
-    &::before {
-      background: linear-gradient(180deg, rgba(8, 16, 41, 0) 30%, $navy-1);
-    }
-  }
-}
-
-.container--account {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  @media (min-width: $lg) {
-    flex-direction: row;
   }
 }

@@ -1,27 +1,15 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
-    <div class="bg--assets">
-      <img class="bg--assets__stars" :src="bg_img.astar_stars" />
-    </div>
+    <div class="container--assets">
+      <div class="column--main">
+        <account
+          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+          :is-loading-erc20-amount="isLoading"
+          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
 
-    <div class="wrapper--assets__inner">
-      <div class="container--assets">
-        <div class="container--account">
-          <account
-            :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-            :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-            :is-loading-erc20-amount="isLoading"
-            :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-          />
-          <rewards />
-        </div>
-
-        <div class="container container--native">
-          <evm-native-token v-if="isH160" />
-          <native-asset-list v-if="!isH160" />
-        </div>
-
-        <div class="container container--others">
+        <div class="container">
           <div v-if="isH160">
             <evm-asset-list :tokens="evmAssets.assets" />
           </div>
@@ -41,7 +29,6 @@
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
-import Rewards from 'src/components/assets/Rewards.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -53,18 +40,13 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 
 export default defineComponent({
   components: {
     Account,
-    Rewards,
     DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
-    NativeAssetList,
-    EvmNativeToken,
   },
   setup() {
     const token = ref<Asset | null>(null);
