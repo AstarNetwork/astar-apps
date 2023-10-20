@@ -44,6 +44,7 @@
           class="button--stake"
           :width="274"
           :height="24"
+          :disabled="isZkEvm"
           @click="goStakePageLink(t.dapp?.address)"
         >
           {{ $t('dappStaking.stakeNow') }}
@@ -55,12 +56,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
-import { useStore } from 'src/store';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
@@ -78,11 +78,10 @@ export default defineComponent({
   setup() {
     const widthCardLineUp = 900;
     const router = useRouter();
-    const store = useStore();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
     const isToStakePage = ref<boolean>(false);
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
 
     const goStakePageLink = (address: string | undefined): void => {
       isToStakePage.value = true;
@@ -106,6 +105,7 @@ export default defineComponent({
       goDappPageLink,
       nativeTokenSymbol,
       widthCardLineUp,
+      isZkEvm,
     };
   },
 });

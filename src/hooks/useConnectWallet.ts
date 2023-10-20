@@ -1,10 +1,5 @@
 import { get } from 'lodash-es';
-import {
-  wait,
-  ASTAR_SS58_FORMAT,
-  checkSumEvmAddress,
-  astarChain,
-} from '@astar-network/astar-sdk-core';
+import { wait, checkSumEvmAddress, astarChain } from '@astar-network/astar-sdk-core';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
@@ -18,7 +13,6 @@ import {
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
@@ -53,7 +47,7 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const store = useStore();
-  const { requestAccounts, requestSignature } = useEvmAccount();
+  const { requestAccounts } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
 
@@ -144,7 +138,10 @@ export const useConnectWallet = () => {
         return false;
       }
 
-      await setupNetwork({ network: chainId, provider });
+      // Memo: Do not change the network for the Bridge page
+      if (currentRouter.value.name !== 'Bridge') {
+        await setupNetwork({ network: chainId, provider });
+      }
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
       // This setup will not require from version 0.4.8

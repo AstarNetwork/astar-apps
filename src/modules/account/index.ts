@@ -16,6 +16,7 @@ export enum HistoryTxType {
   Transfer = 'Transfer',
   Xcm = 'XCM',
   Xvm = 'XVM Transfer',
+  ZK_ETHEREUM_BRIDGE = 'ZK Ethereum Bridge',
 }
 
 export interface TxHistory {
