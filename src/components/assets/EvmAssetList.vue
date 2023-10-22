@@ -1,33 +1,36 @@
 <template>
-  <div v-if="isListReady" class="container--assets">
-    <div class="container">
-      <div class="row">
-        <div>
+  <div v-if="isListReady">
+    <div class="row--header">
+      <div class="row--header__left">
+        <div class="column--token-name">
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
-
-        <asset-search-option
-          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
-          :is-hide-small-balances="isHideSmallBalances"
-          :tokens="tokens"
-          :is-import-modal="true"
-          :is-search="isSearch"
-          :set-search="setSearch"
-          :set-is-search="setIsSearch"
-        />
       </div>
 
-      <div v-for="t in filteredTokens" :key="t.symbol">
-        <div v-if="checkIsCbridgeToken(t)">
-          <evm-cbridge-token :token="t" :data-testid="t.symbol" />
-        </div>
-        <div v-else>
-          <erc-20-currency :token="t" :data-testid="t.symbol" />
-        </div>
-      </div>
-      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
-        <span class="text--xl">{{ $t('assets.noResults') }}</span>
-      </div>
+      <asset-search-option
+        :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+        :is-hide-small-balances="isHideSmallBalances"
+        :tokens="tokens"
+        :is-import-modal="true"
+        :is-search="isSearch"
+        :set-search="setSearch"
+        :set-is-search="setIsSearch"
+      />
+    </div>
+
+    <div class="separator" />
+
+    <div v-for="t in filteredTokens" :key="t.symbol" class="rows">
+      <template v-if="checkIsCbridgeToken(t)">
+        <evm-cbridge-token :token="t" :data-testid="t.symbol" />
+      </template>
+      <template v-else>
+        <erc-20-currency :token="t" :data-testid="t.symbol" />
+      </template>
+    </div>
+
+    <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
+      <span class="text--xl">{{ $t('assets.noResults') }}</span>
     </div>
   </div>
 </template>

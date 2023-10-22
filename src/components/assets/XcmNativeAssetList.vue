@@ -1,29 +1,33 @@
 <template>
   <div>
-    <div class="container">
-      <div class="row--menu">
-        <div class="row">
+    <div class="row--header">
+      <div class="row--header__left">
+        <div class="column--token-name">
           <span class="text--title">
-            {{ $t(width > screenSize.sm ? 'assets.xcmAssets' : 'assets.xcmAssetsShort') }}
+            {{ $t('assets.assets') }}
           </span>
         </div>
-        <asset-search-option
-          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
-          :is-hide-small-balances="isHideSmallBalances"
-          :tokens="xcmAssets"
-          :is-import-modal="false"
-          :is-search="isSearch"
-          :set-search="setSearch"
-          :set-is-search="setIsSearch"
-        />
       </div>
 
-      <div v-for="t in filteredTokens" :key="t.id">
-        <xcm-currency :token="t" />
-      </div>
-      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
-        <span class="text--xl">{{ $t('assets.noResults') }}</span>
-      </div>
+      <asset-search-option
+        :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+        :is-hide-small-balances="isHideSmallBalances"
+        :tokens="xcmAssets"
+        :is-import-modal="false"
+        :is-search="isSearch"
+        :set-search="setSearch"
+        :set-is-search="setIsSearch"
+      />
+    </div>
+
+    <div class="separator" />
+
+    <div v-for="t in filteredTokens" :key="t.id" class="rows">
+      <xcm-currency :token="t" />
+    </div>
+
+    <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
+      <span class="text--xl">{{ $t('assets.noResults') }}</span>
     </div>
   </div>
 </template>
