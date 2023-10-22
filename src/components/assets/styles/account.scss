@@ -1,77 +1,14 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--account {
-  display: grid;
-  row-gap: 24px;
-}
-
-.row {
-  padding: 16px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.row--details {
-  padding: 16px 14px;
+.wrapper--account{
   display: flex;
   flex-direction: column;
-  row-gap: 12px;
-  @media (min-width: $md) {
-    row-gap: 0;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-  }
-  @media (min-width: $lg) {
-    padding-right: 32px;
-  }
+  gap: 32px;
 }
 
 .row--details-signatory {
   padding: 16px 14px;
   background-color: $body-bg-light;
-}
-
-.column--usd {
-  @media (min-width: $sm) {
-    margin-right: 24px;
-  }
-  @media (min-width: $md) {
-    margin-right: 72px;
-  }
-  @media (min-width: $lg) {
-    margin-right: 64px;
-  }
-  @media (min-width: $xl) {
-    margin-right: 298px;
-  }
-  @media (min-width: $xxl) {
-    margin-right: 398px;
-  }
-}
-
-.column--usd-native {
-  @media (min-width: $sm) {
-    margin-right: 24px;
-  }
-  @media (min-width: $md) {
-    margin-right: 70px;
-  }
-  @media (min-width: $lg) {
-    margin-right: 76px;
-  }
-  @media (min-width: $xl) {
-    margin-right: 200px;
-  }
-  @media (min-width: $xxl) {
-    margin-right: 300px;
-  }
-}
-
-.row__column--right {
-  display: flex;
-  align-items: center;
 }
 
 .column-account-name {
@@ -81,50 +18,6 @@
     flex-direction: row;
     align-items: center;
   }
-}
-
-.column-address-icons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.column__address {
-  color: $gray-4;
-  @media (min-width: $md) {
-    margin-left: 42px;
-  }
-}
-
-.column__icons {
-  display: flex;
-  justify-content: flex-end;
-  column-gap: 24px;
-  @media (max-width: $sm) {
-    column-gap: 16px;
-  }
-}
-
-.text--switch-account {
-  cursor: pointer;
-  color: $astar-blue;
-}
-
-.text--total-balance {
-  font-size: 16px;
-  font-weight: 700;
-  color: $navy-1;
-}
-
-.row__icons {
-  display: flex;
-  column-gap: 24px;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
 }
 
 .text--warning-bold {
@@ -143,23 +36,169 @@
 }
 
 .body--dark {
-  .column__address {
-    color: $gray-3;
-  }
-  .text--switch-account {
-    color: $astar-blue;
-  }
-  .text--total-balance {
-    color: $gray-1;
-  }
   .row--details-signatory {
     background-color: $body-bg-dark;
   }
 }
 
-.icon--primary.icon--account{
-  fill: $astar-blue;
-  &:hover{
-    fill: white;
+.row--account-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  color: $navy-1;
+  @media (min-width: $lg) {
+    flex-direction: row;
+  }
+}
+.body--dark {
+  .row--account-info {
+    color: white;
+  }
+}
+
+.column--account-icon {
+  img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 9999px;
+  }
+}
+
+.text--title {
+  @media (min-width: $sm) {
+    font-size: 16px;
+    font-weight: 700;
+  }
+}
+.text--balance {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  @media (min-width: $lg) {
+    text-align: left;
+  }
+  span {
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+.row--actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  @media (min-width: $lg) {
+    justify-content: flex-start;
+  }
+}
+.btn--icon {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: white;
+  margin: auto;
+  background-color: $astar-blue;
+  @media (min-width: $lg) {
+    background-color: transparent;
+    color: $astar-blue;
+  }
+  svg {
+    width: 22px;
+    height: 22px;
+    @media (min-width: $lg) {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  &:hover {
+    color: white;
+    background-color: lighten($astar-blue, 5%);
+  }
+  .icon--copy {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+    @media (min-width: $lg) {
+      stroke: $astar-blue;
+      width: 34px;
+      height: 34px;
+    }
+  }
+  .icon--external-link {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+    @media (min-width: $lg) {
+      stroke: $astar-blue;
+      width: 36px;
+      height: 36px;
+    }
+  }
+  &:hover {
+    color: white;
+    .icon--copy,
+    .icon--external-link {
+      stroke: white;
+    }
+  }
+}
+.body--dark {
+  .btn--icon {
+    color: white;
+    .icon--copy,
+    .icon--external-link {
+      stroke: white;
+    }
+  }
+}
+
+
+.container {
+  overflow: hidden;
+  border-radius: 30px;
+  padding: 16px 0 24px 0;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  background-color: white;
+  @media (min-width: $sm) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.body--dark {
+  .container {
+    background-color: $navy-4;
+  }
+}
+
+.container--account {
+  padding: 32px 32px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: none;
+  background-color: transparent;
+  @media (min-width: $lg) {
+    padding: 32px;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: white;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  }
+}
+.body--dark{
+  .container--account {
+    box-shadow: none;
+    background-color: transparent;
+    @media (min-width: $lg) {
+      background-color: $navy-4;
+      box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+    }
   }
 }
