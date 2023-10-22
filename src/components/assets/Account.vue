@@ -52,10 +52,10 @@
       </div>
     </div>
 
-    <div v-if="isH160" class="container">
-      <evm-native-token />
-      <zk-astr v-if="isZkEvm" />
-    </div>
+    <template v-if="isH160">
+      <evm-native-token class="container" />
+      <zk-astr v-if="isZkEvm" class="container" />
+    </template>
 
     <div v-if="multisig" class="row--details-signatory">
       <div class="column-account-name">

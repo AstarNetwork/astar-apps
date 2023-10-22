@@ -1,44 +1,56 @@
 <template>
   <div data-testid="evm-native-token">
-    <div class="border--separator border--margin" />
-    <div class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
-            <div v-if="astrTokenSymbol && networkNameSubstrate" class="column--ticker">
-              <span class="text--title">{{ astrTokenSymbol }}</span>
-              <span class="text--label">{{ networkNameSubstrate }}</span>
-            </div>
-            <div v-else>
-              <q-skeleton animation="fade" class="skeleton--md" />
-            </div>
-          </div>
+    <!-- Total balance -->
+    <div class="row--header">
+      <div class="row--header__left">
+        <div class="column--token-name">
+          <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
+          <template v-if="astrTokenSymbol">
+            <span class="text--title">{{ astrTokenSymbol }}</span>
+          </template>
+          <template v-else>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </template>
         </div>
-        <div class="row__right row__right--evm-native-token">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
-              </div>
-              <div class="text--label">
-                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="column--asset-buttons column--buttons--native-token">
-            <router-link to="/">
-              <button class="btn btn--sm" :disabled="true">
-                {{ $t('assets.bridge') }}
-              </button>
-            </router-link>
-            <router-link to="/">
-              <button class="btn btn--sm" :disabled="true">
-                {{ $t('assets.transfer') }}
-              </button>
-            </router-link>
-          </div>
+      </div>
+      <div class="row--header__right">
+        <div class="column--balance">
+          <span class="column--amount text--amount">
+            <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
+          </span>
         </div>
+      </div>
+    </div>
+
+    <div class="separator" />
+
+    <!-- Transferable -->
+    <div class="row row--transferable">
+      <div class="row__info">
+        <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+        <div class="column--balance">
+          <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
+        </div>
+      </div>
+
+      <div class="row__actions">
+        <router-link to="/">
+          <button class="btn btn--icon" :disabled="true">
+            <astar-icon-bridge />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+          </q-tooltip>
+        </router-link>
+
+        <router-link to="/">
+          <button class="btn btn--icon" :disabled="true">
+            <astar-icon-transfer />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.send') }}</span>
+          </q-tooltip>
+        </router-link>
       </div>
     </div>
   </div>
