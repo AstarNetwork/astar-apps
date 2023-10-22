@@ -452,7 +452,9 @@ export default {
     collapse: 'Collapse',
     transferableBalance: 'Transferable Balance',
     transferable: 'Transferable',
+    vesting: 'Vesting',
     yourEvmDeposit: 'Your EVM deposit',
+    evmDeposit: 'EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
     cantTransferToExcahges: "You can't transfer to Exchanges",
@@ -470,6 +472,7 @@ export default {
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
     theSignatory: '{account} is the signatory',
+    lockedTokens: 'Locked tokens',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
