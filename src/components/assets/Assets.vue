@@ -1,44 +1,29 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
-    <div class="separator--top container--account">
-      <div class="separator" />
-    </div>
     <div class="container--assets">
-      <div class="container--account">
-        <div class="title--account">
-          <span class="text--xl">
-            {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
-          </span>
-        </div>
+      <div class="column--main">
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
+
+        <div class="container">
+          <div v-if="isH160">
+            <evm-asset-list :tokens="evmAssets.assets" />
+          </div>
+          <div v-else>
+            <!-- Memo: hide xvm panel because AA might replace it -->
+            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          </div>
+        </div>
       </div>
-      <div class="row--links">
+
+      <div class="column--links">
         <dynamic-links />
       </div>
-      <div>
-        <div class="container--account">
-          <div class="separator" />
-        </div>
-        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
-      </div>
-      <div class="container--asset-list">
-        <div v-if="isH160">
-          <evm-asset-list :tokens="evmAssets.assets" />
-        </div>
-        <div v-else class="container--assets">
-          <!-- Memo: hide xvm panel because AA might replace it -->
-          <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-        </div>
-      </div>
-    </div>
-    <div class="column--links">
-      <dynamic-links />
     </div>
   </div>
 </template>

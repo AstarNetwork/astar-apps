@@ -1,90 +1,57 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
+  padding: 24px 10px 0 10px;
   position: relative;
   @media (min-width: $lg) {
-    padding-top: 16px;
+    margin: -60px -40px;
   }
-  @media (min-width: $xxxl) {
+}
+
+.container--assets {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: auto;
+  @media (min-width: $xl) {
     display: flex;
     justify-content: center;
   }
 }
 
-.container--assets {
+.column--main {
+  flex: 1;
+  z-index: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
   row-gap: 32px;
-  margin-bottom: 24px;
-  @media (min-width: $xxxl) {
-    width: 100%;
-    max-width: $container-max-width;
-  }
-}
-
-.container--account {
-  padding: 0 16px;
-  @media (min-width: $lg) {
-    padding: 0;
-  }
 }
 
 .title--account {
   margin-bottom: 10px;
 }
 
-.separator--top {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  @media (min-width: $lg) {
-    display: none;
-  }
-}
-
-.separator {
-  border-bottom: 1px solid;
-  border-image: linear-gradient(
-    90deg,
-    #e6007a -4%,
-    #e6007a -3.88%,
-    #703ac2 17.01%,
-    #0070eb 42.25%,
-    #0297fb 73.9%,
-    #0ae2ff 97.42%
-  );
-  border-image-slice: 1;
-  margin-bottom: 20px;
-}
-
-.row--links {
-  padding-left: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: block;
-  @media (min-width: $lg) {
-    padding: 0;
-  }
-  @media (min-width: $xxxl) {
-    display: none;
-  }
-}
-
 .column--links {
   display: none;
-  @media (min-width: $xxxl) {
+  @media (min-width: $xl) {
     display: block;
   }
 }
 
-.title--assets {
-  padding: 0 16px;
-  @media (min-width: $lg) {
-    padding: 0;
+.container {
+  overflow: hidden;
+  border-radius: 30px;
+  padding: 16px 0 24px 0;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  background-color: white;
+  @media (min-width: $sm) {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
-.container--asset-list {
-  padding: 0 16px;
-  @media (min-width: $lg) {
-    padding: 0;
+
+.body--dark {
+  .container {
+    background-color: $navy-4;
   }
 }
