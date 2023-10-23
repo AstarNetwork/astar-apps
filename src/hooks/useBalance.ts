@@ -97,7 +97,7 @@ function useCall(addressRef: Ref<string>) {
       locks
     );
 
-    balanceRef.value = accountInfo.data.free;
+    balanceRef.value = accountInfo.data.free.add(accountInfo.data.reserved);
   };
 
   const updateAccountBalance = () => {
