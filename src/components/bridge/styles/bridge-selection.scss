@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid $gray-4;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease 0s;
   row-gap: 24px;
@@ -125,5 +125,14 @@
         color: lighten($astar-blue-dark, 10%);
       }
     }
+  }
+  .button--bridge {
+    border: 1px solid $gray-4;
+    background-color: $navy-2;
+  }
+
+  .column--selection button:not([disabled]) .button--bridge:hover {
+    border: 1px solid $astar-blue !important;
+    transition: all 0.3s ease 0s;
   }
 }
