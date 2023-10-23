@@ -19,39 +19,45 @@
 
         <div class="column--balance">
           <div class="column--balance__row text--title">
-            <token-balance :balance="String(token.userBalance)" :symbol="token.metadata.symbol" />
+            <div class="column--amount">
+              {{ isTruncate ? $n(truncate(token.userBalance, 3)) : Number(token.userBalance) }}
+            </div>
+            <div class="column--symbol">
+              {{ token.metadata.symbol }}
+            </div>
           </div>
           <div class="column--balance__row text--label">
-            {{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}
+            <div class="column--amount">
+              {{ $n(Number(token.userBalanceUsd)) }}
+            </div>
+            <div class="column--symbol">
+              {{ $t('usd') }}
+            </div>
           </div>
         </div>
       </div>
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <div>
-            <router-link :to="buildTransferPageLink(token.metadata.symbol)">
-              <button class="btn btn--icon">
-                <astar-icon-transfer />
-              </button>
-            </router-link>
+          <router-link :to="buildTransferPageLink(token.metadata.symbol)">
+            <button class="btn btn--icon">
+              <astar-icon-transfer />
+            </button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </div>
+          </router-link>
 
-          <div>
-            <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
-              <button class="btn btn--icon">
-                <astar-icon-external-link class="icon--external-link" />
-              </button>
-            </a>
+          <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
             <span class="text--expand-menu">{{ $t('subscan') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('subscan') }}</span>
             </q-tooltip>
-          </div>
+          </a>
         </div>
       </q-slide-transition>
     </div>
@@ -66,8 +72,9 @@ import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { truncate } from '@astar-network/astar-sdk-core';
 export default defineComponent({
-  components: { [Jazzicon.name]: Jazzicon, TokenBalance },
+  components: { [Jazzicon.name]: Jazzicon },
   props: {
     token: {
       type: Object as PropType<Asset>,
@@ -76,6 +83,7 @@ export default defineComponent({
   },
   setup(props) {
     const isExpand = ref<boolean>(false);
+
     const t = computed<Asset>(() => props.token);
     const { currentNetworkIdx } = useNetworkInfo();
 
@@ -96,12 +104,19 @@ export default defineComponent({
 
     const { width, screenSize } = useBreakpoints();
 
+    const isTruncate = !props.token.metadata.symbol.toUpperCase().includes('BTC');
+
+    const isFavorite = ref<boolean>(false);
+
     return {
       isDisplayToken,
       explorerLink,
       isExpand,
       width,
       screenSize,
+      isTruncate,
+      isFavorite,
+      truncate,
       buildTransferPageLink,
     };
   },

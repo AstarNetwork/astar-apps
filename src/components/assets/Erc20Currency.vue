@@ -1,102 +1,125 @@
 <template>
   <div>
-    <div class="border--separator" />
-    <div class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <div class="token-logo">
-              <jazzicon
-                v-if="token.image.includes('custom-token')"
-                :address="token.address"
-                :diameter="24"
-              />
-              <img v-else :src="token.image" :alt="token.name" />
-            </div>
-            <div class="column--ticker">
-              <span class="text--title">{{ token.symbol }}</span>
-              <span class="text--label">{{ token.name }}</span>
-            </div>
+    <div class="row" :class="isExpand && 'row--is-expand'">
+      <div class="row__left" @click="isExpand = !isExpand">
+        <div class="column--token">
+          <div class="icon--token">
+            <jazzicon
+              v-if="token.image.includes('custom-token')"
+              :address="token.address"
+              :diameter="24"
+            />
+            <img v-else :src="token.image" :alt="token.name" />
+          </div>
+          <div>
+            <div class="text--title">{{ token.symbol }}</div>
+            <div class="text--label">{{ token.name }}</div>
           </div>
         </div>
-        <div class="row__right row__right--evm">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <token-balance :balance="token.userBalance" :symbol="token.symbol" />
-              </div>
-              <div class="text--label">
-                <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
-              </div>
+
+        <div class="column--balance">
+          <div class="column--balance__row text--title">
+            <div class="column--amount">
+              {{ isTruncate ? $n(truncate(token.userBalance, 3)) : Number(token.userBalance) }}
+            </div>
+            <div class="column--symbol">
+              {{ token.symbol }}
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--multi">
-            <!-- Memo: test checking if styling won't break -->
-            <!-- <div v-if="token.isXC20" /> -->
-            <router-link :to="buildTransferPageLink(token.symbol)">
-              <button class="btn btn--sm">
-                {{ $t('assets.transfer') }}
-              </button>
-            </router-link>
-            <div v-if="token.isWrappedToken && !token.isXC20">
-              <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
-                <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
-              </a>
+          <div class="column--balance__row text--label">
+            <div class="column--amount">
+              {{ $n(Number(token.userBalanceUsd)) }}
             </div>
-            <div class="screen--xl">
-              <a
-                class="box--explorer"
-                :href="explorerLink"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button class="btn btn--sm btn--explorer adjuster--width">
-                  <div class="container--explorer-icon adjuster--width">
-                    <astar-icon-external-link />
-                  </div>
-                </button>
-              </a>
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t('blockscout') }}</span>
-              </q-tooltip>
-            </div>
-            <div class="screen--md">
-              <button
-                class="btn btn--sm btn--icon adjuster--width"
-                @click="
-                  addToEvmProvider({
-                    tokenAddress: token.address,
-                    symbol: token.symbol,
-                    decimals: token.decimal,
-                    image: token.image,
-                    provider,
-                  })
-                "
-              >
-                <div class="icon--plus">
-                  <span> + </span>
-                </div>
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
-                </q-tooltip>
-              </button>
-            </div>
-            <div v-if="isImportedToken" class="screen--xl">
-              <button
-                class="btn btn--sm btn--delete adjuster--width"
-                @click="handleDeleteStoredToken(token.address)"
-              >
-                <div class="adjuster--width icon--delete">
-                  <astar-icon-delete size="22" />
-                </div>
-              </button>
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t('remove') }}</span>
-              </q-tooltip>
+            <div class="column--symbol">
+              {{ $t('usd') }}
             </div>
           </div>
         </div>
       </div>
+
+      <q-slide-transition :duration="150">
+        <div v-show="isExpand || width >= screenSize.sm" class="row__right">
+          <!-- Memo: test checking if styling won't break -->
+          <!-- <div v-if="token.isXC20" /> -->
+          <router-link :to="buildTransferPageLink(token.symbol)">
+            <button class="btn btn--icon">
+              <astar-icon-transfer />
+            </button>
+            <span class="text--expand-menu">{{ $t('assets.send') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.send') }}</span>
+            </q-tooltip>
+          </router-link>
+
+          <div v-if="token.isWrappedToken && !token.isXC20">
+            <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
+              <button class="btn btn--icon">
+                <astar-icon-bridge class="icon--bridge" />
+              </button>
+            </a>
+            <span class="text--expand-menu">{{ $t('assets.wrap') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.wrap') }}</span>
+            </q-tooltip>
+          </div>
+
+          <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
+            <span class="text--expand-menu">{{ $t('blockscout') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('blockscout') }}</span>
+            </q-tooltip>
+          </a>
+
+          <div>
+            <button
+              class="btn btn--icon"
+              @click="
+                addToEvmProvider({
+                  tokenAddress: token.address,
+                  symbol: token.symbol,
+                  decimals: token.decimal,
+                  image: token.image,
+                  provider,
+                })
+              "
+            >
+              <astar-icon-base class="icon--plus">
+                <astar-icon-plus />
+              </astar-icon-base>
+            </button>
+            <span class="text--expand-menu">{{ $t('add') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+            </q-tooltip>
+          </div>
+
+          <div v-if="isImportedToken">
+            <button class="btn btn--icon" @click="handleDeleteStoredToken(token.address)">
+              <astar-icon-delete size="22" />
+            </button>
+            <span class="text--expand-menu">{{ $t('remove') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('remove') }}</span>
+            </q-tooltip>
+          </div>
+
+          <div>
+            <!-- TODO: add logic -->
+            <button class="btn btn--icon">
+              <astar-icon-star class="icon--favorite" :class="isFavorite ? 'on' : 'off'" />
+            </button>
+            <span class="text--expand-menu">{{ $t('assets.favorite') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{
+                $t(isFavorite ? 'assets.removeFromFavorite' : 'assets.addToFavorite')
+              }}</span>
+            </q-tooltip>
+          </div>
+        </div>
+      </q-slide-transition>
     </div>
   </div>
 </template>
@@ -104,7 +127,7 @@
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import {
   deleteImportedErc20Token,
@@ -114,12 +137,13 @@ import {
 } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { truncate } from '@astar-network/astar-sdk-core';
+
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
-    TokenBalance,
   },
   props: {
     token: {
@@ -133,6 +157,8 @@ export default defineComponent({
     },
   },
   setup({ token }) {
+    const isExpand = ref<boolean>(false);
+
     const store = useStore();
     const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
@@ -158,10 +184,22 @@ export default defineComponent({
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
     };
 
+    const { width, screenSize } = useBreakpoints();
+
+    const isTruncate = !token.symbol.toUpperCase().includes('BTC');
+
+    const isFavorite = ref<boolean>(false);
+
     return {
       explorerLink,
       isImportedToken,
       provider,
+      width,
+      screenSize,
+      isExpand,
+      isTruncate,
+      isFavorite,
+      truncate,
       buildTransferPageLink,
       addToEvmProvider,
       handleDeleteStoredToken,
@@ -171,5 +209,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/asset-list.scss';
+@use 'src/components/assets/styles/asset-list-xcm.scss';
 </style>
