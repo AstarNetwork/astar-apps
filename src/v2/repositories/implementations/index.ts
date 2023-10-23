@@ -15,6 +15,7 @@ export * from './TokenApiRepository';
 export * from './EvmAssetsRepository';
 export * from './xcm/CrustShadowXcmRepository';
 export * from './AssetsRepository';
+export * from './ZkBridgeRepository';
 export * from './xcm/BifrostXcmRepository';
 export * from './xcm/EquilibriumXcmRepository';
 export * from './xcm/UniqueXcmRepository';

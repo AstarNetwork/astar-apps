@@ -26,7 +26,7 @@ export const useGasPrice = (isFetch = false) => {
 
   const store = useStore();
   const gas = computed(() => store.getters['general/getGas']);
-  const { currentNetworkName, isMainnet } = useNetworkInfo();
+  const { currentNetworkName, isMainnet, isZkEvm } = useNetworkInfo();
   const network = computed<string>(() => {
     return isMainnet ? currentNetworkName.value.toLowerCase() : 'shibuya';
   });
@@ -89,13 +89,15 @@ export const useGasPrice = (isFetch = false) => {
       currentWallet !== SupportWallet.TalismanEvm &&
       currentWallet !== SupportWallet.SubWalletEvm &&
       currentWallet !== SupportWallet.OneKeyEvm &&
-      !isShibuyaEvm.value
+      !isShibuyaEvm.value &&
+      !isZkEvm.value
     );
   });
 
   watch(
     [network, $web3],
     async () => {
+      // Todo: update the logic for zkEVM
       if (
         isFetch &&
         network.value &&

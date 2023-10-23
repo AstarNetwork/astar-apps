@@ -7,19 +7,52 @@
           <img width="32" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
           <span class="text--title">{{ nativeTokenSymbol }}</span>
         </div>
-        <div v-else>
-          <q-skeleton animation="fade" class="skeleton--md" />
-        </div>
-      </div>
-      <div class="row--header__right">
-        <div v-if="nativeTokenSymbol && currentNetworkName" class="column--balance">
-          <span class="column--amount text--amount">
-            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
-          </span>
-          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
-        </div>
-        <div v-else>
-          <q-skeleton animation="fade" class="skeleton--md" />
+        <div class="row__right row__right--evm-native-token">
+          <div class="column column--balance">
+            <div class="column__box">
+              <div class="text--accent">
+                <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
+              </div>
+              <div class="text--label">
+                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="column--asset-buttons column--buttons--native-token">
+            <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
+              <button class="btn btn--sm">
+                {{ $t('assets.bridge') }}
+              </button>
+            </router-link>
+            <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
+              </button>
+            </router-link>
+            <!-- Only SDN is able to bridge via cBridge at this moment -->
+            <a
+              v-if="nativeTokenSymbol === 'SDN'"
+              :href="cbridgeAppLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button class="btn btn--sm">
+                {{ $t('assets.bridge') }}
+              </button>
+            </a>
+            <a v-if="isZkatana" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
+              <button class="btn btn--sm">
+                {{ $t('assets.faucet') }}
+              </button>
+            </a>
+            <button
+              v-else-if="isFaucet"
+              class="btn btn--sm"
+              @click="handleModalFaucet({ isOpen: true })"
+            >
+              {{ $t('assets.faucet') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -111,10 +144,14 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, usePrice, useBreakpoints } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { buildTransferPageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+<<<<<<< HEAD
 import { truncate } from '@astar-network/astar-sdk-core';
+=======
+import { faucetSethLink } from 'src/links';
+>>>>>>> main
 
 export default defineComponent({
   components: {
@@ -128,7 +165,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
     const store = useStore();
@@ -136,7 +173,11 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+      getTokenImage({
+        isNativeToken: true,
+        symbol: nativeTokenSymbol.value,
+        isZkEvm: isZkEvm.value,
+      })
     );
 
     const updateStates = async (nativeTokenUsd: number): Promise<void> => {
@@ -178,12 +219,19 @@ export default defineComponent({
       cbridgeAppLink,
       isFaucet,
       isModalFaucet,
+<<<<<<< HEAD
       isTruncate,
       width,
       screenSize,
       truncate,
+=======
+      isZkEvm,
+      isZkatana,
+      faucetSethLink,
+>>>>>>> main
       handleModalFaucet,
       buildTransferPageLink,
+      buildEthereumBridgePageLink,
     };
   },
 });

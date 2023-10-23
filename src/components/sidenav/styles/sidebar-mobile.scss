@@ -14,6 +14,7 @@
 .tabs {
   display: flex;
   padding-left: 3px;
+  align-items: center;
 }
 
 .link {
@@ -112,6 +113,11 @@
 
 .tabs_ecosystem {
   width: 84px;
+  display: none;
+  @media (min-width: $sm) {
+    display: block;
+    margin: 0;
+  }
 }
 
 .icon--dot {

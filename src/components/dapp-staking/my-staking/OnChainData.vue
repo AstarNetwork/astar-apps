@@ -145,7 +145,7 @@ export default defineComponent({
     TokenBalance,
   },
   setup() {
-    const { nativeTokenSymbol, currentNetworkName } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName, networkNameSubstrate } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const { screenSize, width } = useBreakpoints();
@@ -174,7 +174,7 @@ export default defineComponent({
       if (aggregatedData.value.length === 0) {
         const repo = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
         aggregatedData.value = await repo.getAggregatedMetrics(
-          currentNetworkName.value.toLowerCase()
+          networkNameSubstrate.value.toLowerCase()
         );
       }
     };

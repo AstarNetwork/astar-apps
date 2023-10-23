@@ -1,6 +1,9 @@
 import Assets from 'components/assets/Assets.vue';
+import L1 from 'components/bridge/ethereum/L1.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
+import BridgePage from 'pages/BridgePage.vue';
+import BridgeSelection from 'src/components/bridge/BridgeSelection.vue';
 import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -12,7 +15,12 @@ import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
-export { buildTransferPageLink, getHeaderName, buildXvmTransferPageLink } from 'src/router/utils';
+export {
+  buildTransferPageLink,
+  getHeaderName,
+  buildXvmTransferPageLink,
+  buildEthereumBridgePageLink,
+} from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
 
@@ -22,6 +30,8 @@ export const networkParam =
 
 export enum Path {
   Assets = '/assets',
+  Bridge = '/bridge',
+  Ethereum = '/ethereum',
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
   Discover = '/discover',
@@ -41,6 +51,11 @@ const routes: RouteRecordRaw[] = [
     path: Path.Assets,
     redirect: networkParam + Path.Assets,
   },
+  {
+    path: Path.Bridge,
+    redirect: networkParam + Path.Bridge,
+  },
+
   {
     path: Path.Dashboard,
     redirect: networkParam + Path.Dashboard,
@@ -77,6 +92,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'xvm-transfer',
         component: XvmTransfer,
+      },
+    ],
+  },
+  {
+    path: '/:network' + Path.Bridge,
+    name: 'Bridge',
+    component: BridgePage,
+    children: [
+      {
+        path: '',
+        component: BridgeSelection,
+      },
+      {
+        path: 'ethereum',
+        component: L1,
       },
     ],
   },

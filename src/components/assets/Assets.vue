@@ -56,7 +56,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -67,7 +67,6 @@ export default defineComponent({
     });
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const xvmAssets = computed<XvmAssets>(() => store.getters['assets/getAllXvmAssets']);
@@ -137,8 +136,8 @@ export default defineComponent({
     watch([currentAccount], handleUpdateEvmAssets, { immediate: isH160.value });
     watchEffect(handleImportingCustomToken);
 
-    const isEnableXcm = computed<boolean>(
-      () => xcmAssets.value.assets && xcmAssets.value.assets.length > 0
+    const isEnableXcm = computed(
+      () => !isZkEvm.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
 
     const handleEvmAssetLoader = (): void => {
