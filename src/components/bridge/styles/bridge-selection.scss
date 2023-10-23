@@ -60,7 +60,7 @@
 }
 
 .column--selection button:not([disabled]) .button--bridge:hover {
-  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+  border: 1px solid $astar-blue !important;
   transition: all 0.3s ease 0s;
 }
 
@@ -127,7 +127,12 @@
     }
   }
   .button--bridge {
+    border: 1px solid $gray-4;
     background-color: $navy-2;
+  }
+
+  .column--selection button:not([disabled]) .button--bridge:hover {
     border: 1px solid $astar-blue !important;
+    transition: all 0.3s ease 0s;
   }
 }
