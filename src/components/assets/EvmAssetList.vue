@@ -3,9 +3,7 @@
     <div class="row--header">
       <div class="row--header__left">
         <div class="column--token-name">
-          <span class="text--title">
-            {{ $t('assets.assets') }}
-          </span>
+          <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
       </div>
 
@@ -22,15 +20,13 @@
 
     <div class="separator" />
 
-    <div class="rows">
-      <div v-for="t in filteredTokens" :key="t.symbol">
-        <template v-if="checkIsCbridgeToken(t)">
-          <evm-cbridge-token :token="t" :data-testid="t.symbol" />
-        </template>
-        <template v-else>
-          <erc-20-currency :token="t" :data-testid="t.symbol" />
-        </template>
-      </div>
+    <div v-for="t in filteredTokens" :key="t.symbol" class="rows">
+      <template v-if="checkIsCbridgeToken(t)">
+        <evm-cbridge-token :token="t" :data-testid="t.symbol" />
+      </template>
+      <template v-else>
+        <erc-20-currency :token="t" :data-testid="t.symbol" />
+      </template>
     </div>
 
     <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
@@ -46,7 +42,6 @@ import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { PropType, computed, defineComponent, ref } from 'vue';
-import { getTokenImage } from 'src/modules/token';
 
 export default defineComponent({
   components: {
@@ -102,11 +97,6 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
-    const { nativeTokenSymbol } = useNetworkInfo();
-    const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
-    );
-
     return {
       symbol,
       token,
@@ -116,8 +106,6 @@ export default defineComponent({
       filteredTokens,
       cbridgeAppLink,
       isHideSmallBalances,
-      nativeTokenSymbol,
-      nativeTokenImg,
       setIsSearch,
       checkIsCbridgeToken,
       toggleIsHideSmallBalances,

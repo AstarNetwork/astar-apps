@@ -16,6 +16,7 @@
             <div class="text--label">{{ token.metadata.name }}</div>
           </div>
         </div>
+
         <div class="column--balance">
           <div class="column--balance__row text--title">
             <div class="column--amount">
@@ -38,42 +39,25 @@
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <div>
-            <router-link :to="buildTransferPageLink(token.metadata.symbol)">
-              <button class="btn btn--icon">
-                <astar-icon-transfer />
-              </button>
-            </router-link>
+          <router-link :to="buildTransferPageLink(token.metadata.symbol)">
+            <button class="btn btn--icon">
+              <astar-icon-transfer />
+            </button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </div>
+          </router-link>
 
-          <div>
-            <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
-              <button class="btn btn--icon">
-                <astar-icon-external-link class="icon--external-link" />
-              </button>
-            </a>
+          <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
             <span class="text--expand-menu">{{ $t('subscan') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('subscan') }}</span>
             </q-tooltip>
-          </div>
-
-          <div>
-            <!-- TODO: add logic -->
-            <button class="btn btn--icon">
-              <astar-icon-star class="icon--favorite" :class="isFavorite ? 'on' : 'off'" />
-            </button>
-            <span class="text--expand-menu">{{ $t('assets.favorite') }}</span>
-            <q-tooltip>
-              <span class="text--tooltip">{{
-                $t(isFavorite ? 'assets.removeFromFavorite' : 'assets.addToFavorite')
-              }}</span>
-            </q-tooltip>
-          </div>
+          </a>
         </div>
       </q-slide-transition>
     </div>
@@ -81,13 +65,13 @@
 </template>
 <script lang="ts">
 import { endpointKey } from 'src/config/chainEndpoints';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import { getXcmToken } from 'src/modules/xcm';
 import { buildTransferPageLink } from 'src/router/routes';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { useBreakpoints } from 'src/hooks';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { truncate } from '@astar-network/astar-sdk-core';
 export default defineComponent({
   components: { [Jazzicon.name]: Jazzicon },
@@ -99,7 +83,6 @@ export default defineComponent({
   },
   setup(props) {
     const isExpand = ref<boolean>(false);
-    const { width, screenSize } = useBreakpoints();
 
     const t = computed<Asset>(() => props.token);
     const { currentNetworkIdx } = useNetworkInfo();
@@ -118,6 +101,8 @@ export default defineComponent({
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
+
+    const { width, screenSize } = useBreakpoints();
 
     const isTruncate = !props.token.metadata.symbol.toUpperCase().includes('BTC');
 

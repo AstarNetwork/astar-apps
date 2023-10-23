@@ -8,6 +8,7 @@
           </span>
         </div>
       </div>
+
       <asset-search-option
         :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
         :is-hide-small-balances="isHideSmallBalances"
@@ -21,7 +22,7 @@
 
     <div class="separator" />
 
-    <div v-for="t in filteredTokens" :key="t.id">
+    <div v-for="t in filteredTokens" :key="t.id" class="rows">
       <xcm-currency :token="t" />
     </div>
 
@@ -34,11 +35,9 @@
 <script lang="ts">
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import { getTokenImage } from 'src/modules/token';
-
 export default defineComponent({
   components: {
     XcmCurrency,
@@ -88,11 +87,6 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
-    const { nativeTokenSymbol } = useNetworkInfo();
-    const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
-    );
-
     return {
       filteredTokens,
       search,
@@ -100,8 +94,6 @@ export default defineComponent({
       isHideSmallBalances,
       width,
       screenSize,
-      nativeTokenSymbol,
-      nativeTokenImg,
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,

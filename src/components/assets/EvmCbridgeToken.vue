@@ -9,13 +9,14 @@
               :address="token.address"
               :diameter="24"
             />
-            <img v-else :src="tokenImg" :alt="token.name" />
+            <img v-else :src="tokenImg" :alt="token.name" class="token-logo" />
           </div>
           <div>
             <div class="text--title">{{ token.symbol }}</div>
             <div class="text--label">{{ formatTokenName(token.name) }}</div>
           </div>
         </div>
+
         <div class="column--balance">
           <div class="column--balance__row text--title">
             <div class="column--amount">
@@ -38,41 +39,35 @@
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <div>
-            <router-link :to="buildTransferPageLink(token.symbol)">
-              <button class="btn btn--icon">
-                <astar-icon-transfer />
-              </button>
-            </router-link>
+          <router-link :to="buildTransferPageLink(token.symbol)">
+            <button class="btn btn--icon">
+              <astar-icon-transfer />
+            </button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </div>
+          </router-link>
 
-          <div>
-            <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
-              <button class="btn btn--icon">
-                <astar-icon-bridge class="icon--bridge" />
-              </button>
-            </a>
+          <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-bridge class="icon--bridge" />
+            </button>
             <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
             </q-tooltip>
-          </div>
+          </a>
 
-          <div>
-            <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
-              <button class="btn btn--icon">
-                <astar-icon-external-link class="icon--external-link" />
-              </button>
-            </a>
+          <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
             <span class="text--expand-menu">{{ $t('blockscout') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('blockscout') }}</span>
             </q-tooltip>
-          </div>
+          </a>
 
           <div>
             <button
@@ -122,9 +117,9 @@ import { Erc20Token, getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { useBreakpoints } from 'src/hooks';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
@@ -139,7 +134,6 @@ export default defineComponent({
   },
   setup({ token }) {
     const isExpand = ref<boolean>(false);
-    const { width, screenSize } = useBreakpoints();
 
     const tokenImg = computed(() =>
       getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.image })
@@ -166,6 +160,8 @@ export default defineComponent({
     const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
     const provider = getEvmProvider(currentWallet.value);
 
+    const { width, screenSize } = useBreakpoints();
+
     const isTruncate = !token.symbol.toUpperCase().includes('BTC');
 
     const isFavorite = ref<boolean>(false);
@@ -176,9 +172,9 @@ export default defineComponent({
       explorerLink,
       cbridgeAppLink,
       provider,
-      isExpand,
       width,
       screenSize,
+      isExpand,
       isTruncate,
       isFavorite,
       truncate,

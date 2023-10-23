@@ -16,6 +16,7 @@
             <div class="text--label">{{ token.name }}</div>
           </div>
         </div>
+
         <div class="column--balance">
           <div class="column--balance__row text--title">
             <div class="column--amount">
@@ -40,18 +41,15 @@
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
           <!-- Memo: test checking if styling won't break -->
           <!-- <div v-if="token.isXC20" /> -->
-
-          <div>
-            <router-link :to="buildTransferPageLink(token.symbol)">
-              <button class="btn btn--icon">
-                <astar-icon-transfer />
-              </button>
-            </router-link>
+          <router-link :to="buildTransferPageLink(token.symbol)">
+            <button class="btn btn--icon">
+              <astar-icon-transfer />
+            </button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </div>
+          </router-link>
 
           <div v-if="token.isWrappedToken && !token.isXC20">
             <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
@@ -65,17 +63,15 @@
             </q-tooltip>
           </div>
 
-          <div>
-            <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
-              <button class="btn btn--icon">
-                <astar-icon-external-link class="icon--external-link" />
-              </button>
-            </a>
+          <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+            <button class="btn btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
             <span class="text--expand-menu">{{ $t('blockscout') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('blockscout') }}</span>
             </q-tooltip>
-          </div>
+          </a>
 
           <div>
             <button
@@ -128,9 +124,10 @@
   </div>
 </template>
 <script lang="ts">
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import {
   deleteImportedErc20Token,
@@ -142,8 +139,8 @@ import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { useBreakpoints } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
+
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
@@ -161,7 +158,6 @@ export default defineComponent({
   },
   setup({ token }) {
     const isExpand = ref<boolean>(false);
-    const { width, screenSize } = useBreakpoints();
 
     const store = useStore();
     const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
@@ -188,6 +184,8 @@ export default defineComponent({
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
     };
 
+    const { width, screenSize } = useBreakpoints();
+
     const isTruncate = !token.symbol.toUpperCase().includes('BTC');
 
     const isFavorite = ref<boolean>(false);
@@ -196,9 +194,9 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
-      isExpand,
       width,
       screenSize,
+      isExpand,
       isTruncate,
       isFavorite,
       truncate,

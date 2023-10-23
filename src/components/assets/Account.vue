@@ -5,7 +5,7 @@
         <div class="column--account-icon">
           <img
             v-if="iconWallet"
-            width="48"
+            width="24"
             :src="iconWallet"
             alt="wallet-icon"
             :class="multisig && 'img--polkasafe'"
@@ -14,7 +14,7 @@
 
         <div>
           <div class="text--title">
-            <span>{{ currentAccount ? currentAccountName : $t('assets.myWallet') }}</span>
+            <span>{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
           </div>
           <div class="text--balance">
             {{ $n(totalBal) }}
@@ -22,16 +22,15 @@
           </div>
         </div>
       </div>
-      <div v-if="isH160">
-        <evm-native-token />
-        <zk-astr v-if="isZkEvm" />
-      </div>
-      <div v-if="multisig" class="row--details-signatory">
-        <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-          <span class="text--accent">{{
-            $t('assets.theSignatory', { account: multisig.signatory.name })
-          }}</span>
+
+      <div class="row--actions">
+        <div v-if="isAccountUnification">
+          <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
+            <astar-icon-person />
+          </button>
+          <q-tooltip>
+            <span class="text--tooltip">Unify accounts</span>
+          </q-tooltip>
         </div>
 
         <div>
@@ -54,9 +53,10 @@
       </div>
     </div>
 
-    <div v-if="isH160" class="container">
-      <evm-native-token />
-    </div>
+    <template v-if="isH160">
+      <evm-native-token class="container" />
+      <zk-astr v-if="isZkEvm" class="container" />
+    </template>
 
     <div v-if="multisig" class="row--details-signatory">
       <div class="column-account-name">
