@@ -15,6 +15,7 @@
   @media (min-width: $xl) {
     display: flex;
     justify-content: center;
+    gap: 40px;
   }
 }
 
@@ -33,6 +34,7 @@
 
 .column--links {
   display: none;
+  width: 272px;
   @media (min-width: $xl) {
     display: block;
   }

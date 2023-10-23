@@ -24,6 +24,8 @@
 }
 
 .sidebar {
+  position: relative;
+  z-index: 1;
   width: 224px;
   padding-top: 24px;
   background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
