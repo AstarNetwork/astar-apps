@@ -218,23 +218,6 @@
   flex-direction: column;
 }
 
-.row--icon--expand-phone {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  @media (min-width: $md) {
-    display: none;
-  }
-}
-
-.row--icon--expand {
-  display: none;
-  @media (min-width: $md) {
-    display: flex;
-    justify-content: center;
-  }
-}
-
 .column--expand {
   position: relative;
 }
