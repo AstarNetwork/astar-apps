@@ -16,8 +16,9 @@
       <div class="row--header__right">
         <div class="column--balance">
           <span class="column--amount text--amount">
-            <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
           </span>
+          <span class="column--symbol text--symbol">{{ astrTokenSymbol }}</span>
         </div>
       </div>
     </div>
@@ -29,7 +30,10 @@
       <div class="row__info">
         <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
         <div class="column--balance">
-          <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
+          <span class="column--amount text--amount">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="column--symbol text--symbol">{{ astrTokenSymbol }}</span>
         </div>
       </div>
 
@@ -56,7 +60,7 @@
   </div>
 </template>
 <script lang="ts">
-import { getUsdBySymbol } from '@astar-network/astar-sdk-core';
+import { getUsdBySymbol, truncate } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { useNetworkInfo } from 'src/hooks';
@@ -65,7 +69,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
-  components: { TokenBalance },
+  components: {},
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -102,12 +106,16 @@ export default defineComponent({
 
     watchEffect(handleAstrPrice);
 
+    const isTruncate = !astrTokenSymbol.value.toUpperCase().includes('BTC');
+
     return {
       astrTokenImg,
       astrTokenSymbol,
       networkNameSubstrate,
       bal,
       balUsd,
+      isTruncate,
+      truncate,
     };
   },
 });

@@ -16,8 +16,9 @@
       <div class="row--header__right">
         <div class="column--balance">
           <span class="column--amount text--amount">
-            <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
           </span>
+          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
         </div>
       </div>
     </div>
@@ -38,7 +39,10 @@
       >
         <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
         <div class="column--balance">
-          <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
+          <span class="column--amount text--amount">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
         </div>
       </div>
 
@@ -144,9 +148,10 @@ import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/r
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { faucetSethLink } from 'src/links';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
-  components: { ModalFaucet, TokenBalance },
+  components: { ModalFaucet },
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -198,6 +203,8 @@ export default defineComponent({
 
     const { width, screenSize } = useBreakpoints();
 
+    const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
+
     return {
       nativeTokenImg,
       nativeTokenSymbol,
@@ -212,6 +219,8 @@ export default defineComponent({
       faucetSethLink,
       width,
       screenSize,
+      isTruncate,
+      truncate,
       handleModalFaucet,
       buildTransferPageLink,
       buildEthereumBridgePageLink,

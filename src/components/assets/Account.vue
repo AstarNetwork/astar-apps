@@ -2,7 +2,7 @@
   <div class="wrapper--account">
     <div class="container container--account">
       <div class="row--account-info">
-        <div class="column-account-name">
+        <div class="column--account-icon">
           <img
             v-if="iconWallet"
             width="24"
@@ -17,7 +17,8 @@
             <span>{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
           </div>
           <div class="text--balance">
-            <span>{{ $n(totalBal) }} USD</span>
+            {{ $n(totalBal) }}
+            <span>USD</span>
           </div>
         </div>
       </div>
