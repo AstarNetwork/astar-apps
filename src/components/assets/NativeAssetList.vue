@@ -80,7 +80,11 @@
 
             <div class="row--icon--expand">
               <div class="column--expand">
-                <button class="icon--expand" :class="isExpand && 'icon--collapse'">
+                <button
+                  class="icon--expand"
+                  :class="isExpand && 'icon--collapse'"
+                  @click="expandAsset(isExpand)"
+                >
                   <astar-icon-expand size="32" />
                   <q-tooltip>
                     <span class="text--tooltip">
@@ -133,7 +137,7 @@
         </div>
 
         <div class="expand-container">
-          <div>
+          <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.transferable') }}</span>
@@ -353,15 +357,15 @@ export default defineComponent({
     });
 
     // Ref: https://stackoverflow.com/questions/48143381/css-expand-contract-animation-to-show-hide-content
-    // const expandAsset = async (isOpen: boolean): Promise<void> => {
-    //   if (isBalloonNativeToken.value) {
-    //     await handleCloseNativeTokenBalloon();
-    //   }
-    //   isExpand.value = !isOpen;
-    //   const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
-    //   el && el.classList.toggle('asset-expanded');
-    //   el && el.classList.toggle('asset-collapsed');
-    // };
+    const expandAsset = async (isOpen: boolean): Promise<void> => {
+      if (isBalloonNativeToken.value) {
+        await handleCloseNativeTokenBalloon();
+      }
+      isExpand.value = !isOpen;
+      const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
+      el && el.classList.toggle('asset-expanded');
+      el && el.classList.toggle('asset-collapsed');
+    };
 
     const { width, screenSize } = useBreakpoints();
 
@@ -392,6 +396,7 @@ export default defineComponent({
       isExpand,
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
+
       width,
       screenSize,
       isTruncate,
@@ -400,6 +405,7 @@ export default defineComponent({
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
+      expandAsset,
       handleCloseNativeTokenBalloon,
     };
   },
