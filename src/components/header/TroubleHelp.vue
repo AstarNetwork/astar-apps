@@ -59,16 +59,16 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 14px;
+  border-radius: 16px;
   transition: all 0.2s ease;
   &:hover {
-    color: $astar-blue-dark;
-    border-color: $astar-blue-dark;
+    border-color: $astar-blue;
+    background-color: $astar-blue;
   }
   @media (min-width: $lg) {
     width: 40px;
     height: 40px;
-    border-radius: 16px;
+    border-radius: 20px;
   }
 }
 .icon--help {

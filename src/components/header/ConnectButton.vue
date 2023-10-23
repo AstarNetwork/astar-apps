@@ -36,10 +36,9 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   transition: all 0.2s ease;
-  margin-right: 8px;
   &:hover {
-    color: $astar-blue-dark;
-    border-color: $astar-blue-dark;
+    border-color: $astar-blue;
+    background-color: $astar-blue;
   }
   @media (min-width: $lg) {
     width: 40px;

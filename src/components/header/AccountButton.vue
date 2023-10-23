@@ -55,15 +55,13 @@ export default defineComponent({
   padding: 4px;
   transition: all 0.2s ease;
   border: solid 1px transparent;
-  margin-right: 8px;
   &:hover {
-    color: $astar-blue-dark;
-    border-color: $astar-blue-dark;
+    border-color: $astar-blue;
+    background-color: $astar-blue;
   }
   @media (min-width: $sm) {
     height: 40px;
     padding: 0 16px 0 12px;
-    margin-right: 0;
   }
 }
 </style>
