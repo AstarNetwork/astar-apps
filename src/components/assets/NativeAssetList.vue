@@ -112,7 +112,7 @@
         <!-- locked token -->
         <div>
           <div>locked</div>
-          <!-- <div class="row--icon--expand">
+          <div class="row--icon--expand">
             <div class="column--expand">
               <button
                 class="icon--expand"
@@ -127,11 +127,11 @@
                 </q-tooltip>
               </button>
             </div>
-          </div> -->
+          </div>
         </div>
 
         <div class="expand-container">
-          <div>
+          <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.transferable') }}</span>
@@ -389,6 +389,7 @@ export default defineComponent({
       isExpand,
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
+
       width,
       screenSize,
       isTruncate,
