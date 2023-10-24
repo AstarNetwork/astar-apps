@@ -97,31 +97,27 @@
         </div>
 
         <!-- Evm Deposit -->
-        <div
-          v-if="numEvmDeposit"
-          class="row--bg--extend-evm-withdraw row--details-native bg--accent"
-        >
-          <div class="row__left">
-            <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
+        <div v-if="numEvmDeposit" class="row row--transferable">
+          <div class="row__info">
+            <div class="column--label text--label">
+              {{ $t('assets.yourEvmDeposit') }}
+            </div>
+            <div v-if="!isSkeleton" class="column--balance">
+              <span class="column--amount text--amount">
+                {{ isTruncate ? $n(truncate(numEvmDeposit, 3)) : Number(numEvmDeposit) }}
+              </span>
+              <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
+            </div>
+            <div v-else>
+              <div class="skeleton--right">
+                <q-skeleton animation="fade" class="skeleton--md" />
+              </div>
+            </div>
           </div>
-          <div class="row__right row__right-collapse">
-            <div class="column--balance">
-              <div v-if="!isSkeleton" class="column__box-native">
-                <span class="text--value">
-                  <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
-                </span>
-              </div>
-              <div v-else class="column__box-native">
-                <div class="skeleton--right">
-                  <q-skeleton animation="fade" class="skeleton--md" />
-                </div>
-              </div>
-            </div>
-            <div class="column--buttons">
-              <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
-                {{ $t('assets.withdraw') }}
-              </button>
-            </div>
+          <div class="row__actions">
+            <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
+              {{ $t('assets.withdraw') }}
+            </button>
           </div>
         </div>
 
