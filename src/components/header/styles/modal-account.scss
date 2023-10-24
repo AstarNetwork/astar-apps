@@ -210,8 +210,8 @@
 }
 
 .dot {
-  position: relative;
-  top: -30px;
+  margin-top: 10px;
+  align-self: flex-start;
   height: 7px;
   width: 8px;
   border-radius: 90%;
