@@ -67,7 +67,7 @@
               </q-tooltip>
             </div>
 
-            <div v-else>
+            <!-- <div v-else>
               <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
                 <button class="btn btn--icon">
                   <astar-icon-transfer />
@@ -76,7 +76,7 @@
                   <span class="text--tooltip">{{ $t('assets.send') }}</span>
                 </q-tooltip>
               </router-link>
-            </div>
+            </div> -->
           </div>
         </div>
 
