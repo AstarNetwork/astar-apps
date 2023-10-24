@@ -109,6 +109,33 @@
           </div>
         </div>
 
+        <div class="row--bg--extend row--details-native">
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.transferable') }}</span>
+          </div>
+          <div class="row__right row__right-collapse">
+            <div class="column--balance">
+              <div v-if="!isSkeleton" class="column__box-native">
+                <span class="text--value">
+                  <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
+                </span>
+              </div>
+              <div v-else class="column__box-native">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+                <button class="btn btn--sm">
+                  {{ $t('assets.transfer') }}
+                </button>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
         <!-- locked token -->
         <div>
           <div>locked</div>
@@ -132,32 +159,6 @@
 
         <div class="expand-container">
           <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.transferable') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
-                  </div>
-                </div>
-                <div class="column--buttons">
-                  <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
-                    <button class="btn btn--sm">
-                      {{ $t('assets.transfer') }}
-                    </button>
-                  </router-link>
-                </div>
-              </div>
-            </div>
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.vesting') }}</span>
