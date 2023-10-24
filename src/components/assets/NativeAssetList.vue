@@ -156,28 +156,34 @@
               </q-tooltip>
             </button>
           </div>
-        </div>
 
-        <div class="expand-container">
-          <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.transferable') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
+          <div class="expand-container wrapper--expand">
+            <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'" class="rows--expand">
+              <!-- Transferable -->
+              <div class="row--expand">
+                <div class="row--expand__info">
+                  <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+                  <div class="column--balance">
+                    <template v-if="!isSkeleton">
+                      <div class="column--amount text--amount">
+                        {{
+                          isTruncate
+                            ? $n(truncate(transferableBalance, 3))
+                            : Number(transferableBalance)
+                        }}
+                      </div>
+                      <div class="column--symbol text--symbol">
+                        {{ nativeTokenSymbol }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="skeleton--right">
+                        <q-skeleton animation="fade" class="skeleton--md" />
+                      </div>
+                    </template>
                   </div>
                 </div>
-                <div class="column--buttons">
+                <div class="row--expand__action">
                   <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
                     <button class="btn btn--sm">
                       {{ $t('assets.transfer') }}
@@ -185,53 +191,59 @@
                   </router-link>
                 </div>
               </div>
-            </div>
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('assets.vesting') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
+
+              <!-- Vesting -->
+              <div class="row--expand">
+                <div class="row--expand__info">
+                  <div class="column--label text--label">{{ $t('assets.vesting') }}</div>
+                  <div class="column--balance">
+                    <template v-if="!isSkeleton">
+                      <div class="column--amount text--amount">
+                        {{ isTruncate ? $n(truncate(vestingTtl, 3)) : Number(vestingTtl) }}
+                      </div>
+                      <div class="column--symbol text--symbol">
+                        {{ nativeTokenSymbol }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="skeleton--right">
+                        <q-skeleton animation="fade" class="skeleton--md" />
+                      </div>
+                    </template>
                   </div>
                 </div>
-                <div class="column--buttons">
+                <div class="row--expand__action">
                   <button class="btn btn--sm" @click="handleModalVesting({ isOpen: true })">
                     {{ $t('assets.view') }}
                   </button>
                 </div>
               </div>
-            </div>
 
-            <div class="row--bg--extend row--details-native bg--accent">
-              <div class="row__left">
-                <span class="text--md">{{ $t('common.staking') }}</span>
-              </div>
-              <div class="row__right row__right-collapse">
-                <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box-native">
-                    <span class="text--value">
-                      <token-balance
-                        :balance="String(lockInDappStaking)"
-                        :symbol="nativeTokenSymbol"
-                      />
-                    </span>
-                  </div>
-                  <div v-else class="column__box-native">
-                    <div class="skeleton--right">
-                      <q-skeleton animation="fade" class="skeleton--md" />
-                    </div>
+              <!-- Staking -->
+              <div class="row--expand">
+                <div class="row--expand__info">
+                  <div class="column--label text--label">{{ $t('common.staking') }}</div>
+                  <div class="column--balance">
+                    <template v-if="!isSkeleton">
+                      <div class="column--amount text--amount">
+                        {{
+                          isTruncate
+                            ? $n(truncate(lockInDappStaking, 3))
+                            : Number(lockInDappStaking)
+                        }}
+                      </div>
+                      <div class="column--symbol text--symbol">
+                        {{ nativeTokenSymbol }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="skeleton--right">
+                        <q-skeleton animation="fade" class="skeleton--md" />
+                      </div>
+                    </template>
                   </div>
                 </div>
-                <div class="column--buttons">
+                <div class="row--expand__action">
                   <router-link :to="Path.DappStaking">
                     <button class="btn btn--sm">{{ $t('manage') }}</button>
                   </router-link>
@@ -286,7 +298,6 @@ export default defineComponent({
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
-    TokenBalance,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
