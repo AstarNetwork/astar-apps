@@ -14,17 +14,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { truncate } from '@astar-network/astar-sdk-core';
-import linksData from 'src/data/dynamic_links.json';
+import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-interface Data {
-  background: string;
-  title: string;
-  subtitle: string;
-  link: string;
-}
 
 export default defineComponent({
   components: {},
@@ -77,7 +68,6 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-// @import './styles/dynamic-links.scss';
 .wrapper--domains {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

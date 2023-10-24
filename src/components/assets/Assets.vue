@@ -22,6 +22,7 @@
       </div>
 
       <div class="column--links">
+        <ads />
         <astar-domains />
         <dynamic-links />
       </div>
@@ -31,6 +32,7 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
+import Ads from 'src/components/assets/Ads.vue';
 import AstarDomains from 'src/components/assets/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -47,6 +49,7 @@ export default defineComponent({
   components: {
     Account,
     DynamicLinks,
+    Ads,
     AstarDomains,
     EvmAssetList,
     XcmNativeAssetList,
