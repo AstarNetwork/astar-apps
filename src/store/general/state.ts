@@ -2,6 +2,7 @@ import { GasTip } from '@astar-network/astar-sdk-core';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { NftMetadata } from 'src/v2/models';
 
 export type SubstrateAccount = {
   address: string;
@@ -35,6 +36,8 @@ export type UnifiedAccount = {
   nativeAddress: string;
   evmAddress: string;
   name: string;
+  avatarUrl?: string;
+  avatarMetadata?: NftMetadata;
 };
 
 export type ConnectionType = 'connected' | 'connecting' | 'offline';

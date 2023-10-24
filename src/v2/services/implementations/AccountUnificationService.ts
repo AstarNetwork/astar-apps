@@ -5,6 +5,7 @@ import {
   WalletType,
   IAccountUnificationService,
   IGasPriceProvider,
+  IIdentityService,
 } from 'src/v2/services';
 import {
   IAccountUnificationRepository,
@@ -12,9 +13,8 @@ import {
   ISystemRepository,
 } from 'src/v2/repositories';
 import { decodeAddress } from '@polkadot/util-crypto';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { IEventAggregator } from 'src/v2/messaging';
 import { Guard } from 'src/v2/common';
-import { IdentityData } from 'src/v2/models';
 import { MetamaskWalletService } from './MetamaskWalletService';
 
 @injectable()
@@ -27,7 +27,8 @@ export class AccountUnificationService implements IAccountUnificationService {
     private unificationRepo: IAccountUnificationRepository,
     @inject(Symbols.EventAggregator) private eventAggregator: IEventAggregator,
     @inject(Symbols.EthCallRepository) private ethCallRepository: IEthCallRepository,
-    @inject(Symbols.GasPriceProvider) private gasPriceProvider: IGasPriceProvider
+    @inject(Symbols.GasPriceProvider) private gasPriceProvider: IGasPriceProvider,
+    @inject(Symbols.IdentityService) private identityService: IIdentityService
   ) {}
 
   public async unifyAccounts(
@@ -72,7 +73,7 @@ export class AccountUnificationService implements IAccountUnificationService {
         nativeAddress,
         evmAddress,
         signedPayload,
-        this.createIdentityData(accountName, avatarNftAddress, avatarNftId)
+        this.identityService.createIdentityData(accountName, avatarNftAddress, avatarNftId)
       );
       const polkadotWallet = this.walletFactory(WalletType.Polkadot);
 
@@ -97,22 +98,5 @@ export class AccountUnificationService implements IAccountUnificationService {
     Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
 
     return await this.unificationRepo.getMappedEvmAddress(nativeAddress);
-  }
-
-  private createIdentityData(
-    display: string,
-    avatarNftAddress?: string,
-    avatarNftId?: string
-  ): IdentityData {
-    const data = new IdentityData(display);
-
-    if (avatarNftAddress && avatarNftId) {
-      data.additional = [
-        { key: 'avatarNftAddress', value: avatarNftAddress },
-        { key: 'avatarNftId', value: avatarNftId },
-      ];
-    }
-
-    return data;
   }
 }
