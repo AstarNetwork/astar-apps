@@ -65,7 +65,16 @@
 
         <!-- Transferable -->
         <div class="row row--transferable">
-          <div class="row__info">
+          <div
+            class="row__info"
+            @click="
+              () =>
+                width <= screenSize.sm &&
+                (isFaucet
+                  ? handleModalFaucet({ isOpen: true })
+                  : $router.push(buildTransferPageLink(nativeTokenSymbol)))
+            "
+          >
             <div class="column--label text--label">
               {{ $t('assets.transferable') }}
             </div>
@@ -123,7 +132,7 @@
 
         <!-- Locked tokens -->
         <div class="row row--locked-tokens">
-          <div class="row__info">
+          <div class="row__info" @click="width <= screenSize.sm && expandAsset(isExpand)">
             <div class="column--label text--label">
               {{ $t('assets.lockedTokens') }}
             </div>
@@ -194,7 +203,10 @@
 
               <!-- Vesting -->
               <div class="row--expand">
-                <div class="row--expand__info">
+                <div
+                  class="row--expand__info"
+                  @click="width <= screenSize.sm && handleModalVesting({ isOpen: true })"
+                >
                   <div class="column--label text--label">{{ $t('assets.vesting') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
@@ -221,7 +233,10 @@
 
               <!-- Staking -->
               <div class="row--expand">
-                <div class="row--expand__info">
+                <div
+                  class="row--expand__info"
+                  @click="() => width <= screenSize.sm && $router.push(Path.DappStaking)"
+                >
                   <div class="column--label text--label">{{ $t('common.staking') }}</div>
                   <div class="column--balance">
                     <template v-if="!isSkeleton">
