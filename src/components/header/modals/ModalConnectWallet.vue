@@ -42,7 +42,7 @@
           <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
-            :disabled="checkIsDisabledWallet(wallet.source)"
+            :disabled="checkIsDisabledWallet(wallet.source) || isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
             @click="!checkIsDisabledWallet(wallet.source) && setSubstrateWalletModal(wallet.source)"
@@ -214,7 +214,7 @@ export default defineComponent({
     const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } =
       useAccount();
     const isClosing = ref<boolean>(false);
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -331,6 +331,7 @@ export default defineComponent({
       setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,
+      isZkEvm,
       isAccountUnification,
     };
   },

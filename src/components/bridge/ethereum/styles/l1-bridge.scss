@@ -1,0 +1,191 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--l1-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box--input-field {
+  display: grid;
+  row-gap: 12px;
+  padding: 9px 15px;
+  border-radius: 6px;
+  height: 88px;
+  background: transparent;
+
+  border: 1px solid $navy-1;
+  @media (min-width: $xs) {
+    width: 344px;
+  }
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+
+.rows {
+  display: grid;
+  row-gap: 16px;
+  margin-bottom: 8px;
+}
+
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+
+.box__row {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.box__space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.box__available {
+  display: flex;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.wrapper__row--button {
+  display: flex;
+  justify-content: center;
+}
+
+.box__column--input-amount {
+  justify-self: flex-end;
+  width: 100%;
+  display: grid;
+}
+
+.text--to--balance {
+  font-weight: 400;
+  font-size: 12px;
+  color: $gray-4;
+}
+
+.text--available {
+  color: $astar-blue;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.input--amount {
+  width: 180px;
+  font-size: 22px;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-weight: 600;
+  color: $navy-1;
+  justify-self: flex-end;
+  @media (min-width: $md) {
+    width: 250px;
+  }
+}
+
+.token-logo {
+  width: 24px;
+  height: 24px;
+  img {
+    border-radius: 50%;
+  }
+}
+
+.btn-size-adjust {
+  width: 100%;
+  @media (min-width: $xs) {
+    width: 344px;
+  }
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+
+.icon--expand {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button--confirm {
+  margin-top: 24px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
+.row--reverse {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-top: 16px;
+}
+
+.icon--reverse {
+  position: absolute;
+  height: 32px;
+  width: 32px;
+  padding: 4px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid $gray-4;
+  cursor: pointer !important;
+  margin-top: -24px;
+  background: transparent;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue !important;
+    color: $astar-blue;
+    transition: all 0.3s ease 0s;
+  }
+}
+
+.body--dark {
+  .box--input-field,
+  .icon--reverse {
+    background: transparent;
+    border: 1px solid $gray-3;
+  }
+  input {
+    color: white;
+  }
+
+  .row--box-error {
+    background: $box-red-dark;
+  }
+}
+
+.container--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  border: 1px solid $border-yellow;
+  padding: 8px 0;
+  padding-left: 24px;
+  width: 344px;
+  border-radius: 6px;
+  background: $transparent-yellow;
+  color: $warning-yellow;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+}

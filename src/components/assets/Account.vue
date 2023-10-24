@@ -66,6 +66,7 @@
       </div>
       <div v-if="isH160">
         <evm-native-token />
+        <zk-astr v-if="isZkEvm" />
       </div>
       <div v-if="multisig" class="row--details-signatory">
         <div class="column-account-name">
@@ -85,36 +86,36 @@
   </div>
 </template>
 <script lang="ts">
-import { isValidEvmAddress, getShortenAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { supportWalletObj } from 'src/config/wallets';
 import {
+  ETHEREUM_EXTENSION,
   useAccount,
-  useAccountUnification,
   useBalance,
   useNetworkInfo,
   usePrice,
   useWalletIcon,
+  useAccountUnification,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { supportWalletObj } from 'src/config/wallets';
-import AuIcon from '../header/modals/account-unification/AuIcon.vue';
 
 export default defineComponent({
   components: {
     NativeAssetList,
     EvmNativeToken,
-    AuIcon,
+    ZkAstr,
   },
   props: {
     ttlErc20Amount: {
@@ -136,6 +137,7 @@ export default defineComponent({
       showAccountUnificationModal,
       isAccountUnification,
     } = useAccount();
+
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -149,7 +151,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -255,6 +257,7 @@ export default defineComponent({
       isAccountUnification,
       unifiedAccount,
       isAccountUnified,
+      isZkEvm,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

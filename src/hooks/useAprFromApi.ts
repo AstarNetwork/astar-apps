@@ -7,13 +7,13 @@ import { useNetworkInfo } from './useNetworkInfo';
 export const useAprFromApi = () => {
   const stakerApr = ref<number>(0);
   const stakerApy = ref<number>(0);
-  const { currentNetworkName } = useNetworkInfo();
+  const { networkNameSubstrate } = useNetworkInfo();
   const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
 
   watchEffect(async () => {
     try {
-      if (currentNetworkName.value) {
-        const result = await repository.getApr(currentNetworkName.value);
+      if (networkNameSubstrate.value) {
+        const result = await repository.getApr(networkNameSubstrate.value);
         stakerApr.value = result.apr;
         stakerApy.value = result.apy;
       }

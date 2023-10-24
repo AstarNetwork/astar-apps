@@ -55,6 +55,7 @@ export const meta = {
       registerDapp: 'Register dApp',
       stake: 'Stake',
     },
+    bridge: 'Bridge assets',
   },
   description: {
     assets: `${networkName} Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Asset page provides seem less cross-chain transfers using Polkadot unique technology XCM as well as newly invented Cross Virtual Machine technology XVM.`,
@@ -102,6 +103,12 @@ export const generateMeta = (path: Path, ogImageUrl?: string): MetaData => {
     case Path.Transfer:
       return buildMeta({
         title: meta.title.assets.transfer,
+        content: meta.description.assets,
+      });
+
+    case Path.Bridge:
+      return buildMeta({
+        title: meta.title.bridge,
         content: meta.description.assets,
       });
 

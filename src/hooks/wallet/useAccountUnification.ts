@@ -17,7 +17,7 @@ import ABI from 'src/config/abi/ERC20.json';
 import { setupNetwork } from 'src/config/web3';
 import { MyStakeInfo, useCurrentEra } from 'src/hooks';
 import { useAccount } from 'src/hooks/useAccount';
-import { getBlockscoutTx } from 'src/links';
+import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AlertMsg } from 'src/modules/toast';
 import { useStore } from 'src/store';
@@ -298,8 +298,8 @@ export const useAccountUnification = () => {
             })
           );
         })
-        .then(({ transactionHash }) => {
-          const explorerUrl = getBlockscoutTx(transactionHash);
+        .then(async ({ transactionHash }) => {
+          const explorerUrl = await getEvmExplorerUrl(transactionHash, web3.value as Web3);
           eventAggregator.publish(
             new ExtrinsicStatusMessage({
               success: true,

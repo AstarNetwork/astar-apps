@@ -5,11 +5,11 @@
       <register />
       <dynamic-ads-area />
 
-      <div class="container--divider">
+      <div v-if="!isZkEvm" class="container--divider">
         <div class="divider" />
       </div>
-      <my-staking />
-      <div class="container--divider">
+      <my-staking v-if="!isZkEvm" />
+      <div v-if="!isZkEvm" class="container--divider">
         <div class="divider" />
       </div>
       <on-chain-data />
@@ -58,16 +58,29 @@ export default defineComponent({
     useMeta(generateMeta(Path.Discover));
     const store = useStore();
     const { isReady } = usePageReady();
+    const { t } = useI18n();
     useDispatchGetDapps();
 
-    const { t } = useI18n();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const { isZkEvm } = useNetworkInfo();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
     const handlePageLoading = (): void => {
       const isLoad = dapps.value.length === 0;
       store.commit('general/setLoading', isLoad);
     };
+
+    watch(
+      [isZkEvm],
+      () => {
+        if (isZkEvm.value) {
+          store.dispatch('general/showAlertMsg', {
+            msg: t('dappStaking.error.notSupportZkEvm'),
+            alertType: 'error',
+          });
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       [dapps],
@@ -81,7 +94,7 @@ export default defineComponent({
       store.dispatch('dapps/getTvl');
     });
 
-    return { isReady };
+    return { isReady, isZkEvm };
   },
 });
 </script>

@@ -12,7 +12,7 @@
     <dapp-stats-charts :dapp="dapp" />
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :height="28" class="btn--stake-switch">
+        <astar-irregular-button :height="28" class="btn--stake-switch" :disabled="isZkEvm">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -53,7 +53,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const { currentNetworkName } = useNetworkInfo();
+    const { currentNetworkName, isZkEvm } = useNetworkInfo();
     useDappRedirect();
     useDispatchGetDapps();
     const store = useStore();
@@ -122,6 +122,7 @@ export default defineComponent({
       goLink,
       buildStakePageLink,
       isH160,
+      isZkEvm,
     };
   },
 });
