@@ -49,7 +49,7 @@
                 ]"
               >
                 <astar-radio-btn
-                  :checked="index === previousSelIdx"
+                  :checked="selAccount === account.address"
                   class="radio-btn"
                   @change="selAccount = account.address"
                 />
