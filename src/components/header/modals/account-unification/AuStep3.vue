@@ -20,7 +20,7 @@
             :placeholder="$t('wallet.unifiedAccount.unifiedAccountName')"
             :maxlength="32"
             :value="accountName"
-            @input="(event) => updateAccountName(event)"
+            @input="(event) => setAccountName(event)"
           />
         </div>
       </div>
@@ -30,9 +30,9 @@
         <div class="label">
           {{ $t('wallet.unifiedAccount.accountIcon') }}
         </div>
-        <!-- TODO: open the select NFT modal (SelectNft.vue) -->
-        <button type="button" class="box--account-icon">
-          <jazzicon :address="currentAccount" :diameter="32" class="icon" />
+        <button type="button" class="box--account-icon" @click="selectNft">
+          <img v-if="avatar?.image" :src="avatar.image" class="icon" />
+          <jazzicon v-else :address="currentAccount" :diameter="32" class="icon" />
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <div>
       <astar-button
         class="btn"
-        :disabled="accountName === '' || isFetchingXc20Tokens || !accountNameSet"
+        :disabled="accountName === '' || isFetchingXc20Tokens || isBusy"
         @click="next()"
         >{{ isEdit ? $t('wallet.unifiedAccount.save') : $t('next') }}</astar-button
       >
@@ -51,7 +51,8 @@
 
 <script lang="ts">
 import { useAccount } from 'src/hooks';
-import { defineComponent, ref } from 'vue';
+import { NftMetadata } from 'src/v2/models';
+import { defineComponent, ref, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -73,35 +74,40 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isBusy: {
+      type: Boolean,
+      required: true,
+    },
     isEdit: {
       type: Boolean,
       default: false,
     },
+    avatar: {
+      type: Object as PropType<NftMetadata | undefined>,
+      default: undefined,
+    },
   },
-  emits: ['next'],
+  emits: ['next', 'onSelectNft'],
   setup(props, { emit }) {
     const next = () => {
       emit('next');
     };
 
+    const selectNft = () => {
+      emit('onSelectNft');
+    };
+
     const { currentAccount } = useAccount();
-    const accountNameSet = ref<boolean>(false);
 
     const icon_img = {
       metamask: require('/src/assets/img/metamask.png'),
     };
 
-    const updateAccountName = (event: any): void => {
-      accountNameSet.value = true;
-      props.setAccountName(event);
-    };
-
     return {
       icon_img,
       currentAccount,
-      accountNameSet,
       next,
-      updateAccountName,
+      selectNft,
     };
   },
 });

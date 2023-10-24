@@ -12,6 +12,9 @@ import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
+import { INftRepository } from 'src/v2/repositories';
+import { useNft } from './useNft';
+import { NftMetadata } from 'src/v2/models';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -20,7 +23,8 @@ const DELAY = 100;
 
 export const useAccount = () => {
   const store = useStore();
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { getProxiedUrl } = useNft();
+  const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -82,20 +86,42 @@ export const useAccount = () => {
 
     if (mapped) {
       const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);
+      const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
       const identity = await identityRepository.getIdentity(isEvmAddress ? mapped : address);
       const name = identity?.display || '';
+
+      let avatarUrl: string | undefined;
+      let nft: NftMetadata | undefined;
+
+      const avatarContractAddress = identity?.getAvatarContractAddress();
+      const avatarTokenId = identity?.getAvatarTokenId();
+      if (avatarContractAddress && avatarTokenId) {
+        nft = await nftRepository.getNftMetadata(
+          currentNetworkName.value.toLowerCase(),
+          avatarContractAddress,
+          avatarTokenId
+        );
+
+        if (nft) {
+          avatarUrl = getProxiedUrl(nft.image);
+        }
+      }
 
       if (isValidEvmAddress(address)) {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: mapped,
           evmAddress: address,
           name,
+          avatarUrl,
+          avatarMetadata: { ...nft, image: avatarUrl },
         });
       } else {
         store.commit('general/setUnifiedAccount', {
           nativeAddress: address,
           evmAddress: mapped,
           name,
+          avatarUrl,
+          avatarMetadata: { ...nft, image: avatarUrl },
         });
       }
     } else {

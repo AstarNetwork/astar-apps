@@ -11,6 +11,14 @@ export class IdentityData {
     this.display = display;
     this.additional = additional;
   }
+
+  getAvatarContractAddress(): string | undefined {
+    return this.additional?.find((x) => x.key === 'avatarNftAddress')?.value;
+  }
+
+  getAvatarTokenId(): string | undefined {
+    return this.additional?.find((x) => x.key === 'avatarNftId')?.value;
+  }
 }
 
 export interface Deposit {

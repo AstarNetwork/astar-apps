@@ -8,11 +8,15 @@
     @close="closeModal"
   >
     <div class="wrapper--modal-account">
-      <div v-if="currentStep === 1">
+      <div v-if="currentStep === UnificationSteps.Welcome">
         <au-step1-evm v-if="isH160" :handle-back="backModal" />
-        <au-step1-native v-else :total-cost="totalCost" @next="updateSteps(2)" />
+        <au-step1-native
+          v-else
+          :total-cost="totalCost"
+          @next="updateSteps(UnificationSteps.ConnectMetamask)"
+        />
       </div>
-      <div v-else-if="currentStep === 2">
+      <div v-else-if="currentStep === UnificationSteps.ConnectMetamask">
         <au-step2
           :selected-evm-address="selectedEvmAddress"
           :is-connected-network="isConnectedNetwork"
@@ -20,58 +24,76 @@
           :is-loading-dapp-staking="isLoadingDappStaking"
           :set-web3="setWeb3"
           :close-modal="closeModal"
-          @next="updateSteps(3)"
+          @next="updateSteps(UnificationSteps.SetNameAndAvatar)"
         />
       </div>
-      <div v-else-if="currentStep === 3">
+      <div v-else-if="currentStep === UnificationSteps.SetNameAndAvatar">
         <au-step3
           :account-name="accountName"
           :set-account-name="setAccountName"
           :selected-evm-address="selectedEvmAddress"
           :is-fetching-xc20-tokens="isFetchingXc20Tokens"
           :is-edit="false"
-          @next="updateSteps(transferXc20Tokens.length > 0 ? 4 : 5)"
+          :is-busy="isLoading"
+          :avatar="avatar"
+          @next="
+            updateSteps(
+              transferXc20Tokens.length > 0
+                ? UnificationSteps.TransferXC20
+                : UnificationSteps.Overview
+            )
+          "
+          @on-select-nft="updateSteps(UnificationSteps.SelectAvatar)"
         />
       </div>
-      <div v-else-if="currentStep === 100 && unifiedAccount">
+      <div v-else-if="currentStep === UnificationSteps.EditIdentity && unifiedAccount">
         <au-step3
           :account-name="accountName"
           :set-account-name="setAccountName"
           :selected-evm-address="unifiedAccount.evmAddress"
           :is-fetching-xc20-tokens="false"
           :is-edit="true"
+          :is-busy="isLoading"
+          :avatar="avatar"
           @next="updateSteps(101)"
+          @on-select-nft="updateSteps(UnificationSteps.SelectAvatar)"
         />
       </div>
-      <div v-else-if="currentStep === 4">
-        <step4
-          :transfer-xc20-tokens="transferXc20Tokens"
-          :handle-transfer-xc20-tokens="handleTransferXc20Tokens"
-          :is-sending-xc20-tokens="isSendingXc20Tokens"
-          @next="updateSteps(5)"
-        />
+      <div v-else-if="currentStep === UnificationSteps.TransferXC20">
         <au-step4
           :transfer-xc20-tokens="transferXc20Tokens"
           :handle-transfer-xc20-tokens="handleTransferXc20Tokens"
           :is-sending-xc20-tokens="isSendingXc20Tokens"
-          @next="updateSteps(5)"
+          @next="updateSteps(UnificationSteps.Overview)"
         />
       </div>
-      <div v-else-if="currentStep === 5">
+      <div v-else-if="currentStep === UnificationSteps.Overview">
         <au-step5
           :account-name="accountName"
           :selected-evm-address="selectedEvmAddress"
+          :avatar-url="avatar?.image ?? ''"
           :is-busy="isLoading"
-          @next="updateSteps(6)"
+          @next="updateSteps(UnificationSteps.Success)"
         />
       </div>
-      <div v-else-if="currentStep === 6">
+      <div v-else-if="currentStep === UnificationSteps.Success">
         <au-step6 />
+      </div>
+      <div v-else-if="currentStep === UnificationSteps.SelectAvatar">
+        <select-nft
+          :evm-address="unifiedAccount ? unifiedAccount.evmAddress : selectedEvmAddress"
+          :avatar-metadata="avatar"
+          @next="setAvatar"
+        />
       </div>
       <div v-else>
         <user-account
           :set-account-name="setAccountName"
-          @next="unifiedAccount ? updateSteps(100) : updateSteps(1)"
+          @next="
+            unifiedAccount
+              ? updateSteps(UnificationSteps.EditIdentity)
+              : updateSteps(UnificationSteps.Welcome)
+          "
         />
       </div>
     </div>
@@ -91,7 +113,20 @@ import AuStep3 from 'src/components/header/modals/account-unification/AuStep3.vu
 import AuStep4 from 'src/components/header/modals/account-unification/AuStep4.vue';
 import AuStep5 from 'src/components/header/modals/account-unification/AuStep5.vue';
 import AuStep6 from 'src/components/header/modals/account-unification/AuStep6.vue';
-import { UnifiedAccount } from 'src/store/general/state';
+import SelectNft from './account-unification/SelectNft.vue';
+import { NftMetadata } from 'src/v2/models';
+
+enum UnificationSteps {
+  Welcome = 1,
+  ConnectMetamask = 2,
+  SetNameAndAvatar = 3,
+  TransferXC20 = 4,
+  Overview = 5,
+  Success = 6,
+  EditIdentity = 100,
+  ExecuteUpdateIdentity = 101,
+  SelectAvatar = 200,
+}
 
 export default defineComponent({
   components: {
@@ -103,6 +138,7 @@ export default defineComponent({
     AuStep4,
     AuStep5,
     AuStep6,
+    SelectNft,
   },
   props: {
     isOpen: {
@@ -122,9 +158,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const totalCost = ref<string>('');
-    const unifiedAccount = computed<UnifiedAccount>(
-      () => store.getters['general/getUnifiedAccount']
-    );
+    const avatar = ref<NftMetadata | undefined>(undefined);
 
     const {
       selectedEvmAddress,
@@ -135,6 +169,7 @@ export default defineComponent({
       isLoadingDappStaking,
       accountName,
       isSendingXc20Tokens,
+      unifiedAccount,
       setAccountName,
       setWeb3,
       handleTransferXc20Tokens,
@@ -171,28 +206,47 @@ export default defineComponent({
 
     onMounted(async () => {
       totalCost.value = await getCost();
+
+      if (unifiedAccount.value?.avatarMetadata) {
+        avatar.value = unifiedAccount.value?.avatarMetadata;
+      }
     });
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);
     });
 
+    const setAvatar = async (nft: NftMetadata): Promise<void> => {
+      avatar.value = nft;
+      await updateSteps(
+        unifiedAccount.value ? UnificationSteps.EditIdentity : UnificationSteps.SetNameAndAvatar
+      );
+    };
+
     const updateSteps = async (step: number): Promise<void> => {
-      if (step === 6) {
+      if (step === UnificationSteps.Success) {
         // Make a call to unify accounts
         const success = await unifyAccounts(
           currentAccount.value,
           selectedEvmAddress.value,
-          accountName.value
+          accountName.value,
+          avatar.value?.contractAddress,
+          avatar.value?.tokenId
         );
 
         if (!success) {
           return;
         }
-      } else if (step === 101) {
-        // Make a call to update unified account identity
-        await updateAccount(unifiedAccount.value.nativeAddress, accountName.value);
-        await checkIfUnified(unifiedAccount.value.nativeAddress);
+      } else if (step === UnificationSteps.ExecuteUpdateIdentity) {
+        if (unifiedAccount.value) {
+          await updateAccount(
+            unifiedAccount.value.nativeAddress,
+            accountName.value,
+            avatar.value?.contractAddress,
+            avatar.value?.tokenId
+          );
+          await checkIfUnified(unifiedAccount.value?.nativeAddress);
+        }
       }
 
       currentStep.value = step;
@@ -204,24 +258,26 @@ export default defineComponent({
     const { t } = useI18n();
 
     const modalTitle = computed((): string => {
-      if (currentStep.value === 1) {
+      if (currentStep.value === UnificationSteps.Welcome) {
         if (isH160.value) {
           return t('wallet.unifiedAccount.create');
         } else {
           return t('wallet.unifiedAccount.readCarefully');
         }
-      } else if (currentStep.value === 2) {
+      } else if (currentStep.value === UnificationSteps.ConnectMetamask) {
         return `${t('wallet.unifiedAccount.create')} : 1`;
-      } else if (currentStep.value === 3) {
+      } else if (currentStep.value === UnificationSteps.SetNameAndAvatar) {
         return `${t('wallet.unifiedAccount.create')} : 2`;
-      } else if (currentStep.value === 4) {
+      } else if (currentStep.value === UnificationSteps.TransferXC20) {
         return `${t('wallet.unifiedAccount.create')} : 3`;
-      } else if (currentStep.value === 5) {
+      } else if (currentStep.value === UnificationSteps.Overview) {
         return `${t('wallet.unifiedAccount.create')} : 4`;
-      } else if (currentStep.value === 6) {
+      } else if (currentStep.value === UnificationSteps.Success) {
         return '';
-      } else if (currentStep.value === 100) {
+      } else if (currentStep.value === UnificationSteps.EditIdentity) {
         return t('wallet.unifiedAccount.editUnifiedAccount');
+      } else if (currentStep.value === UnificationSteps.SelectAvatar) {
+        return t('wallet.unifiedAccount.selectAvatar');
       } else {
         return t('wallet.unifiedAccount.yourAccount');
       }
@@ -245,12 +301,15 @@ export default defineComponent({
       isLoading,
       totalCost,
       unifiedAccount,
+      avatar,
       closeModal,
       backModal,
       updateSteps,
       setWeb3,
       setAccountName,
       handleTransferXc20Tokens,
+      setAvatar,
+      UnificationSteps,
     };
   },
 });

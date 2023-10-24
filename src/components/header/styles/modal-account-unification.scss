@@ -39,14 +39,15 @@
   line-height: 24px;
   font-weight: 700;
   margin-bottom: 8px;
-  .text--account-name__icon {
-    margin-right: 12px;
-    height: 32px;
-    width: 32px;
-    flex-shrink: 0;
-    border-radius: 9999px;
-    object-fit: cover;
-  }
+}
+
+.text--account-name__icon {
+  margin-right: 6px;
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  object-fit: cover;
 }
 
 .box--wallet-list {
@@ -275,8 +276,8 @@
     }
     .icon {
       margin-right: 12px;
-      height: 32px;
-      width: 32px;
+      height: 48px;
+      width: 48px;
       flex-shrink: 0;
       border-radius: 9999px;
       object-fit: cover;
