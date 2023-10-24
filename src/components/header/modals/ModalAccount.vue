@@ -53,53 +53,25 @@
                   class="radio-btn"
                   @change="selAccount = account.address"
                 />
-                <div class="wrapper--account-detail">
-                  <div class="box--account">
-                    <div class="row--account">
-                      <div class="account-name">
-                        <span>
-                          {{ account.name }}
-                        </span>
-                      </div>
-                      <div class="address">
-                        <span>
-                          {{ getShortenAddress(account.address, 4) }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="row--balance-icons">
-                      <div>
-                        <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
-                          {{ $n(displayBalance(account.address)) }}
-                          {{ nativeTokenSymbol }}
-                        </span>
-                        <span v-else class="text--balance-hide">
-                          ----- {{ nativeTokenSymbol }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="icons">
-                    <button class="box--share btn--primary" @click="copyAddress(account.address)">
-                      <div class="icon--primary">
-                        <astar-icon-copy />
-                      </div>
-                      <q-tooltip>
-                        <span class="text--tooltip">{{ $t('copy') }}</span>
-                      </q-tooltip>
-                    </button>
-                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
-                      <button class="box--share btn--primary">
-                        <div class="icon--primary">
-                          <astar-icon-external-link />
-                        </div>
-                        <q-tooltip>
-                          <span class="text--tooltip">{{ $t('subscan') }}</span>
-                        </q-tooltip>
-                      </button>
-                    </a>
-                  </div>
-                </div>
+                <account
+                  v-if="!account.evmAddress"
+                  :account-name="account.name"
+                  :account-address="account.address"
+                  :explorer-url="subScan"
+                  :native-token-symbol="nativeTokenSymbol"
+                  :show-balance-value="isShowBalance && !isLoadingBalance"
+                  :get-balance="displayBalance"
+                />
+                <unified-account
+                  v-else
+                  :native-address="account.address"
+                  :evm-address="account.evmAddress ?? ''"
+                  :account-name="account.name"
+                  :show-balance="isShowBalance && !isLoadingBalance"
+                  :native-token-symbol="nativeTokenSymbol"
+                  :explorer-url="subScan"
+                  :get-balance="displayBalance"
+                />
                 <div v-if="index === previousSelIdx" class="dot" />
               </label>
             </li>
@@ -149,13 +121,17 @@ import { useI18n } from 'vue-i18n';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
 import { astarChain } from 'src/config/chain';
-import { IAccountUnificationRepository } from 'src/v2/repositories';
+import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { container } from 'src/v2/common';
+import UnifiedAccount from './UnifiedAccount.vue';
+import Account from './Account.vue';
 
 export default defineComponent({
   components: {
     SelectedWallet,
+    UnifiedAccount,
+    Account,
   },
   props: {
     isOpen: {
@@ -301,17 +277,21 @@ export default defineComponent({
 
     const updateAccountMap = async (): Promise<void> => {
       isLoadingBalance.value = true;
-      const repository = container.get<IAccountUnificationRepository>(
+      const auRepository = container.get<IAccountUnificationRepository>(
         Symbols.AccountUnificationRepository
       );
+      const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
       const updatedAccountMap = await Promise.all(
         substrateAccountsAll.value.map(async (it) => {
           const balance = await fetchNativeBalance({
             api: $api as ApiPromise,
             address: it.address,
           });
-          const evmAddress = await repository.getMappedEvmAddress(it.address);
-          return { ...it, balance, evmAddress };
+          const [evmAddress, identity] = await Promise.all([
+            auRepository.getMappedEvmAddress(it.address),
+            identityRepository.getIdentity(it.address),
+          ]);
+          return { ...it, balance, evmAddress, name: identity?.display ?? it.name };
         })
       );
       // Memo: we use local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
