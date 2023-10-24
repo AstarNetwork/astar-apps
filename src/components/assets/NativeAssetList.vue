@@ -99,10 +99,18 @@
               </div>
             </div>
             <div class="column--buttons">
-              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+              <!-- <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
                 <button class="btn btn--sm">
                   {{ $t('assets.transfer') }}
                 </button>
+              </router-link> -->
+              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+                <button class="btn btn--icon">
+                  <astar-icon-transfer />
+                </button>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t('assets.send') }}</span>
+                </q-tooltip>
               </router-link>
             </div>
           </div>
