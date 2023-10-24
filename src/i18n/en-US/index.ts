@@ -105,6 +105,7 @@ export default {
     instagram: 'Instagram',
     youtube: 'YouTube',
     docs: 'Documentation',
+    loading: 'Loading...',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -147,6 +148,7 @@ export default {
     shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
     takeLongerTimeToConnect: 'It might take a longer time to load data from chains',
     takeLongerTimeToSend: 'It might take a longer time or fail in sending transactions',
+    zkNetworkTip: 'Please connect to EVM wallets first',
   },
   wallet: {
     connectWallet: 'Connect Wallet',
@@ -212,14 +214,8 @@ export default {
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
       congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
-      needHelp: 'Need help?',
-      whichAddress: {
-        q: 'I don’t know which address I need to use?',
-        a: 'You don’t need to think of which one, balance of the both accounts are the same. You don’t need to think of which one, balance of the both accounts are the same.',
-      },
-      userTutorials: 'User tutorials',
-      aboutForUsers: 'About the unified accounts for users',
-      techDocs: 'Tech docs',
+      onlyShibuya: 'This feature is only available for Shibuya testnet.',
+      userTutorials: 'Documentation and tutorials',
       sendingXc20: 'Start sending XC20 tokens, please wait...',
       editUnifiedAccount: 'Edit Unified Account',
       save: 'Save',
@@ -419,6 +415,7 @@ export default {
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      notSupportZkEvm: "dApp staking doesn't support zkEVM networks",
       notEnoughMinAmount:
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
@@ -654,5 +651,33 @@ export default {
     set forth above. If you do not agree, please click "Decline."`,
     agree: 'Agree',
     decline: 'Decline',
+  },
+  bridge: {
+    bridge: 'Bridge',
+    history: 'Recent History',
+    actionRequired: 'Action Required',
+    claim: 'Claim',
+    noHistory: 'No histories found',
+    completed: 'Completed',
+    inProgress: 'In Progress',
+    ethereumBridge: {
+      title: 'Ethereum Bridge',
+      text: 'Bridge assets between {l1} and {l2}',
+      text2:
+        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH.',
+      lean: '(learn more)',
+    },
+    astarBridge: {
+      title: 'Astar Bridge',
+      text: 'Bridge ASTR token and assets to {l2} from {substrateNetwork} EVM',
+      text2: 'Currently under development',
+    },
+    celetBridge: {
+      title: 'Celer Bridge',
+      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
+    },
+    warning32blocks: 'It could take around 10min or more to finalise (32blocks)',
+    warning2steps:
+      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side. (Available in Recent History)',
   },
 };

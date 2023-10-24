@@ -4,7 +4,7 @@ import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer'
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { getBlockscoutTx, getSubscanExtrinsic } from 'src/links';
+import { getEvmExplorerUrl, getSubscanExtrinsic } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -146,8 +146,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })
-        .then(({ transactionHash }) => {
-          const explorerUrl = getBlockscoutTx(transactionHash);
+        .then(async ({ transactionHash }) => {
+          const explorerUrl = await getEvmExplorerUrl(transactionHash, web3);
           this.eventAggregator.publish(new BusyMessage(false));
           this.eventAggregator.publish(
             new ExtrinsicStatusMessage({

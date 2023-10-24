@@ -27,6 +27,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native-token">
+            <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
+              <button class="btn btn--sm">
+                {{ $t('assets.bridge') }}
+              </button>
+            </router-link>
             <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
@@ -43,8 +48,13 @@
                 {{ $t('assets.bridge') }}
               </button>
             </a>
+            <a v-if="isZkatana" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
+              <button class="btn btn--sm">
+                {{ $t('assets.faucet') }}
+              </button>
+            </a>
             <button
-              v-if="isFaucet"
+              v-else-if="isFaucet"
               class="btn btn--sm"
               @click="handleModalFaucet({ isOpen: true })"
             >
@@ -66,9 +76,10 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, usePrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
-import { buildTransferPageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { faucetSethLink } from 'src/links';
 
 export default defineComponent({
   components: { ModalFaucet, TokenBalance },
@@ -80,7 +91,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
     const store = useStore();
@@ -88,7 +99,11 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+      getTokenImage({
+        isNativeToken: true,
+        symbol: nativeTokenSymbol.value,
+        isZkEvm: isZkEvm.value,
+      })
     );
 
     const updateStates = async (nativeTokenUsd: number): Promise<void> => {
@@ -126,8 +141,12 @@ export default defineComponent({
       cbridgeAppLink,
       isFaucet,
       isModalFaucet,
+      isZkEvm,
+      isZkatana,
+      faucetSethLink,
       handleModalFaucet,
       buildTransferPageLink,
+      buildEthereumBridgePageLink,
     };
   },
 });
