@@ -110,12 +110,14 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AuIcon from '../header/modals/account-unification/AuIcon.vue';
 
 export default defineComponent({
   components: {
     NativeAssetList,
     EvmNativeToken,
     ZkAstr,
+    AuIcon,
   },
   props: {
     ttlErc20Amount: {

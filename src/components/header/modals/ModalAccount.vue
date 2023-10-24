@@ -70,6 +70,7 @@
                   :show-balance="isShowBalance && !isLoadingBalance"
                   :native-token-symbol="nativeTokenSymbol"
                   :explorer-url="subScan"
+                  :avatar-url="account.avatarUrl ?? ''"
                   :get-balance="displayBalance"
                 />
                 <div v-if="index === previousSelIdx" class="dot" />
@@ -118,12 +119,9 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useAccount } from 'src/hooks';
 import { Ledger } from '@polkadot/hw-ledger';
 import { astarChain } from 'src/config/chain';
-import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
-import { Symbols } from 'src/v2/symbols';
-import { container } from 'src/v2/common';
 import UnifiedAccount from './UnifiedAccount.vue';
 import Account from './Account.vue';
 
@@ -186,6 +184,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
     const { currentNetworkChain } = useNetworkInfo();
+    const { checkIfUnified } = useAccount();
 
     const substrateAccounts = computed<SubstrateAccount[]>(() => {
       const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
@@ -277,21 +276,23 @@ export default defineComponent({
 
     const updateAccountMap = async (): Promise<void> => {
       isLoadingBalance.value = true;
-      const auRepository = container.get<IAccountUnificationRepository>(
-        Symbols.AccountUnificationRepository
-      );
-      const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
       const updatedAccountMap = await Promise.all(
         substrateAccountsAll.value.map(async (it) => {
-          const balance = await fetchNativeBalance({
-            api: $api as ApiPromise,
-            address: it.address,
-          });
-          const [evmAddress, identity] = await Promise.all([
-            auRepository.getMappedEvmAddress(it.address),
-            identityRepository.getIdentity(it.address),
+          const [balance, unifiedAccount] = await Promise.all([
+            fetchNativeBalance({
+              api: $api as ApiPromise,
+              address: it.address,
+            }),
+            checkIfUnified(it.address, false),
           ]);
-          return { ...it, balance, evmAddress, name: identity?.display ?? it.name };
+
+          return {
+            ...it,
+            balance,
+            evmAddress: unifiedAccount?.evmAddress,
+            name: unifiedAccount?.name ?? it.name,
+            avatarUrl: unifiedAccount?.avatarUrl,
+          };
         })
       );
       // Memo: we use local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer

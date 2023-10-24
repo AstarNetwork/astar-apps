@@ -1,6 +1,7 @@
 <template>
   <div class="container--account">
-    <div class="row--account">
+    <div class="row--icon">
+      <au-icon :icon-url="avatarUrl" :native-address="nativeAddress" class="icon" />
       <div class="account-name">
         {{ accountName }}
       </div>
@@ -41,15 +42,17 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import Account from './Account.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
+import AuIcon from './account-unification/AuIcon.vue';
 
 export default defineComponent({
   components: {
     Account,
+    AuIcon,
   },
   props: {
     accountName: {
@@ -73,6 +76,10 @@ export default defineComponent({
       required: true,
     },
     explorerUrl: {
+      type: String,
+      required: true,
+    },
+    avatarUrl: {
       type: String,
       required: true,
     },
@@ -134,5 +141,14 @@ export default defineComponent({
 .row--balance {
   margin-top: 6px;
   margin-bottom: 16px;
+}
+
+.row--icon {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 12px;
 }
 </style>
