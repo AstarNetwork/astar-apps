@@ -42,9 +42,8 @@
               </div>
             </div>
 
-            <div v-if="isFaucet">
+            <!-- <div v-if="isFaucet">
               <button class="btn btn--icon" @click="handleModalFaucet({ isOpen: true })">
-                <!-- TODO: will move icon to AstarUI -->
                 <svg
                   width="24"
                   height="24"
@@ -65,7 +64,7 @@
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('assets.faucet') }}</span>
               </q-tooltip>
-            </div>
+            </div> -->
 
             <!-- <div v-else>
               <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
