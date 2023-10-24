@@ -24,7 +24,6 @@
       <div class="column--links">
         <ads />
         <astar-domains />
-        <dynamic-links />
       </div>
     </div>
   </div>
@@ -48,7 +47,6 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
-    DynamicLinks,
     Ads,
     AstarDomains,
     EvmAssetList,

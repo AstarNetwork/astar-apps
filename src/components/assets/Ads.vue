@@ -19,14 +19,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Url } from 'url';
 import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {},
   setup() {
-    const { t } = useI18n();
     const bg_img = {
       zkevm: require('/src/assets/img/zkevm_text_bg.webp'),
     };
@@ -35,12 +32,10 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-.wrapper--ads {
-}
 .astar-zkevm {
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   font-size: 30px;
   font-weight: 800;
   height: 284px;
