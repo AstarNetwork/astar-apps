@@ -148,6 +148,18 @@
         <!-- locked token -->
         <div>
           <div>locked</div>
+          <div class="column--balance">
+            <div v-if="!isSkeleton" class="column__box-native">
+              <span class="text--value">
+                <token-balance :balance="String(lockInDappStaking)" :symbol="nativeTokenSymbol" />
+              </span>
+            </div>
+            <div v-else class="column__box-native">
+              <div class="skeleton--right">
+                <q-skeleton animation="fade" class="skeleton--md" />
+              </div>
+            </div>
+          </div>
           <div class="row--icon--expand">
             <div class="column--expand">
               <button
