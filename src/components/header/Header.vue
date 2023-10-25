@@ -85,7 +85,7 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue';
-import { useAccount, useConnectWallet } from 'src/hooks';
+import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
@@ -105,6 +105,7 @@ import { WalletModalOption } from 'src/config/wallets';
 import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { Symbols } from 'src/v2/symbols';
+import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 
 interface Modal {
   modalNetwork: boolean;
@@ -150,6 +151,8 @@ export default defineComponent({
       openPolkasafeModal,
       openAccountUnificationModal,
     } = useConnectWallet();
+
+    const { isZkEvm } = useNetworkInfo();
 
     const clickAccountBtn = (): void => {
       if (multisig.value) {
@@ -202,6 +205,22 @@ export default defineComponent({
       {
         immediate: true,
       }
+    );
+
+    // Watch for network change and open wallet modal if user connects to zkEVM, but has
+    // Substrate wallet already connected.
+    watch(
+      [currentNetworkIdx, currentAccount],
+      () => {
+        if (
+          currentNetworkIdx.value &&
+          isZkEvm.value &&
+          isValidAddressPolkadotAddress(currentAccount.value)
+        ) {
+          modalName.value = WalletModalOption.SelectWallet;
+        }
+      },
+      { immediate: true }
     );
 
     return {

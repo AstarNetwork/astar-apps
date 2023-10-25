@@ -34,10 +34,7 @@
               :is-disabled-xcm-button="isDisabledXcm"
             />
           </div>
-          <information
-            v-if="rightUi === 'information'"
-            :transfer-type="isLocalTransfer ? HistoryTxType.Transfer : HistoryTxType.Xcm"
-          />
+          <information v-if="rightUi === 'information'" :transfer-type="transferType" />
           <select-chain
             v-if="rightUi === 'select-chain'"
             v-click-away="cancelHighlight"
@@ -134,7 +131,7 @@ export default defineComponent({
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
-    const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx, isZkEvm } = useNetworkInfo();
     const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
     const evmNetworkId = computed(() => {
@@ -240,6 +237,14 @@ export default defineComponent({
         store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: false });
     };
 
+    const transferType = computed<HistoryTxType>(() => {
+      if (isZkEvm.value) {
+        return HistoryTxType.ZK_ETHEREUM_BRIDGE;
+      }
+
+      return isLocalTransfer.value ? HistoryTxType.Transfer : HistoryTxType.Xcm;
+    });
+
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
 
@@ -261,6 +266,7 @@ export default defineComponent({
       currentAccount,
       Path,
       HistoryTxType,
+      transferType,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,

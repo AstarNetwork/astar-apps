@@ -3,8 +3,13 @@
     <div class="container">
       <div class="row--details">
         <div class="column-account-name">
+          <au-icon
+            v-if="isAccountUnified"
+            :native-address="unifiedAccount?.nativeAddress"
+            :icon-url="unifiedAccount?.avatarUrl"
+          />
           <img
-            v-if="iconWallet"
+            v-else-if="iconWallet"
             width="24"
             :src="iconWallet"
             alt="wallet-icon"
@@ -98,6 +103,7 @@ import {
   useNetworkInfo,
   usePrice,
   useWalletIcon,
+  useAccountUnification,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
@@ -136,6 +142,7 @@ export default defineComponent({
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
+    const { unifiedAccount, isAccountUnified } = useAccountUnification();
 
     const store = useStore();
     const { t } = useI18n();
@@ -248,6 +255,8 @@ export default defineComponent({
       supportWalletObj,
       signatoryIconWallet,
       isAccountUnification,
+      unifiedAccount,
+      isAccountUnified,
       isZkEvm,
       getShortenAddress,
       copyAddress,
