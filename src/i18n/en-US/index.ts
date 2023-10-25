@@ -209,7 +209,7 @@ export default {
       haveStakingBalance:
         'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
-      accountIcon: 'Account icon (we are working on adding your own NFT as an account icon)',
+      accountIcon: 'Account icon',
       balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
@@ -218,7 +218,10 @@ export default {
       userTutorials: 'Documentation and tutorials',
       sendingXc20: 'Start sending XC20 tokens, please wait...',
       editUnifiedAccount: 'Edit Unified Account',
+      selectAvatar: 'Select Avatar',
       save: 'Save',
+      noNfts:
+        "You don't have NFTs minted at the moment. When you mint some you will be able to update your unified account with a NFT. For the moment default icon will be used.",
     },
   },
   installWallet: {
