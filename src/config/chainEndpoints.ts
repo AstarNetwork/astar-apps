@@ -142,19 +142,15 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'zkatana-zkevm',
     displayName: 'zKatana Network',
-    endpoints: [
-      { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
-      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
-    ],
+    endpoints: [{ name: '', endpoint: '' }],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ZKATANA,
     isStoreEnabled: true,
-    subscan: 'https://shibuya.subscan.io',
-    blockscout: 'https://zkatana.blockscout.com',
+    subscan: '',
+    blockscout: 'https://zkatana.explorer.startale.com',
     evmChainId: '1261120',
-    evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
+    evmEndpoints: ['https://rpc.startale.com/zkatana'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
