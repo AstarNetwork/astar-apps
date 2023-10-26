@@ -45,12 +45,10 @@
   flex: 1;
   display: flex;
   align-items: center;
-  flex-direction: column;
   gap: 16px;
   color: $navy-1;
-  @media (min-width: $lg) {
-    flex-direction: row;
-  }
+  position: relative;
+  z-index: 1;
 }
 .body--dark {
   .row--account-info {
@@ -60,10 +58,14 @@
 
 .column--account-icon {
   img {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     object-fit: cover;
     border-radius: 9999px;
+    @media (min-width: $sm) {
+      width: 48px;
+    height: 48px;
+    }
   }
 }
 
@@ -76,10 +78,6 @@
 .text--balance {
   font-size: 24px;
   font-weight: 700;
-  text-align: center;
-  @media (min-width: $lg) {
-    text-align: left;
-  }
   span {
     font-size: 16px;
     font-weight: 600;
@@ -87,10 +85,15 @@
 }
 .row--actions {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   justify-content: center;
+  position: relative;
+  z-index: 1;
   @media (min-width: $lg) {
     justify-content: flex-start;
+  }
+  @media (min-width: $sm) {
+    gap: 16px;
   }
 }
 .btn--icon {
@@ -100,13 +103,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  color: white;
   margin: auto;
-  background-color: $astar-blue;
-  @media (min-width: $lg) {
-    background-color: transparent;
-    color: $astar-blue;
-  }
+  color: $navy-1;
+  transition: all 0.2s ease;
   svg {
     width: 22px;
     height: 22px;
@@ -116,15 +115,13 @@
     }
   }
   &:hover {
-    color: white;
-    background-color: lighten($astar-blue, 5%);
+    background-color: rgba(255,255,255,0.5);
   }
   .icon--copy {
     width: 30px;
     height: 30px;
-    stroke: white;
+    stroke: $navy-1;
     @media (min-width: $lg) {
-      stroke: $astar-blue;
       width: 34px;
       height: 34px;
     }
@@ -132,18 +129,10 @@
   .icon--external-link {
     width: 30px;
     height: 30px;
-    stroke: white;
+    stroke: $navy-1;
     @media (min-width: $lg) {
-      stroke: $astar-blue;
       width: 36px;
       height: 36px;
-    }
-  }
-  &:hover {
-    color: white;
-    .icon--copy,
-    .icon--external-link {
-      stroke: white;
     }
   }
 }
@@ -177,19 +166,17 @@
 }
 
 .container--account {
-  padding: 32px 32px 0 32px;
+  padding: 32px 16px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   gap: 16px;
   box-shadow: none;
-  background-color: transparent;
+  background-color: white;
+  position: relative;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
   @media (min-width: $lg) {
     padding: 32px;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    background-color: white;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
   }
 }
 .body--dark{
@@ -200,5 +187,20 @@
       background-color: $navy-4;
       box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
     }
+  }
+}
+
+.background{
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left;
+  z-index: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  @media (min-width: $sm) {
+    background-position: right;
   }
 }

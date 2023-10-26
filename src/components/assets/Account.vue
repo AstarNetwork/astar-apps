@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper--account">
     <div class="container container--account">
+      <div class="background" :style="{ backgroundImage: `url(${bg})` }" />
       <div class="row--account-info">
         <div class="column--account-icon">
           <au-icon
@@ -230,6 +231,26 @@ export default defineComponent({
       { immediate: false }
     );
 
+    const bg_img = {
+      native: require('/src/assets/img/account_bg_native.webp'),
+      shiden: require('/src/assets/img/account_bg_shiden.webp'),
+      zk: require('/src/assets/img/account_bg_zk.webp'),
+      testnet: require('/src/assets/img/account_bg_testnet.webp'),
+    };
+
+    const bg = computed<String>(() => {
+      if (currentNetworkIdx.value === 0) {
+        return bg_img.native;
+      } else if (currentNetworkIdx.value === 1) {
+        return bg_img.shiden;
+      } else if (currentNetworkIdx.value === 2) {
+        return bg_img.testnet;
+      } else if (currentNetworkIdx.value === 4) {
+        return bg_img.zk;
+      }
+      return '';
+    });
+
     return {
       iconWallet,
       currentAccountName,
@@ -250,6 +271,7 @@ export default defineComponent({
       unifiedAccount,
       isAccountUnified,
       isZkEvm,
+      bg,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
