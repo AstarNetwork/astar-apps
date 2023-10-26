@@ -1,32 +1,6 @@
 <template>
   <div data-testid="evm-native-token">
-    <!-- Total balance -->
-    <div class="row--header">
-      <div class="row--header__left">
-        <div class="column--token-name">
-          <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-          <template v-if="nativeTokenSymbol">
-            <span class="text--title">{{ nativeTokenSymbol }}</span>
-          </template>
-          <template v-else>
-            <q-skeleton animation="fade" class="skeleton--md" />
-          </template>
-        </div>
-      </div>
-      <div class="row--header__right">
-        <div class="column--balance">
-          <span class="column--amount text--amount">
-            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
-          </span>
-          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="separator" />
-
-    <!-- Transferable -->
-    <div class="row row--transferable">
+    <div class="row row--transferable row--transferable-evm">
       <div
         class="row__info"
         @click="
@@ -37,7 +11,15 @@
               : $router.push(buildTransferPageLink(nativeTokenSymbol)))
         "
       >
-        <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+        <div class="column--token-name">
+          <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
+          <template v-if="nativeTokenSymbol">
+            <span class="text--title">{{ nativeTokenSymbol }}</span>
+          </template>
+          <template v-else>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </template>
+        </div>
         <div class="column--balance">
           <span class="column--amount text--amount">
             {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}

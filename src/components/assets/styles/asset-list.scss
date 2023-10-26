@@ -327,20 +327,21 @@
   justify-content: space-between;
   .row--header__left {
     width: 50%;
-    .column--token-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      @media (min-width: $sm) {
-        gap: 16px;
-      }
-      img {
-        flex-shrink: 0;
-      }
-    }
   }
   .row--header__right{
     width: 50%;
+  }
+}
+
+.column--token-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  @media (min-width: $sm) {
+    gap: 16px;
+  }
+  img {
+    flex-shrink: 0;
   }
 }
 
@@ -360,6 +361,12 @@
 
 .row--transferable {
   flex-direction: row;
+  &.row--transferable-evm{
+    @media (min-width: $sm) {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+  }
 }
 .row--locked-tokens {
   background-color: $gray-1;
