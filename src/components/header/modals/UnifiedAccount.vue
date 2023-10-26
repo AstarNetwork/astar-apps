@@ -1,18 +1,20 @@
 <template>
   <div class="container--account">
-    <div class="row--icon">
-      <au-icon :icon-url="avatarUrl" :native-address="nativeAddress" class="icon" />
-      <div class="account-name">
-        {{ accountName }}
+    <div class="row--account--header">
+      <div class="row--icon">
+        <au-icon :icon-url="avatarUrl" :native-address="nativeAddress" class="icon" />
+        <div class="account-name">
+          {{ accountName }}
+        </div>
       </div>
-    </div>
-    <div class="row--balance-icons row--balance">
-      <div>
-        <span v-if="showBalance" class="text--balance">
-          {{ $n(getBalance(nativeAddress)) }}
-          {{ nativeTokenSymbol }}
-        </span>
-        <span v-else class="text--balance-hide"> ----- {{ nativeTokenSymbol }} </span>
+      <div class="row--balance-icons row--balance">
+        <div>
+          <span v-if="showBalance" class="text--balance">
+            {{ $n(getBalance(nativeAddress)) }}
+            {{ nativeTokenSymbol }}
+          </span>
+          <span v-else class="text--balance-hide"> ----- {{ nativeTokenSymbol }} </span>
+        </div>
       </div>
     </div>
     <div class="container--addresses">
@@ -139,8 +141,7 @@ export default defineComponent({
 }
 
 .row--balance {
-  margin-top: 6px;
-  margin-bottom: 16px;
+  margin-left: auto;
 }
 
 .row--icon {
@@ -150,5 +151,10 @@ export default defineComponent({
 
 .icon {
   margin-right: 12px;
+}
+
+.row--account--header {
+  display: flex;
+  margin-bottom: 16px;
 }
 </style>
