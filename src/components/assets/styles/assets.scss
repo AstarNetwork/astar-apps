@@ -52,7 +52,9 @@
   display: none;
   width: 272px;
   @media (min-width: $xl) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
   }
 }
 
