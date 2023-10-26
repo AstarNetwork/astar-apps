@@ -384,13 +384,12 @@
 .row--locked-tokens {
   .row__info {
     display: flex;
-    flex-direction: column;
     width: 100%;
     gap: 8px;
     cursor: pointer;
+    flex-direction: row;
+    justify-content: space-between;
     @media (min-width: $sm) {
-      flex-direction: row;
-      justify-content: space-between;
       width: 50%;
       cursor: default;
     }

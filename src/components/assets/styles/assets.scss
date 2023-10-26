@@ -1,10 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
-  padding: 24px 10px 0 10px;
+  margin: 24px 12px 80px 12px;
   position: relative;
   @media (min-width: $lg) {
-    margin: 0 -40px;
+    margin: 24px 0;
   }
 }
 .background{
@@ -28,6 +28,7 @@
   width: 100%;
   max-width: $container-max-width;
   margin: auto;
+  gap: 32px;
   @media (min-width: $xl) {
     display: flex;
     justify-content: center;
