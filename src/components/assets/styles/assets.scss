@@ -4,7 +4,23 @@
   padding: 24px 10px 0 10px;
   position: relative;
   @media (min-width: $lg) {
-    margin: -60px -40px;
+    margin: 0 -40px;
+  }
+}
+.background{
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  @media (orientation: landscape) {
+    height: 100vh;
+  }
+  @media (orientation: portrait) {
+    height: 50vh;
   }
 }
 
@@ -44,7 +60,7 @@
   overflow: hidden;
   border-radius: 16px;
   padding: 16px 0 24px 0;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
   background-color: white;
   @media (min-width: $sm) {
     padding-left: 24px;
