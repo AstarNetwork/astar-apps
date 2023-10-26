@@ -152,9 +152,9 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.ZKATANA,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
-    blockscout: 'https://zkatana.blockscout.com',
+    blockscout: 'https://zkatana.explorer.startale.com',
     evmChainId: '1261120',
-    evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
+    evmEndpoints: ['https://rpc.startale.com/zkatana'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
