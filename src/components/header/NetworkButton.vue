@@ -92,9 +92,12 @@ export default defineComponent({
   font-weight: 600;
   font-size: 14px;
   border-radius: 20px;
-  padding: 4px;
   transition: all 0.2s ease;
   border: solid 1px transparent;
+  img {
+    width: 32px;
+    height: 32px;
+  }
   &:hover {
     border-color: $astar-blue;
     background-color: $astar-blue;
@@ -103,6 +106,10 @@ export default defineComponent({
     height: 40px;
     padding: 0 16px 0 12px;
     gap: 8px;
+    img {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 </style>

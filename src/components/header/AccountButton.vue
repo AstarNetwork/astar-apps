@@ -1,12 +1,16 @@
 <template>
   <div>
     <button type="button" class="btn--account">
-      <img class="icon" width="24" :src="iconWallet" :class="multisig && 'img--polkasafe'" />
-      <template v-if="width >= screenSize.sm">
-        <span>
-          {{ getShortenAddress(account, 4) }}
-        </span>
-      </template>
+      <img
+        v-if="width >= screenSize.sm"
+        class="icon"
+        width="24"
+        :src="iconWallet"
+        :class="multisig && 'img--polkasafe'"
+      />
+      <span>
+        {{ getShortenAddress(account, 4) }}
+      </span>
     </button>
   </div>
 </template>
@@ -52,7 +56,6 @@ export default defineComponent({
   font-weight: 600;
   font-size: 12px;
   border-radius: 20px;
-  padding: 4px;
   transition: all 0.2s ease;
   border: solid 1px transparent;
   &:hover {
