@@ -18,12 +18,20 @@
         },
       }"
     >
-      <swiper-slide v-for="(item, index) in dappPromotions" :key="index">
-        <div class="card" @click="goToLink(item.link)">
+      <swiper-slide v-for="(item, index) in items" :key="index">
+        <div
+          class="card"
+          @click="item.link !== undefined ? goToLink(item.link) : goDappPageLink(item.address)"
+        >
           <img :src="item.img" class="card__img" />
           <div class="card__bottom">
             <div>
-              <div class="text--accent">FEATURED</div>
+              <div
+                class="text--accent"
+                :class="item.link !== undefined ? 'featured' : 'new-listing'"
+              >
+                {{ item.link !== undefined ? 'FEATURED' : 'NEW LISTING' }}
+              </div>
               <div class="text--title">{{ item.name }}</div>
             </div>
             <div class="text--description">{{ item.description }}</div>
@@ -62,7 +70,7 @@ export default defineComponent({
     const items = ref<Data[]>([]);
     const router = useRouter();
 
-    const goToLink = (link: string) => {
+    const goToLink = (link: string): void => {
       window.open(link, '_blank');
     };
 
@@ -85,14 +93,24 @@ export default defineComponent({
         address: '0x95f506e72777efcb3c54878bb4160b00cd11cd84',
         name: 'Lucky',
         description:
-          'New listing1 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rutrum.',
+          'New listing2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rutrum.',
         img: '/images/dapp_promotions/new.webp',
       },
     ];
 
+    const maxLength = Math.max(newListing.length, dappPromotions.length);
+    for (let i = 0; i < maxLength; i++) {
+      if (i < newListing.length) {
+        items.value.push(newListing[i]);
+      }
+      if (i < dappPromotions.length) {
+        items.value.push(dappPromotions[i]);
+      }
+    }
+
     return {
       modules: [Navigation],
-      dappPromotions,
+      items,
       goToLink,
       goDappPageLink,
     };
@@ -100,45 +118,5 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-// @import './styles/dynamic-ads-area.scss';
-.swiper {
-  overflow: visible;
-}
-.swiper-slide {
-  border-radius: 6px;
-  overflow: hidden;
-  height: auto;
-}
-.card {
-  background: rgba(255, 255, 255, 0.1);
-  height: 100%;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  &:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-}
-.card__img {
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  width: 100%;
-}
-.card__bottom {
-  padding: 16px 24px;
-}
-.text--accent {
-  font-size: 12px;
-  font-weight: 700;
-  color: $astar-blue-dark;
-}
-.text--title {
-  margin: 4px 0 16px 0;
-}
-.text--description {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  color: $gray-1;
-}
+@import './styles/dynamic-ads-area.scss';
 </style>
