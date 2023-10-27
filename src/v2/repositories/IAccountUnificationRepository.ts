@@ -39,4 +39,10 @@ export interface IAccountUnificationRepository {
     signature: string,
     identityInfo: IdentityData
   ): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets an account unification fee.
+   * @returns Account unification fee.
+   */
+  getUnificationFee(): Promise<bigint>;
 }
