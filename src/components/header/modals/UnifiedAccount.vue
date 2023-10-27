@@ -157,4 +157,10 @@ export default defineComponent({
   display: flex;
   margin-bottom: 16px;
 }
+
+.body--dark {
+  .container--addresses {
+    background-color: $navy-2;
+  }
+}
 </style>
