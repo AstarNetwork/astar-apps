@@ -51,7 +51,6 @@ export default defineComponent({
 }
 
 .header {
-  overflow: hidden;
   display: flex;
   justify-content: space-between;
   background: $navy-1;

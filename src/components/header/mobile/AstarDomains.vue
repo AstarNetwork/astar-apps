@@ -1,25 +1,30 @@
 <template>
-  <div class="wrapper--domains">
-    <a
-      v-for="(t, index) in items"
-      :key="index"
-      class="link"
-      :href="t.link"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <img :src="t.img" :alt="t.title" />
-      <span>{{ t.title }}</span>
-    </a>
+  <div>
+    <div v-if="width <= screenSize.sm" class="text--title">Astar Domains</div>
+    <div class="wrapper--domains">
+      <a
+        v-for="(t, index) in items"
+        :key="index"
+        class="link"
+        :href="t.link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img :src="t.img" :alt="t.title" />
+        <span>{{ t.title }}</span>
+      </a>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useBreakpoints } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {},
   setup() {
+    const { width, screenSize } = useBreakpoints();
     const { t } = useI18n();
     const icon_img = {
       home: require('/src/assets/img/icon_home.svg'),
@@ -63,7 +68,7 @@ export default defineComponent({
       },
     ];
 
-    return { items };
+    return { items, width, screenSize };
   },
 });
 </script>
@@ -101,5 +106,8 @@ export default defineComponent({
       color: $astar-blue-dark;
     }
   }
+}
+.text--title {
+  margin-bottom: 24px;
 }
 </style>
