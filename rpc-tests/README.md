@@ -1,6 +1,6 @@
 # RPC tests
 
-This project aim to create tesing framework for astar rpc node. It achieve this by spawning a local network with polkadot-launch a Simple CLI tool to launch a local Polkadot test network. [polkadot-launch](https://github.com/paritytech/polkadot-launch) take configuration for the test network in a config.json which describes the config of relaychains and parachains that needs to be started for test network to start.
+This project aims to create a testing framework for astar rpc node. It achieves this by spawning a local network with polkadot-launch a Simple CLI tool to launch a local Polkadot test network. [polkadot-launch](https://github.com/paritytech/polkadot-launch) takes configuration for the test network in a config.json which describes the config of relaychains and parachains that need to be started for test network to start.
 
 After the test network is started tests can be performed by connecting to it using polkadot.js or web3.js.t
 
