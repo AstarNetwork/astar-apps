@@ -6,8 +6,11 @@
 
     <div class="wrapper--unified-account">
       <div>
-        <!-- Todo: check the account's NFT image -->
-        <jazzicon :address="currentAccount" :diameter="80" class="icon--unified-account" />
+        <au-icon
+          :native-address="currentAccount"
+          :icon-url="avatarUrl"
+          class="icon--unified-account"
+        />
       </div>
       <div class="text--unified-account">{{ accountName }}</div>
       <div class="box--wallet-list">
@@ -48,10 +51,10 @@
 import { useAccount, useWalletIcon } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import Jazzicon from 'vue3-jazzicon/src/components';
+import AuIcon from './AuIcon.vue';
 
 export default defineComponent({
-  components: { [Jazzicon.name]: Jazzicon },
+  components: { AuIcon },
   props: {
     selectedEvmAddress: {
       type: String,
@@ -61,13 +64,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    avatarUrl: {
+      type: String,
+      required: true,
+    },
     isBusy: {
       type: Boolean,
       required: true,
     },
   },
   emits: ['next'],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const isChecked = ref<boolean>(false);
 
     const next = (): void => {

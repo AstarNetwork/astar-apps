@@ -29,6 +29,16 @@
   }
 }
 
+.column--selection {
+  width: 260px;
+  @media (min-width: $lg) {
+    width: 254px;
+  }
+  @media (min-width: $xl) {
+    width: 300px;
+  }
+}
+
 .button--bridge {
   display: flex;
   flex-direction: column;
@@ -38,6 +48,8 @@
   height: 260px;
   border-radius: 16px;
   border: 1px solid $gray-4;
+  border-radius: 16px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease 0s;
   row-gap: 24px;
@@ -54,6 +66,19 @@
     border: 1px solid $astar-blue !important;
     transition: all 0.3s ease 0s;
   }
+  height: 260px;
+  margin-bottom: 12px;
+  @media (min-width: $lg) {
+    height: 254px;
+  }
+  @media (min-width: $xl) {
+    height: 300px;
+  }
+}
+
+.column--selection button:not([disabled]) .button--bridge:hover {
+  border: 1px solid $astar-blue !important;
+  transition: all 0.3s ease 0s;
 }
 
 .row--title {
@@ -91,6 +116,12 @@
   font-weight: 400;
   font-size: 14px;
   color: $navy-1;
+  a {
+    color: $astar-blue;
+    &:hover {
+      color: lighten($astar-blue, 10%);
+    }
+  }
 }
 
 .box--text-bridge {
@@ -103,5 +134,22 @@
   .text--bridge-title,
   .text--bridge {
     color: $gray-1;
+  }
+  .text--bridge {
+    a {
+      color: $astar-blue-dark;
+      &:hover {
+        color: lighten($astar-blue-dark, 10%);
+      }
+    }
+  }
+  .button--bridge {
+    border: 1px solid $gray-4;
+    background-color: $navy-2;
+  }
+
+  .column--selection button:not([disabled]) .button--bridge:hover {
+    border: 1px solid $astar-blue !important;
+    transition: all 0.3s ease 0s;
   }
 }

@@ -173,3 +173,23 @@
     background: $box-red-dark;
   }
 }
+
+.container--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  border: 1px solid $border-yellow;
+  padding: 8px 0;
+  padding-left: 24px;
+  width: 344px;
+  border-radius: 6px;
+  background: $transparent-yellow;
+  color: $warning-yellow;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+}

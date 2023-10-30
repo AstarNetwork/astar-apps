@@ -11,6 +11,7 @@ export interface IZkBridgeRepository {
     param: ParamBridgeAsset;
     web3: Web3;
   }): Promise<TransactionConfig>;
+
   getBridgeAssetData({
     param,
     web3,

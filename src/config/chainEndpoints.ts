@@ -123,6 +123,9 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
+      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -134,7 +137,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://161.35.17.216:8545'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
     networkAlias: 'zkatana-zkevm',
@@ -142,18 +145,19 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ZKATANA,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
-    blockscout: 'https://zkatana.blockscout.com',
+    blockscout: 'https://zkatana.explorer.startale.com',
     evmChainId: '1261120',
-    evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
+    evmEndpoints: ['https://rpc.startale.com/zkatana'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
     networkAlias: 'development',

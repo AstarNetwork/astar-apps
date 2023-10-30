@@ -1,13 +1,14 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { checkAllowance, getTokenBal } from 'src/config/web3';
 import {
   EthBridgeChainId,
   EthBridgeContract,
   EthBridgeNetworkName,
   ZkToken,
 } from 'src/modules/zk-evm-bridge';
+import { setupNetwork } from 'src/config/web3';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
@@ -60,7 +61,6 @@ export const useL1Bridge = () => {
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
 
-  const { nativeTokenSymbol } = useNetworkInfo();
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const fromChainId = computed<number>(
     () => EthBridgeChainId[fromChainName.value as EthBridgeNetworkName]
@@ -300,7 +300,6 @@ export const useL1Bridge = () => {
     toBridgeBalance,
     fromChainName,
     toChainName,
-    nativeTokenSymbol,
     importTokenAddress,
     fromChainId,
     toChainId,

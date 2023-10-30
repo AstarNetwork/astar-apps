@@ -102,7 +102,14 @@
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
-      <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
+
+      <div class="container--warning">
+        <ul>
+          <li>{{ $t('bridge.warning32blocks') }}</li>
+          <li>{{ $t('bridge.warning2steps') }}</li>
+        </ul>
+      </div>
+      <div class="wrapper__row--button">
         <astar-button
           v-if="isApproved"
           class="button--confirm btn-size-adjust"
@@ -193,10 +200,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    nativeTokenSymbol: {
-      type: String,
-      required: true,
-    },
     inputHandler: {
       type: Function,
       required: true,
@@ -241,7 +244,6 @@ export default defineComponent({
       zkBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
-      isApproving,
       bridge,
       approve,
     };

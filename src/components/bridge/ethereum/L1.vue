@@ -20,7 +20,6 @@
           :to-bridge-balance="toBridgeBalance"
           :from-chain-name="fromChainName"
           :to-chain-name="toChainName"
-          :native-token-symbol="nativeTokenSymbol"
           :is-approved="isApproved"
           :input-handler="inputHandler"
           :reverse-chain="reverseChain"
@@ -59,17 +58,16 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import Information from 'src/components/assets/transfer/Information.vue';
 import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
 import SelectToken from 'src/components/bridge/common/SelectToken.vue';
+import { useAccount, useBreakpoints, useL1Bridge, useL1History } from 'src/hooks';
+import { HistoryTxType } from 'src/modules/account';
+import { ZkToken } from 'src/modules/zk-evm-bridge';
+import { defineComponent, ref, computed, watch } from 'vue';
+import Information from 'src/components/assets/transfer/Information.vue';
 import BridgeModeTab from 'src/components/bridge/ethereum/BridgeModeTab.vue';
 import L1Bridge from 'src/components/bridge/ethereum/L1Bridge.vue';
 import L1History from 'src/components/bridge/ethereum/L1History.vue';
-import { useAccount, useBreakpoints, useL1Bridge, useL1History } from 'src/hooks';
-import { HistoryTxType } from 'src/modules/account';
-import { astarNativeTokenErcAddr } from 'src/modules/xcm';
-import { ZkToken } from 'src/modules/zk-evm-bridge';
-import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type BridgeTabMode = 'bridge' | 'history';
@@ -100,7 +98,6 @@ export default defineComponent({
       toBridgeBalance,
       fromChainName,
       toChainName,
-      nativeTokenSymbol,
       importTokenAddress,
       fromChainId,
       zkTokens,
@@ -195,7 +192,6 @@ export default defineComponent({
       toBridgeBalance,
       fromChainName,
       toChainName,
-      nativeTokenSymbol,
       fromChainId,
       isApproved,
       inputImportTokenHandler,
