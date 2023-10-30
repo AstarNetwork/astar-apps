@@ -684,6 +684,6 @@ export default {
     },
     warning32blocks: 'It could take around 10min or more to finalise (32blocks)',
     warning2steps:
-      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side. (Available in Recent History)',
+      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side (Available in Recent History)',
   },
 };
