@@ -1,8 +1,9 @@
-import { Dapp, DappBase } from '../logic';
+import { Dapp, DappBase, ProtocolState } from '../logic';
 
 export interface DappStakingState {
   version: string;
   dapps: CombinedDappInfo[];
+  protocolState: ProtocolState | undefined;
 }
 
 export interface CombinedDappInfo {
@@ -14,6 +15,7 @@ function state(): DappStakingState {
   return {
     version: '3.0.0',
     dapps: [],
+    protocolState: undefined,
   };
 }
 

@@ -1,11 +1,12 @@
 import { MutationTree } from 'vuex';
 import { CombinedDappInfo, DappStakingState } from './state';
-import { Dapp } from '../logic';
+import { Dapp, ProtocolState } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
+  setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
 }
 
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
@@ -24,6 +25,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
     } else {
       console.warn(`Dapp with address ${dapp.address} not found in the store.`);
     }
+  },
+  setProtocolState(state, protocolState) {
+    state.protocolState = protocolState;
   },
 };
 
