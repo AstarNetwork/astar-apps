@@ -17,7 +17,6 @@
 .container--selection {
   display: flex;
   flex-direction: column;
-  align-items: center;
   row-gap: 24px;
   @media (min-width: $lg) {
     flex-direction: row;
@@ -44,28 +43,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 260px;
-  height: 260px;
-  border-radius: 16px;
-  border: 1px solid $gray-4;
   border-radius: 16px;
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease 0s;
   row-gap: 24px;
   padding: 16px;
-  @media (min-width: $lg) {
-    width: 254px;
-    height: 254px;
-  }
-  @media (min-width: $xl) {
-    width: 300px;
-    height: 300px;
-  }
-  &:hover {
-    border: 1px solid $astar-blue !important;
-    transition: all 0.3s ease 0s;
-  }
   height: 260px;
   margin-bottom: 12px;
   @media (min-width: $lg) {
