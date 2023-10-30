@@ -682,8 +682,8 @@ export default {
       title: 'Celer Bridge',
       text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
     },
-    warning32blocks: 'It could take around 10min or more to finalise (32blocks)',
+    warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
-      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side (Available in Recent History)',
+      'Bridging back to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 side (available in Recent History)',
   },
 };
