@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <swiper
+      id="dynamic-ads-area"
       :slides-per-view="1.25"
       :slides-per-group="1"
       :space-between="24"
@@ -117,6 +118,6 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import './styles/dynamic-ads-area.scss';
 </style>
