@@ -160,8 +160,13 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
 
   //dApp staking v3
-  container.addTransient<IDappStakingRepositoryV3>(
+  container.addSingleton<IDappStakingRepositoryV3>(
     DappStakingRepositoryV3,
     Symbols.DappStakingRepositoryV3
   );
+
+  // dApp staking v3 data changed subscriptions.
+  container
+    .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+    .startProtocolStateSubscription();
 }

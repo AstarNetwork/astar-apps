@@ -49,3 +49,6 @@ astar-collator
 
 # Chopstick binaries
 db.sqlite
+
+# Temp folder
+*temp

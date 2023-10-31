@@ -7,6 +7,11 @@ export enum PeriodType {
   BuildAndEarn = 'BuildAndEarn',
 }
 
+export enum DappState {
+  Registered = 'Registered',
+  Unregistered = 'Unregistered',
+}
+
 export interface PeriodInfo {
   number: PeriodNumber;
   type: PeriodType;
@@ -23,4 +28,12 @@ export interface ProtocolState {
   periodInfo: PeriodInfo;
   // `true` if pallet is in maintenance mode (disabled), `false` otherwise.
   maintenance: boolean;
+}
+
+export interface DappInfo {
+  address: string;
+  owner: string;
+  id: number;
+  state: DappState;
+  rewardDestination?: string;
 }

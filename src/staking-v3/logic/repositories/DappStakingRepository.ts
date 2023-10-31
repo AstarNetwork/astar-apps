@@ -1,10 +1,24 @@
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
-import { Dapp, DappBase, PeriodType, ProtocolState } from '../models';
+import {
+  Dapp,
+  DappBase,
+  DappInfo,
+  DappState,
+  PeriodType,
+  ProtocolState,
+  ProtocolStateChangedMessage,
+} from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
 import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
-import { PalletDappStakingV3ProtocolState } from '../interfaces';
+import {
+  PalletDappStakingV3DAppInfo,
+  PalletDappStakingV3ProtocolState,
+  SmartContractAddress,
+} from '../interfaces';
+import { IEventAggregator } from 'src/v2/messaging';
+import { Option } from '@polkadot/types';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -30,11 +44,24 @@ export interface IDappStakingRepository {
    * @param network The network to get protocol state for.
    */
   getProtocolState(): Promise<ProtocolState>;
+
+  /**
+   * Starts subscription to protocol state, so UI gets automatically updated when it changes.
+   */
+  startProtocolStateSubscription(): Promise<void>;
+
+  /**
+   * Gets all dapps within the network.
+   */
+  getChainDapps(): Promise<DappInfo[]>;
 }
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
-  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
+  constructor(
+    @inject(Symbols.DefaultApi) private api: IApi,
+    @inject(Symbols.EventAggregator) private eventAggregator: IEventAggregator
+  ) {}
 
   //* @inheritdoc
   public async getDapps(network: string): Promise<DappBase[]> {
@@ -58,6 +85,48 @@ export class DappStakingRepository implements IDappStakingRepository {
     const state =
       await api.query.dappStaking.activeProtocolState<PalletDappStakingV3ProtocolState>();
 
+    return this.mapToModel(state);
+  }
+
+  //* @inheritdoc
+  public async startProtocolStateSubscription(): Promise<void> {
+    const api = await this.api.getApi();
+    await api.query.dappStaking.activeProtocolState((state: PalletDappStakingV3ProtocolState) => {
+      this.eventAggregator.publish(new ProtocolStateChangedMessage(this.mapToModel(state)));
+    });
+  }
+
+  //* @inheritdoc
+  public async getChainDapps(): Promise<DappInfo[]> {
+    const api = await this.api.getApi();
+    const dapps = await api.query.dappStaking.integratedDApps.entries();
+    const result: DappInfo[] = [];
+
+    dapps.forEach(([key, value]) => {
+      const v = <Option<PalletDappStakingV3DAppInfo>>value;
+      const address = this.getContractAddress(key.args[0] as unknown as SmartContractAddress);
+
+      if (v.isSome) {
+        const unwrappedValue = v.unwrap();
+
+        if (address) {
+          result.push({
+            address,
+            owner: unwrappedValue.owner.toString(),
+            id: unwrappedValue.id.toNumber(),
+            state: unwrappedValue.state.isUnregistered
+              ? DappState.Unregistered
+              : DappState.Registered,
+            rewardDestination: unwrappedValue.rewardDestination.unwrapOr(undefined)?.toString(),
+          });
+        }
+      }
+    });
+
+    return result;
+  }
+
+  private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),
       nextEraStart: state.nextEraStart.toNumber(),
@@ -68,5 +137,9 @@ export class DappStakingRepository implements IDappStakingRepository {
       },
       maintenance: state.maintenance.isTrue,
     };
+  }
+
+  private getContractAddress(address: SmartContractAddress): string | undefined {
+    return address.isEvm ? address.asEvm?.toString() : address.asWasm?.toString();
   }
 }
