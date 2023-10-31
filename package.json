@@ -29,6 +29,8 @@
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.5",
     "@astar-network/astar-ui": "^0.0.104",
+    "@astar-network/metamask-astar-adapter": "^0.5.4",
+    "@astar-network/metamask-astar-types": "^0.6.1",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^10.9.1",
     "@polkadot/api-contract": "^10.9.1",
@@ -47,7 +49,7 @@
     "@polkadot/wasm-crypto": "^7.2.1",
     "@polkadot/x-randomvalues": "^12.3.2",
     "@quasar/app-webpack": "^3.11.2",
-    "@quasar/extras": "^1.16.6",
+    "@quasar/extras": "^1.16.7",
     "@vue/apollo-composable": "^4.0.0-beta.4",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",

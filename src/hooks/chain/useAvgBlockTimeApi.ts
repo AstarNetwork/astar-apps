@@ -10,7 +10,7 @@ export const useAvgBlockTimeApi = (network: string) => {
   const etaNextEra = ref<string>('');
   const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
   const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-  const { currentNetworkName } = useNetworkInfo();
+  const { networkNameSubstrate } = useNetworkInfo();
 
   // Subscribe to era change so new estimation can be fetched.
   eventAggregator.subscribe(NewEraMessage.name, async (m) => {
@@ -28,8 +28,8 @@ export const useAvgBlockTimeApi = (network: string) => {
       .toFormat('HH:mm dd-MMM');
   };
 
-  watch([currentNetworkName], () => {
-    fetchNextEraEta(currentNetworkName.value.toLowerCase());
+  watch([networkNameSubstrate], () => {
+    fetchNextEraEta(networkNameSubstrate.value.toLowerCase());
   });
 
   return {

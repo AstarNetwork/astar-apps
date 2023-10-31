@@ -43,6 +43,7 @@
       :connect-ethereum-wallet="connectEthereumWallet"
       :selected-wallet="selectedWallet"
       :open-polkasafe-modal="openPolkasafeModal"
+      :open-account-unification-modal="openAccountUnificationModal"
     />
 
     <modal-account
@@ -62,12 +63,26 @@
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     />
+    <modal-account-unification
+      v-if="modalAccountUnificationSelect"
+      v-model:isOpen="modalAccountUnificationSelect"
+      :open-select-modal="openSelectModal"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
-import { useAccount, useConnectWallet } from 'src/hooks';
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  ref,
+  watch,
+  onMounted,
+  onUnmounted,
+} from 'vue';
+import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
@@ -79,10 +94,15 @@ import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
+import ModalAccountUnification from 'src/components/header/modals/ModalAccountUnification.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
+import { container } from 'src/v2/common';
+import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
+import { Symbols } from 'src/v2/symbols';
+import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 
 interface Modal {
   modalNetwork: boolean;
@@ -100,6 +120,7 @@ export default defineComponent({
     HeaderComp,
     TroubleHelp,
     ModalPolkasafe,
+    ModalAccountUnification,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -117,6 +138,7 @@ export default defineComponent({
       selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
+      modalAccountUnificationSelect,
       setCloseModal,
       setWalletModal,
       openSelectModal,
@@ -124,7 +146,10 @@ export default defineComponent({
       connectEthereumWallet,
       disconnectAccount,
       openPolkasafeModal,
+      openAccountUnificationModal,
     } = useConnectWallet();
+
+    const { isZkEvm } = useNetworkInfo();
 
     const clickAccountBtn = (): void => {
       if (multisig.value) {
@@ -157,6 +182,17 @@ export default defineComponent({
     const route = useRoute();
     const path = computed<string>(() => route.path);
     const headerName = ref<string>('');
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+
+    onMounted(() => {
+      eventAggregator.subscribe(UnifyAccountMessage.name, () => {
+        modalAccountUnificationSelect.value = true;
+      });
+    });
+
+    onUnmounted(() => {
+      eventAggregator.unsubscribe(UnifyAccountMessage.name, () => {});
+    });
 
     watch(
       path,
@@ -166,6 +202,22 @@ export default defineComponent({
       {
         immediate: true,
       }
+    );
+
+    // Watch for network change and open wallet modal if user connects to zkEVM, but has
+    // Substrate wallet already connected.
+    watch(
+      [currentNetworkIdx, currentAccount],
+      () => {
+        if (
+          currentNetworkIdx.value &&
+          isZkEvm.value &&
+          isValidAddressPolkadotAddress(currentAccount.value)
+        ) {
+          modalName.value = WalletModalOption.SelectWallet;
+        }
+      },
+      { immediate: true }
     );
 
     return {
@@ -183,6 +235,7 @@ export default defineComponent({
       width,
       screenSize,
       isLoading,
+      modalAccountUnificationSelect,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
@@ -192,6 +245,7 @@ export default defineComponent({
       connectEthereumWallet,
       disconnectAccount,
       openPolkasafeModal,
+      openAccountUnificationModal,
     };
   },
 });

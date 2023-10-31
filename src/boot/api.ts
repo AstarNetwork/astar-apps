@@ -16,7 +16,9 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
-import { supportWalletObj } from 'src/config/wallets';
+import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
@@ -113,24 +115,41 @@ export default boot(async ({ store }) => {
     }
   });
 
+  const setWeb3 = async (networkId: TNetworkId): Promise<void> => {
+    const web3 = await createAstarWeb3Instance(networkId);
+    if (!web3) {
+      console.error(`cannot create the web3 instance with network id ${networkId}`);
+    }
+    $web3.value = web3;
+  };
+
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
-    if (chainInfo.value?.chain) {
-      const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
-      const currentNetworkIdx = getProviderIndex(currentChain);
-      const web3 = await createAstarWeb3Instance(currentNetworkIdx as TNetworkId);
-      if (!web3) {
-        console.error(`cannot create the web3 instance with network id ${currentNetworkIdx}`);
+    const networkIdx = store.getters['general/networkIdx'];
+    const isZkEvm = networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM;
+
+    if (isZkEvm) {
+      await setWeb3(networkIdx);
+    } else {
+      if (chainInfo.value?.chain) {
+        const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
+        const currentNetworkIdx = getProviderIndex(currentChain);
+        await setWeb3(currentNetworkIdx as TNetworkId);
       }
-      $web3.value = web3;
     }
   });
 
   // execute extension process automatically if selectedAddress is linked or mobile device
   const wallet = String(localStorage.getItem(SELECTED_WALLET));
   const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+
+  if (wallet === SupportWallet.Snap) {
+    const isSnapInstalled = await initiatePolkdatodSnap();
+    isSnapInstalled && (await initPolkadotSnap());
+  }
+
   if (isSubstrateWallet) {
     if (selectedAddress !== null || isMobileDevice) {
       const { extensions } = useExtensions(api, store);

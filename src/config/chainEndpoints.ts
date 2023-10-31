@@ -27,9 +27,11 @@ export enum endpointKey {
   ASTAR = 0,
   SHIDEN = 1,
   SHIBUYA = 2,
-  LOCAL = 3,
-  CUSTOM = 4,
-  ROCSTAR = 5,
+  ASTAR_ZKEVM = 3,
+  ZKATANA = 4,
+  LOCAL = 5,
+  CUSTOM = 6,
+  ROCSTAR = 7,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -39,7 +41,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
@@ -68,7 +70,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shiden.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
@@ -96,7 +98,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'The test network of the layer 2 scaling blockchain',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
-      // { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
@@ -114,6 +116,49 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
+  // Memo: It's dummy data. To be updated
+  {
+    networkAlias: 'astar-zkevm',
+    displayName: 'Astar zkEVM Network',
+    endpoints: [
+      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
+      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
+    ],
+    isSupportContract: false,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ASTAR_ZKEVM,
+    isStoreEnabled: true,
+    subscan: 'https://astar.subscan.io',
+    blockscout: 'https://akiba-explorer.astar.network',
+    evmChainId: '7759',
+    evmEndpoints: ['http://161.35.17.216:8545'],
+    faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
+  },
+  {
+    networkAlias: 'zkatana-zkevm',
+    displayName: 'zKatana Network',
+    endpoints: [
+      { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
+    ],
+    isSupportContract: false,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ZKATANA,
+    isStoreEnabled: true,
+    subscan: 'https://shibuya.subscan.io',
+    blockscout: 'https://zkatana.explorer.startale.com',
+    evmChainId: '1261120',
+    evmEndpoints: ['https://rpc.startale.com/zkatana'],
+    faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
+  },
   {
     networkAlias: 'development',
     displayName: 'Local Network',
@@ -125,7 +170,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     blockscout: '',
     evmChainId: '4369',
-    evmEndpoints: ['http://127.0.0.1:9933'],
+    evmEndpoints: ['http://127.0.0.1:9944'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
@@ -148,6 +193,7 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
+
   {
     networkAlias: 'rocstar',
     displayName: 'Rocstar',

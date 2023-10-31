@@ -28,6 +28,13 @@ export const Symbols = {
   EvmAssetsService: Symbol.for('EvmAssetsService'),
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
+  ZkBridgeRepository: Symbol.for('ZkBridgeRepository'),
   AssetsService: Symbol.for('AssetsService'),
+  ZkBridgeService: Symbol.for('ZkBridgeService'),
+  AccountUnificationService: Symbol.for('AccountUnificationService'),
+  IdentityRepository: Symbol.for('IdentityRepository'),
+  IdentityService: Symbol.for('IdentityService'),
+  NftRepository: Symbol.for('NftRepository'),
+  AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
   DappStakingRepositoryV3: Symbol.for('DappStakingRepositoryV3'),
 };

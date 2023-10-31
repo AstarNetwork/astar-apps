@@ -24,6 +24,7 @@ export enum SupportWallet {
   HanaEvm = 'hanaEvm',
   OneKeyEvm = 'OneKeyEvm',
   OneKeyNative = 'OneKey',
+  Snap = 'Snap',
 }
 
 export enum SupportMultisig {
@@ -35,6 +36,7 @@ export const WalletModalOption = {
   SelectSubstrateAccount: 'SelectSubstrateAccount',
   NoExtension: 'NoExtension',
   OutdatedWallet: 'OutdatedWallet',
+  AccountUnification: 'AccountUnification',
   Polkasafe: SupportMultisig.Polkasafe,
   PolkadotJs: SupportWallet.PolkadotJs,
   Clover: SupportWallet.Clover,
@@ -52,6 +54,7 @@ export const WalletModalOption = {
   HanaEvm: SupportWallet.HanaEvm,
   OneKey: SupportWallet.OneKeyNative,
   OneKeyEvm: SupportWallet.OneKeyEvm,
+  Snap: SupportWallet.Snap,
 };
 
 export const SubstrateWallets = [
@@ -66,6 +69,7 @@ export const SubstrateWallets = [
   SupportWallet.Wallet3,
   SupportWallet.HanaNative,
   SupportWallet.OneKeyNative,
+  SupportWallet.Snap,
 ];
 
 export interface Wallet {
@@ -87,6 +91,16 @@ export const supportWalletObj = {
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
     guideUrl: 'https://docs.astar.network/docs/use/user-guides/create-wallet',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.Snap]: {
+    img: require('/src/assets/img/metamask.png'),
+    name: 'Astar Snap',
+    source: SupportWallet.Snap,
+    // Todo: update URLs
+    walletUrl: 'https://metamask.io/flask/',
+    guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
