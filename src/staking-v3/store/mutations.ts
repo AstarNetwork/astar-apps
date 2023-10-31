@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex';
-import { CombinedDappInfo, DappStakingState } from './state';
-import { Dapp, ProtocolState } from '../logic';
+import { DappStakingState } from './state';
+import { CombinedDappInfo, Dapp, ProtocolState } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;

@@ -1,4 +1,4 @@
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
   Dapp,
   DappBase,
@@ -19,42 +19,9 @@ import {
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
 import { Option } from '@polkadot/types';
-
-/**
- * Interface for repository that handles dapp staking data.
- */
-export interface IDappStakingRepository {
-  /**
-   * Gets dapps data for the given network.
-   * @param network The network to get dapp staking data for.
-   * @returns A promise that resolves to an array of dapp staking data.
-   */
-  getDapps(network: string): Promise<DappBase[]>;
-
-  /**
-   * Gets dapp data for the given network and dapp address.
-   * @param network Network name
-   * @param dappAddress dApp address
-   * @returns A promise that resolves to a dapp data.
-   */
-  getDapp(network: string, dappAddress: string): Promise<Dapp>;
-
-  /**
-   * Gets protocol state for the given network.
-   * @param network The network to get protocol state for.
-   */
-  getProtocolState(): Promise<ProtocolState>;
-
-  /**
-   * Starts subscription to protocol state, so UI gets automatically updated when it changes.
-   */
-  startProtocolStateSubscription(): Promise<void>;
-
-  /**
-   * Gets all dapps within the network.
-   */
-  getChainDapps(): Promise<DappInfo[]>;
-}
+import { IDappStakingRepository } from './IDappStakingRepository';
+import { Guard } from 'src/v2/common';
+import { BigNumber, ethers } from 'ethers';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -65,6 +32,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   //* @inheritdoc
   public async getDapps(network: string): Promise<DappBase[]> {
+    Guard.ThrowIfUndefined(network, 'network');
     const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
     const response = await axios.get<DappBase[]>(url);
 
@@ -73,6 +41,8 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   //* @inheritdoc
   public async getDapp(network: string, dappAddress: string): Promise<Dapp> {
+    Guard.ThrowIfUndefined(network, 'network');
+    Guard.ThrowIfUndefined(dappAddress, 'dappAddress');
     const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${dappAddress}`;
     const response = await axios.get<Dapp>(url);
 
@@ -124,6 +94,41 @@ export class DappStakingRepository implements IDappStakingRepository {
     });
 
     return result;
+  }
+
+  //* @inheritdoc
+  public async getLockCall(amount: number): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    const amountFormatted = this.getFormattedAmount(amount);
+
+    return api.tx.dappStaking.lock(amountFormatted);
+  }
+
+  //* @inheritdoc
+  public async getStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+    const amountFormatted = this.getFormattedAmount(amount);
+
+    return api.tx.dappStaking.stake(getDappAddressEnum(contractAddress), amountFormatted);
+  }
+
+  //* @inheritdoc
+  public async getLockAndStakeCall(
+    contractAddress: string,
+    amount: number
+  ): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+
+    return api.tx.utility.batchAll([
+      await this.getLockCall(amount),
+      await this.getStakeCall(contractAddress, amount),
+    ]);
+  }
+
+  private getFormattedAmount(amount: number): BigInt {
+    return ethers.utils.parseEther(amount.toString()).toBigInt();
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {

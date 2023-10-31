@@ -1,17 +1,24 @@
 import { watch, computed } from 'vue';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
-import { IDappStakingRepository, ProtocolState } from '../logic';
+import { IDappStakingRepository, IDappStakingService, ProtocolState } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
+import { useAccount } from 'src/hooks';
 
 export function useDappStaking() {
   const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
+  const { currentAccount } = useAccount();
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
+
+  const stake = async (dappAddress: string, amount: number): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, 'success');
+  };
 
   watch(
     currentNetworkIdx,
@@ -25,5 +32,5 @@ export function useDappStaking() {
     { immediate: true }
   );
 
-  return { protocolState };
+  return { protocolState, stake };
 }

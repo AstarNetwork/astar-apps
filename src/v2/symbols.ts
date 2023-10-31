@@ -37,4 +37,5 @@ export const Symbols = {
   NftRepository: Symbol.for('NftRepository'),
   AccountUnificationRepository: Symbol.for('AccountUnificationRepository'),
   DappStakingRepositoryV3: Symbol.for('DappStakingRepositoryV3'),
+  DappStakingServiceV3: Symbol.for('DappStakingServiceV3'),
 };

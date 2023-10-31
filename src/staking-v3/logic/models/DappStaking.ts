@@ -1,4 +1,4 @@
-import { ProtocolState } from './Node';
+import { DappInfo, ProtocolState } from './Node';
 
 /**
  * Dapp model containing the basic information so dApps can be displayed on the homepage.
@@ -20,4 +20,13 @@ export interface Dapp extends DappBase {}
  */
 export class ProtocolStateChangedMessage {
   constructor(public state: ProtocolState) {}
+}
+
+/**
+ * Combines a dApp information from different sources, on chain and storage.
+ */
+export interface CombinedDappInfo {
+  basic: DappBase;
+  extended?: Dapp;
+  chain: DappInfo;
 }

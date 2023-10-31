@@ -65,6 +65,8 @@ import {
 import {
   IDappStakingRepository as IDappStakingRepositoryV3,
   DappStakingRepository as DappStakingRepositoryV3,
+  IDappStakingService as IDappStakingServiceV3,
+  DappStakingService as DappStakingServiceV3,
 } from 'src/staking-v3';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -195,6 +197,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     DappStakingRepositoryV3,
     Symbols.DappStakingRepositoryV3
   );
+  container.addSingleton<IDappStakingService>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
 
   // dApp staking v3 data changed subscriptions.
   container

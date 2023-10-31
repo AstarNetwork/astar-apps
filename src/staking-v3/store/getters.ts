@@ -1,19 +1,19 @@
 import { GetterTree } from 'vuex';
-import { CombinedDappInfo, DappStakingState } from './state';
+import { DappStakingState } from './state';
 import { StateInterface } from 'src/store';
-import { DappBase, ProtocolState } from '../logic';
+import { CombinedDappInfo, DappState, ProtocolState } from '../logic';
 
 export interface DappStakingGetters {
   getVersion(state: DappStakingState): string;
   getDapps(state: DappStakingState): CombinedDappInfo[];
-  getDappsBasic(state: DappStakingState): DappBase[];
+  getRegisteredDapps(state: DappStakingState): CombinedDappInfo[];
   getProtocolState(state: DappStakingState): ProtocolState | undefined;
 }
 
 const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters = {
   getVersion: (state) => state.version,
   getDapps: (state) => state.dapps,
-  getDappsBasic: (state) => state.dapps.map((d) => d.basic),
+  getRegisteredDapps: (state) => state.dapps.filter((x) => x.chain.state === DappState.Registered),
   getProtocolState: (state) => state.protocolState,
 };
 
