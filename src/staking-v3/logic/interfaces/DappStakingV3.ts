@@ -1,4 +1,4 @@
-import { Compact, Enum, Option, Struct, bool, u16, u32 } from '@polkadot/types';
+import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32 } from '@polkadot/types';
 import { AccountId32 } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 
@@ -21,6 +21,18 @@ interface PalletDappStakingV3DAppState extends Enum {
   readonly type: 'Registered' | 'Unregistered';
 }
 
+interface PalletDappStakingV3UnlockingChunk extends Struct {
+  readonly amount: Compact<u128>;
+  readonly unlockBlock: Compact<u32>;
+}
+
+export interface PalletDappStakingV3StakeAmount extends Struct {
+  readonly voting: Compact<u128>;
+  readonly buildAndEarn: Compact<u128>;
+  readonly era: Compact<u32>;
+  readonly period: Compact<u32>;
+}
+
 export interface PalletDappStakingV3ProtocolState extends Struct {
   readonly era: Compact<u32>;
   readonly nextEraStart: Compact<u32>;
@@ -40,4 +52,12 @@ export interface SmartContractAddress extends Struct {
   asEvm?: Codec;
   isWasm: boolean;
   asWasm?: Codec;
+}
+
+export interface PalletDappStakingV3AccountLedger extends Struct {
+  readonly locked: Compact<u128>;
+  readonly unlocking: Vec<PalletDappStakingV3UnlockingChunk>;
+  readonly staked: PalletDappStakingV3StakeAmount;
+  readonly stakedFuture: Option<PalletDappStakingV3StakeAmount>;
+  readonly contractStakeCount: Compact<u32>;
 }

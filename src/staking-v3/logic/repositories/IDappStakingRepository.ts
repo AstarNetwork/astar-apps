@@ -1,5 +1,5 @@
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
-import { Dapp, DappBase, DappInfo, ProtocolState } from '../models';
+import { AccountLedger, Dapp, DappBase, DappInfo, ProtocolState } from '../models';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -35,6 +35,12 @@ export interface IDappStakingRepository {
    * Gets all dapps within the network.
    */
   getChainDapps(): Promise<DappInfo[]>;
+
+  /**
+   * Gets an account ledger for the given address.
+   * @param address Address to get account ledger for.
+   */
+  startAccountLedgerSubscription(address: string): Promise<void>;
 
   /**
    * Gets tokens lock call. Tokens needs to be locks in order to be staked

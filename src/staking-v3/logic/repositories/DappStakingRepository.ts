@@ -1,5 +1,7 @@
 import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
+  AccountLedger,
+  AccountLedgerChangedMessage,
   Dapp,
   DappBase,
   DappInfo,
@@ -7,21 +9,24 @@ import {
   PeriodType,
   ProtocolState,
   ProtocolStateChangedMessage,
+  StakeAmount,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
 import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
 import {
+  PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3ProtocolState,
+  PalletDappStakingV3StakeAmount,
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
 import { Option } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -96,6 +101,26 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
+  public async startAccountLedgerSubscription(address: string): Promise<void> {
+    const api = await this.api.getApi();
+    await api.query.dappStaking.ledger(address, (ledger: PalletDappStakingV3AccountLedger) => {
+      const mappedLedger = {
+        locked: ledger.locked.toBigInt(),
+        unlocking: ledger.unlocking.map((chunk) => ({
+          amount: chunk.amount.toBigInt(),
+          unlockBlock: chunk.unlockBlock.toBigInt(),
+        })),
+        staked: this.mapStakeAmount(ledger.staked),
+        stakedFuture: ledger.stakedFuture.isSome
+          ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
+          : undefined,
+        contractStakeCount: ledger.contractStakeCount.toNumber(),
+      };
+
+      this.eventAggregator.publish(new AccountLedgerChangedMessage(mappedLedger));
+    });
+  }
+
   //* @inheritdoc
   public async getLockCall(amount: number): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
@@ -141,6 +166,15 @@ export class DappStakingRepository implements IDappStakingRepository {
         endingEra: state.periodInfo.endingEra.toNumber(),
       },
       maintenance: state.maintenance.isTrue,
+    };
+  }
+
+  private mapStakeAmount(dapp: PalletDappStakingV3StakeAmount): StakeAmount {
+    return {
+      voting: dapp.voting.toBigInt(),
+      buildAndEarn: dapp.buildAndEarn.toBigInt(),
+      era: dapp.era.toNumber(),
+      period: dapp.period.toNumber(),
     };
   }
 

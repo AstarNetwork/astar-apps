@@ -203,4 +203,9 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container
     .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
     .startProtocolStateSubscription();
+
+  // TODO move to account hook and trigger on account change.
+  container
+    .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+    .startAccountLedgerSubscription('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8');
 }

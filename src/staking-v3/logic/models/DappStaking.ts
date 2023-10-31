@@ -23,10 +23,40 @@ export class ProtocolStateChangedMessage {
 }
 
 /**
+ * Used to notify subscribers about ledger changes.
+ */
+export class AccountLedgerChangedMessage {
+  constructor(public ledger: AccountLedger) {}
+}
+
+/**
  * Combines a dApp information from different sources, on chain and storage.
  */
 export interface CombinedDappInfo {
   basic: DappBase;
   extended?: Dapp;
   chain: DappInfo;
+}
+
+interface UnlockingChunk {
+  readonly amount: BigInt;
+  readonly unlockBlock: BigInt;
+}
+
+export interface StakeAmount {
+  readonly voting: BigInt;
+  readonly buildAndEarn: BigInt;
+  readonly era: number;
+  readonly period: number;
+}
+
+/**
+ * Staker account ledger.
+ */
+export interface AccountLedger {
+  readonly locked: BigInt;
+  readonly unlocking: UnlockingChunk[];
+  readonly staked: StakeAmount;
+  readonly stakedFuture?: StakeAmount;
+  readonly contractStakeCount: number;
 }
