@@ -1,11 +1,12 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { EVM, buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
+import { buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import {
   BridgeHistory,
   EthBridgeChainId,
   EthBridgeNetworkName,
+  ZkChainId,
   checkIsL1,
   fetchAccountHistory,
   getChainIdFromNetId,
@@ -48,7 +49,7 @@ export const useL1History = () => {
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
 
-  const handleNetwork = async (chainId: EVM): Promise<void> => {
+  const handleNetwork = async (chainId: ZkChainId): Promise<void> => {
     if (!web3Provider.value || !ethProvider.value) return;
     const connectedNetwork = await web3Provider.value!.eth.net.getId();
     if (connectedNetwork !== chainId) {

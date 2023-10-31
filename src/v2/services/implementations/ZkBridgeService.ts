@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify';
-import { EVM } from 'src/config/web3';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { EthBridgeChainId, getChainIdFromNetId } from 'src/modules/zk-evm-bridge';
+import { EthBridgeChainId, ZkChainId, getChainIdFromNetId } from 'src/modules/zk-evm-bridge';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IZkBridgeRepository } from 'src/v2/repositories/IZkBridgeRepository';
 import { IWalletService, IZkBridgeService, ParamBridgeAsset, ParamClaim } from 'src/v2/services';
@@ -22,7 +21,7 @@ export class ZkBridgeService implements IZkBridgeService {
     this.wallet = walletFactory();
   }
 
-  private async checkConnectedNetwork(chainId: EVM, web3: Web3): Promise<void> {
+  private async checkConnectedNetwork(chainId: ZkChainId, web3: Web3): Promise<void> {
     const connectedNetwork = await web3.eth.net.getId();
     if (connectedNetwork !== chainId) {
       const errMsg = "Connected Network doesn't match";

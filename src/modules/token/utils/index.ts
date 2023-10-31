@@ -64,6 +64,15 @@ export const getStoredERC20Tokens = (): Erc20Token[] => {
 
 export const storeImportedERC20Token = (token: Erc20Token) => {
   const tokens = getStoredERC20Tokens();
+  if (
+    tokens.some(
+      (it) =>
+        it.address.toLowerCase() === token.address.toLowerCase() &&
+        it.srcChainId === token.srcChainId
+    )
+  ) {
+    return;
+  }
   tokens.push(token);
   localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };

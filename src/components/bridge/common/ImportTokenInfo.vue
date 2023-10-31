@@ -97,15 +97,15 @@
 </template>
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, truncate } from '@astar-network/astar-sdk-core';
-import { defineComponent, computed, PropType } from 'vue';
-import Jazzicon from 'vue3-jazzicon/src/components';
-import { useImportToken } from 'src/hooks';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useImportToken } from 'src/hooks';
 import { ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { PropType, computed, defineComponent } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
-    // TokenBalance,
+    TokenBalance,
     [Jazzicon.name]: Jazzicon,
   },
   props: {
@@ -151,13 +151,14 @@ export default defineComponent({
 
     const isDisabledButton = computed<Boolean>(() => isAddedToken.value || isBlackListToken.value);
 
-    const { isLoadingToken, zkToken } = useImportToken({
+    const { isLoadingToken, zkToken, storeImportToken } = useImportToken({
       fromChainName: props.fromChainName,
       toChainName: props.toChainName,
       importTokenAddress: tokenAddress,
     });
 
     const handleAddToken = async (): Promise<void> => {
+      await storeImportToken();
       await props.setZkTokens(zkToken.value);
     };
 

@@ -8,7 +8,7 @@ import {
   ZkToken,
 } from 'src/modules/zk-evm-bridge';
 import { setupNetwork } from 'src/config/web3';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
@@ -17,8 +17,8 @@ import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
-import { wait } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
+import { Erc20Token } from 'src/modules/token';
 
 const eth = {
   symbol: 'ETH',
@@ -111,20 +111,34 @@ export const useL1Bridge = () => {
     const address = currentAccount.value;
     const fromChainIdRef = fromChainId.value;
     if (!address) return;
-    const tokensRaw = localStorage.getItem(LOCAL_STORAGE.ZK_Bridge_IMPORT_TOKENS);
-    const tokensData = tokensRaw ? JSON.parse(tokensRaw) : {};
-    let tokens = [];
+    const tokensRaw = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
+    const tokensData = tokensRaw ? JSON.parse(tokensRaw) : [];
+    const filteredTokens =
+      tokensData.length > 0 &&
+      tokensData
+        .map((it: Erc20Token) => {
+          const isValidToken = it.bridgedTokenAddress && it.srcChainId === fromChainIdRef;
+          return isValidToken
+            ? {
+                address: it.address,
+                decimal: Number(it.decimal),
+                fromChainBalance: 0,
+                name: it.name,
+                symbol: it.symbol,
+                toChainBalance: 0,
+                toChainTokenAddress: it.bridgedTokenAddress,
+              }
+            : null;
+        })
+        .filter((it: Erc20Token) => it !== null);
 
-    if (tokensData.hasOwnProperty(address)) {
-      const addressData = tokensData[address];
-      if (addressData.hasOwnProperty(fromChainIdRef)) {
-        tokens = addressData[fromChainIdRef];
-      } else {
-        tokens = [eth];
-      }
+    let tokens = [];
+    if (filteredTokens) {
+      tokens = [eth, ...filteredTokens];
     } else {
       tokens = [eth];
     }
+
     zkTokens.value = await Promise.all(
       tokens.map(async (token: ZkToken) => {
         let fromChainBalance = '0';
@@ -143,26 +157,7 @@ export const useL1Bridge = () => {
   };
 
   const setZkTokens = async (token: ZkToken): Promise<void> => {
-    const storeTokenData = {
-      [fromChainId.value]: [...zkTokens.value, token],
-    };
-
-    const tokensRaw = localStorage.getItem(LOCAL_STORAGE.ZK_Bridge_IMPORT_TOKENS);
-    const tokensData = tokensRaw ? JSON.parse(tokensRaw) : {};
-    const address = currentAccount.value;
-
-    let newDataObj;
-    if (tokensData.hasOwnProperty(address)) {
-      const addressData = tokensData[address];
-      newDataObj = { ...tokensData, [address]: { ...addressData, ...storeTokenData } };
-    } else {
-      newDataObj = { ...tokensData, [address]: { ...storeTokenData } };
-    }
-    localStorage.setItem(LOCAL_STORAGE.ZK_Bridge_IMPORT_TOKENS, JSON.stringify(newDataObj));
-
     zkTokens.value.push(token);
-    // Memo: to avoid closing select token modal
-    await wait(500);
     importTokenAddress.value = '';
   };
 

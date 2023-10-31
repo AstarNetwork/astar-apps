@@ -19,7 +19,6 @@ export enum LOCAL_STORAGE {
   THEME_COLOR = 'themeColor',
   IS_LEDGER = 'isLedger',
   MULTISIG = 'multisig',
-  ZK_Bridge_IMPORT_TOKENS = 'zkBridgeImportTokens',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser

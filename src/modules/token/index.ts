@@ -30,6 +30,8 @@ export interface Erc20Token {
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;
+  bridgedChainId?: number;
+  bridgedTokenAddress?: string;
 }
 
 export const WASTR: Erc20Token = {

@@ -1,4 +1,3 @@
-import { EVM } from 'src/config/web3';
 import ABI_ZK_EVM_BRIDGE from 'src/config/web3/abi/zkevm-bridge-abi.json';
 export * from './utils';
 
@@ -17,6 +16,14 @@ export enum EthBridgeNetworkName {
   'AstarZk' = 'Astar zkEVM',
 }
 
+// Memo: do not import from src/config/web3 due to reference conflicts
+export enum ZkChainId {
+  'Sepolia' = 11155111,
+  'Zkatana' = 1261120,
+  'Ethereum' = 1,
+  'AstarZk' = 9999999, // Todo: update
+}
+
 // Todo: check mainnet contract
 export const EthBridgeContract = {
   [EthBridgeNetworkName.Sepolia]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
@@ -26,10 +33,17 @@ export const EthBridgeContract = {
 };
 
 export const EthBridgeChainId = {
-  [EthBridgeNetworkName.Sepolia]: EVM.SEPOLIA_TESTNET,
-  [EthBridgeNetworkName.Ethereum]: EVM.ETHEREUM_MAINNET,
-  [EthBridgeNetworkName.Zkatana]: EVM.ZKATANA_TESTNET,
-  [EthBridgeNetworkName.AstarZk]: EVM.ASTAR_ZKEVM_MAINNET,
+  [EthBridgeNetworkName.Sepolia]: ZkChainId.Sepolia,
+  [EthBridgeNetworkName.Ethereum]: ZkChainId.Ethereum,
+  [EthBridgeNetworkName.Zkatana]: ZkChainId.Zkatana,
+  [EthBridgeNetworkName.AstarZk]: ZkChainId.AstarZk,
+};
+
+export const EthBridgeChainIdToName = {
+  [ZkChainId.Sepolia]: EthBridgeNetworkName.Sepolia,
+  [ZkChainId.Ethereum]: EthBridgeNetworkName.Ethereum,
+  [ZkChainId.Zkatana]: EthBridgeNetworkName.Zkatana,
+  [ZkChainId.AstarZk]: EthBridgeNetworkName.AstarZk, // Todo: update
 };
 
 export const zkBridgeIcon = {

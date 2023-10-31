@@ -1,15 +1,21 @@
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  CHAIN_INFORMATION,
+  EVM,
+  TNetworkId,
+  blockExplorerUrls,
+  nativeCurrency,
+} from 'src/config/web3';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { Erc20Token } from 'src/modules/token';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
-import { getRandomFromArray } from '@astar-network/astar-sdk-core';
-import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { ZkChainId, getBridgedTokenAddress } from 'src/modules/zk-evm-bridge';
+import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -126,7 +132,7 @@ export const createAstarWeb3Instance = async (currentNetworkIdx: TNetworkId) => 
   }
 };
 
-export const buildWeb3Instance = (chainId: EVM) => {
+export const buildWeb3Instance = (chainId: EVM | ZkChainId) => {
   const network = getChainData(chainId);
   if (!network.rpcUrls[0]) return;
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
@@ -236,7 +242,21 @@ export const fetchErc20TokenInfo = async ({
       contract.methods.symbol().call(),
     ]);
 
-    const data = {
+    const isZkEvm = srcChainId === ZkChainId.AstarZk || srcChainId === ZkChainId.Zkatana;
+    let bridgedTokenAddress = '';
+    let toChainId;
+    if (isZkEvm) {
+      toChainId = srcChainId === ZkChainId.AstarZk ? ZkChainId.Ethereum : ZkChainId.Sepolia;
+      bridgedTokenAddress = await getBridgedTokenAddress({
+        srcChainId,
+        tokenAddress: address,
+        name,
+        symbol,
+        decimal,
+      });
+    }
+
+    const data: Erc20Token = {
       srcChainId,
       address,
       decimal,
@@ -246,6 +266,8 @@ export const fetchErc20TokenInfo = async ({
       isWrappedToken: false,
       isXC20: isXc20Token(address),
       wrapUrl: null,
+      bridgedChainId: toChainId,
+      bridgedTokenAddress,
     };
 
     return data;
