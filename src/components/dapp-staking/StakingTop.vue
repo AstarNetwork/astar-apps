@@ -1,6 +1,12 @@
 <template>
   <div v-if="isReady" class="extra-wrapper">
     <div class="container--main">
+      <Teleport to="#staking-top-bg">
+        <div
+          class="dapps-staking-bg"
+          :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
+        />
+      </Teleport>
       <top-metric />
       <register />
       <dynamic-ads-area />
@@ -94,7 +100,13 @@ export default defineComponent({
       store.dispatch('dapps/getTvl');
     });
 
-    return { isReady, isZkEvm };
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const bg_img = {
+      light: require('/src/assets/img/dapps_staking_bg_light.webp'),
+      dark: require('/src/assets/img/dapps_staking_bg_dark.webp'),
+    };
+
+    return { isReady, isZkEvm, isDarkTheme, bg_img };
   },
 });
 </script>
@@ -149,6 +161,23 @@ export default defineComponent({
 .body--dark {
   .divider {
     border-color: $gray-5;
+  }
+}
+
+.dapps-staking-bg {
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  @media (orientation: landscape) {
+    height: 900px;
+  }
+
+  @media (orientation: portrait) {
+    height: 500px;
   }
 }
 </style>

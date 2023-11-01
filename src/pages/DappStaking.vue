@@ -1,5 +1,6 @@
 <template>
   <div v-if="isReady" class="wrapper--dapp-staking">
+    <div id="staking-top-bg" />
     <div class="container--dapp-staking">
       <router-view />
     </div>
