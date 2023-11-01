@@ -177,10 +177,15 @@ import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
+<<<<<<< connection-customization
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
 import { LocationQuery, useRoute } from 'vue-router';
+=======
+import { SubstrateAccount } from 'src/store/general/state';
+import { PropType, computed, defineComponent, ref } from 'vue';
+>>>>>>> main
 import { productionOrigin } from 'src/links';
 
 export default defineComponent({
@@ -275,6 +280,7 @@ export default defineComponent({
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+<<<<<<< connection-customization
           // filter wallets based on query params
           if (
             route?.query?.nativeWallets &&
@@ -285,6 +291,8 @@ export default defineComponent({
           ) {
             return undefined;
           }
+=======
+>>>>>>> main
           if (it.source === SupportWallet.Snap) {
             return isSnapEnabled.value ? it : undefined;
           }
