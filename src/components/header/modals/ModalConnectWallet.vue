@@ -236,16 +236,7 @@ export default defineComponent({
         !isClosing.value
       ) {
         if (route?.query?.selectedWalletType === 'native') {
-          if (accounts?.length === 1) {
-            const substrateAccount = accounts[0];
-            store.commit('general/setCurrentAddress', substrateAccount.address);
-            localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, substrateAccount.source);
-            localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
-            window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
-            closeModal();
-          } else if (accounts?.length) {
-            setSubstrateWalletModal(params.selectedWallet as string);
-          }
+          setSubstrateWalletModal(params.selectedWallet as string);
         }
         if (params?.selectedWalletType === 'evm') {
           setEvmWalletModal(params.selectedWallet as string);
