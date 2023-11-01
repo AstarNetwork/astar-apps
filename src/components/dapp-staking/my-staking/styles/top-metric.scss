@@ -7,25 +7,17 @@
   padding-bottom: 24px;
   padding-left: 16px;
   padding-right: 16px;
-
   @media (min-width: $md) {
-    border-radius: 6px;
-  }
-
-  @media (min-width: $xxl) {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 0;
   }
 }
 
 .wrapper--title {
-  margin-left: 16px;
   margin-bottom: 32px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 800;
-  color: $gray-1;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  color: $navy-1;
 
   .txt--title {
     font-size: 40px;
@@ -36,6 +28,12 @@
   .txt--subtitle {
     font-size: 24px;
     line-height: 27px;
+  }
+}
+.body--dark {
+  .wrapper--title {
+    color: $gray-1;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -74,9 +72,9 @@
   flex: none;
   height: 150px;
   padding: 36px 16px;
-  background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
 
   @media (min-width: $lg) {
     flex-basis: 23.5%;
@@ -90,7 +88,7 @@
     gap: 5px;
     font-weight: 600;
     font-size: 14px;
-    color: $gray-1;
+    color: $navy-1;
   }
 
   .row--data {
@@ -101,7 +99,7 @@
       font-weight: 600;
       font-size: 20px;
       line-height: 18px;
-      color: $gray-1;
+      color: $navy-1;
 
       .detail-value {
         font-size: 12px;
@@ -118,7 +116,7 @@
       display: block;
       font-weight: 600;
       font-size: 19px;
-      color: $gray-1;
+      color: $navy-1;
 
       .txt--tvl {
         white-space: nowrap;
@@ -201,7 +199,7 @@
 
   .button--active {
     padding-bottom: 6px;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid $navy-1;
     transition: all 0.3s ease 0s;
   }
 
@@ -262,7 +260,7 @@
 
   .button--active {
     padding-bottom: 6px;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid $navy-1;
     transition: all 0.3s ease 0s;
   }
 
@@ -281,5 +279,20 @@
       margin-top: -32px;
       margin-left: 8px;
     }
+  }
+}
+
+.body--dark {
+  .card {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.2);
+    .button--active {
+      border-color: $gray-1;
+    }
+  }
+  .card p,
+  .row--data .value,
+  .row--data .column--tvl {
+    color: $gray-1;
   }
 }

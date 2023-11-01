@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="panel"
-    :style="`background-image: url('${isShiden ? hero_img.shiden_hero : hero_img.astar_hero}');`"
-  >
+  <div class="panel">
     <div class="wrapper--title">
       <div class="txt--title animate__animated animate__zoomInRight">
         {{ $t('topMetric.build2earn') }}

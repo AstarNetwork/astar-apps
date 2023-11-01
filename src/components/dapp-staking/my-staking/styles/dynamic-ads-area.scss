@@ -2,6 +2,10 @@
 
 .swiper {
   overflow: visible;
+  padding: 0 16px;
+  @media (min-width: $md) {
+    padding: 0;
+  }
 }
 .swiper-slide {
   border-radius: 6px;
@@ -43,9 +47,15 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  color: $gray-1;
+  color: $navy-1;
 }
-#dynamic-ads-area{
+
+.body--dark {
+  .text--description {
+    color: $gray-1;
+  }
+}
+#dynamic-ads-area {
   .swiper-button-prev,
   .swiper-button-next {
     color: white;
@@ -53,7 +63,7 @@
     height: 40px;
     border-radius: 20px;
     background-color: $navy-1;
-    &::after{
+    &::after {
       font-size: 12px;
       font-weight: 600;
     }

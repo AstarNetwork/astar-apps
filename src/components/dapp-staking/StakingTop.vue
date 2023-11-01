@@ -1,12 +1,6 @@
 <template>
   <div v-if="isReady" class="extra-wrapper">
     <div class="container--main">
-      <Teleport to="#staking-top-bg">
-        <div
-          class="dapps-staking-bg"
-          :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
-        />
-      </Teleport>
       <top-metric />
       <register />
       <dynamic-ads-area />
@@ -30,6 +24,13 @@
       <dapp-list category="Utility" />
       <dapp-list category="Others" />
     </div>
+
+    <Teleport to="#staking-top-bg">
+      <div
+        class="dapps-staking-bg"
+        :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
+      />
+    </Teleport>
   </div>
   <div v-else />
 </template>
