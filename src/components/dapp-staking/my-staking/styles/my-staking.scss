@@ -54,6 +54,11 @@
     margin-top: 16px;
   }
 }
+.body--dark {
+  .text--transferable {
+    color: $gray-1;
+  }
+}
 
 .loading {
   display: inline-block;
@@ -128,8 +133,7 @@
     color: $gray-1;
   }
   .staking-container {
-    background: $container-bg-dark;
-    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .text--tab {

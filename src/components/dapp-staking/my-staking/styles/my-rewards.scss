@@ -107,8 +107,7 @@
 
 .body--dark {
   .card {
-    background: $body-bg-dark;
-    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
+    background: rgba(8, 16, 41, 0.5);
 
     p {
       color: $gray-3;
