@@ -4,8 +4,7 @@
 </template>
 
 <script lang="ts">
-import { UnifiedAccount } from 'src/store/general/state';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
