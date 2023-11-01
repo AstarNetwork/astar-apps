@@ -95,7 +95,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   });
 
   const isValidDestAddress = computed<boolean>(() => {
-    const isOnlyAcceptEvmAddress = isH160.value && !isTransferNativeToken.value;
+    const isOnlyAcceptEvmAddress =
+      isH160.value && !isTransferNativeToken.value && !isSupportXvmTransfer.value;
     return isOnlyAcceptEvmAddress
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
@@ -120,7 +121,17 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     transferAmt.value = String(selectedToken.value.userBalance);
   };
 
-  const setErrorMsg = (): void => {
+  const checkUnifiedAccount = async (): Promise<boolean> => {
+    const isEvmAddress = isValidEvmAddress(toAddress.value);
+    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+    if (isH160.value) {
+      return isEvmAddress ? true : await service.checkIsUnifiedAccount(toAddress.value);
+    } else {
+      return isEvmAddress ? await service.checkIsUnifiedAccount(toAddress.value) : true;
+    }
+  };
+
+  const setErrorMsg = async (): Promise<void> => {
     if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     try {
@@ -130,6 +141,13 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+      } else if (
+        isH160.value &&
+        toAddress.value &&
+        !isTransferNativeToken.value &&
+        !(await checkUnifiedAccount())
+      ) {
+        errMsg.value = 'warning.inputtedNotUnifiedDestAddress';
       } else if (transferAmtRef && !transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
