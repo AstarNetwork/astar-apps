@@ -7,8 +7,6 @@ import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 
 @injectable()
 export class NftRepository implements INftRepository {
-  private readonly baseUrl = 'https://api.bluez.app/api/nft/v3/API_KEY';
-
   public async getOwnedTokens(network: string, ownerAddress: string): Promise<NftMetadata[]> {
     const ownedTokensUrl = `${TOKEN_API_URL}/v1/${network}/nft/owned/${ownerAddress}?pageKey=1&pageSize=100`;
     const result = await axios.get(ownedTokensUrl);

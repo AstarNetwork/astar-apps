@@ -1,22 +1,15 @@
 <template>
   <div class="wrapper--account">
-    <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
-      <div>
-        <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
-      </div>
-      <ul class="row--warning-list">
-        <li class="text--warning">
-          {{ $t('assets.cantTransferToExcahges') }}
-        </li>
-        <li class="text--warning">{{ $t('assets.noHash') }}</li>
-      </ul>
-    </div>
-
     <div class="container">
       <div class="row--details">
         <div class="column-account-name">
+          <au-icon
+            v-if="isAccountUnified"
+            :native-address="unifiedAccount?.nativeAddress"
+            :icon-url="unifiedAccount?.avatarUrl"
+          />
           <img
-            v-if="iconWallet"
+            v-else-if="iconWallet"
             width="24"
             :src="iconWallet"
             alt="wallet-icon"
@@ -73,6 +66,7 @@
       </div>
       <div v-if="isH160">
         <evm-native-token />
+        <zk-astr v-if="isZkEvm" />
       </div>
       <div v-if="multisig" class="row--details-signatory">
         <div class="column-account-name">
@@ -89,37 +83,39 @@
       </div>
       <native-asset-list v-if="!isH160" />
     </div>
-    <modal-lockdrop-warning
-      v-if="isLockdropAccount && !isH160"
-      :is-modal="isModalLockdropWarning"
-      :handle-modal="handleModalLockdropWarning"
-    />
   </div>
 </template>
 <script lang="ts">
-import { isValidEvmAddress, getShortenAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { useAccount, useBalance, useNetworkInfo, usePrice, useWalletIcon } from 'src/hooks';
+import { supportWalletObj } from 'src/config/wallets';
+import {
+  ETHEREUM_EXTENSION,
+  useAccount,
+  useBalance,
+  useNetworkInfo,
+  usePrice,
+  useWalletIcon,
+  useAccountUnification,
+} from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { supportWalletObj } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
     NativeAssetList,
-    ModalLockdropWarning,
     EvmNativeToken,
+    ZkAstr,
   },
   props: {
     ttlErc20Amount: {
@@ -134,8 +130,6 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
-    const isLockdropAccount = ref<boolean>(false);
-    const isModalLockdropWarning = ref<boolean>(true);
     const {
       currentAccount,
       currentAccountName,
@@ -143,10 +137,12 @@ export default defineComponent({
       showAccountUnificationModal,
       isAccountUnification,
     } = useAccount();
+
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
+    const { unifiedAccount, isAccountUnified } = useAccountUnification();
 
     const store = useStore();
     const { t } = useI18n();
@@ -155,7 +151,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -172,10 +168,6 @@ export default defineComponent({
       // @ts-ignore
       return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
     });
-
-    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
-      isModalLockdropWarning.value = isOpen;
-    };
 
     const copyAddress = () => {
       copy(currentAccount.value);
@@ -225,7 +217,6 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
-          isLockdropAccount.value = false;
           return;
         }
         if (
@@ -240,14 +231,8 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
-          if (Number(data.free.toString()) > 0) {
-            isLockdropAccount.value = true;
-          } else {
-            isLockdropAccount.value = false;
-          }
         } catch (error: any) {
           console.error(error.message);
-          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -263,16 +248,16 @@ export default defineComponent({
       isH160,
       isEthWallet,
       balUsd,
-      isLockdropAccount,
       isSkeleton,
       totalBal,
       ETHEREUM_EXTENSION,
       multisig,
       supportWalletObj,
       signatoryIconWallet,
-      isModalLockdropWarning,
       isAccountUnification,
-      handleModalLockdropWarning,
+      unifiedAccount,
+      isAccountUnified,
+      isZkEvm,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

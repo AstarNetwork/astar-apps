@@ -2,14 +2,14 @@ import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { IEventAggregator } from 'src/v2/messaging';
 import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
-import { IWalletService, IAssetsService } from 'src/v2/services';
-import { Symbols } from 'src/v2/symbols';
-import Web3 from 'web3';
+import { IAssetsService, IWalletService } from 'src/v2/services';
 import {
   ParamAssetTransfer,
   ParamEvmTransfer,
   ParamEvmWithdraw,
 } from 'src/v2/services/IAssetsService';
+import { Symbols } from 'src/v2/symbols';
+import Web3 from 'web3';
 
 @injectable()
 export class AssetsService implements IAssetsService {

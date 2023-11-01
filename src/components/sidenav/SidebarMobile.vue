@@ -1,9 +1,20 @@
-
 <template>
   <div>
     <div class="header">
       <nav class="tabs">
+        <button
+          v-if="isZkatana"
+          :disabled="true"
+          :class="['link', path === 'dashboard' && 'active-link']"
+        >
+          <div class="column--item column--item--dashboard">
+            <span class="text--link">
+              {{ $t('dashboard.dashboard') }}
+            </span>
+          </div>
+        </button>
         <router-link
+          v-else
           :to="RoutePath.Dashboard"
           :class="['link', path === 'dashboard' && 'active-link']"
         >
@@ -28,6 +39,13 @@
           <div class="column--item">
             <span class="text--link">
               {{ $t('common.staking') }}
+            </span>
+          </div>
+        </router-link>
+        <router-link :to="RoutePath.Bridge" :class="['link', path === 'bridge' && 'active-link']">
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('assets.bridge') }}
             </span>
           </div>
         </router-link>
@@ -65,6 +83,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SidebarOption from './SidebarOption.vue';
 import { Path as RoutePath } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -77,6 +96,7 @@ export default defineComponent({
     const showOption = ref(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+    const { isZkatana } = useNetworkInfo();
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -86,6 +106,8 @@ export default defineComponent({
           return 'tabs__assets';
         case 'dapp-staking':
           return 'tabs__staking';
+        case 'bridge':
+          return 'menu__bridge';
         default:
           return 'tabs__staking';
       }
@@ -97,6 +119,7 @@ export default defineComponent({
       getIndicatorClass,
       path,
       RoutePath,
+      isZkatana,
     };
   },
 });

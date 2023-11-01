@@ -17,14 +17,14 @@ import ABI from 'src/config/abi/ERC20.json';
 import { setupNetwork } from 'src/config/web3';
 import { MyStakeInfo, useCurrentEra } from 'src/hooks';
 import { useAccount } from 'src/hooks/useAccount';
-import { getBlockscoutTx } from 'src/links';
+import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AlertMsg } from 'src/modules/toast';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset } from 'src/v2/models';
+import { Asset, IdentityData } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -34,8 +34,9 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { IIdentityRepository } from 'src/v2/repositories';
+import { UnifiedAccount } from 'src/store/general/state';
 
-const provider = get(window, 'ethereum');
+const provider = get(window, 'ethereum') as any;
 
 export interface TransferXc20Token {
   assetId: string;
@@ -68,6 +69,11 @@ export const useAccountUnification = () => {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
   const gas = computed<GasTip>(() => store.getters['general/getGas']);
+
+  const unifiedAccount = computed<UnifiedAccount | undefined>(
+    () => store.getters['general/getUnifiedAccount']
+  );
+  const isAccountUnified = computed<boolean>(() => unifiedAccount.value !== undefined);
 
   const setAccountName = (event: any) => {
     accountName.value = typeof event === 'string' ? event : event.target.value;
@@ -292,8 +298,8 @@ export const useAccountUnification = () => {
             })
           );
         })
-        .then(({ transactionHash }) => {
-          const explorerUrl = getBlockscoutTx(transactionHash);
+        .then(async ({ transactionHash }) => {
+          const explorerUrl = await getEvmExplorerUrl(transactionHash, web3.value as Web3);
           eventAggregator.publish(
             new ExtrinsicStatusMessage({
               success: true,
@@ -323,18 +329,34 @@ export const useAccountUnification = () => {
   const unifyAccounts = async (
     nativeAddress: string,
     evmAddress: string,
-    accountName: string
+    accountName: string,
+    avatarContractAddress?: string,
+    avatarId?: string
   ): Promise<boolean> => {
     const unificationService = container.get<IAccountUnificationService>(
       Symbols.AccountUnificationService
     );
 
-    return unificationService.unifyAccounts(nativeAddress, evmAddress, accountName);
+    return unificationService.unifyAccounts(
+      nativeAddress,
+      evmAddress,
+      accountName,
+      avatarContractAddress,
+      avatarId
+    );
   };
 
-  const updateAccount = async (nativeAddress: string, accountName: string): Promise<void> => {
+  const updateAccount = async (
+    nativeAddress: string,
+    accountName: string,
+    avatarContractAddress?: string,
+    avatarTokenId?: string
+  ): Promise<void> => {
     const identityService = container.get<IIdentityService>(Symbols.IdentityService);
-    await identityService.setIdentity(nativeAddress, { display: accountName });
+    await identityService.setIdentity(
+      nativeAddress,
+      identityService.createIdentityData(accountName, avatarContractAddress, avatarTokenId)
+    );
   };
 
   const getCost = async (): Promise<string> => {
@@ -360,6 +382,8 @@ export const useAccountUnification = () => {
     isLoadingDappStaking,
     accountName,
     isSendingXc20Tokens,
+    unifiedAccount,
+    isAccountUnified,
     setAccountName,
     setWeb3,
     handleTransferXc20Tokens,
