@@ -17,7 +17,13 @@
             <span> {{ getShortenAddress(zkToken?.address ?? '') }} </span>
           </div>
           <div>
-            <astar-icon-external-link />
+            <a
+              :href="`${getExplorerLink(fromChainName)}/token/${zkToken?.address}`"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <astar-icon-external-link />
+            </a>
           </div>
         </div>
       </div>
@@ -31,7 +37,13 @@
             <span> {{ getShortenAddress(zkToken?.toChainTokenAddress ?? '') }} </span>
           </div>
           <div>
-            <astar-icon-external-link />
+            <a
+              :href="`${getExplorerLink(toChainName)}/token/${zkToken?.toChainTokenAddress}`"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <astar-icon-external-link />
+            </a>
           </div>
         </div>
       </div>
@@ -98,9 +110,10 @@
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, truncate } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { EVM, blockExplorerUrls } from 'src/config/web3';
 import { useImportToken } from 'src/hooks';
-import { ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
-import { PropType, computed, defineComponent } from 'vue';
+import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { PropType, computed, defineComponent, watchEffect } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -162,6 +175,21 @@ export default defineComponent({
       await props.setZkTokens(zkToken.value);
     };
 
+    const getExplorerLink = (chainName: string) => {
+      switch (chainName) {
+        case EthBridgeNetworkName.Ethereum:
+          return blockExplorerUrls[EVM.ETHEREUM_MAINNET];
+        case EthBridgeNetworkName.Sepolia:
+          return blockExplorerUrls[EVM.SEPOLIA_TESTNET];
+        case EthBridgeNetworkName.AstarZk:
+          return blockExplorerUrls[EVM.ASTAR_ZKEVM_MAINNET];
+        case EthBridgeNetworkName.Zkatana:
+          return blockExplorerUrls[EVM.ZKATANA_TESTNET];
+        default:
+          return blockExplorerUrls[EVM.ZKATANA_TESTNET];
+      }
+    };
+
     return {
       truncate,
       getShortenAddress,
@@ -174,6 +202,7 @@ export default defineComponent({
       isAddedToken,
       isDisabledButton,
       isBlackListToken,
+      getExplorerLink,
     };
   },
 });

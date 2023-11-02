@@ -140,6 +140,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 24px;
 }
 
 .icon--warning {
@@ -163,7 +164,7 @@
 .container--token-info {
   display: flex;
   flex-direction: column;
-  row-gap: 10px;
+  row-gap: 6px;
   margin-top: 16px;
   margin-bottom: 8px;
 }
@@ -172,6 +173,9 @@
   display: flex;
   align-items: center;
   column-gap: 4px;
+  img {
+    margin-top: 2px;
+  }
 }
 
 .row--to-chain-address {
