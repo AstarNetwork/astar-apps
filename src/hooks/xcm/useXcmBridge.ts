@@ -5,6 +5,7 @@ import {
   capitalize,
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
+  wait,
 } from '@astar-network/astar-sdk-core';
 import { ApiPromise } from '@polkadot/api';
 import { ethers } from 'ethers';
@@ -35,6 +36,8 @@ import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { evmToAddress } from '@polkadot/util-crypto';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { container } from 'src/v2/common';
 import { AstarToken } from 'src/v2/config/xcm/XcmRepositoryConfiguration';
@@ -47,8 +50,6 @@ import {
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
-import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
@@ -610,16 +611,33 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     await setOriginChainNativeBal();
   });
 
+  // Memo: to avoid using previous endpoint to fetch destChainBalance and it causes a bug (ex: acala -> statemint)
+  const balMonitorDelay = 500;
+
   watch(
     [isLoadingApi, currentAccount, selectedToken, srcChain, originChainApiEndpoint],
     async () => {
+      // Memo: to display the balance with the same timing as destination balance
+      await wait(balMonitorDelay);
       await monitorFromChainBalance();
     }
   );
 
-  watchEffect(async () => {
-    await monitorDestChainBalance(inputtedAddress.value);
-  });
+  watch(
+    [
+      isLoadingApi,
+      currentAccount,
+      selectedToken,
+      destChain,
+      originChainApiEndpoint,
+      inputtedAddress,
+    ],
+    async () => {
+      await wait(balMonitorDelay);
+      await monitorDestChainBalance(inputtedAddress.value);
+    },
+    { immediate: true }
+  );
 
   return {
     amount,
