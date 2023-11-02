@@ -31,10 +31,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const tokenAddress = param.tokenAddress;
     const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
 
-    // Todo: create a check UI for selecting either max amount or a specific amount
-    // const amount = ethers.utils.parseUnits(param.amount, param.decimal).toString();
-    const amount = ethersConstants.MaxUint256;
-    const data = contract.methods.approve(contractAddress, amount).encodeABI();
+    const data = contract.methods.approve(contractAddress, param.amount).encodeABI();
     return {
       from: param.senderAddress,
       to: tokenAddress,

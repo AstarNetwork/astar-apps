@@ -17,8 +17,9 @@ import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
-import { ethers } from 'ethers';
+import { ethers, constants as ethersConstants } from 'ethers';
 import { Erc20Token } from 'src/modules/token';
+import { debounce } from 'lodash-es'; // If using lodash
 
 const eth = {
   symbol: 'ETH',
@@ -55,6 +56,7 @@ export const useL1Bridge = () => {
   const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
   const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
   const isApproved = ref<boolean>(false);
+  const isApproving = ref<boolean>(false);
 
   const store = useStore();
   const { t } = useI18n();
@@ -79,6 +81,10 @@ export const useL1Bridge = () => {
     selectedToken.value = token;
   };
 
+  const setIsApproving = (result: boolean) => {
+    isApproving.value = result;
+  };
+
   const setIsApproved = async (): Promise<void> => {
     const fromChainIdRef = fromChainId.value;
     const senderAddress = currentAccount.value;
@@ -86,7 +92,7 @@ export const useL1Bridge = () => {
     const tokenAddress = selectedToken.value.address;
     const decimals = selectedToken.value.decimal;
     const amount = bridgeAmt.value ?? '0';
-    if (!decimals) return;
+    if (!decimals || !amount) return;
     try {
       if (tokenAddress === astarNativeTokenErcAddr) {
         isApproved.value = true;
@@ -98,9 +104,10 @@ export const useL1Bridge = () => {
         contractAddress,
         tokenAddress,
       });
-      const parsedBridgeAmount = ethers.utils.parseUnits(amount, decimals).toString();
-      isApproved.value =
-        Number(amountAllowance) !== 0 && Number(amountAllowance) >= Number(parsedBridgeAmount);
+      const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
+      console.log('formattedAllowance', formattedAllowance);
+      console.log('amount', amount);
+      isApproved.value = Number(formattedAllowance) >= Number(amount);
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -242,8 +249,12 @@ export const useL1Bridge = () => {
   const handleApprove = async (): Promise<String> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return '';
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    // Todo: create a check UI for selecting either max amount or a specific amount
+    const amount = ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimal).toString();
+    // const amount = ethersConstants.MaxUint256;
+
     return await zkBridgeService.approve({
-      amount: bridgeAmt.value,
+      amount,
       fromChainName: fromChainName.value,
       toChainName: toChainName.value,
       senderAddress: currentAccount.value,
@@ -255,7 +266,7 @@ export const useL1Bridge = () => {
   const handleBridge = async (): Promise<String> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return '';
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-    return await zkBridgeService.bridgeAsset({
+    const hash = await zkBridgeService.bridgeAsset({
       amount: bridgeAmt.value,
       fromChainName: fromChainName.value,
       toChainName: toChainName.value,
@@ -263,6 +274,9 @@ export const useL1Bridge = () => {
       tokenAddress: selectedToken.value.address,
       decimal: selectedToken.value.decimal,
     });
+    await setIsApproved();
+    bridgeAmt.value = '';
+    return hash;
   };
 
   watchEffect(setErrorMsg);
@@ -271,13 +285,19 @@ export const useL1Bridge = () => {
   });
   watch([fromChainName, toChainName], handleNetwork, { immediate: true });
   watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
-  watch([selectedToken, fromChainId, currentAccount], setIsApproved);
 
-  const autoFetchAllowanceHandler = setInterval(async () => {
-    if (!isApproved.value) {
-      await setIsApproved();
-    }
-  }, 30 * 1000);
+  const debounceDelay = 500;
+  const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
+  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved);
+
+  const autoFetchAllowanceHandler = setInterval(
+    async () => {
+      if (!isApproved.value) {
+        await setIsApproved();
+      }
+    },
+    isApproving.value ? 5 : 30 * 1000
+  );
 
   onUnmounted(() => {
     clearInterval(autoFetchAllowanceHandler);
@@ -301,6 +321,8 @@ export const useL1Bridge = () => {
     zkTokens,
     selectedToken,
     isApproved,
+    isApproving,
+    setIsApproving,
     setSelectedToken,
     setZkTokens,
     inputHandler,

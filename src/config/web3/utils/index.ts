@@ -323,5 +323,6 @@ export const checkAllowance = async ({
   srcChainId: EVM;
 }): Promise<string> => {
   const contract = buildErc20Contract({ tokenAddress, srcChainId });
-  return await contract.methods.allowance(senderAddress, contractAddress).call();
+  const allowance = await contract.methods.allowance(senderAddress, contractAddress).call();
+  return allowance;
 };

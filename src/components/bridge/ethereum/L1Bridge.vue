@@ -143,7 +143,8 @@ import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
-import { PropType, defineComponent, ref } from 'vue';
+import { useStore } from 'src/store';
+import { PropType, defineComponent, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -184,6 +185,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isApproving: {
+      type: Boolean,
+      required: true,
+    },
     fromBridgeBalance: {
       type: Number,
       required: true,
@@ -216,19 +221,25 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    setIsApproving: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const isApproving = ref<boolean>(false);
+    const store = useStore();
 
     const bridge = async (): Promise<void> => {
       const transactionHash = await props.handleBridge();
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
+        store.commit('general/setLoading', true, { root: true });
         // Memo: gives some time for updating in the bridge API
         await wait(3 * 1000);
         await props.fetchUserHistory();
         props.setIsBridge(false);
+        store.commit('general/setLoading', false, { root: true });
       }
     };
 
@@ -236,9 +247,23 @@ export default defineComponent({
       const transactionHash = await props.handleApprove();
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
-        isApproving.value = true;
+        store.commit('general/setLoading', true, { root: true });
+        props.setIsApproving(true);
       }
     };
+
+    // Memo: run bridge function after approved
+    // Watching the 'isApproved' prop
+    // When 'isApproved' changes and becomes true, execute 'bridge' function
+    watch(
+      () => props.isApproved,
+      async (newVal, oldVal) => {
+        if (newVal === true) {
+          props.setIsApproving(false);
+          await bridge();
+        }
+      }
+    );
 
     return {
       zkBridgeIcon,

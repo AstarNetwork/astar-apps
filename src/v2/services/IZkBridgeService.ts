@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { BridgeHistory, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 
 export interface IZkBridgeService {
@@ -8,7 +9,7 @@ export interface IZkBridgeService {
 
 export interface ParamBridgeAsset {
   senderAddress: string;
-  amount: string;
+  amount: string | BigNumber;
   fromChainName: EthBridgeNetworkName;
   toChainName: EthBridgeNetworkName;
   tokenAddress: string;

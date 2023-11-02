@@ -175,18 +175,18 @@ export default defineComponent({
       await props.setZkTokens(zkToken.value);
     };
 
-    const getExplorerLink = (chainName: string) => {
+    const getExplorerLink = (chainName: string): string => {
       switch (chainName) {
         case EthBridgeNetworkName.Ethereum:
-          return blockExplorerUrls[EVM.ETHEREUM_MAINNET];
+          return String(blockExplorerUrls[EVM.ETHEREUM_MAINNET][0]);
         case EthBridgeNetworkName.Sepolia:
-          return blockExplorerUrls[EVM.SEPOLIA_TESTNET];
+          return String(blockExplorerUrls[EVM.SEPOLIA_TESTNET][0]);
         case EthBridgeNetworkName.AstarZk:
-          return blockExplorerUrls[EVM.ASTAR_ZKEVM_MAINNET];
+          return String(blockExplorerUrls[EVM.ASTAR_ZKEVM_MAINNET][0]);
         case EthBridgeNetworkName.Zkatana:
-          return blockExplorerUrls[EVM.ZKATANA_TESTNET];
+          return String(blockExplorerUrls[EVM.ZKATANA_TESTNET][0]);
         default:
-          return blockExplorerUrls[EVM.ZKATANA_TESTNET];
+          return String(blockExplorerUrls[EVM.ZKATANA_TESTNET][0]);
       }
     };
 
