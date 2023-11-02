@@ -130,14 +130,16 @@ export default defineComponent({
         if (result.value) {
           // Currently only one tag can be displayed on UI, so let's pick the first one
           // link property is missing from SubSocial data.
-          items.value = result.value.posts.map((x: Data) => {
-            return {
-              tag: x.tag.split(',')[0],
-              title: x.title,
-              link: x.link,
-              img: 'https://ipfs.subsocial.network/ipfs/' + x.img,
-            };
-          });
+          items.value = result.value.posts
+            .map((x: Data) => {
+              return {
+                tag: x.tag && x.tag.includes(',') ? x.tag.split(',')[0] : x.tag,
+                title: x.title,
+                link: x.link,
+                img: 'https://ipfs.subsocial.network/ipfs/' + x.img,
+              };
+            })
+            .filter((x: Data) => x.tag !== null);
           setDataArray();
           handlePageUpdate();
         }
