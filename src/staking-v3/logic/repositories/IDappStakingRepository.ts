@@ -61,4 +61,11 @@ export interface IDappStakingRepository {
    * @param amount Staking amount.
    */
   getLockAndStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets unstake call.
+   * @param contractAddress Address of the contract to be unstaked from.
+   * @param amount Unstaking amount.
+   */
+  getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
 }

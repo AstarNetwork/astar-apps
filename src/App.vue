@@ -139,6 +139,7 @@ export default defineComponent({
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
+      console.log('Ledger:', message.ledger);
     });
 
     // **** end dApp staking v3

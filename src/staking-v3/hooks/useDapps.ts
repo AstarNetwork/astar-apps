@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { container } from 'src/v2/common';
-import { DappBase, IDappStakingRepository, IDappStakingService } from '../logic';
+import { CombinedDappInfo, DappBase, IDappStakingRepository, IDappStakingService } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
 import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
@@ -9,7 +9,9 @@ import { useStore } from 'src/store';
 export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
-  const registeredDapps = computed<DappBase[]>(() => store.getters['stakingV3/getRegisteredDapps']);
+  const registeredDapps = computed<CombinedDappInfo[]>(
+    () => store.getters['stakingV3/getRegisteredDapps']
+  );
 
   const fetchDappsToStore = async (): Promise<void> => {
     const service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);

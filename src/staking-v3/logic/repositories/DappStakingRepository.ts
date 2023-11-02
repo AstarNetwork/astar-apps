@@ -1,6 +1,5 @@
 import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
-  AccountLedger,
   AccountLedgerChangedMessage,
   Dapp,
   DappBase,
@@ -150,6 +149,14 @@ export class DappStakingRepository implements IDappStakingRepository {
       await this.getLockCall(amount),
       await this.getStakeCall(contractAddress, amount),
     ]);
+  }
+
+  public async getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+    const amountFormatted = this.getFormattedAmount(amount);
+
+    return api.tx.dappStaking.unstake(getDappAddressEnum(contractAddress), amountFormatted);
   }
 
   private getFormattedAmount(amount: number): BigInt {

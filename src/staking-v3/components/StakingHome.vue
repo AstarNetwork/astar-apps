@@ -1,7 +1,9 @@
 <template>
   <div class="main--wrapper">
     <h4>Hello from dApp Staking v3</h4>
+    <br />
     <p>Protocol state: {{ protocolState }}</p>
+    <br />
     <div v-for="(dapp, index) in registeredDapps" :key="index">
       <button @click="stake(dapp.chain.address, 1000)">Stake</button> |
       <button @click="unstake(dapp.chain.address, 10)">Unstake</button> |

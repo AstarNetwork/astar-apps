@@ -1,7 +1,12 @@
 import { watch, computed } from 'vue';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
-import { IDappStakingRepository, IDappStakingService, ProtocolState } from '../logic';
+import {
+  AccountLedger,
+  IDappStakingRepository,
+  IDappStakingService,
+  ProtocolState,
+} from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useAccount } from 'src/hooks';
@@ -14,6 +19,8 @@ export function useDappStaking() {
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
+
+  const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -32,5 +39,5 @@ export function useDappStaking() {
     { immediate: true }
   );
 
-  return { protocolState, stake };
+  return { protocolState, stake, ledger };
 }
