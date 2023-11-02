@@ -1,0 +1,35 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--bridge {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.container--bridge {
+  display: grid;
+  row-gap: 32px;
+  margin-bottom: 24px;
+  margin-top: 52px;
+  @media (min-width: $xl) {
+    justify-content: center;
+  }
+}
+
+.wrapper-containers {
+  display: flex;
+  flex-direction: column;
+  row-gap: 80px;
+  @media (min-width: $md) {
+    flex-direction: row;
+    column-gap: 24px;
+    row-gap: 0px;
+  }
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 40px;
+  }
+  @media (min-width: $xl) {
+    column-gap: 50px;
+  }
+}

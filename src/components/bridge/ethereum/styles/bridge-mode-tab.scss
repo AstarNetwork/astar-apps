@@ -1,0 +1,64 @@
+@import 'src/css/quasar.variables.scss';
+
+.box--tab {
+  width: 170px;
+  display: flex;
+  justify-content: center;
+  height: 38px;
+  @media (min-width: $md) {
+    width: 240px;
+  }
+}
+
+.selected-tab {
+  color: $navy-1;
+  border-bottom: 3px solid $blue;
+  transition: all 0.3s ease 0s;
+}
+
+.unselected-tab {
+  color: $navy-1;
+  cursor: pointer;
+  border-bottom: 1px solid $navy-3;
+  transition: all 0.3s ease 0s;
+}
+
+.text--title-tab {
+  font-size: 16px;
+}
+
+.text--selected {
+  font-weight: 600;
+}
+
+.text--xcm {
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+    font-size: 16px;
+    margin-left: 4px;
+  }
+}
+
+.row--tab {
+  display: flex;
+  justify-content: center;
+  @media (min-width: $md) {
+    justify-content: flex-start;
+  }
+}
+
+.row--mode-tab {
+  display: flex;
+}
+
+.box--history-tab {
+  position: relative;
+}
+
+.body--dark {
+  .text--title-tab,
+  .text--xcm {
+    color: $gray-1;
+  }
+}

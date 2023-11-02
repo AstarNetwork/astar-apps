@@ -40,9 +40,10 @@ export class IdentityRepository implements IIdentityRepository {
     const identity = result.unwrapOrDefault();
     const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
     identity.info.additional.forEach((x) => {
+      // Seems dirty. The problem here is that some raw data is treated as ASCII and some as bytes
       data.additional?.push({
-        key: x[0].toHuman() as string,
-        value: x[1].toHuman() as string,
+        key: JSON.parse(JSON.stringify(x[0].toHuman())).Raw,
+        value: JSON.parse(JSON.stringify(x[1].toHuman())).Raw,
       });
     });
 

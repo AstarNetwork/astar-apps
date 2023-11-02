@@ -2,46 +2,72 @@
   <div class="wrapper--account-unification">
     <div class="list--nfts">
       <div
-        v-for="nft in nfts"
-        :key="nft.img"
+        v-for="(nft, index) in ownedNfts"
+        :key="`nft-${index}`"
         class="item"
-        :class="nft.isSelected && 'item--selected'"
+        :class="selectedIndex === index && 'item--selected'"
+        @click="selectedIndex = index"
       >
-        <img :src="nft.img" alt="NFT" />
+        <img :src="nft.image" :alt="nft.name" />
       </div>
+    </div>
+    <div v-if="ownedNfts.length === 0 && !isBusy" class="item">
+      {{ $t('wallet.unifiedAccount.noNfts') }}
     </div>
 
     <!-- Action -->
     <div>
-      <astar-button class="btn">Next</astar-button>
+      <astar-button class="btn" @click="next">Next</astar-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { useNft } from 'src/hooks/useNft';
+import { NftMetadata } from 'src/v2/models';
+import { defineComponent, onMounted, ref, PropType, watch } from 'vue';
 
 export default defineComponent({
   components: {},
+  props: {
+    evmAddress: {
+      type: String,
+      required: true,
+    },
+    avatarMetadata: {
+      type: Object as PropType<NftMetadata | undefined>,
+      default: undefined,
+    },
+  },
   emits: ['next'],
   setup(props, { emit }) {
+    const { ownedNfts, isBusy, getOwnedNfts } = useNft();
+    const selectedIndex = ref<number>(-1);
+
     const next = () => {
-      emit('next');
+      if (selectedIndex.value > -1) {
+        emit('next', ownedNfts.value[selectedIndex.value]);
+      } else {
+        emit('next');
+      }
     };
 
-    const icon_img = {
-      astar_gradient: require('/src/assets/img/astar_icon.svg'),
-    };
+    onMounted(() => {
+      getOwnedNfts(props.evmAddress);
+    });
 
-    const nfts = [
-      { img: icon_img.astar_gradient, isSelected: true },
-      { img: icon_img.astar_gradient, isSelected: false },
-      { img: icon_img.astar_gradient, isSelected: false },
-      { img: icon_img.astar_gradient, isSelected: false },
-    ];
+    watch([ownedNfts], () => {
+      selectedIndex.value = ownedNfts.value.findIndex(
+        (nft) =>
+          nft.contractAddress === props.avatarMetadata?.contractAddress &&
+          nft.tokenId === props.avatarMetadata?.tokenId
+      );
+    });
 
     return {
-      nfts,
+      ownedNfts,
+      selectedIndex,
+      isBusy,
       next,
     };
   },

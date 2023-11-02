@@ -23,7 +23,6 @@
   line-height: 18px;
   color: $navy-1;
   margin: 0 auto;
-  margin-top: 16px;
   padding: 16px;
 }
 .class-radio-off {
@@ -136,6 +135,11 @@
   align-items: center;
   column-gap: 8px;
   cursor: pointer;
+}
+
+.button--network-column {
+  width: 100%;
+  margin-top: 16px;
 }
 
 .body--dark {

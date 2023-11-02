@@ -10,13 +10,19 @@ export const getTokenImage = ({
   isNativeToken,
   symbol,
   iconUrl,
+  isZkEvm,
 }: {
   isNativeToken: boolean;
   symbol: string;
   iconUrl?: string;
+  isZkEvm?: boolean;
 }): string => {
   if (isNativeToken) {
-    return symbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png';
+    return isZkEvm
+      ? require('assets/img/ethereum.png')
+      : symbol === 'SDN'
+      ? 'icons/sdn-token.png'
+      : 'icons/astar.png';
   } else {
     return iconUrl || 'custom-token';
   }
