@@ -70,7 +70,7 @@ export const xcmToken = {
       originAssetId: '1984',
       logo: require('/src/assets/img/token/usdt.png'),
       isXcmCompatible: true,
-      originChain: Chain.STATEMINT,
+      originChain: Chain.ASSET_HUB,
       minBridgeAmount: '1.5',
     },
     {
@@ -203,7 +203,7 @@ export const xcmToken = {
       originAssetId: '1984',
       logo: require('/src/assets/img/token/usdt.png'),
       isXcmCompatible: true,
-      originChain: Chain.STATEMINE,
+      originChain: Chain.ASSET_HUB_KUSAMA,
       minBridgeAmount: '0.1',
     },
     {
