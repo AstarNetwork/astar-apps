@@ -57,6 +57,7 @@ export default {
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    inputtedNotUnifiedDestAddress: 'Inputted destination address has not been unified',
     blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
