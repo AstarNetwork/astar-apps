@@ -5,7 +5,6 @@ import {
   capitalize,
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
-  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 import { ApiPromise } from '@polkadot/api';
 import { ethers } from 'ethers';
@@ -40,7 +39,12 @@ import { Path } from 'src/router';
 import { container } from 'src/v2/common';
 import { AstarToken } from 'src/v2/config/xcm/XcmRepositoryConfiguration';
 import { IApiFactory } from 'src/v2/integration';
-import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
+import {
+  IAccountUnificationService,
+  IXcmEvmService,
+  IXcmService,
+  IXcmTransfer,
+} from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
 import { castChainName, castXcmEndpoint } from 'src/modules/xcm';
@@ -337,10 +341,15 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     ) {
       return 0;
     }
+    const accountUnificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
     if (isDeposit.value) {
       // if: SS58 Deposit
       const isSendToH160 = isValidEvmAddress(address);
-      const destAddress = isSendToH160 ? toSS58Address(address) : address;
+      const destAddress = isSendToH160
+        ? await accountUnificationService.getMappedNativeAddress(address)
+        : address;
       if (isAstarNativeTransfer.value) {
         const accountInfo = await $api?.query.system.account<SystemAccount>(address);
         const bal = accountInfo!.data.free || '0';
