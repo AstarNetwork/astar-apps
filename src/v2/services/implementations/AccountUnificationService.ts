@@ -99,4 +99,9 @@ export class AccountUnificationService implements IAccountUnificationService {
 
     return await this.unificationRepo.getMappedEvmAddress(nativeAddress);
   }
+  public async checkIsUnifiedAccount(address: string): Promise<boolean> {
+    Guard.ThrowIfUndefined('address', address);
+
+    return await this.unificationRepo.handleCheckIsUnifiedAccount(address);
+  }
 }
