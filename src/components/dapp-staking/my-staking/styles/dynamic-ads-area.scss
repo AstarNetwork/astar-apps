@@ -31,7 +31,7 @@
   height: auto;
 }
 .card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.5);
   height: 100%;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -39,7 +39,16 @@
   border-radius: 6px;
   overflow: hidden;
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+  }
+}
+.body--dark{
+  .card {
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
   }
 }
 .card__img {
