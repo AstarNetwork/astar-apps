@@ -21,7 +21,7 @@
     >
       <swiper-slide v-for="(item, index) in items" :key="index">
         <div
-          class="card"
+          class="card--swiper"
           @click="item.link !== undefined ? goToLink(item.link) : goDappPageLink(item.address)"
         >
           <img :src="item.img" class="card__img" />

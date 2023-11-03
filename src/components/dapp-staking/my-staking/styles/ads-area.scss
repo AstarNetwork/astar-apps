@@ -8,8 +8,8 @@
     black calc(100% - 16px),
     transparent
   );
-  margin-top: 48px;
-  margin-bottom: 48px;
+  padding-top: 48px;
+  padding-bottom: 48px;
   @media (min-width: $sm) {
     mask-image: linear-gradient(
       to right,
@@ -20,7 +20,9 @@
     );
     margin-left: -48px;
     margin-right: -48px;
-    padding: 0 48px;
+    margin-bottom: -48px;
+    padding-left: 48px;
+    padding-right: 48px;
   }
 }
 .swiper {
@@ -33,12 +35,12 @@
 .swiper-slide {
   height: auto;
 }
-.card {
+.card--swiper {
   background: rgba(255, 255, 255, 0.5);
   height: 100%;
   transition: all 0.2s ease;
   cursor: pointer;
-  box-shadow: 0px 0px 12px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 16px 2px #00000014;
   border-radius: 6px;
   overflow: hidden;
   &:hover {
@@ -46,9 +48,8 @@
   }
 }
 .body--dark{
-  .card {
+  .card--swiper {
     background: rgba(255, 255, 255, 0.1);
-    overflow: hidden;
     &:hover {
       background: rgba(255, 255, 255, 0.2);
     }

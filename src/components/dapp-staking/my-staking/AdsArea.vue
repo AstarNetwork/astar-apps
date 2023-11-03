@@ -16,7 +16,7 @@
       }"
     >
       <swiper-slide v-for="(t, index) in items" :key="index">
-        <div class="card" @click="goToLink(t.link)">
+        <div class="card--swiper" @click="goToLink(t.link)">
           <img :src="t.img" class="card__img" />
           <div class="card__bottom">
             <div>

@@ -73,11 +73,7 @@
   padding: 36px 16px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
-  cursor: default;
-  &:hover {
-    background: rgba(255, 255, 255, 0.5);
-  }
+  box-shadow: 0 0 16px 2px #00000014;
   @media (min-width: $lg) {
     flex-basis: 23.5%;
     padding: 36px 24px;
@@ -287,10 +283,6 @@
 .body--dark {
   .card {
     background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.2);
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
     .button--active {
       border-color: $gray-1;
     }
