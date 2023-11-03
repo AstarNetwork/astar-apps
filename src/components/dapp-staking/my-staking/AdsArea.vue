@@ -17,7 +17,7 @@
     >
       <swiper-slide v-for="(t, index) in items" :key="index">
         <div class="card" @click="goToLink(t.link)">
-          <img :src="isShiden ? bg_img.shiden_hero : bg_img.astar_hero" class="card__img" />
+          <img :src="t.img" class="card__img" />
           <div class="card__bottom">
             <div>
               <div class="text--subtitle">{{ t.subtitle }}</div>
@@ -54,7 +54,12 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
-    const items = adsData;
+    const items = adsData.map((item) => {
+      return {
+        ...item,
+        img: item.img === '' ? bg_img.astar_hero : item.img,
+      };
+    });
 
     const goToLink = (link: string) => {
       window.open(link, '_blank');
@@ -63,8 +68,6 @@ export default defineComponent({
     return {
       modules: [Navigation],
       items,
-      bg_img,
-      isShiden,
       goToLink,
     };
   },
