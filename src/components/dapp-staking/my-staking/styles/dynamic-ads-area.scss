@@ -1,5 +1,25 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--dynamic-ads {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  @media (min-width: $sm) {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 48px,
+      black calc(100% - 48px),
+      transparent
+    );
+    margin: 0 -48px;
+    padding: 0 48px;
+  }
+}
 .swiper {
   overflow: visible;
   padding: 0 16px;
@@ -74,5 +94,8 @@
   }
   .swiper-button-next {
     padding-left: 2px;
+  }
+  .swiper-button-disabled {
+    display: none;
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper--dynamic-ads">
     <swiper
       id="dynamic-ads-area"
       :slides-per-view="1.25"

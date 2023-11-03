@@ -168,7 +168,7 @@ export default defineComponent({
 .dapps-staking-bg {
   background-repeat: no-repeat;
   background-size: cover;
-  position: absolute;
+  position: fixed;
   width: 100%;
   left: 0;
   top: 0;
