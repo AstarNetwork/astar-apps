@@ -64,7 +64,11 @@ import { Symbols } from 'src/v2/symbols';
 import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { AccountLedgerChangedMessage, ProtocolStateChangedMessage } from './staking-v3';
+import {
+  AccountLedgerChangedMessage,
+  ProtocolStateChangedMessage,
+  StakerInfoChangedMessage,
+} from './staking-v3';
 
 export default defineComponent({
   name: 'App',
@@ -140,6 +144,11 @@ export default defineComponent({
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
       console.log('Ledger:', message.ledger);
+    });
+
+    eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {
+      const message = m as StakerInfoChangedMessage;
+      store.commit('stakingV3/setStakerInfo', message.stakerInfo, { root: true });
     });
 
     // **** end dApp staking v3

@@ -1,10 +1,11 @@
-import { AccountLedger, CombinedDappInfo, ProtocolState } from '../logic';
+import { AccountLedger, CombinedDappInfo, ProtocolState, SingularStakingInfo } from '../logic';
 
 export interface DappStakingState {
   version: string;
   dapps: CombinedDappInfo[];
   protocolState: ProtocolState | undefined;
   ledger: AccountLedger | undefined;
+  stakerInfo: Map<string, SingularStakingInfo> | undefined;
 }
 
 function state(): DappStakingState {
@@ -13,6 +14,7 @@ function state(): DappStakingState {
     dapps: [],
     protocolState: undefined,
     ledger: undefined,
+    stakerInfo: undefined,
   };
 }
 

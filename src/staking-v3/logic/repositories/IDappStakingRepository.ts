@@ -1,5 +1,5 @@
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
-import { AccountLedger, Dapp, DappBase, DappInfo, ProtocolState } from '../models';
+import { Dapp, DappBase, DappInfo, ProtocolState, SingularStakingInfo } from '../models';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -86,4 +86,11 @@ export interface IDappStakingRepository {
    * Gets claim staker rewards call.
    */
   getClaimStakerRewardsCall(): Promise<ExtrinsicPayload>;
+
+  /**
+   * Starts subscription to a staker info changes.
+   * @param address Staker address to get info for.
+   * @returns A promise that resolves to a map of staker address and staker info.
+   */
+  startGetStakerInfoSubscription(address: string): Promise<void>;
 }

@@ -1,13 +1,20 @@
 import { MutationTree } from 'vuex';
 import { DappStakingState } from './state';
-import { AccountLedger, CombinedDappInfo, Dapp, ProtocolState } from '../logic';
+import {
+  AccountLedger,
+  CombinedDappInfo,
+  Dapp,
+  ProtocolState,
+  SingularStakingInfo,
+} from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
-  setLedger(stake: DappStakingState, ledger: AccountLedger): void;
+  setLedger(state: DappStakingState, ledger: AccountLedger): void;
+  setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
 }
 
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
@@ -32,6 +39,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setLedger(state, ledger) {
     state.ledger = ledger;
+  },
+  setStakerInfo(state, stakerInfo) {
+    state.stakerInfo = stakerInfo;
   },
 };
 

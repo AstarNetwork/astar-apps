@@ -61,3 +61,15 @@ export interface PalletDappStakingV3AccountLedger extends Struct {
   readonly stakedFuture: Option<PalletDappStakingV3StakeAmount>;
   readonly contractStakeCount: Compact<u32>;
 }
+
+export interface PalletDappStakingV3StakeAmount extends Struct {
+  readonly voting: Compact<u128>;
+  readonly buildAndEarn: Compact<u128>;
+  readonly era: Compact<u32>;
+  readonly period: Compact<u32>;
+}
+
+export interface PalletDappStakingV3SingularStakingInfo extends Struct {
+  readonly staked: PalletDappStakingV3StakeAmount;
+  readonly loyalStaker: bool;
+}

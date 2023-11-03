@@ -8,7 +8,9 @@ import {
   PeriodType,
   ProtocolState,
   ProtocolStateChangedMessage,
+  SingularStakingInfo,
   StakeAmount,
+  StakerInfoChangedMessage,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
@@ -18,14 +20,16 @@ import {
   PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3ProtocolState,
+  PalletDappStakingV3SingularStakingInfo,
   PalletDappStakingV3StakeAmount,
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
-import { Option } from '@polkadot/types';
+import { Option, StorageKey } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
+import { AnyTuple, Codec } from '@polkadot/types/types';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -63,11 +67,19 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
+  private protocolStateSubscription: Function | undefined = undefined;
   public async startProtocolStateSubscription(): Promise<void> {
     const api = await this.api.getApi();
-    await api.query.dappStaking.activeProtocolState((state: PalletDappStakingV3ProtocolState) => {
-      this.eventAggregator.publish(new ProtocolStateChangedMessage(this.mapToModel(state)));
-    });
+
+    if (this.protocolStateSubscription) {
+      this.protocolStateSubscription();
+    }
+
+    const subscription = await api.query.dappStaking.activeProtocolState(
+      (state: PalletDappStakingV3ProtocolState) => {
+        this.eventAggregator.publish(new ProtocolStateChangedMessage(this.mapToModel(state)));
+      }
+    );
   }
 
   //* @inheritdoc
@@ -100,24 +112,36 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
+  private ledgerSubscription: Function | undefined = undefined;
   public async startAccountLedgerSubscription(address: string): Promise<void> {
     const api = await this.api.getApi();
-    await api.query.dappStaking.ledger(address, (ledger: PalletDappStakingV3AccountLedger) => {
-      const mappedLedger = {
-        locked: ledger.locked.toBigInt(),
-        unlocking: ledger.unlocking.map((chunk) => ({
-          amount: chunk.amount.toBigInt(),
-          unlockBlock: chunk.unlockBlock.toBigInt(),
-        })),
-        staked: this.mapStakeAmount(ledger.staked),
-        stakedFuture: ledger.stakedFuture.isSome
-          ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
-          : undefined,
-        contractStakeCount: ledger.contractStakeCount.toNumber(),
-      };
 
-      this.eventAggregator.publish(new AccountLedgerChangedMessage(mappedLedger));
-    });
+    if (this.ledgerSubscription) {
+      this.ledgerSubscription();
+    }
+
+    const subscription = await api.query.dappStaking.ledger(
+      address,
+      (ledger: PalletDappStakingV3AccountLedger) => {
+        const mappedLedger = {
+          locked: ledger.locked.toBigInt(),
+          unlocking: ledger.unlocking.map((chunk) => ({
+            amount: chunk.amount.toBigInt(),
+            unlockBlock: chunk.unlockBlock.toBigInt(),
+          })),
+          staked: this.mapStakeAmount(ledger.staked),
+          stakedFuture: ledger.stakedFuture.isSome
+            ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
+            : undefined,
+          contractStakeCount: ledger.contractStakeCount.toNumber(),
+        };
+
+        this.eventAggregator.publish(new AccountLedgerChangedMessage(mappedLedger));
+      }
+    );
+
+    // Ledger subscription returns Codec instead of Function and that's why we have casting dirty magic below.
+    this.ledgerSubscription = subscription as unknown as Function;
   }
 
   //* @inheritdoc
@@ -186,9 +210,47 @@ export class DappStakingRepository implements IDappStakingRepository {
     ]);
   }
 
+  //* @inheritdoc
   public async getClaimStakerRewardsCall(): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     return api.tx.dappStaking.claimStakerRewards();
+  }
+
+  private stakerInfoSubscription: Function | undefined = undefined;
+  //* @inheritdoc
+  public async startGetStakerInfoSubscription(address: string): Promise<void> {
+    Guard.ThrowIfUndefined(address, 'address');
+    const api = await this.api.getApi();
+
+    if (this.stakerInfoSubscription) {
+      this.stakerInfoSubscription();
+    }
+
+    const subscription = await api.query.dappStaking.stakerInfo.entries(
+      address,
+      (stakers: [StorageKey<AnyTuple>, Codec][]) => {
+        const result = new Map<string, SingularStakingInfo>();
+        stakers.forEach(([key, value]) => {
+          const v = <Option<PalletDappStakingV3SingularStakingInfo>>value;
+
+          if (v.isSome) {
+            const unwrappedValue = v.unwrap();
+            const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
+
+            if (address) {
+              result.set(address, <SingularStakingInfo>{
+                loyalStaker: unwrappedValue.loyalStaker.isTrue,
+                staked: this.mapStakeAmount(unwrappedValue.staked),
+              });
+            }
+          }
+        });
+
+        this.eventAggregator.publish(new StakerInfoChangedMessage(result));
+      }
+    );
+
+    this.stakerInfoSubscription = subscription as unknown as Function;
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {

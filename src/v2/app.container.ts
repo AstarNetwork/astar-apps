@@ -208,4 +208,9 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container
     .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
     .startAccountLedgerSubscription('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8');
+
+  // dApp staking v3 staker info changed subscriptions. Also trigger on account change.
+  container
+    .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+    .startGetStakerInfoSubscription('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8');
 }

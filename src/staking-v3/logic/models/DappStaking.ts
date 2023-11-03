@@ -30,6 +30,13 @@ export class AccountLedgerChangedMessage {
 }
 
 /**
+ * Used to notify subscribers about staker info changes.
+ */
+export class StakerInfoChangedMessage {
+  constructor(public stakerInfo: Map<string, SingularStakingInfo>) {}
+}
+
+/**
  * Combines a dApp information from different sources, on chain and storage.
  */
 export interface CombinedDappInfo {
@@ -59,4 +66,9 @@ export interface AccountLedger {
   readonly staked: StakeAmount;
   readonly stakedFuture?: StakeAmount;
   readonly contractStakeCount: number;
+}
+
+export interface SingularStakingInfo {
+  readonly staked: StakeAmount;
+  readonly loyalStaker: boolean;
 }
