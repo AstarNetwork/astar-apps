@@ -10,8 +10,8 @@ export const zkEvmApi = {
 };
 
 export enum EthBridgeNetworkName {
-  'Sepolia' = 'Sepolia',
-  'Zkatana' = 'zKatana',
+  'Sepolia' = 'Sepolia Testnet',
+  'Zkatana' = 'zKatana Testnet',
   'Ethereum' = 'Ethereum',
   'AstarZk' = 'Astar zkEVM',
 }
@@ -49,8 +49,8 @@ export const EthBridgeChainIdToName = {
 export const zkBridgeIcon = {
   [EthBridgeNetworkName.Sepolia]: require('/src/assets/img/ethereum.png'),
   [EthBridgeNetworkName.Ethereum]: require('/src/assets/img/ethereum.png'),
-  [EthBridgeNetworkName.Zkatana]: require('src/assets/img/chain/shibuya.png'),
-  [EthBridgeNetworkName.AstarZk]: require('src/assets/img/chain/shibuya.png'),
+  [EthBridgeNetworkName.Zkatana]: require('src/assets/img/chain/zkatana-logo.png'),
+  [EthBridgeNetworkName.AstarZk]: require('src/assets/img/chain/zkatana-logo.png'),
 } as any;
 
 export interface BridgeHistory {

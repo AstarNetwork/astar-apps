@@ -140,7 +140,7 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
-    networkAlias: 'zkatana-zkevm',
+    networkAlias: 'zkatana-testnet',
     displayName: 'zKatana Network',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },

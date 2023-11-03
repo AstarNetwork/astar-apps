@@ -85,7 +85,9 @@
                 >
                   <span>
                     {{
-                      (checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
+                      (checkIsL1(history.network_id) ? l1Network : l2Network)
+                        .replace('zkEVM', '')
+                        .replace('Testnet', '')
                     }}
                   </span>
                   <div class="container--explorer-icon">
@@ -107,7 +109,9 @@
                 >
                   <span>
                     {{
-                      (!checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
+                      (!checkIsL1(history.network_id) ? l1Network : l2Network)
+                        .replace('zkEVM', '')
+                        .replace('Testnet', '')
                     }}
                   </span>
                   <div class="container--explorer-icon">
