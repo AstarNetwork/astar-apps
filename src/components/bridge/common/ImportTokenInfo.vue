@@ -20,16 +20,24 @@
         </div>
         <div class="column--chain">
           <div>
-            <span> {{ getShortenAddress(zkToken?.address ?? '') }} </span>
-          </div>
-          <div>
             <a
               :href="`${getExplorerLink(fromChainName)}/token/${zkToken?.address}`"
               target="_blank"
               rel="noopener noreferrer"
+              class="text--link"
             >
-              <astar-icon-external-link />
+              {{ getShortenAddress(zkToken?.address ?? '') }}
             </a>
+          </div>
+          <div>
+            <button
+              id="copyAddress"
+              type="button"
+              class="icon--copy"
+              @click="copyAddress(zkToken?.address || '')"
+            >
+              <astar-icon-copy />
+            </button>
           </div>
         </div>
       </div>
@@ -46,16 +54,24 @@
         </div>
         <div class="column--chain">
           <div>
-            <span> {{ getShortenAddress(zkToken?.toChainTokenAddress ?? '') }} </span>
-          </div>
-          <div>
             <a
               :href="`${getExplorerLink(toChainName)}/token/${zkToken?.toChainTokenAddress}`"
               target="_blank"
               rel="noopener noreferrer"
+              class="text--link"
             >
-              <astar-icon-external-link />
+              {{ getShortenAddress(zkToken?.toChainTokenAddress ?? '') }}
             </a>
+          </div>
+          <div>
+            <button
+              id="copyAddress"
+              type="button"
+              class="icon--copy"
+              @click="copyAddress(zkToken?.toChainTokenAddress || '')"
+            >
+              <astar-icon-copy />
+            </button>
           </div>
         </div>
       </div>
@@ -123,6 +139,7 @@
 </template>
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, truncate } from '@astar-network/astar-sdk-core';
+import copy from 'copy-to-clipboard';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { EVM, blockExplorerUrls } from 'src/config/web3';
 import { useImportToken } from 'src/hooks';
@@ -132,7 +149,9 @@ import {
   ZkToken,
   zkBridgeIcon,
 } from 'src/modules/zk-evm-bridge';
+import { useStore } from 'src/store';
 import { PropType, computed, defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -167,6 +186,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
+    const { t } = useI18n();
+
     const tokenAddress = computed<string>(() => props.importTokenAddress);
     const isValidAddress = computed<Boolean>(() => isValidEvmAddress(props.importTokenAddress));
     const isTokenNotExists = computed<Boolean>(
@@ -211,6 +233,14 @@ export default defineComponent({
       }
     };
 
+    const copyAddress = (address: string): void => {
+      copy(address);
+      store.dispatch('general/showAlertMsg', {
+        msg: t('toast.copyAddressSuccessfully'),
+        alertType: 'copied',
+      });
+    };
+
     return {
       truncate,
       getShortenAddress,
@@ -224,6 +254,7 @@ export default defineComponent({
       isDisabledButton,
       isBlackListToken,
       getExplorerLink,
+      copyAddress,
     };
   },
 });
