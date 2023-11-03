@@ -12,7 +12,9 @@
           <img width="16" :src="zkBridgeIcon[fromChainName]" class="icon--chain" alt="chain-icon" />
           <span>
             {{
-              $t('bridge.tokenInfo.tokenAddress', { network: fromChainName.replace('zkEVM', '') })
+              $t('bridge.tokenInfo.tokenAddress', {
+                network: fromChainName.replace('zkEVM', '').replace('Testnet', ''),
+              })
             }}
           </span>
         </div>
@@ -35,7 +37,11 @@
         <div class="column--chain">
           <img width="16" :src="zkBridgeIcon[toChainName]" alt="chain-icon" />
           <span>
-            {{ $t('bridge.tokenInfo.tokenAddress', { network: toChainName.replace('zkEVM', '') }) }}
+            {{
+              $t('bridge.tokenInfo.tokenAddress', {
+                network: toChainName.replace('zkEVM', '').replace('Testnet', ''),
+              })
+            }}
           </span>
         </div>
         <div class="column--chain">

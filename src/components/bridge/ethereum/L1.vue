@@ -57,6 +57,19 @@
           :set-zk-tokens="setZkTokens"
         />
       </div>
+      <modal-select-import-token
+        :is-modal-select-token="isModalSelectToken"
+        :handle-modal-select-token="handleModalSelectToken"
+        :set-token="handleSetToken"
+        :tokens="zkTokens"
+        :token="selectedToken"
+        :input-import-token-handler="inputImportTokenHandler"
+        :import-token-address="importTokenAddress"
+        :from-chain-id="fromChainId"
+        :from-chain-name="fromChainName"
+        :to-chain-name="toChainName"
+        :set-tokens="setZkTokens"
+      />
     </div>
   </div>
 </template>
@@ -72,12 +85,20 @@ import Information from 'src/components/assets/transfer/Information.vue';
 import BridgeModeTab from 'src/components/bridge/ethereum/BridgeModeTab.vue';
 import L1Bridge from 'src/components/bridge/ethereum/L1Bridge.vue';
 import L1History from 'src/components/bridge/ethereum/L1History.vue';
+import ModalSelectImportToken from 'src/components/bridge/ethereum/ModalSelectImportToken.vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type BridgeTabMode = 'bridge' | 'history';
 
 export default defineComponent({
-  components: { Information, BridgeModeTab, L1Bridge, L1History, SelectToken },
+  components: {
+    Information,
+    BridgeModeTab,
+    L1Bridge,
+    L1History,
+    SelectToken,
+    ModalSelectImportToken,
+  },
   setup() {
     const isBridge = ref<boolean>(true);
     const rightUi = ref<RightUi>('information');
@@ -217,6 +238,7 @@ export default defineComponent({
       setSelectedToken,
       handleApprove,
       setIsApproving,
+      handleModalSelectToken,
     };
   },
 });

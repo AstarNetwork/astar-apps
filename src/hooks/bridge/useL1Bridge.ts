@@ -20,7 +20,6 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ethers, constants as ethersConstants } from 'ethers';
 import { Erc20Token } from 'src/modules/token';
 import { debounce } from 'lodash-es'; // If using lodash
-import { wait } from '@astar-network/astar-sdk-core';
 
 const eth = {
   symbol: 'ETH',
