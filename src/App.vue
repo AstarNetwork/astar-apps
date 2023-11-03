@@ -66,6 +66,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import {
   AccountLedgerChangedMessage,
+  IDappStakingRepository,
   ProtocolStateChangedMessage,
   StakerInfoChangedMessage,
 } from './staking-v3';
@@ -84,7 +85,7 @@ export default defineComponent({
   setup() {
     useAppRouter();
     const store = useStore();
-    const { currentAccountName } = useAccount();
+    const { currentAccountName, currentAccount } = useAccount();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -143,7 +144,6 @@ export default defineComponent({
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
-      console.log('Ledger:', message.ledger);
     });
 
     eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {
@@ -154,8 +154,22 @@ export default defineComponent({
     // **** end dApp staking v3
 
     // Handle wallet change so we can inject proper wallet
+    let previousAddress: string | undefined = undefined;
     watch([isEthWallet, currentWallet, isH160, currentAccountName], () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
+
+      // Subscribe to an account specific dApp staking v3 data.
+      if (currentAccount.value && currentAccount.value !== previousAddress) {
+        container
+          .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
+          .startAccountLedgerSubscription(currentAccount.value);
+
+        container
+          .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
+          .startGetStakerInfoSubscription(currentAccount.value);
+
+        previousAddress = currentAccount.value;
+      }
     });
 
     const removeSplashScreen = () => {

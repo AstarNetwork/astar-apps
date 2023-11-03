@@ -112,15 +112,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
-  private ledgerSubscription: Function | undefined = undefined;
+  private ledgerUnsubscribe: Function | undefined = undefined;
   public async startAccountLedgerSubscription(address: string): Promise<void> {
     const api = await this.api.getApi();
 
-    if (this.ledgerSubscription) {
-      this.ledgerSubscription();
+    if (this.ledgerUnsubscribe) {
+      this.ledgerUnsubscribe();
     }
 
-    const subscription = await api.query.dappStaking.ledger(
+    const unsubscribe = await api.query.dappStaking.ledger(
       address,
       (ledger: PalletDappStakingV3AccountLedger) => {
         const mappedLedger = {
@@ -141,7 +141,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     );
 
     // Ledger subscription returns Codec instead of Function and that's why we have casting dirty magic below.
-    this.ledgerSubscription = subscription as unknown as Function;
+    this.ledgerUnsubscribe = unsubscribe as unknown as Function;
   }
 
   //* @inheritdoc
@@ -216,17 +216,17 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.claimStakerRewards();
   }
 
-  private stakerInfoSubscription: Function | undefined = undefined;
+  private stakerInfoUnsubscribe: Function | undefined = undefined;
   //* @inheritdoc
   public async startGetStakerInfoSubscription(address: string): Promise<void> {
     Guard.ThrowIfUndefined(address, 'address');
     const api = await this.api.getApi();
 
-    if (this.stakerInfoSubscription) {
-      this.stakerInfoSubscription();
+    if (this.stakerInfoUnsubscribe) {
+      this.stakerInfoUnsubscribe();
     }
 
-    const subscription = await api.query.dappStaking.stakerInfo.entries(
+    const unsubscribe = await api.query.dappStaking.stakerInfo.entries(
       address,
       (stakers: [StorageKey<AnyTuple>, Codec][]) => {
         const result = new Map<string, SingularStakingInfo>();
@@ -250,7 +250,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       }
     );
 
-    this.stakerInfoSubscription = subscription as unknown as Function;
+    this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {

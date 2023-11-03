@@ -5,13 +5,16 @@ import {
   AccountLedger,
   IDappStakingRepository,
   IDappStakingService,
+  PeriodType,
   ProtocolState,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useAccount } from 'src/hooks';
+import { useI18n } from 'vue-i18n';
 
 export function useDappStaking() {
+  const { t } = useI18n();
   const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
   const { currentAccount } = useAccount();
@@ -23,6 +26,11 @@ export function useDappStaking() {
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
+    const [result, error] = canStake(amount);
+    if (!result) {
+      throw error;
+    }
+
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, 'success');
   };
@@ -37,6 +45,19 @@ export function useDappStaking() {
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
   };
 
+  const canStake = (amount: number): [boolean, string] => {
+    if (amount <= 0) {
+      return [false, t('stakingV3.amountGreater0')];
+    } else if (
+      protocolState.value?.periodInfo.type === PeriodType.BuildAndEarn &&
+      protocolState.value.periodInfo.endingEra <= protocolState.value.era + 1
+    ) {
+      return [false, t('stakingV3.periodEndsNextEra')];
+    }
+
+    return [true, ''];
+  };
+
   watch(
     currentNetworkIdx,
     async () => {
@@ -49,5 +70,5 @@ export function useDappStaking() {
     { immediate: true }
   );
 
-  return { protocolState, ledger, stake, unstake, claimStakerRewards };
+  return { protocolState, ledger, stake, unstake, claimStakerRewards, canStake };
 }

@@ -657,6 +657,8 @@ export default {
   },
   stakingV3: {
     title: 'dApp Staking v3',
+    amountGreater0: 'Staking amount must be greater than 0.',
+    periodEndsNextEra: 'Period ends in the next era.',
   },
   bridge: {
     bridge: 'Bridge',
