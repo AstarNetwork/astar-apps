@@ -27,6 +27,16 @@ export function useDappStaking() {
     await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, 'success');
   };
 
+  const unstake = async (dappAddress: string, amount: number): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
+  };
+
+  const claimStakerRewards = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.claimStakerRewards(currentAccount.value, 'success');
+  };
+
   watch(
     currentNetworkIdx,
     async () => {
@@ -39,5 +49,5 @@ export function useDappStaking() {
     { immediate: true }
   );
 
-  return { protocolState, stake, ledger };
+  return { protocolState, ledger, stake, unstake, claimStakerRewards };
 }

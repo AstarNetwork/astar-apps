@@ -22,4 +22,25 @@ export interface IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void>;
+
+  /**
+   * Invokes unstake and unlock calls.
+   * @param contractAddress Address of the contract to be staked to.
+   * @param amount Staking amount.
+   * @param senderAddress Address of the request sender.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  unstakeAndUnlock(
+    contractAddress: string,
+    amount: number,
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void>;
+
+  /**
+   * Invokes claim staker rewards call.
+   * @param senderAddress Address of the request sender.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimStakerRewards(senderAddress: string, successMessage: string): Promise<void>;
 }

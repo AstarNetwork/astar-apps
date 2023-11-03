@@ -7,6 +7,7 @@
     <div v-for="(dapp, index) in registeredDapps" :key="index">
       <button @click="stake(dapp.chain.address, 1000)">Stake</button> |
       <button @click="unstake(dapp.chain.address, 10)">Unstake</button> |
+      <button @click="claimStakerRewards()">Claim staker</button> |
       <button @click="fetchDappToStore(dapp.chain.address)">Details</button> | [{{
         dapp.chain.address
       }}]
@@ -21,14 +22,14 @@ import { useDapps, useDappStaking } from '../hooks';
 
 export default defineComponent({
   setup() {
-    const { registeredDapps, fetchDappsToStore, fetchDappToStore, unstake } = useDapps();
-    const { protocolState, stake } = useDappStaking();
+    const { registeredDapps, fetchDappsToStore, fetchDappToStore } = useDapps();
+    const { protocolState, stake, unstake, claimStakerRewards } = useDappStaking();
 
     onMounted(async () => {
       await fetchDappsToStore();
     });
 
-    return { registeredDapps, protocolState, stake, unstake, fetchDappToStore };
+    return { registeredDapps, protocolState, stake, unstake, fetchDappToStore, claimStakerRewards };
   },
 });
 </script>

@@ -151,6 +151,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     ]);
   }
 
+  //* @inheritdoc
   public async getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
@@ -159,8 +160,35 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.unstake(getDappAddressEnum(contractAddress), amountFormatted);
   }
 
+  //* @inheritdoc
+  public async getUnlockCall(amount: number): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    const amountFormatted = this.getFormattedAmount(amount);
+
+    return api.tx.dappStaking.unlock(amountFormatted);
+  }
+
   private getFormattedAmount(amount: number): BigInt {
     return ethers.utils.parseEther(amount.toString()).toBigInt();
+  }
+
+  //* @inheritdoc
+  public async getUnstakeAndUnlockCall(
+    contractAddress: string,
+    amount: number
+  ): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+
+    return api.tx.utility.batchAll([
+      await this.getUnstakeCall(contractAddress, amount),
+      await this.getUnlockCall(amount),
+    ]);
+  }
+
+  public async getClaimStakerRewardsCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.claimStakerRewards();
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
