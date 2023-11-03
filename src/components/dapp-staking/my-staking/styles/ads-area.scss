@@ -1,6 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--dynamic-ads {
+.wrapper--ads-area {
   mask-image: linear-gradient(
     to right,
     transparent,
@@ -8,6 +8,8 @@
     black calc(100% - 16px),
     transparent
   );
+  margin-top: 48px;
+  margin-bottom: 48px;
   @media (min-width: $sm) {
     mask-image: linear-gradient(
       to right,
@@ -16,7 +18,8 @@
       black calc(100% - 48px),
       transparent
     );
-    margin: 0 -48px;
+    margin-left: -48px;
+    margin-right: -48px;
     padding: 0 48px;
   }
 }
@@ -69,7 +72,7 @@
     color: $astar-pink;
   }
 }
-.text--title {
+.text--name {
   margin: 4px 0 16px 0;
 }
 .text--description {
@@ -79,13 +82,22 @@
   -webkit-line-clamp: 3;
   color: $navy-1;
 }
+.text--title {
+  margin: 4px 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.text--subtitle{
+  color: $gray-3;
+  font-weight: 600;
+}
 
 .body--dark {
   .text--description {
     color: $gray-1;
   }
 }
-#dynamic-ads-area {
+.swiper--ads-area {
   .swiper-button-prev,
   .swiper-button-next {
     color: white;

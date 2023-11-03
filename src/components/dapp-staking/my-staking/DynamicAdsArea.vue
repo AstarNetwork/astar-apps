@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper--dynamic-ads">
+  <div class="wrapper--ads-area">
     <swiper
-      id="dynamic-ads-area"
+      class="swiper--ads-area"
       :slides-per-view="1.25"
       :slides-per-group="1"
       :space-between="24"
@@ -33,7 +33,7 @@
               >
                 {{ item.link !== undefined ? 'FEATURED' : 'NEW LISTING' }}
               </div>
-              <div class="text--title">{{ item.name }}</div>
+              <div class="text--name">{{ item.name }}</div>
             </div>
             <div class="text--description">{{ item.description }}</div>
           </div>
@@ -119,5 +119,5 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
-@import './styles/dynamic-ads-area.scss';
+@import './styles/ads-area.scss';
 </style>
