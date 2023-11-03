@@ -71,7 +71,7 @@
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
               <img
-                v-if="selectedToken.symbol == 'ETH'"
+                v-if="selectedToken.symbol === 'ETH'"
                 width="24"
                 alt="token-logo"
                 :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
@@ -99,6 +99,22 @@
         </div>
       </div>
 
+      <div v-if="!isApproved && selectedToken.symbol !== 'ETH'">
+        <div class="input--checkbox" :class="isApproveMaxAmount && 'input--checkbox--checked'">
+          <input
+            id="approve-max-amount"
+            :checked="isApproveMaxAmount"
+            :value="isApproveMaxAmount"
+            type="checkbox"
+            class="checkbox"
+            @change="(event:any)=>$emit('update:isApproveMaxAmount', event.target.checked)"
+          />
+          <label for="approve-max-amount">
+            <span>Approve Max Amount (option)</span>
+          </label>
+        </div>
+      </div>
+
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
@@ -109,6 +125,7 @@
           <li>{{ $t('bridge.warning2steps') }}</li>
         </ul>
       </div>
+
       <div class="wrapper__row--button">
         <astar-button
           v-if="isApproved"
@@ -116,7 +133,7 @@
           :disabled="isDisabledBridge"
           @click="bridge"
         >
-          {{ $t('confirm') }}
+          {{ $t('assets.bridge') }}
         </astar-button>
         <astar-button
           v-else-if="isApproving"
@@ -189,6 +206,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isApproveMaxAmount: {
+      type: Boolean,
+      required: true,
+    },
     fromBridgeBalance: {
       type: Number,
       required: true,
@@ -252,15 +273,16 @@ export default defineComponent({
       }
     };
 
-    // Memo: run bridge function after approved
     // Watching the 'isApproved' prop
-    // When 'isApproved' changes and becomes true, execute 'bridge' function
+    // When 'isApproved' changes and becomes true, stop loading animation
     watch(
       () => props.isApproved,
       async (newVal, oldVal) => {
         if (newVal === true) {
           props.setIsApproving(false);
-          await bridge();
+          store.commit('general/setLoading', false, { root: true });
+          // Memo: run bridge function after approved
+          // await bridge();
         }
       }
     );

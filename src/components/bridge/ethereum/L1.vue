@@ -20,13 +20,15 @@
           :to-bridge-balance="toBridgeBalance"
           :from-chain-name="fromChainName"
           :to-chain-name="toChainName"
-          :is-approved="isApproved"
           :is-approving="isApproving"
+          :is-approved="isApproved"
           :input-handler="inputHandler"
           :reverse-chain="reverseChain"
           :handle-bridge="handleBridge"
           :handle-approve="handleApprove"
           :set-is-approving="setIsApproving"
+          :is-approve-max-amount="isApproveMaxAmount"
+          @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
         <l1-history
           v-else
@@ -106,6 +108,7 @@ export default defineComponent({
       selectedToken,
       isApproved,
       isApproving,
+      isApproveMaxAmount,
       inputHandler,
       reverseChain,
       handleBridge,
@@ -199,6 +202,7 @@ export default defineComponent({
       fromChainId,
       isApproved,
       isApproving,
+      isApproveMaxAmount,
       inputImportTokenHandler,
       cancelHighlight,
       handleSetToken,

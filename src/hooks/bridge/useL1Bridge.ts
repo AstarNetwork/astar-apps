@@ -20,6 +20,7 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ethers, constants as ethersConstants } from 'ethers';
 import { Erc20Token } from 'src/modules/token';
 import { debounce } from 'lodash-es'; // If using lodash
+import { wait } from '@astar-network/astar-sdk-core';
 
 const eth = {
   symbol: 'ETH',
@@ -57,6 +58,7 @@ export const useL1Bridge = () => {
   const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
+  const isApproveMaxAmount = ref<boolean>(false);
 
   const store = useStore();
   const { t } = useI18n();
@@ -92,12 +94,12 @@ export const useL1Bridge = () => {
     const tokenAddress = selectedToken.value.address;
     const decimals = selectedToken.value.decimal;
     const amount = bridgeAmt.value ?? '0';
+    if (tokenAddress === astarNativeTokenErcAddr) {
+      isApproved.value = true;
+      return;
+    }
     if (!decimals || !amount) return;
     try {
-      if (tokenAddress === astarNativeTokenErcAddr) {
-        isApproved.value = true;
-        return;
-      }
       const amountAllowance = await checkAllowance({
         srcChainId: fromChainIdRef,
         senderAddress,
@@ -105,8 +107,6 @@ export const useL1Bridge = () => {
         tokenAddress,
       });
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
-      console.log('formattedAllowance', formattedAllowance);
-      console.log('amount', amount);
       isApproved.value = Number(formattedAllowance) >= Number(amount);
     } catch (error) {
       console.error(error);
@@ -211,6 +211,7 @@ export const useL1Bridge = () => {
     fromBridgeBalance.value = 0;
     toBridgeBalance.value = 0;
     errMsg.value = '';
+    isApproveMaxAmount.value = false;
   };
 
   const setErrorMsg = (): void => {
@@ -229,9 +230,19 @@ export const useL1Bridge = () => {
     }
   };
 
-  const reverseChain = (fromChain: EthBridgeNetworkName, toChain: EthBridgeNetworkName): void => {
+  const reverseChain = async (
+    fromChain: EthBridgeNetworkName,
+    toChain: EthBridgeNetworkName
+  ): Promise<void> => {
     fromChainName.value = toChain;
     toChainName.value = fromChain;
+    // Fixme: switch chain with not changing selected token
+    // const waitDelay = 500;
+    // await wait(waitDelay);
+    // const t = zkTokens.value.find((it) => it.address === selectedToken.value.toChainTokenAddress);
+    // setSelectedToken(t ? t : eth);
+    setSelectedToken(eth);
+    resetStates();
   };
 
   const handleNetwork = async (): Promise<void> => {
@@ -249,9 +260,9 @@ export const useL1Bridge = () => {
   const handleApprove = async (): Promise<String> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return '';
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-    // Todo: create a check UI for selecting either max amount or a specific amount
-    const amount = ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimal).toString();
-    // const amount = ethersConstants.MaxUint256;
+    const amount = isApproveMaxAmount.value
+      ? ethersConstants.MaxUint256
+      : ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimal).toString();
 
     return await zkBridgeService.approve({
       amount,
@@ -265,6 +276,9 @@ export const useL1Bridge = () => {
 
   const handleBridge = async (): Promise<String> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return '';
+    if (!isApproved.value) {
+      throw Error('Please approve first');
+    }
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
     const hash = await zkBridgeService.bridgeAsset({
       amount: bridgeAmt.value,
@@ -276,6 +290,7 @@ export const useL1Bridge = () => {
     });
     await setIsApproved();
     bridgeAmt.value = '';
+    isApproveMaxAmount.value = false;
     return hash;
   };
 
@@ -283,12 +298,15 @@ export const useL1Bridge = () => {
   watch([fromChainName, toChainName, currentAccount, selectedToken], setBridgeBalance, {
     immediate: true,
   });
-  watch([fromChainName, toChainName], handleNetwork, { immediate: true });
+  watch([fromChainName], handleNetwork, { immediate: true });
   watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
 
   const debounceDelay = 500;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
-  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved);
+  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
+    immediate: true,
+  });
+  watch([selectedToken, fromChainId, currentAccount], resetStates);
 
   const autoFetchAllowanceHandler = setInterval(
     async () => {
@@ -304,7 +322,10 @@ export const useL1Bridge = () => {
   });
 
   watchEffect(() => {
-    console.log('isApproved', isApproved.value);
+    // console.log('isApproved', isApproved.value);
+    console.log('isApproveMaxAmount', isApproveMaxAmount.value);
+    // console.log('zkTokens', zkTokens.value);
+    console.log('selectedToken', selectedToken.value);
   });
 
   return {
@@ -322,6 +343,7 @@ export const useL1Bridge = () => {
     selectedToken,
     isApproved,
     isApproving,
+    isApproveMaxAmount,
     setIsApproving,
     setSelectedToken,
     setZkTokens,
