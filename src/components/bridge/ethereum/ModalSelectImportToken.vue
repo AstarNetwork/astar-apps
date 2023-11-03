@@ -26,7 +26,13 @@
           @click="setToken(t)"
         >
           <div class="column--item-name">
-            <jazzicon :address="t.address" :diameter="24" class="item-logo" />
+            <img
+              v-if="t.symbol === 'ETH'"
+              :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
+              :alt="t.symbol"
+              class="native-token-logo"
+            />
+            <jazzicon v-else :address="t.address" :diameter="24" class="item-logo" />
             <span class="text--item-name">{{ t.symbol }}</span>
           </div>
           <div class="column--item-name">
@@ -56,7 +62,7 @@ import ImportTokenInfo from 'src/components/bridge/common/ImportTokenInfo.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useNetworkInfo } from 'src/hooks';
-import { ZkToken } from 'src/modules/zk-evm-bridge';
+import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -125,7 +131,14 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    return { nativeTokenSymbol, closeModal, isClosingModal, truncate };
+    return {
+      nativeTokenSymbol,
+      closeModal,
+      isClosingModal,
+      truncate,
+      EthBridgeNetworkName,
+      zkBridgeIcon,
+    };
   },
 });
 </script>

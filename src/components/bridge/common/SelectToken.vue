@@ -16,21 +16,14 @@
     <div v-if="!importTokenAddress" class="container--items">
       <div v-for="(token, index) in tokens" :key="index" class="row--item" @click="setToken(token)">
         <div class="column--item-name">
-          <!-- <jazzicon
-            v-if="token.tokenImage === 'custom-token'"
-            :address="token.address"
-            :diameter="24"
-            class="item-logo"
-          /> -->
-          <jazzicon :address="token.address" :diameter="24" class="item-logo" />
-          <!-- <img
-            v-else
-            :src="token.tokenImage"
-            :alt="token.metadata.symbol"
-            :class="[
-              token.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'item-logo',
-            ]"
-          /> -->
+          <img
+            v-if="token.symbol === 'ETH'"
+            :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
+            :alt="token.symbol"
+            class="native-token-logo"
+          />
+          <jazzicon v-else :address="token.address" :diameter="24" class="item-logo" />
+
           <span class="text--item-name">{{ token.symbol }}</span>
         </div>
         <div class="column--item-name">
@@ -59,11 +52,11 @@
 </template>
 <script lang="ts">
 import { truncate } from '@astar-network/astar-sdk-core';
-import { ZkToken } from 'src/modules/zk-evm-bridge';
 import { defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ImportTokenInfo from 'src/components/bridge/common/ImportTokenInfo.vue';
+import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {
@@ -105,7 +98,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return { truncate, getShortenAddress };
+    return { truncate, getShortenAddress, EthBridgeNetworkName, zkBridgeIcon };
   },
 });
 </script>
