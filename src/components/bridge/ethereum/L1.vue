@@ -41,7 +41,7 @@
         />
         <information
           v-if="rightUi === 'information'"
-          :transfer-type="HistoryTxType.Transfer"
+          :transfer-type="HistoryTxType.ZK_ETHEREUM_BRIDGE"
           :is-history="false"
         />
         <select-token

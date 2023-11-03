@@ -110,7 +110,7 @@
             @change="(event:any)=>$emit('update:isApproveMaxAmount', event.target.checked)"
           />
           <label for="approve-max-amount">
-            <span>Approve Max Amount (option)</span>
+            <span>{{ $t('bridge.approvalMaxAmount') }}</span>
           </label>
         </div>
       </div>
@@ -133,7 +133,7 @@
           :disabled="isDisabledBridge"
           @click="bridge"
         >
-          {{ $t('assets.bridge') }}
+          {{ $t('bridge.bridge') }}
         </astar-button>
         <astar-button
           v-else-if="isApproving"

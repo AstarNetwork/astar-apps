@@ -58,7 +58,6 @@
   </div>
 </template>
 <script lang="ts">
-import { useNetworkInfo } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
 import { ZkToken } from 'src/modules/zk-evm-bridge';
 import { defineComponent, PropType } from 'vue';

@@ -667,6 +667,7 @@ export default {
     noHistory: 'No histories found',
     completed: 'Completed',
     inProgress: 'In Progress',
+    approvalMaxAmount: 'Approve Max Amount (option)',
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
@@ -686,5 +687,16 @@ export default {
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
       'Bridging back to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+    tokenInfo: {
+      invalidTokenAddress: 'Invalid token address',
+      tokenAddress: '{network} token address',
+      tokenName: 'Token Name',
+      tokenSymbol: 'Token Symbol',
+      fromChainBal: 'From Chain Balance',
+      destChainBal: 'Destination Chain Balance',
+      tokenHasBeenAdded: 'The token has been added already',
+      tokenNotSupported: "This token isn't supported on zkEVM",
+      interactCarefully: 'Interact carefully with new or suspicious tokens',
+    },
   },
 };
