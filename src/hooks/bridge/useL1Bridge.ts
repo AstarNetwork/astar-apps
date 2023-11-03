@@ -59,6 +59,16 @@ export const useL1Bridge = () => {
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
 
+  const resetStates = (): void => {
+    bridgeAmt.value = '';
+    fromBridgeBalance.value = 0;
+    toBridgeBalance.value = 0;
+    errMsg.value = '';
+    isApproveMaxAmount.value = false;
+    isApproving.value = false;
+    isApproved.value = false;
+  };
+
   const store = useStore();
   const { t } = useI18n();
   const { currentAccount } = useAccount();
@@ -205,14 +215,6 @@ export const useL1Bridge = () => {
     toBridgeBalance.value = Number(toBal);
   };
 
-  const resetStates = (): void => {
-    bridgeAmt.value = '';
-    fromBridgeBalance.value = 0;
-    toBridgeBalance.value = 0;
-    errMsg.value = '';
-    isApproveMaxAmount.value = false;
-  };
-
   const setErrorMsg = (): void => {
     if (isLoading.value) return;
     const bridgeAmtRef = Number(bridgeAmt.value);
@@ -318,13 +320,6 @@ export const useL1Bridge = () => {
 
   onUnmounted(() => {
     clearInterval(autoFetchAllowanceHandler);
-  });
-
-  watchEffect(() => {
-    // console.log('isApproved', isApproved.value);
-    console.log('isApproveMaxAmount', isApproveMaxAmount.value);
-    // console.log('zkTokens', zkTokens.value);
-    console.log('selectedToken', selectedToken.value);
   });
 
   return {

@@ -79,7 +79,6 @@
               <jazzicon v-else :address="selectedToken.address" :diameter="24" class="item-logo" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>
-            <!-- Memo: use this incase we need to bridge more tokens -->
             <div class="icon--expand">
               <astar-icon-expand size="20" />
             </div>
