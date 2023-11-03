@@ -37,7 +37,11 @@
                     alt="from-bridge"
                   />
                   <span class="text--accent">
-                    {{ checkIsL1(history.network_id) ? l1Network : l2Network }}
+                    {{
+                      (checkIsL1(history.network_id) ? l1Network : l2Network)
+                        .replace('zkEVM', '')
+                        .replace('Testnet', '')
+                    }}
                   </span>
                 </div>
                 <div class="icon--arrow-right">
@@ -54,7 +58,11 @@
                     alt="from-bridge"
                   />
                   <span class="text--accent">
-                    {{ !checkIsL1(history.network_id) ? l1Network : l2Network }}
+                    {{
+                      (!checkIsL1(history.network_id) ? l1Network : l2Network)
+                        .replace('zkEVM', '')
+                        .replace('Testnet', '')
+                    }}
                   </span>
                 </div>
               </div>

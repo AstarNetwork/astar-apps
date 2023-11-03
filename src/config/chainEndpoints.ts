@@ -154,6 +154,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://zkatana.explorer.startale.com',
     evmChainId: '1261120',
+    // evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
     evmEndpoints: ['https://rpc.startale.com/zkatana'],
     faucetEndpoint: '',
     defaultLogo:

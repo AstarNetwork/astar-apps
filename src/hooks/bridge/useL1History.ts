@@ -78,9 +78,11 @@ export const useL1History = () => {
       const formattedResult = await Promise.all(
         data.map(async (it) => {
           try {
-            const isOriginL1 = checkIsL1(it['orig_net']);
-            const web3 = isOriginL1 ? l1Web3 : l2Web3;
-            if (!web3) return it;
+            const isTokenOriginL1 = checkIsL1(it['orig_net']);
+            const isL1Tx = checkIsL1(it['network_id']);
+            const web3 = isL1Tx ? l1Web3 : l2Web3;
+            const originNetWeb3 = isTokenOriginL1 ? l1Web3 : l2Web3;
+            if (!web3 || !originNetWeb3) return it;
             if (it.claim_tx_hash === '') {
               numberInProgress++;
             }
@@ -96,7 +98,7 @@ export const useL1History = () => {
             let decimal = 18;
 
             if (it.orig_addr !== astarNativeTokenErcAddr) {
-              const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], it.orig_addr);
+              const contract = new originNetWeb3.eth.Contract(ERC20_ABI as AbiItem[], it.orig_addr);
               const data = await Promise.all([
                 contract.methods.name().call(),
                 contract.methods.symbol().call(),
