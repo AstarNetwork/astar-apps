@@ -150,6 +150,7 @@
   </div>
 </template>
 <script lang="ts">
+import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { DateTime } from 'luxon';
@@ -162,6 +163,7 @@ import {
   checkIsL1,
   zkBridgeIcon,
 } from 'src/modules/zk-evm-bridge';
+import { useStore } from 'src/store';
 import { PropType, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -201,6 +203,7 @@ export default defineComponent({
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
     const { t } = useI18n();
+    const store = useStore();
 
     const syncIndex = ref<number | undefined>();
 
@@ -218,7 +221,11 @@ export default defineComponent({
     const claim = async (withdrawal: BridgeHistory): Promise<void> => {
       const transactionHash = await props.handleClaim(withdrawal);
       if (isHex(transactionHash)) {
+        store.commit('general/setLoading', true, { root: true });
+        // Memo: gives some time for updating in the bridge API
+        await wait(3 * 1000);
         await props.fetchUserHistory();
+        store.commit('general/setLoading', false, { root: true });
       }
     };
 

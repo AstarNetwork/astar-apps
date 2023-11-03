@@ -98,7 +98,6 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     );
 
     const contractAddress = getContractFromNetId(network_id);
-    // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/abis/bridge.json
     const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
 
     const data = contract.methods
