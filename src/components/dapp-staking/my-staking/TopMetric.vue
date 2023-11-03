@@ -8,84 +8,90 @@
         {{ $t('topMetric.wayOfStaking') }}
       </div>
     </div>
+
     <div class="wrapper--cards">
-      <div class="card">
-        <p>
-          {{ $t('topMetric.tvlInDapps') }}
-        </p>
-        <div class="row--data">
-          <div v-if="!tvl" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="column--tvl">
-            <div class="txt--tvl">
-              {{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}
+      <div class="cards">
+        <div class="card">
+          <p>
+            {{ $t('topMetric.tvlInDapps') }}
+          </p>
+          <div class="row--data">
+            <div v-if="!tvl" class="loading">
+              <q-skeleton type="rect" animation="fade" />
             </div>
-            <div>(${{ formatNumber(tvl.tvlUsd, 1) }})</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <p>
-          {{ $t('topMetric.stakersRewards') }}
-        </p>
-        <div class="row--data">
-          <div v-if="!percentage" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="value">
-            <div class="column--apr-apy">
-              <div :class="isApr ? 'button--active' : 'button--not-active'" @click="isApr = true">
-                <span> {{ $t('topMetric.apr') }}</span>
+            <div v-else class="column--tvl">
+              <div class="txt--tvl">
+                {{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}
               </div>
-              <div :class="!isApr ? 'button--active' : 'button--not-active'" @click="isApr = false">
-                <span> {{ $t('topMetric.apy') }}</span>
-              </div>
-            </div>
-            <div>
-              <span>{{ percentage }}%</span>
+              <div>(${{ formatNumber(tvl.tvlUsd, 1) }})</div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="card">
-        <p>
-          {{ $t('topMetric.currentEra') }}
-        </p>
-        <div class="row--data">
-          <div v-if="!currentEra" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="value">
-            <div class="row--era-info">
-              <div class="column--era-info">
-                <div>{{ currentEra.toString() }}</div>
-                <div v-if="etaNextEra" class="text--eta-next-era">
-                  {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
+        <div class="card">
+          <p>
+            {{ $t('topMetric.stakersRewards') }}
+          </p>
+          <div class="row--data">
+            <div v-if="!percentage" class="loading">
+              <q-skeleton type="rect" animation="fade" />
+            </div>
+            <div v-else class="value">
+              <div class="column--apr-apy">
+                <div :class="isApr ? 'button--active' : 'button--not-active'" @click="isApr = true">
+                  <span> {{ $t('topMetric.apr') }}</span>
+                </div>
+                <div
+                  :class="!isApr ? 'button--active' : 'button--not-active'"
+                  @click="isApr = false"
+                >
+                  <span> {{ $t('topMetric.apy') }}</span>
                 </div>
               </div>
-              <div v-if="etaNextEra && !isLoading" class="box-pie-chart">
-                <pie-chart
-                  :percentage="progress"
-                  bold="3px"
-                  width="44px"
-                  color="#0085ff"
-                  font-size="11px"
-                />
+              <div>
+                <span>{{ percentage }}%</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="card">
-        <p>
-          {{ $t('topMetric.totalDapps') }}
-        </p>
-        <div class="row--data">
-          <div v-if="!dappsCount" class="loading">
-            <q-skeleton type="rect" animation="fade" />
+        <div class="card">
+          <p>
+            {{ $t('topMetric.currentEra') }}
+          </p>
+          <div class="row--data">
+            <div v-if="!currentEra" class="loading">
+              <q-skeleton type="rect" animation="fade" />
+            </div>
+            <div v-else class="value">
+              <div class="row--era-info">
+                <div class="column--era-info">
+                  <div>{{ currentEra.toString() }}</div>
+                  <div v-if="etaNextEra" class="text--eta-next-era">
+                    {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
+                  </div>
+                </div>
+                <div v-if="etaNextEra && !isLoading" class="box-pie-chart">
+                  <pie-chart
+                    :percentage="progress"
+                    bold="3px"
+                    width="44px"
+                    color="#0085ff"
+                    font-size="11px"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div v-else class="value">{{ dappsCount.toLocaleString() }}</div>
+        </div>
+        <div class="card">
+          <p>
+            {{ $t('topMetric.totalDapps') }}
+          </p>
+          <div class="row--data">
+            <div v-if="!dappsCount" class="loading">
+              <q-skeleton type="rect" animation="fade" />
+            </div>
+            <div v-else class="value">{{ dappsCount.toLocaleString() }}</div>
+          </div>
         </div>
       </div>
     </div>

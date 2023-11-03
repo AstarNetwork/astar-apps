@@ -10,7 +10,11 @@
   );
   padding-top: 48px;
   padding-bottom: 48px;
-  @media (min-width: $sm) {
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
     mask-image: linear-gradient(
       to right,
       transparent,
@@ -18,9 +22,9 @@
       black calc(100% - 48px),
       transparent
     );
+    margin-bottom: -48px;
     margin-left: -48px;
     margin-right: -48px;
-    margin-bottom: -48px;
     padding-left: 48px;
     padding-right: 48px;
   }

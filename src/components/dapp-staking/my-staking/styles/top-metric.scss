@@ -37,26 +37,39 @@
 }
 
 .wrapper--cards {
-  display: flex;
-  position: relative;
-  width: 100%;
-  max-width: 1295px;
-  flex-wrap: nowrap;
   overflow-x: auto;
-  overflow-y: hidden;
-  column-gap: 16px;
-  column-count: 4;
-
+  padding: 16px;
+  margin: -16px;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
   &::-webkit-scrollbar {
     display: none;
   }
-
   @media (min-width: $md) {
-    justify-content: space-between;
+    padding: 48px;
+    margin: -48px;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 48px,
+      black calc(100% - 48px),
+      transparent
+    );
   }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 16px;
+  min-width: 1000px;
   @media (min-width: $xxl) {
     column-gap: 24px;
-    overflow-x: hidden;
   }
 }
 
@@ -75,7 +88,6 @@
   background: rgba(255, 255, 255, 0.5);
   box-shadow: 0 0 16px 2px #00000014;
   @media (min-width: $lg) {
-    flex-basis: 23.5%;
     padding: 36px 24px;
     height: 126px;
   }
