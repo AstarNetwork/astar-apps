@@ -74,6 +74,14 @@
 }
 .text--name {
   margin: 4px 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: $navy-1;
+}
+.body--dark{
+  .text--name {
+    color: $gray-1;
+  }
 }
 .text--description {
   overflow: hidden;
