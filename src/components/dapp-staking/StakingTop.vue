@@ -172,12 +172,6 @@ export default defineComponent({
   left: 0;
   top: 0;
   z-index: -1;
-  @media (orientation: landscape) {
-    height: 900px;
-  }
-
-  @media (orientation: portrait) {
-    height: 500px;
-  }
+  height: 100vh;
 }
 </style>
