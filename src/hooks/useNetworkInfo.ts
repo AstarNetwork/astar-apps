@@ -8,7 +8,7 @@ import {
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
 import { useStore } from 'src/store';
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';

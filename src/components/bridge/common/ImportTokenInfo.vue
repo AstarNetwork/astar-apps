@@ -13,7 +13,7 @@
           <span>
             {{
               $t('bridge.tokenInfo.tokenAddress', {
-                network: fromChainName.replace('zkEVM', '').replace('Testnet', ''),
+                network: getShortNetworkName(fromChainName),
               })
             }}
           </span>
@@ -47,7 +47,7 @@
           <span>
             {{
               $t('bridge.tokenInfo.tokenAddress', {
-                network: toChainName.replace('zkEVM', '').replace('Testnet', ''),
+                network: getShortNetworkName(toChainName),
               })
             }}
           </span>
@@ -153,6 +153,7 @@ import { useStore } from 'src/store';
 import { PropType, computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { getShortNetworkName } from 'src/modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {
@@ -255,6 +256,7 @@ export default defineComponent({
       isBlackListToken,
       getExplorerLink,
       copyAddress,
+      getShortNetworkName,
     };
   },
 });

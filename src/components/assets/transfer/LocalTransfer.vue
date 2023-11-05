@@ -143,7 +143,7 @@
               </span>
             </div>
             <span
-              v-if="isH160 && !isNativeToEvm"
+              v-if="isZkEvm || (isH160 && !isNativeToEvm)"
               :class="isChecked ? 'color--gray1' : 'color--not-checked'"
             >
               <div class="row--warning-title">
@@ -158,7 +158,7 @@
                 </span>
               </div>
               <div class="text--warn">
-                {{ $t('assets.modals.notDestIsLedgerAccount') }}
+                {{ $t('assets.modals.notDestAnyExchanges') }}
               </div>
             </span>
           </label>
@@ -191,7 +191,7 @@ import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useNetworkInfo, useTokenTransfer, useWalletIcon } from 'src/hooks';
 import { Asset } from 'src/v2/models';
-import { PropType, computed, defineComponent, watchEffect } from 'vue';
+import { PropType, computed, defineComponent } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -214,7 +214,7 @@ export default defineComponent({
   setup(props) {
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName, multisig } = useAccount();
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
     const t = computed<Asset>(() => props.token);
     const {
       selectedTip,
@@ -273,6 +273,7 @@ export default defineComponent({
       isTransferNativeToken,
       isNativeToEvm,
       multisig,
+      isZkEvm,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,

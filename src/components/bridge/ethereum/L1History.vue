@@ -37,11 +37,7 @@
                     alt="from-bridge"
                   />
                   <span class="text--accent">
-                    {{
-                      (checkIsL1(history.network_id) ? l1Network : l2Network)
-                        .replace('zkEVM', '')
-                        .replace('Testnet', '')
-                    }}
+                    {{ getShortNetworkName(checkIsL1(history.network_id) ? l1Network : l2Network) }}
                   </span>
                 </div>
                 <div class="icon--arrow-right">
@@ -59,9 +55,7 @@
                   />
                   <span class="text--accent">
                     {{
-                      (!checkIsL1(history.network_id) ? l1Network : l2Network)
-                        .replace('zkEVM', '')
-                        .replace('Testnet', '')
+                      getShortNetworkName(!checkIsL1(history.network_id) ? l1Network : l2Network)
                     }}
                   </span>
                 </div>
@@ -92,11 +86,7 @@
                   rel="noreferrer"
                 >
                   <span>
-                    {{
-                      (checkIsL1(history.network_id) ? l1Network : l2Network)
-                        .replace('zkEVM', '')
-                        .replace('Testnet', '')
-                    }}
+                    {{ getShortNetworkName(checkIsL1(history.network_id) ? l1Network : l2Network) }}
                   </span>
                   <div class="container--explorer-icon">
                     <astar-icon-external-link />
@@ -117,9 +107,7 @@
                 >
                   <span>
                     {{
-                      (!checkIsL1(history.network_id) ? l1Network : l2Network)
-                        .replace('zkEVM', '')
-                        .replace('Testnet', '')
+                      getShortNetworkName(!checkIsL1(history.network_id) ? l1Network : l2Network)
                     }}
                   </span>
                   <div class="container--explorer-icon">
@@ -166,6 +154,7 @@ import {
 import { useStore } from 'src/store';
 import { PropType, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getShortNetworkName } from 'src/modules/zk-evm-bridge';
 
 enum TxStatus {
   Completed = 'completed',
@@ -279,6 +268,7 @@ export default defineComponent({
       checkIsRefresh,
       claim,
       getExplorerUrl,
+      getShortNetworkName,
     };
   },
 });

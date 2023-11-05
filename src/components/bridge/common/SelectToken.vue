@@ -7,7 +7,11 @@
       <div class="box--input-field box--hover--active">
         <input
           :value="importTokenAddress"
-          placeholder="Token Address"
+          :placeholder="
+            $t('bridge.tokenInfo.tokenAddress', {
+              network: getShortNetworkName(fromChainName),
+            })
+          "
           class="input--token"
           @input="(e) => inputImportTokenHandler(e)"
         />
@@ -57,6 +61,7 @@ import Jazzicon from 'vue3-jazzicon/src/components';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ImportTokenInfo from 'src/components/bridge/common/ImportTokenInfo.vue';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { getShortNetworkName } from 'src/modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {
@@ -98,7 +103,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return { truncate, getShortenAddress, EthBridgeNetworkName, zkBridgeIcon };
+    return { EthBridgeNetworkName, zkBridgeIcon, getShortNetworkName, truncate, getShortenAddress };
   },
 });
 </script>
