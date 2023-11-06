@@ -102,14 +102,7 @@
           </div>
         </div>
       </div>
-      <div
-        v-if="
-          currentNetworkIdx === endpointKey.ASTAR &&
-          (!$route?.query?.multisigWallets ||
-            ($route?.query?.multisigWallets &&
-              $route?.query?.multisigWallets?.includes('polkasafe')))
-        "
-      >
+      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
         <div class="title--account-type">
           <span>
             {{ $t('wallet.multisigAccount') }}
@@ -300,16 +293,6 @@ export default defineComponent({
       return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
-          // filter wallets based on query params
-          if (
-            route?.query?.evmWallets &&
-            !(route?.query?.evmWallets as string)
-              ?.split(',')
-              .filter((source) => checkValidSourceParameter(source))
-              .includes(it.source)
-          ) {
-            return undefined;
-          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
