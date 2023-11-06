@@ -1,62 +1,14 @@
 [
   {
-    "name":"Beyond Club",
-    "description": "Campaign1",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign1.webp"
+    "name": "Algem - Liquid Staking",
+    "description": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
+    "link": "https://www.algem.io/",
+    "img": ""
   },
   {
-    "name":"Beyond Club",
-    "description": "Campaign2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign2.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign3",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign3.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign4",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign4.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign5",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign5.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign6",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign6.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign7",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign7.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign8",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign8.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign9",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign9.webp"
-  },
-  {
-    "name":"Beyond Club",
-    "description": "Campaign10",
-    "link": "https://astar.network/",
-    "img": "/images/dapp_promotions/campaign10.webp"
+    "name": "ASTR token, value and utility",
+    "description": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
+    "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
+    "img": "https://ipfs.subsocial.network/ipfs/bafybeig2o6zjlnxnwgdv6xkcgu4w5tn7wdre26kimpc2w2ldrum66cotw4"
   }
 ]
