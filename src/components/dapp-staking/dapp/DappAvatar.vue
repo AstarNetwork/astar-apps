@@ -14,7 +14,11 @@
           </div>
         </div>
         <div class="row--stake">
-          <astar-button class="btn-size--stake" @click="goStakeLink(dapp.dapp.address)">
+          <astar-button
+            class="btn-size--stake"
+            :disabled="isZkEvm"
+            @click="goStakeLink(dapp.dapp.address)"
+          >
             <span class="text--btn-stake">
               {{ $t('dappStaking.stake') }}
             </span>
@@ -38,11 +42,10 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'src/store';
 
 export default defineComponent({
   props: {
@@ -54,7 +57,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const { currentAccount } = useAccount();
-    const store = useStore();
+    const { isZkEvm } = useNetworkInfo();
     const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
 
     const goEditLink = (): void => {
@@ -77,6 +80,7 @@ export default defineComponent({
       goEditLink,
       goStakeLink,
       twitterUrl,
+      isZkEvm,
     };
   },
 });

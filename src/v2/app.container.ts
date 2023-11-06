@@ -12,6 +12,7 @@ import {
   IEvmAssetsRepository,
   IXvmRepository,
   IAssetsRepository,
+  IZkBridgeRepository,
   IPolkasafeRepository,
   IIdentityRepository,
   INftRepository,
@@ -26,6 +27,7 @@ import {
   XcmRepository,
   EvmAssetsRepository,
   AssetsRepository,
+  ZkBridgeRepository,
   PolkasafeRepository,
   NftRepository,
   AccountUnificationRepository,
@@ -39,6 +41,7 @@ import {
   IXcmService,
   IEvmAssetsService,
   IAssetsService,
+  IZkBridgeService,
   WalletType,
   IXvmService,
   IAccountUnificationService,
@@ -55,6 +58,7 @@ import {
   XcmEvmService,
   EvmDappStakingService,
   AssetsService,
+  ZkBridgeService,
   AccountUnificationService,
   IdentityService,
 } from './services/implementations';
@@ -71,19 +75,23 @@ import { IdentityRepository } from './repositories/implementations/IdentityRepos
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
-// Todo: delete after we remove the lockdrop service
-let isLockdropAccount = false;
 
-export function setCurrentWallet(
-  isEthWallet: boolean,
-  currentWallet: string,
-  isLockdrop: boolean
-): void {
+export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+  if (!currentWallet) {
+    return;
+  }
+
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
-  isLockdropAccount = isLockdrop;
 
-  container.removeConstant(Symbols.CurrentWallet);
+  // Memo: Trying to fix 'Invalid binding type: Symbol(CurrentWallet)' error here
+  // Try to get the current wallet
+  try {
+    container.get<string>(Symbols.CurrentWallet);
+    // If the line above did not throw an error, the binding exists, remove it.
+    container.removeConstant(Symbols.CurrentWallet);
+  } catch (error) {}
+
   container.addConstant<string>(Symbols.CurrentWallet, currentWalletName);
 }
 
@@ -112,7 +120,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot || isLockdropAccount
+          currentWalletType === WalletType.Polkadot
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );
@@ -133,6 +141,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
+  container.addTransient<IZkBridgeRepository>(ZkBridgeRepository, Symbols.ZkBridgeRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
   container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
   container.addSingleton<IAccountUnificationRepository>(
@@ -155,6 +164,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.BalanceFormatterService
   );
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
+  container.addTransient<IZkBridgeService>(ZkBridgeService, Symbols.ZkBridgeService);
   container.addSingleton<IAccountUnificationService>(
     AccountUnificationService,
     Symbols.AccountUnificationService

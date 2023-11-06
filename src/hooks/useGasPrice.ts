@@ -26,10 +26,12 @@ export const useGasPrice = (isFetch = false) => {
 
   const store = useStore();
   const gas = computed(() => store.getters['general/getGas']);
-  const { currentNetworkName, isMainnet } = useNetworkInfo();
+  const { currentNetworkName, isMainnet, isZkEvm } = useNetworkInfo();
   const network = computed<string>(() => {
     return isMainnet ? currentNetworkName.value.toLowerCase() : 'shibuya';
   });
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+  const isShibuyaEvm = computed<boolean>(() => isH160.value && network.value === 'shibuya');
 
   const setSelectedGas = (speed: Speed): void => {
     selectedGas.value = {
@@ -86,14 +88,23 @@ export const useGasPrice = (isFetch = false) => {
     return (
       currentWallet !== SupportWallet.TalismanEvm &&
       currentWallet !== SupportWallet.SubWalletEvm &&
-      currentWallet !== SupportWallet.OneKeyEvm
+      currentWallet !== SupportWallet.OneKeyEvm &&
+      !isShibuyaEvm.value &&
+      !isZkEvm.value
     );
   });
 
   watch(
     [network, $web3],
     async () => {
-      if (isFetch && network.value && !gas.value && $web3.value) {
+      // Todo: update the logic for zkEVM
+      if (
+        isFetch &&
+        network.value &&
+        !gas.value &&
+        $web3.value &&
+        isEnableSpeedConfiguration.value
+      ) {
         // console.info('gas price', network.value, gas.value);
         await dispatchGasPrice(network.value);
       }

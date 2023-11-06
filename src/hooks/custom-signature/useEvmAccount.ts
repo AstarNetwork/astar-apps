@@ -1,10 +1,13 @@
-import { ref, watch, WatchCallback } from 'vue';
+import { ref, watch, WatchCallback, computed } from 'vue';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import { useRouter } from 'vue-router';
 
 export function useEvmAccount() {
   const { ethProvider } = useEthProvider();
   const loadedAccounts = ref<string[]>([]);
+  const router = useRouter();
+  const currentRouter = computed(() => router.currentRoute.value.matched[0]);
 
   const requestAccounts = async () => {
     let provider = ethProvider.value;
@@ -46,6 +49,9 @@ export function useEvmAccount() {
         loadedAccounts.value = accounts;
       };
       const handleChainChanged = () => {
+        // Memo: Do not reload for the Bridge page
+        if (currentRouter.value.name === 'Bridge') return;
+
         // refresh the page if the user changes the network
         window.location.reload();
       };

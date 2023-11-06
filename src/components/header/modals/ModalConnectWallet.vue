@@ -13,7 +13,7 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             v-for="(wallet, index) in evmWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
@@ -29,7 +29,7 @@
                 {{ castWalletName(wallet.name) }}
               </span>
             </div>
-          </div>
+          </button>
         </div>
       </div>
       <div>
@@ -39,12 +39,13 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
+            :disabled="checkIsDisabledWallet(wallet.source) || isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
-            @click="setSubstrateWalletModal(wallet.source)"
+            @click="!checkIsDisabledWallet(wallet.source) && setSubstrateWalletModal(wallet.source)"
           >
             <div class="box--img">
               <img :src="wallet.img" />
@@ -54,7 +55,7 @@
                 {{ castWalletName(wallet.name) }}
               </span>
             </div>
-          </div>
+          </button>
         </div>
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
@@ -101,21 +102,14 @@
           </div>
         </div>
       </div>
-      <div
-        v-if="
-          currentNetworkIdx === endpointKey.ASTAR &&
-          (!$route?.query?.multisigWallets ||
-            ($route?.query?.multisigWallets &&
-              $route?.query?.multisigWallets?.includes('polkasafe')))
-        "
-      >
+      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
         <div class="title--account-type">
           <span>
             {{ $t('wallet.multisigAccount') }}
           </span>
         </div>
         <div class="wrapper--wallets">
-          <div
+          <button
             class="box__row--wallet box--hover--active"
             :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
             @click="setPolkasafeModal()"
@@ -129,7 +123,7 @@
             <div>
               <span> PolkaSafe </span>
             </div>
-          </div>
+          </button>
         </div>
       </div>
       <!-- temporarily disable until we implement account selection UI -->
@@ -158,24 +152,27 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
+import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import {
-  supportAllWalletsObj,
-  supportEvmWallets,
-  SupportWallet,
-  supportWallets,
-  Wallet,
   SupportMultisig,
+  SupportWallet,
+  Wallet,
+  supportAllWalletsObj,
+  supportEvmWalletObj,
+  supportEvmWallets,
+  supportWallets,
 } from 'src/config/wallets';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
+import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
-import { LocationQuery, useRoute } from 'vue-router';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { PropType, computed, defineComponent, ref } from 'vue';
+import { productionOrigin } from 'src/links';
 
 export default defineComponent({
   props: {
@@ -214,49 +211,10 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } =
+      useAccount();
     const isClosing = ref<boolean>(false);
-    const { currentNetworkIdx } = useNetworkInfo();
-    const route = useRoute();
-
-    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
-    const substrateAccounts = computed<SubstrateAccount[]>(
-      () => store.getters['general/substrateAccounts']
-    );
-
-    const checkValidSourceParameter = (source: string) => {
-      return Object.values(SupportWallet).includes(source as SupportWallet);
-    };
-
-    const handleSelectedWalletInQuery = (params: LocationQuery, accounts: SubstrateAccount[]) => {
-      if (
-        params?.selectedWallet &&
-        params?.selectedWalletType &&
-        checkValidSourceParameter(params?.selectedWallet as string) &&
-        !isClosing.value
-      ) {
-        if (route?.query?.selectedWalletType === 'native') {
-          if (accounts?.length === 1) {
-            const substrateAccount = accounts[0];
-            store.commit('general/setCurrentAddress', substrateAccount.address);
-            localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, substrateAccount.source);
-            localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
-            window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
-            closeModal();
-          } else if (accounts?.length) {
-            setSubstrateWalletModal(params.selectedWallet as string);
-          }
-        }
-        if (params?.selectedWalletType === 'evm') {
-          setEvmWalletModal(params.selectedWallet as string);
-        }
-      }
-    };
-
-    // the route is updated asynchronously
-    watch([route, substrateAccounts], ([newRoute, accounts]) => {
-      handleSelectedWalletInQuery(newRoute.query, accounts);
-    });
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -266,19 +224,19 @@ export default defineComponent({
       props.setCloseModal();
     };
 
+    const checkIsDisabledWallet = (source: SupportWallet): boolean => {
+      if (source === SupportWallet.Snap && window.location.origin === productionOrigin) {
+        return true;
+      }
+      return false;
+    };
+
     const nativeWallets = computed(() => {
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
-          // filter wallets based on query params
-          if (
-            route?.query?.nativeWallets &&
-            !(route?.query?.nativeWallets as string)
-              ?.split(',') // convert query param string to array
-              .filter((source) => checkValidSourceParameter(source))
-              .includes(it.source)
-          ) {
-            return undefined;
+          if (it.source === SupportWallet.Snap) {
+            return isSnapEnabled.value ? it : undefined;
           }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
@@ -293,16 +251,6 @@ export default defineComponent({
       return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
-          // filter wallets based on query params
-          if (
-            route?.query?.evmWallets &&
-            !(route?.query?.evmWallets as string)
-              ?.split(',')
-              .filter((source) => checkValidSourceParameter(source))
-              .includes(it.source)
-          ) {
-            return undefined;
-          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
@@ -311,6 +259,11 @@ export default defineComponent({
         })
         .filter((it) => it !== undefined) as Wallet[];
     });
+
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+    const substrateAccounts = computed<SubstrateAccount[]>(
+      () => store.getters['general/substrateAccounts']
+    );
 
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
@@ -322,7 +275,24 @@ export default defineComponent({
       }
     };
 
+    const handleMetaMaskSnap = async (): Promise<void> => {
+      const provider = get(window, supportEvmWalletObj[SupportWallet.MetaMask].ethExtension);
+      const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
+      if (!address) return;
+      const isSnapInstalled = await initiatePolkdatodSnap();
+      if (isSnapInstalled) {
+        await initPolkadotSnap();
+        useExtensions($api!!, store);
+        const extensions = await getInjectedExtensions(true);
+        const isExtensionsUpdated = extensions.some((it) => it.name === SupportWallet.Snap);
+        // Memo: Sync the metamask extension for users who visit our portal first time
+        !isExtensionsUpdated && (await wait(3000));
+      }
+    };
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      if (source === SupportWallet.Snap) {
+        await handleMetaMaskSnap();
+      }
       await closeModal();
       props.setWalletModal(source);
     };
@@ -357,9 +327,11 @@ export default defineComponent({
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
+      checkIsDisabledWallet,
       setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,
+      isZkEvm,
       isAccountUnification,
     };
   },

@@ -1,0 +1,138 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--bridge-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-top: 48px;
+  margin-bottom: 48px;
+  @media (min-width: $xl) {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+.container--selection {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 16px;
+  }
+  @media (min-width: $xl) {
+    flex-direction: row;
+    column-gap: 56px;
+  }
+}
+
+.column--selection {
+  width: 260px;
+  @media (min-width: $lg) {
+    width: 254px;
+  }
+  @media (min-width: $xl) {
+    width: 300px;
+  }
+}
+
+.button--bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  row-gap: 24px;
+  padding: 16px;
+  height: 260px;
+  margin-bottom: 12px;
+  @media (min-width: $lg) {
+    height: 254px;
+  }
+  @media (min-width: $xl) {
+    height: 300px;
+  }
+}
+
+.column--selection button:not([disabled]) .button--bridge:hover {
+  border: 1px solid $astar-blue !important;
+  transition: all 0.3s ease 0s;
+}
+
+.row--title {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  @media (min-width: $lg) {
+    column-gap: 4px;
+  }
+  @media (min-width: $xl) {
+    column-gap: 8px;
+  }
+}
+
+.img--logo {
+  width: 32px;
+  height: 32px;
+  @media (min-width: $lg) {
+    width: 30px;
+    height: 30px;
+  }
+  @media (min-width: $xl) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.text--bridge-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: $navy-1;
+}
+
+.text--bridge {
+  font-weight: 400;
+  font-size: 14px;
+  color: $navy-1;
+  a {
+    color: $astar-blue;
+    &:hover {
+      color: lighten($astar-blue, 10%);
+    }
+  }
+}
+
+.box--text-bridge {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
+.body--dark {
+  .text--bridge-title,
+  .text--bridge {
+    color: $gray-1;
+  }
+  .text--bridge {
+    a {
+      color: $astar-blue-dark;
+      &:hover {
+        color: lighten($astar-blue-dark, 10%);
+      }
+    }
+  }
+  .button--bridge {
+    border: 1px solid $gray-4;
+    background-color: $navy-2;
+  }
+
+  .column--selection button:not([disabled]) .button--bridge:hover {
+    border: 1px solid $astar-blue !important;
+    transition: all 0.3s ease 0s;
+  }
+}

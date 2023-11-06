@@ -20,7 +20,7 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AlertMsg } from 'src/modules/toast';
-import { getBlockscoutTx } from 'src/links';
+import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 
 @injectable()
@@ -102,7 +102,7 @@ export class XcmEvmService implements IXcmEvmService {
         await web3.eth
           .sendTransaction({ ...rawTx, gas: estimatedGas })
           .then(async ({ transactionHash }) => {
-            const explorerUrl = getBlockscoutTx(transactionHash);
+            const explorerUrl = await getEvmExplorerUrl(transactionHash, web3);
             this.eventAggregator.publish(new BusyMessage(false));
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage({ success: true, message: successMessage, explorerUrl })

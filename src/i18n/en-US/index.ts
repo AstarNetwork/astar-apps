@@ -55,6 +55,7 @@ export default {
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    inputtedNotUnifiedDestAddress: 'Inputted destination address has not been unified',
     blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
@@ -94,7 +95,6 @@ export default {
     staking: 'Staking',
     contract: 'Contract',
     ecosystem: 'Ecosystem',
-    plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
     telegram: 'Telegram',
@@ -106,6 +106,7 @@ export default {
     instagram: 'Instagram',
     youtube: 'YouTube',
     docs: 'Documentation',
+    loading: 'Loading...',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -148,6 +149,7 @@ export default {
     shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
     takeLongerTimeToConnect: 'It might take a longer time to load data from chains',
     takeLongerTimeToSend: 'It might take a longer time or fail in sending transactions',
+    zkNetworkTip: 'Please connect to EVM wallets first',
   },
   wallet: {
     connectWallet: 'Connect Wallet',
@@ -208,22 +210,19 @@ export default {
       haveStakingBalance:
         'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
-      accountIcon: 'Account icon (we are working on adding your own NFT as an account icon)',
+      accountIcon: 'Account icon',
       balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
       readyToUnify:
         'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
       congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
-      needHelp: 'Need help?',
-      whichAddress: {
-        q: 'I don’t know which address I need to use?',
-        a: 'You don’t need to think of which one, balance of the both accounts are the same. You don’t need to think of which one, balance of the both accounts are the same.',
-      },
-      userTutorials: 'User tutorials',
-      aboutForUsers: 'About the unified accounts for users',
-      techDocs: 'Tech docs',
+      onlyShibuya: 'This feature is only available for Shibuya testnet.',
+      userTutorials: 'Documentation and tutorials',
       sendingXc20: 'Start sending XC20 tokens, please wait...',
       editUnifiedAccount: 'Edit Unified Account',
+      selectAvatar: 'Select Avatar',
       save: 'Save',
+      noNfts:
+        "You don't have NFTs minted at the moment. When you mint some you will be able to update your unified account with a NFT. For the moment default icon will be used.",
     },
   },
   installWallet: {
@@ -420,6 +419,7 @@ export default {
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      notSupportZkEvm: "dApp staking doesn't support zkEVM networks",
       notEnoughMinAmount:
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
@@ -439,7 +439,6 @@ export default {
     xvmAssets: 'XVM (Cross Virtual Machine) ERC-20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
-    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
@@ -459,8 +458,6 @@ export default {
     yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
-    lockdropAccount: 'Lockdrop Account',
-    inLockdropAccount: 'You are in a Lockdrop account',
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
@@ -561,16 +558,6 @@ export default {
         tooltip:
           'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
-      lockdropWarning: {
-        message:
-          'The Lockdrop account will be deprecated in the upcoming update, as its purpose has been fulfilled. Please transfer your funds to another substrate wallet immediately.',
-        list1:
-          "Please transfer your funds from this account by the specified date. Retrieval won't be possible after that.",
-        list2:
-          'Please note that unstaking in dApp staking will require 10 eras (approximately 10 days).',
-        closeTime: 'UTC 23:59 12th September 2023',
-        gotIt: 'Got it',
-      },
     },
   },
   dashboard: {
@@ -668,5 +655,33 @@ export default {
     set forth above. If you do not agree, please click "Decline."`,
     agree: 'Agree',
     decline: 'Decline',
+  },
+  bridge: {
+    bridge: 'Bridge',
+    history: 'Recent History',
+    actionRequired: 'Action Required',
+    claim: 'Claim',
+    noHistory: 'No histories found',
+    completed: 'Completed',
+    inProgress: 'In Progress',
+    ethereumBridge: {
+      title: 'Ethereum Bridge',
+      text: 'Bridge assets between {l1} and {l2}',
+      text2:
+        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH.',
+      lean: '(learn more)',
+    },
+    astarBridge: {
+      title: 'Astar Bridge',
+      text: 'Bridge ASTR token and assets to {l2} from {substrateNetwork} EVM',
+      text2: 'Currently under development',
+    },
+    celetBridge: {
+      title: 'Celer Bridge',
+      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
+    },
+    warning32blocks: 'It could take around 10min or more to finalise (32blocks)',
+    warning2steps:
+      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side. (Available in Recent History)',
   },
 };
