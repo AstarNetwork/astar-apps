@@ -178,7 +178,6 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { SubstrateAccount } from 'src/store/general/state';
 import { LocationQuery, useRoute } from 'vue-router';
 import { productionOrigin } from 'src/links';
