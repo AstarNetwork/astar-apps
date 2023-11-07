@@ -1,3 +1,4 @@
+import { u128 } from '@polkadot/types';
 import { buildEvmAddress, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 import { AccountId32, H160 } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
@@ -78,5 +79,12 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     const unifyCall = await this.getClaimEvmAccountCall(evmAddress, signature);
 
     return api.tx.utility.batchAll([identityCall, unifyCall]);
+  }
+
+  public async getUnificationFee(): Promise<bigint> {
+    const api = await this.api.getApi();
+    const fee = <u128>api.consts.unifiedAccounts.accountMappingStorageFee;
+
+    return fee.toBigInt();
   }
 }
