@@ -157,9 +157,26 @@
                   {{ $t('warning.warning') }}
                 </span>
               </div>
-              <div class="text--warn">
-                {{ $t('assets.modals.notDestIsLedgerAccount') }}
-              </div>
+              <ul class="column--warnings">
+                <li>
+                  <span class="text--warn">
+                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
+                    I’m not sending tokens to exchange address.
+                  </span>
+                </li>
+                <li>
+                  <span class="text--warn">
+                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
+                    ERC20 tokens cannot be sent to Astar Native addresses.
+                  </span>
+                </li>
+                <li>
+                  <span class="text--warn">
+                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
+                    I understand that if I do so, the funds will likely be lost.
+                  </span>
+                </li>
+              </ul>
             </span>
           </label>
         </div>

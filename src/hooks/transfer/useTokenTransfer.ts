@@ -106,7 +106,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const inputHandler = (event: any): void => {
     transferAmt.value = event.target.value;
-    errMsg.value = '';
   };
 
   const resetStates = (): void => {
@@ -135,12 +134,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     try {
+      console.log('setErrorMsg');
       if (transferAmtRef && transferAmtRef > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: selectedToken.value.metadata.symbol,
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+        return;
       } else if (
         isH160.value &&
         toAddress.value &&
@@ -153,8 +154,10 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           token: nativeTokenSymbol.value,
         });
       } else {
+        console.log('else');
         errMsg.value = '';
       }
+      console.log('errMsg.value', errMsg.value);
     } catch (error: any) {
       errMsg.value = error.message;
     }
