@@ -288,6 +288,8 @@ export default {
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
     },
+    dappsOwners: 'dApps owners! We can now help to promote your campaign. Please check',
+    dappsOwnersLink: 'the details.',
   },
   dappStaking: {
     myStaking: 'My Staking',

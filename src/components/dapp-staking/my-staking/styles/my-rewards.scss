@@ -142,3 +142,28 @@
     color: $gray-1;
   }
 }
+
+.info--dapps-owners {
+  border: solid 1px $astar-pink;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  font-weight: 500;
+  background-color: rgba($astar-pink, 20%);
+  span {
+    background-color: $astar-pink;
+    color: white;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 20px;
+    margin-right: 2px;
+    display: inline-block;
+  }
+  a {
+    color: $astar-pink;
+    &:hover {
+      color: lighten($astar-pink, 20%);
+    }
+  }
+}
