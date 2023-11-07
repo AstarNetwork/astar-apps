@@ -142,11 +142,11 @@ export let xcmChainObj: XcmChainObj = {
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
   },
-  [Chain.STATEMINE]: {
-    name: Chain.STATEMINE,
+  [Chain.ASSET_HUB_KUSAMA]: {
+    name: Chain.ASSET_HUB_KUSAMA,
     relayChain: Chain.KUSAMA,
-    img: require('/src/assets/img/chain/statemine.svg'),
-    parachainId: parachainIds.STATEMINE,
+    img: require('/src/assets/img/chain/asset-hub.svg'),
+    parachainId: parachainIds.ASSET_HUB_KUSAMA,
     endpoints: [
       'wss://kusama-asset-hub-rpc.polkadot.io',
       'wss://statemine-rpc.dwellir.com',
@@ -154,7 +154,7 @@ export let xcmChainObj: XcmChainObj = {
       'wss://statemine.api.onfinality.io/public-ws',
       'wss://statemine.public.curie.radiumblock.co/ws',
     ],
-    subscan: 'https://statemine.subscan.io',
+    subscan: 'https://assethub-kusama.subscan.io',
     isAstarNativeToken: false,
   },
   [Chain.KARURA]: {
@@ -220,18 +220,18 @@ export let xcmChainObj: XcmChainObj = {
     subscan: 'https://moonbeam.subscan.io',
     isAstarNativeToken: true,
   },
-  [Chain.STATEMINT]: {
-    name: Chain.STATEMINT,
+  [Chain.ASSET_HUB]: {
+    name: Chain.ASSET_HUB,
     relayChain: Chain.POLKADOT,
-    img: require('/src/assets/img/chain/statemine.svg'),
-    parachainId: parachainIds.STATEMINT,
+    img: require('/src/assets/img/chain/asset-hub.svg'),
+    parachainId: parachainIds.ASSET_HUB,
     endpoints: [
       'wss://statemint-rpc.dwellir.com',
       'wss://polkadot-asset-hub-rpc.polkadot.io',
       'wss://statemint.api.onfinality.io/public-ws',
       'wss://statemint.public.curie.radiumblock.co/ws',
     ],
-    subscan: 'https://statemint.subscan.io',
+    subscan: 'https://assethub-polkadot.subscan.io',
     isAstarNativeToken: false,
   },
   [Chain.KINTSUGI]: {

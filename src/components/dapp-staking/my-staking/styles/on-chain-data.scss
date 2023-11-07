@@ -9,7 +9,7 @@
 }
 
 .box--data {
-  background-color: white;
+  background-color: #ffffff80;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -88,7 +88,7 @@
   gap: 8px;
   width: 200px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff50;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
@@ -96,6 +96,7 @@
 }
 .body--dark {
   .dropbox--sort {
+    background: rgba(255, 255, 255, 0.1);
     color: $gray-1;
   }
 }
@@ -109,7 +110,7 @@
   padding: 8px 16px;
   gap: 8px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff50;
   border-radius: 6px;
   width: 100%;
   margin-bottom: 16px;
@@ -123,6 +124,7 @@
 }
 .body--dark {
   .dropbox--filter {
+    background: rgba(255, 255, 255, 0.1);
     color: $gray-1;
   }
 }
@@ -252,7 +254,7 @@
 }
 
 .divider {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid white;
   margin-top: 8px;
   margin-bottom: 8px;
 }
@@ -260,5 +262,8 @@
 .body--dark {
   .text--title {
     color: $gray-1;
+  }
+  .divider {
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }

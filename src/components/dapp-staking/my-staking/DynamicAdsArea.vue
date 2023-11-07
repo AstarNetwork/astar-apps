@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper--ads-area">
     <swiper
-      id="dynamic-ads-area"
+      class="swiper--ads-area"
       :slides-per-view="1.25"
       :slides-per-group="1"
       :space-between="24"
@@ -21,7 +21,7 @@
     >
       <swiper-slide v-for="(item, index) in combinedCampaigns" :key="index">
         <div
-          class="card"
+          class="card--swiper"
           @click="item.link !== undefined ? goToLink(item.link) : goDappPageLink(item.address)"
         >
           <img :src="item.img" class="card__img" />
@@ -33,7 +33,7 @@
               >
                 {{ item.link !== undefined ? 'FEATURED' : 'NEW LISTING' }}
               </div>
-              <div class="text--title">{{ item.name }}</div>
+              <div class="text--name">{{ item.name }}</div>
             </div>
             <div class="text--description">{{ item.description }}</div>
           </div>
@@ -82,6 +82,32 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+@import './styles/ads-area.scss';
+</style>
+
 <style lang="scss">
-@import './styles/dynamic-ads-area.scss';
+.swiper--ads-area {
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $navy-1;
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .swiper-button-prev {
+    padding-right: 2px;
+  }
+  .swiper-button-next {
+    padding-left: 2px;
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+}
 </style>
