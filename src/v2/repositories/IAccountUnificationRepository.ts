@@ -26,6 +26,12 @@ export interface IAccountUnificationRepository {
   getMappedEvmAddress(nativeAddress: string): Promise<string>;
 
   /**
+   * check if the given address is unified account.
+   * @param address H160 or SS58 address.
+   */
+  handleCheckIsUnifiedAccount(address: string): Promise<boolean>;
+
+  /**
    * Gets batch all call to unify accounts and to set the account identity.
    * @param nativeAddress Native address to unify.
    * @param evmAddress EVM address to unify.

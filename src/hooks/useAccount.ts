@@ -129,21 +129,6 @@ export const useAccount = () => {
     }
   };
 
-  // TODO Move to separate lib, probably update toSS58Address in astar.js
-  const getSS58Address = async (evmAddress: string): Promise<string> => {
-    if (isValidEvmAddress(evmAddress)) {
-      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
-      const ss58Pair = await service.getMappedNativeAddress(evmAddress);
-      if (ss58Pair) {
-        return ss58Pair;
-      } else {
-        return toSS58Address(evmAddress);
-      }
-    }
-
-    return evmAddress;
-  };
-
   const showAccountUnificationModal = (): void => {
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.publish(new UnifyAccountMessage());
@@ -249,7 +234,6 @@ export const useAccount = () => {
     isAccountUnification,
     isH160Formatted,
     disconnectAccount,
-    getSS58Address,
     showAccountUnificationModal,
     checkIfUnified,
   };

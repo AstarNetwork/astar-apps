@@ -94,6 +94,7 @@ import { $api } from 'src/boot/api';
 import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import ZkAstr from 'src/components/assets/ZkAstr.vue';
+import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { supportWalletObj } from 'src/config/wallets';
 import {
