@@ -159,21 +159,18 @@
               </div>
               <ul class="column--warnings">
                 <li>
-                  <span class="text--warn">
-                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
-                    I’m not sending tokens to exchange address.
+                  <span>
+                    {{ $t('assets.modals.notSendToExchanges') }}
                   </span>
                 </li>
                 <li>
-                  <span class="text--warn">
-                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
-                    ERC20 tokens cannot be sent to Astar Native addresses.
+                  <span>
+                    {{ $t('assets.modals.cannotBeSentErc20', { network: currentNetworkName }) }}
                   </span>
                 </li>
                 <li>
-                  <span class="text--warn">
-                    <!-- {{ $t('assets.modals.notDestIsLedgerAccount') }} -->
-                    I understand that if I do so, the funds will likely be lost.
+                  <span>
+                    {{ $t('assets.modals.understandWarning') }}
                   </span>
                 </li>
               </ul>
@@ -231,7 +228,7 @@ export default defineComponent({
   setup(props) {
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName, multisig } = useAccount();
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName } = useNetworkInfo();
     const t = computed<Asset>(() => props.token);
     const {
       selectedTip,
@@ -290,6 +287,7 @@ export default defineComponent({
       isTransferNativeToken,
       isNativeToEvm,
       multisig,
+      currentNetworkName,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,
