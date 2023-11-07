@@ -103,7 +103,6 @@
   display: flex;
   align-items: flex-start;
   column-gap: 8px;
-  margin-top: 10px;
 }
 
 .row--account {
@@ -124,12 +123,11 @@
 }
 
 .address {
-  color: $gray-4;
+  color: $gray-3;
   font-weight: 510;
   font-size: 12px;
   line-height: 20px;
   text-align: left;
-  margin-top: 4px;
   position: relative;
   @media (min-width: $sm) {
     margin-top: 0px;
@@ -210,8 +208,9 @@
 }
 
 .dot {
-  position: relative;
-  top: -30px;
+  margin-top: 12px;
+  margin-left: 8px;
+  align-self: flex-start;
   height: 7px;
   width: 8px;
   border-radius: 90%;
@@ -221,7 +220,7 @@
 .text--balance {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-5;
+  color: $gray-3;
 }
 
 .text--balance-hide {
@@ -270,5 +269,9 @@
   }
   .text--balance {
     color: white;
+  }
+
+  .account-name {
+    color: $gray-1;
   }
 }
