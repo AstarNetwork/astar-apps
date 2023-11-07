@@ -134,7 +134,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     try {
-      console.log('setErrorMsg');
       if (transferAmtRef && transferAmtRef > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: selectedToken.value.metadata.symbol,
@@ -154,10 +153,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           token: nativeTokenSymbol.value,
         });
       } else {
-        console.log('else');
         errMsg.value = '';
       }
-      console.log('errMsg.value', errMsg.value);
     } catch (error: any) {
       errMsg.value = error.message;
     }
