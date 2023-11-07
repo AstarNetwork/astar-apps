@@ -163,7 +163,7 @@
                     {{ $t('assets.modals.notSendToExchanges') }}
                   </span>
                 </li>
-                <li>
+                <li v-if="!isSupportAuTransfer">
                   <span>
                     {{ $t('assets.modals.cannotBeSentErc20', { network: currentNetworkName }) }}
                   </span>
@@ -228,7 +228,7 @@ export default defineComponent({
   setup(props) {
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName, multisig } = useAccount();
-    const { nativeTokenSymbol, currentNetworkName } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName, isSupportAuTransfer } = useNetworkInfo();
     const t = computed<Asset>(() => props.token);
     const {
       selectedTip,
@@ -288,6 +288,7 @@ export default defineComponent({
       isNativeToEvm,
       multisig,
       currentNetworkName,
+      isSupportAuTransfer,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,
