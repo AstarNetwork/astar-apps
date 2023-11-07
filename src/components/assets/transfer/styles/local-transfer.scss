@@ -298,11 +298,6 @@
   font-weight: 700;
 }
 
-.text--warn {
-  padding-left: 10px;
-  line-height: 20px;
-}
-
 .text--title-evm-warning {
   font-weight: 700;
   font-size: 14px;
@@ -315,6 +310,13 @@
 
 .icon--warning {
   color: $warning-red;
+}
+
+.column--warnings {
+  display: flex;
+  flex-direction: column;
+  list-style-type: disc;
+  margin-left: 18px;
 }
 
 .body--dark {

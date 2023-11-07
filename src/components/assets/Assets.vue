@@ -32,7 +32,7 @@
         </div>
         <div v-else class="container--assets">
           <!-- Memo: hide xvm panel because AA might replace it -->
-          <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+          <!-- <xvm-native-asset-list v-if="isSupportAuTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
         </div>
       </div>
