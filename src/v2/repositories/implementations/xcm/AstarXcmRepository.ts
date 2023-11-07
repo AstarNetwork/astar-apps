@@ -95,7 +95,7 @@ export class AstarXcmRepository extends XcmRepository {
     return await this.buildTxCall(
       from,
       endpoint,
-      'xtokens',
+      'xTokens',
       'transferMultiasset',
       assets,
       destination,
