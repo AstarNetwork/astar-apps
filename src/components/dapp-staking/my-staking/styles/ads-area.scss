@@ -65,7 +65,10 @@
   width: 100%;
 }
 .card__bottom {
-  padding: 16px 24px;
+  padding: 16px;
+  @media (min-width: $lg) {
+    padding: 16px 24px;
+  }
 }
 .text--accent {
   font-size: 12px;

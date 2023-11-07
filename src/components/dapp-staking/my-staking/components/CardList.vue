@@ -155,8 +155,7 @@ export default defineComponent({
     align-items: center;
   }
   .wrapper--img {
-    background: #fff;
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
     border-radius: 16px;
     width: 80px;
     height: 80px;
@@ -241,10 +240,6 @@ export default defineComponent({
 
 .body--dark {
   .card {
-    .wrapper--img {
-      background: transparent;
-    }
-
     .panel--right {
       .txt--title {
         color: $gray-1;
@@ -262,7 +257,10 @@ export default defineComponent({
     }
     @mixin hover {
       background: rgba(247, 247, 248, 0.03);
-      box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
+      box-shadow: 0px 0px 6px 3px rgba(0, 0, 0, 0.1);
+      @media (min-width: $sm) {
+        box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
+      }
     }
     &:hover {
       @include hover;

@@ -4,7 +4,7 @@
       class="swiper--ads-area"
       :slides-per-view="1.25"
       :slides-per-group="1"
-      :space-between="24"
+      :space-between="16"
       :navigation="true"
       :parallax="true"
       :modules="modules"
@@ -12,10 +12,17 @@
         '768': {
           slidesPerView: 3.25,
           slidesPerGroup: 3,
+          spaceBetween: 16,
+        },
+        '1024': {
+          slidesPerView: 3.25,
+          slidesPerGroup: 3,
+          spaceBetween: 24,
         },
         '1280': {
           slidesPerView: 4.5,
           slidesPerGroup: 4,
+          spaceBetween: 24,
         },
       }"
     >
