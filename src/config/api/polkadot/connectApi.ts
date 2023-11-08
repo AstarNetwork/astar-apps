@@ -8,6 +8,21 @@ import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
 import jsonParachainSpecTokyo from './chain-specs/tokyo.json';
 import { WellKnownChain } from '@substrate/connect';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  databaseURL: 'https://DATABASE_NAME.firebaseio.com',
+  projectId: 'ep-test-40025',
+  storageBucket: 'YOUR_STORAGE_BUCKET',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId: 'YOUR_APP_ID',
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -123,6 +138,7 @@ export async function connectApi(
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   store.commit('general/setLoading', true);
+  const startTime = performance.now();
 
   api.on('error', (error: Error) => console.error(error.message));
   try {
@@ -168,6 +184,20 @@ export async function connectApi(
 
   try {
     await api.isReady;
+    const endTime = performance.now();
+    const responseTime = endTime - startTime;
+    const timestamp = new Date().toISOString();
+
+    // Create the document in Firestore
+    const docRef = await collection(db, 'response_times');
+    await addDoc(docRef, {
+      endpoint: endpoint,
+      responseTime: responseTime,
+      timestamp: timestamp,
+      clientIp: clientIp,
+    });
+
+    console.log('Document written with ID: ', docRef.id);
 
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
