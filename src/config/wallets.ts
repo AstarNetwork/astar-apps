@@ -98,9 +98,9 @@ export const supportWalletObj = {
     img: require('/src/assets/img/metamask.png'),
     name: 'Astar Snap',
     source: SupportWallet.Snap,
-    // Todo: update URLs
-    walletUrl: 'https://metamask.io/flask/',
-    guideUrl: 'https://docs.astar.network/docs/build/integrations/wallets/astar-safe',
+    walletUrl: 'https://snaps.metamask.io/snap/npm/astar-network/snap/',
+    guideUrl:
+      'https://docs.astar.network/docs/use/manage-wallets/wallet-providers/metamask-astar-snap/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
