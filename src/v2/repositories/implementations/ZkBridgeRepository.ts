@@ -1,5 +1,5 @@
 import ERC20_ABI from 'src/config/abi/ERC20.json';
-import { ethers, constants as ethersConstants } from 'ethers';
+import { ethers } from 'ethers';
 import { injectable } from 'inversify';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
 import {
