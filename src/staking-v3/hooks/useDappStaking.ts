@@ -49,8 +49,8 @@ export function useDappStaking() {
     if (amount <= 0) {
       return [false, t('stakingV3.amountGreater0')];
     } else if (
-      protocolState.value?.periodInfo.type === PeriodType.BuildAndEarn &&
-      protocolState.value.periodInfo.endingEra <= protocolState.value.era + 1
+      protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
+      protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
       return [false, t('stakingV3.periodEndsNextEra')];
     }

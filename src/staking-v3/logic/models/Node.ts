@@ -14,8 +14,8 @@ export enum DappState {
 
 export interface PeriodInfo {
   number: PeriodNumber;
-  type: PeriodType;
-  endingEra: EraNumber;
+  subperiod: PeriodType;
+  subperiodEndEra: EraNumber;
 }
 
 // General information & state of the dApp staking protocol.

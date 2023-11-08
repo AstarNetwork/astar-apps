@@ -259,8 +259,8 @@ export class DappStakingRepository implements IDappStakingRepository {
       nextEraStart: state.nextEraStart.toNumber(),
       periodInfo: {
         number: state.periodInfo.number.toNumber(),
-        type: <PeriodType>state.periodInfo.periodType.type,
-        endingEra: state.periodInfo.endingEra.toNumber(),
+        subperiod: <PeriodType>state.periodInfo.subperiod.type,
+        subperiodEndEra: state.periodInfo.subperiodEndEra.toNumber(),
       },
       maintenance: state.maintenance.isTrue,
     };

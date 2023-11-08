@@ -10,8 +10,8 @@ interface PalletDappStakingV3PeriodType extends Enum {
 
 interface PalletDappStakingV3PeriodInfo extends Struct {
   readonly number: Compact<u32>;
-  readonly periodType: PalletDappStakingV3PeriodType;
-  readonly endingEra: Compact<u32>;
+  readonly subperiod: PalletDappStakingV3PeriodType;
+  readonly subperiodEndEra: Compact<u32>;
 }
 
 interface PalletDappStakingV3DAppState extends Enum {
