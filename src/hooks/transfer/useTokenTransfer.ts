@@ -57,7 +57,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer, isZkEvm } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportAuTransfer, isZkEvm } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -96,7 +96,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isValidDestAddress = computed<boolean>(() => {
     const isOnlyAcceptEvmAddress =
-      isH160.value && !isTransferNativeToken.value && !isSupportXvmTransfer.value;
+      isH160.value && !isTransferNativeToken.value && !isSupportAuTransfer.value;
     return isOnlyAcceptEvmAddress
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
@@ -106,7 +106,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const inputHandler = (event: any): void => {
     transferAmt.value = event.target.value;
-    errMsg.value = '';
   };
 
   const resetStates = (): void => {
@@ -141,6 +140,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+        return;
       } else if (
         isH160.value &&
         toAddress.value &&

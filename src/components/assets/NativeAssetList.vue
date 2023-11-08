@@ -280,7 +280,7 @@ export default defineComponent({
     const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol, isSupportXvmTransfer } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -379,7 +379,7 @@ export default defineComponent({
       isLoading,
       Path,
       isSkeleton,
-      isSupportXvmTransfer,
+      isSupportAuTransfer,
       isExpand,
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
