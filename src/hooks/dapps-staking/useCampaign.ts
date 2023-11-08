@@ -19,7 +19,7 @@ export function useCampaign() {
             name: x.dapp?.name,
             shortDescription: x.dapp?.shortDescription,
             link: x.dapp?.url,
-            img: x.dapp?.imagesUrl[0],
+            img: x.dapp?.imagesUrl ? x.dapp.imagesUrl[0] : 'images/noimage.png',
             address: x.contract.address,
           }
       )
