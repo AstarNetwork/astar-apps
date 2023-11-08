@@ -17,7 +17,7 @@ export function useCampaign() {
         (x) =>
           <Campaign>{
             name: x.dapp?.name,
-            description: x.dapp?.description,
+            shortDescription: x.dapp?.shortDescription,
             link: x.dapp?.url,
             img: x.dapp?.imagesUrl[0],
             address: x.contract.address,

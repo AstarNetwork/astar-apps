@@ -35,7 +35,7 @@
               </div>
               <div class="text--name">{{ item.name }}</div>
             </div>
-            <div class="text--description">{{ item.description }}</div>
+            <div class="text--description">{{ item.shortDescription }}</div>
           </div>
         </div>
       </swiper-slide>

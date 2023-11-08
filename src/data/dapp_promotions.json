@@ -1,13 +1,13 @@
 [
   {
     "name": "Algem - Liquid Staking",
-    "description": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
+    "shortDescription": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
     "link": "https://www.algem.io/",
-    "img": ""
+    "img": "https://storage.googleapis.com/astarnetwork-a4924.appspot.com/astar-dapps%2F0x70d264472327B67898c919809A9dc4759B6c0f27_1.jpg"
   },
   {
     "name": "ASTR token, value and utility",
-    "description": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
+    "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
     "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
     "img": "https://ipfs.subsocial.network/ipfs/bafybeig2o6zjlnxnwgdv6xkcgu4w5tn7wdre26kimpc2w2ldrum66cotw4"
   }

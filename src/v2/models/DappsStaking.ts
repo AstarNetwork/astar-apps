@@ -62,7 +62,7 @@ export interface DappStakingConstants {
 
 export interface Campaign {
   name: string;
-  description: string;
+  shortDescription: string;
   link?: string;
   img: string;
   address?: string;
