@@ -84,8 +84,8 @@ export const useAccount = () => {
 
     const isEvmAddress = isValidEvmAddress(address);
     const mapped = isEvmAddress
-      ? await service.getMappedNativeAddress(address)
-      : await service.getMappedEvmAddress(address);
+      ? await service.getConvertedNativeAddress(address)
+      : await service.getConvertedEvmAddress(address);
 
     if (mapped) {
       const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);

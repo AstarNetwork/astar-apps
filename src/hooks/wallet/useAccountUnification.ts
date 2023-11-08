@@ -127,7 +127,7 @@ export const useAccountUnification = () => {
       let isPendingWithdrawal = false;
       let stakingData: MyStakeInfo[] = [];
 
-      const mappedSS58Address = await accountUnificationService.getMappedNativeAddress(
+      const mappedSS58Address = await accountUnificationService.getConvertedNativeAddress(
         selectedEvmAddress.value
       );
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
