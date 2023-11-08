@@ -60,7 +60,7 @@ export const faqSs58XcmBridge: Faq[] = [
   },
   {
     title: 'How can I find my other chains addresses?',
-    url: 'https://docs.astar.network/docs/learn/xcm/faq/#q-where-can-i-find-other-chains-addresses',
+    url: 'https://docs.astar.network/docs/learn/interoperability/faq#q-where-can-i-find-other-chains-addresses',
   },
   {
     title: 'What is the easiest way to bring tokens to Astar from other chains?',
