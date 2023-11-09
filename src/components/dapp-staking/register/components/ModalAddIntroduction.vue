@@ -38,7 +38,6 @@
           </div>
         </div>
 
-        <!-- TODO: Add introduction text into submit -->
         <astar-button class="button--submit" :disabled="!canSubmit()" @click="handleSubmit()">
           {{ $t('dappStaking.modals.submit') }}
         </astar-button>
