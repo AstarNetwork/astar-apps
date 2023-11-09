@@ -189,6 +189,11 @@ export const getTokenBal = async ({
     if (isCheckNativeBal && nativeCurrency[srcChainId].symbol === tokenSymbol) {
       return await getNativeBalance({ address, srcChainId, web3 });
     } else {
+      const code = await web3.eth.getCode(tokenAddress);
+      const isTokenExist = code !== '0x';
+      if (!isTokenExist) {
+        return '0';
+      }
       const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
       const decimals = await contract.methods.decimals().call();
       const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
@@ -234,11 +239,12 @@ export const getTokenImage = async ({ symbol, address }: { symbol: string; addre
 
   // Memo: get the token image by Ethereum contract address
   const trustWalletLogoUrl = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
-  const logoURI = await axios
-    .head(trustWalletLogoUrl)
-    .then(() => trustWalletLogoUrl)
-    .catch(() => '');
-  return logoURI;
+  try {
+    await axios.get(trustWalletLogoUrl);
+    return trustWalletLogoUrl;
+  } catch (error) {
+    return '';
+  }
 };
 
 export const fetchErc20TokenInfo = async ({
