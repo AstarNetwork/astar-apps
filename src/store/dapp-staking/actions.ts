@@ -155,6 +155,7 @@ const actions: ActionTree<State, StateInterface> = {
           images: getImagesInfo(parameters.dapp),
           developers: parameters.dapp.developers,
           description: parameters.dapp.description,
+          shortDescription: parameters.dapp.shortDescription,
           communities: parameters.dapp.communities,
           contractType: parameters.dapp.contractType,
           mainCategory: parameters.dapp.mainCategory,

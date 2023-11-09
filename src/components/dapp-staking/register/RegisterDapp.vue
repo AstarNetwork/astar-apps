@@ -90,6 +90,7 @@
       :name="data.name"
       :image="data.imagesContent[1]"
       :handle-submit="handleSubmit"
+      :introduction-changed="introductionChanged"
     />
   </div>
 </template>
@@ -276,6 +277,7 @@ export default defineComponent({
                 }))
               : [];
             data.description = registeredDapp.description;
+            data.shortDescription = registeredDapp.shortDescription;
             data.communities = registeredDapp.communities ?? [];
             data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
@@ -337,7 +339,15 @@ export default defineComponent({
 
     const isModalAddIntroduction = ref<boolean>(false);
     const handleModalAddIntroduction = ({ isOpen }: { isOpen: boolean }): void => {
-      isModalAddIntroduction.value = isOpen;
+      dappForm?.value?.validate().then(async (success: boolean) => {
+        if (success && validateCustomComponents()) {
+          isModalAddIntroduction.value = isOpen;
+        }
+      });
+    };
+
+    const introductionChanged = (introduction: string): void => {
+      data.shortDescription = introduction;
     };
 
     return {
@@ -357,6 +367,7 @@ export default defineComponent({
       isUrlValid,
       handleDappChanged,
       handleSubmit,
+      introductionChanged,
     };
   },
 });

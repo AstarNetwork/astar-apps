@@ -40,7 +40,7 @@
         </div>
 
         <!-- TODO: Add introduction text into submit -->
-        <astar-button class="button--submit" @click="handleSubmit()">
+        <astar-button class="button--submit" :disabled="!canSubmit()" @click="handleSubmit()">
           {{ $t('dappStaking.modals.submit') }}
         </astar-button>
       </q-form>
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
@@ -64,6 +64,10 @@ export default defineComponent({
       required: true,
     },
     handleModalAddIntroduction: {
+      type: Function,
+      required: true,
+    },
+    introductionChanged: {
       type: Function,
       required: true,
     },
@@ -92,10 +96,17 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
+    const canSubmit = (): boolean => introduction.value.length >= 10;
+
+    watch([introduction], () => {
+      props.introductionChanged(introduction.value);
+    });
+
     return {
       isClosingModal,
       introduction,
       closeModal,
+      canSubmit,
     };
   },
 });
