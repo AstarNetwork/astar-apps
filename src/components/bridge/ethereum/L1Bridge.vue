@@ -125,29 +125,20 @@
         </ul>
       </div>
 
-      <div class="wrapper__row--button">
+      <div class="row--buttons">
         <astar-button
-          v-if="isApproved"
-          class="button--confirm btn-size-adjust"
-          :disabled="isDisabledBridge || isHandling"
-          @click="bridge"
-        >
-          {{ $t('bridge.bridge') }}
-        </astar-button>
-        <astar-button
-          v-else-if="isApproving"
-          class="button--confirm btn-size-adjust"
-          :disabled="true"
-        >
-          {{ $t('approving') }}
-        </astar-button>
-        <astar-button
-          v-else
-          class="button--confirm btn-size-adjust"
-          :disabled="isDisabledBridge || isHandling"
+          class="button--confirm"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
           @click="approve"
         >
           {{ $t('approve') }}
+        </astar-button>
+        <astar-button
+          class="button--confirm"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
+          @click="bridge"
+        >
+          {{ $t('bridge.bridge') }}
         </astar-button>
       </div>
     </div>
@@ -160,7 +151,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
-import { PropType, defineComponent, watch, ref } from 'vue';
+import { PropType, defineComponent, watch, ref, computed } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -250,11 +241,11 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const store = useStore();
     const isHandling = ref<boolean>(false);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
       const transactionHash = await props.handleBridge();
-      isHandling.value = false;
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
         store.commit('general/setLoading', true, { root: true });
@@ -264,17 +255,18 @@ export default defineComponent({
         props.setIsBridge(false);
         store.commit('general/setLoading', false, { root: true });
       }
+      isHandling.value = false;
     };
 
     const approve = async (): Promise<void> => {
       isHandling.value = true;
       const transactionHash = await props.handleApprove();
-      isHandling.value = false;
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
         store.commit('general/setLoading', true, { root: true });
         props.setIsApproving(true);
       }
+      isHandling.value = false;
     };
 
     // Watching the 'isApproved' prop
@@ -296,6 +288,7 @@ export default defineComponent({
       currentAccount,
       EthBridgeNetworkName,
       isHandling,
+      isLoading,
       bridge,
       approve,
     };

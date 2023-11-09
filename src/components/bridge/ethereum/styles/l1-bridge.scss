@@ -108,13 +108,13 @@
   }
 }
 
-.btn-size-adjust {
-  width: 100%;
-  @media (min-width: $xs) {
-    width: 344px;
-  }
+.row--buttons {
+  display: grid;
+  row-gap: 16px;
   @media (min-width: $sm) {
-    width: 412px;
+    grid-template-columns: 48% 48%;
+    justify-content: space-between;
+    row-gap: 0px;
   }
 }
 
@@ -129,6 +129,7 @@
   font-size: 22px;
   font-weight: 600;
   height: 44px;
+  width: 100%;
 }
 
 .row--reverse {

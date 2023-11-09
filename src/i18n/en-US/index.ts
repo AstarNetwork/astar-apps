@@ -11,7 +11,6 @@ export default {
   add: 'Add',
   and: 'and',
   approve: 'Approve',
-  approving: 'Approving...',
   estimated: 'Estimated',
   forget: 'Forget',
   remove: 'Remove',
