@@ -3,13 +3,12 @@
     <div class="container">
       <div class="row--details">
         <div class="column-account-name">
-          <au-icon
+          <!-- <au-icon
             v-if="isAccountUnified"
             :native-address="unifiedAccount?.nativeAddress"
             :icon-url="unifiedAccount?.avatarUrl"
-          />
+          /> -->
           <img
-            v-else-if="iconWallet"
             width="24"
             :src="iconWallet"
             alt="wallet-icon"
@@ -94,7 +93,7 @@ import { $api } from 'src/boot/api';
 import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import ZkAstr from 'src/components/assets/ZkAstr.vue';
-import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
+// import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { supportWalletObj } from 'src/config/wallets';
 import {
@@ -117,7 +116,6 @@ export default defineComponent({
     NativeAssetList,
     EvmNativeToken,
     ZkAstr,
-    AuIcon,
   },
   props: {
     ttlErc20Amount: {
