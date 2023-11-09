@@ -686,7 +686,7 @@ export default {
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
-      'Bridging back to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+      'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     tokenInfo: {
       invalidTokenAddress: 'Invalid token address',
       tokenAddress: '{network} token address',
