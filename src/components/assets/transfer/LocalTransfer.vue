@@ -157,9 +157,23 @@
                   {{ $t('warning.warning') }}
                 </span>
               </div>
-              <div class="text--warn">
-                {{ $t('assets.modals.notDestIsLedgerAccount') }}
-              </div>
+              <ul class="column--warnings">
+                <li>
+                  <span>
+                    {{ $t('assets.modals.notSendToExchanges') }}
+                  </span>
+                </li>
+                <li v-if="!isSupportAuTransfer">
+                  <span>
+                    {{ $t('assets.modals.cannotBeSentErc20', { network: currentNetworkName }) }}
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    {{ $t('assets.modals.understandWarning') }}
+                  </span>
+                </li>
+              </ul>
             </span>
           </label>
         </div>
@@ -214,7 +228,7 @@ export default defineComponent({
   setup(props) {
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName, multisig } = useAccount();
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName, isSupportAuTransfer } = useNetworkInfo();
     const t = computed<Asset>(() => props.token);
     const {
       selectedTip,
@@ -273,6 +287,8 @@ export default defineComponent({
       isTransferNativeToken,
       isNativeToEvm,
       multisig,
+      currentNetworkName,
+      isSupportAuTransfer,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,

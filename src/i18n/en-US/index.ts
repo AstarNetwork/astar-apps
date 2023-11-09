@@ -500,10 +500,11 @@ export default {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
+      cannotBeSentErc20: 'ERC20 tokens cannot be sent to {network} Native addresses',
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
       notSendToEvmExchanges:
         "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
-      understandWarning: 'I understand the following. If don’t, I will lose my funds.',
+      understandWarning: 'I understand that if I do so, the funds will likely be lost',
       notDestIsLedgerAccount:
         'The destination address is neither a ledger native account nor an exchange address. I understand that if I do so, the funds will likely be lost.',
       notDestIsExchangeAddress: 'Destination address is not an Exchange address',
