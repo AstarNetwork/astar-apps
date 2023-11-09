@@ -116,6 +116,7 @@ export const useL1Bridge = () => {
         tokenAddress,
       });
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
+      console.info('allowance: ', formattedAllowance, selectedToken.value.symbol);
       isApproved.value = Number(formattedAllowance) >= Number(amount);
     } catch (error) {
       console.error(error);
