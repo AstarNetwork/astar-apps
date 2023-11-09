@@ -179,7 +179,6 @@ export const useL1Bridge = () => {
 
   const inputHandler = (event: any): void => {
     bridgeAmt.value = event.target.value;
-    errMsg.value = '';
   };
 
   const inputImportTokenHandler = (event: any): void => {
