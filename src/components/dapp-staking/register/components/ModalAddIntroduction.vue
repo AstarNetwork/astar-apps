@@ -29,7 +29,6 @@
             v-model="introduction"
             outlined
             :placeholder="$t('dappStaking.modals.introduction.placeholder')"
-            input-class="input--introduction"
             maxlength="65"
           />
           <div class="input--introduction__helper">
@@ -111,17 +110,6 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-.input--introduction {
-  color: $navy-1 !important;
-}
-.body--dark {
-  .input--introduction {
-    color: $gray-1 !important;
-  }
-}
-</style>
 
 <style lang="scss" scoped>
 @import '../../my-staking/styles/ads-area.scss';

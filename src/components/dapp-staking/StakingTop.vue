@@ -164,15 +164,4 @@ export default defineComponent({
     border-color: $gray-5;
   }
 }
-
-.dapps-staking-bg {
-  background-repeat: round;
-  position: fixed;
-  width: 100%;
-  left: 0;
-  top: 0;
-  z-index: -1;
-  height: 100vh;
-  opacity: 0.8;
-}
 </style>
