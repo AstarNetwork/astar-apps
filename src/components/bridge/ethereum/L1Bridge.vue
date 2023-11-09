@@ -277,8 +277,6 @@ export default defineComponent({
         if (newVal === true) {
           props.setIsApproving(false);
           store.commit('general/setLoading', false, { root: true });
-          // Memo: run bridge function after approved
-          // await bridge();
         }
       }
     );
