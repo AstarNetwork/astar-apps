@@ -33,9 +33,9 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     const api = await this.api.getApi();
     const nativeAddress = api.query.hasOwnProperty('unifiedAccounts')
       ? await api.query.unifiedAccounts.evmToNative<AccountId32>(evmAddress)
-      : toSS58Address(evmAddress);
+      : '';
 
-    return nativeAddress.toString() !== '' ? nativeAddress.toString() : toSS58Address(evmAddress);
+    return nativeAddress.toString();
   }
 
   public async getMappedEvmAddress(nativeAddress: string): Promise<string> {
@@ -44,9 +44,21 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     const api = await this.api.getApi();
     const evmAddress = api.query.hasOwnProperty('unifiedAccounts')
       ? await api.query.unifiedAccounts.nativeToEvm<H160>(nativeAddress)
-      : buildEvmAddress(nativeAddress);
+      : '';
 
-    return evmAddress.toString() !== '' ? evmAddress.toString() : buildEvmAddress(nativeAddress);
+    return evmAddress.toString();
+  }
+
+  public async getConvertedNativeAddress(evmAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('evmAddress', evmAddress);
+    const nativeAddress = await this.getMappedNativeAddress(evmAddress);
+    return nativeAddress !== '' ? nativeAddress : toSS58Address(evmAddress);
+  }
+
+  public async getConvertedEvmAddress(nativeAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
+    const evmAddress = await this.getMappedEvmAddress(nativeAddress);
+    return evmAddress !== '' ? evmAddress : buildEvmAddress(nativeAddress);
   }
 
   public async handleCheckIsUnifiedAccount(address: string): Promise<boolean> {

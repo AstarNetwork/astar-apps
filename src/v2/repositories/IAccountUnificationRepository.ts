@@ -14,16 +14,28 @@ export interface IAccountUnificationRepository {
   getClaimEvmAccountCall(evmAddress: string, signature: string): Promise<ExtrinsicPayload>;
 
   /**
-   * Gets mapped native address for the given EVM address.
+   * Queries mapped native address for the given EVM address in runtime.
    * @param evmAddress EVM address to get mapped native address.
    */
   getMappedNativeAddress(evmAddress: string): Promise<string>;
 
   /**
-   * Gets mapped EVM address for the given native address.
+   * Queries mapped EVM address for the given native address in runtime.
    * @param nativeAddress Native address to get mapped EVM address.
    */
   getMappedEvmAddress(nativeAddress: string): Promise<string>;
+
+  /**
+   * Gets mapped native address for the given EVM address.
+   * @param evmAddress EVM address to get mapped native address.
+   */
+  getConvertedNativeAddress(evmAddress: string): Promise<string>;
+
+  /**
+   * Gets mapped EVM address for the given native address.
+   * @param nativeAddress Native address to get mapped EVM address.
+   */
+  getConvertedEvmAddress(nativeAddress: string): Promise<string>;
 
   /**
    * check if the given address is unified account.

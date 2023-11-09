@@ -194,7 +194,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       if (isH160.value) {
         const receivingAddress = isValidEvmAddress(toAddress)
           ? toAddress
-          : await accountUnificationService.getMappedEvmAddress(toAddress);
+          : await accountUnificationService.getConvertedEvmAddress(toAddress);
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
           transferAmt,
@@ -211,7 +211,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
-          ? await accountUnificationService.getMappedNativeAddress(toAddress)
+          ? await accountUnificationService.getConvertedNativeAddress(toAddress)
           : toAddress;
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
@@ -264,7 +264,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
     const isSendToH160 = isValidEvmAddress(toAddress.value);
     const destAddress = isSendToH160
-      ? await accountUnificationService.getMappedNativeAddress(toAddress.value)
+      ? await accountUnificationService.getConvertedNativeAddress(toAddress.value)
       : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
@@ -272,7 +272,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
-        ? await accountUnificationService.getMappedEvmAddress(toAddress.value)
+        ? await accountUnificationService.getConvertedEvmAddress(toAddress.value)
         : toAddress.value;
 
       const balance = await getTokenBal({
