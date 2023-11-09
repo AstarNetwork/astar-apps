@@ -7,7 +7,7 @@
           <div class="column--currency">
             <div class="token-logo">
               <jazzicon
-                v-if="token.image.includes('custom-token')"
+                v-if="token.image && token.image.includes('custom-token')"
                 :address="token.address"
                 :diameter="24"
               />

@@ -76,6 +76,12 @@
                 alt="token-logo"
                 :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
               />
+              <img
+                v-else-if="selectedToken.image !== ''"
+                width="24"
+                alt="token-logo"
+                :src="selectedToken.image"
+              />
               <jazzicon v-else :address="selectedToken.address" :diameter="24" class="item-logo" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>

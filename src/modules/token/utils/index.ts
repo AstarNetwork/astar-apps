@@ -51,6 +51,8 @@ export const getRegisteredERC20Token = ({
       ...it,
       image: tokenImageMap.hasOwnProperty(it.symbol)
         ? tokenImageMap[it.symbol as keyof typeof tokenImageMap]
+        : it.image
+        ? it.image
         : 'custom-token',
     };
   });

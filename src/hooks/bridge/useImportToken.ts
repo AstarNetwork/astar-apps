@@ -1,11 +1,12 @@
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import ABI from 'src/config/abi/ERC20.json';
-import { buildWeb3Instance, getTokenBal } from 'src/config/web3';
+import { buildWeb3Instance, getTokenBal, getTokenImage } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
 import {
   EthBridgeChainId,
   EthBridgeNetworkName,
+  ZkChainId,
   ZkToken,
   getBridgedTokenAddress,
 } from 'src/modules/zk-evm-bridge';
@@ -63,6 +64,11 @@ export const useImportToken = ({
         decimal,
       });
 
+      const isFromEthChains =
+        fromChainId === ZkChainId.Ethereum || fromChainId === ZkChainId.Sepolia;
+      const ethereumAddress = isFromEthChains ? tokenAddress : toChainTokenAddress;
+      const logoURI = await getTokenImage({ symbol, address: ethereumAddress });
+
       const toChainUserBalance = await getTokenBal({
         address: currentAccount.value,
         tokenAddress: toChainTokenAddress,
@@ -77,6 +83,7 @@ export const useImportToken = ({
         fromChainBalance: Number(userBalance),
         toChainBalance: Number(toChainUserBalance),
         toChainTokenAddress,
+        image: logoURI,
       };
     } catch (error) {
       console.error(error);
@@ -113,7 +120,7 @@ export const useImportToken = ({
         decimal: decimal,
         symbol: symbol,
         name,
-        image: '',
+        image: zkToken.value?.image,
         isWrappedToken: false,
         isXC20: false,
         wrapUrl: null,
@@ -127,7 +134,7 @@ export const useImportToken = ({
         decimal: decimal,
         symbol: symbol,
         name,
-        image: '',
+        image: zkToken.value?.image,
         isWrappedToken: false,
         isXC20: false,
         wrapUrl: null,

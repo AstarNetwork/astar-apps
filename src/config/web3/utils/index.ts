@@ -1,4 +1,5 @@
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
+import axios from 'axios';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
@@ -10,7 +11,7 @@ import {
   nativeCurrency,
 } from 'src/config/web3';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { Erc20Token } from 'src/modules/token';
+import { Erc20Token, tokenImageMap } from 'src/modules/token';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ZkChainId, getBridgedTokenAddress } from 'src/modules/zk-evm-bridge';
 import Web3 from 'web3';
@@ -225,6 +226,21 @@ export const isXc20Token = (address: string): boolean => {
   return addr.slice(0, 10) === '0xffffffff';
 };
 
+export const getTokenImage = async ({ symbol, address }: { symbol: string; address: string }) => {
+  const isRegisteredToken = tokenImageMap.hasOwnProperty(symbol);
+  if (isRegisteredToken) {
+    return tokenImageMap[symbol as keyof typeof tokenImageMap];
+  }
+
+  // Memo: get the token image by Ethereum contract address
+  const trustWalletLogoUrl = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+  const logoURI = await axios
+    .head(trustWalletLogoUrl)
+    .then(() => trustWalletLogoUrl)
+    .catch(() => '');
+  return logoURI;
+};
+
 export const fetchErc20TokenInfo = async ({
   web3,
   address,
@@ -243,8 +259,10 @@ export const fetchErc20TokenInfo = async ({
     ]);
 
     const isZkEvm = srcChainId === ZkChainId.AstarZk || srcChainId === ZkChainId.Zkatana;
+
     let bridgedTokenAddress = '';
     let toChainId;
+    let image = '';
     if (isZkEvm) {
       toChainId = srcChainId === ZkChainId.AstarZk ? ZkChainId.Ethereum : ZkChainId.Sepolia;
       bridgedTokenAddress = await getBridgedTokenAddress({
@@ -254,6 +272,7 @@ export const fetchErc20TokenInfo = async ({
         symbol,
         decimal,
       });
+      image = await getTokenImage({ symbol, address: bridgedTokenAddress });
     }
 
     const data: Erc20Token = {
@@ -262,7 +281,7 @@ export const fetchErc20TokenInfo = async ({
       decimal,
       symbol,
       name,
-      image: '',
+      image,
       isWrappedToken: false,
       isXC20: isXc20Token(address),
       wrapUrl: null,

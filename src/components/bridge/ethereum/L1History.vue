@@ -117,6 +117,7 @@
                 <button
                   v-else-if="history.isActionRequired"
                   class="action-button link-button status--claim"
+                  :disabled="isHandling"
                   @click="async () => await claim(history)"
                 >
                   {{ $t('bridge.claim') }}
@@ -193,7 +194,7 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { t } = useI18n();
     const store = useStore();
-
+    const isHandling = ref<boolean>(false);
     const syncIndex = ref<number | undefined>();
 
     const handleUpdateHistory = async (index: number): Promise<void> => {
@@ -208,6 +209,7 @@ export default defineComponent({
     };
 
     const claim = async (withdrawal: BridgeHistory): Promise<void> => {
+      isHandling.value = true;
       const transactionHash = await props.handleClaim(withdrawal);
       if (isHex(transactionHash)) {
         store.commit('general/setLoading', true, { root: true });
@@ -216,6 +218,7 @@ export default defineComponent({
         await props.fetchUserHistory();
         store.commit('general/setLoading', false, { root: true });
       }
+      isHandling.value = false;
     };
 
     const displayTime = (timestamp: number): string => {
@@ -260,6 +263,7 @@ export default defineComponent({
       nativeTokenSymbol,
       TxStatus,
       syncIndex,
+      isHandling,
       displayTime,
       checkIsL1,
       checkStatus,

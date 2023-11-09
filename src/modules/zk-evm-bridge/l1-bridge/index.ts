@@ -87,6 +87,7 @@ export interface ZkToken {
   toChainTokenAddress?: string;
   fromChainBalance?: number;
   toChainBalance?: number;
+  image?: string;
 }
 
 // Ref: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/src/constants.ts#L73

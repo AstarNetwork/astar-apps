@@ -143,6 +143,7 @@ export const useL1Bridge = () => {
                 symbol: it.symbol,
                 toChainBalance: 0,
                 toChainTokenAddress: it.bridgedTokenAddress,
+                image: it.image,
               }
             : null;
         })

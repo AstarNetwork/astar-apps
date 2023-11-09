@@ -26,6 +26,12 @@
             :alt="token.symbol"
             class="native-token-logo"
           />
+          <img
+            v-else-if="token.image !== ''"
+            :src="token.image"
+            :alt="token.symbol"
+            class="native-token-logo"
+          />
           <jazzicon v-else :address="token.address" :diameter="24" class="item-logo" />
 
           <span class="text--item-name">{{ token.symbol }}</span>
