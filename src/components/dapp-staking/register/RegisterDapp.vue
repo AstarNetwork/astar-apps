@@ -70,13 +70,27 @@
           <tags :dapp="data" class="component" />
           <license :dapp="data" class="component" />
           <div class="button--container">
-            <astar-button class="button--submit" @click="handleSubmit">
+            <!-- <astar-button class="button--submit" @click="handleSubmit">
               {{ $t('dappStaking.modals.submit') }}
+            </astar-button> -->
+            <astar-button
+              class="button--submit"
+              @click="handleModalAddIntroduction({ isOpen: true })"
+            >
+              {{ $t('next') }}
             </astar-button>
           </div>
         </div>
       </q-form>
     </div>
+
+    <modal-add-introduction
+      :is-modal-add-introduction="isModalAddIntroduction"
+      :handle-modal-add-introduction="handleModalAddIntroduction"
+      :name="data.name"
+      :image="data.imagesContent[1]"
+      :handle-submit="handleSubmit"
+    />
   </div>
 </template>
 
@@ -113,6 +127,7 @@ import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import DesktopOnlyBanner from './components/DesktopOnlyBanner.vue';
+import ModalAddIntroduction from './components/ModalAddIntroduction.vue';
 
 export default defineComponent({
   components: {
@@ -129,6 +144,7 @@ export default defineComponent({
     BackToPage,
     WelcomeBanner,
     DesktopOnlyBanner,
+    ModalAddIntroduction,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -319,6 +335,11 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const isModalAddIntroduction = ref<boolean>(false);
+    const handleModalAddIntroduction = ({ isOpen }: { isOpen: boolean }): void => {
+      isModalAddIntroduction.value = isOpen;
+    };
+
     return {
       data,
       isModalAddDeveloper,
@@ -330,6 +351,8 @@ export default defineComponent({
       Path,
       isNewDapp,
       isMobileDevice,
+      isModalAddIntroduction,
+      handleModalAddIntroduction,
       updateDappLogo,
       isUrlValid,
       handleDappChanged,

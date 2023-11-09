@@ -387,6 +387,13 @@ export default {
         githubAccount: 'GitHub account',
         communityRequired: 'At least one community link is required.',
       },
+      introduction: {
+        title: 'One more thing!',
+        promotionCard:
+          'When you are listed, a promotion card will appear like this, please fill in the description within 65 characters.',
+        placeholder: 'Please add your introduction',
+        characters: '{characters} out of 65 characters',
+      },
       description: 'Description',
       markdown: 'Markdown',
       preview: 'Preview',
