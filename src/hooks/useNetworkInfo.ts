@@ -82,7 +82,7 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
-  const isSupportXvmTransfer = computed<boolean>(() => {
+  const isSupportAuTransfer = computed<boolean>(() => {
     return !isMainnet.value && !isZkEvm.value;
   });
 
@@ -102,7 +102,7 @@ export function useNetworkInfo() {
     evmNetworkIdx,
     currentNetworkName,
     nativeTokenSymbol,
-    isSupportXvmTransfer,
+    isSupportAuTransfer,
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,

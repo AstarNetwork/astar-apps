@@ -224,7 +224,7 @@ export class XcmRepository implements IXcmRepository {
     return await this.buildTxCall(
       from,
       endpoint,
-      'xtokens',
+      'xTokens',
       'transferMultiasset',
       assets,
       destination,

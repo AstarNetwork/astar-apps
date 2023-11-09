@@ -32,7 +32,7 @@ import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
-import { IIdentityRepository } from 'src/v2/repositories';
+import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 
 const provider = get(window, 'ethereum') as any;
@@ -127,7 +127,7 @@ export const useAccountUnification = () => {
       let isPendingWithdrawal = false;
       let stakingData: MyStakeInfo[] = [];
 
-      const mappedSS58Address = await accountUnificationService.getMappedNativeAddress(
+      const mappedSS58Address = await accountUnificationService.getConvertedNativeAddress(
         selectedEvmAddress.value
       );
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
@@ -369,8 +369,14 @@ export const useAccountUnification = () => {
   const getCost = async (): Promise<string> => {
     const TOTAL_FIELDS = 5; // account name, avatar address key, avatar address value, token id key, token id value
     const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
-    const depositInfo = await identityRepository.getDepositInfo();
-    const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS);
+    const auRepository = container.get<IAccountUnificationRepository>(
+      Symbols.AccountUnificationRepository
+    );
+    const [depositInfo, mappingFee] = await Promise.all([
+      identityRepository.getDepositInfo(),
+      auRepository.getUnificationFee(),
+    ]);
+    const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS) + mappingFee;
 
     return `${ethers.utils.formatEther(totalDeposit.toString())} ${nativeTokenSymbol.value}`;
   };

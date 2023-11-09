@@ -267,6 +267,19 @@
   }
 }
 
+.column--buttons--zkevm {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 400px;
+    grid-template-columns: auto auto 60px 60px 60px;
+    justify-content: end;
+    column-gap: 8px;
+  }
+  @media (min-width: $xxl) {
+    column-gap: 24px;
+  }
+}
+
 .adjuster--width {
   @media (min-width: $xl) {
     width: 70px !important;
@@ -400,14 +413,6 @@
     stroke: white;
     background-color: $astar-blue;
   }
-}
-
-.btn--delete {
-  margin-top: 4px;
-}
-
-.icon--delete {
-  margin-top: 1px;
 }
 
 .row--menu {
