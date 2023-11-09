@@ -129,7 +129,7 @@
         <astar-button
           v-if="isApproved"
           class="button--confirm btn-size-adjust"
-          :disabled="isDisabledBridge"
+          :disabled="isDisabledBridge || isHandling"
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -144,7 +144,7 @@
         <astar-button
           v-else
           class="button--confirm btn-size-adjust"
-          :disabled="isDisabledBridge"
+          :disabled="isDisabledBridge || isHandling"
           @click="approve"
         >
           {{ $t('approve') }}
@@ -160,7 +160,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
-import { PropType, defineComponent, watch } from 'vue';
+import { PropType, defineComponent, watch, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -249,9 +249,12 @@ export default defineComponent({
   setup(props) {
     const { currentAccount } = useAccount();
     const store = useStore();
+    const isHandling = ref<boolean>(false);
 
     const bridge = async (): Promise<void> => {
+      isHandling.value = true;
       const transactionHash = await props.handleBridge();
+      isHandling.value = false;
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
         store.commit('general/setLoading', true, { root: true });
@@ -264,7 +267,9 @@ export default defineComponent({
     };
 
     const approve = async (): Promise<void> => {
+      isHandling.value = true;
       const transactionHash = await props.handleApprove();
+      isHandling.value = false;
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
         store.commit('general/setLoading', true, { root: true });
@@ -290,6 +295,7 @@ export default defineComponent({
       zkBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
+      isHandling,
       bridge,
       approve,
     };
