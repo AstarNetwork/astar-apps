@@ -26,12 +26,13 @@
   flex-direction: column;
   flex-basis: 24%;
   min-width: 200px;
-  background: $gray-1;
+  background: white;
   border-radius: 6px;
   min-width: 150px;
   padding: 24px 16px;
   flex-basis: 100%;
   width: 100%;
+  cursor: default;
   @media (min-width: $lg) {
     padding: 32px 24px;
     min-width: auto;
@@ -107,17 +108,13 @@
 
 .body--dark {
   .card {
-    background: $body-bg-dark;
-    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
-
+    background: rgba(8, 16, 41, 0.5);
     p {
       color: $gray-3;
     }
-
     .row--title {
       color: $gray-3;
     }
-
     .value {
       color: $gray-1;
     }
@@ -143,5 +140,30 @@
 .body--dark {
   .claim-warning {
     color: $gray-1;
+  }
+}
+
+.info--dapps-owners {
+  border: solid 1px $astar-pink;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  font-weight: 500;
+  background-color: rgba($astar-pink, 20%);
+  span {
+    background-color: $astar-pink;
+    color: white;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 20px;
+    margin-right: 2px;
+    display: inline-block;
+  }
+  a {
+    color: $astar-pink;
+    &:hover {
+      color: lighten($astar-pink, 20%);
+    }
   }
 }

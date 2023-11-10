@@ -9,30 +9,19 @@
 }
 
 .box--data {
-  background: linear-gradient(
-    93.75deg,
-    #e6007a -8.23%,
-    #703ac2 16.47%,
-    #0070eb 51.42%,
-    #0297fb 95.48%,
-    #0ae2ff 114.61%
-  );
+  background-color: #ffffff80;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 32px 16px;
   gap: 16px;
+  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
 }
-
-.box--data-shiden {
-  background: linear-gradient(
-    129.32deg,
-    #170d29 -4.43%,
-    #481e94 31.93%,
-    #6d2cae 74.44%,
-    #0a010d 133.31%
-  ) !important;
+.body--dark {
+  .box--data {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .row--title {
@@ -42,13 +31,20 @@
 .text--name {
   font-size: 16px;
   font-weight: 600;
-  color: $gray-1;
+  color: $navy-1;
 }
 
 .text--value {
   font-size: 14px;
   font-weight: 600;
-  color: $gray-1;
+  color: $navy-1;
+}
+
+.body--dark {
+  .text--name,
+  .text--value {
+    color: $gray-1;
+  }
 }
 
 .text--title {
@@ -92,11 +88,17 @@
   gap: 8px;
   width: 200px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff50;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: $gray-1;
+  color: $navy-1;
+}
+.body--dark {
+  .dropbox--sort {
+    background: rgba(255, 255, 255, 0.1);
+    color: $gray-1;
+  }
 }
 
 .dropbox--filter {
@@ -108,16 +110,22 @@
   padding: 8px 16px;
   gap: 8px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff50;
   border-radius: 6px;
   width: 100%;
   margin-bottom: 16px;
   font-size: 14px;
   font-weight: 600;
-  color: $gray-1;
+  color: $navy-1;
   @media (min-width: $md) {
     margin-bottom: 0px;
     width: 200px;
+  }
+}
+.body--dark {
+  .dropbox--filter {
+    background: rgba(255, 255, 255, 0.1);
+    color: $gray-1;
   }
 }
 
@@ -229,10 +237,15 @@
   cursor: pointer;
   transition: all 0.2s ease-in;
   border-radius: 50%;
-  color: $gray-1;
+  color: $navy-1;
   &:hover {
     transition: all 0.2s ease-in;
     background: rgba(255, 255, 255, 0.2);
+  }
+}
+.body--dark {
+  .icon--arrow {
+    color: $gray-1;
   }
 }
 
@@ -241,7 +254,7 @@
 }
 
 .divider {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid white;
   margin-top: 8px;
   margin-bottom: 8px;
 }
@@ -249,5 +262,8 @@
 .body--dark {
   .text--title {
     color: $gray-1;
+  }
+  .divider {
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }

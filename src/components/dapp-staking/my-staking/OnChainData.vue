@@ -363,3 +363,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './styles/on-chain-data.scss';
 </style>
+
+<style lang="scss">
+.body--dark .column--sort .q-icon {
+  color: $gray-1;
+}
+</style>

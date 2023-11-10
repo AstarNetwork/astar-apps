@@ -7,7 +7,7 @@
       append
       max-file-size="1000000"
       accept="image/jpeg, .png"
-      :label="$t('dappStaking.modals.images', { size: '1 MB' })"
+      :label="$t('dappStaking.modals.images', { ratio: '16:9', size: '1 MB' })"
       class="component"
       lazy-rules="ondemand"
       :rules="[(v: File[]) => (v && v.length >= 5) || $t('dappStaking.modals.imagesRequired')]"
