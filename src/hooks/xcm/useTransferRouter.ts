@@ -63,7 +63,7 @@ export function useTransferRouter() {
     return capitalize(chain) as Chain;
   });
 
-  const disabledXcmParachains = computed<Chain[]>(() => {
+  const disabledXcmParachains = computed<Chain[] | string[]>(() => {
     const restrictedNetworksArray = restrictedXcmNetwork[currentNetworkChain.value] || [];
     if (restrictedNetworksArray.length === 0) return [];
     return restrictedNetworksArray

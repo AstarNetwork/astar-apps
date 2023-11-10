@@ -173,11 +173,13 @@ export const getTokenBal = async ({
   tokenAddress,
   srcChainId,
   tokenSymbol,
+  isNativeToken,
 }: {
   address: string;
   tokenAddress: string;
   srcChainId: number;
   tokenSymbol?: string;
+  isNativeToken?: boolean;
 }): Promise<string> => {
   try {
     const web3 = buildWeb3Instance(srcChainId);
@@ -185,7 +187,7 @@ export const getTokenBal = async ({
       throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
     }
 
-    const isCheckNativeBal = tokenAddress === astarNativeTokenErcAddr;
+    const isCheckNativeBal = isNativeToken || tokenAddress === astarNativeTokenErcAddr;
     if (isCheckNativeBal && nativeCurrency[srcChainId].symbol === tokenSymbol) {
       return await getNativeBalance({ address, srcChainId, web3 });
     } else {
