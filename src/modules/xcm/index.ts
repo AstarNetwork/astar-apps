@@ -364,16 +364,11 @@ export const polkadotParachains = xcmChains.filter(
 
 // Todo: ideally use a content management to manage it
 export const restrictedXcmNetwork = {
-  [astarChain.ASTAR]: [
-    {
-      chain: Chain.MOONBEAM,
-      isRestrictedFromNative: false,
-      isRestrictedFromEvm: true,
-    },
-  ],
+  [astarChain.ASTAR]: [],
   [astarChain.SHIDEN]: [
     {
-      chain: Chain.MOONRIVER,
+      chain: '',
+      // chain: Chain.MOONRIVER,
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },

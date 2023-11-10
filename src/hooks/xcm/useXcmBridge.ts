@@ -113,6 +113,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   );
 
   const isWithdrawalEthChain = computed<boolean>(() =>
+    // Memo: Moonbeam and Moonriver
     ethWalletChains.includes(destChain.value.name)
   );
 
@@ -378,6 +379,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           address: inputtedAddress.value,
           tokenAddress,
           tokenSymbol: selectedToken.value.metadata.symbol,
+          // Withdraw GLMR or MOVR
+          isNativeToken: true,
         });
         return Number(balance);
       } else {
