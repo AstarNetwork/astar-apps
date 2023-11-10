@@ -51,6 +51,8 @@ export const getRegisteredERC20Token = ({
       ...it,
       image: tokenImageMap.hasOwnProperty(it.symbol)
         ? tokenImageMap[it.symbol as keyof typeof tokenImageMap]
+        : it.image
+        ? it.image
         : 'custom-token',
     };
   });
@@ -64,6 +66,15 @@ export const getStoredERC20Tokens = (): Erc20Token[] => {
 
 export const storeImportedERC20Token = (token: Erc20Token) => {
   const tokens = getStoredERC20Tokens();
+  if (
+    tokens.some(
+      (it) =>
+        it.address.toLowerCase() === token.address.toLowerCase() &&
+        it.srcChainId === token.srcChainId
+    )
+  ) {
+    return;
+  }
   tokens.push(token);
   localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };

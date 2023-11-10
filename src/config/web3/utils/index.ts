@@ -1,13 +1,22 @@
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
+import axios from 'axios';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  CHAIN_INFORMATION,
+  EVM,
+  TNetworkId,
+  blockExplorerUrls,
+  nativeCurrency,
+} from 'src/config/web3';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { Erc20Token } from 'src/modules/token';
+import { Erc20Token, tokenImageMap } from 'src/modules/token';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { ZkChainId, getBridgedTokenAddress } from 'src/modules/zk-evm-bridge';
 import Web3 from 'web3';
+import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
-import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
-import { getRandomFromArray } from '@astar-network/astar-sdk-core';
-import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -18,6 +27,20 @@ export const getChainData = (chainId: number) => {
     rpcUrls: rpcUrls[chainId],
     blockExplorerUrls: blockExplorerUrls[chainId],
   };
+};
+
+export const buildErc20Contract = ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: EVM;
+}): Contract => {
+  const web3 = buildWeb3Instance(srcChainId);
+  if (!web3) {
+    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
+  }
+  return new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 };
 
 export const setupNetwork = async ({
@@ -110,7 +133,7 @@ export const createAstarWeb3Instance = async (currentNetworkIdx: TNetworkId) => 
   }
 };
 
-export const buildWeb3Instance = (chainId: EVM) => {
+export const buildWeb3Instance = (chainId: EVM | ZkChainId) => {
   const network = getChainData(chainId);
   if (!network.rpcUrls[0]) return;
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
@@ -123,11 +146,7 @@ export const getTokenDetails = async ({
   tokenAddress: string;
   srcChainId: number;
 }): Promise<{ decimals: string; symbol: string }> => {
-  const web3 = buildWeb3Instance(srcChainId);
-  if (!web3) {
-    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
-  }
-  const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+  const contract = buildErc20Contract({ tokenAddress, srcChainId });
   const [decimals, symbol] = await Promise.all([
     contract.methods.decimals().call(),
     contract.methods.symbol().call(),
@@ -138,14 +157,17 @@ export const getTokenDetails = async ({
 export const getNativeBalance = async ({
   address,
   srcChainId,
+  web3,
 }: {
   address: string;
   srcChainId: number;
+  web3?: Web3;
 }): Promise<string> => {
-  const web3 = buildWeb3Instance(srcChainId);
-  const bal = await web3!.eth.getBalance(address);
-  return web3!.utils.fromWei(bal, 'ether');
+  const web3Provider = web3 ? web3 : buildWeb3Instance(srcChainId);
+  const bal = await web3Provider!.eth.getBalance(address);
+  return web3Provider!.utils.fromWei(bal, 'ether');
 };
+
 export const getTokenBal = async ({
   address,
   tokenAddress,
@@ -162,18 +184,22 @@ export const getTokenBal = async ({
     if (!web3) {
       throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
     }
-    const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 
-    const isCheckNativeBal = tokenSymbol && srcChainId;
-    if (isCheckNativeBal && nativeCurrency[srcChainId].name === tokenSymbol) {
-      const balance = await web3.eth.getBalance(address);
-      return web3.utils.fromWei(balance, 'ether');
+    const isCheckNativeBal = tokenAddress === astarNativeTokenErcAddr;
+    if (isCheckNativeBal && nativeCurrency[srcChainId].symbol === tokenSymbol) {
+      return await getNativeBalance({ address, srcChainId, web3 });
+    } else {
+      const code = await web3.eth.getCode(tokenAddress);
+      const isTokenExist = code !== '0x';
+      if (!isTokenExist) {
+        return '0';
+      }
+      const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const decimals = await contract.methods.decimals().call();
+      const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
+      const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
+      return formattedBalance;
     }
-
-    const decimals = await contract.methods.decimals().call();
-    const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
-    const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
-    return formattedBalance;
   } catch (error: any) {
     console.error(error.message);
     return '0';
@@ -205,6 +231,22 @@ export const isXc20Token = (address: string): boolean => {
   return addr.slice(0, 10) === '0xffffffff';
 };
 
+export const getTokenImage = async ({ symbol, address }: { symbol: string; address: string }) => {
+  const isRegisteredToken = tokenImageMap.hasOwnProperty(symbol);
+  if (isRegisteredToken) {
+    return tokenImageMap[symbol as keyof typeof tokenImageMap];
+  }
+
+  // Memo: get the token image by Ethereum contract address
+  const trustWalletLogoUrl = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+  try {
+    await axios.get(trustWalletLogoUrl);
+    return trustWalletLogoUrl;
+  } catch (error) {
+    return '';
+  }
+};
+
 export const fetchErc20TokenInfo = async ({
   web3,
   address,
@@ -222,16 +264,35 @@ export const fetchErc20TokenInfo = async ({
       contract.methods.symbol().call(),
     ]);
 
-    const data = {
+    const isZkEvm = srcChainId === ZkChainId.AstarZk || srcChainId === ZkChainId.Zkatana;
+
+    let bridgedTokenAddress = '';
+    let toChainId;
+    let image = '';
+    if (isZkEvm) {
+      toChainId = srcChainId === ZkChainId.AstarZk ? ZkChainId.Ethereum : ZkChainId.Sepolia;
+      bridgedTokenAddress = await getBridgedTokenAddress({
+        srcChainId,
+        tokenAddress: address,
+        name,
+        symbol,
+        decimal,
+      });
+      image = await getTokenImage({ symbol, address: bridgedTokenAddress });
+    }
+
+    const data: Erc20Token = {
       srcChainId,
       address,
       decimal,
       symbol,
       name,
-      image: '',
+      image,
       isWrappedToken: false,
       isXC20: isXc20Token(address),
       wrapUrl: null,
+      bridgedChainId: toChainId,
+      bridgedTokenAddress,
     };
 
     return data;
@@ -273,4 +334,20 @@ export const getTransactionTimestamp = async ({
 
   const block = await web3.eth.getBlock(transaction.blockNumber);
   return Number(block.timestamp);
+};
+
+export const checkAllowance = async ({
+  senderAddress,
+  contractAddress,
+  tokenAddress,
+  srcChainId,
+}: {
+  senderAddress: string;
+  contractAddress: string;
+  tokenAddress: string;
+  srcChainId: EVM;
+}): Promise<string> => {
+  const contract = buildErc20Contract({ tokenAddress, srcChainId });
+  const allowance = await contract.methods.allowance(senderAddress, contractAddress).call();
+  return allowance;
 };

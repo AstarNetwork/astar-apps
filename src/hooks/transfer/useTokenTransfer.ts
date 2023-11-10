@@ -75,7 +75,12 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const isNativeTokenSs58ToEvm =
       isSs58 && isTransferNativeToken.value && isValidEvmAddress(toAddress.value);
 
-    return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
+    return (
+      !isTransferNativeToken.value ||
+      isNativeTokenEvmToSs58 ||
+      isNativeTokenSs58ToEvm ||
+      isZkEvm.value
+    );
   });
 
   const fromAddressBalance = computed<number>(() =>
@@ -97,7 +102,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const isValidDestAddress = computed<boolean>(() => {
     const isOnlyAcceptEvmAddress =
       isH160.value && !isTransferNativeToken.value && !isSupportAuTransfer.value;
-    return isOnlyAcceptEvmAddress
+    return isOnlyAcceptEvmAddress || isZkEvm.value
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
           isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||

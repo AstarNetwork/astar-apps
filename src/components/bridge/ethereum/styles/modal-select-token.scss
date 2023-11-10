@@ -1,0 +1,169 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--select-item {
+  border: 1px solid $gray-4;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 16px;
+  color: $gray-4;
+  height: 470px;
+  width: 348px;
+  overflow: auto;
+  @media (min-width: $md) {
+    width: 320px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
+.container--select-item-mobile {
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: $gray-4;
+  background-color: transparent;
+  padding: 24px;
+  max-height: 420px;
+  overflow: auto;
+  padding-top: 0;
+}
+
+.row--title {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.container--items {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.row--item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    border: 1px solid $astar-blue;
+  }
+  @media (min-width: $md) {
+    background-color: transparent;
+    padding-top: 0;
+    padding-bottom: 0;
+    &:hover {
+      border: 1px solid transparent;
+      background-color: white;
+    }
+  }
+}
+
+.row--item-selected {
+  border: 1px solid $astar-blue;
+  @media (min-width: $md) {
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
+}
+
+.column--item-name {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  padding: 16px;
+}
+
+.item-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.native-token-logo {
+  width: 24px;
+  border-radius: 50%;
+}
+
+.text--item-name {
+  color: $navy-1;
+  font-weight: 700;
+  font-size: 16px;
+  @media (min-width: $md) {
+    font-weight: 600;
+    font-size: 16px;
+  }
+}
+
+.text--token-amount {
+  font-size: 12px;
+  font-weight: 400;
+  color: $navy-1;
+}
+
+.box__column--input-token {
+  justify-self: flex-end;
+  width: 100%;
+  display: grid;
+  margin-bottom: 12px;
+}
+
+.box--input-field {
+  padding: 9px 15px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid $navy-1;
+}
+
+.input--token {
+  text-align: left;
+  width: 100%;
+  outline: none;
+  background: transparent;
+  font-weight: 600;
+  color: $navy-1;
+  justify-self: flex-end;
+  font-size: 16px;
+}
+
+.body--dark {
+  .container--select-item {
+    color: $gray-1;
+    border: 1px solid $gray-4;
+  }
+  .row--item {
+    background-color: transparent;
+    @media (min-width: $md) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+    }
+  }
+  .row--item-selected {
+    @media (min-width: $md) {
+      background-color: $gray-5;
+    }
+  }
+  .text--item-name {
+    color: $gray-1;
+  }
+  .text--token-amount {
+    color: $gray-1;
+  }
+
+  input {
+    color: white;
+  }
+  .box--input-field {
+    background: transparent;
+    border: 1px solid $gray-3;
+  }
+}

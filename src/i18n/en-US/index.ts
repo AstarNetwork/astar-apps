@@ -10,6 +10,7 @@ export default {
   to: 'To',
   add: 'Add',
   and: 'and',
+  approve: 'Approve',
   estimated: 'Estimated',
   forget: 'Forget',
   remove: 'Remove',
@@ -462,6 +463,7 @@ export default {
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
     noResults: 'No results found :(',
+    letsImportToken: 'There are no tokens listed. Let’s import them!',
     wrongNetwork: 'Wallet connected to the wrong network',
     connectNetwork: 'Connect to {network} RPC',
     invalidAddress: 'The address is not valid',
@@ -665,11 +667,12 @@ export default {
     noHistory: 'No histories found',
     completed: 'Completed',
     inProgress: 'In Progress',
+    approvalMaxAmount: 'Approve Max Amount (option)',
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
       text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH.',
+        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
       lean: '(learn more)',
     },
     astarBridge: {
@@ -681,8 +684,19 @@ export default {
       title: 'Celer Bridge',
       text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
     },
-    warning32blocks: 'It could take around 10min or more to finalise (32blocks)',
+    warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
-      'Bridging to L1 (back to Ethereum) has two steps and it requires users to claim from L1 side. (Available in Recent History)',
+      'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+    tokenInfo: {
+      invalidTokenAddress: 'Invalid token address',
+      tokenAddress: '{network} token address',
+      tokenName: 'Token Name',
+      tokenSymbol: 'Token Symbol',
+      fromChainBal: 'From Chain Balance',
+      destChainBal: 'Destination Chain Balance',
+      tokenHasBeenAdded: 'The token has been added already',
+      tokenNotSupported: "This token isn't supported on zkEVM",
+      interactCarefully: 'Interact carefully with new or suspicious tokens',
+    },
   },
 };

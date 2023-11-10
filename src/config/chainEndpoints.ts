@@ -140,7 +140,7 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
   {
-    networkAlias: 'zkatana-zkevm',
+    networkAlias: 'zkatana-testnet',
     displayName: 'zKatana Network',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
@@ -154,6 +154,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://zkatana.explorer.startale.com',
     evmChainId: '1261120',
+    // evmEndpoints: ['https://rpc.zkatana.gelato.digital'],
     evmEndpoints: ['https://rpc.startale.com/zkatana'],
     faucetEndpoint: '',
     defaultLogo:

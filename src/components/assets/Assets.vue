@@ -47,7 +47,7 @@ import Account from 'src/components/assets/Account.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
