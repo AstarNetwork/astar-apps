@@ -400,7 +400,7 @@ export default {
       addAccount: 'Add an account',
       addLogo: 'Add a logo image',
       addImage: 'Add an image',
-      images: 'Images (maximum upload file size: {size})',
+      images: 'Images (Recommended size {ratio} within {size})',
       imagesRequired: 'At least 4 images are required.',
       descriptionRequired: 'Tell the world something about your dApp.',
       contractTypeTitle: 'Is your project on',
