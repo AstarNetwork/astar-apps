@@ -72,3 +72,9 @@ export interface SingularStakingInfo {
   readonly staked: StakeAmount;
   readonly loyalStaker: boolean;
 }
+
+export interface PeriodEndInfo {
+  readonly bonusRewardPool: BigInt;
+  readonly totalVpStake: BigInt;
+  readonly finalEra: number;
+}

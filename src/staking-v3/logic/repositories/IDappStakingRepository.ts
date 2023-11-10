@@ -1,5 +1,5 @@
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
-import { Dapp, DappBase, DappInfo, ProtocolState, SingularStakingInfo } from '../models';
+import { AccountLedger, Dapp, DappBase, DappInfo, PeriodEndInfo, ProtocolState } from '../models';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -37,10 +37,17 @@ export interface IDappStakingRepository {
   getChainDapps(): Promise<DappInfo[]>;
 
   /**
-   * Gets an account ledger for the given address.
+   * Starts a subscription to an account ledger with the given address.
    * @param address Address to get account ledger for.
    */
   startAccountLedgerSubscription(address: string): Promise<void>;
+
+  /**
+   * Gets an account ledger for the given address.
+   * @param address Address to get account ledger for.
+   * @returns A promise that resolves to an account ledger.
+   */
+  getAccountLedger(address: string): Promise<AccountLedger>;
 
   /**
    * Gets tokens lock call. Tokens needs to be locks in order to be staked
@@ -93,4 +100,11 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to a map of staker address and staker info.
    */
   startGetStakerInfoSubscription(address: string): Promise<void>;
+
+  /**
+   * Gets period end information (last era, bonus rewards, total stake)
+   * @param period Period number to get info for.
+   * @returns A promise that resolves to the period info.
+   */
+  getPeriodEndInfo(period: number): Promise<PeriodEndInfo | undefined>;
 }

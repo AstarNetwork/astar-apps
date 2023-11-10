@@ -74,6 +74,40 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(call, senderAddress, successMessage);
   }
 
+  // @inheritdoc
+  public async getStakerRewards(senderAddress: string): Promise<number> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+
+    const protocolState = await this.dappStakingRepository.getProtocolState();
+    const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
+
+    // *** 1. Determine last claimable era.
+    // TODO - how to know if rewards expired
+    const currentPeriod = protocolState.periodInfo.number;
+    const firstStakedEra = Math.min(ledger.staked.era, ledger.stakedFuture?.era ?? Infinity);
+    const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
+    let lastStakedEra = 0;
+
+    if (lastStakedPeriod < currentPeriod) {
+      // Find last era from past period.
+      const periodInfo = await this.dappStakingRepository.getPeriodEndInfo(lastStakedPeriod);
+      lastStakedEra = periodInfo?.finalEra ?? 0; // periodInfo shouldn't be undefined for this case.
+    } else if (lastStakedPeriod === currentPeriod) {
+      // Find last era from current period.
+      lastStakedEra = protocolState.era - 1;
+    } else {
+      // Most likely rewards expired.
+      return 0;
+    }
+
+    // *** 2. Create list of all claimable eras with stake amounts
+    for (let i = firstStakedEra; i <= lastStakedEra; i++) {
+      // TODO - get staker rewards for era
+    }
+
+    return 0;
+  }
+
   private async signCall(
     call: ExtrinsicPayload,
     senderAddress: string,

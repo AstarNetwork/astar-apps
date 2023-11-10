@@ -67,6 +67,7 @@ import { ETHEREUM_EXTENSION } from 'src/hooks';
 import {
   AccountLedgerChangedMessage,
   IDappStakingRepository,
+  IDappStakingService,
   ProtocolStateChangedMessage,
   StakerInfoChangedMessage,
 } from './staking-v3';
@@ -141,9 +142,15 @@ export default defineComponent({
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
     });
 
-    eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
+    eventAggregator.subscribe(AccountLedgerChangedMessage.name, async (m) => {
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
+      console.log('ledger', message.ledger);
+
+      // TODO, temp call, remove later
+      await container
+        .get<IDappStakingService>(Symbols.DappStakingServiceV3)
+        .getStakerRewards(currentAccount.value);
     });
 
     eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {

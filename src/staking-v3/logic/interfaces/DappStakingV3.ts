@@ -73,3 +73,9 @@ export interface PalletDappStakingV3SingularStakingInfo extends Struct {
   readonly staked: PalletDappStakingV3StakeAmount;
   readonly loyalStaker: bool;
 }
+
+export interface PalletDappStakingV3PeriodEndInfo extends Struct {
+  readonly bonusRewardPool: Compact<u128>;
+  readonly totalVpStake: Compact<u128>;
+  readonly finalEra: Compact<u32>;
+}

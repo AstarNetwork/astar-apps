@@ -1,10 +1,12 @@
 import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
+  AccountLedger,
   AccountLedgerChangedMessage,
   Dapp,
   DappBase,
   DappInfo,
   DappState,
+  PeriodEndInfo,
   PeriodType,
   ProtocolState,
   ProtocolStateChangedMessage,
@@ -19,6 +21,7 @@ import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
+  PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
   PalletDappStakingV3SingularStakingInfo,
   PalletDappStakingV3StakeAmount,
@@ -123,25 +126,20 @@ export class DappStakingRepository implements IDappStakingRepository {
     const unsubscribe = await api.query.dappStaking.ledger(
       address,
       (ledger: PalletDappStakingV3AccountLedger) => {
-        const mappedLedger = {
-          locked: ledger.locked.toBigInt(),
-          unlocking: ledger.unlocking.map((chunk) => ({
-            amount: chunk.amount.toBigInt(),
-            unlockBlock: chunk.unlockBlock.toBigInt(),
-          })),
-          staked: this.mapStakeAmount(ledger.staked),
-          stakedFuture: ledger.stakedFuture.isSome
-            ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
-            : undefined,
-          contractStakeCount: ledger.contractStakeCount.toNumber(),
-        };
-
+        const mappedLedger = this.mapLedger(ledger);
         this.eventAggregator.publish(new AccountLedgerChangedMessage(mappedLedger));
       }
     );
 
     // Ledger subscription returns Codec instead of Function and that's why we have casting dirty magic below.
     this.ledgerUnsubscribe = unsubscribe as unknown as Function;
+  }
+
+  public async getAccountLedger(address: string): Promise<AccountLedger> {
+    const api = await this.api.getApi();
+    const ledger = await api.query.dappStaking.ledger<PalletDappStakingV3AccountLedger>(address);
+
+    return this.mapLedger(ledger);
   }
 
   //* @inheritdoc
@@ -216,6 +214,24 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.claimStakerRewards();
   }
 
+  public async getPeriodEndInfo(period: number): Promise<PeriodEndInfo | undefined> {
+    const api = await this.api.getApi();
+    const infoWrapped = await api.query.dappStaking.periodEndInfo<
+      Option<PalletDappStakingV3PeriodEndInfo>
+    >(period);
+
+    if (infoWrapped.isNone) {
+      return undefined;
+    }
+
+    const info = infoWrapped.unwrap();
+    return {
+      bonusRewardPool: info.bonusRewardPool.toBigInt(),
+      totalVpStake: info.totalVpStake.toBigInt(),
+      finalEra: info.finalEra.toNumber(),
+    };
+  }
+
   private stakerInfoUnsubscribe: Function | undefined = undefined;
   //* @inheritdoc
   public async startGetStakerInfoSubscription(address: string): Promise<void> {
@@ -272,6 +288,21 @@ export class DappStakingRepository implements IDappStakingRepository {
       buildAndEarn: dapp.buildAndEarn.toBigInt(),
       era: dapp.era.toNumber(),
       period: dapp.period.toNumber(),
+    };
+  }
+
+  private mapLedger(ledger: PalletDappStakingV3AccountLedger): AccountLedger {
+    return <AccountLedger>{
+      locked: ledger.locked.toBigInt(),
+      unlocking: ledger.unlocking.map((chunk) => ({
+        amount: chunk.amount.toBigInt(),
+        unlockBlock: chunk.unlockBlock.toBigInt(),
+      })),
+      staked: this.mapStakeAmount(ledger.staked),
+      stakedFuture: ledger.stakedFuture.isSome
+        ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
+        : undefined,
+      contractStakeCount: ledger.contractStakeCount.toNumber(),
     };
   }
 

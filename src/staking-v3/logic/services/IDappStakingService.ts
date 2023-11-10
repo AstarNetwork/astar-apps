@@ -43,4 +43,11 @@ export interface IDappStakingService {
    * @param successMessage Message to be displayed on the call success.
    */
   claimStakerRewards(senderAddress: string, successMessage: string): Promise<void>;
+
+  /**
+   * Calculates staker rewards.
+   * @param senderAddress Staker address.
+   * @returns Staker rewards amount.
+   */
+  getStakerRewards(senderAddress: string): Promise<number>;
 }
