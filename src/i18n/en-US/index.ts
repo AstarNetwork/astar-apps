@@ -659,6 +659,7 @@ export default {
     title: 'dApp Staking v3',
     amountGreater0: 'Staking amount must be greater than 0.',
     periodEndsNextEra: 'Period ends in the next era.',
+    stakerRewardsExpired: 'Staker rewards expired.',
   },
   bridge: {
     bridge: 'Bridge',

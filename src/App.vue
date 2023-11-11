@@ -137,20 +137,21 @@ export default defineComponent({
 
     // **** dApp staking v3
 
-    eventAggregator.subscribe(ProtocolStateChangedMessage.name, (m) => {
+    eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
       const message = m as ProtocolStateChangedMessage;
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
+
+      // TODO, temp call, remove later
+      const stakerReward = await container
+        .get<IDappStakingService>(Symbols.DappStakingServiceV3)
+        .getStakerRewards(currentAccount.value);
+      console.log('stakerReward', stakerReward);
     });
 
-    eventAggregator.subscribe(AccountLedgerChangedMessage.name, async (m) => {
+    eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
       console.log('ledger', message.ledger);
-
-      // TODO, temp call, remove later
-      await container
-        .get<IDappStakingService>(Symbols.DappStakingServiceV3)
-        .getStakerRewards(currentAccount.value);
     });
 
     eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {

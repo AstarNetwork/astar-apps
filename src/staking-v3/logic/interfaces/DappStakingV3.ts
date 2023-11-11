@@ -79,3 +79,15 @@ export interface PalletDappStakingV3PeriodEndInfo extends Struct {
   readonly totalVpStake: Compact<u128>;
   readonly finalEra: Compact<u32>;
 }
+
+export interface PalletDappStakingV3EraRewardSpan extends Struct {
+  readonly span: Vec<PalletDappStakingV3EraReward>;
+  readonly firstEra: Compact<u32>;
+  readonly lastEra: Compact<u32>;
+}
+
+interface PalletDappStakingV3EraReward extends Struct {
+  readonly stakerRewardPool: Compact<u128>;
+  readonly staked: Compact<u128>;
+  readonly dappRewardPool: Compact<u128>;
+}

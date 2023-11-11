@@ -49,5 +49,5 @@ export interface IDappStakingService {
    * @param senderAddress Staker address.
    * @returns Staker rewards amount.
    */
-  getStakerRewards(senderAddress: string): Promise<number>;
+  getStakerRewards(senderAddress: string): Promise<bigint>;
 }

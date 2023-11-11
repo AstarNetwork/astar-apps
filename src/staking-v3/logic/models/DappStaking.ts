@@ -46,13 +46,13 @@ export interface CombinedDappInfo {
 }
 
 interface UnlockingChunk {
-  readonly amount: BigInt;
-  readonly unlockBlock: BigInt;
+  readonly amount: bigint;
+  readonly unlockBlock: bigint;
 }
 
 export interface StakeAmount {
-  readonly voting: BigInt;
-  readonly buildAndEarn: BigInt;
+  readonly voting: bigint;
+  readonly buildAndEarn: bigint;
   readonly era: number;
   readonly period: number;
 }
@@ -61,7 +61,7 @@ export interface StakeAmount {
  * Staker account ledger.
  */
 export interface AccountLedger {
-  readonly locked: BigInt;
+  readonly locked: bigint;
   readonly unlocking: UnlockingChunk[];
   readonly staked: StakeAmount;
   readonly stakedFuture?: StakeAmount;
@@ -74,7 +74,24 @@ export interface SingularStakingInfo {
 }
 
 export interface PeriodEndInfo {
-  readonly bonusRewardPool: BigInt;
-  readonly totalVpStake: BigInt;
+  readonly bonusRewardPool: bigint;
+  readonly totalVpStake: bigint;
   readonly finalEra: number;
+}
+
+export interface EraRewardSpan {
+  readonly span: EraReward[];
+  readonly firstEra: number;
+  readonly lastEra: number;
+}
+
+export interface EraReward {
+  readonly stakerRewardPool: bigint;
+  readonly staked: bigint;
+  readonly dappRewardPool: bigint;
+}
+
+export interface Constants {
+  eraRewardSpanLength: number;
+  rewardRetentionInPeriods: number;
 }

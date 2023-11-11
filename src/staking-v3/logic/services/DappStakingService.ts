@@ -70,25 +70,85 @@ export class DappStakingService implements IDappStakingService {
   public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const call = await this.dappStakingRepository.getClaimStakerRewardsCall();
+    const { firstSpanIndex, lastSpanIndex, rewardsExpired } = await this.getEraRange(senderAddress);
+
+    if (rewardsExpired) {
+      throw 'Staker rewards expired.';
+    }
+
+    const numberOfClaimCalls = lastSpanIndex - firstSpanIndex + 1;
+    const call = await this.dappStakingRepository.getClaimStakerRewardsCall(numberOfClaimCalls);
     await this.signCall(call, senderAddress, successMessage);
   }
 
   // @inheritdoc
-  public async getStakerRewards(senderAddress: string): Promise<number> {
+  public async getStakerRewards(senderAddress: string): Promise<bigint> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const protocolState = await this.dappStakingRepository.getProtocolState();
     const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
+    let result = BigInt(0);
 
     // *** 1. Determine last claimable era.
-    // TODO - how to know if rewards expired
+    const { firstStakedEra, lastStakedEra, firstSpanIndex, lastSpanIndex, rewardsExpired } =
+      await this.getEraRange(senderAddress);
+
+    if (rewardsExpired) {
+      return result;
+    }
+
+    // *** 2. Create list of all claimable eras with stake amounts.
+    const claimableEras: Map<number, bigint> = new Map();
+    for (let era = firstStakedEra; era <= lastStakedEra; era++) {
+      let stakedSum = BigInt(0);
+
+      if (ledger.staked.era <= era) {
+        stakedSum += ledger.staked.voting + ledger.staked.buildAndEarn;
+      }
+      if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
+        stakedSum += ledger.stakedFuture.voting + ledger.stakedFuture.buildAndEarn;
+      }
+
+      claimableEras.set(era, stakedSum);
+    }
+
+    // *** 3. Calculate rewards.
+    for (let spanIndex = firstSpanIndex; spanIndex <= lastSpanIndex; spanIndex++) {
+      const span = await this.dappStakingRepository.getEraRewards(spanIndex);
+      if (!span) {
+        continue;
+      }
+
+      for (let era = span.firstEra; era <= span.lastEra; era++) {
+        const staked = claimableEras.get(era);
+        if (staked) {
+          const spanIndex = era - span.firstEra;
+          result += (staked / span.span[spanIndex].staked) * span.span[spanIndex].stakerRewardPool;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private async getEraRange(senderAddress: string) {
+    const protocolState = await this.dappStakingRepository.getProtocolState();
+    const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
+    const constants = await this.dappStakingRepository.getConstants();
+    let rewardsExpired = false;
+
+    // *** 1. Determine last claimable era.
     const currentPeriod = protocolState.periodInfo.number;
-    const firstStakedEra = Math.min(ledger.staked.era, ledger.stakedFuture?.era ?? Infinity);
+    const firstStakedEra = Math.min(
+      ledger.staked.era > 0 ? ledger.staked.era : Infinity,
+      ledger.stakedFuture?.era ?? Infinity
+    );
     const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
     let lastStakedEra = 0;
 
-    if (lastStakedPeriod < currentPeriod) {
+    if (lastStakedPeriod <= currentPeriod - constants.rewardRetentionInPeriods) {
+      // Rewards expired.
+      rewardsExpired = true;
+    } else if (lastStakedPeriod < currentPeriod) {
       // Find last era from past period.
       const periodInfo = await this.dappStakingRepository.getPeriodEndInfo(lastStakedPeriod);
       lastStakedEra = periodInfo?.finalEra ?? 0; // periodInfo shouldn't be undefined for this case.
@@ -96,16 +156,13 @@ export class DappStakingService implements IDappStakingService {
       // Find last era from current period.
       lastStakedEra = protocolState.era - 1;
     } else {
-      // Most likely rewards expired.
-      return 0;
+      throw 'Invalid operation.';
     }
 
-    // *** 2. Create list of all claimable eras with stake amounts
-    for (let i = firstStakedEra; i <= lastStakedEra; i++) {
-      // TODO - get staker rewards for era
-    }
+    const firstSpanIndex = firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength);
+    const lastSpanIndex = lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength);
 
-    return 0;
+    return { firstStakedEra, lastStakedEra, firstSpanIndex, lastSpanIndex, rewardsExpired };
   }
 
   private async signCall(

@@ -1,5 +1,14 @@
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
-import { AccountLedger, Dapp, DappBase, DappInfo, PeriodEndInfo, ProtocolState } from '../models';
+import {
+  AccountLedger,
+  Constants,
+  Dapp,
+  DappBase,
+  DappInfo,
+  EraRewardSpan,
+  PeriodEndInfo,
+  ProtocolState,
+} from '../models';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -92,7 +101,7 @@ export interface IDappStakingRepository {
   /**
    * Gets claim staker rewards call.
    */
-  getClaimStakerRewardsCall(): Promise<ExtrinsicPayload>;
+  getClaimStakerRewardsCall(numberOfCalls: number): Promise<ExtrinsicPayload>;
 
   /**
    * Starts subscription to a staker info changes.
@@ -107,4 +116,17 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the period info.
    */
   getPeriodEndInfo(period: number): Promise<PeriodEndInfo | undefined>;
+
+  /**
+   * Gets era rewards for the given era.
+   * @param spanIndex Index of a span to get rewards for.
+   * @returns A promise that resolves to the era rewards or undefined if rewards are not available.
+   */
+  getEraRewards(spanIndex: number): Promise<EraRewardSpan | undefined>;
+
+  /**
+   * Gets the pallet constants.
+   * @returns A promise that resolves to the constants.
+   */
+  getConstants(): Promise<Constants>;
 }

@@ -2,10 +2,12 @@ import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-netw
 import {
   AccountLedger,
   AccountLedgerChangedMessage,
+  Constants,
   Dapp,
   DappBase,
   DappInfo,
   DappState,
+  EraRewardSpan,
   PeriodEndInfo,
   PeriodType,
   ProtocolState,
@@ -21,6 +23,7 @@ import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
+  PalletDappStakingV3EraRewardSpan,
   PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
   PalletDappStakingV3SingularStakingInfo,
@@ -28,7 +31,7 @@ import {
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
-import { Option, StorageKey } from '@polkadot/types';
+import { Option, StorageKey, u32 } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
@@ -209,14 +212,17 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getClaimStakerRewardsCall(): Promise<ExtrinsicPayload> {
+  public async getClaimStakerRewardsCall(numberOfCalls: number): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
-    return api.tx.dappStaking.claimStakerRewards();
+    const calls = Array(numberOfCalls)
+      .fill(0)
+      .map(() => api.tx.dappStaking.claimStakerRewards());
+    return api.tx.utility.batchAll(calls);
   }
 
   public async getPeriodEndInfo(period: number): Promise<PeriodEndInfo | undefined> {
     const api = await this.api.getApi();
-    const infoWrapped = await api.query.dappStaking.periodEndInfo<
+    const infoWrapped = await api.query.dappStaking.periodEnd<
       Option<PalletDappStakingV3PeriodEndInfo>
     >(period);
 
@@ -229,6 +235,39 @@ export class DappStakingRepository implements IDappStakingRepository {
       bonusRewardPool: info.bonusRewardPool.toBigInt(),
       totalVpStake: info.totalVpStake.toBigInt(),
       finalEra: info.finalEra.toNumber(),
+    };
+  }
+
+  //* @inheritdoc
+  public async getEraRewards(spanIndex: number): Promise<EraRewardSpan | undefined> {
+    const api = await this.api.getApi();
+    const rewardsWrapped = await api.query.dappStaking.eraRewards<
+      Option<PalletDappStakingV3EraRewardSpan>
+    >(spanIndex);
+
+    if (rewardsWrapped.isNone) {
+      return undefined;
+    }
+
+    const rewards = rewardsWrapped.unwrap();
+    return {
+      firstEra: rewards.firstEra.toNumber(),
+      lastEra: rewards.lastEra.toNumber(),
+      span: rewards.span.map((reward) => ({
+        stakerRewardPool: reward.stakerRewardPool.toBigInt(),
+        staked: reward.staked.toBigInt(),
+        dappRewardPool: reward.dappRewardPool.toBigInt(),
+      })),
+    };
+  }
+
+  //* @inheritdoc
+  public async getConstants(): Promise<Constants> {
+    const api = await this.api.getApi();
+
+    return {
+      eraRewardSpanLength: (<u32>api.consts.dappStaking.eraRewardSpanLength).toNumber(),
+      rewardRetentionInPeriods: (<u32>api.consts.dappStaking.rewardRetentionInPeriods).toNumber(),
     };
   }
 
