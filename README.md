@@ -47,7 +47,7 @@ npx @acala-network/chopsticks@latest xcm -p=tests/chopsticks/astar.yml -p=tests/
 
 - Start the portal (the portal should run on http://localhost:8080)
 
-- You need to familiar with Playwright generator by running codegen
+- You need to be familiar with Playwright generator by running codegen
 
 ```bash
 yarn playwright:codegen
@@ -79,5 +79,5 @@ BASE_URL='http://localhost:8080' yarn playwright:ci
 
 - Create test file or added test cases on existing file in /tests
   - Simple UI e2e testing : (assets).spec.ts
-  - Native Transaction e2e teting : (assets)-transactions.spec.ts
+  - Native Transaction e2e testing : (assets)-transactions.spec.ts
   - EVM Transaction e2e testing : (assets)-transactions-evm.spec.ts

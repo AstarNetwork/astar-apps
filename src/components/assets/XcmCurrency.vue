@@ -99,7 +99,12 @@ export default defineComponent({
     const explorerLink = computed<string>(() => {
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
-      return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
+      const shibuyaBalanceUrl = 'https://shibuya.subscan.io/assets/' + t.value.id;
+      return currentNetworkIdx.value === endpointKey.ASTAR
+        ? astarBalanceUrl
+        : currentNetworkIdx.value === endpointKey.SHIDEN
+        ? shidenBalanceUrl
+        : shibuyaBalanceUrl;
     });
 
     const { width, screenSize } = useBreakpoints();

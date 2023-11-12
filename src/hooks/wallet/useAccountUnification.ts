@@ -4,7 +4,6 @@ import {
   PayloadWithWeight,
   getEvmGas,
   getIndividualClaimTxs,
-  toSS58Address,
   wait,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -24,7 +23,7 @@ import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset, IdentityData } from 'src/v2/models';
+import { Asset } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -33,7 +32,7 @@ import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
-import { IIdentityRepository } from 'src/v2/repositories';
+import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 
 const provider = get(window, 'ethereum') as any;
@@ -73,7 +72,9 @@ export const useAccountUnification = () => {
   const unifiedAccount = computed<UnifiedAccount | undefined>(
     () => store.getters['general/getUnifiedAccount']
   );
-  const isAccountUnified = computed<boolean>(() => unifiedAccount.value !== undefined);
+  const isAccountUnified = computed<boolean>(() => {
+    return !!(unifiedAccount.value !== undefined && unifiedAccount.value.name);
+  });
 
   const setAccountName = (event: any) => {
     accountName.value = typeof event === 'string' ? event : event.target.value;
@@ -118,11 +119,17 @@ export const useAccountUnification = () => {
 
   const checkStakerInfo = async (): Promise<void> => {
     if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
+    const accountUnificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
     try {
       isLoadingDappStaking.value = true;
       let isPendingWithdrawal = false;
       let stakingData: MyStakeInfo[] = [];
-      const mappedSS58Address = toSS58Address(selectedEvmAddress.value);
+
+      const mappedSS58Address = await accountUnificationService.getConvertedNativeAddress(
+        selectedEvmAddress.value
+      );
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
 
       // Memo: check if there are any dapps staked
@@ -362,8 +369,14 @@ export const useAccountUnification = () => {
   const getCost = async (): Promise<string> => {
     const TOTAL_FIELDS = 5; // account name, avatar address key, avatar address value, token id key, token id value
     const identityRepository = container.get<IIdentityRepository>(Symbols.IdentityRepository);
-    const depositInfo = await identityRepository.getDepositInfo();
-    const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS);
+    const auRepository = container.get<IAccountUnificationRepository>(
+      Symbols.AccountUnificationRepository
+    );
+    const [depositInfo, mappingFee] = await Promise.all([
+      identityRepository.getDepositInfo(),
+      auRepository.getUnificationFee(),
+    ]);
+    const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS) + mappingFee;
 
     return `${ethers.utils.formatEther(totalDeposit.toString())} ${nativeTokenSymbol.value}`;
   };

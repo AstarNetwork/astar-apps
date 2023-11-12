@@ -36,7 +36,7 @@ import Ads from 'src/components/assets/Ads.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';

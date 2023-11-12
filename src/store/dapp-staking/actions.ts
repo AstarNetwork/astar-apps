@@ -15,7 +15,7 @@ import { StateInterface } from '../index';
 import { sign } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
-import { IDappStakingService } from 'src/v2/services';
+import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
@@ -25,7 +25,6 @@ import {
   TOKEN_API_URL,
   DappItem,
   isValidEvmAddress,
-  toSS58Address,
 } from '@astar-network/astar-sdk-core';
 
 const showError = (dispatch: Dispatch, message: string): void => {
@@ -91,14 +90,16 @@ const actions: ActionTree<State, StateInterface> = {
     { commit, dispatch },
     { network, currentAccount }: { network: string; currentAccount: string }
   ) {
-    // commit('general/setLoading', true, { root: true });
+    const accountUnificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
 
     try {
       // Fetch dapps
       const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
       const address = isValidEvmAddress(currentAccount)
-        ? toSS58Address(currentAccount)
+        ? await accountUnificationService.getMappedNativeAddress(currentAccount)
         : currentAccount;
       const [dapps, combinedInfo] = await Promise.all([
         axios.get<DappItem[]>(dappsUrl),
@@ -154,6 +155,7 @@ const actions: ActionTree<State, StateInterface> = {
           images: getImagesInfo(parameters.dapp),
           developers: parameters.dapp.developers,
           description: parameters.dapp.description,
+          shortDescription: parameters.dapp.shortDescription,
           communities: parameters.dapp.communities,
           contractType: parameters.dapp.contractType,
           mainCategory: parameters.dapp.mainCategory,

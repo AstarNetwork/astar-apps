@@ -70,12 +70,24 @@ export default defineComponent({
 }
 
 .preview {
-  margin-top: 18px;
-  height: 389px;
+  height: 416px;
 }
 
 .wrapper--tab {
   display: flex;
   justify-content: center;
+}
+</style>
+
+<style lang="scss">
+.wrapper--description {
+  .q-field__control {
+    background: none;
+    box-shadow: none;
+  }
+  .q-textarea .q-field__native,
+  .preview {
+    padding: 16px;
+  }
 }
 </style>

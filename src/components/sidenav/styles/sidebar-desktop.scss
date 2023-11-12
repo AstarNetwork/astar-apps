@@ -31,6 +31,7 @@
   background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   display: flex;
   flex-direction: column;
+  z-index: 1;
 }
 
 .sidebar--height-decentralized {

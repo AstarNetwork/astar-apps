@@ -31,6 +31,22 @@
 
     <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
       <span class="text--xl">{{ $t('assets.noResults') }}</span>
+      <!-- main start -->
+      <div v-for="t in filteredTokens" :key="t.symbol">
+        <div v-if="checkIsCbridgeToken(t)">
+          <evm-cbridge-token :token="t" :data-testid="t.symbol" />
+        </div>
+        <div v-else>
+          <erc-20-currency :token="t" :data-testid="t.symbol" />
+        </div>
+      </div>
+      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.noResults') }}</span>
+      </div>
+      <div v-else-if="filteredTokens.length === 0" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.letsImportToken') }}</span>
+      </div>
+      <!-- main end -->
     </div>
   </div>
 </template>
