@@ -174,11 +174,7 @@
           </div>
         </div>
         <div class="row--icon--expand-phone">
-          <button
-            class="icon--expand"
-            :class="isExpand && 'icon--collapse'"
-            @click="expandAsset(isExpand)"
-          >
+          <button class="icon--expand">
             <astar-icon-expand size="32" />
           </button>
           <balloon
@@ -244,7 +240,6 @@ export default defineComponent({
     const isRocstar = ref<boolean>(false);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
-    const isExpand = ref<boolean>(false);
     const { isBalloonNativeToken, isBalloonNativeTokenClosing, handleCloseNativeTokenBalloon } =
       useBalloons();
 
@@ -321,17 +316,6 @@ export default defineComponent({
       }
     });
 
-    // Ref: https://stackoverflow.com/questions/48143381/css-expand-contract-animation-to-show-hide-content
-    const expandAsset = async (isOpen: boolean): Promise<void> => {
-      if (isBalloonNativeToken.value) {
-        await handleCloseNativeTokenBalloon();
-      }
-      isExpand.value = !isOpen;
-      const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
-      el && el.classList.toggle('asset-expanded');
-      el && el.classList.toggle('asset-collapsed');
-    };
-
     return {
       bal,
       nativeTokenSymbol,
@@ -354,14 +338,12 @@ export default defineComponent({
       Path,
       isSkeleton,
       isSupportAuTransfer,
-      isExpand,
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
-      expandAsset,
       handleCloseNativeTokenBalloon,
     };
   },
