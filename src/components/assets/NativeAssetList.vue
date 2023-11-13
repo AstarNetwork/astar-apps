@@ -60,32 +60,6 @@
                 </button>
               </router-link>
             </div>
-            <div class="row--icon--expand">
-              <div class="column--expand">
-                <button
-                  class="icon--expand"
-                  :class="isExpand && 'icon--collapse'"
-                  @click="expandAsset(isExpand)"
-                >
-                  <astar-icon-expand size="32" />
-                  <q-tooltip>
-                    <span class="text--tooltip">
-                      {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
-                    </span>
-                  </q-tooltip>
-                </button>
-
-                <balloon
-                  class="balloon-native-token"
-                  direction="right"
-                  :is-balloon="isBalloonNativeToken"
-                  :is-balloon-closing="isBalloonNativeTokenClosing"
-                  :handle-close-balloon="handleCloseNativeTokenBalloon"
-                  :title="$t('new')"
-                  :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
-                />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -118,7 +92,7 @@
         </div>
 
         <div class="expand-container">
-          <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
+          <div>
             <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
