@@ -7,23 +7,26 @@ import {
   IDappStakingService,
   PeriodType,
   ProtocolState,
+  Rewards,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useAccount } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
+import { useDapps } from './useDapps';
 
 export function useDappStaking() {
   const { t } = useI18n();
   const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
   const { currentAccount } = useAccount();
+  const { registeredDapps } = useDapps();
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
-
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
+  const rewards = computed<Rewards | undefined>(() => store.getters['stakingV3/getRewards']);
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
     const [result, error] = canStake(amount);
@@ -43,6 +46,20 @@ export function useDappStaking() {
   const claimStakerRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
+  };
+
+  const claimDappRewards = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const contractAddress = registeredDapps.value.find(
+      (x) =>
+        x.chain.rewardDestination === currentAccount.value || x.chain.owner === currentAccount.value
+    )?.chain.address;
+
+    if (contractAddress) {
+      await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
+    } else {
+      throw 'No dapp found';
+    }
   };
 
   const canStake = (amount: number): [boolean, string] => {
@@ -70,5 +87,14 @@ export function useDappStaking() {
     { immediate: true }
   );
 
-  return { protocolState, ledger, stake, unstake, claimStakerRewards, canStake };
+  return {
+    protocolState,
+    ledger,
+    rewards,
+    stake,
+    unstake,
+    claimStakerRewards,
+    canStake,
+    claimDappRewards,
+  };
 }

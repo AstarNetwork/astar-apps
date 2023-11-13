@@ -142,10 +142,17 @@ export default defineComponent({
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
       // TODO, temp call, remove later
-      const stakerReward = await container
-        .get<IDappStakingService>(Symbols.DappStakingServiceV3)
-        .getStakerRewards(currentAccount.value);
-      console.log('stakerReward', stakerReward);
+      const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+      const [stakerReward, dAppRewards] = await Promise.all([
+        stakingV3service.getStakerRewards(currentAccount.value),
+        stakingV3service.getDappRewards('0x0000000000000000000000000000000000000005'),
+      ]);
+
+      store.commit(
+        'stakingV3/setRewards',
+        { staker: stakerReward, dApp: dAppRewards, bonus: BigInt(0) },
+        { root: true }
+      );
     });
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {

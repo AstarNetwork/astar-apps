@@ -1,4 +1,4 @@
-import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32 } from '@polkadot/types';
+import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32, u8 } from '@polkadot/types';
 import { AccountId32 } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 
@@ -90,4 +90,15 @@ interface PalletDappStakingV3EraReward extends Struct {
   readonly stakerRewardPool: Compact<u128>;
   readonly staked: Compact<u128>;
   readonly dappRewardPool: Compact<u128>;
+}
+
+export interface PalletDappStakingV3DAppTierRewards extends Struct {
+  readonly dapps: Vec<PalletDappStakingV3DAppTier>;
+  readonly rewards: Vec<u128>;
+  readonly period: Compact<u32>;
+}
+
+interface PalletDappStakingV3DAppTier extends Struct {
+  readonly dappId: Compact<u16>;
+  readonly tierId: Option<u8>;
 }

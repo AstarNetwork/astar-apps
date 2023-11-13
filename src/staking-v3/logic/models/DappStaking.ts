@@ -95,3 +95,20 @@ export interface Constants {
   eraRewardSpanLength: number;
   rewardRetentionInPeriods: number;
 }
+
+export interface DAppTierRewards {
+  readonly dapps: DAppTier[];
+  readonly rewards: bigint[];
+  readonly period: number;
+}
+
+interface DAppTier {
+  readonly dappId: number;
+  readonly tierId: number | undefined;
+}
+
+export interface Rewards {
+  dApp: bigint;
+  staker: bigint;
+  bonus: bigint;
+}

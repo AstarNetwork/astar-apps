@@ -2,6 +2,7 @@ import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
   Constants,
+  DAppTierRewards,
   Dapp,
   DappBase,
   DappInfo,
@@ -44,6 +45,13 @@ export interface IDappStakingRepository {
    * Gets all dapps within the network.
    */
   getChainDapps(): Promise<DappInfo[]>;
+
+  /**
+   * Gets dapp info for the given contract address.
+   * @param contractAddress Address of the contract to get dapp info for.
+   * @returns A promise that resolves to a dapp info.
+   */
+  getChainDapp(contractAddress: string): Promise<DappInfo | undefined>;
 
   /**
    * Starts a subscription to an account ledger with the given address.
@@ -104,6 +112,16 @@ export interface IDappStakingRepository {
   getClaimStakerRewardsCall(numberOfCalls: number): Promise<ExtrinsicPayload>;
 
   /**
+   * Gets claim dapp rewards batch call.
+   * @param contractAddress Address of the contract to claim rewards for.
+   * @param erasToClaim Eras to claim rewards for.
+   */
+  getClaimDappRewardsCall(
+    contractAddress: string,
+    erasToClaim: number[]
+  ): Promise<ExtrinsicPayload>;
+
+  /**
    * Starts subscription to a staker info changes.
    * @param address Staker address to get info for.
    * @returns A promise that resolves to a map of staker address and staker info.
@@ -129,4 +147,11 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the constants.
    */
   getConstants(): Promise<Constants>;
+
+  /**
+   * Gets the dapp tiers.
+   * @param era Era to get dapp tiers for.
+   * @returns A promise that resolves to the dapp tiers.
+   */
+  getDappTiers(era: number): Promise<DAppTierRewards | undefined>;
 }

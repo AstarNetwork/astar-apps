@@ -6,6 +6,7 @@ import {
   Dapp,
   ProtocolState,
   SingularStakingInfo,
+  Rewards,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -15,6 +16,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
   setLedger(state: DappStakingState, ledger: AccountLedger): void;
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
+  setRewards(state: DappStakingState, rewards: Rewards): void;
 }
 
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
@@ -42,6 +44,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setStakerInfo(state, stakerInfo) {
     state.stakerInfo = stakerInfo;
+  },
+  setRewards(state, rewards) {
+    state.rewards = rewards;
   },
 };
 

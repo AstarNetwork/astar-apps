@@ -3,6 +3,7 @@ import {
   AccountLedger,
   AccountLedgerChangedMessage,
   Constants,
+  DAppTierRewards,
   Dapp,
   DappBase,
   DappInfo,
@@ -23,6 +24,7 @@ import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
+  PalletDappStakingV3DAppTierRewards,
   PalletDappStakingV3EraRewardSpan,
   PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
@@ -102,20 +104,28 @@ export class DappStakingRepository implements IDappStakingRepository {
         const unwrappedValue = v.unwrap();
 
         if (address) {
-          result.push({
-            address,
-            owner: unwrappedValue.owner.toString(),
-            id: unwrappedValue.id.toNumber(),
-            state: unwrappedValue.state.isUnregistered
-              ? DappState.Unregistered
-              : DappState.Registered,
-            rewardDestination: unwrappedValue.rewardDestination.unwrapOr(undefined)?.toString(),
-          });
+          result.push(this.mapDapp(unwrappedValue, address));
         }
       }
     });
 
     return result;
+  }
+
+  public async getChainDapp(contractAddress: string): Promise<DappInfo | undefined> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const api = await this.api.getApi();
+    const dappWrapped = await api.query.dappStaking.integratedDApps<
+      Option<PalletDappStakingV3DAppInfo>
+    >(getDappAddressEnum(contractAddress));
+
+    if (dappWrapped.isNone) {
+      return undefined;
+    }
+
+    const dapp = dappWrapped.unwrap();
+    return this.mapDapp(dapp, contractAddress);
   }
 
   private ledgerUnsubscribe: Function | undefined = undefined;
@@ -271,6 +281,28 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  //* @inheritdoc
+  public async getDappTiers(era: number): Promise<DAppTierRewards | undefined> {
+    const api = await this.api.getApi();
+    const tiersWrapped = await api.query.dappStaking.dAppTiers<
+      Option<PalletDappStakingV3DAppTierRewards>
+    >(era);
+
+    if (tiersWrapped.isNone) {
+      return undefined;
+    }
+
+    const tiers = tiersWrapped.unwrap();
+    return {
+      period: tiers.period.toNumber(),
+      dapps: tiers.dapps.map((dapp) => ({
+        dappId: dapp.dappId.toNumber(),
+        tierId: dapp.tierId.unwrapOr(undefined)?.toNumber(),
+      })),
+      rewards: tiers.rewards.map((reward) => reward.toBigInt()),
+    };
+  }
+
   private stakerInfoUnsubscribe: Function | undefined = undefined;
   //* @inheritdoc
   public async startGetStakerInfoSubscription(address: string): Promise<void> {
@@ -308,6 +340,21 @@ export class DappStakingRepository implements IDappStakingRepository {
     this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
   }
 
+  //* @inheritdoc
+  public async getClaimDappRewardsCall(
+    contractAddress: string,
+    erasToClaim: number[]
+  ): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const api = await this.api.getApi();
+    const calls = erasToClaim.map((era) =>
+      api.tx.dappStaking.claimDappReward(getDappAddressEnum(contractAddress), era)
+    );
+
+    return api.tx.utility.batchAll(calls);
+  }
+
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),
@@ -342,6 +389,16 @@ export class DappStakingRepository implements IDappStakingRepository {
         ? this.mapStakeAmount(ledger.stakedFuture.unwrap())
         : undefined,
       contractStakeCount: ledger.contractStakeCount.toNumber(),
+    };
+  }
+
+  private mapDapp(dapp: PalletDappStakingV3DAppInfo, address: string): DappInfo {
+    return {
+      address,
+      owner: dapp.owner.toString(),
+      id: dapp.id.toNumber(),
+      state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
+      rewardDestination: dapp.rewardDestination.unwrapOr(undefined)?.toString(),
     };
   }
 

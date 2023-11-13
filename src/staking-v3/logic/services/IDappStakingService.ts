@@ -50,4 +50,23 @@ export interface IDappStakingService {
    * @returns Staker rewards amount.
    */
   getStakerRewards(senderAddress: string): Promise<bigint>;
+
+  /**
+   * Calculates a dApp rewards
+   * @param contractAddress Contract address to calculate reward for.
+   * @returns Dapp rewards amount.
+   */
+  getDappRewards(contractAddress: string): Promise<bigint>;
+
+  /**
+   * Invokes claim dapp rewards call.
+   * @param contractAddress Address of the contract to be claimed from.
+   * @param senderAddress Address of the request sender.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimDappRewards(
+    contractAddress: string,
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void>;
 }

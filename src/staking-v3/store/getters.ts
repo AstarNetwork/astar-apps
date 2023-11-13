@@ -7,6 +7,7 @@ import {
   DappState,
   ProtocolState,
   SingularStakingInfo,
+  Rewards,
 } from '../logic';
 
 export interface DappStakingGetters {
@@ -16,6 +17,7 @@ export interface DappStakingGetters {
   getProtocolState(state: DappStakingState): ProtocolState | undefined;
   getLedger(state: DappStakingState): AccountLedger | undefined;
   getStakeInfo(state: DappStakingState): Map<string, SingularStakingInfo> | undefined;
+  getRewards(state: DappStakingState): Rewards | undefined;
 }
 
 const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters = {
@@ -25,6 +27,7 @@ const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters
   getProtocolState: (state) => state.protocolState,
   getLedger: (state) => state.ledger,
   getStakeInfo: (state) => state.stakerInfo,
+  getRewards: (state) => state.rewards,
 };
 
 export default getters;
