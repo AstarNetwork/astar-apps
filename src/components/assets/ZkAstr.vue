@@ -24,6 +24,7 @@
           <button class="btn btn--icon" :disabled="true">
             <astar-icon-bridge />
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
@@ -33,6 +34,7 @@
           <button class="btn btn--icon" :disabled="true">
             <astar-icon-transfer />
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.send') }}</span>
           </q-tooltip>

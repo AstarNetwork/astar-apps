@@ -6,10 +6,11 @@
       <div class="wallet-tab">
         <div class="wallet-tab__bg">
           <template v-if="isH160">
-            <div class="btn btn--native" :class="!isZkEvm && 'active'">
-              Astar EVM<span v-if="isZkEvm"> (L1)</span>
-            </div>
-            <div v-if="isZkEvm" class="btn btn--evm" :class="isZkEvm && 'active'">Astar zkEVM</div>
+            <template v-if="isZkEvm">
+              <div class="btn btn--native">Astar EVM (L1)</div>
+              <div v-if="isZkEvm" class="btn btn--evm active">Astar zkEVM</div>
+            </template>
+            <div v-else class="btn btn--native active">Astar EVM</div>
           </template>
           <div v-else class="btn btn--native active">Astar Native</div>
         </div>

@@ -238,7 +238,7 @@
   cursor: pointer;
   transition: all 0.4s ease 0s;
   border-radius: 100%;
-  svg{
+  svg {
     width: 26px;
     height: 26px;
   }
@@ -311,7 +311,7 @@
   background-color: $gray-2;
   height: 1px;
 }
-.body--dark{
+.body--dark {
   .separator {
     background-color: $navy-3;
   }
@@ -328,7 +328,7 @@
   .row--header__left {
     width: 50%;
   }
-  .row--header__right{
+  .row--header__right {
     width: 50%;
   }
 }
@@ -343,7 +343,7 @@
   img {
     flex-shrink: 0;
   }
-  .text--title{
+  .text--title {
     font-weight: 600;
     @media (min-width: $lg) {
       font-size: 14px;
@@ -367,7 +367,7 @@
 
 .row--transferable {
   flex-direction: row;
-  &.row--transferable-evm{
+  &.row--transferable-evm {
     @media (min-width: $sm) {
       padding-top: 8px;
       padding-bottom: 8px;
@@ -401,33 +401,40 @@
     }
   }
   .row__actions {
-    display: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+    padding-top: 16px;
     @media (min-width: $sm) {
       width: 50%;
-      display: flex;
       justify-content: flex-end;
+      padding-top: 0;
+    }
+    .text--mobile-menu {
+      font-size: 12px;
+      color: $gray-3;
+      font-weight: 500;
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      @media (min-width: $sm) {
+        display: none;
+      }
     }
   }
 }
-.column--label{
+.column--label {
   width: 50%;
 }
-.column--amount{
+.column--amount {
   width: 70%;
   text-align: right;
 }
-.column--symbol{
+.column--symbol {
   width: 30%;
   text-align: left;
 }
-.row--transferable > .row__info > .column--balance > .column--symbol,
-.row--locked-tokens > .row__info > .column--balance > .column--symbol{
-  width: 15%;
-  @media (min-width: $sm) {
-    width: 30%;
-  }
-}
-
 
 .rows--expand {
   padding: 16px 0 0 0;
@@ -449,7 +456,7 @@
     cursor: default;
   }
 }
-.body--dark{
+.body--dark {
   .row--expand {
     background-color: $navy-4;
   }
@@ -458,7 +465,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  padding-left: 16px;
+  padding-left: 8px;
   @media (min-width: $sm) {
     width: 50%;
     padding-left: 24px;
@@ -472,7 +479,7 @@
     display: flex;
     justify-content: flex-end;
   }
-  .btn--sm{
+  .btn--sm {
     font-weight: 600;
   }
 }
@@ -485,14 +492,25 @@
     font-size: 14px;
   }
 }
-.row--expand{
+.row--expand {
   .text--label {
     font-size: 14px;
   }
 }
-.body--dark{
+.body--dark {
   .text--label {
     color: white;
+  }
+}
+.row--transferable,
+.row--locked-tokens {
+  .column--balance{
+    width: 50%;
+  }
+  .text--label,
+  .text--amount,
+  .text--symbol {
+    font-size: 14px;
   }
 }
 
@@ -507,24 +525,24 @@
     width: 50%;
   }
 }
-.body--dark{
+.body--dark {
   .column--balance {
     color: white;
   }
 }
-.row--header .column--balance{
+.row--header .column--balance {
   @media (min-width: $sm) {
     width: 100%;
   }
   .column--amount,
-  .column--symbol{
+  .column--symbol {
     @media (min-width: $sm) {
       width: auto;
     }
   }
 }
 
-.row--expand{
+.row--expand {
   .column--balance {
     gap: 4px;
     width: 50%;
@@ -550,7 +568,7 @@
     font-size: 14px;
   }
 }
-.row--expand{
+.row--expand {
   .text--amount {
     font-size: 14px;
     font-weight: 600;
@@ -573,14 +591,26 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  color: $astar-blue;
-  margin: auto;
+  background-color: $astar-blue;
+  @media (min-width: $sm) {
+    background-color: transparent;
+    color: $astar-blue;
+    margin: auto;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+    &:hover {
+      color: white;
+      background-color: $astar-blue;
+    }
+  }
   svg {
     width: 20px;
     height: 20px;
-  }
-  &:hover {
-    color: white;
-    background-color: $astar-blue;
+    @media (min-width: $sm) {
+      width: 24px;
+      height: 24px;
+    }
   }
 }

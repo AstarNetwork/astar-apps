@@ -30,16 +30,7 @@
 
         <!-- Transferable -->
         <div class="row row--transferable">
-          <div
-            class="row__info"
-            @click="
-              () =>
-                width <= screenSize.sm &&
-                (isFaucet
-                  ? handleModalFaucet({ isOpen: true })
-                  : $router.push(buildTransferPageLink(nativeTokenSymbol)))
-            "
-          >
+          <div class="row__info">
             <div class="column--label text--label">
               {{ $t('assets.transferable') }}
             </div>
@@ -78,6 +69,7 @@
                   />
                 </svg>
               </button>
+              <span class="text--mobile-menu">{{ $t('assets.faucet') }}</span>
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('assets.faucet') }}</span>
               </q-tooltip>
@@ -87,6 +79,7 @@
                 <button class="btn btn--icon">
                   <astar-icon-transfer />
                 </button>
+                <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
                 <q-tooltip>
                   <span class="text--tooltip">{{ $t('assets.send') }}</span>
                 </q-tooltip>

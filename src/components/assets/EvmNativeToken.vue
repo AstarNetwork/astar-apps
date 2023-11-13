@@ -1,16 +1,7 @@
 <template>
   <div data-testid="evm-native-token">
     <div class="row row--transferable row--transferable-evm">
-      <div
-        class="row__info"
-        @click="
-          () =>
-            width <= screenSize.sm &&
-            (isFaucet
-              ? handleModalFaucet({ isOpen: true })
-              : $router.push(buildTransferPageLink(nativeTokenSymbol)))
-        "
-      >
+      <div class="row__info">
         <div class="column--token-name">
           <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
           <template v-if="nativeTokenSymbol">
@@ -33,6 +24,7 @@
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
@@ -42,6 +34,7 @@
           <button class="btn btn--icon">
             <astar-icon-transfer />
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.send') }}</span>
           </q-tooltip>
@@ -57,6 +50,7 @@
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
@@ -82,6 +76,7 @@
               />
             </svg>
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.faucet') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.faucet') }}</span>
           </q-tooltip>
@@ -107,6 +102,7 @@
               />
             </svg>
           </button>
+          <span class="text--mobile-menu">{{ $t('assets.faucet') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.faucet') }}</span>
           </q-tooltip>
