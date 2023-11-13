@@ -33,82 +33,6 @@
             </div>
             <div class="column--symbol">
               {{ $t('usd') }}
-
-              <!-- main start -->
-              <div
-                class="column--asset-buttons"
-                :class="isZkEvm ? 'column--buttons--zkevm' : 'column--buttons--multi'"
-              >
-                <!-- Memo: test checking if styling won't break -->
-                <!-- <div v-if="token.isXC20" /> -->
-                <router-link :to="buildTransferPageLink(token.symbol)">
-                  <button class="btn btn--sm">
-                    {{ $t('assets.transfer') }}
-                  </button>
-                </router-link>
-                <div v-if="token.isWrappedToken && !token.isXC20">
-                  <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
-                    <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
-                  </a>
-                </div>
-                <div v-if="isZkEvm">
-                  <router-link :to="buildEthereumBridgePageLink()">
-                    <button class="btn btn--sm">{{ $t('assets.bridge') }}</button>
-                  </router-link>
-                </div>
-                <div class="screen--xl">
-                  <a
-                    class="box--explorer"
-                    :href="explorerLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button class="btn btn--sm btn--explorer adjuster--width">
-                      <div class="container--explorer-icon adjuster--width">
-                        <astar-icon-external-link />
-                      </div>
-                    </button>
-                  </a>
-                  <q-tooltip>
-                    <span class="text--tooltip">{{ $t('blockscout') }}</span>
-                  </q-tooltip>
-                </div>
-                <div class="screen--md">
-                  <button
-                    class="btn btn--sm btn--icon adjuster--width"
-                    @click="
-                      addToEvmProvider({
-                        tokenAddress: token.address,
-                        symbol: token.symbol,
-                        decimals: token.decimal,
-                        image: token.image,
-                        provider,
-                      })
-                    "
-                  >
-                    <div class="icon--plus">
-                      <span> + </span>
-                    </div>
-                    <q-tooltip>
-                      <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
-                    </q-tooltip>
-                  </button>
-                </div>
-                <div v-if="isImportedToken" class="screen--xl">
-                  <button
-                    class="btn btn--sm adjuster--width"
-                    @click="handleDeleteStoredToken(token.address)"
-                  >
-                    <div class="adjuster--width">
-                      <astar-icon-delete size="20" />
-                    </div>
-                  </button>
-                  <q-tooltip>
-                    <span class="text--tooltip">{{ $t('remove') }}</span>
-                  </q-tooltip>
-                </div>
-              </div>
-              <!-- main end -->
             </div>
           </div>
         </div>
@@ -133,11 +57,23 @@
               <button class="btn btn--icon">
                 <astar-icon-bridge class="icon--bridge" />
               </button>
+              <span class="text--expand-menu">{{ $t('assets.wrap') }}</span>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.wrap') }}</span>
+              </q-tooltip>
             </a>
-            <span class="text--expand-menu">{{ $t('assets.wrap') }}</span>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('assets.wrap') }}</span>
-            </q-tooltip>
+          </div>
+
+          <div v-if="isZkEvm">
+            <router-link :to="buildEthereumBridgePageLink()">
+              <button class="btn btn--icon">
+                <astar-icon-bridge class="icon--bridge" />
+              </button>
+              <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+              </q-tooltip>
+            </router-link>
           </div>
 
           <a :href="explorerLink" target="_blank" rel="noopener noreferrer">

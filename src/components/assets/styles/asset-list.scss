@@ -104,47 +104,6 @@
   }
 }
 
-// main start
-.column--buttons--native-token {
-  @media (min-width: $xl) {
-    display: flex !important;
-    justify-content: flex-end;
-    width: 412px;
-    column-gap: 24px;
-  }
-  @media (min-width: $xxl) {
-    column-gap: 48px;
-    width: 484px;
-  }
-}
-
-.column--buttons--multi {
-  @media (min-width: $xl) {
-    display: grid;
-    width: 400px;
-    grid-template-columns: 100px 100px 70px 70px;
-    justify-content: end;
-    column-gap: 24px;
-  }
-  @media (min-width: $xxl) {
-    column-gap: 48px;
-  }
-}
-
-.column--buttons--zkevm {
-  @media (min-width: $xl) {
-    display: grid;
-    width: 400px;
-    grid-template-columns: auto auto 60px 60px 60px;
-    justify-content: end;
-    column-gap: 8px;
-  }
-  @media (min-width: $xxl) {
-    column-gap: 24px;
-  }
-}
-// main end
-
 .adjuster--width {
   @media (min-width: $xl) {
     width: 70px !important;
