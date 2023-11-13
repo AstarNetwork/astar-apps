@@ -6,8 +6,10 @@
       <div class="wallet-tab">
         <div class="wallet-tab__bg">
           <template v-if="isH160">
-            <div class="btn btn--native" :class="!isZkEvm && 'active'">Astar EVM (L1)</div>
-            <div class="btn btn--evm" :class="isZkEvm && 'active'">Astar zkEVM</div>
+            <div class="btn btn--native" :class="!isZkEvm && 'active'">
+              Astar EVM<span v-if="isZkEvm"> (L1)</span>
+            </div>
+            <div v-if="isZkEvm" class="btn btn--evm" :class="isZkEvm && 'active'">Astar zkEVM</div>
           </template>
           <div v-else class="btn btn--native active">Astar Native</div>
         </div>
@@ -248,22 +250,14 @@ export default defineComponent({
 
     const bg_img = {
       native: require('/src/assets/img/account_bg_native.webp'),
-      shiden: require('/src/assets/img/account_bg_shiden.webp'),
       zk: require('/src/assets/img/account_bg_zk.webp'),
-      testnet: require('/src/assets/img/account_bg_testnet.webp'),
     };
 
     const bg = computed<String>(() => {
-      if (currentNetworkIdx.value === 0) {
-        return bg_img.native;
-        // } else if (currentNetworkIdx.value === 1) {
-        //   return bg_img.shiden;
-        // } else if (currentNetworkIdx.value === 2) {
-        //   return bg_img.testnet;
-      } else if (currentNetworkIdx.value === 4) {
+      if (currentNetworkIdx.value === 4) {
         return bg_img.zk;
       }
-      return '';
+      return bg_img.native;
     });
 
     return {

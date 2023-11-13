@@ -1,30 +1,6 @@
 <template>
   <div class="wrapper--ads-area">
-    <swiper
-      class="swiper--ads-area"
-      :slides-per-view="1.25"
-      :slides-per-group="1"
-      :space-between="16"
-      :navigation="true"
-      :modules="modules"
-      :breakpoints="{
-        '768': {
-          slidesPerView: 3.25,
-          slidesPerGroup: 3,
-          spaceBetween: 16,
-        },
-        '1024': {
-          slidesPerView: 3.25,
-          slidesPerGroup: 3,
-          spaceBetween: 24,
-        },
-        '1280': {
-          slidesPerView: 4.5,
-          slidesPerGroup: 4,
-          spaceBetween: 24,
-        },
-      }"
-    >
+    <swiper class="swiper--ads-area" :slides-per-view="1" :modules="modules" :autoplay="true">
       <swiper-slide v-for="(item, index) in combinedCampaigns" :key="index">
         <div
           class="card--swiper"
@@ -58,7 +34,7 @@ import { useCampaign } from 'src/hooks';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 
 export default defineComponent({
   components: {
@@ -80,7 +56,7 @@ export default defineComponent({
     };
 
     return {
-      modules: [Navigation],
+      modules: [Autoplay],
       combinedCampaigns,
       goToLink,
       goDappPageLink,
@@ -89,31 +65,28 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@import './styles/ads-area.scss';
-</style>
+@import '../dapp-staking/my-staking/styles/ads-area.scss';
 
-<style lang="scss">
-.swiper--ads-area {
-  .swiper-button-prev,
-  .swiper-button-next {
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
+.wrapper--ads-area {
+  margin: 0;
+  padding: 0;
+  mask-image: none;
+}
+.swiper {
+  overflow: hidden;
+}
+
+.card--swiper {
+  border: solid 1px $gray-2;
+  border-radius: 16px;
+  box-shadow: none;
+  background-color: white;
+}
+
+.body--dark {
+  .card--swiper {
+    border-color: $navy-3;
     background-color: $navy-1;
-    &::after {
-      font-size: 12px;
-      font-weight: 600;
-    }
-  }
-  .swiper-button-prev {
-    padding-right: 2px;
-  }
-  .swiper-button-next {
-    padding-left: 2px;
-  }
-  .swiper-button-disabled {
-    display: none;
   }
 }
 </style>

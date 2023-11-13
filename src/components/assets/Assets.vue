@@ -23,7 +23,7 @@
       </div>
 
       <div class="column--links">
-        <ads />
+        <side-ads />
         <astar-domains />
       </div>
     </div>
@@ -32,7 +32,7 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
-import Ads from 'src/components/assets/Ads.vue';
+import SideAds from 'src/components/assets/SideAds.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
@@ -48,7 +48,7 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
-    Ads,
+    SideAds,
     AstarDomains,
     EvmAssetList,
     XcmNativeAssetList,
