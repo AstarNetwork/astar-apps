@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
-    <div class="background" :style="{ backgroundImage: `url(${bg})` }" />
+    <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
       <div class="column--main">
         <account
@@ -157,25 +157,18 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+
     const bg_img = {
-      common: require('/src/assets/img/bg_common.webp'),
-      native: require('/src/assets/img/bg_native.webp'),
-      shiden: require('/src/assets/img/bg_shiden.webp'),
-      zk: require('/src/assets/img/bg_zk.webp'),
-      testnet: require('/src/assets/img/bg_testnet.webp'),
+      light: require('/src/assets/img/assets_bg_light.webp'),
+      dark: require('/src/assets/img/assets_bg_dark.webp'),
     };
 
     const bg = computed<String>(() => {
-      if (currentNetworkIdx.value === 0) {
-        return bg_img.native;
-      } else if (currentNetworkIdx.value === 1) {
-        return bg_img.shiden;
-      } else if (currentNetworkIdx.value === 2) {
-        return bg_img.testnet;
-      } else if (currentNetworkIdx.value === 4) {
-        return bg_img.zk;
+      if (isDarkTheme.value) {
+        return bg_img.dark;
       }
-      return bg_img.common;
+      return bg_img.light;
     });
 
     return {

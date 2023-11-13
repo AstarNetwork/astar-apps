@@ -5,25 +5,28 @@
   column-gap: 4px;
   align-items: center;
   @media (min-width: $sm) {
-    column-gap: 16px;
+    column-gap: 8px;
   }
 }
 
 .input--search {
-  border: solid 1px $gray-3;
+  border: solid 1px transparent;
   border-radius: 9999px;
   padding: 8px 16px;
-  background-color: transparent;
+  background-color: $gray-1;
+  transition: border .2s ease;
   &::placeholder {
     opacity: 0.5;
   }
-  &:focus {
+  &:focus,
+  &:hover {
     outline: none;
     border-color: $astar-blue;
   }
 }
-.body--dark{
+.body--dark {
   .input--search {
+    background-color: $navy-3;
     &::placeholder {
       opacity: 1;
     }

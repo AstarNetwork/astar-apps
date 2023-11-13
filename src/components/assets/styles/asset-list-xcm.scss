@@ -10,11 +10,11 @@
   align-items: center;
   padding: 16px;
 }
-.body--dark{
+.body--dark {
   .row {
     &:hover {
       @media (min-width: $sm) {
-        background-color: $navy-1
+        background-color: $navy-1;
       }
     }
   }
@@ -26,7 +26,7 @@
     background-color: white;
   }
 }
-.body--dark{
+.body--dark {
   .row--is-expand {
     background-color: $navy-1;
     @media (min-width: $sm) {
@@ -67,19 +67,31 @@
   width: 50%;
   display: flex;
   align-items: center;
+  .text--title {
+    font-size: 14px;
+  }
+  .text--label {
+    font-size: 12px;
+  }
 }
 
 .column--balance {
   width: 50%;
-  .column--balance__row{
+  .column--balance__row {
     display: flex;
     gap: 8px;
+    &.text--title {
+      font-size: 14px;
+    }
+    &.text--label {
+      font-size: 12px;
+    }
   }
-  .column--amount{
+  .column--amount {
     width: 70%;
     text-align: right;
   }
-  .column--symbol{
+  .column--symbol {
     width: 30%;
     text-align: left;
   }

@@ -1,13 +1,24 @@
 @import 'src/css/quasar.variables.scss';
 
+// .wrapper--assets {
+//   margin: 24px 12px 80px 12px;
+//   position: relative;
+//   @media (min-width: $lg) {
+//     margin: 24px 0;
+//   }
+// }
 .wrapper--assets {
-  margin: 24px 12px 80px 12px;
   position: relative;
   @media (min-width: $lg) {
-    margin: 24px 0;
+    padding-top: 16px;
+  }
+  @media (min-width: $xxxl) {
+    display: flex;
+    justify-content: center;
   }
 }
-.background{
+
+.assets-page-bg {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -60,19 +71,20 @@
 }
 
 .container {
-  overflow: hidden;
+  border: solid 1px $gray-2;
+  background-color: white;
+  box-shadow: none;
   border-radius: 16px;
   padding: 16px 0 24px 0;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-  background-color: white;
   @media (min-width: $sm) {
     padding-left: 24px;
     padding-right: 24px;
   }
 }
-
 .body--dark {
   .container {
-    background-color: $navy-4;
+    background-color: $navy-1;
+    border-color: $navy-3;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
   }
 }

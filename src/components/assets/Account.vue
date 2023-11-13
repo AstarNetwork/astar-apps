@@ -1,61 +1,74 @@
 <template>
   <div class="wrapper--account">
-    <div class="container container--account">
-      <div class="background" :style="{ backgroundImage: `url(${bg})` }" />
-      <div class="row--account-info">
-        <div class="column--account-icon">
-          <au-icon
-            v-if="isAccountUnified"
-            :native-address="unifiedAccount?.nativeAddress"
-            :icon-url="unifiedAccount?.avatarUrl"
-          />
-          <img
-            v-else-if="iconWallet"
-            width="24"
-            :src="iconWallet"
-            alt="wallet-icon"
-            :class="multisig && 'img--polkasafe'"
-          />
-        </div>
+    <div class="container--account">
+      <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
-        <div>
-          <div class="text--title">
-            <span>{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
-          </div>
-          <div class="text--balance">
-            {{ $n(totalBal) }}
-            <span>USD</span>
-          </div>
+      <div class="wallet-tab">
+        <div class="wallet-tab__bg">
+          <template v-if="isH160">
+            <div class="btn btn--native" :class="!isZkEvm && 'active'">Astar EVM (L1)</div>
+            <div class="btn btn--evm" :class="isZkEvm && 'active'">Astar zkEVM</div>
+          </template>
+          <div v-else class="btn btn--native active">Astar Native</div>
         </div>
       </div>
 
-      <div class="row--actions">
-        <div v-if="isAccountUnification">
-          <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
-            <astar-icon-person />
-          </button>
-          <q-tooltip>
-            <span class="text--tooltip">Unify accounts</span>
-          </q-tooltip>
+      <div class="row">
+        <div class="row--account-info">
+          <div class="column--account-icon">
+            <au-icon
+              v-if="isAccountUnified"
+              :native-address="unifiedAccount?.nativeAddress"
+              :icon-url="unifiedAccount?.avatarUrl"
+            />
+            <img
+              v-else-if="iconWallet"
+              width="24"
+              :src="iconWallet"
+              alt="wallet-icon"
+              :class="multisig && 'img--polkasafe'"
+            />
+          </div>
+
+          <div>
+            <div class="text--address">
+              {{ getShortenAddress(currentAccount) }}
+            </div>
+            <div class="text--balance">
+              {{ $n(totalBal) }}
+              <span>USD</span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <button id="copyAddress" type="button" class="btn--icon" @click="copyAddress">
-            <astar-icon-copy class="icon--copy" />
-          </button>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('copy') }}</span>
-          </q-tooltip>
-        </div>
+        <div class="row--actions">
+          <div v-if="isAccountUnification">
+            <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
+              <astar-icon-person />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">Unify accounts</span>
+            </q-tooltip>
+          </div>
 
-        <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-          <button class="btn--icon">
-            <astar-icon-external-link class="icon--external-link" />
-          </button>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-          </q-tooltip>
-        </a>
+          <div>
+            <button id="copyAddress" type="button" class="btn--icon" @click="copyAddress">
+              <astar-icon-copy class="icon--copy" />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('copy') }}</span>
+            </q-tooltip>
+          </div>
+
+          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+            <button class="btn--icon">
+              <astar-icon-external-link class="icon--external-link" />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+            </q-tooltip>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -243,10 +256,10 @@ export default defineComponent({
     const bg = computed<String>(() => {
       if (currentNetworkIdx.value === 0) {
         return bg_img.native;
-      } else if (currentNetworkIdx.value === 1) {
-        return bg_img.shiden;
-      } else if (currentNetworkIdx.value === 2) {
-        return bg_img.testnet;
+        // } else if (currentNetworkIdx.value === 1) {
+        //   return bg_img.shiden;
+        // } else if (currentNetworkIdx.value === 2) {
+        //   return bg_img.testnet;
       } else if (currentNetworkIdx.value === 4) {
         return bg_img.zk;
       }

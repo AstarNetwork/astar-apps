@@ -349,15 +349,23 @@
 
 .separator {
   margin: 8px 16px;
-  background-color: $navy-1;
+  background-color: $gray-2;
   height: 1px;
+}
+.body--dark{
+  .separator {
+    background-color: $navy-3;
+  }
 }
 
 .row--header {
-  padding: 16px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  @media (min-width: $lg) {
+    padding: 16px;
+  }
   .row--header__left {
     width: 50%;
   }
@@ -375,6 +383,12 @@
   }
   img {
     flex-shrink: 0;
+  }
+  .text--title{
+    font-weight: 600;
+    @media (min-width: $lg) {
+      font-size: 14px;
+    }
   }
 }
 
@@ -494,9 +508,13 @@
 .row--expand__action {
   display: none;
   @media (min-width: $sm) {
+    padding-right: 16px;
     width: 50%;
     display: flex;
     justify-content: flex-end;
+  }
+  .btn--sm{
+    font-weight: 600;
   }
 }
 
@@ -504,13 +522,13 @@
   font-weight: 600;
   color: $navy-1;
   font-size: 16px;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
 }
 .row--expand{
   .text--label {
     font-size: 14px;
-    @media (min-width: $sm) {
-      font-size: 16px;
-    }
   }
 }
 .body--dark{
@@ -558,25 +576,28 @@
 }
 
 .text--amount {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 1;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
 }
 .text--symbol {
   font-size: 16px;
   font-weight: 600;
   line-height: 1;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
 }
 .row--expand{
   .text--amount {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
   }
   .text--symbol {
     font-size: 14px;
-    @media (min-width: $sm) {
-      font-size: 16px;
-    }
   }
 }
 

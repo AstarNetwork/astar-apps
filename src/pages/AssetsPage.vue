@@ -52,8 +52,9 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 #assets-top {
+  padding: 0 16px;
   @media (min-width: $lg) {
-    padding-top: 58px;
+    margin-top: 58px;
   }
 }
 </style>

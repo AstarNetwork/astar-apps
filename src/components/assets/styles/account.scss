@@ -1,6 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--account{
+.wrapper--account {
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -58,26 +58,22 @@
 
 .column--account-icon {
   img {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     object-fit: cover;
     border-radius: 9999px;
-    @media (min-width: $sm) {
-      width: 48px;
-    height: 48px;
-    }
   }
 }
 
-.text--title {
-  @media (min-width: $sm) {
-    font-size: 16px;
-    font-weight: 700;
-  }
+.text--address {
+  font-size: 12px;
+  color: $navy-1;
 }
+
 .text--balance {
   font-size: 24px;
   font-weight: 700;
+  color: $navy-1;
   span {
     font-size: 16px;
     font-weight: 600;
@@ -115,7 +111,7 @@
     }
   }
   &:hover {
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
   }
   .icon--copy {
     width: 30px;
@@ -136,61 +132,57 @@
     }
   }
 }
-.body--dark {
-  .btn--icon {
-    color: white;
-    .icon--copy,
-    .icon--external-link {
-      stroke: white;
-    }
-  }
-}
-
 
 .container {
-  overflow: hidden;
-  border-radius: 16px;
-  padding: 24px 0;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  border: solid 1px $gray-2;
   background-color: white;
+  box-shadow: none;
+  border-radius: 16px;
+  padding: 16px 0 24px 0;
   @media (min-width: $sm) {
     padding-left: 24px;
     padding-right: 24px;
   }
 }
-
 .body--dark {
   .container {
-    background-color: $navy-4;
+    background-color: $navy-1;
+    border-color: $navy-3;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
   }
 }
 
 .container--account {
-  padding: 32px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  box-shadow: none;
-  background-color: white;
+  overflow: hidden;
   position: relative;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+  border-radius: 0 0 16px 16px;
+  margin: 0 -16px;
+  border: solid 1px $gray-2;
+  background-color: white;
+  padding: 16px;
+  height: 180px;
   @media (min-width: $lg) {
-    padding: 32px;
+    border-radius: 16px;
+    margin: 0;
   }
-}
-.body--dark{
-  .container--account {
-    box-shadow: none;
-    background-color: transparent;
+  .row {
+    padding: 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     @media (min-width: $lg) {
-      background-color: $navy-4;
-      box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+      padding: 0 20px;
     }
   }
 }
+.body--dark {
+  .container--account {
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+  }
+}
 
-.background{
+.account-bg {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left;
@@ -202,5 +194,40 @@
   height: 100%;
   @media (min-width: $sm) {
     background-position: right;
+  }
+}
+
+.wallet-tab {
+  position: relative;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  @media (min-width: $lg) {
+    justify-content: flex-end;
+  }
+  .wallet-tab__bg {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 4px;
+    border-radius: 9999px;
+    display: flex;
+  }
+  .btn {
+    border-radius: 9999px;
+    padding: 4px 12px;
+    color: $navy-1;
+    font-weight: 600;
+    &.active {
+      color: white;
+    }
+  }
+  .btn--native {
+    &.active {
+      background: linear-gradient(270deg, #ff94cd 26.04%, #e6007a 100%);
+    }
+  }
+  .btn--evm {
+    &.active {
+      background: linear-gradient(270deg, #703ac2 26.04%, #226dff 100%);
+    }
   }
 }
