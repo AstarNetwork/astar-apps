@@ -69,4 +69,18 @@ export interface IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void>;
+
+  /**
+   * Calculates staker bonus rewards.
+   * @param senderAddress Staker address.
+   * @returns Staker bonus rewards amount.
+   */
+  getBonusRewards(senderAddress: string): Promise<bigint>;
+
+  /**
+   * Invokes claim bonus rewards call.
+   * @param senderAddress Address of the request sender.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
 }

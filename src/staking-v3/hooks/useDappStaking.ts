@@ -48,6 +48,11 @@ export function useDappStaking() {
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
   };
 
+  const claimBonusRewards = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.claimBonusRewards(currentAccount.value, 'success');
+  };
+
   const claimDappRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const contractAddress = registeredDapps.value.find(
@@ -96,5 +101,6 @@ export function useDappStaking() {
     claimStakerRewards,
     canStake,
     claimDappRewards,
+    claimBonusRewards,
   };
 }

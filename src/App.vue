@@ -143,16 +143,13 @@ export default defineComponent({
 
       // TODO, temp call, remove later
       const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-      const [stakerReward, dAppRewards] = await Promise.all([
+      const [staker, dApp, bonus] = await Promise.all([
         stakingV3service.getStakerRewards(currentAccount.value),
         stakingV3service.getDappRewards('0x0000000000000000000000000000000000000005'),
+        stakingV3service.getBonusRewards(currentAccount.value),
       ]);
 
-      store.commit(
-        'stakingV3/setRewards',
-        { staker: stakerReward, dApp: dAppRewards, bonus: BigInt(0) },
-        { root: true }
-      );
+      store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
     });
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {

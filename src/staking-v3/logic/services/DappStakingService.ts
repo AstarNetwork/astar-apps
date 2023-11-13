@@ -146,11 +146,66 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<void> {
     const result = await this.getDappRewardsAndErasToClaim(contractAddress);
 
+    if (result.erasToClaim.length === 0) {
+      throw `No dApp rewards to claim for contract address ${contractAddress}.`;
+    }
+
     const call = await this.dappStakingRepository.getClaimDappRewardsCall(
       contractAddress,
       result.erasToClaim
     );
     await this.signCall(call, senderAddress, successMessage);
+  }
+
+  // @inheritdoc
+  public async getBonusRewards(senderAddress: string): Promise<bigint> {
+    const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
+
+    return result.rewards;
+  }
+
+  public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
+    const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
+
+    if (result.contractsToClaim.length === 0) {
+      throw `No bonus rewards to claim for sender address ${senderAddress}.`;
+    }
+
+    const call = await this.dappStakingRepository.getClaimBonusRewardsCall(result.contractsToClaim);
+    await this.signCall(call, senderAddress, successMessage);
+  }
+
+  private async getBonusRewardsAndContractsToClaim(
+    senderAddress: string
+  ): Promise<{ rewards: bigint; contractsToClaim: string[] }> {
+    let result = { rewards: BigInt(0), contractsToClaim: Array<string>() };
+    const [stakerInfo, protocolState, constants] = await Promise.all([
+      this.dappStakingRepository.startGetStakerInfo(senderAddress),
+      this.dappStakingRepository.getProtocolState(),
+      this.dappStakingRepository.getConstants(),
+    ]);
+
+    for (const [contract, info] of stakerInfo.entries()) {
+      // Staker is eligible to bonus rewards if he is a loyal staker and if rewards are not expired
+      // and if stake amount refers to the past period.
+      if (
+        info.loyalStaker &&
+        info.staked.period >=
+          protocolState.periodInfo.number - constants.rewardRetentionInPeriods &&
+        info.staked.period < protocolState.periodInfo.number
+      ) {
+        const periodEndInfo = await this.dappStakingRepository.getPeriodEndInfo(info.staked.period);
+        if (periodEndInfo) {
+          result.rewards +=
+            (info.staked.voting / periodEndInfo.totalVpStake) * periodEndInfo.bonusRewardPool;
+          result.contractsToClaim.push(contract);
+        } else {
+          throw `Period end info not found for period ${info.staked.period}.`;
+        }
+      }
+    }
+
+    return result;
   }
 
   private async getDappRewardsAndErasToClaim(

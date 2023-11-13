@@ -9,6 +9,7 @@ import {
   EraRewardSpan,
   PeriodEndInfo,
   ProtocolState,
+  SingularStakingInfo,
 } from '../models';
 
 /**
@@ -122,11 +123,24 @@ export interface IDappStakingRepository {
   ): Promise<ExtrinsicPayload>;
 
   /**
+   * Gets claim staker bonus rewards batch call.
+   * @param contractAddress Addresses of the contracts to claim bonus rewards for.
+   */
+  getClaimBonusRewardsCall(contractAddresses: string[]): Promise<ExtrinsicPayload>;
+
+  /**
    * Starts subscription to a staker info changes.
    * @param address Staker address to get info for.
    * @returns A promise that resolves to a map of staker address and staker info.
    */
   startGetStakerInfoSubscription(address: string): Promise<void>;
+
+  /**
+   * Gets staker info for the given address.
+   * @param address Address to get staker info for.
+   * @returns A promise that resolves to an array of staker info.
+   */
+  startGetStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>>;
 
   /**
    * Gets period end information (last era, bonus rewards, total stake)

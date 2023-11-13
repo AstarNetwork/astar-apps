@@ -181,6 +181,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return api.tx.utility.batchAll([
+      api.tx.dappStaking.cleanupExpiredEntries(), // TODO not sure if this will be called automatically by a node.
       await this.getLockCall(amount),
       await this.getStakeCall(contractAddress, amount),
     ]);
@@ -316,28 +317,21 @@ export class DappStakingRepository implements IDappStakingRepository {
     const unsubscribe = await api.query.dappStaking.stakerInfo.entries(
       address,
       (stakers: [StorageKey<AnyTuple>, Codec][]) => {
-        const result = new Map<string, SingularStakingInfo>();
-        stakers.forEach(([key, value]) => {
-          const v = <Option<PalletDappStakingV3SingularStakingInfo>>value;
-
-          if (v.isSome) {
-            const unwrappedValue = v.unwrap();
-            const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
-
-            if (address) {
-              result.set(address, <SingularStakingInfo>{
-                loyalStaker: unwrappedValue.loyalStaker.isTrue,
-                staked: this.mapStakeAmount(unwrappedValue.staked),
-              });
-            }
-          }
-        });
-
+        const result = this.mapsStakerInfo(stakers);
         this.eventAggregator.publish(new StakerInfoChangedMessage(result));
       }
     );
 
     this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
+  }
+
+  public async startGetStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
+    Guard.ThrowIfUndefined(address, 'address');
+
+    const api = await this.api.getApi();
+    const stakerInfos = await api.query.dappStaking.stakerInfo.entries(address);
+
+    return this.mapsStakerInfo(stakerInfos);
   }
 
   //* @inheritdoc
@@ -350,6 +344,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
     const calls = erasToClaim.map((era) =>
       api.tx.dappStaking.claimDappReward(getDappAddressEnum(contractAddress), era)
+    );
+
+    return api.tx.utility.batchAll(calls);
+  }
+
+  public async getClaimBonusRewardsCall(contractAddresses: string[]): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    const calls = contractAddresses.map((address) =>
+      api.tx.dappStaking.claimBonusReward(getDappAddressEnum(address))
     );
 
     return api.tx.utility.batchAll(calls);
@@ -404,5 +407,28 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   private getContractAddress(address: SmartContractAddress): string | undefined {
     return address.isEvm ? address.asEvm?.toString() : address.asWasm?.toString();
+  }
+
+  private mapsStakerInfo(
+    stakers: [StorageKey<AnyTuple>, Codec][]
+  ): Map<string, SingularStakingInfo> {
+    const result = new Map<string, SingularStakingInfo>();
+    stakers.forEach(([key, value]) => {
+      const v = <Option<PalletDappStakingV3SingularStakingInfo>>value;
+
+      if (v.isSome) {
+        const unwrappedValue = v.unwrap();
+        const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
+
+        if (address) {
+          result.set(address, <SingularStakingInfo>{
+            loyalStaker: unwrappedValue.loyalStaker.isTrue,
+            staked: this.mapStakeAmount(unwrappedValue.staked),
+          });
+        }
+      }
+    });
+
+    return result;
   }
 }
