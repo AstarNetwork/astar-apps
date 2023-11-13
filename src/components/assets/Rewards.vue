@@ -1,24 +1,16 @@
 <template>
   <div class="wrapper--rewards">
-    <div>
-      <div class="wrapper--cards">
-        <div v-if="!isDappDeveloper" class="card">
-          <div class="row--title">
-            {{ $t('myReward.estimatedRewards') }}
-          </div>
-
-          <div class="row--data">
-            <div v-if="isLoadingPendingRewards" class="loading">
-              <q-skeleton type="rect" animation="fade" />
-            </div>
-            <div v-else class="value value--claim">
-              <div>
-                <span class="text--rewards-amount">
-                  {{ $n(pendingRewards) }} {{ nativeTokenSymbol }}
-                </span>
-              </div>
-            </div>
-          </div>
+    <div v-if="!isDappDeveloper" class="container--rewards">
+      <div class="text--title">
+        {{ $t('assets.yourEstimatedRewards') }}
+      </div>
+      <div class="row--data">
+        <div v-if="isLoadingPendingRewards" class="loading">
+          <q-skeleton type="rect" animation="fade" />
+        </div>
+        <div v-else class="value">
+          <span class="text--amount">{{ $n(pendingRewards) }}</span>
+          <span class="text--symbol">{{ nativeTokenSymbol }}</span>
         </div>
       </div>
     </div>
@@ -28,17 +20,14 @@
 <script lang="ts">
 import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
 import { $api } from 'src/boot/api';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
+
 export default defineComponent({
-  components: {
-    // TokenBalance,
-  },
   setup() {
     const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =

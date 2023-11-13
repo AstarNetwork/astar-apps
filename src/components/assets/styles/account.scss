@@ -161,8 +161,8 @@
   border: solid 1px $gray-2;
   background-color: white;
   padding: 16px;
-  height: 180px;
-  @media (min-width: $lg) {
+  min-height: 180px;
+  @media (min-width: $sm) {
     border-radius: 16px;
     margin: 0;
   }
@@ -198,7 +198,7 @@
   margin-bottom: 16px;
   display: flex;
   justify-content: center;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     justify-content: flex-end;
   }
   .wallet-tab__bg {
@@ -230,5 +230,10 @@
 
 .row--account-rewards {
   display: flex;
-  gap: 16px;
+  gap: 32px;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    gap: 16px;
+  }
 }
