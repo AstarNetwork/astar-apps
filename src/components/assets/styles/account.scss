@@ -153,6 +153,7 @@
 }
 
 .container--account {
+  flex: 1;
   overflow: hidden;
   position: relative;
   border-radius: 0 0 16px 16px;
@@ -225,4 +226,9 @@
       background: linear-gradient(270deg, #703ac2 26.04%, #226dff 100%);
     }
   }
+}
+
+.row--account-rewards {
+  display: flex;
+  gap: 16px;
 }

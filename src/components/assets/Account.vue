@@ -1,78 +1,82 @@
 <template>
   <div class="wrapper--account">
-    <div class="container--account">
-      <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
+    <div class="row--account-rewards">
+      <div class="container--account">
+        <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
-      <div class="wallet-tab">
-        <div class="wallet-tab__bg">
-          <template v-if="isH160">
-            <template v-if="isZkEvm">
-              <div class="btn btn--native">Astar EVM (L1)</div>
-              <div v-if="isZkEvm" class="btn btn--evm active">Astar zkEVM</div>
+        <div class="wallet-tab">
+          <div class="wallet-tab__bg">
+            <template v-if="isH160">
+              <template v-if="isZkEvm">
+                <div class="btn btn--native">Astar EVM (L1)</div>
+                <div v-if="isZkEvm" class="btn btn--evm active">Astar zkEVM</div>
+              </template>
+              <div v-else class="btn btn--native active">Astar EVM</div>
             </template>
-            <div v-else class="btn btn--native active">Astar EVM</div>
-          </template>
-          <div v-else class="btn btn--native active">Astar Native</div>
+            <div v-else class="btn btn--native active">Astar Native</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="row--account-info">
+            <div class="column--account-icon">
+              <au-icon
+                v-if="isAccountUnified"
+                :native-address="unifiedAccount?.nativeAddress"
+                :icon-url="unifiedAccount?.avatarUrl"
+              />
+              <img
+                v-else-if="iconWallet"
+                width="24"
+                :src="iconWallet"
+                alt="wallet-icon"
+                :class="multisig && 'img--polkasafe'"
+              />
+            </div>
+
+            <div>
+              <div class="text--address">
+                {{ getShortenAddress(currentAccount) }}
+              </div>
+              <div class="text--balance">
+                {{ $n(totalBal) }}
+                <span>USD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row--actions">
+            <div v-if="isAccountUnification">
+              <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
+                <astar-icon-person />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">Unify accounts</span>
+              </q-tooltip>
+            </div>
+
+            <div>
+              <button id="copyAddress" type="button" class="btn--icon" @click="copyAddress">
+                <astar-icon-copy class="icon--copy" />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
+            </div>
+
+            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+              <button class="btn--icon">
+                <astar-icon-external-link class="icon--external-link" />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+              </q-tooltip>
+            </a>
+          </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="row--account-info">
-          <div class="column--account-icon">
-            <au-icon
-              v-if="isAccountUnified"
-              :native-address="unifiedAccount?.nativeAddress"
-              :icon-url="unifiedAccount?.avatarUrl"
-            />
-            <img
-              v-else-if="iconWallet"
-              width="24"
-              :src="iconWallet"
-              alt="wallet-icon"
-              :class="multisig && 'img--polkasafe'"
-            />
-          </div>
-
-          <div>
-            <div class="text--address">
-              {{ getShortenAddress(currentAccount) }}
-            </div>
-            <div class="text--balance">
-              {{ $n(totalBal) }}
-              <span>USD</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="row--actions">
-          <div v-if="isAccountUnification">
-            <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
-              <astar-icon-person />
-            </button>
-            <q-tooltip>
-              <span class="text--tooltip">Unify accounts</span>
-            </q-tooltip>
-          </div>
-
-          <div>
-            <button id="copyAddress" type="button" class="btn--icon" @click="copyAddress">
-              <astar-icon-copy class="icon--copy" />
-            </button>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('copy') }}</span>
-            </q-tooltip>
-          </div>
-
-          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-            <button class="btn--icon">
-              <astar-icon-external-link class="icon--external-link" />
-            </button>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-            </q-tooltip>
-          </a>
-        </div>
-      </div>
+      <rewards v-if="!isZkEvm" />
     </div>
 
     <template v-if="isH160">
@@ -120,6 +124,7 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Rewards from 'src/components/assets/Rewards.vue';
 
 export default defineComponent({
   components: {
@@ -127,6 +132,7 @@ export default defineComponent({
     EvmNativeToken,
     ZkAstr,
     AuIcon,
+    Rewards,
   },
   props: {
     ttlErc20Amount: {
