@@ -13,28 +13,111 @@
 
     <q-slide-transition :duration="150">
       <div v-show="showNav" class="wrapper--mobile-nav">
+        <nav class="links">
+          <router-link
+            :to="RoutePath.Assets"
+            :class="['link', path === 'assets' && 'active-link']"
+            @click="showNav = !showNav"
+          >
+            <div class="column--item">
+              <span>My Assets</span>
+            </div>
+          </router-link>
+
+          <router-link
+            v-if="network.isStoreEnabled"
+            :to="RoutePath.DappStaking"
+            :class="['link', path === 'dapp-staking' && 'active-link']"
+            @click="showNav = !showNav"
+          >
+            <div class="column--item">
+              <span class="text--link">
+                {{ $t('common.staking') }}
+              </span>
+            </div>
+          </router-link>
+
+          <button
+            v-if="isZkatana"
+            :disabled="true"
+            :class="['link', path === 'dashboard' && 'active-link']"
+          >
+            <div class="column--item column--item--dashboard">
+              <span class="text--link">Data</span>
+            </div>
+          </button>
+
+          <router-link
+            v-else
+            :to="RoutePath.Dashboard"
+            :class="['link', path === 'dashboard' && 'active-link']"
+            @click="showNav = !showNav"
+          >
+            <div class="column--item column--item--dashboard">
+              <span class="text--link">Data</span>
+            </div>
+          </router-link>
+        </nav>
+
         <astar-domains />
+        <blog-posts />
         <community-links />
+        <settings />
+
+        <div class="footer--mobile-nav">
+          <div>Astar Network © 2023 Built by Astar Foundation</div>
+          <div class="footer--mobile-nav__links">
+            <a href="https://astar.network/term-of-use" target="_blank" rel="noopener noreferrer">
+              {{ $t('disclaimer.terms') }}
+            </a>
+            <a
+              href="https://astar.network/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t('disclaimer.privacy') }}
+            </a>
+          </div>
+        </div>
       </div>
     </q-slide-transition>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useBreakpoints } from 'src/hooks';
+import { Path as RoutePath } from 'src/router/routes';
+import { useRouter } from 'vue-router';
+import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import CommunityLinks from 'src/components/header/mobile/CommunityLinks.vue';
+import BlogPosts from 'src/components/header/mobile/BlogPosts.vue';
+import Settings from 'src/components/header/mobile/Settings.vue';
 
 export default defineComponent({
-  components: { AstarDomains, CommunityLinks },
+  components: { AstarDomains, CommunityLinks, BlogPosts, Settings },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const showNav = ref<boolean>(false);
+    const router = useRouter();
+    const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+    const { isZkatana } = useNetworkInfo();
+
+    const store = useStore();
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const network = ref(providerEndpoints[currentNetworkIdx.value]);
+
     return {
       width,
       screenSize,
       showNav,
+      path,
+      RoutePath,
+      network,
+      isZkatana,
     };
   },
 });
@@ -66,11 +149,39 @@ export default defineComponent({
 }
 .wrapper--mobile-nav {
   width: 100vw;
-  height: calc(100vh - 64px);
-  background-color: white;
+  background-color: $navy-1;
   position: absolute;
   left: 0;
   top: 64px;
   z-index: 1;
+  color: $gray-1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 0;
+}
+.links {
+  padding: 0 16px;
+  a {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 64px;
+  }
+}
+
+.footer--mobile-nav {
+  padding: 0 16px;
+  text-align: center;
+  font-size: 12px;
+  color: $gray-3;
+  .footer--mobile-nav__links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+    a {
+      color: $astar-blue;
+    }
+  }
 }
 </style>

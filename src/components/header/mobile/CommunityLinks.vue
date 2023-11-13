@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper--community">
-    <div class="text--title">Astar Network is owned by community</div>
-    <button class="btn--feedback">Give us feedback</button>
+    <div class="text--title">Astar Network is owned by the community</div>
   </div>
 </template>
 <script lang="ts">
@@ -65,7 +64,7 @@ export default defineComponent({
   background-color: $navy-1;
   color: white;
   text-align: center;
-  padding: 40px 16px;
+  padding: 0 16px;
 }
 .text--title {
   font-weight: 900;

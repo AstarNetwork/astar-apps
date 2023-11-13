@@ -1,19 +1,16 @@
 <template>
-  <div>
-    <div v-if="width <= screenSize.sm" class="text--title">Astar Domains</div>
-    <div class="wrapper--domains">
-      <a
-        v-for="(t, index) in items"
-        :key="index"
-        class="link"
-        :href="t.link"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img :src="t.img" :alt="t.title" />
-        <span>{{ t.title }}</span>
-      </a>
-    </div>
+  <div class="wrapper--domains">
+    <a
+      v-for="(t, index) in items"
+      :key="index"
+      class="link"
+      :href="t.link"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img :src="t.img" :alt="t.title" />
+      <span>{{ t.title }}</span>
+    </a>
   </div>
 </template>
 <script lang="ts">
@@ -75,8 +72,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 .wrapper--domains {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 12px;
+  padding: 0 16px;
+  @media (min-width: $sm) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0;
+  }
 }
 .link {
   font-weight: 500;
@@ -106,8 +109,5 @@ export default defineComponent({
       color: $astar-blue-dark;
     }
   }
-}
-.text--title {
-  margin-bottom: 24px;
 }
 </style>
