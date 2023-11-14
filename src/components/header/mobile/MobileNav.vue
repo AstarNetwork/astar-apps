@@ -20,7 +20,7 @@
             @click="showNav = !showNav"
           >
             <div class="column--item">
-              <span>My Assets</span>
+              <span>{{ $t('sidenavi.myAssets') }}</span>
             </div>
           </router-link>
 
@@ -54,15 +54,24 @@
             @click="showNav = !showNav"
           >
             <div class="column--item column--item--dashboard">
-              <span class="text--link">Data</span>
+              <span class="text--link">{{ $t('sidenavi.data') }}</span>
             </div>
           </router-link>
         </nav>
 
-        <astar-domains />
-        <blog-posts />
-        <community-links />
-        <settings />
+        <div class="gradient-bg">
+          <astar-domains />
+          <blog-posts />
+        </div>
+
+        <div class="gradient-bg">
+          <community-links />
+          <div class="text--settings">{{ $t('sidenavi.settings') }}</div>
+          <div class="container--settings">
+            <locale-changer />
+            <light-dark-mode />
+          </div>
+        </div>
 
         <div class="footer--mobile-nav">
           <div>Astar Network © 2023 Built by Astar Foundation</div>
@@ -92,13 +101,14 @@ import { useRouter } from 'vue-router';
 import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
-import CommunityLinks from 'src/components/header/mobile/CommunityLinks.vue';
-import BlogPosts from 'src/components/header/mobile/BlogPosts.vue';
-import Settings from 'src/components/header/mobile/Settings.vue';
+import AstarDomains from './AstarDomains.vue';
+import CommunityLinks from './CommunityLinks.vue';
+import BlogPosts from './BlogPosts.vue';
+import LocaleChanger from './LocaleChanger.vue';
+import LightDarkMode from './LightDarkMode.vue';
 
 export default defineComponent({
-  components: { AstarDomains, CommunityLinks, BlogPosts, Settings },
+  components: { AstarDomains, CommunityLinks, BlogPosts, LocaleChanger, LightDarkMode },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const showNav = ref<boolean>(false);
@@ -157,8 +167,8 @@ export default defineComponent({
   color: $gray-1;
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  padding: 40px 0;
+  // gap: 40px;
+  padding-top: 40px;
 }
 .links {
   padding: 0 16px;
@@ -169,8 +179,13 @@ export default defineComponent({
   }
 }
 
+.gradient-bg {
+  padding: 40px 0;
+  background: linear-gradient(176deg, #081029 50%, #1f2f5f 96.8%);
+}
+
 .footer--mobile-nav {
-  padding: 0 16px;
+  padding: 40px 16px 80px 16px;
   text-align: center;
   font-size: 12px;
   color: $gray-3;
@@ -183,5 +198,19 @@ export default defineComponent({
       color: $astar-blue;
     }
   }
+}
+
+.text--settings {
+  color: $gray-1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+.container--settings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0 16px;
 }
 </style>

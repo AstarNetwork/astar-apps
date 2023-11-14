@@ -1,75 +1,112 @@
 <template>
   <div class="wrapper--community">
     <div class="text--title">Astar Network is owned by the community</div>
+
+    <div class="container--links">
+      <a :href="socialUrl.discord" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon" viewBox="0 0 448 512" icon-name="Discord">
+            <astar-icon-discord />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.discord') }}</span>
+      </a>
+      <a :href="socialUrl.twitter" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon" viewBox="0 0 448 512" icon-name="Twitter">
+            <astar-icon-twitter />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.twitter') }}</span>
+      </a>
+      <a :href="socialUrl.telegram" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon" viewBox="0 0 448 512" icon-name="Telegram">
+            <astar-icon-telegram />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.telegram') }}</span>
+      </a>
+      <a :href="socialUrl.reddit" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon community-icon" icon-name="Reddit">
+            <astar-icon-reddit />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.reddit') }}</span>
+      </a>
+      <a :href="socialUrl.youtube" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon community-icon" icon-name="YouTube">
+            <astar-icon-youtube />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.youtube') }}</span>
+      </a>
+      <a :href="socialUrl.github" target="_blank" rel="noopener noreferrer">
+        <div class="menu-item">
+          <astar-icon-base class="icon" viewBox="0 4 548 512" icon-name="Github">
+            <astar-icon-github />
+          </astar-icon-base>
+        </div>
+        <span>{{ $t('sidenavi.github') }}</span>
+      </a>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useBreakpoints } from 'src/hooks';
-import { useI18n } from 'vue-i18n';
+import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {},
   setup() {
-    const { width, screenSize } = useBreakpoints();
-    const { t } = useI18n();
-    const icon_img = {
-      home: require('/src/assets/img/icon_home.svg'),
-      astar2: require('/src/assets/img/icon_astar2.svg'),
-      tech_stack: require('/src/assets/img/icon_tech_stack.svg'),
-      docs: require('/src/assets/img/icon_docs.svg'),
-      forum: require('/src/assets/img/icon_forum.svg'),
-      startale: require('/src/assets/img/icon_startale.svg'),
-    };
-
-    const items = [
-      {
-        title: 'Home',
-        img: icon_img.home,
-        link: 'https://astar.network/',
-      },
-      {
-        title: 'Astar 2.0',
-        img: icon_img.astar2,
-        link: 'https://astar.network/astar2',
-      },
-      {
-        title: 'Tech Stack',
-        img: icon_img.tech_stack,
-        link: 'https://astar.network/developers/techstack',
-      },
-      {
-        title: 'Astar Docs',
-        img: icon_img.docs,
-        link: 'https://docs.astar.network/',
-      },
-      {
-        title: 'Forum',
-        img: icon_img.forum,
-        link: 'https://forum.astar.network/',
-      },
-      {
-        title: 'Startale',
-        img: icon_img.startale,
-        link: 'https://startale.org/',
-      },
-    ];
-
-    return { items, width, screenSize };
+    return { socialUrl };
   },
 });
 </script>
 <style lang="scss" scoped>
 .wrapper--community {
-  background-color: $navy-1;
   color: white;
   text-align: center;
   padding: 0 16px;
+  margin-bottom: 40px;
 }
 .text--title {
   font-weight: 900;
   color: white;
   font-size: 24px;
   margin-bottom: 24px;
+}
+
+.container--links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px 12px;
+  @media (min-width: $sm) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  a {
+    .menu-item {
+      width: 64px;
+      height: 64px;
+      background-color: $navy-3;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $astar-blue;
+      margin: auto;
+    }
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+    span {
+      font-size: 12px;
+      margin-top: 12px;
+      display: block;
+    }
+  }
 }
 </style>

@@ -75,7 +75,11 @@ export default defineComponent({
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 40px 12px;
   padding: 0 16px;
+  margin-bottom: 40px;
   @media (min-width: $sm) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  @media (min-width: $lg) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     padding: 0;

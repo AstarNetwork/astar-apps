@@ -89,8 +89,8 @@ export default {
   common: {
     updateMetadata: 'Update Metadata',
     metadataAlreadyInstalled: 'Metadata Already Installed',
-    lightMode: 'Light mode',
-    darkMode: 'Dark mode',
+    lightTheme: 'Light theme',
+    darkTheme: 'Dark theme',
     dApps: 'dApps',
     dappStaking: 'dApp Staking',
     staking: 'Staking',
@@ -129,6 +129,8 @@ export default {
   },
   sidenavi: {
     community: 'Community',
+    myAssets: 'My Assets',
+    data: 'Data',
     discord: 'Discord',
     twitter: 'Twitter',
     telegram: 'Telegram',
