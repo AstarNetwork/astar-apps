@@ -8,4 +8,7 @@ export interface IAccountUnificationService {
   ): Promise<boolean>;
   getMappedNativeAddress(evmAddress: string): Promise<string>;
   getMappedEvmAddress(nativeAddress: string): Promise<string>;
+  getConvertedNativeAddress(evmAddress: string): Promise<string>;
+  getConvertedEvmAddress(nativeAddress: string): Promise<string>;
+  checkIsUnifiedAccount(address: string): Promise<boolean>;
 }

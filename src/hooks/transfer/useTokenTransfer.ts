@@ -1,7 +1,6 @@
 import {
   ASTAR_SS58_FORMAT,
   SUBSTRATE_SS58_FORMAT,
-  buildEvmAddress,
   getEvmGasCost,
   getShortenAddress,
   isValidAddressPolkadotAddress,
@@ -20,7 +19,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { IAssetsService } from 'src/v2/services';
+import { IAccountUnificationService, IAssetsService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -36,7 +35,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const store = useStore();
   const { t } = useI18n();
-  const { currentAccount, getSS58Address } = useAccount();
+  const { currentAccount } = useAccount();
   const { accountData } = useBalance(currentAccount);
 
   const transferableBalance = computed<number>(() => {
@@ -58,7 +57,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer, isZkEvm } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportAuTransfer, isZkEvm } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -76,7 +75,12 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const isNativeTokenSs58ToEvm =
       isSs58 && isTransferNativeToken.value && isValidEvmAddress(toAddress.value);
 
-    return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
+    return (
+      !isTransferNativeToken.value ||
+      isNativeTokenEvmToSs58 ||
+      isNativeTokenSs58ToEvm ||
+      isZkEvm.value
+    );
   });
 
   const fromAddressBalance = computed<number>(() =>
@@ -97,8 +101,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isValidDestAddress = computed<boolean>(() => {
     const isOnlyAcceptEvmAddress =
-      isH160.value && !isTransferNativeToken.value && !isSupportXvmTransfer.value;
-    return isOnlyAcceptEvmAddress
+      isH160.value && !isTransferNativeToken.value && !isSupportAuTransfer.value;
+    return isOnlyAcceptEvmAddress || isZkEvm.value
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
           isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||
@@ -107,7 +111,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const inputHandler = (event: any): void => {
     transferAmt.value = event.target.value;
-    errMsg.value = '';
   };
 
   const resetStates = (): void => {
@@ -122,7 +125,17 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     transferAmt.value = String(selectedToken.value.userBalance);
   };
 
-  const setErrorMsg = (): void => {
+  const checkUnifiedAccount = async (): Promise<boolean> => {
+    const isEvmAddress = isValidEvmAddress(toAddress.value);
+    const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
+    if (isH160.value) {
+      return isEvmAddress ? true : await service.checkIsUnifiedAccount(toAddress.value);
+    } else {
+      return isEvmAddress ? await service.checkIsUnifiedAccount(toAddress.value) : true;
+    }
+  };
+
+  const setErrorMsg = async (): Promise<void> => {
     if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     try {
@@ -132,6 +145,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+        return;
+      } else if (
+        isH160.value &&
+        toAddress.value &&
+        !isTransferNativeToken.value &&
+        !(await checkUnifiedAccount())
+      ) {
+        errMsg.value = 'warning.inputtedNotUnifiedDestAddress';
       } else if (transferAmtRef && !transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
@@ -171,11 +192,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
     try {
       const assetsService = container.get<IAssetsService>(Symbols.AssetsService);
+      const accountUnificationService = container.get<IAccountUnificationService>(
+        Symbols.AccountUnificationService
+      );
 
       if (isH160.value) {
         const receivingAddress = isValidEvmAddress(toAddress)
           ? toAddress
-          : buildEvmAddress(toAddress);
+          : await accountUnificationService.getConvertedEvmAddress(toAddress);
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
           transferAmt,
@@ -192,7 +216,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
-          ? await getSS58Address(toAddress)
+          ? await accountUnificationService.getConvertedNativeAddress(toAddress)
           : toAddress;
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
@@ -239,16 +263,21 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       toAddressBalance.value = 0;
       return;
     }
+    const accountUnificationService = container.get<IAccountUnificationService>(
+      Symbols.AccountUnificationService
+    );
 
     const isSendToH160 = isValidEvmAddress(toAddress.value);
-    const destAddress = isSendToH160 ? await getSS58Address(toAddress.value) : toAddress.value;
+    const destAddress = isSendToH160
+      ? await accountUnificationService.getConvertedNativeAddress(toAddress.value)
+      : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
     if (isTransferNativeToken.value && !isZkEvm.value) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
-        ? buildEvmAddress(toAddress.value)
+        ? await accountUnificationService.getConvertedEvmAddress(toAddress.value)
         : toAddress.value;
 
       const balance = await getTokenBal({

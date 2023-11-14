@@ -31,6 +31,11 @@ export class IdentityRepository implements IIdentityRepository {
   public async getIdentity(address: string): Promise<IdentityData | undefined> {
     Guard.ThrowIfUndefined('address', address);
     const api = await this.api.getApi();
+
+    if (!api.query.identity) {
+      return undefined;
+    }
+
     const result = await api.query.identity.identityOf<Option<PalletIdentityRegistration>>(address);
 
     if (result.isNone) {

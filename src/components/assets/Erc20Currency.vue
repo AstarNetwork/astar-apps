@@ -7,7 +7,7 @@
           <div class="column--currency">
             <div class="token-logo">
               <jazzicon
-                v-if="token.image.includes('custom-token')"
+                v-if="token.image && token.image.includes('custom-token')"
                 :address="token.address"
                 :diameter="24"
               />
@@ -30,7 +30,10 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--multi">
+          <div
+            class="column--asset-buttons"
+            :class="isZkEvm ? 'column--buttons--zkevm' : 'column--buttons--multi'"
+          >
             <!-- Memo: test checking if styling won't break -->
             <!-- <div v-if="token.isXC20" /> -->
             <router-link :to="buildTransferPageLink(token.symbol)">
@@ -42,6 +45,11 @@
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
+            </div>
+            <div v-if="isZkEvm">
+              <router-link :to="buildEthereumBridgePageLink()">
+                <button class="btn btn--sm">{{ $t('assets.bridge') }}</button>
+              </router-link>
             </div>
             <div class="screen--xl">
               <a
@@ -83,11 +91,11 @@
             </div>
             <div v-if="isImportedToken" class="screen--xl">
               <button
-                class="btn btn--sm btn--delete adjuster--width"
+                class="btn btn--sm adjuster--width"
                 @click="handleDeleteStoredToken(token.address)"
               >
-                <div class="adjuster--width icon--delete">
-                  <astar-icon-delete size="22" />
+                <div class="adjuster--width">
+                  <astar-icon-delete size="20" />
                 </div>
               </button>
               <q-tooltip>
@@ -112,10 +120,11 @@ import {
   getErc20Explorer,
   getStoredERC20Tokens,
 } from 'src/modules/token';
-import { buildTransferPageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
@@ -134,7 +143,7 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
-    const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const explorerLink = computed(() => {
       const tokenAddress = token.address;
@@ -162,9 +171,11 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
+      isZkEvm,
       buildTransferPageLink,
       addToEvmProvider,
       handleDeleteStoredToken,
+      buildEthereumBridgePageLink,
     };
   },
 });

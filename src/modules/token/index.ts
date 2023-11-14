@@ -30,6 +30,8 @@ export interface Erc20Token {
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;
+  bridgedChainId?: number;
+  bridgedTokenAddress?: string;
 }
 
 export const WASTR: Erc20Token = {
@@ -50,4 +52,6 @@ export const registeredErc20Tokens: Erc20Token[] = [WASTR];
 export const tokenImageMap = {
   ARSW: 'https://assets.coingecko.com/coins/images/26048/small/arsw.png?1655440190',
   LAY: 'https://assets.coingecko.com/coins/images/25795/small/WKBrkX4y_400x400.png?1653920060',
+  USDT: 'https://assets.coingecko.com/coins/images/325/large/Tether-logo.png?1598003707',
+  WETH: 'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
 };

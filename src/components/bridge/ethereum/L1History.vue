@@ -37,7 +37,7 @@
                     alt="from-bridge"
                   />
                   <span class="text--accent">
-                    {{ checkIsL1(history.network_id) ? l1Network : l2Network }}
+                    {{ getShortNetworkName(checkIsL1(history.network_id) ? l1Network : l2Network) }}
                   </span>
                 </div>
                 <div class="icon--arrow-right">
@@ -54,15 +54,17 @@
                     alt="from-bridge"
                   />
                   <span class="text--accent">
-                    {{ !checkIsL1(history.network_id) ? l1Network : l2Network }}
+                    {{
+                      getShortNetworkName(!checkIsL1(history.network_id) ? l1Network : l2Network)
+                    }}
                   </span>
                 </div>
               </div>
               <div>
                 <span class="text--accent">
                   <token-balance
-                    :balance="ethers.utils.formatEther(history.amount.toString())"
-                    :symbol="nativeTokenSymbol"
+                    :balance="ethers.utils.formatUnits(history.amount.toString(), history.decimal)"
+                    :symbol="history.symbol ?? ''"
                   />
                 </span>
               </div>
@@ -84,9 +86,7 @@
                   rel="noreferrer"
                 >
                   <span>
-                    {{
-                      (checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
-                    }}
+                    {{ getShortNetworkName(checkIsL1(history.network_id) ? l1Network : l2Network) }}
                   </span>
                   <div class="container--explorer-icon">
                     <astar-icon-external-link />
@@ -107,7 +107,7 @@
                 >
                   <span>
                     {{
-                      (!checkIsL1(history.network_id) ? l1Network : l2Network).replace('zkEVM', '')
+                      getShortNetworkName(!checkIsL1(history.network_id) ? l1Network : l2Network)
                     }}
                   </span>
                   <div class="container--explorer-icon">
@@ -117,6 +117,7 @@
                 <button
                   v-else-if="history.isActionRequired"
                   class="action-button link-button status--claim"
+                  :disabled="isHandling"
                   @click="async () => await claim(history)"
                 >
                   {{ $t('bridge.claim') }}
@@ -138,6 +139,7 @@
   </div>
 </template>
 <script lang="ts">
+import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { DateTime } from 'luxon';
@@ -150,8 +152,10 @@ import {
   checkIsL1,
   zkBridgeIcon,
 } from 'src/modules/zk-evm-bridge';
+import { useStore } from 'src/store';
 import { PropType, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getShortNetworkName } from 'src/modules/zk-evm-bridge';
 
 enum TxStatus {
   Completed = 'completed',
@@ -189,7 +193,8 @@ export default defineComponent({
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
     const { t } = useI18n();
-
+    const store = useStore();
+    const isHandling = ref<boolean>(false);
     const syncIndex = ref<number | undefined>();
 
     const handleUpdateHistory = async (index: number): Promise<void> => {
@@ -204,10 +209,16 @@ export default defineComponent({
     };
 
     const claim = async (withdrawal: BridgeHistory): Promise<void> => {
+      isHandling.value = true;
       const transactionHash = await props.handleClaim(withdrawal);
       if (isHex(transactionHash)) {
+        store.commit('general/setLoading', true, { root: true });
+        // Memo: gives some time for updating in the bridge API
+        await wait(3 * 1000);
         await props.fetchUserHistory();
+        store.commit('general/setLoading', false, { root: true });
       }
+      isHandling.value = false;
     };
 
     const displayTime = (timestamp: number): string => {
@@ -252,6 +263,7 @@ export default defineComponent({
       nativeTokenSymbol,
       TxStatus,
       syncIndex,
+      isHandling,
       displayTime,
       checkIsL1,
       checkStatus,
@@ -260,6 +272,7 @@ export default defineComponent({
       checkIsRefresh,
       claim,
       getExplorerUrl,
+      getShortNetworkName,
     };
   },
 });

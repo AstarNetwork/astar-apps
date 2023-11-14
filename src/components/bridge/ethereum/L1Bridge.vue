@@ -9,7 +9,7 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
@@ -39,7 +39,7 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(toBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
@@ -62,21 +62,32 @@
               <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromBridgeBalance)"
-                :symbol="nativeTokenSymbol"
+                :symbol="selectedToken.symbol"
               />
             </span>
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row cursor-pointer">
+          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <img width="24" alt="token-logo" :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]" />
+              <img
+                v-if="selectedToken.symbol === 'ETH'"
+                width="24"
+                alt="token-logo"
+                :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
+              />
+              <img
+                v-else-if="selectedToken.image !== ''"
+                width="24"
+                alt="token-logo"
+                :src="selectedToken.image"
+              />
+              <jazzicon v-else :address="selectedToken.address" :diameter="24" class="item-logo" />
             </div>
-            <span class="text--title">{{ nativeTokenSymbol }}</span>
-            <!-- Memo: use this incase we need to bridge more tokens -->
-            <!-- <div class="icon--expand">
+            <span class="text--title">{{ selectedToken.symbol }}</span>
+            <div class="icon--expand">
               <astar-icon-expand size="20" />
-            </div> -->
+            </div>
           </div>
           <div class="box__column--input-amount">
             <input
@@ -87,9 +98,25 @@
               pattern="^[0-9]*(\.)?[0-9]*$"
               placeholder="0.0"
               class="input--amount input--no-spin"
-              @input="inputHandler"
+              @input="(e) => inputHandler(e)"
             />
           </div>
+        </div>
+      </div>
+
+      <div v-if="!isApproved && selectedToken.symbol !== 'ETH'">
+        <div class="input--checkbox" :class="isApproveMaxAmount && 'input--checkbox--checked'">
+          <input
+            id="approve-max-amount"
+            :checked="isApproveMaxAmount"
+            :value="isApproveMaxAmount"
+            type="checkbox"
+            class="checkbox"
+            @change="(event:any)=>$emit('update:isApproveMaxAmount', event.target.checked)"
+          />
+          <label for="approve-max-amount">
+            <span>{{ $t('bridge.approvalMaxAmount') }}</span>
+          </label>
         </div>
       </div>
 
@@ -103,29 +130,40 @@
           <li>{{ $t('bridge.warning2steps') }}</li>
         </ul>
       </div>
-      <div class="wrapper__row--button">
+
+      <div class="row--buttons">
         <astar-button
-          class="button--confirm btn-size-adjust"
-          :disabled="isDisabledBridge"
+          class="button--confirm"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
+          @click="approve"
+        >
+          {{ $t('approve') }}
+        </astar-button>
+        <astar-button
+          class="button--confirm"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
           @click="bridge"
         >
-          {{ $t('confirm') }}
+          {{ $t('bridge.bridge') }}
         </astar-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useL1Bridge } from 'src/hooks';
-import { defineComponent } from 'vue';
-import { zkBridgeIcon, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
-import { isHex } from '@polkadot/util';
 import { wait } from '@astar-network/astar-sdk-core';
+import { isHex } from '@polkadot/util';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useAccount } from 'src/hooks';
+import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { useStore } from 'src/store';
+import { PropType, defineComponent, watch, ref, computed } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
     TokenBalance,
+    [Jazzicon.name]: Jazzicon,
   },
   props: {
     fetchUserHistory: {
@@ -136,48 +174,127 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
+    selectedToken: {
+      type: Object as PropType<ZkToken>,
+      required: true,
+    },
+    bridgeAmt: {
+      type: String,
+      required: true,
+    },
+    errMsg: {
+      type: String,
+      required: true,
+    },
+    isDisabledBridge: {
+      type: Boolean,
+      required: true,
+    },
+    isApproved: {
+      type: Boolean,
+      required: true,
+    },
+    isApproving: {
+      type: Boolean,
+      required: true,
+    },
+    isApproveMaxAmount: {
+      type: Boolean,
+      required: true,
+    },
+    fromBridgeBalance: {
+      type: Number,
+      required: true,
+    },
+    toBridgeBalance: {
+      type: Number,
+      required: true,
+    },
+    fromChainName: {
+      type: String,
+      required: true,
+    },
+    toChainName: {
+      type: String,
+      required: true,
+    },
+    inputHandler: {
+      type: Function,
+      required: true,
+    },
+    reverseChain: {
+      type: Function,
+      required: true,
+    },
+    handleBridge: {
+      type: Function,
+      required: true,
+    },
+    handleApprove: {
+      type: Function,
+      required: true,
+    },
+    setIsApproving: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const {
-      bridgeAmt,
-      errMsg,
-      isDisabledBridge,
-      fromBridgeBalance,
-      toBridgeBalance,
-      fromChainName,
-      toChainName,
-      nativeTokenSymbol,
-      inputHandler,
-      reverseChain,
-      handleBridge,
-    } = useL1Bridge();
+    const store = useStore();
+    const isHandling = ref<boolean>(false);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const bridge = async (): Promise<void> => {
-      const transactionHash = await handleBridge();
-      if (isHex(transactionHash)) {
-        // Memo: gives some time for synching in the bridge API
+      isHandling.value = true;
+      const transactionHash = await props.handleBridge();
+      const isTransactionSuccessful = isHex(transactionHash);
+      if (isTransactionSuccessful) {
+        store.commit('general/setLoading', true, { root: true });
+        // Memo: gives some time for updating in the bridge API
         await wait(3 * 1000);
         await props.fetchUserHistory();
         props.setIsBridge(false);
+        store.commit('general/setLoading', false, { root: true });
       }
+      isHandling.value = false;
     };
+
+    const approve = async (): Promise<void> => {
+      isHandling.value = true;
+      const transactionHash = await props.handleApprove();
+      const isTransactionSuccessful = isHex(transactionHash);
+      if (isTransactionSuccessful) {
+        store.commit('general/setLoading', true, { root: true });
+        props.setIsApproving(true);
+      }
+      isHandling.value = false;
+    };
+
+    // Watching the 'isApproved' prop
+    // When 'isApproved' changes and becomes true, stop loading animation
+    watch(
+      () => props.isApproved,
+      async (newVal, oldVal) => {
+        if (newVal === true) {
+          props.setIsApproving(false);
+          store.commit('general/setLoading', false, { root: true });
+        }
+      }
+    );
 
     return {
       zkBridgeIcon,
       currentAccount,
-      bridgeAmt,
-      isDisabledBridge,
-      errMsg,
-      fromBridgeBalance,
-      toBridgeBalance,
-      fromChainName,
-      toChainName,
       EthBridgeNetworkName,
-      nativeTokenSymbol,
-      inputHandler,
-      reverseChain,
+      isHandling,
+      isLoading,
       bridge,
+      approve,
     };
   },
 });
