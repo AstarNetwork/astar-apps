@@ -140,7 +140,7 @@ export interface IDappStakingRepository {
    * @param address Address to get staker info for.
    * @returns A promise that resolves to an array of staker info.
    */
-  startGetStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>>;
+  getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>>;
 
   /**
    * Gets period end information (last era, bonus rewards, total stake)

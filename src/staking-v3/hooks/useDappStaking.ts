@@ -46,25 +46,52 @@ export function useDappStaking() {
   const claimStakerRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
+    const staker = await stakingService.getStakerRewards(currentAccount.value);
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
 
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimBonusRewards(currentAccount.value, 'success');
+    const bonus = await stakingService.getBonusRewards(currentAccount.value);
+    store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
 
   const claimDappRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    const contractAddress = registeredDapps.value.find(
-      (x) =>
-        x.chain.rewardDestination === currentAccount.value || x.chain.owner === currentAccount.value
-    )?.chain.address;
+    const contractAddress = getOwnedDappAddress();
 
     if (contractAddress) {
       await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
+      const dApp = await stakingService.getDappRewards(contractAddress);
+      store.commit('stakingV3/setRewards', { ...rewards.value, dApp });
     } else {
       throw 'No dapp found';
     }
+  };
+
+  const getAllRewards = async (): Promise<void> => {
+    const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const ownedContractAddress = getOwnedDappAddress();
+
+    const calls = [];
+    if (currentAccount.value) {
+      calls.push(stakingV3service.getStakerRewards(currentAccount.value));
+      calls.push(stakingV3service.getBonusRewards(currentAccount.value));
+    }
+    if (ownedContractAddress) {
+      calls.push(stakingV3service.getDappRewards(ownedContractAddress));
+    }
+
+    const [staker, dApp, bonus] = await Promise.all(calls);
+    store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
+  };
+
+  const getOwnedDappAddress = (): string | undefined => {
+    return registeredDapps.value.find(
+      (x) =>
+        x.chain.rewardDestination === currentAccount.value || x.chain.owner === currentAccount.value
+    )?.chain.address;
   };
 
   const canStake = (amount: number): [boolean, string] => {
@@ -102,5 +129,6 @@ export function useDappStaking() {
     canStake,
     claimDappRewards,
     claimBonusRewards,
+    getAllRewards,
   };
 }

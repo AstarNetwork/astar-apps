@@ -71,6 +71,7 @@ import {
   ProtocolStateChangedMessage,
   StakerInfoChangedMessage,
 } from './staking-v3';
+import { useDappStaking } from './staking-v3/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -87,6 +88,7 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
+    const { getAllRewards } = useDappStaking();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -141,15 +143,7 @@ export default defineComponent({
       const message = m as ProtocolStateChangedMessage;
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
-      // TODO, temp call, remove later
-      const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-      const [staker, dApp, bonus] = await Promise.all([
-        stakingV3service.getStakerRewards(currentAccount.value),
-        stakingV3service.getDappRewards('0x0000000000000000000000000000000000000005'),
-        stakingV3service.getBonusRewards(currentAccount.value),
-      ]);
-
-      store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
+      await getAllRewards();
     });
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {

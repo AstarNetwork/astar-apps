@@ -325,7 +325,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
   }
 
-  public async startGetStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
+  public async getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
     Guard.ThrowIfUndefined(address, 'address');
 
     const api = await this.api.getApi();

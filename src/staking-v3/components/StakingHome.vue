@@ -19,8 +19,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, watch } from 'vue';
 import { useDapps, useDappStaking } from '../hooks';
+import { useAccount } from 'src/hooks';
 
 export default defineComponent({
   setup() {
@@ -33,10 +34,18 @@ export default defineComponent({
       claimStakerRewards,
       claimDappRewards,
       claimBonusRewards,
+      getAllRewards,
     } = useDappStaking();
+    const { currentAccount } = useAccount();
 
     onMounted(async () => {
       await fetchDappsToStore();
+    });
+
+    watch([currentAccount], async () => {
+      if (currentAccount) {
+        await getAllRewards();
+      }
     });
 
     return {
