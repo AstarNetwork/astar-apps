@@ -4,7 +4,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig, SupportWallet } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
+import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
@@ -76,7 +76,10 @@ export const useAccount = () => {
     });
   };
 
-  const checkIfUnified = async (address: string): Promise<void> => {
+  const checkIfUnified = async (
+    address: string,
+    persistState = true
+  ): Promise<UnifiedAccount | undefined> => {
     const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
 
     const isEvmAddress = isValidEvmAddress(address);
@@ -107,41 +110,32 @@ export const useAccount = () => {
         }
       }
 
-      if (isValidEvmAddress(address)) {
-        store.commit('general/setUnifiedAccount', {
-          nativeAddress: mapped,
-          evmAddress: address,
-          name,
-          avatarUrl,
-          avatarMetadata: { ...nft, image: avatarUrl },
-        });
-      } else {
-        store.commit('general/setUnifiedAccount', {
-          nativeAddress: address,
-          evmAddress: mapped,
-          name,
-          avatarUrl,
-          avatarMetadata: { ...nft, image: avatarUrl },
-        });
+      const account: UnifiedAccount = {
+        nativeAddress: isEvmAddress ? mapped : address,
+        evmAddress: isEvmAddress ? address : mapped,
+        name,
+        avatarUrl,
+        avatarMetadata: {
+          name: nft?.name || '',
+          description: nft?.description || '',
+          image: avatarUrl || '',
+          contractAddress: nft?.contractAddress || '',
+          tokenId: nft?.tokenId || '',
+          tokenUri: nft?.tokenUri || '',
+          ownerAddress: nft?.ownerAddress || '',
+        },
+      };
+
+      if (persistState) {
+        store.commit('general/setUnifiedAccount', account);
       }
+
+      return account;
     } else {
       store.commit('general/setUnifiedAccount', undefined);
     }
-  };
 
-  // TODO Move to separate lib, probably update toSS58Address in astar.js
-  const getSS58Address = async (evmAddress: string): Promise<string> => {
-    if (isValidEvmAddress(evmAddress)) {
-      const service = container.get<IAccountUnificationService>(Symbols.AccountUnificationService);
-      const ss58Pair = await service.getMappedNativeAddress(evmAddress);
-      if (ss58Pair) {
-        return ss58Pair;
-      } else {
-        return toSS58Address(evmAddress);
-      }
-    }
-
-    return evmAddress;
+    return undefined;
   };
 
   const showAccountUnificationModal = (): void => {
@@ -249,7 +243,6 @@ export const useAccount = () => {
     isAccountUnification,
     isH160Formatted,
     disconnectAccount,
-    getSS58Address,
     showAccountUnificationModal,
     checkIfUnified,
   };

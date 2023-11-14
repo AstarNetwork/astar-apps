@@ -114,7 +114,7 @@ export class StatemintXcmRepository extends XcmRepository {
     // Memo: avoid getting a UI error when the `token` is `ASTR` while the `monitorDestChainBalance` function(watch) in useXcmBridge.ts
     // Reproduce the UI error: assets page -> transfer ASTR -> XCM -> flip the chains -> To: Statemint
     // Todo: The error is because Statemint doesn't have 'ASTR', we can refactor here later
-    const statemintChains = [Chain.STATEMINT, Chain.STATEMINE];
+    const statemintChains = [Chain.ASSET_HUB, Chain.ASSET_HUB_KUSAMA];
     if (!statemintChains.includes(token.originChain as Chain)) {
       return '0';
     }

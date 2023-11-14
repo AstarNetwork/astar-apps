@@ -21,7 +21,7 @@ export class NftRepository implements INftRepository {
     tokenId: string
   ): Promise<NftMetadata | undefined> {
     const metadataUri = `${TOKEN_API_URL}/v1/${network}/nft/metadata/${contractAddress}/${tokenId}`;
-    const result = await axios.get(metadataUri);
+    const result = await axios.get<NftMetadata>(metadataUri);
 
     return result.data ?? undefined;
   }

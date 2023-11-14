@@ -28,6 +28,9 @@
       <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
+      <div v-else-if="filteredTokens.length === 0" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.letsImportToken') }}</span>
+      </div>
     </div>
   </div>
 </template>

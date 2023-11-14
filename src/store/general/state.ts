@@ -9,6 +9,8 @@ export type SubstrateAccount = {
   name: string;
   source: string;
   balance?: string;
+  evmAddress?: string;
+  avatarUrl?: string;
 };
 
 export enum AlertType {

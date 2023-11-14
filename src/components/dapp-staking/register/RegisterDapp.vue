@@ -2,8 +2,8 @@
   <div class="container--register">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <div class="wrapper--register-form">
-      <welcome-banner v-if="isNewDapp && !isMobileDevice" class="welcome" />
-      <desktop-only-banner v-if="isMobileDevice" class="welcome" />
+      <welcome-banner v-if="isNewDapp && !isMobileDevice" />
+      <desktop-only-banner v-if="isMobileDevice" />
       <q-form v-if="!isMobileDevice" ref="dappForm">
         <div style="display: flex; flex-direction: column">
           <q-input
@@ -70,13 +70,35 @@
           <tags :dapp="data" class="component" />
           <license :dapp="data" class="component" />
           <div class="button--container">
-            <astar-button class="button--submit" @click="handleSubmit">
+            <!-- <astar-button class="button--submit" @click="handleSubmit">
               {{ $t('dappStaking.modals.submit') }}
+            </astar-button> -->
+            <astar-button
+              class="button--submit"
+              @click="handleModalAddIntroduction({ isOpen: true })"
+            >
+              {{ $t('next') }}
             </astar-button>
           </div>
         </div>
       </q-form>
     </div>
+
+    <modal-add-introduction
+      :is-modal-add-introduction="isModalAddIntroduction"
+      :handle-modal-add-introduction="handleModalAddIntroduction"
+      :name="data.name"
+      :image="data.imagesContent[1]"
+      :handle-submit="handleSubmit"
+      :introduction-changed="introductionChanged"
+    />
+
+    <Teleport to="#staking-top-bg">
+      <div
+        class="dapps-staking-bg"
+        :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -113,6 +135,7 @@ import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import DesktopOnlyBanner from './components/DesktopOnlyBanner.vue';
+import ModalAddIntroduction from './components/ModalAddIntroduction.vue';
 
 export default defineComponent({
   components: {
@@ -129,6 +152,7 @@ export default defineComponent({
     BackToPage,
     WelcomeBanner,
     DesktopOnlyBanner,
+    ModalAddIntroduction,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -260,6 +284,7 @@ export default defineComponent({
                 }))
               : [];
             data.description = registeredDapp.description;
+            data.shortDescription = registeredDapp.shortDescription;
             data.communities = registeredDapp.communities ?? [];
             data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
@@ -319,6 +344,25 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const isModalAddIntroduction = ref<boolean>(false);
+    const handleModalAddIntroduction = ({ isOpen }: { isOpen: boolean }): void => {
+      dappForm?.value?.validate().then(async (success: boolean) => {
+        if (success && validateCustomComponents()) {
+          isModalAddIntroduction.value = isOpen;
+        }
+      });
+    };
+
+    const introductionChanged = (introduction: string): void => {
+      data.shortDescription = introduction;
+    };
+
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const bg_img = {
+      light: require('/src/assets/img/dapps_staking_bg_light.webp'),
+      dark: require('/src/assets/img/dapps_staking_bg_dark.webp'),
+    };
+
     return {
       data,
       isModalAddDeveloper,
@@ -330,10 +374,15 @@ export default defineComponent({
       Path,
       isNewDapp,
       isMobileDevice,
+      isModalAddIntroduction,
+      isDarkTheme,
+      bg_img,
+      handleModalAddIntroduction,
       updateDappLogo,
       isUrlValid,
       handleDappChanged,
       handleSubmit,
+      introductionChanged,
     };
   },
 });
@@ -372,6 +421,19 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+.q-field__native {
+  color: $navy-1 !important;
+}
+.body--dark {
+  .q-field__native {
+    color: $gray-1 !important;
+  }
+}
+.q-field__control {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
+}
+
 .q-field--outlined:hover .q-field__control:before {
   border-color: $astar-blue;
 }
@@ -404,7 +466,7 @@ export default defineComponent({
 }
 
 .q-field--outlined.q-field--dark .q-field__control:before {
-  border-color: $navy-1;
+  border-color: $gray-5;
 }
 
 .q-field--outlined.q-field--dark .q-field__control {
@@ -412,10 +474,13 @@ export default defineComponent({
 }
 
 // readonly
-.q-field--outlined.q-field--readonly .q-field__control:before {
-  border-style: solid;
-  border-color: $gray-1;
-  background-color: $gray-1;
+.q-field--outlined.q-field--readonly .q-field__control {
+  box-shadow: none;
+  &:before {
+    border-style: solid;
+    border-color: white;
+    background-color: white;
+  }
 }
 
 .q-field--outlined.q-field--dark.q-field--readonly .q-field__control:before {
@@ -447,9 +512,5 @@ export default defineComponent({
 
 .button--container {
   margin-bottom: 20px;
-}
-
-.welcome {
-  margin-bottom: 30px;
 }
 </style>

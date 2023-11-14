@@ -99,4 +99,25 @@ export class AccountUnificationService implements IAccountUnificationService {
 
     return await this.unificationRepo.getMappedEvmAddress(nativeAddress);
   }
+
+  // Memo: return mapped native address for evm address
+  // 1. query in API
+  // 2. convert the address by SDK in case the account hasn't been unified
+  public async getConvertedNativeAddress(evmAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('evmAddress', evmAddress);
+
+    return await this.unificationRepo.getConvertedNativeAddress(evmAddress);
+  }
+
+  // Memo: return mapped EVM address for native address
+  public async getConvertedEvmAddress(nativeAddress: string): Promise<string> {
+    Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
+
+    return await this.unificationRepo.getConvertedEvmAddress(nativeAddress);
+  }
+  public async checkIsUnifiedAccount(address: string): Promise<boolean> {
+    Guard.ThrowIfUndefined('address', address);
+
+    return await this.unificationRepo.handleCheckIsUnifiedAccount(address);
+  }
 }
