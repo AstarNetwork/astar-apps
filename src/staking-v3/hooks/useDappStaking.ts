@@ -115,11 +115,6 @@ export function useDappStaking() {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const constants = await stakingRepo.getConstants();
-    console.log('ledger.value?.contractStakeCount----:', ledger.value?.contractStakeCount);
-    console.log('constants.maxNumberOfStakedContracts:', constants.maxNumberOfStakedContracts);
-    if (canClaimStakerRewards) {
-      console.log('canClaimStakerRewards:', canClaimStakerRewards);
-    }
 
     if (amount <= 0) {
       // Prevents ZeroAmount
