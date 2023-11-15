@@ -148,6 +148,39 @@
 
         <div class="expand-container">
           <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'" class="rows--expand">
+            <!-- Transferable -->
+            <div class="row--expand" style="display: none">
+              <div class="row--expand__info">
+                <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
+                <div class="column--balance">
+                  <template v-if="!isSkeleton">
+                    <div class="column--amount text--amount">
+                      {{
+                        isTruncate
+                          ? $n(truncate(transferableBalance, 3))
+                          : Number(transferableBalance)
+                      }}
+                    </div>
+                    <div class="column--symbol text--symbol">
+                      {{ nativeTokenSymbol }}
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="skeleton--right">
+                      <q-skeleton animation="fade" class="skeleton--md" />
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div class="row--expand__action">
+                <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+                  <button class="btn btn--sm">
+                    {{ $t('assets.transfer') }}
+                  </button>
+                </router-link>
+              </div>
+            </div>
+
             <!-- Vesting -->
             <div class="row--expand">
               <div
