@@ -42,10 +42,10 @@
           <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
-            :disabled="checkIsDisabledWallet(wallet.source) || isZkEvm"
+            :disabled="isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
-            @click="!checkIsDisabledWallet(wallet.source) && setSubstrateWalletModal(wallet.source)"
+            @click="setSubstrateWalletModal(wallet.source)"
           >
             <div class="box--img">
               <img :src="wallet.img" />
@@ -172,7 +172,6 @@ import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, ref } from 'vue';
-import { productionOrigin } from 'src/links';
 
 export default defineComponent({
   props: {
@@ -222,13 +221,6 @@ export default defineComponent({
       await wait(animationDuration);
       isClosing.value = false;
       props.setCloseModal();
-    };
-
-    const checkIsDisabledWallet = (source: SupportWallet): boolean => {
-      if (source === SupportWallet.Snap && window.location.origin === productionOrigin) {
-        return true;
-      }
-      return false;
     };
 
     const nativeWallets = computed(() => {
@@ -327,7 +319,6 @@ export default defineComponent({
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
-      checkIsDisabledWallet,
       setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,
