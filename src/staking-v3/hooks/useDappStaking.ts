@@ -74,16 +74,19 @@ export function useDappStaking() {
     const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const ownedContractAddress = getOwnedDappAddress();
 
-    const calls = [];
+    let staker = BigInt(0);
+    let dApp = BigInt(0);
+    let bonus = BigInt(0);
+
     if (currentAccount.value) {
-      calls.push(stakingV3service.getStakerRewards(currentAccount.value));
-      calls.push(stakingV3service.getBonusRewards(currentAccount.value));
-    }
-    if (ownedContractAddress) {
-      calls.push(stakingV3service.getDappRewards(ownedContractAddress));
+      staker = await stakingV3service.getStakerRewards(currentAccount.value);
+      bonus = await stakingV3service.getBonusRewards(currentAccount.value);
+
+      if (ownedContractAddress) {
+        dApp = await stakingV3service.getDappRewards(ownedContractAddress ?? '');
+      }
     }
 
-    const [staker, dApp, bonus] = await Promise.all(calls);
     store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
   };
 
