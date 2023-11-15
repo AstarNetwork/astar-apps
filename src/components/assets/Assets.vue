@@ -161,7 +161,7 @@ export default defineComponent({
 
     const bg_img = {
       light: require('/src/assets/img/assets_bg_light.webp'),
-      dark: require('/src/assets/img/assets_bg_dark.webp'),
+      dark: require('/src/assets/img/assets_bg_dark_A.webp'),
     };
 
     const bg = computed<String>(() => {
