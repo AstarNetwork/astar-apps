@@ -3,9 +3,12 @@
     <div class="row--header">
       <div class="row--header__left">
         <div class="column--token-name">
-          <span class="text--title">
-            {{ $t('assets.assets') }}
-          </span>
+          <img
+            class="token-logo"
+            :src="isDarkTheme ? icon_img.dark : icon_img.light"
+            :alt="$t('assets.assets')"
+          />
+          <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
       </div>
 
@@ -38,6 +41,8 @@ import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
 import { useBreakpoints } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
+import { useStore } from 'src/store';
+
 export default defineComponent({
   components: {
     XcmCurrency,
@@ -87,6 +92,13 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
+    const store = useStore();
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const icon_img = {
+      light: require('/src/assets/img/assets_icon_light.svg'),
+      dark: require('/src/assets/img/assets_icon_dark.svg'),
+    };
+
     return {
       filteredTokens,
       search,
@@ -94,6 +106,8 @@ export default defineComponent({
       isHideSmallBalances,
       width,
       screenSize,
+      isDarkTheme,
+      icon_img,
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,

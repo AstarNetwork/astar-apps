@@ -342,6 +342,8 @@
   }
   img {
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
   }
   .text--title {
     font-weight: 600;
@@ -390,6 +392,7 @@
 .row--locked-tokens {
   .row__info {
     display: flex;
+    align-items: center;
     width: 100%;
     gap: 8px;
     cursor: pointer;

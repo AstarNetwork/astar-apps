@@ -3,6 +3,11 @@
     <div class="row--header">
       <div class="row--header__left">
         <div class="column--token-name">
+          <img
+            class="token-logo"
+            :src="isDarkTheme ? icon_img.dark : icon_img.light"
+            :alt="$t('assets.assets')"
+          />
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
       </div>
@@ -45,6 +50,7 @@ import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { PropType, computed, defineComponent, ref } from 'vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -100,6 +106,13 @@ export default defineComponent({
       search.value = event.target.value;
     };
 
+    const store = useStore();
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const icon_img = {
+      light: require('/src/assets/img/assets_icon_light.svg'),
+      dark: require('/src/assets/img/assets_icon_dark.svg'),
+    };
+
     return {
       symbol,
       token,
@@ -109,6 +122,8 @@ export default defineComponent({
       filteredTokens,
       cbridgeAppLink,
       isHideSmallBalances,
+      isDarkTheme,
+      icon_img,
       setIsSearch,
       checkIsCbridgeToken,
       toggleIsHideSmallBalances,
