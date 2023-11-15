@@ -1,4 +1,5 @@
 import { watch, computed } from 'vue';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
 import {
@@ -36,14 +37,19 @@ export function useDappStaking() {
       throw error;
     }
 
+    const successMessage = t('stakingV3.successfullyStaked', {
+      contractAddress: getShortenAddress(dappAddress, 5),
+    });
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, 'success');
+    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, successMessage);
   };
 
   const unstake = async (dappAddress: string, amount: number): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
   };
+
+  const canClaimStakerRewards = (): boolean => (rewards.value?.staker ?? 0) > BigInt(0);
 
   const claimStakerRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -52,12 +58,16 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
 
+  const canClaimBonusRewards = (): boolean => (rewards.value?.bonus ?? 0) > BigInt(0);
+
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimBonusRewards(currentAccount.value, 'success');
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
+
+  const canClaimDappRewards = (): boolean => (rewards.value?.dApp ?? 0) > BigInt(0);
 
   const claimDappRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -76,16 +86,19 @@ export function useDappStaking() {
     const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const ownedContractAddress = getOwnedDappAddress();
 
-    const calls = [];
+    let staker = BigInt(0);
+    let dApp = BigInt(0);
+    let bonus = BigInt(0);
+
     if (currentAccount.value) {
-      calls.push(stakingV3service.getStakerRewards(currentAccount.value));
-      calls.push(stakingV3service.getBonusRewards(currentAccount.value));
-    }
-    if (ownedContractAddress) {
-      calls.push(stakingV3service.getDappRewards(ownedContractAddress));
+      staker = await stakingV3service.getStakerRewards(currentAccount.value);
+      bonus = await stakingV3service.getBonusRewards(currentAccount.value);
+
+      if (ownedContractAddress) {
+        dApp = await stakingV3service.getDappRewards(ownedContractAddress ?? '');
+      }
     }
 
-    const [staker, dApp, bonus] = await Promise.all(calls);
     store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
   };
 
@@ -137,5 +150,8 @@ export function useDappStaking() {
     claimDappRewards,
     claimBonusRewards,
     getAllRewards,
+    canClaimBonusRewards,
+    canClaimDappRewards,
+    canClaimStakerRewards,
   };
 }
