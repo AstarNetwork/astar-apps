@@ -382,7 +382,7 @@ export const useAccountUnification = () => {
   };
 
   watch([web3], updateEvmProvider);
-  watch([selectedEvmAddress, dapps, era], checkStakerInfo);ƒet
+  watch([selectedEvmAddress, dapps, era], checkStakerInfo);
   watch([xcmAssets, web3], setTransferXc20CallData);
 
   return {
