@@ -279,6 +279,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     return {
       eraRewardSpanLength: (<u32>api.consts.dappStaking.eraRewardSpanLength).toNumber(),
       rewardRetentionInPeriods: (<u32>api.consts.dappStaking.rewardRetentionInPeriods).toNumber(),
+      maxNumberOfStakedContracts: (<u32>(
+        api.consts.dappStaking.maxNumberOfStakedContracts
+      )).toNumber(),
     };
   }
 

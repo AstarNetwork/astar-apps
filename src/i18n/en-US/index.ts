@@ -673,7 +673,12 @@ export default {
     amountGreater0: 'Staking amount must be greater than 0.',
     periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
-    unavailableStakeFunds: 'The staking amount surpasses the current balance available for staking.',
+    unclaimedRewardsFromPastPeriods:
+      'There are unclaimed rewards remaining from past periods. They should be claimed before staking again.',
+    tooManyStakedContracts:
+      'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+    unavailableStakeFunds:
+      'The staking amount surpasses the current balance available for staking.',
     successfullyStaked: 'You successfully staked to {contractAddress}',
   },
   bridge: {

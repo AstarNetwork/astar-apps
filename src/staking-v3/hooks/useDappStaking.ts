@@ -15,6 +15,8 @@ import { useStore } from 'src/store';
 import { useAccount, useBalance } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
+import { ethers } from 'ethers';
+import BN from 'bn.js';
 
 export function useDappStaking() {
   const { t } = useI18n();
@@ -32,7 +34,7 @@ export function useDappStaking() {
   const rewards = computed<Rewards | undefined>(() => store.getters['stakingV3/getRewards']);
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = canStake(amount);
+    const [result, error] = await canStake(amount);
     if (!result) {
       throw error;
     }
@@ -109,11 +111,27 @@ export function useDappStaking() {
     )?.chain.address;
   };
 
-  const canStake = (amount: number): [boolean, string] => {
+  const canStake = async (amount: number): Promise<[boolean, string]> => {
+    const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const constants = await stakingRepo.getConstants();
+    console.log('ledger.value?.contractStakeCount----:', ledger.value?.contractStakeCount);
+    console.log('constants.maxNumberOfStakedContracts:', constants.maxNumberOfStakedContracts);
+    if (canClaimStakerRewards) {
+      console.log('canClaimStakerRewards:', canClaimStakerRewards);
+    }
+
     if (amount <= 0) {
       // Prevents ZeroAmount
       return [false, t('stakingV3.amountGreater0')];
-    } else if (amount > balance.value.toNumber()) {
+    } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
+      // Prevents TooManyStakedContracts
+      return [false, t('stakingV3.tooManyStakedContracts')];
+    } else if (canClaimDappRewards()) {
+      // Prevents UnclaimedRewardsFromPastPeriods
+      // May want to auto claim rewards here
+      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+    } else if (stakeAmount.gt(balance.value)) {
       // Prevents UnavailableStakeFunds
       return [false, t('stakingV3.unavailableStakeFunds')];
     } else if (
