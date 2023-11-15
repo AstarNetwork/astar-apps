@@ -11,8 +11,8 @@
         Claim staker
       </button>
       | <button :disabled="!canClaimDappRewards()" @click="claimDappRewards()">Claim dApp</button> |
-      <button :disabled="canClaimBonusRewards()" @click="claimBonusRewards()">Claim bonus</button> |
-      <button @click="fetchDappToStore(dapp.chain.address)">Details</button> | [{{
+      <button :disabled="!canClaimBonusRewards()" @click="claimBonusRewards()">Claim bonus</button>
+      | <button @click="fetchDappToStore(dapp.chain.address)">Details</button> | [{{
         dapp.chain.address
       }}]
       <b>{{ dapp.basic.name }}</b>
