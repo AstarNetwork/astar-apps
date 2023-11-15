@@ -7,9 +7,11 @@
     <div v-for="(dapp, index) in registeredDapps" :key="index">
       <button @click="stake(dapp.chain.address, 1000)">Stake</button> |
       <button @click="unstake(dapp.chain.address, 10)">Unstake</button> |
-      <button :disabled="!rewards?.staker" @click="claimStakerRewards()">Claim staker</button> |
-      <button :disabled="!rewards?.dApp" @click="claimDappRewards()">Claim dApp</button> |
-      <button :disabled="!rewards?.bonus" @click="claimBonusRewards()">Claim bonus</button> |
+      <button :disabled="!canClaimStakerRewards()" @click="claimStakerRewards()">
+        Claim staker
+      </button>
+      | <button :disabled="!canClaimDappRewards()" @click="claimDappRewards()">Claim dApp</button> |
+      <button :disabled="canClaimBonusRewards()" @click="claimBonusRewards()">Claim bonus</button> |
       <button @click="fetchDappToStore(dapp.chain.address)">Details</button> | [{{
         dapp.chain.address
       }}]
@@ -35,6 +37,9 @@ export default defineComponent({
       claimDappRewards,
       claimBonusRewards,
       getAllRewards,
+      canClaimBonusRewards,
+      canClaimDappRewards,
+      canClaimStakerRewards,
     } = useDappStaking();
     const { currentAccount } = useAccount();
 
@@ -58,6 +63,9 @@ export default defineComponent({
       claimStakerRewards,
       claimDappRewards,
       claimBonusRewards,
+      canClaimBonusRewards,
+      canClaimDappRewards,
+      canClaimStakerRewards,
     };
   },
 });

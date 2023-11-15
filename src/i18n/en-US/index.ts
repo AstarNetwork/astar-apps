@@ -673,6 +673,7 @@ export default {
     amountGreater0: 'Staking amount must be greater than 0.',
     periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
+    successfullyStaked: 'You successfully staked to {contractAddress}',
   },
   bridge: {
     bridge: 'Bridge',

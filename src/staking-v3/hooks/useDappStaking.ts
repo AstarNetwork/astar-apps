@@ -1,4 +1,5 @@
 import { watch, computed } from 'vue';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
 import {
@@ -34,14 +35,19 @@ export function useDappStaking() {
       throw error;
     }
 
+    const successMessage = t('stakingV3.successfullyStaked', {
+      contractAddress: getShortenAddress(dappAddress, 5),
+    });
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, 'success');
+    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, successMessage);
   };
 
   const unstake = async (dappAddress: string, amount: number): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
   };
+
+  const canClaimStakerRewards = (): boolean => (rewards.value?.staker ?? 0) > BigInt(0);
 
   const claimStakerRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -50,12 +56,16 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
 
+  const canClaimBonusRewards = (): boolean => (rewards.value?.bonus ?? 0) > BigInt(0);
+
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimBonusRewards(currentAccount.value, 'success');
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
+
+  const canClaimDappRewards = (): boolean => (rewards.value?.dApp ?? 0) > BigInt(0);
 
   const claimDappRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -133,5 +143,8 @@ export function useDappStaking() {
     claimDappRewards,
     claimBonusRewards,
     getAllRewards,
+    canClaimBonusRewards,
+    canClaimDappRewards,
+    canClaimStakerRewards,
   };
 }
