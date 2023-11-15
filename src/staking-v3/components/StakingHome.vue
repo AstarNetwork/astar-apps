@@ -5,6 +5,7 @@
     <p>Protocol state: {{ protocolState }}</p>
     <br />
     <div v-for="(dapp, index) in registeredDapps" :key="index">
+      <button @click="navigateToVote()">Vote</button> |
       <button @click="stake(dapp.chain.address, 1000)">Stake</button> |
       <button @click="unstake(dapp.chain.address, 10)">Unstake</button> |
       <button :disabled="!canClaimStakerRewards()" @click="claimStakerRewards()">
@@ -22,11 +23,15 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, watch } from 'vue';
-import { useDapps, useDappStaking } from '../hooks';
 import { useAccount } from 'src/hooks';
+import { useDappStaking, useDapps } from '../hooks';
+import { Path, networkParam } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
+  components: {},
   setup() {
+    const router = useRouter();
     const { registeredDapps, fetchDappsToStore, fetchDappToStore } = useDapps();
     const {
       protocolState,
@@ -42,6 +47,11 @@ export default defineComponent({
       canClaimStakerRewards,
     } = useDappStaking();
     const { currentAccount } = useAccount();
+
+    const navigateToVote = (): void => {
+      const base = networkParam + Path.DappStakingV3 + Path.Vote;
+      router.push(base);
+    };
 
     onMounted(async () => {
       await fetchDappsToStore();
@@ -66,6 +76,7 @@ export default defineComponent({
       canClaimBonusRewards,
       canClaimDappRewards,
       canClaimStakerRewards,
+      navigateToVote,
     };
   },
 });

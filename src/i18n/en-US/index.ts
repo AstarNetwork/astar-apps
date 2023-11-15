@@ -674,6 +674,7 @@ export default {
     periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
     successfullyStaked: 'You successfully staked to {contractAddress}',
+    voteTitle: 'Vote!',
   },
   bridge: {
     bridge: 'Bridge',

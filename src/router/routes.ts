@@ -14,7 +14,7 @@ import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
 import DappStakingV3Page from 'src/pages/DappStakingV3.vue';
-import { StakingHome } from 'src/staking-v3';
+import { StakingHome, Vote } from 'src/staking-v3';
 import { RouteRecordRaw } from 'vue-router';
 
 export {
@@ -43,6 +43,7 @@ export enum Path {
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
   DappStakingV3 = '/dapp-staking-v3',
+  Vote = '/vote',
 }
 
 const routes: RouteRecordRaw[] = [
@@ -177,6 +178,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'discover',
         component: StakingHome,
+      },
+      {
+        path: 'vote',
+        component: Vote,
       },
     ],
   },
