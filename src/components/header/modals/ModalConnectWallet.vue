@@ -152,7 +152,6 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -174,6 +173,7 @@ import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { SubstrateAccount } from 'src/store/general/state';
 import { LocationQuery, useRoute } from 'vue-router';
 import { productionOrigin } from 'src/links';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 export default defineComponent({
   props: {
@@ -234,7 +234,7 @@ export default defineComponent({
         checkValidSourceParameter(params?.selectedWallet as string) &&
         !isClosing.value
       ) {
-        if (route?.query?.selectedWalletType === 'native') {
+        if (params?.selectedWalletType === 'native') {
           setSubstrateWalletModal(params.selectedWallet as string);
         }
         if (params?.selectedWalletType === 'evm') {
@@ -293,6 +293,15 @@ export default defineComponent({
       return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          if (
+            route?.query?.evmWallets &&
+            !(route?.query?.evmWallets as string)
+              ?.split(',')
+              .filter((source) => checkValidSourceParameter(source))
+              .includes(it.source)
+          ) {
+            return undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
