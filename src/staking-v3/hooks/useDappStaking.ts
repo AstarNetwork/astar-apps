@@ -11,7 +11,7 @@ import {
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useAccount } from 'src/hooks';
+import { useAccount, useBalance } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 
@@ -21,6 +21,8 @@ export function useDappStaking() {
   const store = useStore();
   const { currentAccount } = useAccount();
   const { registeredDapps } = useDapps();
+
+  const { balance, isLoadingBalance } = useBalance(currentAccount);
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
@@ -96,8 +98,13 @@ export function useDappStaking() {
 
   const canStake = (amount: number): [boolean, string] => {
     if (amount <= 0) {
+      // Prevents ZeroAmount
       return [false, t('stakingV3.amountGreater0')];
+    } else if (amount > balance.value.toNumber()) {
+      // Prevents UnavailableStakeFunds
+      return [false, t('stakingV3.unavailableStakeFunds')];
     } else if (
+      // Prevents PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {

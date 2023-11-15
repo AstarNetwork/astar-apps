@@ -673,6 +673,7 @@ export default {
     amountGreater0: 'Staking amount must be greater than 0.',
     periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
+    unavailableStakeFunds: 'The amount being staked is too large compared to what\'s available for staking',
   },
   bridge: {
     bridge: 'Bridge',
