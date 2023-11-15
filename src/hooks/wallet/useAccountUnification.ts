@@ -5,7 +5,6 @@ import {
   getEvmGas,
   getIndividualClaimTxs,
   wait,
-  checkSumEvmAddress,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -85,7 +84,7 @@ export const useAccountUnification = () => {
     if (!provider || typeof window.ethereum === 'undefined') return;
     const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
     web3.value = new Web3(provider as any);
-    selectedEvmAddress.value = checkSumEvmAddress(address);
+    selectedEvmAddress.value = address;
     const chainId = `0x${evmNetworkIdx.value.toString(16)}`;
     if (provider.chainId !== chainId) {
       await setupNetwork({ network: evmNetworkIdx.value, provider });
@@ -383,7 +382,7 @@ export const useAccountUnification = () => {
   };
 
   watch([web3], updateEvmProvider);
-  watch([selectedEvmAddress, dapps, era], checkStakerInfo);
+  watch([selectedEvmAddress, dapps, era], checkStakerInfo);ƒet
   watch([xcmAssets, web3], setTransferXc20CallData);
 
   return {
