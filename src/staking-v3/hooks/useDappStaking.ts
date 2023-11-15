@@ -47,6 +47,11 @@ export function useDappStaking() {
   };
 
   const unstake = async (dappAddress: string, amount: number): Promise<void> => {
+    const [result, error] = await canUnStake(amount);
+    if (!result) {
+      throw error;
+    }
+
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
   };
@@ -126,6 +131,9 @@ export function useDappStaking() {
       // Prevents UnclaimedRewardsFromPastPeriods
       // May want to auto claim rewards here
       return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+    } else if (protocolState.value?.maintenance) {
+      // Prevents Disabled
+      return [false, t('stakingV3.disabled')];
     } else if (stakeAmount.gt(balance.value)) {
       // Prevents UnavailableStakeFunds
       return [false, t('stakingV3.unavailableStakeFunds')];
@@ -135,6 +143,27 @@ export function useDappStaking() {
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
       return [false, t('stakingV3.periodEndsNextEra')];
+    }
+
+    return [true, ''];
+  };
+
+  const canUnStake = async (amount: number): Promise<[boolean, string]> => {
+    const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
+    const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
+
+    if (amount <= 0) {
+      // Prevents ZeroAmount
+      return [false, t('stakingV3.amountGreater0')];
+    } else if (stakeAmount.gt(stakedAmount)) {
+      // Prevents UnstakeAmountTooLarge
+      return [false, t('stakingV3.unstakeAmountTooLarge')];
+    } else if (protocolState.value?.maintenance) {
+      // Prevents Disabled
+      return [false, t('stakingV3.disabled')];
+    } else if (!amount) {
+      // Prevents UnstakeFromPastPeriod
+      return [false, t('stakingV3.unstakeFromPastPeriod')];
     }
 
     return [true, ''];
@@ -160,6 +189,7 @@ export function useDappStaking() {
     unstake,
     claimStakerRewards,
     canStake,
+    canUnStake,
     claimDappRewards,
     claimBonusRewards,
     getAllRewards,
