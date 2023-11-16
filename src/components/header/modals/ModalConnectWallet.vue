@@ -211,8 +211,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { currentAccountName, disconnectAccount, isAccountUnification, isSnapEnabled } =
-      useAccount();
+    const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
@@ -235,9 +234,6 @@ export default defineComponent({
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
-          if (it.source === SupportWallet.Snap) {
-            return isSnapEnabled.value ? it : undefined;
-          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
