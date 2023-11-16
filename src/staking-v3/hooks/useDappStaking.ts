@@ -127,7 +127,7 @@ export function useDappStaking() {
     } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
       // Prevents TooManyStakedContracts
       return [false, t('stakingV3.tooManyStakedContracts')];
-    } else if (canClaimDappRewards()) {
+    } else if (canClaimDappRewards() || canClaimStakerRewards() || canClaimBonusRewards()) {
       // Prevents UnclaimedRewardsFromPastPeriods
       // May want to auto claim rewards here
       return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
@@ -158,6 +158,10 @@ export function useDappStaking() {
     } else if (stakeAmount.gt(stakedAmount)) {
       // Prevents UnstakeAmountTooLarge
       return [false, t('stakingV3.unstakeAmountTooLarge')];
+    } else if (canClaimDappRewards() || canClaimStakerRewards() || canClaimBonusRewards()) {
+      // Prevents UnclaimedRewardsFromPastPeriods
+      // May want to auto claim rewards here
+      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
     } else if (protocolState.value?.maintenance) {
       // Prevents Disabled
       return [false, t('stakingV3.disabled')];
