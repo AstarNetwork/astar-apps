@@ -4,6 +4,7 @@ import {
   ProtocolState,
   SingularStakingInfo,
   Rewards,
+  Constants,
 } from '../logic';
 
 export interface DappStakingState {
@@ -13,6 +14,7 @@ export interface DappStakingState {
   ledger: AccountLedger | undefined;
   stakerInfo: Map<string, SingularStakingInfo> | undefined;
   rewards: Rewards | undefined;
+  constants: Constants | undefined;
 }
 
 function state(): DappStakingState {
@@ -23,6 +25,7 @@ function state(): DappStakingState {
     ledger: undefined,
     stakerInfo: undefined,
     rewards: undefined,
+    constants: undefined,
   };
 }
 

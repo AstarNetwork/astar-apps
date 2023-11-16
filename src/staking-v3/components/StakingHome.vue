@@ -45,6 +45,7 @@ export default defineComponent({
       canClaimBonusRewards,
       canClaimDappRewards,
       canClaimStakerRewards,
+      fetchConstantsToStore,
     } = useDappStaking();
     const { currentAccount } = useAccount();
 

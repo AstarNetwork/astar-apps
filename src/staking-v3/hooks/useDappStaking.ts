@@ -4,6 +4,7 @@ import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
 import {
   AccountLedger,
+  Constants,
   IDappStakingRepository,
   IDappStakingService,
   PeriodType,
@@ -12,7 +13,7 @@ import {
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useAccount } from 'src/hooks';
+import { useAccount, useChainMetadata } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 
@@ -22,12 +23,21 @@ export function useDappStaking() {
   const store = useStore();
   const { currentAccount } = useAccount();
   const { registeredDapps } = useDapps();
+  const { decimal } = useChainMetadata();
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
   const rewards = computed<Rewards | undefined>(() => store.getters['stakingV3/getRewards']);
+  const constants = computed<Constants | undefined>(() => {
+    const consts = store.getters['stakingV3/getConstants'];
+    if (!consts) {
+      fetchConstantsToStore();
+    }
+
+    return consts;
+  });
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
     const [result, error] = canStake(amount);
@@ -107,6 +117,25 @@ export function useDappStaking() {
     )?.chain.address;
   };
 
+  const fetchConstantsToStore = async (): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const constants = await stakingRepo.getConstants();
+    constants.minStakeAmountToken = Number(
+      (constants.minStakeAmount ?? 0) / BigInt(10 ** decimal.value)
+    );
+    store.commit('stakingV3/setConstants', constants);
+  };
+
+  const getTotalStaked = async (stakerAddress: string): Promise<bigint> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const staked = await stakingService.getStakedAmount(stakerAddress);
+
+    let result = BigInt(0);
+    staked.forEach((x) => (result += x));
+
+    return result;
+  };
+
   const canStake = (amount: number): [boolean, string] => {
     if (amount <= 0) {
       return [false, t('stakingV3.amountGreater0')];
@@ -136,6 +165,7 @@ export function useDappStaking() {
     protocolState,
     ledger,
     rewards,
+    constants,
     stake,
     unstake,
     claimStakerRewards,
@@ -146,5 +176,7 @@ export function useDappStaking() {
     canClaimBonusRewards,
     canClaimDappRewards,
     canClaimStakerRewards,
+    fetchConstantsToStore,
+    getTotalStaked,
   };
 }

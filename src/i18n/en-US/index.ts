@@ -675,6 +675,14 @@ export default {
     stakerRewardsExpired: 'Staker rewards expired.',
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
+    minBalanceAfterStaking:
+      'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
+    selectProjects: 'Select projects',
+    chooseProject: 'Choose a project to vote',
+    availableToVote: 'Available to vote',
+    totalTransferable: 'Total transferable',
+    lockedForVoting: 'Locked for voting',
   },
   bridge: {
     bridge: 'Bridge',

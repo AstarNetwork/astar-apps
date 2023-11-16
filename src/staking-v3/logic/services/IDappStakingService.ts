@@ -83,4 +83,11 @@ export interface IDappStakingService {
    * @param successMessage Message to be displayed on the call success.
    */
   claimBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
+
+  /**
+   * Calculates staked amount.
+   * @param senderAddress Staker address.
+   * @returns Staked amount map. Key - contract address, value - staked amount.
+   */
+  getStakedAmount(senderAddress: string): Promise<Map<string, bigint>>;
 }

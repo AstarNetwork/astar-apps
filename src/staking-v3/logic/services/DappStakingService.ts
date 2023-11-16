@@ -176,6 +176,25 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(call, senderAddress, successMessage);
   }
 
+  public async getStakedAmount(senderAddress: string): Promise<Map<string, bigint>> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+
+    const [stakerInfo, protocolState, constants] = await Promise.all([
+      this.dappStakingRepository.getStakerInfo(senderAddress),
+      this.dappStakingRepository.getProtocolState(),
+      this.dappStakingRepository.getConstants(),
+    ]);
+    const result = new Map<string, bigint>();
+
+    for (const [contract, info] of stakerInfo.entries()) {
+      if (info.staked.era > protocolState.era - constants.eraRewardSpanLength) {
+        result.set(contract, info.staked.voting + info.staked.buildAndEarn);
+      }
+    }
+
+    return result;
+  }
+
   private async getBonusRewardsAndContractsToClaim(
     senderAddress: string
   ): Promise<{ rewards: bigint; contractsToClaim: string[] }> {
@@ -278,7 +297,7 @@ export class DappStakingService implements IDappStakingService {
     const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
     let lastStakedEra = 0;
 
-    if (lastStakedPeriod < currentPeriod - constants.rewardRetentionInPeriods) {
+    if (lastStakedPeriod <= currentPeriod - constants.rewardRetentionInPeriods) {
       // Rewards expired.
       rewardsExpired = true;
     } else if (lastStakedPeriod < currentPeriod) {

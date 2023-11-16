@@ -33,7 +33,7 @@ import {
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
-import { Option, StorageKey, u32 } from '@polkadot/types';
+import { Option, StorageKey, u32, u128 } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
@@ -279,6 +279,8 @@ export class DappStakingRepository implements IDappStakingRepository {
     return {
       eraRewardSpanLength: (<u32>api.consts.dappStaking.eraRewardSpanLength).toNumber(),
       rewardRetentionInPeriods: (<u32>api.consts.dappStaking.rewardRetentionInPeriods).toNumber(),
+      minStakeAmount: (<u128>api.consts.dappStaking.minimumStakeAmount).toBigInt(),
+      minBalanceAfterStaking: 10,
     };
   }
 
