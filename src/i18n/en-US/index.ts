@@ -670,9 +670,19 @@ export default {
   },
   stakingV3: {
     title: 'dApp Staking v3',
-    amountGreater0: 'Staking amount must be greater than 0.',
+    amountGreater0: 'Amount must be greater than 0.',
     periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
+    disabled: 'Pallet is disabled/in maintenance mode.',
+    unstakeFromPastPeriod:
+      'Unstaking is rejected since the period in which past stake was active has passed.',
+    unstakeAmountTooLarge: 'Unstake amount is greater than the staked amount.',
+    unclaimedRewardsFromPastPeriods:
+      'There are unclaimed rewards remaining from past periods. They should be claimed before staking again.',
+    tooManyStakedContracts:
+      'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+    unavailableStakeFunds:
+      'The staking amount surpasses the current balance available for staking.',
     successfullyStaked: 'You successfully staked to {contractAddress}',
   },
   bridge: {

@@ -12,9 +12,11 @@ import {
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useAccount } from 'src/hooks';
+import { useAccount, useBalance } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
+import { ethers } from 'ethers';
+import BN from 'bn.js';
 
 export function useDappStaking() {
   const { t } = useI18n();
@@ -23,6 +25,8 @@ export function useDappStaking() {
   const { currentAccount } = useAccount();
   const { registeredDapps } = useDapps();
 
+  const { balance, isLoadingBalance } = useBalance(currentAccount);
+
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
@@ -30,7 +34,7 @@ export function useDappStaking() {
   const rewards = computed<Rewards | undefined>(() => store.getters['stakingV3/getRewards']);
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = canStake(amount);
+    const [result, error] = await canStake(amount);
     if (!result) {
       throw error;
     }
@@ -43,6 +47,11 @@ export function useDappStaking() {
   };
 
   const unstake = async (dappAddress: string, amount: number): Promise<void> => {
+    const [result, error] = await canUnStake(amount);
+    if (!result) {
+      throw error;
+    }
+
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
   };
@@ -107,14 +116,58 @@ export function useDappStaking() {
     )?.chain.address;
   };
 
-  const canStake = (amount: number): [boolean, string] => {
+  const canStake = async (amount: number): Promise<[boolean, string]> => {
+    const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const constants = await stakingRepo.getConstants();
+
     if (amount <= 0) {
+      // Prevents ZeroAmount
       return [false, t('stakingV3.amountGreater0')];
+    } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
+      // Prevents TooManyStakedContracts
+      return [false, t('stakingV3.tooManyStakedContracts')];
+    } else if (canClaimDappRewards() || canClaimStakerRewards() || canClaimBonusRewards()) {
+      // Prevents UnclaimedRewardsFromPastPeriods
+      // May want to auto claim rewards here
+      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+    } else if (protocolState.value?.maintenance) {
+      // Prevents Disabled
+      return [false, t('stakingV3.disabled')];
+    } else if (stakeAmount.gt(balance.value)) {
+      // Prevents UnavailableStakeFunds
+      return [false, t('stakingV3.unavailableStakeFunds')];
     } else if (
+      // Prevents PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
       return [false, t('stakingV3.periodEndsNextEra')];
+    }
+
+    return [true, ''];
+  };
+
+  const canUnStake = async (amount: number): Promise<[boolean, string]> => {
+    const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
+    const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
+
+    if (amount <= 0) {
+      // Prevents ZeroAmount
+      return [false, t('stakingV3.amountGreater0')];
+    } else if (stakeAmount.gt(stakedAmount)) {
+      // Prevents UnstakeAmountTooLarge
+      return [false, t('stakingV3.unstakeAmountTooLarge')];
+    } else if (canClaimDappRewards() || canClaimStakerRewards() || canClaimBonusRewards()) {
+      // Prevents UnclaimedRewardsFromPastPeriods
+      // May want to auto claim rewards here
+      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+    } else if (protocolState.value?.maintenance) {
+      // Prevents Disabled
+      return [false, t('stakingV3.disabled')];
+    } else if (!amount) {
+      // Prevents UnstakeFromPastPeriod
+      return [false, t('stakingV3.unstakeFromPastPeriod')];
     }
 
     return [true, ''];
@@ -140,6 +193,7 @@ export function useDappStaking() {
     unstake,
     claimStakerRewards,
     canStake,
+    canUnStake,
     claimDappRewards,
     claimBonusRewards,
     getAllRewards,

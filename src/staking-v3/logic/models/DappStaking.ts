@@ -94,6 +94,7 @@ export interface EraReward {
 export interface Constants {
   eraRewardSpanLength: number;
   rewardRetentionInPeriods: number;
+  maxNumberOfStakedContracts: number;
 }
 
 export interface DAppTierRewards {
