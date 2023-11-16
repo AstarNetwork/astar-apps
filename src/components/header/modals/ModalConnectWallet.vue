@@ -152,7 +152,6 @@
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -170,9 +169,11 @@ import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { SubstrateAccount } from 'src/store/general/state';
-import { PropType, computed, defineComponent, ref } from 'vue';
+import { LocationQuery, useRoute } from 'vue-router';
 import { productionOrigin } from 'src/links';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 export default defineComponent({
   props: {
@@ -215,6 +216,37 @@ export default defineComponent({
       useAccount();
     const isClosing = ref<boolean>(false);
     const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const route = useRoute();
+
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+    const substrateAccounts = computed<SubstrateAccount[]>(
+      () => store.getters['general/substrateAccounts']
+    );
+
+    const checkValidSourceParameter = (source: string) => {
+      return Object.values(SupportWallet).includes(source as SupportWallet);
+    };
+
+    const handleSelectedWalletInQuery = (params: LocationQuery, accounts: SubstrateAccount[]) => {
+      if (
+        params?.selectedWallet &&
+        params?.selectedWalletType &&
+        checkValidSourceParameter(params?.selectedWallet as string) &&
+        !isClosing.value
+      ) {
+        if (params?.selectedWalletType === 'native') {
+          setSubstrateWalletModal(params.selectedWallet as string);
+        }
+        if (params?.selectedWalletType === 'evm') {
+          setEvmWalletModal(params.selectedWallet as string);
+        }
+      }
+    };
+
+    // the route is updated asynchronously
+    watch([route, substrateAccounts], ([newRoute, accounts]) => {
+      handleSelectedWalletInQuery(newRoute.query, accounts);
+    });
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -235,6 +267,16 @@ export default defineComponent({
       return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          // filter wallets based on query params
+          if (
+            route?.query?.nativeWallets &&
+            !(route?.query?.nativeWallets as string)
+              ?.split(',') // convert query param string to array
+              .filter((source) => checkValidSourceParameter(source))
+              .includes(it.source)
+          ) {
+            return undefined;
+          }
           if (it.source === SupportWallet.Snap) {
             return isSnapEnabled.value ? it : undefined;
           }
@@ -251,6 +293,15 @@ export default defineComponent({
       return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          if (
+            route?.query?.evmWallets &&
+            !(route?.query?.evmWallets as string)
+              ?.split(',')
+              .filter((source) => checkValidSourceParameter(source))
+              .includes(it.source)
+          ) {
+            return undefined;
+          }
           if (isMobileDevice) {
             return isSupportMobileApp ? it : undefined;
           } else {
@@ -259,11 +310,6 @@ export default defineComponent({
         })
         .filter((it) => it !== undefined) as Wallet[];
     });
-
-    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
-    const substrateAccounts = computed<SubstrateAccount[]>(
-      () => store.getters['general/substrateAccounts']
-    );
 
     const castWalletName = (wallet: string): string => {
       return wallet.split('(')[0].trim();
