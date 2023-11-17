@@ -4,5 +4,17 @@
     "shortDescription": "Web-based dungeon crawler by SFY Labs. Play and craft NFTs 2.0!",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=0x74cc66cd0cf57bb2a0f237c89bcf8db92d3721a8",
     "img": "https://ipfs.filebase.io/ipfs/QmbPiKUgeU4kBwobo412E7kJbTN3e47SPiLi7VsH49ySUP"
+  },
+  {
+    "name": "Algem - Liquid Staking",
+    "shortDescription": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
+    "link": "https://www.algem.io/",
+    "img": "images/dapp_promotions/algem.jpg"
+  },
+  {
+    "name": "ASTR token, value and utility",
+    "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
+    "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
+    "img": "https://ipfs.subsocial.network/ipfs/bafybeig2o6zjlnxnwgdv6xkcgu4w5tn7wdre26kimpc2w2ldrum66cotw4"
   }
 ]
