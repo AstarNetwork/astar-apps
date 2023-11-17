@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch } from 'vue';
+import { defineComponent, onMounted, watch, watchEffect } from 'vue';
 import { useDapps, useDappStaking } from '../hooks';
 import { useAccount } from 'src/hooks';
 
@@ -53,6 +53,11 @@ export default defineComponent({
       }
     });
 
+    watchEffect(() => {
+      console.log('registeredDapps', registeredDapps.value);
+      console.log('protocolState', protocolState.value);
+    });
+
     return {
       registeredDapps,
       protocolState,
@@ -73,6 +78,6 @@ export default defineComponent({
 
 <style scoped>
 .main--wrapper {
-  margin-top: 40px;
+  margin-bottom: 40px;
 }
 </style>

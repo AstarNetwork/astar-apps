@@ -1,0 +1,106 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--promo {
+  padding: 0 16px;
+  margin-bottom: 80px;
+  @media (min-width: $md) {
+    padding: 0;
+  }
+}
+
+.row--title {
+  margin-bottom: 4px;
+}
+
+.row--button {
+  margin-top: 64px;
+  margin-bottom: 64px;
+  text-align: center;
+}
+
+.text--promo-title {
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.row--data {
+  display: flex;
+  column-gap: 6px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.card--data {
+  background-color: $navy-1;
+  width: 80px;
+  height: 100px;
+  border-radius: 10px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.card__top {
+  height: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.card__bottom {
+  justify-self: flex-end;
+}
+
+.button--link {
+  width: 166px;
+  height: 48px;
+  @media (min-width: $sm) {
+    width: 216px;
+  }
+}
+
+.text--value {
+  font-weight: 800;
+  font-size: 16px;
+  color: white;
+}
+.text--value-small {
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+}
+
+.text--card-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+.row--start-staking {
+}
+
+.button--staking {
+  width: 100%;
+  background-color: rgba(230, 0, 122, 1);
+  border-radius: 16px;
+  height: 80px;
+}
+
+.text--start-staking {
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+}
+
+.body--dark {
+  .card--data {
+    background-color: $astar-blue;
+  }
+  .text--value,
+  .text--value-small,
+  .text--card-title {
+    color: $gray-1;
+  }
+}
