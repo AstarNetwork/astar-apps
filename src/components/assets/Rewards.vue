@@ -1,6 +1,11 @@
 <template>
   <div class="wrapper--rewards">
-    <div v-if="!isDappDeveloper" class="container--rewards">
+    <div
+      v-if="!isDappDeveloper"
+      class="container--rewards"
+      :disabled="!canClaim || !canClaimWithoutError"
+      @click="claimAll"
+    >
       <div class="text--title">
         {{ $t('assets.yourEstimatedRewards') }}
       </div>
@@ -25,7 +30,7 @@ import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hook
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   setup() {
@@ -36,7 +41,7 @@ export default defineComponent({
     const store = useStore();
 
     const pendingRewards = ref<number>(0);
-    const isLoadingPendingRewards = ref<boolean>(false);
+    const isLoadingPendingRewards = ref<boolean>(true);
 
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
@@ -72,7 +77,9 @@ export default defineComponent({
       isLoadingPendingRewards.value = false;
     };
 
-    watch([senderSs58Account, amountOfEras], setPendingRewards, { immediate: false });
+    watch([senderSs58Account, amountOfEras], setPendingRewards, {
+      immediate: true,
+    });
 
     return {
       isLoading,
