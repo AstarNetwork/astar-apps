@@ -16,6 +16,7 @@ import { useStore } from 'src/store';
 import { useAccount, useChainMetadata } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
+import { ethers } from 'ethers';
 
 export function useDappStaking() {
   const { t } = useI18n();
@@ -29,7 +30,14 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getProtocolState']
   );
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
-  const rewards = computed<Rewards | undefined>(() => store.getters['stakingV3/getRewards']);
+  const rewards = computed<Rewards | undefined>(() => {
+    const rewards = store.getters['stakingV3/getRewards'];
+    if (!rewards) {
+      getAllRewards();
+    }
+
+    return rewards;
+  });
   const constants = computed<Constants | undefined>(() => {
     const consts = store.getters['stakingV3/getConstants'];
     if (!consts) {
@@ -38,6 +46,39 @@ export function useDappStaking() {
 
     return consts;
   });
+  const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
+  const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
+  const hasBonusRewards = computed<boolean>(() => !!rewards.value?.bonus);
+  const hasRewards = computed<boolean>(
+    () => hasStakerRewards.value || hasDappRewards.value || hasBonusRewards.value
+  );
+
+  const totalStake = computed<bigint>(() => {
+    let result = BigInt(0);
+
+    if (
+      ledger.value?.stakedFuture &&
+      ledger.value.stakedFuture.period === protocolState.value?.periodInfo.number
+    ) {
+      result += !isRewardOrStakeExpired(ledger.value.stakedFuture.period)
+        ? ledger.value.stakedFuture.voting + ledger.value.stakedFuture.buildAndEarn
+        : BigInt(0);
+    } else if (
+      ledger.value &&
+      ledger.value.staked.period === protocolState.value?.periodInfo.number
+    ) {
+      result += !isRewardOrStakeExpired(ledger.value.staked.period)
+        ? ledger.value.staked.voting + ledger.value.staked.buildAndEarn
+        : BigInt(0);
+    }
+
+    return result;
+  });
+
+  const isRewardOrStakeExpired = (period: number): boolean =>
+    protocolState.value && constants.value
+      ? protocolState.value.periodInfo.number < period - constants.value.rewardRetentionInPeriods
+      : true;
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
     const [result, error] = canStake(amount);
@@ -57,8 +98,6 @@ export function useDappStaking() {
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
   };
 
-  const canClaimStakerRewards = (): boolean => (rewards.value?.staker ?? 0) > BigInt(0);
-
   const claimStakerRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
@@ -66,7 +105,23 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
 
-  const canClaimBonusRewards = (): boolean => (rewards.value?.bonus ?? 0) > BigInt(0);
+  const claimLockAndStake = async (
+    stakeInfo: Map<string, number>,
+    lockAmount: bigint
+  ): Promise<void> => {
+    const dAppsToClaim = registeredDapps.value
+      .filter((x) => x.chain.owner === currentAccount.value)
+      .map((x) => x.chain.address);
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+
+    await stakingService.claimLockAndStake(
+      currentAccount.value,
+      Number(ethers.utils.formatEther(lockAmount.toString())),
+      stakeInfo,
+      dAppsToClaim
+    );
+    await getAllRewards();
+  };
 
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -74,8 +129,6 @@ export function useDappStaking() {
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
-
-  const canClaimDappRewards = (): boolean => (rewards.value?.dApp ?? 0) > BigInt(0);
 
   const claimDappRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -126,16 +179,6 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
-  const getTotalStaked = async (stakerAddress: string): Promise<bigint> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    const staked = await stakingService.getStakedAmount(stakerAddress);
-
-    let result = BigInt(0);
-    staked.forEach((x) => (result += x));
-
-    return result;
-  };
-
   const canStake = (amount: number): [boolean, string] => {
     if (amount <= 0) {
       return [false, t('stakingV3.amountGreater0')];
@@ -166,6 +209,11 @@ export function useDappStaking() {
     ledger,
     rewards,
     constants,
+    totalStake,
+    hasStakerRewards,
+    hasDappRewards,
+    hasBonusRewards,
+    hasRewards,
     stake,
     unstake,
     claimStakerRewards,
@@ -173,10 +221,7 @@ export function useDappStaking() {
     claimDappRewards,
     claimBonusRewards,
     getAllRewards,
-    canClaimBonusRewards,
-    canClaimDappRewards,
-    canClaimStakerRewards,
     fetchConstantsToStore,
-    getTotalStaked,
+    claimLockAndStake,
   };
 }

@@ -223,12 +223,13 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getClaimStakerRewardsCall(numberOfCalls: number): Promise<ExtrinsicPayload> {
+  public async getClaimStakerRewardsCalls(numberOfCalls: number): Promise<ExtrinsicPayload[]> {
     const api = await this.api.getApi();
     const calls = Array(numberOfCalls)
       .fill(0)
       .map(() => api.tx.dappStaking.claimStakerRewards());
-    return api.tx.utility.batchAll(calls);
+
+    return calls;
   }
 
   public async getPeriodEndInfo(period: number): Promise<PeriodEndInfo | undefined> {
@@ -351,11 +352,17 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.utility.batchAll(calls);
   }
 
-  public async getClaimBonusRewardsCall(contractAddresses: string[]): Promise<ExtrinsicPayload> {
+  public async getClaimBonusRewardsCalls(contractAddresses: string[]): Promise<ExtrinsicPayload[]> {
     const api = await this.api.getApi();
     const calls = contractAddresses.map((address) =>
       api.tx.dappStaking.claimBonusReward(getDappAddressEnum(address))
     );
+
+    return calls;
+  }
+
+  public async batchAllCalls(calls: ExtrinsicPayload[]): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
 
     return api.tx.utility.batchAll(calls);
   }

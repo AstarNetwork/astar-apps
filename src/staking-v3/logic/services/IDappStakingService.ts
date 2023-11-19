@@ -85,9 +85,19 @@ export interface IDappStakingService {
   claimBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
-   * Calculates staked amount.
+   * Batches and invokes multiple calls
+   * 1. Claims staker, dApp and bonus rewards if available
+   * 2. Locks a given tokens amount
+   * 3. Stakes a given tokens amount
    * @param senderAddress Staker address.
-   * @returns Staked amount map. Key - contract address, value - staked amount.
+   * @param amountToLock Tokens to lock
+   * @param stakeInfo A map containing contract addresses and amounts to stake.
+   * @param dappsToClaim List of dApp owned by sender to claim dApp rewards for.
    */
-  getStakedAmount(senderAddress: string): Promise<Map<string, bigint>>;
+  claimLockAndStake(
+    senderAddress: string,
+    amountToLock: number,
+    stakeInfo: Map<string, number>,
+    dappsToClaim: string[]
+  ): Promise<void>;
 }

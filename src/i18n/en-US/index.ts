@@ -683,6 +683,17 @@ export default {
     availableToVote: 'Available to vote',
     totalTransferable: 'Total transferable',
     lockedForVoting: 'Locked for voting',
+    alreadyVoted: 'Already voted',
+    remainLockedToken: 'Remain locked token',
+    voteLockedTokensWarning:
+      'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
+    rewardsWillBeClaimed: 'Your unclaimed rewards will be claimed.',
+    basicRewards: 'Basic rewards',
+    bonusRewards: 'Bonus rewards',
+    dAppRewards: 'dApp rewards',
+    tokensToBeLocked: 'Tokens to be locked',
+    additionalTokensLockedWarning:
+      'Additional tokens will be locked to be able to stake a desired amount.',
   },
   bridge: {
     bridge: 'Bridge',

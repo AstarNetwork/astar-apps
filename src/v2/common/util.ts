@@ -3,4 +3,6 @@ const wait = (ms: number): Promise<number> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export { wait };
+const abs = (number: bigint): bigint => (number >= 0 ? number : number * BigInt(-1));
+
+export { wait, abs };

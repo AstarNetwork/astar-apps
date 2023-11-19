@@ -83,17 +83,15 @@
       <div v-if="warningMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(warningMsg) }}</span>
       </div>
-      <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
-        <astar-button
-          class="btn-size--confirm"
-          :disabled="!!errMsg || !Number(amount)"
-          @click="handleStake({ amount, targetContractId: dapp.dapp.address })"
-        >
-          <span class="text--btn-confirm">
-            {{ $t('confirm') }}
-          </span>
-        </astar-button>
-      </div>
+      <astar-button
+        class="btn-size--confirm"
+        :disabled="!!errMsg || !Number(amount)"
+        @click="handleStake({ amount, targetContractId: dapp.dapp.address })"
+      >
+        <span class="text--btn-confirm">
+          {{ $t('confirm') }}
+        </span>
+      </astar-button>
     </div>
   </div>
 </template>

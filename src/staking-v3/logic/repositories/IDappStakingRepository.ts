@@ -108,9 +108,12 @@ export interface IDappStakingRepository {
   getUnstakeAndUnlockCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
 
   /**
-   * Gets claim staker rewards call.
+   * Gets claim staker rewards batch call. Situations when multiple claim staker call are required
+   * is highly possible.
+   * @param numberOfCalls Number of calls to batch
+   * @returns Batch call
    */
-  getClaimStakerRewardsCall(numberOfCalls: number): Promise<ExtrinsicPayload>;
+  getClaimStakerRewardsCalls(numberOfCalls: number): Promise<ExtrinsicPayload[]>;
 
   /**
    * Gets claim dapp rewards batch call.
@@ -126,7 +129,7 @@ export interface IDappStakingRepository {
    * Gets claim staker bonus rewards batch call.
    * @param contractAddress Addresses of the contracts to claim bonus rewards for.
    */
-  getClaimBonusRewardsCall(contractAddresses: string[]): Promise<ExtrinsicPayload>;
+  getClaimBonusRewardsCalls(contractAddresses: string[]): Promise<ExtrinsicPayload[]>;
 
   /**
    * Starts subscription to a staker info changes.
@@ -168,4 +171,11 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the dapp tiers.
    */
   getDappTiers(era: number): Promise<DAppTierRewards | undefined>;
+
+  /**
+   * Creates a batchAll call for a given calls
+   * @param calls Calls to batch.
+   * @returns Batch call
+   */
+  batchAllCalls(calls: ExtrinsicPayload[]): Promise<ExtrinsicPayload>;
 }

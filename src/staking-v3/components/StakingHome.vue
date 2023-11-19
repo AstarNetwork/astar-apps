@@ -8,11 +8,9 @@
       <button @click="navigateToVote()">Vote</button> |
       <button @click="stake(dapp.chain.address, 1000)">Stake</button> |
       <button @click="unstake(dapp.chain.address, 10)">Unstake</button> |
-      <button :disabled="!canClaimStakerRewards()" @click="claimStakerRewards()">
-        Claim staker
-      </button>
-      | <button :disabled="!canClaimDappRewards()" @click="claimDappRewards()">Claim dApp</button> |
-      <button :disabled="!canClaimBonusRewards()" @click="claimBonusRewards()">Claim bonus</button>
+      <button :disabled="!hasStakerRewards" @click="claimStakerRewards()">Claim staker</button>
+      | <button :disabled="!hasDappRewards" @click="claimDappRewards()">Claim dApp</button> |
+      <button :disabled="!hasBonusRewards" @click="claimBonusRewards()">Claim bonus</button>
       | <button @click="fetchDappToStore(dapp.chain.address)">Details</button> | [{{
         dapp.chain.address
       }}]
@@ -36,16 +34,15 @@ export default defineComponent({
     const {
       protocolState,
       rewards,
+      hasStakerRewards,
+      hasBonusRewards,
+      hasDappRewards,
       stake,
       unstake,
       claimStakerRewards,
       claimDappRewards,
       claimBonusRewards,
       getAllRewards,
-      canClaimBonusRewards,
-      canClaimDappRewards,
-      canClaimStakerRewards,
-      fetchConstantsToStore,
     } = useDappStaking();
     const { currentAccount } = useAccount();
 
@@ -68,15 +65,15 @@ export default defineComponent({
       registeredDapps,
       protocolState,
       rewards,
+      hasStakerRewards,
+      hasBonusRewards,
+      hasDappRewards,
       stake,
       unstake,
       fetchDappToStore,
       claimStakerRewards,
       claimDappRewards,
       claimBonusRewards,
-      canClaimBonusRewards,
-      canClaimDappRewards,
-      canClaimStakerRewards,
       navigateToVote,
     };
   },

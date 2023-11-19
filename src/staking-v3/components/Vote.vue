@@ -31,7 +31,7 @@
         />
       </div>
       <div class="amount">
-        <amount />
+        <amount :amount-changed="handleAmountChanged" />
       </div>
     </div>
     <div class="note">
@@ -42,8 +42,55 @@
       </div>
       <div class="note--row">
         <div>{{ $t('stakingV3.lockedForVoting') }}</div>
-        <div><format-balance :balance="locked" /></div>
+        <div><format-balance :balance="locked.toString()" /></div>
       </div>
+      <div class="note--row">
+        <div>{{ $t('stakingV3.alreadyVoted') }}</div>
+        <div><format-balance :balance="totalStake.toString()" /></div>
+      </div>
+      <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+        <div>
+          <b>{{
+            remainLockedToken >= 0
+              ? $t('stakingV3.remainLockedToken')
+              : $t('stakingV3.tokensToBeLocked')
+          }}</b>
+        </div>
+        <div>
+          <b><format-balance :balance="abs(remainLockedToken).toString()" /></b>
+        </div>
+      </div>
+      <div v-if="remainLockedToken !== BigInt(0)" class="note warning">
+        {{
+          remainLockedToken > BigInt(0)
+            ? $t('stakingV3.voteLockedTokensWarning')
+            : $t('stakingV3.additionalTokensLockedWarning')
+        }}
+      </div>
+    </div>
+    <div v-if="hasRewards" class="note">
+      <b>{{ $t('stakingV3.rewardsWillBeClaimed') }}</b>
+      <div class="note--row">
+        <div>{{ $t('stakingV3.basicRewards') }}</div>
+        <div><format-balance :balance="rewards?.staker.toString() ?? ''" /></div>
+      </div>
+      <div class="note--row">
+        <div>{{ $t('stakingV3.bonusRewards') }}</div>
+        <div><format-balance :balance="rewards?.bonus.toString() ?? ''" /></div>
+      </div>
+      <div class="note--row">
+        <div>{{ $t('stakingV3.dAppRewards') }}</div>
+        <div><format-balance :balance="rewards?.dApp.toString() ?? ''" /></div>
+      </div>
+    </div>
+    <div class="wrapper--button">
+      <astar-button
+        :disabled="!canConfirm"
+        style="width: 100%; height: 52px; font-size: 22px"
+        @click="confirm"
+      >
+        {{ $t('confirm') }}
+      </astar-button>
     </div>
   </div>
 </template>
@@ -54,6 +101,8 @@ import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { DappSelector, Dapp } from './dapp-selector';
 import Amount from './Amount.vue';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
+import { ethers } from 'ethers';
+import { abs } from 'src/v2/common';
 
 export default defineComponent({
   components: {
@@ -62,14 +111,23 @@ export default defineComponent({
     FormatBalance,
   },
   setup() {
-    const { constants, ledger } = useDappStaking();
+    const { constants, ledger, totalStake, hasRewards, rewards, claimLockAndStake } =
+      useDappStaking();
     const { registeredDapps } = useDapps();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
-    const locked = computed<string>(() => ledger?.value?.locked.toString() ?? '0');
 
+    const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const selectedDapp = ref<Dapp | undefined>(undefined);
+    const stakeAmount = ref<number>(0);
+    const remainLockedToken = computed<bigint>(() => {
+      const stakeToken = ethers.utils.parseEther(stakeAmount.value.toString()).toBigInt();
+      return locked.value - stakeToken - totalStake.value;
+    });
+    const canConfirm = computed<boolean>(
+      () => !!selectedDapp.value?.address && stakeAmount.value > 0
+    );
 
     const dapps = computed<Dapp[]>(() => {
       return registeredDapps.value.map((dapp) => ({
@@ -83,7 +141,39 @@ export default defineComponent({
       selectedDapp.value = dapp;
     };
 
-    return { constants, nativeTokenSymbol, dapps, locked, useableBalance, handleDappSelected };
+    const handleAmountChanged = (amount: number): void => {
+      stakeAmount.value = amount;
+    };
+
+    const confirm = async (): Promise<void> => {
+      // TODO at the moment only one dApp is supported for staking. This will change in the future.
+      // If additional funds locking is required remainLockedToken value will be negative.
+      if (canConfirm) {
+        const stakeInfo = new Map<string, number>();
+        stakeInfo.set(selectedDapp.value?.address ?? '', stakeAmount.value);
+        await claimLockAndStake(
+          stakeInfo,
+          remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
+        );
+      }
+    };
+
+    return {
+      constants,
+      nativeTokenSymbol,
+      dapps,
+      locked,
+      useableBalance,
+      totalStake,
+      remainLockedToken,
+      hasRewards,
+      canConfirm,
+      rewards,
+      handleDappSelected,
+      handleAmountChanged,
+      confirm,
+      abs,
+    };
   },
 });
 </script>
@@ -102,6 +192,10 @@ li {
 
 .wrapper--vote {
   padding: 16px;
+  max-width: 412px;
+  @media (min-width: $xl) {
+    justify-content: center;
+  }
 }
 
 .title {
@@ -120,6 +214,16 @@ li {
   border-radius: 16px;
   background-color: $gray-1;
   margin: 16px 0;
+}
+
+.warning {
+  background-color: rgba(230, 0, 122, 0.05);
+  border: 1px solid $astar-pink;
+  color: $astar-pink;
+}
+
+.warning--text {
+  color: $astar-pink;
 }
 
 .note--row {
@@ -148,6 +252,18 @@ li {
 
   .note {
     background-color: $navy-3;
+  }
+
+  .btn--confirm {
+    width: 100%;
+    font-size: 22px;
+    font-weight: 600;
+    height: 52px;
+  }
+
+  .wrapper--button {
+    width: 100%;
+    height: auto;
   }
 }
 </style>
