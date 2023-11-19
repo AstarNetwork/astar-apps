@@ -22,7 +22,7 @@
     width: 200vw;
     height: 200vw;
     content: '';
-    animation: wave linear 6s infinite;
+    animation: wave linear 16s infinite;
     z-index: 0;
     @media (min-width: $sm) {
       width: 200%;
@@ -93,5 +93,5 @@
 .text--symbol {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }

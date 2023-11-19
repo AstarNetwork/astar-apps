@@ -1,19 +1,37 @@
 <template>
   <div class="wrapper--account">
     <div class="row--account-rewards">
-      <div class="container--account">
+      <div class="container--account" :class="`network-${currentNetworkIdx}`">
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
           <div class="wallet-tab__bg">
+            <!-- EVM -->
             <template v-if="isH160">
+              <!-- zkEVM -->
               <template v-if="isZkEvm">
-                <div class="btn btn--native">Astar EVM (L1)</div>
-                <div v-if="isZkEvm" class="btn btn--evm active">Astar zkEVM</div>
+                <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
+                <div v-if="isZkEvm" class="btn active">Astar zkatana</div>
               </template>
-              <div v-else class="btn btn--native active">Astar EVM</div>
+
+              <!-- Astar EVM -->
+              <template v-else>
+                <div class="btn active">
+                  {{ currentNetworkName.replace('Network', '') }}
+                  EVM (L1)
+                </div>
+                <a v-if="currentNetworkIdx === 2" class="btn" href="/zkatana-testnet/assets">
+                  Astar zkatana
+                </a>
+                <a v-else-if="currentNetworkIdx !== 1" class="btn" disabled>Astar zkEVM</a>
+              </template>
             </template>
-            <div v-else class="btn btn--native active">Astar Native</div>
+
+            <!-- Native -->
+            <div v-else class="btn active">
+              {{ currentNetworkIdx === 4 ? 'Astar' : currentNetworkName.replace('Network', '') }}
+              Native
+            </div>
           </div>
         </div>
 
@@ -36,7 +54,7 @@
 
             <div>
               <div class="text--address">
-                {{ getShortenAddress(currentAccount) }}
+                <span>{{ getShortenAddress(currentAccount) }}</span>
               </div>
               <div class="text--balance">
                 {{ $n(totalBal) }}
@@ -267,6 +285,8 @@ export default defineComponent({
       return bg_img.native;
     });
 
+    const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
+
     return {
       iconWallet,
       currentAccountName,
@@ -288,6 +308,8 @@ export default defineComponent({
       isAccountUnified,
       isZkEvm,
       bg,
+      currentNetworkIdx,
+      currentNetworkName,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

@@ -92,8 +92,7 @@
             </q-tooltip>
           </div>
 
-          <div>
-            <!-- TODO: add logic -->
+          <!-- <div>
             <button class="btn btn--icon">
               <astar-icon-star class="icon--favorite" :class="isFavorite ? 'on' : 'off'" />
             </button>
@@ -103,7 +102,7 @@
                 $t(isFavorite ? 'assets.removeFromFavorite' : 'assets.addToFavorite')
               }}</span>
             </q-tooltip>
-          </div>
+          </div> -->
         </div>
       </q-slide-transition>
     </div>

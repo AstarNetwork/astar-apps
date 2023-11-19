@@ -17,7 +17,7 @@
   .row {
     &:hover {
       @media (min-width: $sm) {
-        background-color: $navy-1;
+        background-color: $navy-3;
       }
     }
   }
@@ -31,7 +31,7 @@
 }
 .body--dark {
   .row--is-expand {
-    background-color: $navy-1;
+    background-color: $navy-3;
     @media (min-width: $sm) {
       background-color: $navy-2;
     }

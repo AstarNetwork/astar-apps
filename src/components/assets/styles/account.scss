@@ -60,14 +60,60 @@
   img {
     width: 32px;
     height: 32px;
-    object-fit: cover;
-    border-radius: 9999px;
+    // object-fit: cover;
+    // border-radius: 9999px;
   }
 }
 
 .text--address {
   font-size: 12px;
-  color: $navy-1;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.container--account {
+  // astar native
+  &.network-0 {
+    .text--address {
+      background: linear-gradient(90deg, #e6007a 25%, #ff9dd1 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  // shiden
+  &.network-1 {
+    .text--address {
+      background: linear-gradient(90deg, #5928b1 25%, #b092ea 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  // shibuya
+  &.network-2 {
+    .text--address {
+      background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  // zKatana
+  &.network-4 {
+    .text--address {
+      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
 }
 
 .text--balance {
@@ -197,10 +243,7 @@
   position: relative;
   margin-bottom: 16px;
   display: flex;
-  justify-content: center;
-  @media (min-width: $sm) {
-    justify-content: flex-end;
-  }
+  justify-content: flex-end;
   .wallet-tab__bg {
     background-color: rgba(255, 255, 255, 0.3);
     padding: 4px;
@@ -214,16 +257,56 @@
     font-weight: 600;
     &.active {
       color: white;
+      background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+    }
+    &:not(.active){
+      cursor: pointer;
     }
   }
-  .btn--native {
-    &.active {
-      background: linear-gradient(270deg, #ff94cd 26.04%, #e6007a 100%);
+}
+
+.container--account {
+  // astar native
+  &.network-0 {
+    .wallet-tab {
+      .btn {
+        &.active {
+          background: linear-gradient(270deg, #ff94cd 25%, #e6007a 100%);
+        }
+      }
     }
   }
-  .btn--evm {
-    &.active {
-      background: linear-gradient(270deg, #703ac2 26.04%, #226dff 100%);
+
+  // shiden
+  &.network-1 {
+    .wallet-tab {
+      .btn {
+        &.active {
+          background: linear-gradient(270deg, #5928b1 25%, #b092ea 100%);
+        }
+      }
+    }
+  }
+
+  // shibuya
+  &.network-2 {
+    .wallet-tab {
+      .btn {
+        &.active {
+          background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+        }
+      }
+    }
+  }
+
+  // zKatana
+  &.network-4 {
+    .wallet-tab {
+      .btn {
+        &.active {
+          background: linear-gradient(270deg, #226dff 25%, #703ac2 100%);
+        }
+      }
     }
   }
 }
