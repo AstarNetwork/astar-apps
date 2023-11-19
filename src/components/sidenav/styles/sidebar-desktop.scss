@@ -28,7 +28,7 @@
   z-index: 1;
   width: 224px;
   padding-top: 24px;
-  background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
+  background: #081029;
   display: flex;
   flex-direction: column;
   z-index: 1;
@@ -100,19 +100,19 @@
 }
 
 .menu__assets {
-  margin-top: -322px;
-}
-
-.menu__dashboard {
   margin-top: -276px;
 }
 
-.menu__staking {
+.menu__dashboard {
   margin-top: -230px;
 }
 
-.menu__bridge {
+.menu__staking {
   margin-top: -184px;
+}
+
+.menu__bridge {
+  margin-top: -138px;
 }
 
 .dummy-row {
@@ -126,9 +126,6 @@
 .body--dark {
   .menu__indicator {
     background: $navy-3;
-  }
-  .sidebar {
-    background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   }
   .link {
     color: $gray-1;

@@ -32,7 +32,7 @@
       <div class="container--address container--address--eth">
         <img :src="walletIcons.evm" alt="Wallet icon" />
         <account
-          :account-address="evmAddress"
+          :account-address="checkSumEvmAddress(evmAddress)"
           :explorer-url="blockScout"
           :native-token-symbol="nativeTokenSymbol"
           :show-balance-value="false"
@@ -45,7 +45,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from './Account.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
@@ -101,7 +101,7 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`
     );
 
-    return { getShortenAddress, blockScout, walletIcons };
+    return { getShortenAddress, checkSumEvmAddress, blockScout, walletIcons };
   },
 });
 </script>
