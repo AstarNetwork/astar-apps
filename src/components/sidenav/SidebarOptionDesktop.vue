@@ -130,11 +130,13 @@ svg {
 .sidebar-button-container {
   display: flex;
   align-items: center;
-  background-color: $navy-3;
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 10px;
   cursor: pointer;
+  &:hover {
+    background-color: $navy-3;
+  }
 }
 
 .menu-item {

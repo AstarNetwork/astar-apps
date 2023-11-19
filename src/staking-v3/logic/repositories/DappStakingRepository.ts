@@ -282,6 +282,9 @@ export class DappStakingRepository implements IDappStakingRepository {
       rewardRetentionInPeriods: (<u32>api.consts.dappStaking.rewardRetentionInPeriods).toNumber(),
       minStakeAmount: (<u128>api.consts.dappStaking.minimumStakeAmount).toBigInt(),
       minBalanceAfterStaking: 10,
+      maxNumberOfStakedContracts: (<u32>(
+        api.consts.dappStaking.maxNumberOfStakedContracts
+      )).toNumber(),
     };
   }
 
