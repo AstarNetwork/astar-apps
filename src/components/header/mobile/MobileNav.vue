@@ -169,6 +169,8 @@ export default defineComponent({
   flex-direction: column;
   // gap: 40px;
   padding-top: 40px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
 }
 .links {
   padding: 0 16px;
