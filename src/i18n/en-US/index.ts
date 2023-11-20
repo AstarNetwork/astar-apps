@@ -703,7 +703,7 @@ export default {
     dAppRewards: 'dApp rewards',
     tokensToBeLocked: 'Tokens to be locked',
     additionalTokensLockedWarning:
-      'Additional tokens will be locked to be able to stake a desired amount.',
+      'Additional tokens will be locked to be able to vote a desired amount.',
   },
   bridge: {
     bridge: 'Bridge',

@@ -158,25 +158,26 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    const call = await this.getClaimDappRewardsCall(contractAddress);
+    const calls = await this.getClaimDappRewardsCalls(contractAddress);
 
-    if (!call) {
+    if (!calls) {
       throw `No dApp rewards to claim for contract address ${contractAddress}.`;
     }
 
-    await this.signCall(call, senderAddress, successMessage);
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.signCall(batch, senderAddress, successMessage);
   }
 
-  private async getClaimDappRewardsCall(
+  private async getClaimDappRewardsCalls(
     contractAddress: string
-  ): Promise<ExtrinsicPayload | undefined> {
+  ): Promise<ExtrinsicPayload[] | undefined> {
     const result = await this.getDappRewardsAndErasToClaim(contractAddress);
 
     if (result.erasToClaim.length === 0) {
       return undefined;
     }
 
-    return await this.dappStakingRepository.getClaimDappRewardsCall(
+    return await this.dappStakingRepository.getClaimDappRewardsCalls(
       contractAddress,
       result.erasToClaim
     );
@@ -233,10 +234,10 @@ export class DappStakingService implements IDappStakingService {
     const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
     claimStakerCall && calls.push(...claimStakerCall);
     // dApps rewards
-    dappsToClaim.forEach(async (x) => {
-      const call = await this.getClaimDappRewardsCall(x);
-      call && calls.push(call);
-    });
+    for (const dApp of dappsToClaim) {
+      const claimDappCalls = await this.getClaimDappRewardsCalls(dApp);
+      claimDappCalls && calls.push(...claimDappCalls);
+    }
     // Bonus rewards
     const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
     claimBonusCalls && calls.push(...claimBonusCalls);
@@ -245,7 +246,6 @@ export class DappStakingService implements IDappStakingService {
       amountToLock > 0 ? await this.dappStakingRepository.getLockCall(amountToLock) : undefined;
     lockCall && calls.push(lockCall);
     // Stake tokens
-    // TODO check if cleanup call will be added to runtime. If no, add it here.
     for (let [key, value] of stakeInfo) {
       calls.push(await this.dappStakingRepository.getStakeCall(key, value));
     }
@@ -370,12 +370,11 @@ export class DappStakingService implements IDappStakingService {
       throw 'Invalid operation.';
     }
 
-    // const firstSpanIndex =
-    //   (firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength)) /
-    //   constants.eraRewardSpanLength;
-    // const lastSpanIndex =
-    //   (lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength)) /
-    //   constants.eraRewardSpanLength;
+    if (firstStakedEra >= lastStakedEra) {
+      // No rewards earned. See if we need to distinguish this and rewards expired.
+      rewardsExpired = true;
+    }
+
     const firstSpanIndex = firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength);
     const lastSpanIndex = lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength);
 

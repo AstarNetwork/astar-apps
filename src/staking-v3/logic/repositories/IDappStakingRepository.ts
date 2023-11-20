@@ -120,10 +120,10 @@ export interface IDappStakingRepository {
    * @param contractAddress Address of the contract to claim rewards for.
    * @param erasToClaim Eras to claim rewards for.
    */
-  getClaimDappRewardsCall(
+  getClaimDappRewardsCalls(
     contractAddress: string,
     erasToClaim: number[]
-  ): Promise<ExtrinsicPayload>;
+  ): Promise<ExtrinsicPayload[]>;
 
   /**
    * Gets claim staker bonus rewards batch call.

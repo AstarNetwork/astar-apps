@@ -341,18 +341,19 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getClaimDappRewardsCall(
+  public async getClaimDappRewardsCalls(
     contractAddress: string,
     erasToClaim: number[]
-  ): Promise<ExtrinsicPayload> {
+  ): Promise<ExtrinsicPayload[]> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
+    const calls: ExtrinsicPayload[] = [];
     const api = await this.api.getApi();
-    const calls = erasToClaim.map((era) =>
-      api.tx.dappStaking.claimDappReward(getDappAddressEnum(contractAddress), era)
+    erasToClaim.map((era) =>
+      calls.push(api.tx.dappStaking.claimDappReward(getDappAddressEnum(contractAddress), era))
     );
 
-    return api.tx.utility.batchAll(calls);
+    return calls;
   }
 
   public async getClaimBonusRewardsCalls(contractAddresses: string[]): Promise<ExtrinsicPayload[]> {
