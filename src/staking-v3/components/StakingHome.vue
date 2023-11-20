@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch } from 'vue';
+import { defineComponent, onMounted, watch, watchEffect } from 'vue';
 import { useAccount } from 'src/hooks';
 import { useDappStaking, useDapps } from '../hooks';
 import { Path, networkParam } from 'src/router/routes';
@@ -61,6 +61,11 @@ export default defineComponent({
       }
     });
 
+    watchEffect(() => {
+      console.log('registeredDapps', registeredDapps.value);
+      console.log('protocolState', protocolState.value);
+    });
+
     return {
       registeredDapps,
       protocolState,
@@ -82,6 +87,6 @@ export default defineComponent({
 
 <style scoped>
 .main--wrapper {
-  margin-top: 40px;
+  margin-bottom: 40px;
 }
 </style>

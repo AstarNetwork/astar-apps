@@ -14,7 +14,8 @@ import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
 import DappStakingV3Page from 'src/pages/DappStakingV3.vue';
-import { StakingHome, Vote } from 'src/staking-v3';
+import { Vote } from 'src/staking-v3';
+import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export {
@@ -177,7 +178,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: StakingHome,
+        component: DiscoverV3,
       },
       {
         path: 'vote',
