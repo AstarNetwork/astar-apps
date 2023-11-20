@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="selector-wrapper" @click="handleModalSelectDapp({ isOpen: true })">
+    <div
+      class="selector-wrapper"
+      :class="selectedDappAddress && 'cursor--default'"
+      @click="handleModalSelectDapp({ isOpen: true })"
+    >
       <div class="name">
         {{ selectedDapp ? selectedDapp.name : placeholder }}
       </div>
@@ -34,25 +38,36 @@ export default defineComponent({
       required: false,
       default: 'Select a dApp',
     },
-    dappSelected: {
+    selectedDappAddress: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    onDappSelected: {
       type: Function as PropType<(dapp: Dapp) => void>,
       required: false,
       default: undefined,
     },
   },
   setup(props) {
-    const selectedDapp = ref<Dapp | undefined>(undefined);
+    const selectedDapp = ref<Dapp | undefined>(
+      props.dapps.find((dapp) => dapp.address === props.selectedDappAddress)
+    );
     const isModalSelectDapp = ref<boolean>(false);
 
     const handleDappSelected = (dapp: Dapp): void => {
       selectedDapp.value = dapp;
 
-      if (props.dappSelected) {
-        props.dappSelected(dapp);
+      if (props.onDappSelected) {
+        props.onDappSelected(dapp);
       }
     };
 
     const handleModalSelectDapp = ({ isOpen }: { isOpen: boolean }): void => {
+      if (props.selectedDappAddress) {
+        return;
+      }
+
       isModalSelectDapp.value = isOpen;
     };
 
@@ -67,6 +82,10 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+}
+
+.cursor--default {
+  cursor: default;
 }
 
 .name {

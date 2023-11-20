@@ -5,6 +5,7 @@ import {
   SingularStakingInfo,
   Rewards,
   Constants,
+  EraInfo,
 } from '../logic';
 
 export interface DappStakingState {
@@ -15,6 +16,7 @@ export interface DappStakingState {
   stakerInfo: Map<string, SingularStakingInfo> | undefined;
   rewards: Rewards | undefined;
   constants: Constants | undefined;
+  currentEra: EraInfo | undefined;
 }
 
 function state(): DappStakingState {
@@ -26,6 +28,7 @@ function state(): DappStakingState {
     stakerInfo: undefined,
     rewards: undefined,
     constants: undefined,
+    currentEra: undefined,
   };
 }
 

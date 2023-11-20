@@ -62,7 +62,6 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      console.log('registeredDapps', registeredDapps.value);
       console.log('protocolState', protocolState.value);
     });
 

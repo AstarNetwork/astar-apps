@@ -8,6 +8,7 @@ import {
   SingularStakingInfo,
   Rewards,
   Constants,
+  EraInfo,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -19,6 +20,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
   setRewards(state: DappStakingState, rewards: Rewards): void;
   setConstants(state: DappStakingState, constants: Constants): void;
+  setCurrentEraInfo(state: DappStakingState, currentEra: EraInfo): void;
 }
 
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
@@ -52,6 +54,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setConstants(state, constants) {
     state.constants = constants;
+  },
+  setCurrentEraInfo(state, currentEra) {
+    state.currentEra = currentEra;
   },
 };
 

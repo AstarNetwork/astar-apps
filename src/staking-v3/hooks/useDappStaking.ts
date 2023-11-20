@@ -5,6 +5,7 @@ import { container } from 'src/v2/common';
 import {
   AccountLedger,
   Constants,
+  EraInfo,
   IDappStakingRepository,
   IDappStakingService,
   PeriodType,
@@ -28,7 +29,7 @@ export function useDappStaking() {
   const { registeredDapps } = useDapps();
   const { decimal } = useChainMetadata();
 
-  const { balance, isLoadingBalance } = useBalance(currentAccount);
+  const { balance } = useBalance(currentAccount);
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
@@ -50,6 +51,15 @@ export function useDappStaking() {
 
     return consts;
   });
+  const currentEraInfo = computed<EraInfo | undefined>(() => {
+    const era = store.getters['stakingV3/getCurrentEraInfo'];
+    if (!era) {
+      getCurrentEraInfo();
+    }
+
+    return era;
+  });
+
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
   const hasBonusRewards = computed<boolean>(() => !!rewards.value?.bonus);
@@ -188,6 +198,13 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
+  const getCurrentEraInfo = async (): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const eraInfo = await stakingRepo.getCurrentEraInfo();
+
+    store.commit('stakingV3/setCurrentEraInfo', eraInfo);
+  };
+
   const canStake = async (amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
@@ -267,6 +284,7 @@ export function useDappStaking() {
     hasDappRewards,
     hasBonusRewards,
     hasRewards,
+    currentEraInfo,
     stake,
     unstake,
     claimStakerRewards,
@@ -277,5 +295,6 @@ export function useDappStaking() {
     getAllRewards,
     fetchConstantsToStore,
     claimLockAndStake,
+    getCurrentEraInfo,
   };
 }

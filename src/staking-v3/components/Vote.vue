@@ -26,8 +26,9 @@
       <div class="dapp">
         <dapp-selector
           :dapps="dapps"
-          :dapp-selected="handleDappSelected"
+          :on-dapp-selected="handleDappSelected"
           :placeholder="$t('stakingV3.chooseProject')"
+          :selected-dapp-address="selectedDappAddress"
         />
       </div>
       <div class="amount">
@@ -103,6 +104,7 @@ import Amount from './Amount.vue';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import { ethers } from 'ethers';
 import { abs } from 'src/v2/common';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -117,14 +119,20 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
+    const route = useRoute();
 
-    const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const selectedDapp = ref<Dapp | undefined>(undefined);
+    const selectedDappAddress = ref<string>((route.query.dappAddress as string) ?? '');
+    const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const stakeAmount = ref<number>(0);
+
+    console.log('fsdf', selectedDappAddress.value);
+
     const remainLockedToken = computed<bigint>(() => {
       const stakeToken = ethers.utils.parseEther(stakeAmount.value.toString()).toBigInt();
       return locked.value - stakeToken - totalStake.value;
     });
+
     const canConfirm = computed<boolean>(
       () => !!selectedDapp.value?.address && stakeAmount.value > 0
     );
@@ -169,6 +177,7 @@ export default defineComponent({
       hasRewards,
       canConfirm,
       rewards,
+      selectedDappAddress,
       handleDappSelected,
       handleAmountChanged,
       confirm,

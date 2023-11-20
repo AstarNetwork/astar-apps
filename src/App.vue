@@ -88,7 +88,7 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
-    const { getAllRewards } = useDappStaking();
+    const { getAllRewards, getCurrentEraInfo } = useDappStaking();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -145,6 +145,7 @@ export default defineComponent({
 
       console.log('protocol state', message.state);
       await getAllRewards();
+      await getCurrentEraInfo();
     });
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {

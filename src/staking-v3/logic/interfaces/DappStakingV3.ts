@@ -102,3 +102,11 @@ interface PalletDappStakingV3DAppTier extends Struct {
   readonly dappId: Compact<u16>;
   readonly tierId: Option<u8>;
 }
+
+export interface PalletDappStakingV3EraInfo extends Struct {
+  readonly activeEraLocked: Compact<u128>;
+  readonly totalLocked: Compact<u128>;
+  readonly unlocking: Compact<u128>;
+  readonly currentStakeAmount: PalletDappStakingV3StakeAmount;
+  readonly nextStakeAmount: PalletDappStakingV3StakeAmount;
+}

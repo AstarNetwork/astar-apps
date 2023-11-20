@@ -6,6 +6,7 @@ import {
   Dapp,
   DappBase,
   DappInfo,
+  EraInfo,
   EraRewardSpan,
   PeriodEndInfo,
   ProtocolState,
@@ -178,4 +179,10 @@ export interface IDappStakingRepository {
    * @returns Batch call
    */
   batchAllCalls(calls: ExtrinsicPayload[]): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets the current era information.
+   * @returns A promise that resolves to the era info.
+   */
+  getCurrentEraInfo(): Promise<EraInfo>;
 }
