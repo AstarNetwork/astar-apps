@@ -28,7 +28,7 @@ export function useDappStaking() {
   const { registeredDapps } = useDapps();
   const { decimal } = useChainMetadata();
 
-  const { balance, isLoadingBalance } = useBalance(currentAccount);
+  const { useableBalance } = useBalance(currentAccount);
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
@@ -190,25 +190,26 @@ export function useDappStaking() {
 
   const canStake = async (amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
+    const balanceBN = new BN(useableBalance.value.toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const constants = await stakingRepo.getConstants();
 
     if (amount <= 0) {
-      // Prevents ZeroAmount
-      return [false, t('stakingV3.amountGreater0')];
+      // Prevents dappStaking.ZeroAmount
+      return [false, t('stakingV3.dappStaking.ZeroAmount')];
     } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
-      // Prevents TooManyStakedContracts
-      return [false, t('stakingV3.tooManyStakedContracts')];
-    } else if (hasRewards) {
-      // Prevents UnclaimedRewardsFromPastPeriods
+      // Prevents dappStaking.TooManyStakedContracts
+      return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
+    } else if (hasRewards.value) {
+      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
       // May want to auto claim rewards here
-      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
     } else if (protocolState.value?.maintenance) {
-      // Prevents Disabled
-      return [false, t('stakingV3.disabled')];
-    } else if (stakeAmount.gt(balance.value)) {
-      // Prevents UnavailableStakeFunds
-      return [false, t('stakingV3.unavailableStakeFunds')];
+      // Prevents dappStaking.Disabled
+      return [false, t('stakingV3.dappStaking.Disabled')];
+    } else if (stakeAmount.gt(balanceBN)) {
+      // Prevents dappStaking.UnavailableStakeFunds
+      return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
     } else if (
       // Prevents PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
@@ -225,21 +226,21 @@ export function useDappStaking() {
     const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
 
     if (amount <= 0) {
-      // Prevents ZeroAmount
-      return [false, t('stakingV3.amountGreater0')];
+      // Prevents dappStaking.ZeroAmount
+      return [false, t('stakingV3.dappStaking.ZeroAmount')];
     } else if (stakeAmount.gt(stakedAmount)) {
-      // Prevents UnstakeAmountTooLarge
-      return [false, t('stakingV3.unstakeAmountTooLarge')];
-    } else if (hasRewards) {
-      // Prevents UnclaimedRewardsFromPastPeriods
+      // Prevents dappStaking.UnstakeAmountTooLarge
+      return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
+    } else if (hasRewards.value) {
+      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
       // May want to auto claim rewards here
-      return [false, t('stakingV3.unclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
     } else if (protocolState.value?.maintenance) {
-      // Prevents Disabled
-      return [false, t('stakingV3.disabled')];
+      // Prevents dappStaking.Disabled
+      return [false, t('stakingV3.dappStaking.Disabled')];
     } else if (!amount) {
-      // Prevents UnstakeFromPastPeriod
-      return [false, t('stakingV3.unstakeFromPastPeriod')];
+      // Prevents dappStaking.UnstakeFromPastPeriod
+      return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
     }
 
     return [true, ''];
