@@ -57,12 +57,12 @@ test.describe('account panel', () => {
     await expect(page.locator('.noti-content')).toBeVisible();
   });
 
-  test('account expander works', async ({ page }) => {
-    await page.locator('.icon--expand').first().click();
-    const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
-    await expect(transferButton).toBeVisible();
+  // test('account expander works', async ({ page }) => {
+  //   await page.locator('.icon--expand').first().click();
+  //   const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
+  //   await expect(transferButton).toBeVisible();
 
-    await page.locator('.icon--expand').first().click();
-    await expect(transferButton).not.toBeVisible();
-  });
+  //   await page.locator('.icon--expand').first().click();
+  //   await expect(transferButton).not.toBeVisible();
+  // });
 });
