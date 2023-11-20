@@ -1,0 +1,48 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapps {
+  padding: 0 16px;
+  width: 100%;
+  @media (min-width: $md) {
+    padding: 0;
+  }
+}
+
+.card--dapp {
+  width: 280px;
+  height: 196px;
+  border: 1px solid $navy-1;
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.card__top {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid $navy-3;
+}
+
+.icon--dapp {
+  width: 80px;
+  height: 80px;
+}
+
+.card__bottom {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.body--dark {
+}
+
+.body--dark {
+  .card--dapp {
+    border: 1px solid $gray-1;
+  }
+  .card__top {
+    border-bottom: 1px solid $gray-4;
+  }
+}
