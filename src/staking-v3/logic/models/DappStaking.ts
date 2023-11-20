@@ -94,6 +94,9 @@ export interface EraReward {
 export interface Constants {
   eraRewardSpanLength: number;
   rewardRetentionInPeriods: number;
+  minStakeAmount: bigint;
+  minStakeAmountToken?: number;
+  minBalanceAfterStaking: number;
   maxNumberOfStakedContracts: number;
 }
 

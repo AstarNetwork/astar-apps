@@ -684,6 +684,26 @@ export default {
     unavailableStakeFunds:
       'The staking amount surpasses the current balance available for staking.',
     successfullyStaked: 'You successfully staked to {contractAddress}',
+    voteTitle: 'Vote!',
+    minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
+    minBalanceAfterStaking:
+      'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
+    selectProjects: 'Select projects',
+    chooseProject: 'Choose a project to vote',
+    availableToVote: 'Available to vote',
+    totalTransferable: 'Total transferable',
+    lockedForVoting: 'Locked for voting',
+    alreadyVoted: 'Already voted',
+    remainLockedToken: 'Remain locked token',
+    voteLockedTokensWarning:
+      'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
+    rewardsWillBeClaimed: 'Your unclaimed rewards will be claimed.',
+    basicRewards: 'Basic rewards',
+    bonusRewards: 'Bonus rewards',
+    dAppRewards: 'dApp rewards',
+    tokensToBeLocked: 'Tokens to be locked',
+    additionalTokensLockedWarning:
+      'Additional tokens will be locked to be able to stake a desired amount.',
   },
   bridge: {
     bridge: 'Bridge',

@@ -9,9 +9,14 @@ import { useStore } from 'src/store';
 export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
-  const registeredDapps = computed<CombinedDappInfo[]>(
-    () => store.getters['stakingV3/getRegisteredDapps']
-  );
+  const registeredDapps = computed<CombinedDappInfo[]>(() => {
+    const dapps = store.getters['stakingV3/getRegisteredDapps'];
+    if (!dapps.length) {
+      fetchDappsToStore();
+    }
+
+    return dapps;
+  });
 
   const fetchDappsToStore = async (): Promise<void> => {
     const service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);

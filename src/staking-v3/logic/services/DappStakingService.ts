@@ -70,18 +70,31 @@ export class DappStakingService implements IDappStakingService {
   public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const { firstSpanIndex, lastSpanIndex, rewardsExpired } = await this.getStakerEraRange(
-      senderAddress
-    );
+    const calls = await this.getClaimStakerRewardsCall(senderAddress);
 
-    if (rewardsExpired) {
+    if (!calls) {
       throw 'Staker rewards expired.';
     }
 
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  private async getClaimStakerRewardsCall(
+    senderAddress: string
+  ): Promise<ExtrinsicPayload[] | undefined> {
+    const { firstSpanIndex, lastSpanIndex, rewardsExpired, eraRewardSpanLength } =
+      await this.getStakerEraRange(senderAddress);
+
+    if (rewardsExpired || isNaN(firstSpanIndex)) {
+      return undefined;
+    }
+
     // TODO fix, something is not right here.
-    const numberOfClaimCalls = lastSpanIndex - firstSpanIndex + 1;
-    const call = await this.dappStakingRepository.getClaimStakerRewardsCall(numberOfClaimCalls);
-    await this.signCall(call, senderAddress, successMessage);
+    const numberOfClaimCalls = (lastSpanIndex - firstSpanIndex) / eraRewardSpanLength + 1;
+    const result = await this.dappStakingRepository.getClaimStakerRewardsCalls(numberOfClaimCalls);
+
+    return result;
   }
 
   // @inheritdoc
@@ -145,17 +158,28 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    const result = await this.getDappRewardsAndErasToClaim(contractAddress);
+    const call = await this.getClaimDappRewardsCall(contractAddress);
 
-    if (result.erasToClaim.length === 0) {
+    if (!call) {
       throw `No dApp rewards to claim for contract address ${contractAddress}.`;
     }
 
-    const call = await this.dappStakingRepository.getClaimDappRewardsCall(
+    await this.signCall(call, senderAddress, successMessage);
+  }
+
+  private async getClaimDappRewardsCall(
+    contractAddress: string
+  ): Promise<ExtrinsicPayload | undefined> {
+    const result = await this.getDappRewardsAndErasToClaim(contractAddress);
+
+    if (result.erasToClaim.length === 0) {
+      return undefined;
+    }
+
+    return await this.dappStakingRepository.getClaimDappRewardsCall(
       contractAddress,
       result.erasToClaim
     );
-    await this.signCall(call, senderAddress, successMessage);
   }
 
   // @inheritdoc
@@ -166,14 +190,68 @@ export class DappStakingService implements IDappStakingService {
   }
 
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
-    const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    const calls = await this.getClaimBonusRewardsCalls(senderAddress);
 
-    if (result.contractsToClaim.length === 0) {
+    if (!calls) {
       throw `No bonus rewards to claim for sender address ${senderAddress}.`;
     }
 
-    const call = await this.dappStakingRepository.getClaimBonusRewardsCall(result.contractsToClaim);
-    await this.signCall(call, senderAddress, successMessage);
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  private async getClaimBonusRewardsCalls(
+    senderAddress: string
+  ): Promise<ExtrinsicPayload[] | undefined> {
+    const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
+
+    if (result.contractsToClaim.length === 0) {
+      return undefined;
+    }
+
+    return await this.dappStakingRepository.getClaimBonusRewardsCalls(result.contractsToClaim);
+  }
+
+  // @inheritdoc
+  public async claimLockAndStake(
+    senderAddress: string,
+    amountToLock: number,
+    stakeInfo: Map<string, number>,
+    dappsToClaim: string[]
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    if (stakeInfo.size === 0) {
+      throw 'No stakeInfo provided';
+    }
+    // TODO there is a possibility that some address is wrong or some amount is below min staking amount
+    // Check this also
+
+    const calls: ExtrinsicPayload[] = [];
+
+    // Staker rewards
+    const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
+    claimStakerCall && calls.push(...claimStakerCall);
+    // dApps rewards
+    dappsToClaim.forEach(async (x) => {
+      const call = await this.getClaimDappRewardsCall(x);
+      call && calls.push(call);
+    });
+    // Bonus rewards
+    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
+    claimBonusCalls && calls.push(...claimBonusCalls);
+    // Lock tokens
+    const lockCall =
+      amountToLock > 0 ? await this.dappStakingRepository.getLockCall(amountToLock) : undefined;
+    lockCall && calls.push(lockCall);
+    // Stake tokens
+    // TODO check if cleanup call will be added to runtime. If no, add it here.
+    for (let [key, value] of stakeInfo) {
+      calls.push(await this.dappStakingRepository.getStakeCall(key, value));
+    }
+
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.signCall(batch, senderAddress, 'success');
   }
 
   private async getBonusRewardsAndContractsToClaim(
@@ -292,12 +370,14 @@ export class DappStakingService implements IDappStakingService {
       throw 'Invalid operation.';
     }
 
-    const firstSpanIndex =
-      (firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength)) /
-      constants.eraRewardSpanLength;
-    const lastSpanIndex =
-      (lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength)) /
-      constants.eraRewardSpanLength;
+    // const firstSpanIndex =
+    //   (firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength)) /
+    //   constants.eraRewardSpanLength;
+    // const lastSpanIndex =
+    //   (lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength)) /
+    //   constants.eraRewardSpanLength;
+    const firstSpanIndex = firstStakedEra - (firstStakedEra % constants.eraRewardSpanLength);
+    const lastSpanIndex = lastStakedEra - (lastStakedEra % constants.eraRewardSpanLength);
 
     return {
       firstStakedEra,
@@ -305,6 +385,7 @@ export class DappStakingService implements IDappStakingService {
       firstSpanIndex,
       lastSpanIndex,
       rewardsExpired,
+      eraRewardSpanLength: constants.eraRewardSpanLength,
     };
   }
 

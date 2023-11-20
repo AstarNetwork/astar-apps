@@ -143,6 +143,7 @@ export default defineComponent({
       const message = m as ProtocolStateChangedMessage;
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
+      console.log('protocol state', message.state);
       await getAllRewards();
     });
 
