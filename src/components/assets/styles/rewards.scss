@@ -11,6 +11,7 @@
   position: relative;
   overflow: hidden;
   min-height: 180px;
+  transition: all 0.2s ease;
   @media (min-width: $sm) {
     width: 220px;
   }
@@ -42,6 +43,9 @@
     opacity: 0.5;
     background: linear-gradient(to right, #d0faff, #dde4ff, #fee2f1);
   }
+  &:hover{
+    opacity: 0.9;
+  }
 }
 
 @keyframes wave {
@@ -61,12 +65,10 @@
 }
 
 .container--rewards {
+  text-align: left;
   position: relative;
   z-index: 1;
   cursor: pointer;
-  &:hover {
-    opacity: 0.8;
-  }
 }
 
 .text--title {

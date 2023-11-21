@@ -1,24 +1,26 @@
 <template>
-  <div class="wrapper--rewards">
-    <div
+  <div>
+    <button
       v-if="!isDappDeveloper"
-      class="container--rewards"
+      class="wrapper--rewards"
       :disabled="!canClaim || !canClaimWithoutError"
       @click="claimAll"
     >
-      <div class="text--title">
-        {{ $t('assets.yourEstimatedRewards') }}
-      </div>
-      <div class="row--data">
-        <div v-if="isLoadingPendingRewards" class="loading">
-          <q-skeleton type="rect" animation="fade" />
+      <div class="container--rewards">
+        <div class="text--title">
+          {{ $t('assets.yourEstimatedRewards') }}
         </div>
-        <div v-else class="value">
-          <span class="text--amount">{{ $n(pendingRewards) }}</span>
-          <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+        <div class="row--data">
+          <div v-if="isLoadingPendingRewards" class="loading">
+            <q-skeleton type="rect" animation="fade" />
+          </div>
+          <div v-else class="value">
+            <span class="text--amount">{{ $n(pendingRewards) }}</span>
+            <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </button>
   </div>
 </template>
 
