@@ -275,14 +275,20 @@ export default defineComponent({
 
     const bg_img = {
       native: require('/src/assets/img/account_bg_native.webp'),
+      shiden: require('/src/assets/img/account_bg_shiden.webp'),
+      testnet: require('/src/assets/img/account_bg_testnet.webp'),
       zk: require('/src/assets/img/account_bg_zk.webp'),
     };
 
     const bg = computed<String>(() => {
-      if (currentNetworkIdx.value === 4) {
+      if (currentNetworkIdx.value === 0) {
+        return bg_img.native;
+      } else if (currentNetworkIdx.value === 1) {
+        return bg_img.shiden;
+      } else if (currentNetworkIdx.value === 4) {
         return bg_img.zk;
       }
-      return bg_img.native;
+      return bg_img.testnet;
     });
 
     const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);

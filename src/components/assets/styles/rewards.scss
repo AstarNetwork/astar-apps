@@ -12,6 +12,7 @@
   overflow: hidden;
   min-height: 180px;
   transition: all 0.2s ease;
+  width: 100%;
   @media (min-width: $sm) {
     width: 220px;
   }
