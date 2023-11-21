@@ -47,6 +47,7 @@
         </div>
 
         <div class="row__actions">
+          <!-- Todo: check -->
           <div v-if="isFaucet">
             <button class="btn btn--icon" @click="handleModalFaucet({ isOpen: true })">
               <svg
