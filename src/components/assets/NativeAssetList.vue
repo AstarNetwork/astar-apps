@@ -47,6 +47,18 @@
         </div>
 
         <div class="row__actions">
+          <template v-if="isShibuya">
+            <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+              <button class="btn btn--icon">
+                <astar-icon-transfer />
+              </button>
+              <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.send') }}</span>
+              </q-tooltip>
+            </router-link>
+          </template>
+
           <div v-if="isFaucet">
             <button class="btn btn--icon" @click="handleModalFaucet({ isOpen: true })">
               <svg
