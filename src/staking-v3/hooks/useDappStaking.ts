@@ -98,7 +98,7 @@ export function useDappStaking() {
   };
 
   const unstake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = await canUnStake(amount);
+    const [result, error] = await canUnStake(dappAddress, amount);
     if (!result) {
       throw error;
     }
@@ -211,17 +211,17 @@ export function useDappStaking() {
       // Prevents dappStaking.UnavailableStakeFunds
       return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
     } else if (
-      // Prevents PeriodEndsInNextEra
+      // Prevents dappStaking.PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
-      return [false, t('stakingV3.periodEndsNextEra')];
+      return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
     }
 
     return [true, ''];
   };
 
-  const canUnStake = async (amount: number): Promise<[boolean, string]> => {
+  const canUnStake = async (address: string, amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
 
@@ -238,10 +238,13 @@ export function useDappStaking() {
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
+    } else if (!address) {
+      // Prevents dappStaking.NoStakingInfo
+      return [false, t('stakingV3.dappStaking.NoStakingInfo')];
     } else if (!amount) {
       // Prevents dappStaking.UnstakeFromPastPeriod
       return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
-    }
+    } // Prevents dappStaking.TooManyStakedContracts
 
     return [true, ''];
   };

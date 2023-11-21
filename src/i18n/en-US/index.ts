@@ -671,11 +671,12 @@ export default {
   stakingV3: {
     title: 'dApp Staking v3',
     noDappSelected: 'No dApp selected.',
-    periodEndsNextEra: 'Period ends in the next era.',
     stakerRewardsExpired: 'Staker rewards expired.',
     dappStaking: {
       Disabled: 'Pallet is disabled/in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
+      NoStakingInfo: 'Account has no staking information for the contract',
+      PeriodEndsNextEra: 'Period ends in the next era.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
       UnavailableStakeFunds:

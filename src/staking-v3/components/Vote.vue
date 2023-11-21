@@ -106,6 +106,7 @@ import { abs } from 'src/v2/common';
 import { useStore } from 'src/store';
 import { useI18n } from 'vue-i18n';
 import BN from 'bn.js';
+import { PeriodType } from '../logic';
 
 export default defineComponent({
   components: {
@@ -135,7 +136,9 @@ export default defineComponent({
     const balanceBN = computed(() => new BN(useableBalance.value.toString()));
 
     const canConfirm = (): [boolean, string] => {
-      const stakeAmountBN = new BN(ethers.utils.parseEther(stakeAmount.toString()).toString());
+      const stakeAmountBN = new BN(
+        ethers.utils.parseEther(stakeAmount.value.toString()).toString()
+      );
 
       if (!selectedDapp.value?.address) {
         // Prevents NoDappSelected
@@ -149,6 +152,12 @@ export default defineComponent({
       } else if (protocolState.value?.maintenance) {
         // Prevents dappStaking.Disabled
         return [false, t('stakingV3.dappStaking.Disabled')];
+      } else if (
+        // Prevents dappStaking.PeriodEndsInNextEra
+        protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
+        protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
+      ) {
+        return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
       }
 
       return [true, ''];
