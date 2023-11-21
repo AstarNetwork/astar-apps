@@ -158,7 +158,7 @@ export default defineComponent({
         protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
       ) {
         return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
-      }
+      } // Prevents dappStaking.TooManyStakedContracts
 
       return [true, ''];
     };

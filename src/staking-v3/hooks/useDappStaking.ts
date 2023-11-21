@@ -244,7 +244,7 @@ export function useDappStaking() {
     } else if (!amount) {
       // Prevents dappStaking.UnstakeFromPastPeriod
       return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
-    } // Prevents dappStaking.TooManyStakedContracts
+    }
 
     return [true, ''];
   };
