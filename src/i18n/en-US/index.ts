@@ -704,6 +704,8 @@ export default {
     tokensToBeLocked: 'Tokens to be locked',
     additionalTokensLockedWarning:
       'Additional tokens will be locked to be able to vote a desired amount.',
+    done: 'Done',
+    search: 'Search',
   },
   bridge: {
     bridge: 'Bridge',

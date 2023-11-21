@@ -6,7 +6,7 @@
       @click="handleModalSelectDapp({ isOpen: true })"
     >
       <div class="name">
-        {{ selectedDapp ? selectedDapp.name : placeholder }}
+        {{ placeholder }}
       </div>
       <div><astar-icon-expand size="20" /></div>
     </div>
@@ -14,7 +14,7 @@
       :dapps="dapps"
       :is-modal-select-dapp="isModalSelectDapp"
       :handle-modal-select-dapp="handleModalSelectDapp"
-      :dapp-selected="handleDappSelected"
+      :dapps-selected="handleDappsSelected"
     />
   </div>
 </template>
@@ -43,23 +43,23 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
-    onDappSelected: {
-      type: Function as PropType<(dapp: Dapp) => void>,
+    onDappsSelected: {
+      type: Function as PropType<(dapp: Dapp[]) => void>,
       required: false,
       default: undefined,
     },
   },
   setup(props) {
-    const selectedDapp = ref<Dapp | undefined>(
-      props.dapps.find((dapp) => dapp.address === props.selectedDappAddress)
+    const selectedDapps = ref<Dapp[] | undefined>(
+      props.dapps.filter((dapp) => dapp.address === props.selectedDappAddress)
     );
     const isModalSelectDapp = ref<boolean>(false);
 
-    const handleDappSelected = (dapp: Dapp): void => {
-      selectedDapp.value = dapp;
+    const handleDappsSelected = (dapps: Dapp[]): void => {
+      selectedDapps.value = dapps;
 
-      if (props.onDappSelected) {
-        props.onDappSelected(dapp);
+      if (props.onDappsSelected) {
+        props.onDappsSelected(dapps);
       }
     };
 
@@ -71,7 +71,7 @@ export default defineComponent({
       isModalSelectDapp.value = isOpen;
     };
 
-    return { selectedDapp, isModalSelectDapp, handleDappSelected, handleModalSelectDapp };
+    return { selectedDapps, isModalSelectDapp, handleDappsSelected, handleModalSelectDapp };
   },
 });
 </script>

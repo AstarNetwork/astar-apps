@@ -26,7 +26,7 @@
       <div class="dapp">
         <dapp-selector
           :dapps="dapps"
-          :on-dapp-selected="handleDappSelected"
+          :on-dapps-selected="handleDappsSelected"
           :placeholder="$t('stakingV3.chooseProject')"
           :selected-dapp-address="selectedDappAddress"
         />
@@ -121,12 +121,10 @@ export default defineComponent({
     const { useableBalance } = useBalance(currentAccount);
     const route = useRoute();
 
-    const selectedDapp = ref<Dapp | undefined>(undefined);
+    const selectedDapps = ref<Dapp[]>([]);
     const selectedDappAddress = ref<string>((route.query.dappAddress as string) ?? '');
     const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const stakeAmount = ref<number>(0);
-
-    console.log('fsdf', selectedDappAddress.value);
 
     const remainLockedToken = computed<bigint>(() => {
       const stakeToken = ethers.utils.parseEther(stakeAmount.value.toString()).toBigInt();
@@ -134,7 +132,7 @@ export default defineComponent({
     });
 
     const canConfirm = computed<boolean>(
-      () => !!selectedDapp.value?.address && stakeAmount.value > 0
+      () => true // selectedDapps.value.find(x => x.address ) && stakeAmount.value > 0
     );
 
     const dapps = computed<Dapp[]>(() => {
@@ -145,8 +143,8 @@ export default defineComponent({
       }));
     });
 
-    const handleDappSelected = (dapp: Dapp): void => {
-      selectedDapp.value = dapp;
+    const handleDappsSelected = (dapps: Dapp[]): void => {
+      selectedDapps.value = dapps;
     };
 
     const handleAmountChanged = (amount: number): void => {
@@ -158,7 +156,11 @@ export default defineComponent({
       // If additional funds locking is required remainLockedToken value will be negative.
       if (canConfirm) {
         const stakeInfo = new Map<string, number>();
-        stakeInfo.set(selectedDapp.value?.address ?? '', stakeAmount.value);
+
+        selectedDapps.value.forEach((dapp) => {
+          stakeInfo.set(dapp.address, stakeAmount.value);
+        });
+
         await claimLockAndStake(
           stakeInfo,
           remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
@@ -178,7 +180,7 @@ export default defineComponent({
       canConfirm,
       rewards,
       selectedDappAddress,
-      handleDappSelected,
+      handleDappsSelected,
       handleAmountChanged,
       confirm,
       abs,
