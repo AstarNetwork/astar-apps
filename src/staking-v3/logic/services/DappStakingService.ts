@@ -370,7 +370,7 @@ export class DappStakingService implements IDappStakingService {
       throw 'Invalid operation.';
     }
 
-    if (firstStakedEra >= lastStakedEra) {
+    if (firstStakedEra > lastStakedEra) {
       // No rewards earned. See if we need to distinguish this and rewards expired.
       rewardsExpired = true;
     }

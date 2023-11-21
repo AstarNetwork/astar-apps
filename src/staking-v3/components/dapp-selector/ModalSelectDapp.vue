@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/v2/common';
@@ -69,6 +69,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const maxDappsToSelect = 10;
     const isClosingModal = ref<boolean>(false);
     const selectedDapps = ref<Dapp[]>([]);
     const searchTerm = ref<string>('');
@@ -88,7 +89,9 @@ export default defineComponent({
       if (indexToRemove >= 0) {
         selectedDapps.value.splice(indexToRemove, 1);
       } else {
-        selectedDapps.value.push(dapp);
+        if (selectedDapps.value.length < maxDappsToSelect) {
+          selectedDapps.value.push(dapp);
+        }
       }
     };
 
@@ -107,10 +110,6 @@ export default defineComponent({
     };
 
     const isSelected = (dapp: Dapp): boolean => selectedDapps.value.includes(dapp);
-
-    // watch([searchTerm], () => {
-    //   console.log('searchTerm', searchTerm.value);
-    // });
 
     return {
       closeModal,

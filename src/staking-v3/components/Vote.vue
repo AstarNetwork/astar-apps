@@ -22,18 +22,29 @@
         </li>
       </ul>
     </div>
-    <div>
+    <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
       <div class="dapp">
         <dapp-selector
           :dapps="dapps"
-          :on-dapps-selected="handleDappsSelected"
+          :on-select-dapps="handleSelectDapp"
           :placeholder="$t('stakingV3.chooseProject')"
-          :selected-dapp-address="selectedDappAddress"
+          :selected-dapp="dapp"
+          :disable-selection="!canAddDapp"
         />
       </div>
       <div class="amount">
-        <amount :amount-changed="handleAmountChanged" />
+        <amount
+          :amount="dapp.amount"
+          :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
+        />
       </div>
+    </div>
+    <div v-if="canAddDapp" class="dapp amount-full-border">
+      <dapp-selector
+        :dapps="dapps"
+        :on-select-dapps="handleSelectDapp"
+        :placeholder="$t('stakingV3.chooseProject')"
+      />
     </div>
     <div class="note">
       <b>{{ $t('stakingV3.availableToVote') }}</b>
@@ -86,22 +97,29 @@
     </div>
     <div class="wrapper--button">
       <astar-button
-        :disabled="!canConfirm"
+        :disabled="!canConfirm()"
         style="width: 100%; height: 52px; font-size: 22px"
         @click="confirm"
       >
         {{ $t('confirm') }}
       </astar-button>
     </div>
+    <modal-select-dapp
+      :dapps="dapps"
+      :is-modal-select-dapp="isModalSelectDapp"
+      :handle-modal-select-dapp="handleModalSelectDapp"
+      :dapps-selected="handleDappsSelected"
+    />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useDappStaking, useDapps } from '../hooks';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { DappSelector, Dapp } from './dapp-selector';
 import Amount from './Amount.vue';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
+import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
 import { abs } from 'src/v2/common';
 import { useRoute } from 'vue-router';
@@ -111,6 +129,7 @@ export default defineComponent({
     DappSelector,
     Amount,
     FormatBalance,
+    ModalSelectDapp,
   },
   setup() {
     const { constants, ledger, totalStake, hasRewards, rewards, claimLockAndStake } =
@@ -121,52 +140,84 @@ export default defineComponent({
     const { useableBalance } = useBalance(currentAccount);
     const route = useRoute();
 
+    const dapps = ref<Dapp[]>([]);
     const selectedDapps = ref<Dapp[]>([]);
     const selectedDappAddress = ref<string>((route.query.dappAddress as string) ?? '');
     const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
-    const stakeAmount = ref<number>(0);
+    const totalStakeAmount = computed<number>(() =>
+      selectedDapps.value.reduce((total, dapp) => total + dapp.amount, 0)
+    );
+    const isModalSelectDapp = ref<boolean>(false);
 
     const remainLockedToken = computed<bigint>(() => {
-      const stakeToken = ethers.utils.parseEther(stakeAmount.value.toString()).toBigInt();
+      const stakeToken = ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt();
       return locked.value - stakeToken - totalStake.value;
     });
 
-    const canConfirm = computed<boolean>(
-      () => true // selectedDapps.value.find(x => x.address ) && stakeAmount.value > 0
-    );
-
-    const dapps = computed<Dapp[]>(() => {
-      return registeredDapps.value.map((dapp) => ({
-        name: dapp.basic.name,
-        address: dapp.basic.address,
-        logoUrl: dapp.basic.iconUrl,
-      }));
-    });
+    const canConfirm = (): boolean =>
+      selectedDapps.value.length > 0 &&
+      totalStakeAmount.value > 0 &&
+      Number(useableBalance.value) > totalStakeAmount.value;
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
       selectedDapps.value = dapps;
     };
 
-    const handleAmountChanged = (amount: number): void => {
-      stakeAmount.value = amount;
+    const handleSelectDapp = (): void => {
+      handleModalSelectDapp({ isOpen: true });
     };
 
+    const handleAmountChanged = (dapp: Dapp, amount: number): void => {
+      dapp.amount = amount;
+    };
+
+    const handleModalSelectDapp = ({ isOpen }: { isOpen: boolean }): void => {
+      isModalSelectDapp.value = isOpen;
+    };
+
+    const canAddDapp = computed<boolean>((): boolean => selectedDappAddress.value === '');
+
     const confirm = async (): Promise<void> => {
-      // TODO at the moment only one dApp is supported for staking. This will change in the future.
-      // If additional funds locking is required remainLockedToken value will be negative.
-      if (canConfirm) {
+      if (canConfirm()) {
         const stakeInfo = new Map<string, number>();
 
         selectedDapps.value.forEach((dapp) => {
-          stakeInfo.set(dapp.address, stakeAmount.value);
+          if (dapp.amount > 0) {
+            stakeInfo.set(dapp.address, dapp.amount);
+          }
         });
 
+        // If additional funds locking is required remainLockedToken value will be negative.
         await claimLockAndStake(
           stakeInfo,
           remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
         );
       }
     };
+
+    watch(
+      [dapps],
+      () => {
+        if (dapps.value.length === 0) {
+          dapps.value = registeredDapps.value.map((dapp) => ({
+            name: dapp.basic.name,
+            address: dapp.basic.address,
+            logoUrl: dapp.basic.iconUrl,
+            amount: 0,
+          }));
+        }
+
+        if (selectedDappAddress.value) {
+          const dapp = dapps.value.find((dapp) => dapp.address === selectedDappAddress.value);
+          if (dapp) {
+            selectedDapps.value = [dapp];
+          }
+        }
+      },
+      {
+        immediate: true,
+      }
+    );
 
     return {
       constants,
@@ -179,11 +230,15 @@ export default defineComponent({
       hasRewards,
       canConfirm,
       rewards,
-      selectedDappAddress,
+      selectedDapps,
+      isModalSelectDapp,
       handleDappsSelected,
       handleAmountChanged,
       confirm,
       abs,
+      handleModalSelectDapp,
+      handleSelectDapp,
+      canAddDapp,
     };
   },
 });
@@ -254,6 +309,15 @@ li {
   border: 1px solid $gray-3;
   border-top-width: 0px;
   padding: 24px 8px;
+}
+
+.dapp-amount {
+  margin-bottom: 16px;
+}
+
+.amount-full-border {
+  border-radius: 16px;
+  border-width: 1px;
 }
 
 .body--dark {

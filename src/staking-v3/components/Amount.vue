@@ -24,6 +24,11 @@ import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   props: {
+    amount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     amountChanged: {
       type: Function as PropType<(amount: number) => void | undefined>,
       required: false,
@@ -32,7 +37,7 @@ export default defineComponent({
   },
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const amount = ref<number | undefined>(undefined);
+    // const amount = ref<number | undefined>(undefined);
 
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
@@ -45,7 +50,7 @@ export default defineComponent({
       }
     };
 
-    return { nativeTokenImg, nativeTokenSymbol, amount, handleInputAmount };
+    return { nativeTokenImg, nativeTokenSymbol, handleInputAmount };
   },
 });
 </script>
