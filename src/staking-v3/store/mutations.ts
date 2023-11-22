@@ -9,6 +9,7 @@ import {
   Rewards,
   Constants,
   EraInfo,
+  DAppTierRewards,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -21,6 +22,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setRewards(state: DappStakingState, rewards: Rewards): void;
   setConstants(state: DappStakingState, constants: Constants): void;
   setCurrentEraInfo(state: DappStakingState, currentEra: EraInfo): void;
+  setDappTiers(state: DappStakingState, dAppTiers: DAppTierRewards): void;
 }
 
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
@@ -57,6 +59,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setCurrentEraInfo(state, currentEra) {
     state.currentEra = currentEra;
+  },
+  setDappTiers(state, dAppTiers) {
+    state.dAppTiers = dAppTiers;
   },
 };
 

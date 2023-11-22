@@ -5,6 +5,7 @@ import { container } from 'src/v2/common';
 import {
   AccountLedger,
   Constants,
+  DAppTierRewards,
   EraInfo,
   IDappStakingRepository,
   IDappStakingService,
@@ -58,6 +59,15 @@ export function useDappStaking() {
     }
 
     return era;
+  });
+  const dAppTiers = computed<DAppTierRewards | undefined>(() => {
+    const tiers = store.getters['stakingV3/getDappTiers'];
+    if (!tiers) {
+      const era = protocolState.value?.era;
+      getDappTiers(era ? era - 1 : 0);
+    }
+
+    return tiers;
   });
 
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
@@ -262,6 +272,19 @@ export function useDappStaking() {
     return [true, ''];
   };
 
+  const getDappTiers = async (era: number): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const tiers = await stakingRepo.getDappTiers(era);
+
+    store.commit('stakingV3/setDappTiers', tiers);
+  };
+
+  const getDappTier = (dappId: number): number | undefined => {
+    const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
+
+    return tierId !== undefined ? tierId + 1 : undefined;
+  };
+
   watch(
     currentNetworkIdx,
     async () => {
@@ -285,6 +308,7 @@ export function useDappStaking() {
     hasBonusRewards,
     hasRewards,
     currentEraInfo,
+    dAppTiers,
     stake,
     unstake,
     claimStakerRewards,
@@ -296,5 +320,7 @@ export function useDappStaking() {
     fetchConstantsToStore,
     claimLockAndStake,
     getCurrentEraInfo,
+    getDappTiers,
+    getDappTier,
   };
 }

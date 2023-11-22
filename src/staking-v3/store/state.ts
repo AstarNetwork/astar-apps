@@ -6,6 +6,7 @@ import {
   Rewards,
   Constants,
   EraInfo,
+  DAppTierRewards,
 } from '../logic';
 
 export interface DappStakingState {
@@ -17,6 +18,7 @@ export interface DappStakingState {
   rewards: Rewards | undefined;
   constants: Constants | undefined;
   currentEra: EraInfo | undefined;
+  dAppTiers: DAppTierRewards | undefined;
 }
 
 function state(): DappStakingState {
@@ -29,6 +31,7 @@ function state(): DappStakingState {
     rewards: undefined,
     constants: undefined,
     currentEra: undefined,
+    dAppTiers: undefined,
   };
 }
 
