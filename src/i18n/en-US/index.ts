@@ -706,6 +706,13 @@ export default {
       'Additional tokens will be locked to be able to vote a desired amount.',
     done: 'Done',
     search: 'Search',
+    build: 'Build',
+    newDappPromotion: 'New dApp promotion',
+    votingNow: 'Voting Now',
+    voteNow: 'Vote now',
+    vote: 'Vote',
+    voteToday: 'Vote today and be eligible for  bonus rewards',
+    stakeOn: 'Stake on {name}',
   },
   bridge: {
     bridge: 'Bridge',

@@ -233,11 +233,11 @@ export class DappStakingService implements IDappStakingService {
     // Staker rewards
     const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
     claimStakerCall && calls.push(...claimStakerCall);
-    // dApps rewards
-    for (const dApp of dappsToClaim) {
-      const claimDappCalls = await this.getClaimDappRewardsCalls(dApp);
-      claimDappCalls && calls.push(...claimDappCalls);
-    }
+    // dApps rewards - most likely will be claimed separately from a dApp page
+    // for (const dApp of dappsToClaim) {
+    //   const claimDappCalls = await this.getClaimDappRewardsCalls(dApp);
+    //   claimDappCalls && calls.push(...claimDappCalls);
+    // }
     // Bonus rewards
     const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
     claimBonusCalls && calls.push(...claimBonusCalls);

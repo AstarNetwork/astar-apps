@@ -90,10 +90,10 @@
         <div>{{ $t('stakingV3.bonusRewards') }}</div>
         <div><format-balance :balance="rewards?.bonus.toString() ?? ''" /></div>
       </div>
-      <div class="note--row">
+      <!-- <div class="note--row">
         <div>{{ $t('stakingV3.dAppRewards') }}</div>
         <div><format-balance :balance="rewards?.dApp.toString() ?? ''" /></div>
-      </div>
+      </div> -->
     </div>
     <div class="wrapper--button">
       <astar-button

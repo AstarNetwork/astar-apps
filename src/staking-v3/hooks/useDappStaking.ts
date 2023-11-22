@@ -35,6 +35,9 @@ export function useDappStaking() {
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
+  const isVotingPeriod = computed<boolean>(
+    () => protocolState.value?.periodInfo.subperiod === PeriodType.Voting
+  );
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
   const rewards = computed<Rewards | undefined>(() => {
     const rewards = store.getters['stakingV3/getRewards'];
@@ -309,6 +312,7 @@ export function useDappStaking() {
     hasRewards,
     currentEraInfo,
     dAppTiers,
+    isVotingPeriod,
     stake,
     unstake,
     claimStakerRewards,
