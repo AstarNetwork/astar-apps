@@ -161,7 +161,7 @@
         <div class="expand-container">
           <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'" class="rows--expand">
             <!-- Transferable -->
-            <!-- <div class="row--expand">
+            <div class="row--expand">
               <div class="row--expand__info">
                 <div class="column--label text--label">{{ $t('assets.transferable') }}</div>
                 <div class="column--balance">
@@ -191,7 +191,7 @@
                   </button>
                 </router-link>
               </div>
-            </div> -->
+            </div>
 
             <!-- Vesting -->
             <div class="row--expand">
