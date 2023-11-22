@@ -90,6 +90,7 @@
         @click="confirm"
       >
         {{ $t('confirm') }}
+        <q-tooltip v-if="!isConfirmable" class="error">{{ errorMessage }}</q-tooltip>
       </astar-button>
     </div>
   </div>
@@ -130,6 +131,7 @@ export default defineComponent({
       return locked.value - stakeToken - totalStake.value;
     });
 
+    let errorMessage = '';
     const { t } = useI18n();
     const store = useStore();
     const protocolState = computed(() => store.getters['stakingV3/getProtocolState']);
@@ -208,6 +210,7 @@ export default defineComponent({
       totalStake,
       remainLockedToken,
       hasRewards,
+      errorMessage,
       canConfirm,
       rewards,
       handleDappSelected,
@@ -218,10 +221,8 @@ export default defineComponent({
   },
   computed: {
     isConfirmable() {
-      const [confirmable, errorMessage] = this.canConfirm();
-      if (!confirmable) {
-        // console.log(errorMessage);
-      }
+      let confirmable = false;
+      [confirmable, this.errorMessage] = this.canConfirm();
       return confirmable;
     },
   },
