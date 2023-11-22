@@ -75,7 +75,7 @@ export default defineComponent({
     );
 
     const navigateToVote = (dAppAddress: string | undefined = undefined): void => {
-      const base = networkParam + Path.DappStakingV3 + Path.Vote;
+      const base = networkParam + Path.DappStaking + Path.Vote;
       router.push(`${base}?dappAddress=${dAppAddress ?? ''}`);
     };
 
