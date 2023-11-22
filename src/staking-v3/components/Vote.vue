@@ -84,13 +84,15 @@
       </div>
     </div>
     <div class="wrapper--button">
+      <div v-if="!isConfirmable" class="note warning">
+        {{ errorMessage }}
+      </div>
       <astar-button
         :disabled="!isConfirmable"
         style="width: 100%; height: 52px; font-size: 22px"
         @click="confirm"
       >
         {{ $t('confirm') }}
-        <q-tooltip v-if="!isConfirmable" class="error">{{ errorMessage }}</q-tooltip>
       </astar-button>
     </div>
   </div>

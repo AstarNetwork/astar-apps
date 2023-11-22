@@ -85,7 +85,7 @@ export function useDappStaking() {
       : true;
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = await canStake(amount);
+    const [result, error] = await canStake(dappAddress, amount);
     if (!result) {
       throw error;
     }
@@ -188,19 +188,26 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
-  const canStake = async (amount: number): Promise<[boolean, string]> => {
+  const canStake = async (
+    dappAddress: string,
+    amount: number,
+    ignoreCanClaim = false
+  ): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const balanceBN = new BN(useableBalance.value.toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const constants = await stakingRepo.getConstants();
 
-    if (amount <= 0) {
+    if (!dappAddress) {
+      // Prevents NoDappSelected
+      return [false, t('stakingV3.noDappSelected')];
+    } else if (amount <= 0) {
       // Prevents dappStaking.ZeroAmount
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
     } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
       // Prevents dappStaking.TooManyStakedContracts
       return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
-    } else if (hasRewards.value) {
+    } else if (hasRewards.value && !ignoreCanClaim) {
       // Prevents dappStaking.UnclaimedRewards
       // May want to auto claim rewards here
       return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
@@ -221,11 +228,14 @@ export function useDappStaking() {
     return [true, ''];
   };
 
-  const canUnStake = async (address: string, amount: number): Promise<[boolean, string]> => {
+  const canUnStake = async (dappAddress: string, amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const constants = await stakingRepo.getConstants();
+    const [constants, stakerInfo] = await Promise.all([
+      stakingRepo.getConstants(),
+      stakingRepo.getStakerInfo(currentAccount.value),
+    ]);
 
     console.log('ledger.value?.unlocking?.length)', ledger.value?.unlocking?.length);
     console.log('constants.maxNumberOfUnlockingChunks', constants.maxUnlockingChunks);
@@ -243,7 +253,7 @@ export function useDappStaking() {
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
-    } else if (!address) {
+    } else if (!stakerInfo.get(dappAddress)) {
       // Prevents dappStaking.NoStakingInfo
       return [false, t('stakingV3.dappStaking.NoStakingInfo')];
     } else if (!amount) {
