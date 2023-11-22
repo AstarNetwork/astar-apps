@@ -264,12 +264,13 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getDapp(
     contractAddress: string,
-    network: string
+    network: string,
+    forEdit = false
   ): Promise<EditDappItem | undefined> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('network', network);
 
-    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${contractAddress}`;
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${contractAddress}?forEdit=${forEdit}`;
 
     try {
       const response = await axios.get<EditDappItem>(url);
