@@ -188,6 +188,11 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
+  const getChainStateByAddress = (address: string): string | undefined => {
+    const dapp = registeredDapps.value.find((dapp) => dapp.chain.address === address);
+    return dapp?.chain.state;
+  };
+
   const canStake = async (
     dappAddress: string,
     amount: number,
@@ -218,11 +223,14 @@ export function useDappStaking() {
       // Prevents dappStaking.UnavailableStakeFunds
       return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
     } else if (
-      // Prevents dappStaking.PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
+      // Prevents dappStaking.PeriodEndsInNextEra
       return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
+    } else if (getChainStateByAddress(dappAddress) === 'Unregistered') {
+      // Prevents dappStaking.NotOperatedDApp
+      return [false, t('stakingV3.dappStaking.NotOperatedDApp')];
     }
 
     return [true, ''];

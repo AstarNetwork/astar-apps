@@ -676,6 +676,7 @@ export default {
       Disabled: 'Pallet is disabled/in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
+      NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra: 'Period ends in the next era.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
