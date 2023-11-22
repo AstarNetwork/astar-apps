@@ -33,7 +33,7 @@ export default defineComponent({
           : null;
 
       if (developerContract) {
-        const dapp = await service.getDapp(developerContract, currentNetworkName.value, true);
+        const dapp = await service.getDapp(developerContract, currentNetworkName.value);
         canRegister.value = dapp === undefined;
       }
     };
