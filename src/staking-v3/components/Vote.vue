@@ -152,6 +152,10 @@ export default defineComponent({
       } else if (protocolState.value?.maintenance) {
         // Prevents dappStaking.Disabled
         return [false, t('stakingV3.dappStaking.Disabled')];
+      } else if (hasRewards.value) {
+        // Prevents dappStaking.UnclaimedRewards
+        // May want to auto claim rewards here
+        return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
       } else if (
         // Prevents dappStaking.PeriodEndsInNextEra
         protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&

@@ -679,10 +679,12 @@ export default {
       PeriodEndsNextEra: 'Period ends in the next era.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+      TooManyUnlockingChunks:
+        'Contract has too many unlocking chunks. Withdraw the existing chunks if possible or wait for current chunks to complete unlocking process to withdraw them.',
       UnavailableStakeFunds:
         'The staking amount surpasses the current balance available for staking.',
-      UnclaimedRewardsFromPastPeriods:
-        'There are unclaimed rewards remaining from past periods. They should be claimed before staking again.',
+      UnclaimedRewards:
+        'There are unclaimed rewards remaining from past eras or periods. They should be claimed before attempting any stake modification again.',
       UnstakeAmountTooLarge: 'Unstake amount is greater than the staked amount.',
       UnstakeFromPastPeriod:
         'Unstaking is rejected since the period in which past stake was active has passed.',

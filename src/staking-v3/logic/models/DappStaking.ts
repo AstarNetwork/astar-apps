@@ -98,6 +98,7 @@ export interface Constants {
   minStakeAmountToken?: number;
   minBalanceAfterStaking: number;
   maxNumberOfStakedContracts: number;
+  maxUnlockingChunks: number;
 }
 
 export interface DAppTierRewards {

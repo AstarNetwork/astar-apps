@@ -201,9 +201,9 @@ export function useDappStaking() {
       // Prevents dappStaking.TooManyStakedContracts
       return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
     } else if (hasRewards.value) {
-      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
+      // Prevents dappStaking.UnclaimedRewards
       // May want to auto claim rewards here
-      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
@@ -224,6 +224,11 @@ export function useDappStaking() {
   const canUnStake = async (address: string, amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const constants = await stakingRepo.getConstants();
+
+    console.log('ledger.value?.unlocking?.length)', ledger.value?.unlocking?.length);
+    console.log('constants.maxNumberOfUnlockingChunks', constants.maxUnlockingChunks);
 
     if (amount <= 0) {
       // Prevents dappStaking.ZeroAmount
@@ -232,9 +237,9 @@ export function useDappStaking() {
       // Prevents dappStaking.UnstakeAmountTooLarge
       return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
     } else if (hasRewards.value) {
-      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
+      // Prevents dappStaking.UnclaimedRewards
       // May want to auto claim rewards here
-      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
@@ -244,6 +249,9 @@ export function useDappStaking() {
     } else if (!amount) {
       // Prevents dappStaking.UnstakeFromPastPeriod
       return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
+    } else if ((ledger.value?.unlocking?.length ?? 0) >= constants.maxUnlockingChunks) {
+      // Prevents dappStaking.TooManyUnlockingChunks
+      return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
     }
 
     return [true, ''];
