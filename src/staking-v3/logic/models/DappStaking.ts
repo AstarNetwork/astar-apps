@@ -103,6 +103,8 @@ export interface Constants {
   minBalanceAfterStaking: number;
   maxNumberOfStakedContracts: number;
   maxNumberOfContracts: number;
+  standardErasPerBuildAndEarnPeriod: number;
+  standardErasPerVotingPeriod: number;
 }
 
 export interface DAppTierRewards {
