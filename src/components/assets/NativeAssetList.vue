@@ -136,7 +136,7 @@
             </div>
             <div v-if="!isSkeleton" class="column--balance">
               <div class="column--amount text--amount">
-                {{ isTruncate ? $n(truncate(lockInDappStaking, 3)) : Number(lockInDappStaking) }}
+                {{ $n(truncate(lockInDappStaking + vestingTtl, 3)) }}
               </div>
               <div class="column--symbol text--symbol">
                 {{ nativeTokenSymbol }}
