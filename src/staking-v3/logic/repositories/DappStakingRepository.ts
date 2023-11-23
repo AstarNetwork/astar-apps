@@ -393,6 +393,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  public async getContractStake(dappId: number): Promise<StakeAmount> {
+    const api = await this.api.getApi();
+    const contractStake = await api.query.dappStaking.contractStake<PalletDappStakingV3StakeAmount>(
+      dappId
+    );
+
+    return this.mapStakeAmount(contractStake);
+  }
+
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),

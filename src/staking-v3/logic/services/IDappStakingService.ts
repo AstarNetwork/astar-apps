@@ -1,4 +1,4 @@
-import { CombinedDappInfo } from '../models';
+import { CombinedDappInfo, StakeAmount } from '../models';
 
 /**
  * @interface IDappStakingService interface for a service containing business logic for dapp staking.
@@ -102,4 +102,12 @@ export interface IDappStakingService {
   ): Promise<void>;
 
   getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;
+
+  /**
+   * Gets contract stake amounts for a given dApps ids.
+   * @param dappIds dApps ids to get stake amounts for.
+   * @returns A map containing dApp id and stake amount. If stake amount is undefined, it means that
+   *         there is no stakes for the dApp in the current period.
+   */
+  getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>>;
 }

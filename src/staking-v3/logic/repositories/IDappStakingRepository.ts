@@ -11,6 +11,7 @@ import {
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,
+  StakeAmount,
 } from '../models';
 
 /**
@@ -185,4 +186,10 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the era info.
    */
   getCurrentEraInfo(): Promise<EraInfo>;
+
+  /**
+   * Gets the contract staking info.
+   * @param dappId Dapp id to get staking info for.
+   */
+  getContractStake(dappId: number): Promise<StakeAmount>;
 }

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo } from '../models';
+import { CombinedDappInfo, StakeAmount } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingRepository } from '../repositories';
@@ -355,7 +355,13 @@ export class DappStakingService implements IDappStakingService {
     }
 
     let result = BigInt(0);
-    if (period < protocolState.periodInfo.number - constants.rewardRetentionInPeriods) {
+    if (
+      this.hasRewardsExpired(
+        period,
+        protocolState.periodInfo.number,
+        constants.rewardRetentionInPeriods
+      )
+    ) {
       return result;
     }
 
@@ -387,6 +393,22 @@ export class DappStakingService implements IDappStakingService {
     return result;
   }
 
+  public async getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>> {
+    const protocolState = await this.dappStakingRepository.getProtocolState();
+    const result = new Map<number, StakeAmount | undefined>();
+    await Promise.all(
+      dappIds.map(async (dappId) => {
+        const stakeAmount = await this.dappStakingRepository.getContractStake(dappId);
+        result.set(
+          dappId,
+          protocolState.periodInfo.number === stakeAmount.period ? stakeAmount : undefined
+        );
+      })
+    );
+
+    return result;
+  }
+
   private async getStakerEraRange(senderAddress: string) {
     const [protocolState, ledger, constants] = await Promise.all([
       this.dappStakingRepository.getProtocolState(),
@@ -404,7 +426,9 @@ export class DappStakingService implements IDappStakingService {
     const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
     let lastStakedEra = 0;
 
-    if (lastStakedPeriod < currentPeriod - constants.rewardRetentionInPeriods) {
+    if (
+      this.hasRewardsExpired(lastStakedPeriod, currentPeriod, constants.rewardRetentionInPeriods)
+    ) {
       // Rewards expired.
       rewardsExpired = true;
     } else if (lastStakedPeriod < currentPeriod) {
@@ -434,6 +458,14 @@ export class DappStakingService implements IDappStakingService {
       rewardsExpired,
       eraRewardSpanLength: constants.eraRewardSpanLength,
     };
+  }
+
+  private hasRewardsExpired(
+    stakedPeriod: number,
+    currentPeriod: number,
+    rewardRetentionInPeriods: number
+  ): boolean {
+    return stakedPeriod < currentPeriod - rewardRetentionInPeriods;
   }
 
   private async signCall(
