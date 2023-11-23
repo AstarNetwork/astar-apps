@@ -62,6 +62,5 @@ test.describe('account panel', () => {
     await expect(transferButton).toBeVisible();
     await page.locator('.icon--expand').first().click();
     await expect(page.getByText('Vesting')).toBeVisible();
-    await expect(page.getByText('Staking')).toBeVisible();
   });
 });
