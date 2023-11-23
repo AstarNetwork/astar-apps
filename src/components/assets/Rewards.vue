@@ -1,22 +1,16 @@
 <template>
   <div>
-    <button
-      v-if="!isDappDeveloper"
-      class="wrapper--rewards"
-      :disabled="!canClaim || !canClaimWithoutError"
-      @click="claimAll"
-    >
+    <button v-if="!isDappDeveloper" class="wrapper--rewards" @click="handleClaim">
       <div class="container--rewards">
         <div class="text--title">
           {{ $t('assets.yourEstimatedRewards') }}
         </div>
         <div class="row--data">
-          <div v-if="isLoadingPendingRewards" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="value">
-            <span class="text--amount">{{ $n(pendingRewards) }}</span>
-            <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+          <div class="value">
+            <div>
+              <span class="text--amount">{{ $n(pendingRewards || 0) }}</span>
+              <span class="text--symbol">{{ nativeTokenSymbol }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -31,8 +25,9 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { Path as RoutePath } from 'src/router/routes';
 
 export default defineComponent({
   setup() {
@@ -40,7 +35,7 @@ export default defineComponent({
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError, isDappDeveloper } =
       useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
-    const store = useStore();
+    const router = useRouter();
 
     const pendingRewards = ref<number>(0);
     const isLoadingPendingRewards = ref<boolean>(true);
@@ -68,6 +63,7 @@ export default defineComponent({
     const setPendingRewards = async (): Promise<void> => {
       if (!currentAccount.value || !amountOfEras.value) {
         pendingRewards.value = 0;
+        isLoadingPendingRewards.value = false;
         return;
       }
       isLoadingPendingRewards.value = true;
@@ -79,6 +75,22 @@ export default defineComponent({
       isLoadingPendingRewards.value = false;
     };
 
+    const handleClaim = async (): Promise<void> => {
+      if (isLoadingPendingRewards.value || isLoading.value) return;
+
+      if (pendingRewards.value > 0 && canClaimWithoutError.value) {
+        await claimAll();
+        return;
+      }
+
+      if (!Number(totalStaked.value)) {
+        router.push({
+          path: RoutePath.DappStaking,
+        });
+        return;
+      }
+    };
+
     watch([senderSs58Account, amountOfEras], setPendingRewards, {
       immediate: true,
     });
@@ -88,18 +100,18 @@ export default defineComponent({
       amountOfEras,
       canClaim,
       canClaimWithoutError,
-      claimAll,
       isCompounding,
-      changeDestinationForRestaking,
       isLoadingClaimed,
       claimed,
       totalStaked,
       nativeTokenSymbol,
       isLoadingTotalStaked,
-      goToSubscan,
       pendingRewards,
       isLoadingPendingRewards,
       isDappDeveloper,
+      changeDestinationForRestaking,
+      handleClaim,
+      goToSubscan,
     };
   },
 });
