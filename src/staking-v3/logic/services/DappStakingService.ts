@@ -313,7 +313,8 @@ export class DappStakingService implements IDappStakingService {
     // Find the first era to claim rewards from. If we are at the first period, then we need to
     // start from era 2 since era 1 was voting.
     const firstEra =
-      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0 + 2;
+      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ??
+      constants.standardErasPerVotingPeriod;
     const lastEra = protocolState.era - 1;
 
     if (firstEra <= lastEra) {
@@ -329,6 +330,53 @@ export class DappStakingService implements IDappStakingService {
           if (dApp && dApp.tierId !== undefined) {
             result.rewards += tierReward.rewards[dApp.tierId];
             result.erasToClaim.push(firstEra + index);
+          }
+        }
+      });
+    } else {
+      throw `First reward era can't be determined for dApp id ${dapp.id}.`;
+    }
+
+    return result;
+  }
+
+  public async getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const [protocolState, constants, dapp, periodInfo] = await Promise.all([
+      this.dappStakingRepository.getProtocolState(),
+      this.dappStakingRepository.getConstants(),
+      this.dappStakingRepository.getChainDapp(contractAddress),
+      this.dappStakingRepository.getPeriodEndInfo(period),
+    ]);
+
+    if (!dapp) {
+      throw `Dapp with address ${contractAddress} not found on chain.`;
+    }
+
+    let result = BigInt(0);
+    if (period < protocolState.periodInfo.number - constants.rewardRetentionInPeriods) {
+      return result;
+    }
+
+    const lastEra = periodInfo?.finalEra ?? 0;
+    const firstEra =
+      lastEra > constants.standardErasPerBuildAndEarnPeriod
+        ? lastEra - constants.standardErasPerBuildAndEarnPeriod + 1
+        : constants.standardErasPerVotingPeriod;
+
+    if (firstEra <= lastEra) {
+      const tierRewards = await Promise.all(
+        Array(lastEra - firstEra + 1)
+          .fill(firstEra)
+          .map((era, index) => this.dappStakingRepository.getDappTiers(era + index))
+      );
+
+      tierRewards.forEach((tierReward, index) => {
+        if (tierReward) {
+          const dApp = tierReward?.dapps.find((d) => d.dappId === dapp.id);
+          if (dApp && dApp.tierId !== undefined) {
+            result += tierReward.rewards[dApp.tierId];
           }
         }
       });
@@ -370,7 +418,7 @@ export class DappStakingService implements IDappStakingService {
       throw 'Invalid operation.';
     }
 
-    if (firstStakedEra >= lastStakedEra) {
+    if (firstStakedEra > lastStakedEra) {
       // No rewards earned. See if we need to distinguish this and rewards expired.
       rewardsExpired = true;
     }

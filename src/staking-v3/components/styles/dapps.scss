@@ -1,7 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dapps {
+  display: flex;
+  flex-wrap: wrap;
   padding: 0 16px;
+  gap: 16px;
   width: 100%;
   @media (min-width: $md) {
     padding: 0;

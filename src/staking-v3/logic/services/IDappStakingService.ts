@@ -100,4 +100,6 @@ export interface IDappStakingService {
     stakeInfo: Map<string, number>,
     dappsToClaim: string[]
   ): Promise<void>;
+
+  getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;
 }

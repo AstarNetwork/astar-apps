@@ -83,9 +83,13 @@
 
 .button--staking {
   width: 100%;
-  background-color: rgba(230, 0, 122, 1);
+  background-color: $astar-pink;
   border-radius: 16px;
   height: 80px;
+}
+
+.pink--button {
+  background-color: $astar-pink;
 }
 
 .text--start-staking {

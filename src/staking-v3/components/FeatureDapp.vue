@@ -1,69 +1,92 @@
 <template>
   <div class="wrapper--promo">
     <div class="row--title">
-      <span class="text--promo-title"> New dapp promotion </span>
+      <span class="text--promo-title">{{
+        isVotingPeriod ? $t('stakingV3.votingNow') : $t('stakingV3.newDappPromotion')
+      }}</span>
     </div>
     <div>
-      <span> Ligtning-fast speed with near-zero gas fees dex in now available on Astar </span>
+      <span>{{ isVotingPeriod ? $t('stakingV3.voteToday') : promotedDapp?.shortDescription }}</span>
     </div>
     <div class="row--button">
-      <astar-button class="button--link"> Stake on Singlar </astar-button>
+      <astar-button
+        v-if="isVotingPeriod"
+        class="button--link pink--button"
+        @click="navigateToVote()"
+      >
+        {{ $t('stakingV3.voteNow') }}
+      </astar-button>
+      <astar-button v-else class="button--link" @click="navigateToVote(promotedDapp?.address)">
+        {{ $t('stakingV3.stakeOn', { name: promotedDapp?.name }) }}
+      </astar-button>
     </div>
     <div class="row--data">
-      <div class="card--data">
-        <div class="card__top">
-          <span class="text--card-title">BUILD</span>
-        </div>
-        <div class="card__bottom">
-          <span class="text--value">21</span>
-          <span class="text--value-small">/120</span>
-        </div>
-      </div>
-      <div class="promo__data">
-        <div class="card--data">
-          <div class="card__top">
-            <span class="text--card-title">Basic Rewards</span>
-          </div>
-          <div class="card__bottom">
-            <span class="text--value">9.7%</span>
-          </div>
-        </div>
-      </div>
-      <div class="promo__data">
-        <div class="card--data">
-          <div class="card__top">
-            <span class="text--card-title">Bonus Rewards</span>
-          </div>
-          <div class="card__bottom">
-            <span class="text--value">2.3%</span>
-          </div>
-        </div>
-      </div>
-      <div class="promo__data">
-        <div class="card--data">
-          <div class="card__top">
-            <span class="text--card-title">TVL</span>
-          </div>
-          <div class="card__bottom">
-            <span class="text--value">39.4%</span>
-          </div>
-        </div>
-      </div>
+      <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.build').toUpperCase()">
+        <span class="text--value">{{ registeredDapps.length }}</span>
+        <span class="text--value-small">/{{ constants?.maxNumberOfContracts ?? '-' }}</span>
+      </kpi-card>
+      <kpi-card v-if="isVotingPeriod" :title="$t('stakingV3.vote')">
+        <span class="text--value">2</span>
+        <span class="text--value-small">/14</span>
+      </kpi-card>
+      <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')">9.7%</kpi-card>
+      <kpi-card :title="$t('stakingV3.bonusRewards')">2.3%</kpi-card>
+      <kpi-card :title="$t('dashboard.tvl')">
+        <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
+      </kpi-card>
     </div>
-    <div class="row--start-staking">
+    <div v-if="!isVotingPeriod" class="row--start-staking">
       <button class="button--staking">
-        <span class="text--start-staking">Start Staking Now</span>
+        <span class="text--start-staking" @click="navigateToVote()">Start Staking Now</span>
       </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useDappStaking, useDapps, useCampaign } from '../hooks';
+import { Campaign } from 'src/v2/models';
+import { Path, networkParam } from 'src/router/routes';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
+import KpiCard from './KpiCard.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
+  components: {
+    FormatBalance,
+    KpiCard,
+  },
   setup() {
-    return {};
+    const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
+    const { registeredDapps } = useDapps();
+    const { newListings } = useCampaign();
+    const router = useRouter();
+    // const { totalSupply } = useTokenCirculation();
+
+    // const tvlPercentage = computed<number>(
+    //   () =>
+    //     Number(ethers.utils.formatEther(currentEraInfo.value?.totalLocked.toString() ?? 0)) /
+    //     totalSupply.value
+    // );
+
+    const promotedDapp = computed<Campaign | undefined>(() =>
+      newListings.value.length ? newListings.value[0] : undefined
+    );
+
+    const navigateToVote = (dAppAddress: string | undefined = undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Vote;
+      router.push(`${base}?dappAddress=${dAppAddress ?? ''}`);
+    };
+
+    return {
+      constants,
+      registeredDapps,
+      promotedDapp,
+      currentEraInfo,
+      isVotingPeriod,
+      navigateToVote,
+    };
   },
 });
 </script>
