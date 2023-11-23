@@ -8,6 +8,7 @@ import {
   DappBase,
   DappInfo,
   DappState,
+  EraInfo,
   EraRewardSpan,
   PeriodEndInfo,
   PeriodType,
@@ -25,6 +26,7 @@ import {
   PalletDappStakingV3AccountLedger,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3DAppTierRewards,
+  PalletDappStakingV3EraInfo,
   PalletDappStakingV3EraRewardSpan,
   PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
@@ -285,6 +287,13 @@ export class DappStakingRepository implements IDappStakingRepository {
       maxNumberOfStakedContracts: (<u32>(
         api.consts.dappStaking.maxNumberOfStakedContracts
       )).toNumber(),
+      maxNumberOfContracts: (<u32>api.consts.dappStaking.maxNumberOfContracts).toNumber(),
+      standardErasPerBuildAndEarnPeriod: (<u32>(
+        api.consts.dappStaking.standardErasPerBuildAndEarnPeriod
+      )).toNumber(),
+      standardErasPerVotingPeriod: (<u32>(
+        api.consts.dappStaking.standardErasPerVotingPeriod
+      )).toNumber(),
     };
   }
 
@@ -369,6 +378,19 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return api.tx.utility.batchAll(calls);
+  }
+
+  public async getCurrentEraInfo(): Promise<EraInfo> {
+    const api = await this.api.getApi();
+    const info = await api.query.dappStaking.currentEraInfo<PalletDappStakingV3EraInfo>();
+
+    return {
+      totalLocked: info.totalLocked.toBigInt(),
+      activeEraLocked: info.activeEraLocked?.toBigInt(),
+      unlocking: info.unlocking.toBigInt(),
+      currentStakeAmount: this.mapStakeAmount(info.currentStakeAmount),
+      nextStakeAmount: this.mapStakeAmount(info.nextStakeAmount),
+    };
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {

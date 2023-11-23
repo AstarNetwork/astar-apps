@@ -8,6 +8,10 @@ export interface DappBase {
   name: string;
   iconUrl: string;
   mainCategory?: string;
+  creationTime: number;
+  shortDescription: string;
+  url: string;
+  imagesUrl: string[];
 }
 
 /**
@@ -98,6 +102,9 @@ export interface Constants {
   minStakeAmountToken?: number;
   minBalanceAfterStaking: number;
   maxNumberOfStakedContracts: number;
+  maxNumberOfContracts: number;
+  standardErasPerBuildAndEarnPeriod: number;
+  standardErasPerVotingPeriod: number;
 }
 
 export interface DAppTierRewards {
@@ -115,4 +122,12 @@ export interface Rewards {
   dApp: bigint;
   staker: bigint;
   bonus: bigint;
+}
+
+export interface EraInfo {
+  readonly activeEraLocked?: bigint;
+  readonly totalLocked: bigint;
+  readonly unlocking: bigint;
+  readonly currentStakeAmount: StakeAmount;
+  readonly nextStakeAmount?: StakeAmount;
 }

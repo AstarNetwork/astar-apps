@@ -13,7 +13,6 @@ import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
-import DappStakingV3Page from 'src/pages/DappStakingV3.vue';
 import { Vote } from 'src/staking-v3';
 import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
 import { RouteRecordRaw } from 'vue-router';
@@ -43,7 +42,6 @@ export enum Path {
   Transfer = '/transfer',
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
-  DappStakingV3 = '/dapp-staking-v3',
   Vote = '/vote',
 }
 
@@ -76,10 +74,6 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/store/discover-dapps',
     redirect: networkParam + Path.DappStaking + Path.Discover,
-  },
-  {
-    path: Path.DappStakingV3,
-    redirect: networkParam + Path.DappStakingV3 + Path.Discover,
   },
   {
     path: '/:network' + Path.Assets,
@@ -151,7 +145,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: StakingTop,
+        component: networkParam === '/development' ? DiscoverV3 : StakingTop,
       },
       {
         path: 'stake',
@@ -165,28 +159,12 @@ const routes: RouteRecordRaw[] = [
         path: 'register',
         component: RegisterDapp,
       },
-    ],
-  },
-  {
-    path: '/:network' + Path.DappStakingV3,
-    name: 'dApp Staking v3',
-    component: DappStakingV3Page,
-    children: [
-      {
-        path: '',
-        redirect: Path.DappStaking + networkParam + Path.Discover,
-      },
-      {
-        path: 'discover',
-        component: DiscoverV3,
-      },
       {
         path: 'vote',
         component: Vote,
       },
     ],
   },
-
   // Always leave this as last one,
   // but you can also remove it
   {

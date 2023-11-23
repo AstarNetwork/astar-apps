@@ -12,6 +12,9 @@
         </div>
         <div class="card__bottom">
           <div>
+            <span class="text--label">T{{ getDappTier(dapp.chain.id) ?? '-' }}</span>
+          </div>
+          <div>
             <span class="text--label">2,432</span>
           </div>
           <div>
@@ -25,13 +28,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useDapps } from '../hooks';
+import { useDappStaking, useDapps } from '../hooks';
 
 export default defineComponent({
   setup() {
     const { registeredDapps } = useDapps();
+    const { getDappTier } = useDappStaking();
 
-    return { registeredDapps };
+    return { registeredDapps, getDappTier };
   },
 });
 </script>

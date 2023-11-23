@@ -5,6 +5,8 @@ import { container } from 'src/v2/common';
 import {
   AccountLedger,
   Constants,
+  DAppTierRewards,
+  EraInfo,
   IDappStakingRepository,
   IDappStakingService,
   PeriodType,
@@ -33,6 +35,9 @@ export function useDappStaking() {
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
+  const isVotingPeriod = computed<boolean>(
+    () => protocolState.value?.periodInfo.subperiod === PeriodType.Voting
+  );
   const ledger = computed<AccountLedger | undefined>(() => store.getters['stakingV3/getLedger']);
   const rewards = computed<Rewards | undefined>(() => {
     const rewards = store.getters['stakingV3/getRewards'];
@@ -50,6 +55,24 @@ export function useDappStaking() {
 
     return consts;
   });
+  const currentEraInfo = computed<EraInfo | undefined>(() => {
+    const era = store.getters['stakingV3/getCurrentEraInfo'];
+    if (!era) {
+      getCurrentEraInfo();
+    }
+
+    return era;
+  });
+  const dAppTiers = computed<DAppTierRewards | undefined>(() => {
+    const tiers = store.getters['stakingV3/getDappTiers'];
+    if (!tiers) {
+      const era = protocolState.value?.era;
+      getDappTiers(era ? era - 1 : 0);
+    }
+
+    return tiers;
+  });
+
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
   const hasBonusRewards = computed<boolean>(() => !!rewards.value?.bonus);
@@ -188,6 +211,13 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
+  const getCurrentEraInfo = async (): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const eraInfo = await stakingRepo.getCurrentEraInfo();
+
+    store.commit('stakingV3/setCurrentEraInfo', eraInfo);
+  };
+
   const canStake = async (amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const balanceBN = new BN(useableBalance.value.toString());
@@ -249,6 +279,19 @@ export function useDappStaking() {
     return [true, ''];
   };
 
+  const getDappTiers = async (era: number): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const tiers = await stakingRepo.getDappTiers(era);
+
+    store.commit('stakingV3/setDappTiers', tiers);
+  };
+
+  const getDappTier = (dappId: number): number | undefined => {
+    const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
+
+    return tierId !== undefined ? tierId + 1 : undefined;
+  };
+
   watch(
     currentNetworkIdx,
     async () => {
@@ -271,6 +314,9 @@ export function useDappStaking() {
     hasDappRewards,
     hasBonusRewards,
     hasRewards,
+    currentEraInfo,
+    dAppTiers,
+    isVotingPeriod,
     stake,
     unstake,
     claimStakerRewards,
@@ -281,5 +327,8 @@ export function useDappStaking() {
     getAllRewards,
     fetchConstantsToStore,
     claimLockAndStake,
+    getCurrentEraInfo,
+    getDappTiers,
+    getDappTier,
   };
 }

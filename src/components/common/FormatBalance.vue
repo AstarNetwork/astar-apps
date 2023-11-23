@@ -2,7 +2,7 @@
   <balance :balance="balance" :decimals="decimal" :unit="defaultUnitToken" />
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, PropType } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 import { useChainMetadata } from 'src/hooks';
 import { BN } from '@polkadot/util';
 
@@ -12,7 +12,7 @@ export default defineComponent({
   components: { Balance },
   props: {
     balance: {
-      type: Object as PropType<BN> | PropType<string> | undefined,
+      type: [BN, String],
       required: true,
     },
   },

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch, watchEffect } from 'vue';
+import { defineComponent, onMounted, watch } from 'vue';
 import { useAccount } from 'src/hooks';
 import { useDappStaking, useDapps } from '../hooks';
 import { Path, networkParam } from 'src/router/routes';
@@ -47,7 +47,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     const navigateToVote = (): void => {
-      const base = networkParam + Path.DappStakingV3 + Path.Vote;
+      const base = networkParam + Path.DappStaking + Path.Vote;
       router.push(base);
     };
 
@@ -59,11 +59,6 @@ export default defineComponent({
       if (currentAccount) {
         await getAllRewards();
       }
-    });
-
-    watchEffect(() => {
-      console.log('registeredDapps', registeredDapps.value);
-      console.log('protocolState', protocolState.value);
     });
 
     return {

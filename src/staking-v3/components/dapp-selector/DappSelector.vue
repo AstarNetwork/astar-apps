@@ -1,62 +1,57 @@
 <template>
   <div>
-    <div class="selector-wrapper" @click="handleModalSelectDapp({ isOpen: true })">
+    <div
+      class="selector-wrapper"
+      :class="disableSelection && 'cursor--default'"
+      @click="handleModalSelectDapp({ isOpen: true })"
+    >
       <div class="name">
-        {{ selectedDapp ? selectedDapp.name : placeholder }}
+        {{ selectedDapp?.name || placeholder }}
       </div>
       <div><astar-icon-expand size="20" /></div>
     </div>
-    <modal-select-dapp
-      :dapps="dapps"
-      :is-modal-select-dapp="isModalSelectDapp"
-      :handle-modal-select-dapp="handleModalSelectDapp"
-      :dapp-selected="handleDappSelected"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { Dapp } from './Model';
-import ModalSelectDapp from './ModalSelectDapp.vue';
 
 export default defineComponent({
-  components: {
-    ModalSelectDapp,
-  },
   props: {
-    dapps: {
-      type: Object as PropType<Dapp[]>,
-      required: true,
+    selectedDapp: {
+      type: Object as PropType<Dapp> | undefined,
+      required: false,
+      default: undefined,
     },
     placeholder: {
       type: String,
       required: false,
       default: 'Select a dApp',
     },
-    dappSelected: {
-      type: Function as PropType<(dapp: Dapp) => void>,
+    onSelectDapps: {
+      type: Function as PropType<() => void>,
       required: false,
       default: undefined,
     },
+    disableSelection: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup(props) {
-    const selectedDapp = ref<Dapp | undefined>(undefined);
-    const isModalSelectDapp = ref<boolean>(false);
+    const handleModalSelectDapp = ({ isOpen }: { isOpen: boolean }): void => {
+      if (props.disableSelection) {
+        return;
+      }
 
-    const handleDappSelected = (dapp: Dapp): void => {
-      selectedDapp.value = dapp;
-
-      if (props.dappSelected) {
-        props.dappSelected(dapp);
+      if (isOpen && props.onSelectDapps) {
+        props.onSelectDapps();
       }
     };
 
-    const handleModalSelectDapp = ({ isOpen }: { isOpen: boolean }): void => {
-      isModalSelectDapp.value = isOpen;
-    };
-
-    return { selectedDapp, isModalSelectDapp, handleDappSelected, handleModalSelectDapp };
+    return { handleModalSelectDapp };
   },
 });
 </script>
@@ -69,10 +64,16 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.cursor--default {
+  cursor: default;
+}
+
 .name {
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>
