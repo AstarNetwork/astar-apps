@@ -98,64 +98,70 @@
       </div>
 
       <!-- Evm Deposit -->
-      <div v-if="numEvmDeposit" class="row row--transferable">
-        <div class="row__info">
-          <div class="column--label text--label">
-            {{ $t('assets.yourEvmDeposit') }}
-          </div>
-          <div v-if="!isSkeleton" class="column--balance">
-            <span class="column--amount text--amount">
-              {{ isTruncate ? $n(truncate(numEvmDeposit, 3)) : Number(numEvmDeposit) }}
-            </span>
-            <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
-          </div>
-          <div v-else>
-            <div class="skeleton--right">
-              <q-skeleton animation="fade" class="skeleton--md" />
+      <div v-if="numEvmDeposit" class="row row--evm-deposit">
+        <div class="row--inner-container">
+          <div class="row__info">
+            <div class="column--label text--label">
+              {{ $t('assets.evmDeposit') }}
+            </div>
+            <div v-if="!isSkeleton" class="column--balance">
+              <span class="column--amount text--amount">
+                {{ isTruncate ? $n(truncate(numEvmDeposit, 3)) : Number(numEvmDeposit) }}
+              </span>
+              <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
+            </div>
+            <div v-else>
+              <div class="skeleton--right">
+                <q-skeleton animation="fade" class="skeleton--md" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row__actions">
-          <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
-            {{ $t('assets.withdraw') }}
-          </button>
+          <div class="row__actions">
+            <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
+              {{ $t('assets.withdraw') }}
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Locked tokens -->
       <div class="row row--locked-tokens">
-        <div class="row__info" @click="width <= screenSize.sm && expandAsset(isExpand)">
-          <div class="column--label text--label">
-            {{ $t('assets.lockedTokens') }}
-          </div>
-          <div v-if="!isSkeleton" class="column--balance">
-            <div class="column--amount text--amount">
-              {{ isTruncate ? $n(truncate(lockInDappStaking, 3)) : Number(lockInDappStaking) }}
+        <div class="row--inner-container">
+          <div class="row__info">
+            <div class="column--label text--label">
+              {{ $t('assets.lockedTokens') }}
             </div>
-            <div class="column--symbol text--symbol">
-              {{ nativeTokenSymbol }}
+            <div v-if="!isSkeleton" class="column--balance">
+              <div class="column--amount text--amount">
+                {{ isTruncate ? $n(truncate(lockInDappStaking, 3)) : Number(lockInDappStaking) }}
+              </div>
+              <div class="column--symbol text--symbol">
+                {{ nativeTokenSymbol }}
+              </div>
+            </div>
+            <div v-else>
+              <div class="skeleton--right">
+                <q-skeleton animation="fade" class="skeleton--md" />
+              </div>
             </div>
           </div>
-          <div v-else>
-            <div class="skeleton--right">
-              <q-skeleton animation="fade" class="skeleton--md" />
-            </div>
-          </div>
-        </div>
 
-        <div v-if="width >= screenSize.sm" class="row__actions">
-          <button
-            class="icon--expand"
-            :class="isExpand && 'icon--collapse'"
-            @click="expandAsset(isExpand)"
-          >
-            <astar-icon-expand size="32" />
-            <q-tooltip>
-              <span class="text--tooltip">
-                {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
-              </span>
-            </q-tooltip>
-          </button>
+          <div class="row__actions">
+            <button
+              class="icon--expand"
+              :class="isExpand && 'icon--collapse'"
+              @click="expandAsset(isExpand)"
+            >
+              <astar-icon-base>
+                <astar-icon-3dots />
+              </astar-icon-base>
+              <q-tooltip>
+                <span class="text--tooltip">
+                  {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
+                </span>
+              </q-tooltip>
+            </button>
+          </div>
         </div>
 
         <div class="expand-container">
@@ -195,10 +201,7 @@
 
             <!-- Vesting -->
             <div class="row--expand">
-              <div
-                class="row--expand__info"
-                @click="width <= screenSize.sm && handleModalVesting({ isOpen: true })"
-              >
+              <div class="row--expand__info">
                 <div class="column--label text--label">{{ $t('assets.vesting') }}</div>
                 <div class="column--balance">
                   <template v-if="!isSkeleton">
@@ -225,10 +228,7 @@
 
             <!-- Staking -->
             <div class="row--expand">
-              <div
-                class="row--expand__info"
-                @click="() => width <= screenSize.sm && $router.push(Path.DappStaking)"
-              >
+              <div class="row--expand__info">
                 <div class="column--label text--label">{{ $t('common.staking') }}</div>
                 <div class="column--balance">
                   <template v-if="!isSkeleton">

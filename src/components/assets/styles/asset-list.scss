@@ -205,7 +205,8 @@
   justify-content: space-between;
 }
 
-.row--transferable {
+.row--transferable,
+.row--evm-deposit {
   display: flex;
   flex-direction: column;
 }
@@ -238,6 +239,9 @@
   cursor: pointer;
   transition: all 0.4s ease 0s;
   border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   svg {
     width: 26px;
     height: 26px;
@@ -246,10 +250,6 @@
     color: white;
     background-color: $astar-blue;
   }
-}
-
-.icon--collapse {
-  transform: rotate(180deg);
 }
 
 .column--transferable-bal {
@@ -367,7 +367,8 @@
   }
 }
 
-.row--transferable {
+.row--transferable,
+.row--evm-deposit {
   flex-direction: row;
   &.row--transferable-evm {
     @media (min-width: $sm) {
@@ -376,26 +377,14 @@
     }
   }
 }
-.row--locked-tokens {
-  background-color: $gray-1;
-  @media (min-width: $sm) {
-    border-radius: 16px;
-  }
-}
-.body--dark {
-  .row--locked-tokens {
-    background-color: $navy-2;
-  }
-}
 
 .row--transferable,
-.row--locked-tokens {
+.row--evm-deposit {
   .row__info {
     display: flex;
     align-items: center;
     width: 100%;
     gap: 8px;
-    cursor: pointer;
     flex-direction: row;
     justify-content: space-between;
     @media (min-width: $sm) {
@@ -427,6 +416,7 @@
     }
   }
 }
+
 .column--label {
   width: 50%;
 }
@@ -437,54 +427,6 @@
 .column--symbol {
   width: 30%;
   text-align: left;
-}
-
-.rows--expand {
-  padding: 16px 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.row--expand {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border-radius: 8px;
-  padding: 16px 0;
-  cursor: pointer;
-  @media (min-width: $sm) {
-    padding: 24px 0;
-    justify-content: space-between;
-    border-radius: 16px;
-    cursor: default;
-  }
-}
-.body--dark {
-  .row--expand {
-    background-color: $navy-4;
-  }
-}
-.row--expand__info {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
-  @media (min-width: $sm) {
-    width: 50%;
-    padding-left: 24px;
-  }
-}
-.row--expand__action {
-  display: none;
-  @media (min-width: $sm) {
-    padding-right: 16px;
-    width: 50%;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .btn--sm {
-    font-weight: 600;
-  }
 }
 
 .text--label {
@@ -506,8 +448,8 @@
   }
 }
 .row--transferable,
-.row--locked-tokens {
-  .column--balance{
+.row--evm-deposit {
+  .column--balance {
     width: 50%;
   }
   .text--label,
@@ -616,4 +558,174 @@
       height: 24px;
     }
   }
+}
+
+.row--locked-tokens,
+.row--evm-deposit {
+  background-color: $gray-1;
+  @media (min-width: $sm) {
+    border-radius: 16px;
+  }
+}
+.body--dark {
+  .row--locked-tokens,
+  .row--evm-deposit {
+    background-color: $navy-3;
+  }
+}
+
+.row--locked-tokens,
+.row--evm-deposit {
+  padding: 0;
+  display: block;
+  .row--inner-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    .row__info {
+      display: block;
+      @media (min-width: $sm) {
+        width: 50%;
+        display: flex;
+        align-items: center;
+      }
+      .column--label {
+        font-size: 14px;
+        width: 100%;
+        padding: 12px 0;
+        @media (min-width: $sm) {
+          width: 50%;
+        }
+      }
+      .column--balance {
+        justify-content: left;
+        padding: 12px 0;
+        @media (min-width: $sm) {
+          width: 50%;
+          justify-content: flex-end;
+        }
+
+        .column--amount {
+          font-size: 14px;
+          text-align: left;
+          width: auto;
+          @media (min-width: $sm) {
+            width: 70%;
+            text-align: right;
+          }
+        }
+        .column--symbol {
+          font-size: 14px;
+          width: auto;
+          @media (min-width: $sm) {
+            width: 30%;
+          }
+        }
+      }
+    }
+    .row__actions {
+      padding-bottom: 4px;
+      align-self: flex-end;
+      width: auto;
+      @media (min-width: $sm) {
+        padding: 0;
+        align-self: center;
+      }
+      .icon--expand {
+        width: 32px;
+        height: 32px;
+        @media (min-width: $sm) {
+          width: 40px;
+          height: 40px;
+        }
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+  }
+  .expand-container {
+    @media (min-width: $sm) {
+      padding: 0 16px;
+    }
+    .asset-collapsed {
+      padding-bottom: 8px;
+      @media (min-width: $sm) {
+        padding-bottom: 16px;
+      }
+    }
+    .rows--expand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      .row--expand {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        background-color: white;
+        @media (min-width: $sm) {
+          border-radius: 12px;
+        }
+      }
+      .row--expand__info {
+        @media (min-width: $sm) {
+          width: 50%;
+          display: flex;
+          align-items: center;
+        }
+        .column--label {
+          padding: 12px 0;
+          @media (min-width: $sm) {
+            width: 50%;
+          }
+        }
+        .column--balance {
+          width: auto;
+          justify-content: left;
+          padding: 12px 0;
+          @media (min-width: $sm) {
+            width: 50%;
+            justify-content: flex-end;
+          }
+          .column--amount {
+            width: auto;
+            text-align: left;
+            @media (min-width: $sm) {
+              width: 70%;
+              text-align: right;
+            }
+          }
+          .column--symbol {
+            width: auto;
+            @media (min-width: $sm) {
+              width: 30%;
+            }
+          }
+        }
+      }
+      .row--expand__action {
+        align-self: flex-end;
+        padding-bottom: 6px;
+        @media (min-width: $sm) {
+          padding: 0;
+          align-self: center;
+        }
+        .btn--sm {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.body--dark {
+  .row--locked-tokens .expand-container .rows--expand .row--expand {
+    background-color: $navy-1;
+  }
+}
+
+.row--evm-deposit {
+  margin-bottom: 8px;
 }

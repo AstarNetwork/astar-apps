@@ -468,6 +468,7 @@ export default {
     collapse: 'Collapse',
     transferableBalance: 'Transferable Balance',
     transferable: 'Transferable',
+    evmDeposit: 'EVM deposit',
     yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
