@@ -97,7 +97,7 @@
     </div>
     <div class="wrapper--button">
       <astar-button
-        :disabled="!canConfirm()"
+        :disabled="!isConfirmable"
         style="width: 100%; height: 52px; font-size: 22px"
         @click="confirm"
       >
@@ -123,6 +123,10 @@ import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
 import { abs } from 'src/v2/common';
 import { useRoute } from 'vue-router';
+import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
+import BN from 'bn.js';
+import { PeriodType } from '../logic';
 
 export default defineComponent({
   components: {
@@ -154,10 +158,15 @@ export default defineComponent({
       return locked.value - stakeToken - totalStake.value;
     });
 
-    const canConfirm = (): boolean =>
-      selectedDapps.value.length > 0 &&
-      totalStakeAmount.value > 0 &&
-      Number(useableBalance.value) > totalStakeAmount.value;
+    const { t } = useI18n();
+    const store = useStore();
+    const protocolState = computed(() => store.getters['stakingV3/getProtocolState']);
+    const balanceBN = computed(() => new BN(useableBalance.value.toString()));
+
+    // TODO this should be moved to useDappStaking.
+    const canConfirm = (): [boolean, string] => {
+      return [true, ''];
+    };
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
       selectedDapps.value = dapps;
@@ -178,21 +187,23 @@ export default defineComponent({
     const canAddDapp = computed<boolean>((): boolean => selectedDappAddress.value === '');
 
     const confirm = async (): Promise<void> => {
-      if (canConfirm()) {
-        const stakeInfo = new Map<string, number>();
-
-        selectedDapps.value.forEach((dapp) => {
-          if (dapp.amount > 0) {
-            stakeInfo.set(dapp.address, dapp.amount);
-          }
-        });
-
-        // If additional funds locking is required remainLockedToken value will be negative.
-        await claimLockAndStake(
-          stakeInfo,
-          remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
-        );
+      const [result, error] = canConfirm();
+      if (!result) {
+        throw error;
       }
+
+      const stakeInfo = new Map<string, number>();
+      selectedDapps.value.forEach((dapp) => {
+        if (dapp.amount > 0) {
+          stakeInfo.set(dapp.address, dapp.amount);
+        }
+      });
+
+      // If additional funds locking is required remainLockedToken value will be negative.
+      await claimLockAndStake(
+        stakeInfo,
+        remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
+      );
     };
 
     watch(
@@ -240,6 +251,15 @@ export default defineComponent({
       handleSelectDapp,
       canAddDapp,
     };
+  },
+  computed: {
+    isConfirmable() {
+      const [confirmable, errorMessage] = this.canConfirm();
+      if (!confirmable) {
+        // console.log(errorMessage);
+      }
+      return confirmable;
+    },
   },
 });
 </script>
