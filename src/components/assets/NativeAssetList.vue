@@ -84,7 +84,10 @@
             </q-tooltip>
           </div>
           <template v-else>
-            <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+            <router-link
+              :to="buildTransferPageLink(nativeTokenSymbol)"
+              data-testid="transfer-link-button"
+            >
               <button class="btn btn--icon">
                 <astar-icon-transfer />
               </button>
