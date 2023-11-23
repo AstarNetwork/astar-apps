@@ -105,10 +105,20 @@
     }
   }
 
+  // zkEVM
+  &.network-3 {
+    .text--address {
+      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
   // zKatana
   &.network-4 {
     .text--address {
-      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
+      background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -300,8 +310,8 @@
     }
   }
 
-  // zKatana
-  &.network-4 {
+  // zkEVM
+  &.network-3 {
     .wallet-tab {
       .btn {
         &.active {
@@ -310,6 +320,17 @@
       }
     }
   }
+
+  // zKatana
+  &.network-4 {
+    .wallet-tab {
+      .btn {
+        &.active {
+          background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+        }
+      }
+    }
+  }  
 }
 
 .row--account-rewards {

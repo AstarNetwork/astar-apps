@@ -93,9 +93,15 @@ export default defineComponent({
     border-image-slice: 1;
   }
 
+  // zkEVM
+  &.header__border-3 {
+    border-image: linear-gradient(270deg, #703ac2 25%, #226dff 100%);
+    border-image-slice: 1;
+  }
+
   // zKatana
   &.header__border-4 {
-    border-image: linear-gradient(270deg, #703ac2 25%, #226dff 100%);
+    border-image: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
     border-image-slice: 1;
   }
 }
