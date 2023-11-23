@@ -3,7 +3,7 @@
     <div class="icon">
       <logo />
     </div>
-    <nav class="menu">
+    <nav v-if="!router.currentRoute.value.path.includes('snap')" class="menu">
       <div>
         <router-link
           :to="RoutePath.Assets"
@@ -116,6 +116,7 @@
       </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
+    <nav v-else class="menu" />
 
     <div class="wrapper--bottom">
       <sidebar-option-desktop />

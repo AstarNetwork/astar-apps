@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <nav class="tabs">
+      <nav v-if="!router.currentRoute.value.path.includes('snap')" class="tabs">
         <button
           v-if="isZkatana"
           :disabled="true"
@@ -62,6 +62,7 @@
         </a>
         <div class="tabs__indicator" :class="getIndicatorClass(path)" />
       </nav>
+      <nav v-else class="tabs" />
 
       <button type="button" class="button--option" @click="showOption = !showOption">
         <astar-icon-base class="icon--dot" stroke="currentColor" icon-name="option">
@@ -116,6 +117,7 @@ export default defineComponent({
     return {
       showOption,
       network,
+      router,
       getIndicatorClass,
       path,
       RoutePath,

@@ -15,6 +15,8 @@ export const getHeaderName = (path: string): string => {
     return 'dApp Staking';
   } else if (path.includes('bridge')) {
     return 'Bridge';
+  } else if (path.includes('snap')) {
+    return 'Astar Snap';
   }
   return '';
 };

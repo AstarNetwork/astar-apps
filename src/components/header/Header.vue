@@ -5,7 +5,8 @@
         <div class="icon"><logo /></div>
       </template>
       <trouble-help />
-      <template v-if="!currentAccount">
+      <template v-if="path.includes('snap')" />
+      <template v-else-if="!currentAccount">
         <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
         </connect-button>
@@ -17,7 +18,7 @@
           @click="clickAccountBtn"
         />
       </template>
-      <network-button @show-network="clickNetworkBtn" />
+      <network-button v-if="!path.includes('snap')" @show-network="clickNetworkBtn" />
     </header-comp>
 
     <!-- Modals -->
@@ -29,6 +30,7 @@
     />
 
     <modal-connect-wallet
+      v-if="!path.includes('snap')"
       :is-modal-connect-wallet="
         modalName === WalletModalOption.SelectWallet ||
         modalName === WalletModalOption.NoExtension ||
@@ -232,6 +234,7 @@ export default defineComponent({
       selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
+      path,
       width,
       screenSize,
       isLoading,
