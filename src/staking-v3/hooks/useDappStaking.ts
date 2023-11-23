@@ -216,12 +216,6 @@ export function useDappStaking() {
     return dapp?.chain.state;
   };
 
-  const canStake = async (
-    dappAddress: string,
-    amount: number,
-    ignoreCanClaim = false
-  ): Promise<[boolean, string]> => {
-
   const getCurrentEraInfo = async (): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const eraInfo = await stakingRepo.getCurrentEraInfo();
@@ -229,7 +223,11 @@ export function useDappStaking() {
     store.commit('stakingV3/setCurrentEraInfo', eraInfo);
   };
 
-  const canStake = async (amount: number): Promise<[boolean, string]> => {
+  const canStake = async (
+    dappAddress: string,
+    amount: number,
+    ignoreCanClaim = false
+  ): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const balanceBN = new BN(useableBalance.value.toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);

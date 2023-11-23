@@ -139,7 +139,7 @@ export default defineComponent({
     ModalSelectDapp,
   },
   setup() {
-    const { constants, ledger, totalStake, hasRewards, rewards, claimLockAndStake } =
+    const { constants, ledger, totalStake, hasRewards, rewards, claimLockAndStake, canStake } =
       useDappStaking();
     const { registeredDapps } = useDapps();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -167,39 +167,6 @@ export default defineComponent({
     const protocolState = computed(() => store.getters['stakingV3/getProtocolState']);
     const balanceBN = computed(() => new BN(useableBalance.value.toString()));
 
-    // TODO this should be moved to useDappStaking.
-    const canConfirm = (): [boolean, string] => {
-      const stakeAmountBN = new BN(
-        ethers.utils.parseEther(stakeAmount.value.toString()).toString()
-      );
-
-      if (!selectedDapp.value?.address) {
-        // Prevents NoDappSelected
-        return [false, t('stakingV3.noDappSelected')];
-      } else if (stakeAmount.value <= 0) {
-        // Prevents dappStaking.ZeroAmount
-        return [false, t('stakingV3.dappStaking.ZeroAmount')];
-      } else if (stakeAmountBN.gt(balanceBN.value)) {
-        // Prevents dappStaking.UnavailableStakeFunds
-        return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
-      } else if (protocolState.value?.maintenance) {
-        // Prevents dappStaking.Disabled
-        return [false, t('stakingV3.dappStaking.Disabled')];
-      } else if (hasRewards.value) {
-        // Prevents dappStaking.UnclaimedRewards
-        // May want to auto claim rewards here
-        return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
-      } else if (
-        // Prevents dappStaking.PeriodEndsInNextEra
-        protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
-        protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
-      ) {
-        return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
-      } // Prevents dappStaking.TooManyStakedContracts
-
-      return [true, ''];
-    };
-
     const handleDappsSelected = (dapps: Dapp[]): void => {
       selectedDapps.value = dapps;
     };
@@ -219,10 +186,10 @@ export default defineComponent({
     const canAddDapp = computed<boolean>((): boolean => selectedDappAddress.value === '');
 
     const confirm = async (): Promise<void> => {
-      const [result, error] = canConfirm();
-      if (!result) {
-        throw error;
-      }
+      // const [result, error] = canStake(dapp.address, dapp.amount);
+      // if (!result) {
+      //   throw error;
+      // }
 
       const stakeInfo = new Map<string, number>();
       selectedDapps.value.forEach((dapp) => {
@@ -272,7 +239,6 @@ export default defineComponent({
       remainLockedToken,
       hasRewards,
       errorMessage,
-      canConfirm,
       rewards,
       selectedDapps,
       isModalSelectDapp,
@@ -287,8 +253,8 @@ export default defineComponent({
   },
   computed: {
     isConfirmable() {
-      let confirmable = false;
-      [confirmable, this.errorMessage] = this.canConfirm();
+      let confirmable = true;
+      // [confirmable, this.errorMessage] = this.canStake(dapp.address, dapp.amount);
       return confirmable;
     },
   },
