@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading" class="wrapper--assets">
+  <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
     <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
       <div class="column--main">
@@ -31,7 +31,6 @@
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
-import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import SideAds from 'src/components/assets/SideAds.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
