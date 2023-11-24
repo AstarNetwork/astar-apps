@@ -282,11 +282,11 @@ export default defineComponent({
     };
 
     const bg = computed<String>(() => {
-      if (currentNetworkIdx.value === 0) {
+      if (currentNetworkIdx.value === endpointKey.ASTAR) {
         return bg_img.native;
-      } else if (currentNetworkIdx.value === 1) {
+      } else if (currentNetworkIdx.value === endpointKey.SHIDEN) {
         return bg_img.shiden;
-      } else if (currentNetworkIdx.value === 4) {
+      } else if (currentNetworkIdx.value === endpointKey.ZKATANA) {
         return bg_img.testnet_zk;
       }
       return bg_img.testnet;
