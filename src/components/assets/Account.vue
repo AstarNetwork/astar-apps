@@ -11,7 +11,7 @@
               <!-- zkEVM -->
               <template v-if="isZkEvm">
                 <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
-                <div v-if="isZkEvm" class="btn active">Astar zkatana</div>
+                <div v-if="isZkEvm" class="btn active">Astar zKatana</div>
               </template>
 
               <!-- Astar EVM -->
@@ -21,7 +21,7 @@
                   EVM (L1)
                 </div>
                 <a v-if="currentNetworkIdx === 2" class="btn" href="/zkatana-testnet/assets">
-                  Astar zkatana
+                  Astar zKatana
                 </a>
                 <a v-else-if="currentNetworkIdx !== 1" class="btn" disabled>Astar zkEVM</a>
               </template>
@@ -30,7 +30,7 @@
             <!-- Native -->
             <div v-else class="btn active">
               {{ currentNetworkIdx === 4 ? 'Astar' : currentNetworkName.replace('Network', '') }}
-              Native
+              {{ $t('native') }}
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
               </div>
               <div class="text--balance">
                 {{ $n(totalBal) }}
-                <span>USD</span>
+                <span>{{ $t('usd') }}</span>
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@
                 <astar-icon-person />
               </button>
               <q-tooltip>
-                <span class="text--tooltip">Unify accounts</span>
+                <span class="text--tooltip">{{ $t('assets.unifyAccounts') }}</span>
               </q-tooltip>
             </div>
 
