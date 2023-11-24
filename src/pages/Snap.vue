@@ -18,6 +18,12 @@
           <div class="wrapper--panel">
             <p>
               {{ $t('snap.description') }}
+              <a
+                href="https://docs.astar.network/docs/use/manage-wallets/wallet-providers/metamask-astar-snap/"
+                target="_blank"
+              >
+                {{ $t('snap.documentation') }}
+              </a>
             </p>
             <h3>{{ $t('snap.pleaseNote') }}:</h3>
             <ul>
@@ -37,21 +43,40 @@
     </div>
 
     <div class="cards responsive">
-      <div class="card">
+      <button
+        class="card"
+        :style="buttonStyles[0]"
+        :disabled="isSnapInstalled"
+        @mouseover="buttonStyles[0].backgroundColor = 'blue'"
+        @mouseleave="buttonStyles[0].backgroundColor = 'white'"
+        @click="handleMetaMaskSnap()"
+      >
         <p>
-          {{ $t('snap.description') }}
+          {{ isSnapInstalled ? $t('snap.alreadyInstalled') : $t('snap.install1') }}
         </p>
-      </div>
-      <div class="card">
+      </button>
+      <router-link :to="Path.Assets">
+        <button
+          class="card"
+          :style="buttonStyles[1]"
+          @mouseover="buttonStyles[1].backgroundColor = 'blue'"
+          @mouseleave="buttonStyles[1].backgroundColor = 'white'"
+        >
+          <p>
+            {{ $t('snap.install2') }}
+          </p>
+        </button>
+      </router-link>
+      <button
+        class="card"
+        :style="buttonStyles[2]"
+        @mouseover="buttonStyles[2].backgroundColor = 'blue'"
+        @mouseleave="buttonStyles[2].backgroundColor = 'white'"
+      >
         <p>
-          {{ $t('snap.description') }}
+          {{ $t('snap.install3') }}
         </p>
-      </div>
-      <div class="card">
-        <p>
-          {{ $t('snap.description') }}
-        </p>
-      </div>
+      </button>
     </div>
   </div>
 </template>
@@ -59,8 +84,15 @@
 <script lang="ts">
 import { usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Path } from 'src/router';
+import { $api } from 'src/boot/api';
+import { wait } from '@astar-network/astar-sdk-core';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
+import { getInjectedExtensions } from 'src/hooks/helper/wallet';
+import { useExtensions } from 'src/hooks/useExtensions';
+import { initiatePolkdatodSnap, SnapInitializationResponse } from 'src/modules/snap';
 
 export default defineComponent({
   name: 'Snap',
@@ -74,7 +106,45 @@ export default defineComponent({
       dark: require('/src/assets/img/dapps_staking_bg_dark.webp'),
     };
 
-    return { isReady, isDarkTheme, bg_img };
+    const buttonStyles = ref([
+      { backgroundColor: 'white' },
+      { backgroundColor: 'white' },
+      { backgroundColor: 'white' },
+    ]);
+
+    // let isSnapInstalled: SnapInitializationResponse = {
+    //   isSnapInstalled: false,
+    //   snap: undefined,
+    // };
+
+    const isSnapInstalled = ref(false);
+
+    onMounted(async () => {
+      const snap = await initiatePolkdatodSnap();
+      isSnapInstalled.value = snap.isSnapInstalled;
+    });
+
+    const handleMetaMaskSnap = async (): Promise<void> => {
+      if (isSnapInstalled.value) {
+        console.log('Snap is installed', isSnapInstalled.value);
+        // await initPolkadotSnap();
+        useExtensions($api!!, store);
+        const extensions = await getInjectedExtensions(true);
+        const isExtensionsUpdated = extensions.some((it) => it.name === 'Snap');
+        // Memo: Sync the metamask extension for users who visit our portal first time
+        !isExtensionsUpdated && (await wait(3000));
+      }
+    };
+
+    return {
+      Path,
+      isReady,
+      isDarkTheme,
+      bg_img,
+      buttonStyles,
+      isSnapInstalled,
+      handleMetaMaskSnap,
+    };
   },
 });
 </script>

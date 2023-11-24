@@ -236,7 +236,10 @@ export default {
     pn1: 'Make sure you have MetaMask installed in your browser (if not please check https://metamask.io/)',
     pn2: 'Only one substrate address is created per MetaMask account',
     pn3: 'Crosschain transfers (XCM) are not recommended until the other chain supports Astar Snap',
-    install: 'Install Astar Snap in your MetaMask extension',
+    install1: 'Step 1: Install Astar Snap in your MetaMask extension',
+    alreadyInstalled: 'Step 1: Already installed!',
+    install2: 'Step 2: Go the Portal Asset page.',
+    install3: 'Step 3: There is no step 3!',
   },
   installWallet: {
     getWallet: 'Haven’t got {value} yet?',
