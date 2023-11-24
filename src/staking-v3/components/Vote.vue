@@ -90,10 +90,6 @@
         <div>{{ $t('stakingV3.bonusRewards') }}</div>
         <div><format-balance :balance="rewards?.bonus.toString() ?? ''" /></div>
       </div>
-      <div class="note--row">
-        <div>{{ $t('stakingV3.dAppRewards') }}</div>
-        <div><format-balance :balance="rewards?.dApp.toString() ?? ''" /></div>
-      </div>
     </div>
     <div class="wrapper--button">
       <astar-button
@@ -126,7 +122,7 @@ import { useRoute } from 'vue-router';
 import { useStore } from 'src/store';
 import { useI18n } from 'vue-i18n';
 import BN from 'bn.js';
-import { PeriodType } from '../logic';
+import { DappStakeInfo } from '../logic';
 
 export default defineComponent({
   components: {
@@ -192,10 +188,14 @@ export default defineComponent({
         throw error;
       }
 
-      const stakeInfo = new Map<string, number>();
+      const stakeInfo: DappStakeInfo[] = [];
       selectedDapps.value.forEach((dapp) => {
         if (dapp.amount > 0) {
-          stakeInfo.set(dapp.address, dapp.amount);
+          stakeInfo.push({
+            id: dapp.id,
+            address: dapp.address,
+            amount: dapp.amount,
+          });
         }
       });
 
@@ -215,6 +215,7 @@ export default defineComponent({
             address: dapp.basic.address,
             logoUrl: dapp.basic.iconUrl,
             amount: 0,
+            id: dapp.chain.id,
           }));
         }
 

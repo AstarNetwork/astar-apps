@@ -56,11 +56,11 @@ export function useDapps() {
     }
   };
 
-  const fetchStakeAmountsToStore = async (): Promise<void> => {
+  const fetchStakeAmountsToStore = async (dappIds: number[] = []): Promise<void> => {
     console.log('Fetching stake amounts');
     const service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const stakeAmounts = await service.getContractStakes(
-      registeredDapps.value.map((d) => d.chain.id)
+      dappIds.length > 0 ? dappIds : registeredDapps.value.map((d) => d.chain.id)
     );
 
     // Update state

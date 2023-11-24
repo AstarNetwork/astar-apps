@@ -41,6 +41,15 @@ export class StakerInfoChangedMessage {
 }
 
 /**
+ * Contains info required to stake to a dApp.
+ */
+export interface DappStakeInfo {
+  id: number;
+  address: string;
+  amount: number;
+}
+
+/**
  * Combines a dApp information from different sources, on chain and storage.
  */
 export interface CombinedDappInfo {

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo, StakeAmount } from '../models';
+import { CombinedDappInfo, DappStakeInfo, StakeAmount } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingRepository } from '../repositories';
@@ -218,11 +218,10 @@ export class DappStakingService implements IDappStakingService {
   public async claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: Map<string, number>,
-    dappsToClaim: string[]
+    stakeInfo: DappStakeInfo[]
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
-    if (stakeInfo.size === 0) {
+    if (stakeInfo.length === 0) {
       throw 'No stakeInfo provided';
     }
     // TODO there is a possibility that some address is wrong or some amount is below min staking amount
@@ -233,11 +232,6 @@ export class DappStakingService implements IDappStakingService {
     // Staker rewards
     const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
     claimStakerCall && calls.push(...claimStakerCall);
-    // dApps rewards
-    for (const dApp of dappsToClaim) {
-      const claimDappCalls = await this.getClaimDappRewardsCalls(dApp);
-      claimDappCalls && calls.push(...claimDappCalls);
-    }
     // Bonus rewards
     const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
     claimBonusCalls && calls.push(...claimBonusCalls);
@@ -246,8 +240,8 @@ export class DappStakingService implements IDappStakingService {
       amountToLock > 0 ? await this.dappStakingRepository.getLockCall(amountToLock) : undefined;
     lockCall && calls.push(lockCall);
     // Stake tokens
-    for (let [key, value] of stakeInfo) {
-      calls.push(await this.dappStakingRepository.getStakeCall(key, value));
+    for (const info of stakeInfo) {
+      calls.push(await this.dappStakingRepository.getStakeCall(info.address, info.amount));
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);

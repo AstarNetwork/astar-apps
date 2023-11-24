@@ -1,4 +1,4 @@
-import { CombinedDappInfo, StakeAmount } from '../models';
+import { CombinedDappInfo, DappStakeInfo, StakeAmount } from '../models';
 
 /**
  * @interface IDappStakingService interface for a service containing business logic for dapp staking.
@@ -97,8 +97,7 @@ export interface IDappStakingService {
   claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: Map<string, number>,
-    dappsToClaim: string[]
+    stakeInfo: DappStakeInfo[]
   ): Promise<void>;
 
   getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;

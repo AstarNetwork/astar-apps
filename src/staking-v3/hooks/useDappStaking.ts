@@ -6,6 +6,7 @@ import {
   AccountLedger,
   Constants,
   DAppTierRewards,
+  DappStakeInfo,
   EraInfo,
   IDappStakingRepository,
   IDappStakingService,
@@ -27,7 +28,7 @@ export function useDappStaking() {
   const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
   const { currentAccount } = useAccount();
-  const { registeredDapps } = useDapps();
+  const { registeredDapps, fetchStakeAmountsToStore } = useDapps();
   const { decimal } = useChainMetadata();
 
   const { useableBalance } = useBalance(currentAccount);
@@ -138,21 +139,17 @@ export function useDappStaking() {
   };
 
   const claimLockAndStake = async (
-    stakeInfo: Map<string, number>,
+    stakeInfo: DappStakeInfo[],
     lockAmount: bigint
   ): Promise<void> => {
-    const dAppsToClaim = registeredDapps.value
-      .filter((x) => x.chain.owner === currentAccount.value)
-      .map((x) => x.chain.address);
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
     await stakingService.claimLockAndStake(
       currentAccount.value,
       Number(ethers.utils.formatEther(lockAmount.toString())),
-      stakeInfo,
-      dAppsToClaim
+      stakeInfo
     );
-    await getAllRewards();
+    await Promise.all([getAllRewards(), fetchStakeAmountsToStore(stakeInfo.map((x) => x.id))]);
   };
 
   const claimBonusRewards = async (): Promise<void> => {
