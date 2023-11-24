@@ -718,6 +718,8 @@ export default {
     vote: 'Vote',
     voteToday: 'Vote today and be eligible for  bonus rewards',
     stakeOn: 'Stake on {name}',
+    tier: 'Tier',
+    tierLeaderboard: 'Tier Leaderboard',
   },
   bridge: {
     bridge: 'Bridge',

@@ -1,17 +1,10 @@
 import { computed } from 'vue';
 import { container } from 'src/v2/common';
-import {
-  CombinedDappInfo,
-  DappBase,
-  IDappStakingRepository,
-  IDappStakingService,
-  StakeAmount,
-} from '../logic';
+import { CombinedDappInfo, IDappStakingRepository, IDappStakingService } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
 import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import { each } from 'store';
 
 export function useDapps() {
   const store = useStore();
@@ -19,10 +12,10 @@ export function useDapps() {
   let isLoadingDapps = false;
   const registeredDapps = computed<CombinedDappInfo[]>(() => {
     const dapps = store.getters['stakingV3/getRegisteredDapps'];
-    // if (!dapps.length && !isLoadingDapps) {
-    //   isLoadingDapps = true;
-    //   fetchDappsToStore();
-    // }
+    if (!dapps.length && !isLoadingDapps) {
+      isLoadingDapps = true;
+      fetchDappsToStore();
+    }
 
     return dapps;
   });

@@ -25,7 +25,11 @@ export function useLeaderboard() {
       }
     });
 
+    // TODO fix this when we have tiers assigned to dapps.
     leaderBoards.value.set(1, sortedDapps);
+    leaderBoards.value.set(2, []);
+    leaderBoards.value.set(3, []);
+    leaderBoards.value.set(4, []);
   };
 
   watch(registeredDapps, () => {
