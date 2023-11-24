@@ -131,3 +131,10 @@ export interface EraInfo {
   readonly currentStakeAmount: StakeAmount;
   readonly nextStakeAmount?: StakeAmount;
 }
+
+export interface ContractStakeAmount {
+  readonly staked: StakeAmount;
+  readonly stakedFuture?: StakeAmount;
+  //tierLabel is not used ATM.
+  //tierLabel?: TierLabel;
+}

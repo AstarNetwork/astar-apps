@@ -2,6 +2,7 @@ import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
   Constants,
+  ContractStakeAmount,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -191,5 +192,5 @@ export interface IDappStakingRepository {
    * Gets the contract staking info.
    * @param dappId Dapp id to get staking info for.
    */
-  getContractStake(dappId: number): Promise<StakeAmount>;
+  getContractStake(dappId: number): Promise<ContractStakeAmount>;
 }

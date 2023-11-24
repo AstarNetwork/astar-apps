@@ -38,4 +38,5 @@ export interface DappInfo {
   rewardDestination?: string;
   stakeVoting?: bigint;
   stakeBuildAndEarn?: bigint;
+  totalStake?: bigint;
 }

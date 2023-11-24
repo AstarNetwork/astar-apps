@@ -8,6 +8,8 @@ interface PalletDappStakingV3PeriodType extends Enum {
   readonly type: 'Voting' | 'BuildAndEarn';
 }
 
+interface PalletDappStakingV3TierLabel extends Enum {}
+
 interface PalletDappStakingV3PeriodInfo extends Struct {
   readonly number: Compact<u32>;
   readonly subperiod: PalletDappStakingV3PeriodType;
@@ -109,4 +111,10 @@ export interface PalletDappStakingV3EraInfo extends Struct {
   readonly unlocking: Compact<u128>;
   readonly currentStakeAmount: PalletDappStakingV3StakeAmount;
   readonly nextStakeAmount: PalletDappStakingV3StakeAmount;
+}
+
+export interface PalletDappStakingV3ContractStakeAmount extends Struct {
+  readonly staked: PalletDappStakingV3StakeAmount;
+  readonly stakedFuture: Option<PalletDappStakingV3StakeAmount>;
+  readonly tierLabel: Option<PalletDappStakingV3TierLabel>;
 }

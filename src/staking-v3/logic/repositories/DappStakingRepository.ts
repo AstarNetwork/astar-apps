@@ -3,6 +3,7 @@ import {
   AccountLedger,
   AccountLedgerChangedMessage,
   Constants,
+  ContractStakeAmount,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -24,6 +25,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
+  PalletDappStakingV3ContractStakeAmount,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3DAppTierRewards,
   PalletDappStakingV3EraInfo,
@@ -393,13 +395,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getContractStake(dappId: number): Promise<StakeAmount> {
+  public async getContractStake(dappId: number): Promise<ContractStakeAmount> {
     const api = await this.api.getApi();
-    const contractStake = await api.query.dappStaking.contractStake<PalletDappStakingV3StakeAmount>(
-      dappId
-    );
+    const contractStake =
+      await api.query.dappStaking.contractStake<PalletDappStakingV3ContractStakeAmount>(dappId);
 
-    return this.mapStakeAmount(contractStake);
+    return this.mapContractStakeAmount(contractStake);
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
@@ -421,6 +422,17 @@ export class DappStakingRepository implements IDappStakingRepository {
       buildAndEarn: dapp.buildAndEarn.toBigInt(),
       era: dapp.era.toNumber(),
       period: dapp.period.toNumber(),
+    };
+  }
+
+  private mapContractStakeAmount(
+    amount: PalletDappStakingV3ContractStakeAmount
+  ): ContractStakeAmount {
+    return {
+      staked: this.mapStakeAmount(amount.staked),
+      stakedFuture: amount.stakedFuture.isSome
+        ? this.mapStakeAmount(amount.stakedFuture.unwrap())
+        : undefined,
     };
   }
 

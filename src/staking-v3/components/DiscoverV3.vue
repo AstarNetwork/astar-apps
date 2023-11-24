@@ -3,6 +3,7 @@
     <!-- Todo: Delete -->
     <staking-home />
     <feature-dapp />
+    <leaderboard />
     <ad />
     <dapps />
   </div>
@@ -14,6 +15,7 @@ import StakingHome from './StakingHome.vue';
 import FeatureDapp from './FeatureDapp.vue';
 import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
+import Leaderboard from './leaderboard/Leaderboard.vue';
 
 export default defineComponent({
   components: {
@@ -21,6 +23,7 @@ export default defineComponent({
     FeatureDapp,
     Ad,
     Dapps,
+    Leaderboard,
   },
   setup() {
     return {};

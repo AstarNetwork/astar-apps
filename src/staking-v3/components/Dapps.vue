@@ -18,7 +18,9 @@
             <span class="text--label">2,432</span>
           </div>
           <div>
-            <span class="text--label">1.078M ASTR</span>
+            <span class="text--label">
+              <format-balance :balance="dapp.chain.totalStake?.toString() ?? ''" />
+            </span>
           </div>
         </div>
       </div>
@@ -29,8 +31,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useDappStaking, useDapps } from '../hooks';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
 
 export default defineComponent({
+  components: {
+    FormatBalance,
+  },
   setup() {
     const { registeredDapps } = useDapps();
     const { getDappTier } = useDappStaking();

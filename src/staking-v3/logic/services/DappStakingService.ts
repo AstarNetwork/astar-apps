@@ -313,8 +313,7 @@ export class DappStakingService implements IDappStakingService {
     // Find the first era to claim rewards from. If we are at the first period, then we need to
     // start from era 2 since era 1 was voting.
     const firstEra =
-      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ??
-      constants.standardErasPerVotingPeriod;
+      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0;
     const lastEra = protocolState.era - 1;
 
     if (firstEra <= lastEra) {
@@ -398,11 +397,11 @@ export class DappStakingService implements IDappStakingService {
     const result = new Map<number, StakeAmount | undefined>();
     await Promise.all(
       dappIds.map(async (dappId) => {
-        const stakeAmount = await this.dappStakingRepository.getContractStake(dappId);
-        result.set(
-          dappId,
-          protocolState.periodInfo.number === stakeAmount.period ? stakeAmount : undefined
-        );
+        const contractStake = await this.dappStakingRepository.getContractStake(dappId);
+        const stake = contractStake.stakedFuture
+          ? contractStake.stakedFuture
+          : contractStake.staked;
+        result.set(dappId, protocolState.periodInfo.number === stake.period ? stake : undefined);
       })
     );
 
