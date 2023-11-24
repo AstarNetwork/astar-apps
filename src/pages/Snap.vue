@@ -92,7 +92,7 @@ import { wait } from '@astar-network/astar-sdk-core';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
-import { initiatePolkdatodSnap, SnapInitializationResponse } from 'src/modules/snap';
+import { initiatePolkadotSnap, SnapInitializationResponse } from 'src/modules/snap';
 
 export default defineComponent({
   name: 'Snap',
@@ -120,7 +120,7 @@ export default defineComponent({
     const isSnapInstalled = ref(false);
 
     onMounted(async () => {
-      const snap = await initiatePolkdatodSnap();
+      const snap = await initiatePolkadotSnap();
       isSnapInstalled.value = snap.isSnapInstalled;
     });
 

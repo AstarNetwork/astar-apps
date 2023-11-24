@@ -83,7 +83,7 @@ export interface SnapInitializationResponse {
   snap?: MetamaskPolkadotSnap;
 }
 
-export async function initiatePolkdatodSnap(): Promise<SnapInitializationResponse> {
+export async function initiatePolkadotSnap(): Promise<SnapInitializationResponse> {
   try {
     console.info('Attempting to connect to snap...');
     // Todo: update network params

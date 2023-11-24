@@ -168,7 +168,7 @@ import {
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
-import { initiatePolkdatodSnap } from 'src/modules/snap';
+import { initiatePolkadotSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, ref } from 'vue';
@@ -271,7 +271,7 @@ export default defineComponent({
       const provider = get(window, supportEvmWalletObj[SupportWallet.MetaMask].ethExtension);
       const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
       if (!address) return;
-      const isSnapInstalled = await initiatePolkdatodSnap();
+      const isSnapInstalled = await initiatePolkadotSnap();
       if (isSnapInstalled) {
         await initPolkadotSnap();
         useExtensions($api!!, store);
