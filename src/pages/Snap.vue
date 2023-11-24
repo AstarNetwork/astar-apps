@@ -97,6 +97,7 @@ import { wait } from '@astar-network/astar-sdk-core';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkadotSnap } from 'src/modules/snap';
+import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 export default defineComponent({
   name: 'Snap',
@@ -124,6 +125,7 @@ export default defineComponent({
       isSnapInstalled.value = snap.isSnapInstalled;
 
       if (isSnapInstalled.value) {
+        await initPolkadotSnap();
         useExtensions($api!!, store);
         const extensions = await getInjectedExtensions(true);
         const isExtensionsUpdated = extensions.some((it) => it.name === 'Snap');
