@@ -42,10 +42,10 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.107":
-  version "0.0.107"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.107.tgz#22cac6ac2c5085994e90993108b8f80d9e980467"
-  integrity sha512-QE4bgAPdgr92/wexi+W9FbutWavC0K4WYwLNPwJFqrz5YCRZIt4uPU/0mXnf+zJ7MyURMbzoZxdSkTau8TaKNw==
+"@astar-network/astar-ui@^0.0.136":
+  version "0.0.136"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.136.tgz#cbf468d5d099ced53ed6d5a4cab23af5390315d9"
+  integrity sha512-Kuizskf6J738hejB7Y7Az6n2PSUVSbpjwrWQ0m9Uh0Rtpmj5eb/MVXT9vyl5zZP3jxOchZcrbjhsMW8VrzARwA==
   dependencies:
     "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"
