@@ -60,8 +60,7 @@ test.describe('account panel', () => {
     context: BrowserContext;
   }) => {
     // transfer test (from native to evm) :: need to testing
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     const faucetAmount = BigInt(200);
     await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
     await page.getByPlaceholder('0.0').fill(faucetAmount.toString());

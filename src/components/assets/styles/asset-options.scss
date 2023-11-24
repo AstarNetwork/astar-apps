@@ -72,7 +72,12 @@
   transition: all 0.3s ease 0s;
   cursor: pointer;
   border-radius: 100%;
-  padding: 4px;
+  width: 40px;
+  height: 40px;
+  .icon--dot {
+    width: 22px;
+    height: 22px;
+  }
   &:hover {
     transition: all 0.3s ease 0s;
     background-color: $astar-blue;
