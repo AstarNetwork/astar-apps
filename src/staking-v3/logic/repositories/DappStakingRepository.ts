@@ -345,7 +345,6 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     const api = await this.api.getApi();
     const stakerInfos = await api.query.dappStaking.stakerInfo.entries(address);
-
     return this.mapsStakerInfo(stakerInfos);
   }
 
