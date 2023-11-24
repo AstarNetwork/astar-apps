@@ -230,7 +230,7 @@ export default {
     name: 'Astar Snap',
     purpose: 'Install with ease in just three simple steps',
     description:
-      'Astar Snap is a new wallet that generates an Astar Native address within MetaMask. By instalting the Astar Snap, user will have a substrate address and can execute transactions.',
+      'Astar Snap is a new wallet that generates an Astar Native address within MetaMask. By installing Astar Snap, you will obtain a substrate address and be able to sign transactions.',
     documentation: 'Check the documentation',
     pleaseNote: 'Please note',
     pn1: 'Make sure you have MetaMask installed in your browser (if not please check https://metamask.io/)',
@@ -238,8 +238,9 @@ export default {
     pn3: 'Crosschain transfers (XCM) are not recommended until the other chain supports Astar Snap',
     install1: 'Step 1: Install Astar Snap in your MetaMask extension',
     alreadyInstalled: 'Step 1: Already installed!',
-    install2: 'Step 2: Go the Portal Asset page.',
-    install3: 'Step 3: There is no step 3!',
+    install2: 'Step 2: Set the wallet to Astar Snap',
+    install3: 'Step 3: Go the Portal Asset page.',
+    install4: 'Step 3: There is no step 3!',
   },
   installWallet: {
     getWallet: 'Haven’t got {value} yet?',

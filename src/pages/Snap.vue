@@ -55,28 +55,31 @@
           {{ isSnapInstalled ? $t('snap.alreadyInstalled') : $t('snap.install1') }}
         </p>
       </button>
+      <button
+        class="card"
+        :style="buttonStyles[1]"
+        :disabled="!isSnapInstalled"
+        @mouseover="buttonStyles[1].backgroundColor = 'blue'"
+        @mouseleave="buttonStyles[1].backgroundColor = 'white'"
+        @click="setWallet()"
+      >
+        <p>
+          {{ $t('snap.install2') }}
+        </p>
+      </button>
       <router-link :to="Path.Assets">
         <button
           class="card"
-          :style="buttonStyles[1]"
-          @mouseover="buttonStyles[1].backgroundColor = 'blue'"
-          @mouseleave="buttonStyles[1].backgroundColor = 'white'"
+          :style="buttonStyles[2]"
+          :disabled="!isSnapInstalled || !isWalletSet"
+          @mouseover="buttonStyles[2].backgroundColor = 'blue'"
+          @mouseleave="buttonStyles[2].backgroundColor = 'white'"
         >
           <p>
-            {{ $t('snap.install2') }}
+            {{ $t('snap.install3') }}
           </p>
         </button>
       </router-link>
-      <button
-        class="card"
-        :style="buttonStyles[2]"
-        @mouseover="buttonStyles[2].backgroundColor = 'blue'"
-        @mouseleave="buttonStyles[2].backgroundColor = 'white'"
-      >
-        <p>
-          {{ $t('snap.install3') }}
-        </p>
-      </button>
     </div>
   </div>
 </template>
@@ -88,11 +91,12 @@ import { computed, defineComponent, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Path } from 'src/router';
 import { $api } from 'src/boot/api';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { wait } from '@astar-network/astar-sdk-core';
-import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
-import { initiatePolkadotSnap, SnapInitializationResponse } from 'src/modules/snap';
+import { initiatePolkadotSnap } from 'src/modules/snap';
 
 export default defineComponent({
   name: 'Snap',
@@ -112,29 +116,40 @@ export default defineComponent({
       { backgroundColor: 'white' },
     ]);
 
-    // let isSnapInstalled: SnapInitializationResponse = {
-    //   isSnapInstalled: false,
-    //   snap: undefined,
-    // };
-
     const isSnapInstalled = ref(false);
-
-    onMounted(async () => {
-      const snap = await initiatePolkadotSnap();
-      isSnapInstalled.value = snap.isSnapInstalled;
-    });
+    let address = '';
 
     const handleMetaMaskSnap = async (): Promise<void> => {
+      const snap = await initiatePolkadotSnap();
+      isSnapInstalled.value = snap.isSnapInstalled;
+
       if (isSnapInstalled.value) {
-        console.log('Snap is installed', isSnapInstalled.value);
-        // await initPolkadotSnap();
         useExtensions($api!!, store);
         const extensions = await getInjectedExtensions(true);
         const isExtensionsUpdated = extensions.some((it) => it.name === 'Snap');
         // Memo: Sync the metamask extension for users who visit our portal first time
         !isExtensionsUpdated && (await wait(3000));
+        const accounts = await web3Accounts({ ss58Format: 5 });
+        address = accounts.find((account) => account.meta.source === 'Snap')?.address || '';
+        console.log('accounts are', accounts);
+        console.log('snap address is', address);
       }
     };
+
+    const setWallet = async () => {
+      if (isSnapInstalled.value) {
+        store.commit('general/setCurrentWallet', 'Snap');
+
+        localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, 'Snap');
+        localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, address ?? '');
+      }
+    };
+
+    const isWalletSet = computed<boolean>(() => {
+      const selectedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      const selectAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+      return selectedWallet === 'Snap' && selectAddress === address;
+    });
 
     return {
       Path,
@@ -143,6 +158,8 @@ export default defineComponent({
       bg_img,
       buttonStyles,
       isSnapInstalled,
+      isWalletSet,
+      setWallet,
       handleMetaMaskSnap,
     };
   },
