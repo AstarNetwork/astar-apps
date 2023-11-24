@@ -252,7 +252,11 @@ export default defineComponent({
           (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
-          const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          const registeredDapp = await service.getDapp(
+            data.address,
+            currentNetworkName.value,
+            true
+          );
           isNewDapp.value = !registeredDapp;
           if (registeredDapp && !registeredDapp.tags) {
             registeredDapp.tags = [];
