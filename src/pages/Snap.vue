@@ -58,13 +58,13 @@
       <button
         class="card"
         :style="buttonStyles[1]"
-        :disabled="!isSnapInstalled"
+        :disabled="!isSnapInstalled || isWalletSet"
         @mouseover="buttonStyles[1].backgroundColor = 'blue'"
         @mouseleave="buttonStyles[1].backgroundColor = 'white'"
         @click="setWallet()"
       >
         <p>
-          {{ $t('snap.install2') }}
+          {{ isWalletSet ? $t('snap.alreadySet') : $t('snap.install2') }}
         </p>
       </button>
       <router-link :to="Path.Assets">
@@ -118,7 +118,7 @@ export default defineComponent({
     ]);
 
     const isSnapInstalled = ref(false);
-    let address = '';
+    const address = ref('');
 
     const handleMetaMaskSnap = async (): Promise<void> => {
       const snap = await initiatePolkadotSnap();
@@ -132,25 +132,31 @@ export default defineComponent({
         // Memo: Sync the metamask extension for users who visit our portal first time
         !isExtensionsUpdated && (await wait(3000));
         const accounts = await web3Accounts({ ss58Format: 5 });
-        address = accounts.find((account) => account.meta.source === 'Snap')?.address || '';
+        address.value = accounts.find((account) => account.meta.source === 'Snap')?.address || '';
         console.log('accounts are', accounts);
-        console.log('snap address is', address);
+        console.log('snap address is', address.value);
       }
     };
 
-    const setWallet = async () => {
+    const setWallet = () => {
       if (isSnapInstalled.value) {
         store.commit('general/setCurrentWallet', 'Snap');
+        console.log('snap address is', address.value);
 
         localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, 'Snap');
-        localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, address ?? '');
+        localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, address.value ?? '');
+
+        console.log('isWalletSet', isWalletSet.value);
       }
     };
 
     const isWalletSet = computed<boolean>(() => {
       const selectedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
       const selectAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
-      return selectedWallet === 'Snap' && selectAddress === address;
+      console.log('selected wallet is', selectedWallet);
+      console.log('selected address is', selectAddress);
+      console.log('snap address is', address.value);
+      return selectedWallet === 'Snap' && selectAddress === address.value;
     });
 
     return {
