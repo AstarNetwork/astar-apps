@@ -87,12 +87,12 @@
 <script lang="ts">
 import { usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Path } from 'src/router';
 import { $api } from 'src/boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts } from '@polkadot/extension-dapp';
 import { wait } from '@astar-network/astar-sdk-core';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -118,6 +118,7 @@ export default defineComponent({
     ]);
 
     const isSnapInstalled = ref(false);
+    const isWalletSet = ref(false);
     const address = ref('');
 
     const handleMetaMaskSnap = async (): Promise<void> => {
@@ -146,18 +147,9 @@ export default defineComponent({
         localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, 'Snap');
         localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, address.value ?? '');
 
-        console.log('isWalletSet', isWalletSet.value);
+        isWalletSet.value = true;
       }
     };
-
-    const isWalletSet = computed<boolean>(() => {
-      const selectedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-      const selectAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
-      console.log('selected wallet is', selectedWallet);
-      console.log('selected address is', selectAddress);
-      console.log('snap address is', address.value);
-      return selectedWallet === 'Snap' && selectAddress === address.value;
-    });
 
     return {
       Path,
