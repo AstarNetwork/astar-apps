@@ -108,9 +108,18 @@ export default defineComponent({
     watch(
       [dapps],
       () => {
+        console.log('dapps', dapps.value);
         if (dapps.value.length > 0) {
           getDapp();
         }
+      },
+      { immediate: true }
+    );
+
+    watch(
+      [dapp],
+      () => {
+        console.log('dapp', dapp.value);
       },
       { immediate: true }
     );
