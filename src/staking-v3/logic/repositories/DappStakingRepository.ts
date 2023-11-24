@@ -341,12 +341,14 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   public async getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
+    console.log('getStakerInfo');
     Guard.ThrowIfUndefined(address, 'address');
 
     const api = await this.api.getApi();
     const stakerInfos = await api.query.dappStaking.stakerInfo.entries(address);
-
-    return this.mapsStakerInfo(stakerInfos);
+    const resMap = this.mapsStakerInfo(stakerInfos);
+    console.log('resMap', resMap);
+    return resMap;
   }
 
   //* @inheritdoc

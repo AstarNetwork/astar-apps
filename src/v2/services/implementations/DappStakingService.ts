@@ -135,6 +135,7 @@ export class DappStakingService implements IDappStakingService {
     contractAddresses: string[],
     walletAddress: string
   ): Promise<StakerInfo[]> {
+    console.log('getStakerInfo');
     Guard.ThrowIfUndefined('contractAddresses', contractAddresses);
 
     const stakerInfos = await this.dappStakingRepository.getStakerInfo(
@@ -143,10 +144,13 @@ export class DappStakingService implements IDappStakingService {
     );
     const metadata = await this.metadataRepository.getChainMetadata();
 
-    return stakerInfos.map((x) => {
+    console.log('stakerInfos', stakerInfos);
+    const res = stakerInfos.map((x) => {
       x.totalStakeFormatted = ethers.utils.formatUnits(x.totalStake, metadata.decimals);
       return x;
     });
+    console.log('res', res);
+    return res;
   }
 
   public async getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]> {

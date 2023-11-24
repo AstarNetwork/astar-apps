@@ -38,7 +38,7 @@ export default defineComponent({
     const { getDappTier } = useDappStaking();
     const router = useRouter();
 
-    const goDappPageLink = (address: string | undefined): void => {
+    const goDappPageLink = (address: string): void => {
       const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
       router.push(url);
