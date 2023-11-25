@@ -32,9 +32,13 @@ export function useLeaderboard() {
     leaderBoards.value.set(4, []);
   };
 
-  watch(registeredDapps, () => {
-    calculateLeaderboard();
-  });
+  watch(
+    registeredDapps,
+    () => {
+      calculateLeaderboard();
+    },
+    { immediate: true }
+  );
 
   return { leaderBoards };
 }
