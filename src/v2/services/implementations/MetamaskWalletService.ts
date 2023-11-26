@@ -127,7 +127,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       const [nonce, gasPrice] = await Promise.all([
         web3.eth.getTransactionCount(from),
         // memo, ignore gas station for now.
-        getEvmGas(web3, this.gasPriceProvider.getGas().price),
+        getEvmGas(web3, '0'),
       ]);
 
       const rawTx = {
