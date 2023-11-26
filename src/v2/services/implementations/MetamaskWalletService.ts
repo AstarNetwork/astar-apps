@@ -127,7 +127,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       const [nonce, gasPrice] = await Promise.all([
         web3.eth.getTransactionCount(from),
         // memo, ignore gas station for now.
-        getEvmGas(web3, '0'),
+        getEvmGas(web3, this.gasPriceProvider.getGas().price),
       ]);
 
       const rawTx = {
@@ -138,9 +138,12 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         data,
       };
 
+      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const connectedChainId = await web3.eth.net.getId();
       const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
-      const txParam = isSetGasByWallet ? rawTx : { ...rawTx, gasPrice: web3.utils.toHex(gasPrice) };
+      const txParam = isSetGasByWallet
+        ? rawTx
+        : { ...rawTx, gasPrice: web3.utils.toHex(multipliedGas.toString()) };
       const estimatedGas = await web3.eth.estimateGas(txParam);
       const transactionHash = await web3.eth
         .sendTransaction({ ...txParam, gas: estimatedGas })
