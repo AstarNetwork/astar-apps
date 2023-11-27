@@ -351,6 +351,10 @@ export default {
       community: 'Community',
       wallets: 'Wallets',
       stats: 'Stats',
+      v3: {
+        currentTier: 'Current Tier',
+        totalEarned: 'Total Earned',
+      },
     },
     modals: {
       contractAddress: 'Contract address {address}',
