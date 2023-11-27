@@ -85,6 +85,13 @@ export interface IDappStakingService {
   claimBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
+   * Invokes calls to claim staker bonus rewards calls.
+   * @param senderAddress Address of the request sender.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimStakerAndBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
+
+  /**
    * Batches and invokes multiple calls
    * 1. Claims staker, dApp and bonus rewards if available
    * 2. Locks a given tokens amount

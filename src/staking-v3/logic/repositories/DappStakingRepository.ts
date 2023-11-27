@@ -17,7 +17,6 @@ import {
   ProtocolStateChangedMessage,
   SingularStakingInfo,
   StakeAmount,
-  StakerInfoChangedMessage,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
@@ -321,34 +320,16 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  private stakerInfoUnsubscribe: Function | undefined = undefined;
-  //* @inheritdoc
-  public async startGetStakerInfoSubscription(address: string): Promise<void> {
-    Guard.ThrowIfUndefined(address, 'address');
-    const api = await this.api.getApi();
-
-    if (this.stakerInfoUnsubscribe) {
-      this.stakerInfoUnsubscribe();
-    }
-
-    const unsubscribe = await api.query.dappStaking.stakerInfo.entries(
-      address,
-      (stakers: [StorageKey<AnyTuple>, Codec][]) => {
-        const result = this.mapsStakerInfo(stakers);
-        this.eventAggregator.publish(new StakerInfoChangedMessage(result));
-      }
-    );
-
-    this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
-  }
-
   public async getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
     Guard.ThrowIfUndefined(address, 'address');
 
     const api = await this.api.getApi();
-    const stakerInfos = await api.query.dappStaking.stakerInfo.entries(address);
+    const [stakerInfos, protocolState] = await Promise.all([
+      api.query.dappStaking.stakerInfo.entries(address),
+      this.getProtocolState(),
+    ]);
 
-    return this.mapsStakerInfo(stakerInfos);
+    return this.mapsStakerInfo(stakerInfos, protocolState.periodInfo.number);
   }
 
   //* @inheritdoc
@@ -466,7 +447,8 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   private mapsStakerInfo(
-    stakers: [StorageKey<AnyTuple>, Codec][]
+    stakers: [StorageKey<AnyTuple>, Codec][],
+    currentPeriod: number
   ): Map<string, SingularStakingInfo> {
     const result = new Map<string, SingularStakingInfo>();
     stakers.forEach(([key, value]) => {
@@ -476,7 +458,7 @@ export class DappStakingRepository implements IDappStakingRepository {
         const unwrappedValue = v.unwrap();
         const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
 
-        if (address) {
+        if (address && unwrappedValue.staked.period.toNumber() === currentPeriod) {
           result.set(address, <SingularStakingInfo>{
             loyalStaker: unwrappedValue.loyalStaker.isTrue,
             staked: this.mapStakeAmount(unwrappedValue.staked),

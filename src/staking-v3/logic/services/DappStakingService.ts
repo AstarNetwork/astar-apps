@@ -202,6 +202,22 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  public async claimStakerAndBonusRewards(
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
+    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
+
+    const batch = await this.dappStakingRepository.batchAllCalls([
+      ...(claimStakerCalls ? claimStakerCalls : []),
+      ...(claimBonusCalls ? claimBonusCalls : []),
+    ]);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
   private async getClaimBonusRewardsCalls(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {

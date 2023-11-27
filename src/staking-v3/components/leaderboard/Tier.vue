@@ -6,7 +6,9 @@
         <div>{{ index + 1 }}</div>
         <div><img :src="dapp.basic.iconUrl" :alt="dapp.basic.name" class="dapp--image" /></div>
         <div>{{ dapp.basic.name }}</div>
-        <div class="amount"><format-balance :balance="dapp.chain.totalStake ?? 0" /></div>
+        <div class="amount">
+          <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+        </div>
       </div>
     </div>
     <div v-for="index in itemsToShow - slicedDapps.length" :key="index">
@@ -23,11 +25,11 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { CombinedDappInfo } from '../../logic';
-import FormatBalance from 'src/components/common/FormatBalance.vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
   components: {
-    FormatBalance,
+    TokenBalanceNative,
   },
   props: {
     tier: {

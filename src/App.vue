@@ -67,7 +67,6 @@ import {
   AccountLedgerChangedMessage,
   IDappStakingRepository,
   ProtocolStateChangedMessage,
-  StakerInfoChangedMessage,
 } from './staking-v3';
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 
@@ -86,7 +85,8 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
-    const { getAllRewards, getCurrentEraInfo, getDappTiers } = useDappStaking();
+    const { getAllRewards, getCurrentEraInfo, getDappTiers, fetchStakerInfoToStore } =
+      useDappStaking();
     const { fetchStakeAmountsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
@@ -148,6 +148,7 @@ export default defineComponent({
         getCurrentEraInfo(),
         getDappTiers(message.state.era - 1),
         fetchStakeAmountsToStore(),
+        fetchStakerInfoToStore(),
       ]);
     });
 
@@ -155,11 +156,6 @@ export default defineComponent({
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
       console.log('ledger', message.ledger);
-    });
-
-    eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {
-      const message = m as StakerInfoChangedMessage;
-      store.commit('stakingV3/setStakerInfo', message.stakerInfo, { root: true });
     });
 
     // **** end dApp staking v3

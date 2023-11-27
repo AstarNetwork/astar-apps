@@ -19,7 +19,7 @@
           </div>
           <div>
             <span class="text--label">
-              <format-balance :balance="dapp.chain.totalStake?.toString() ?? ''" />
+              <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
             </span>
           </div>
         </div>
@@ -31,11 +31,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useDappStaking, useDapps } from '../hooks';
-import FormatBalance from 'src/components/common/FormatBalance.vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
   components: {
-    FormatBalance,
+    TokenBalanceNative,
   },
   setup() {
     const { registeredDapps } = useDapps();

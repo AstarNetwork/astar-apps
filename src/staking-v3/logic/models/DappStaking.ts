@@ -34,13 +34,6 @@ export class AccountLedgerChangedMessage {
 }
 
 /**
- * Used to notify subscribers about staker info changes.
- */
-export class StakerInfoChangedMessage {
-  constructor(public stakerInfo: Map<string, SingularStakingInfo>) {}
-}
-
-/**
  * Contains info required to stake to a dApp.
  */
 export interface DappStakeInfo {

@@ -36,8 +36,8 @@
       </kpi-card>
     </div>
     <div v-if="!isVotingPeriod" class="row--start-staking">
-      <button class="button--staking">
-        <span class="text--start-staking" @click="navigateToVote()">Start Staking Now</span>
+      <button class="button--staking" @click="navigateToVote()">
+        <span class="text--start-staking">Start Staking Now</span>
       </button>
     </div>
   </div>

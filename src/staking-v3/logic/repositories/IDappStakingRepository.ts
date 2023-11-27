@@ -135,13 +135,6 @@ export interface IDappStakingRepository {
   getClaimBonusRewardsCalls(contractAddresses: string[]): Promise<ExtrinsicPayload[]>;
 
   /**
-   * Starts subscription to a staker info changes.
-   * @param address Staker address to get info for.
-   * @returns A promise that resolves to a map of staker address and staker info.
-   */
-  startGetStakerInfoSubscription(address: string): Promise<void>;
-
-  /**
    * Gets staker info for the given address.
    * @param address Address to get staker info for.
    * @returns A promise that resolves to an array of staker info.

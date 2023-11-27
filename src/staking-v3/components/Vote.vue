@@ -50,15 +50,15 @@
       <b>{{ $t('stakingV3.availableToVote') }}</b>
       <div class="note--row">
         <div>{{ $t('stakingV3.totalTransferable') }}</div>
-        <div><format-balance :balance="useableBalance" /></div>
+        <div><token-balance-native :balance="useableBalance" /></div>
       </div>
       <div class="note--row">
         <div>{{ $t('stakingV3.lockedForVoting') }}</div>
-        <div><format-balance :balance="locked.toString()" /></div>
+        <div><token-balance-native :balance="locked.toString()" /></div>
       </div>
       <div class="note--row">
         <div>{{ $t('stakingV3.alreadyVoted') }}</div>
-        <div><format-balance :balance="totalStake.toString()" /></div>
+        <div><token-balance-native :balance="totalStake.toString()" /></div>
       </div>
       <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
         <div>
@@ -69,7 +69,7 @@
           }}</b>
         </div>
         <div>
-          <b><format-balance :balance="abs(remainLockedToken).toString()" /></b>
+          <b><token-balance-native :balance="abs(remainLockedToken).toString()" /></b>
         </div>
       </div>
       <div v-if="remainLockedToken !== BigInt(0)" class="note warning">
@@ -84,11 +84,11 @@
       <b>{{ $t('stakingV3.rewardsWillBeClaimed') }}</b>
       <div class="note--row">
         <div>{{ $t('stakingV3.basicRewards') }}</div>
-        <div><format-balance :balance="rewards?.staker.toString() ?? ''" /></div>
+        <div><token-balance-native :balance="rewards?.staker.toString() ?? ''" /></div>
       </div>
       <div class="note--row">
         <div>{{ $t('stakingV3.bonusRewards') }}</div>
-        <div><format-balance :balance="rewards?.bonus.toString() ?? ''" /></div>
+        <div><token-balance-native :balance="rewards?.bonus.toString() ?? ''" /></div>
       </div>
     </div>
     <div class="wrapper--button">
@@ -114,7 +114,7 @@ import { useDappStaking, useDapps } from '../hooks';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { DappSelector, Dapp } from './dapp-selector';
 import Amount from './Amount.vue';
-import FormatBalance from 'src/components/common/FormatBalance.vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
 import { abs } from 'src/v2/common';
@@ -128,7 +128,7 @@ export default defineComponent({
   components: {
     DappSelector,
     Amount,
-    FormatBalance,
+    TokenBalanceNative,
     ModalSelectDapp,
   },
   setup() {

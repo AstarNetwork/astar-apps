@@ -13,6 +13,7 @@ import {
   PeriodType,
   ProtocolState,
   Rewards,
+  SingularStakingInfo,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
@@ -73,6 +74,9 @@ export function useDappStaking() {
 
     return tiers;
   });
+  const stakerInfo = computed<Map<string, SingularStakingInfo>>(
+    () => store.getters['stakingV3/getStakeInfo']
+  );
 
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
@@ -149,7 +153,11 @@ export function useDappStaking() {
       Number(ethers.utils.formatEther(lockAmount.toString())),
       stakeInfo
     );
-    await Promise.all([getAllRewards(), fetchStakeAmountsToStore(stakeInfo.map((x) => x.id))]);
+    await Promise.all([
+      getAllRewards(),
+      fetchStakerInfoToStore(),
+      fetchStakeAmountsToStore(stakeInfo.map((x) => x.id)),
+    ]);
   };
 
   const claimBonusRewards = async (): Promise<void> => {
@@ -170,6 +178,14 @@ export function useDappStaking() {
     } else {
       throw 'No dapp found';
     }
+  };
+
+  const claimStakerAndBonusRewards = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.claimStakerAndBonusRewards(currentAccount.value, 'success');
+    const staker = await stakingService.getStakerRewards(currentAccount.value);
+    const bonus = await stakingService.getBonusRewards(currentAccount.value);
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
   };
 
   const getAllRewards = async (): Promise<void> => {
@@ -289,6 +305,13 @@ export function useDappStaking() {
     return tierId !== undefined ? tierId + 1 : undefined;
   };
 
+  const fetchStakerInfoToStore = async (): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const stakerInfo = await stakingRepo.getStakerInfo(currentAccount.value);
+
+    store.commit('stakingV3/setStakerInfo', stakerInfo, { root: true });
+  };
+
   watch(
     currentNetworkIdx,
     async () => {
@@ -314,6 +337,7 @@ export function useDappStaking() {
     currentEraInfo,
     dAppTiers,
     isVotingPeriod,
+    stakerInfo,
     stake,
     unstake,
     claimStakerRewards,
@@ -321,11 +345,13 @@ export function useDappStaking() {
     canUnStake,
     claimDappRewards,
     claimBonusRewards,
+    claimStakerAndBonusRewards,
     getAllRewards,
     fetchConstantsToStore,
     claimLockAndStake,
     getCurrentEraInfo,
     getDappTiers,
     getDappTier,
+    fetchStakerInfoToStore,
   };
 }
