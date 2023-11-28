@@ -21,7 +21,7 @@ export default defineComponent({
       required: true,
     },
     amount: {
-      type: [BigInt, undefined],
+      type: Object,
       required: true,
     },
   },

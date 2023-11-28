@@ -14,5 +14,11 @@ export function useDappStakingNavigation() {
     router.push(base);
   };
 
-  return { navigateToVote, navigateToHome };
+  const navigateDappPage = (address: string): void => {
+    const base = networkParam + Path.DappStaking + Path.Dapp;
+    const url = `${base}?dapp=${address?.toLowerCase()}`;
+    router.push(url);
+  };
+
+  return { navigateToVote, navigateToHome, navigateDappPage };
 }
