@@ -65,13 +65,15 @@
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
             </button>
-            <a :href="blockscout + dapp.dapp.address" target="_blank" rel="noopener noreferrer">
+            <a :href="explorerUrl" target="_blank" rel="noopener noreferrer">
               <button class="box--share btn--primary">
                 <div class="icon--primary">
                   <astar-icon-external-link />
                 </div>
                 <q-tooltip>
-                  <span class="text--tooltip">{{ $t('blockscout') }}</span>
+                  <span class="text--tooltip">
+                    {{ $t(dapp.dapp.address.startsWith('0x') ? 'blockscout' : 'subscan') }}
+                  </span>
                 </q-tooltip>
               </button>
             </a>
@@ -223,9 +225,14 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const { t } = useI18n();
-    const blockscout = computed<string>(
-      () => `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`
-    );
+
+    const explorerUrl = computed<string>(() => {
+      const address = props.dapp.dapp.address;
+      const blockscout = `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`;
+      const subscan = `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`;
+      return address.startsWith('0x') ? blockscout + address : subscan + address;
+    });
+
     const copyAddress = (address: string): void => {
       copy(address);
       store.dispatch('general/showAlertMsg', {
@@ -263,7 +270,7 @@ export default defineComponent({
       getShortenAddress,
       copyAddress,
       goLink,
-      blockscout,
+      explorerUrl,
       communities,
       virtualMachineTags,
       CommunityType,
