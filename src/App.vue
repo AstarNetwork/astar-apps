@@ -148,7 +148,6 @@ export default defineComponent({
         getCurrentEraInfo(),
         getDappTiers(message.state.era - 1),
         fetchStakeAmountsToStore(),
-        fetchStakerInfoToStore(),
       ]);
     });
 
@@ -170,10 +169,8 @@ export default defineComponent({
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
           .startAccountLedgerSubscription(currentAccount.value);
-
-        container
-          .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
-          .startGetStakerInfoSubscription(currentAccount.value);
+        fetchStakerInfoToStore();
+        getAllRewards();
 
         previousAddress = currentAccount.value;
       }

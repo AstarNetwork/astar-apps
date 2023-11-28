@@ -297,6 +297,13 @@ export class DappStakingService implements IDappStakingService {
     return result;
   }
 
+  public async claimUnlockedTokens(senderAddress: string): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
+    await this.signCall(call, senderAddress, 'success');
+  }
+
   private async getDappRewardsAndErasToClaim(
     contractAddress: string
   ): Promise<{ rewards: bigint; erasToClaim: number[] }> {

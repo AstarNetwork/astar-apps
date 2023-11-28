@@ -1,4 +1,7 @@
-<!-- Idea behind this component is to be reusable and used through the portal. We can move it to Astar-UI if needed -->
+<!--
+  Idea behind this component is to be reusable and used through the portal.
+  We can move it to Astar-UI if needed.
+-->
 <template>
   <div class="row--tab">
     <div class="row--mode-tab">
@@ -17,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, watch } from 'vue';
 
 export interface TabDefinition {
   title: string;
@@ -45,6 +48,19 @@ export default defineComponent({
         props.tabSelected(index);
       }
     }
+
+    watch(() => props.tabs, () => {
+      // If the selected tab is not visible, select the first visible tab
+      const tab = props.tabs[selectedTabIndex.value];
+      if (!tab.visible) {
+        for (let i = 0; i < props.tabs.length; i++) {
+          if (props.tabs[i].visible) {
+            handleTabSelected(i);
+            break;
+          }
+        }
+      }
+    });
 
     return { selectedTabIndex, handleTabSelected };
   },

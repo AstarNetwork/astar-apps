@@ -384,6 +384,11 @@ export class DappStakingRepository implements IDappStakingRepository {
     return this.mapContractStakeAmount(contractStake);
   }
 
+  public async getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.claimUnlocked();
+  }
+
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),
@@ -467,6 +472,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       }
     });
 
+    console.log('Staker info size: ' + result.size);
     return result;
   }
 }

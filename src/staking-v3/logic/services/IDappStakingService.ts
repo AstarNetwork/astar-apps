@@ -116,4 +116,10 @@ export interface IDappStakingService {
    *         there is no stakes for the dApp in the current period.
    */
   getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>>;
+
+  /**
+   * Claims all fully unlocked tokens.
+   * @param senderAddress Address of the request sender.
+   */
+  claimUnlockedTokens(senderAddress: string): Promise<void>;
 }

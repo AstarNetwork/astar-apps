@@ -729,6 +729,12 @@ export default {
     stakedAmount: 'Staked amount',
     bonusReward: 'Bonus reward',
     manage: 'Manage',
+    add: 'Add',
+    unbond: 'Unbond',
+    index: 'Index',
+    chunk: 'Chunk',
+    unbondingAmount: 'Unbonding amount',
+    withdraw: 'Withdraw',
   },
   bridge: {
     bridge: 'Bridge',

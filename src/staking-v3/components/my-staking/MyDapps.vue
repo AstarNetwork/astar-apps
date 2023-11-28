@@ -10,7 +10,14 @@
       <div>{{ getDappName(key) }}</div>
       <div class="right"><token-balance-native :balance="getStakedAmount(value).toString()" /></div>
       <div class="right">{{ value.loyalStaker ? 'Yes' : 'No' }}</div>
-      <div></div>
+      <div class="buttons">
+        <astar-button :width="97" :height="24" @click="navigateToVote(key)">{{
+          $t('stakingV3.add')
+        }}</astar-button>
+        <astar-button :width="97" :height="24" @click="unstake(key, 100)">{{
+          $t('stakingV3.unbond')
+        }}</astar-button>
+      </div>
     </div>
   </div>
 </template>
@@ -18,7 +25,7 @@
 <script lang="ts">
 import { SingularStakingInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType } from 'vue';
-import { useDapps } from 'src/staking-v3/hooks';
+import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
@@ -33,6 +40,8 @@ export default defineComponent({
   },
   setup() {
     const { registeredDapps } = useDapps();
+    const { navigateToVote } = useDappStakingNavigation();
+    const { unstake } = useDappStaking();
 
     const getDappName = (dappAddress: string): string => {
       const dapp = registeredDapps.value.find((dapp) => dapp.basic.address === dappAddress);
@@ -43,7 +52,7 @@ export default defineComponent({
       return stakingInfo.staked.voting + stakingInfo.staked.buildAndEarn;
     };
 
-    return { getDappName, getStakedAmount };
+    return { getDappName, getStakedAmount, navigateToVote, unstake };
   },
 });
 </script>
@@ -74,5 +83,11 @@ export default defineComponent({
 
 .right {
   text-align: right;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  column-gap: 16px;
 }
 </style>

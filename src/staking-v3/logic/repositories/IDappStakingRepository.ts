@@ -186,4 +186,9 @@ export interface IDappStakingRepository {
    * @param dappId Dapp id to get staking info for.
    */
   getContractStake(dappId: number): Promise<ContractStakeAmount>;
+
+  /**
+   * Claims all fully unlocked chunks.
+   */
+  getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload>;
 }

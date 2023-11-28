@@ -133,6 +133,7 @@ export function useDappStaking() {
 
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.unstakeAndUnlock(dappAddress, amount, currentAccount.value, 'success');
+    fetchStakerInfoToStore();
   };
 
   const claimStakerRewards = async (): Promise<void> => {
@@ -186,6 +187,11 @@ export function useDappStaking() {
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
+  };
+
+  const withdraw = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.claimUnlockedTokens(currentAccount.value);
   };
 
   const getAllRewards = async (): Promise<void> => {
@@ -353,5 +359,6 @@ export function useDappStaking() {
     getDappTiers,
     getDappTier,
     fetchStakerInfoToStore,
+    withdraw,
   };
 }
