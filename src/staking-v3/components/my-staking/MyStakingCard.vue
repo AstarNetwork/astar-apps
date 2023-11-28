@@ -2,7 +2,9 @@
   <div class="card">
     <div class="card--title">{{ caption }}</div>
     <div class="card--balance">
-      <div class="card--amount">{{ $n(truncate(ethers.utils.formatEther(amount) ?? '0', 2)) }}</div>
+      <div class="card--amount">
+        {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
+      </div>
       <div class="card--symbol">{{ nativeTokenSymbol }}</div>
     </div>
   </div>

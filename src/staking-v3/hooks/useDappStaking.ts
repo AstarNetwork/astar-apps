@@ -78,6 +78,18 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getStakeInfo']
   );
 
+  const totalUserStake = computed<bigint>(() => {
+    let result = BigInt(0);
+
+    if (ledger.value?.stakedFuture) {
+      return ledger.value.stakedFuture.voting + ledger.value.stakedFuture.buildAndEarn;
+    } else if (ledger.value?.staked) {
+      return ledger.value.staked.voting + ledger.value.staked.buildAndEarn;
+    }
+
+    return result;
+  });
+
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
   const hasBonusRewards = computed<boolean>(() => !!rewards.value?.bonus);
@@ -353,6 +365,7 @@ export function useDappStaking() {
     dAppTiers,
     isVotingPeriod,
     stakerInfo,
+    totalUserStake,
     stake,
     unstake,
     claimStakerRewards,
