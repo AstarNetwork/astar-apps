@@ -137,9 +137,14 @@ export interface IDappStakingRepository {
   /**
    * Gets staker info for the given address.
    * @param address Address to get staker info for.
+   * @param includePreviousPeriods Indicates whether to include previous periods info.
+   *  Previous period info is needed for bonus rewards calculation.
    * @returns A promise that resolves to an array of staker info.
    */
-  getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>>;
+  getStakerInfo(
+    address: string,
+    includePreviousPeriods: boolean
+  ): Promise<Map<string, SingularStakingInfo>>;
 
   /**
    * Gets period end information (last era, bonus rewards, total stake)

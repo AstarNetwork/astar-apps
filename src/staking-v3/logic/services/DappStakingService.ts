@@ -269,7 +269,7 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<{ rewards: bigint; contractsToClaim: string[] }> {
     let result = { rewards: BigInt(0), contractsToClaim: Array<string>() };
     const [stakerInfo, protocolState, constants] = await Promise.all([
-      this.dappStakingRepository.getStakerInfo(senderAddress),
+      this.dappStakingRepository.getStakerInfo(senderAddress, true),
       this.dappStakingRepository.getProtocolState(),
       this.dappStakingRepository.getConstants(),
     ]);

@@ -321,7 +321,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
+  public async getStakerInfo(
+    address: string,
+    includePreviousPeriods = false
+  ): Promise<Map<string, SingularStakingInfo>> {
     Guard.ThrowIfUndefined(address, 'address');
 
     const api = await this.api.getApi();
@@ -330,7 +333,11 @@ export class DappStakingRepository implements IDappStakingRepository {
       this.getProtocolState(),
     ]);
 
-    return this.mapsStakerInfo(stakerInfos, protocolState.periodInfo.number);
+    return this.mapsStakerInfo(
+      stakerInfos,
+      protocolState.periodInfo.number,
+      includePreviousPeriods
+    );
   }
 
   //* @inheritdoc
@@ -461,7 +468,8 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   private mapsStakerInfo(
     stakers: [StorageKey<AnyTuple>, Codec][],
-    currentPeriod: number
+    currentPeriod: number,
+    includePreviousPeriods: boolean
   ): Map<string, SingularStakingInfo> {
     const result = new Map<string, SingularStakingInfo>();
     stakers.forEach(([key, value]) => {
@@ -471,7 +479,10 @@ export class DappStakingRepository implements IDappStakingRepository {
         const unwrappedValue = v.unwrap();
         const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
 
-        if (address && unwrappedValue.staked.period.toNumber() === currentPeriod) {
+        if (
+          address &&
+          (unwrappedValue.staked.period.toNumber() === currentPeriod || includePreviousPeriods)
+        ) {
           result.set(address, <SingularStakingInfo>{
             loyalStaker: unwrappedValue.loyalStaker.isTrue,
             staked: this.mapStakeAmount(unwrappedValue.staked),

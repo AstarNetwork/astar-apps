@@ -322,7 +322,7 @@ export function useDappStaking() {
     }
 
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const stakerInfo = await stakingRepo.getStakerInfo(currentAccount.value);
+    const stakerInfo = await stakingRepo.getStakerInfo(currentAccount.value, false);
 
     store.commit('stakingV3/setStakerInfo', stakerInfo, { root: true });
   };
