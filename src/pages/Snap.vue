@@ -1,9 +1,6 @@
 <template>
-  <div v-if="isReady" class="extra-wrapper">
-    <div
-      class="container--main"
-      :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
-    >
+  <div v-if="isReady" class="">
+    <div class="container--main">
       <div class="wrapper--title">
         <div class="txt--title animate__animated animate__zoomInRight">
           {{ $t('snap.name') }}
@@ -25,7 +22,8 @@
                 {{ $t('snap.documentation') }}
               </a>
             </p>
-            <h3>{{ $t('snap.pleaseNote') }}:</h3>
+            <br />
+            <b>{{ $t('snap.pleaseNote') }}:</b>
             <ul>
               <li>
                 {{ $t('snap.pn1') }}
@@ -45,49 +43,28 @@
     <div class="cards responsive">
       <button
         class="card"
-        :style="buttonStyles[0]"
-        :disabled="isSnapInstalled"
-        @mouseover="buttonStyles[0].backgroundColor = 'blue'"
-        @mouseleave="buttonStyles[0].backgroundColor = 'white'"
-        @click="handleMetaMaskSnap()"
+        :class="{ 'card-hover': isHovered }"
+        @mouseover="isHovered = true"
+        @mouseleave="isHovered = false"
+        @click="isSnapInstalled ? $router.push(Path.Assets) : handleMetaMaskSnap()"
       >
-        <p>
-          {{ isSnapInstalled ? $t('snap.alreadyInstalled') : $t('snap.install1') }}
-        </p>
+        <div class="card__logo">
+          <img :src="icon_img.metamask" width="30" />
+        </div>
+        <div v-if="!isLoading" class="card__title">
+          {{ isSnapInstalled ? $t('snap.gotoAssets') : $t('snap.install') }}
+        </div>
+        <astar-spinner v-else />
       </button>
-      <button
-        class="card"
-        :style="buttonStyles[1]"
-        :disabled="!isSnapInstalled || isWalletSet"
-        @mouseover="buttonStyles[1].backgroundColor = 'blue'"
-        @mouseleave="buttonStyles[1].backgroundColor = 'white'"
-        @click="setWallet()"
-      >
-        <p>
-          {{ isWalletSet ? $t('snap.alreadySet') : $t('snap.install2') }}
-        </p>
-      </button>
-      <router-link :to="Path.Assets">
-        <button
-          class="card"
-          :style="buttonStyles[2]"
-          :disabled="!isSnapInstalled || !isWalletSet"
-          @mouseover="buttonStyles[2].backgroundColor = 'blue'"
-          @mouseleave="buttonStyles[2].backgroundColor = 'white'"
-        >
-          <p>
-            {{ $t('snap.install3') }}
-          </p>
-        </button>
-      </router-link>
     </div>
   </div>
+  <astar-spinner v-else />
 </template>
 
 <script lang="ts">
 import { usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Path } from 'src/router';
 import { $api } from 'src/boot/api';
@@ -105,37 +82,32 @@ export default defineComponent({
     const store = useStore();
     const { isReady } = usePageReady();
     const { t } = useI18n();
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
-    const bg_img = {
-      light: require('/src/assets/img/dapps_staking_bg_light.webp'),
-      dark: require('/src/assets/img/dapps_staking_bg_dark.webp'),
-    };
 
-    const buttonStyles = ref([
-      { backgroundColor: 'white' },
-      { backgroundColor: 'white' },
-      { backgroundColor: 'white' },
-    ]);
-
+    const isHovered = ref(false);
     const isSnapInstalled = ref(false);
     const isWalletSet = ref(false);
+    const isLoading = ref(false);
     const address = ref('');
+
+    const icon_img = {
+      metamask: require('/src/assets/img/metamask.png'),
+    };
 
     const handleMetaMaskSnap = async (): Promise<void> => {
       const snap = await initiatePolkadotSnap();
       isSnapInstalled.value = snap.isSnapInstalled;
 
       if (isSnapInstalled.value) {
+        isLoading.value = true;
         await initPolkadotSnap();
         useExtensions($api!!, store);
         const extensions = await getInjectedExtensions(true);
         const isExtensionsUpdated = extensions.some((it) => it.name === 'Snap');
-        // Memo: Sync the metamask extension for users who visit our portal first time
         !isExtensionsUpdated && (await wait(3000));
         const accounts = await web3Accounts({ ss58Format: 5 });
         address.value = accounts.find((account) => account.meta.source === 'Snap')?.address || '';
-        console.log('accounts are', accounts);
-        console.log('snap address is', address.value);
+        setWallet();
+        isLoading.value = false;
       }
     };
 
@@ -153,10 +125,10 @@ export default defineComponent({
 
     return {
       Path,
+      icon_img,
       isReady,
-      isDarkTheme,
-      bg_img,
-      buttonStyles,
+      isHovered,
+      isLoading,
       isSnapInstalled,
       isWalletSet,
       setWallet,
@@ -169,10 +141,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/components/dapp-staking/my-staking/styles/top-metric.scss';
 @import 'src/components/dapp-staking/my-staking/styles/my-staking.scss';
-.extra-wrapper {
-  max-width: $container-max-width;
-  margin: 0 auto;
-}
+
 .container--main {
   width: 100%;
   padding: 0px 0px 24px 0px;
@@ -190,31 +159,29 @@ export default defineComponent({
   }
 }
 
-.divider {
-  border-top: 1px solid transparent;
-  border-image: linear-gradient(
-    121.48deg,
-    #e6007a -5.77%,
-    #703ac2 13.57%,
-    #0070eb 34.18%,
-    #0297fb 58.08%,
-    #0ae2ff 74.93%
-  );
-  border-image-slice: 1;
-  margin-top: 80px;
-  margin-bottom: 24px;
+.card {
+  position: relative;
+  padding: 20px;
+  min-height: 200px;
 }
 
-.container--divider {
-  padding: 0 16px;
-  @media (min-width: $lg) {
-    padding: 0;
-  }
+.card__logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
-.body--dark {
-  .divider {
-    border-color: $gray-5;
-  }
+.card__title {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.card-hover {
+  background-color: $astar-blue;
 }
 </style>
