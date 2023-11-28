@@ -18,6 +18,13 @@
           @click="withdraw"
           >{{ $t('stakingV3.withdraw') }}</astar-button
         >
+        <astar-button
+          :disabled="chunk.remainingBlocks <= 0"
+          :width="97"
+          :height="24"
+          @click="relock"
+          >{{ $t('stakingV3.relock') }}</astar-button
+        >
       </div>
     </div>
   </div>
@@ -35,7 +42,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { ledger, withdraw } = useDappStaking();
+    const { ledger, withdraw, relock } = useDappStaking();
     const chunks = computed(
       () =>
         ledger.value?.unlocking.map((chunk) => {
@@ -48,7 +55,7 @@ export default defineComponent({
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
-    return { chunks, withdraw };
+    return { chunks, withdraw, relock };
   },
 });
 </script>

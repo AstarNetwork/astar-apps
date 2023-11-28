@@ -297,10 +297,19 @@ export class DappStakingService implements IDappStakingService {
     return result;
   }
 
+  // @inheritdoc
   public async claimUnlockedTokens(senderAddress: string): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
+    await this.signCall(call, senderAddress, 'success');
+  }
+
+  // @inheritdoc
+  public async relockUnlockingTokens(senderAddress: string): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();
     await this.signCall(call, senderAddress, 'success');
   }
 

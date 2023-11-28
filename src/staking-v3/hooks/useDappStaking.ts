@@ -194,6 +194,11 @@ export function useDappStaking() {
     await stakingService.claimUnlockedTokens(currentAccount.value);
   };
 
+  const relock = async (): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.relockUnlockingTokens(currentAccount.value);
+  };
+
   const getAllRewards = async (): Promise<void> => {
     const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const ownedContractAddress = getOwnedDappAddress();
@@ -360,5 +365,6 @@ export function useDappStaking() {
     getDappTier,
     fetchStakerInfoToStore,
     withdraw,
+    relock,
   };
 }

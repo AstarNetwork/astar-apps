@@ -188,7 +188,12 @@ export interface IDappStakingRepository {
   getContractStake(dappId: number): Promise<ContractStakeAmount>;
 
   /**
-   * Claims all fully unlocked chunks.
+   * Gets a call to claim all fully unlocked chunks.
    */
   getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets a call to relock all unbonding chunks.
+   */
+  getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload>;
 }

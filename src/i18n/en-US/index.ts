@@ -735,6 +735,7 @@ export default {
     chunk: 'Chunk',
     unbondingAmount: 'Unbonding amount',
     withdraw: 'Withdraw',
+    relock: 'Re-lock',
   },
   bridge: {
     bridge: 'Bridge',

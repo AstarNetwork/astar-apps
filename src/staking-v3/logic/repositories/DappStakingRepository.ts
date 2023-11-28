@@ -384,9 +384,16 @@ export class DappStakingRepository implements IDappStakingRepository {
     return this.mapContractStakeAmount(contractStake);
   }
 
+  //* @inheritdoc
   public async getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     return api.tx.dappStaking.claimUnlocked();
+  }
+
+  //* @inheritdoc
+  public async getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.relockUnlocking();
   }
 
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
