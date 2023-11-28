@@ -492,6 +492,7 @@ export default {
     reward: 'Reward',
     lockedTokens: 'Locked tokens',
     vesting: 'Vesting',
+    reserved: 'Reserved',
     favorite: 'Favorite',
     addToFavorite: 'Add to favorite',
     removeFromFavorite: 'Remove from favorite',
