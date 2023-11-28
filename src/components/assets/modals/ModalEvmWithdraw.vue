@@ -66,8 +66,8 @@ export default defineComponent({
       useEvmDeposit();
 
     const handleWithdraw = async (): Promise<void> => {
-      await sendTransaction();
       await closeModal();
+      await sendTransaction();
     };
 
     return {

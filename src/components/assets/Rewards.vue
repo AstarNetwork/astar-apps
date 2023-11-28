@@ -80,6 +80,7 @@ export default defineComponent({
 
       if (pendingRewards.value > 0 && canClaimWithoutError.value) {
         await claimAll();
+        await setPendingRewards();
         return;
       }
 
