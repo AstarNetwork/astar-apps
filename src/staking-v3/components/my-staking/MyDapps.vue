@@ -14,23 +14,31 @@
         <astar-button :width="97" :height="24" @click="navigateToVote(key)">{{
           $t('stakingV3.add')
         }}</astar-button>
-        <astar-button :width="97" :height="24" @click="unstake(key, 100)">{{
+        <astar-button :width="97" :height="24" @click="handleUnbonding(key)">{{
           $t('stakingV3.unbond')
         }}</astar-button>
       </div>
     </div>
+    <modal-unbond-dapp
+      v-if="dappToUnbond"
+      :set-is-open="setShowModalUnbond"
+      :show="showModalUnbond"
+      :dapp="dappToUnbond"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { SingularStakingInfo } from 'src/staking-v3/logic';
-import { defineComponent, PropType } from 'vue';
+import { DappBase, SingularStakingInfo } from 'src/staking-v3/logic';
+import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import ModalUnbondDapp from './ModalUnbondDapp.vue';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    ModalUnbondDapp,
   },
   props: {
     stakedDapps: {
@@ -39,20 +47,39 @@ export default defineComponent({
     },
   },
   setup() {
-    const { registeredDapps } = useDapps();
+    const { registeredDapps, getDapp } = useDapps();
     const { navigateToVote } = useDappStakingNavigation();
     const { unstake } = useDappStaking();
 
+    const dappToUnbond = ref<DappBase | undefined>();
+    const showModalUnbond = ref<boolean>(false);
+    const setShowModalUnbond = (isOpen: boolean): void => {
+      showModalUnbond.value = isOpen;
+    };
+
     const getDappName = (dappAddress: string): string => {
-      const dapp = registeredDapps.value.find((dapp) => dapp.basic.address === dappAddress);
-      return dapp?.basic.name ?? '';
+      return getDapp(dappAddress)?.basic.name ?? '';
     };
 
     const getStakedAmount = (stakingInfo: SingularStakingInfo): bigint => {
       return stakingInfo.staked.voting + stakingInfo.staked.buildAndEarn;
     };
 
-    return { getDappName, getStakedAmount, navigateToVote, unstake };
+    const handleUnbonding = (dappAddress: string): void => {
+      dappToUnbond.value = getDapp(dappAddress)?.basic;
+      showModalUnbond.value = true;
+    };
+
+    return {
+      showModalUnbond,
+      dappToUnbond,
+      setShowModalUnbond,
+      getDappName,
+      getStakedAmount,
+      navigateToVote,
+      unstake,
+      handleUnbonding,
+    };
   },
 });
 </script>

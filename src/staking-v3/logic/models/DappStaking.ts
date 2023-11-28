@@ -107,6 +107,7 @@ export interface Constants {
   maxNumberOfContracts: number;
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
+  unlockingPeriod: number;
 }
 
 export interface DAppTierRewards {

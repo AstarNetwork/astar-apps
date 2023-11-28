@@ -148,6 +148,7 @@ export default defineComponent({
         getCurrentEraInfo(),
         getDappTiers(message.state.era - 1),
         fetchStakeAmountsToStore(),
+        fetchStakerInfoToStore(),
       ]);
     });
 

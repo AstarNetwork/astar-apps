@@ -295,6 +295,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       standardErasPerVotingPeriod: (<u32>(
         api.consts.dappStaking.standardErasPerVotingPeriod
       )).toNumber(),
+      unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
     };
   }
 

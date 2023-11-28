@@ -317,6 +317,10 @@ export function useDappStaking() {
   };
 
   const fetchStakerInfoToStore = async (): Promise<void> => {
+    if (!currentAccount.value) {
+      return;
+    }
+
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const stakerInfo = await stakingRepo.getStakerInfo(currentAccount.value);
 

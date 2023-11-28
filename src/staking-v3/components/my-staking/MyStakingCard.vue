@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card--title">{{ caption }}</div>
     <div class="card--balance">
-      <div class="card--amount">{{ ethers.utils.formatEther(amount) }}</div>
+      <div class="card--amount">{{ $n(truncate(ethers.utils.formatEther(amount) ?? '0', 2)) }}</div>
       <div class="card--symbol">{{ nativeTokenSymbol }}</div>
     </div>
   </div>
@@ -12,6 +12,7 @@
 import { defineComponent } from 'vue';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from 'src/hooks';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   props: {
@@ -27,7 +28,7 @@ export default defineComponent({
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    return { nativeTokenSymbol, ethers };
+    return { nativeTokenSymbol, ethers, truncate };
   },
 });
 </script>

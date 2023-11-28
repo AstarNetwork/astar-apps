@@ -73,15 +73,14 @@ export function useDapps() {
     });
   };
 
-  const unstake = async (dappAddress: string, amount: number): Promise<void> => {
-    console.log(`Unstaking ${amount} from ${dappAddress}`);
-  };
+  const getDapp = (dappAddress: string): CombinedDappInfo | undefined =>
+    registeredDapps.value.find((d) => d.chain.address === dappAddress);
 
   return {
     registeredDapps,
     fetchDappsToStore,
     fetchDappToStore,
     fetchStakeAmountsToStore,
-    unstake,
+    getDapp,
   };
 }
