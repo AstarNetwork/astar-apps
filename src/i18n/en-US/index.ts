@@ -497,7 +497,7 @@ export default {
     addToFavorite: 'Add to favorite',
     removeFromFavorite: 'Remove from favorite',
     unifyAccounts: 'Unify accounts',
-    yourEstimatedRewards: 'Your estimated Rewards',
+    yourEstimatedRewards: 'Claim your estimated Rewards',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
