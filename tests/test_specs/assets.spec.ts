@@ -58,11 +58,9 @@ test.describe('account panel', () => {
   });
 
   test('account expander works', async ({ page }) => {
-    await page.locator('.icon--expand').first().click();
-    const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
+    const transferButton = page.getByTestId('transfer-link-button');
     await expect(transferButton).toBeVisible();
-
     await page.locator('.icon--expand').first().click();
-    await expect(transferButton).not.toBeVisible();
+    await expect(page.getByText('Vesting')).toBeVisible();
   });
 });

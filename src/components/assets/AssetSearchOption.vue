@@ -1,27 +1,14 @@
 <template>
   <div class="row--search-option">
-    <div :class="isSearch && 'search--active'">
-      <div class="box--search">
-        <table class="table--search">
-          <tr class="tr--search">
-            <td>
-              <input
-                type="text"
-                placeholder="Search"
-                class="input--search"
-                @input="setSearch"
-                @focus="setIsSearch(true)"
-                @blur="setIsSearch(false)"
-              />
-            </td>
-            <td>
-              <div class="icon--search">
-                <astar-icon-search />
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
+    <div class="box--search">
+      <input
+        type="text"
+        placeholder="Search"
+        class="input--search"
+        @input="setSearch"
+        @focus="setIsSearch(true)"
+        @blur="setIsSearch(false)"
+      />
     </div>
     <asset-options
       :is-import-modal="isImportModal"

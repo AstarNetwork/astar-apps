@@ -1,0 +1,100 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--rewards {
+  background-color: white;
+  border: solid 1px $gray-2;
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  transition: all 0.2s ease;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: 220px;
+  }
+  &::before,
+  &::after {
+    position: absolute;
+    left: -50%;
+    top: 50%;
+    width: 200vw;
+    height: 200vw;
+    content: '';
+    animation: wave linear 16s infinite;
+    z-index: 0;
+    @media (min-width: $sm) {
+      width: 200%;
+      height: 200%;
+    }
+  }
+  &::before {
+    bottom: -156%;
+    border-radius: 50% 50% / 50% 70%;
+    opacity: 0.5;
+    background: linear-gradient(to right, #fee2f1, #dde4ff, #d0faff);
+    animation-delay: 0.4s;
+  }
+  &::after {
+    bottom: -160%;
+    border-radius: 30% 70% / 30% 50%;
+    opacity: 0.5;
+    background: linear-gradient(to right, #d0faff, #dde4ff, #fee2f1);
+  }
+  &:hover{
+    opacity: 0.9;
+  }
+}
+
+@keyframes wave {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.body--dark {
+  .wrapper--rewards {
+    color: $navy-1;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+  }
+}
+
+.container--rewards {
+  text-align: left;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.text--title {
+  line-height: 1.25;
+}
+.body--dark {
+  .text--title {
+    color: $navy-1;
+  }
+}
+
+.value {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  margin-top: 4px;
+}
+
+.text--amount {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.text--symbol {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}

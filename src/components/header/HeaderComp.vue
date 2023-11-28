@@ -1,5 +1,8 @@
 <template>
-  <div class="header" :class="isDecentralized && 'margin--decentralized'">
+  <div
+    class="header"
+    :class="`${isDecentralized && 'margin--decentralized'} header__border-${network}`"
+  >
     <div class="header-left">
       <div v-if="title">{{ title }}</div>
       <div v-else>
@@ -23,6 +26,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    network: {
+      type: Number,
+      default: 0,
+    },
   },
   setup() {
     const isDecentralized = computed<boolean>(() => {
@@ -44,32 +51,56 @@ export default defineComponent({
 }
 
 .header {
-  overflow: hidden;
   display: flex;
   justify-content: space-between;
-  background: #0e101d;
+  background: $navy-1;
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
   height: 4rem;
   padding-left: 16px;
   padding-right: 16px;
-  border-bottom: 1px solid transparent !important;
-  border-image: linear-gradient(
-    121.48deg,
-    #e6007a -5.77%,
-    #703ac2 13.57%,
-    #0070eb 34.18%,
-    #0297fb 58.08%,
-    #0ae2ff 74.93%
-  );
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
   border-image-slice: 1;
-  @media (min-width: $lg) {
-    background: rgba(247, 247, 248, 0.8);
-  }
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;
     height: 6rem;
-    background: #fff;
+  }
+
+  // astar native
+  &.header__border-0 {
+    border-image: linear-gradient(270deg, #e6007a 25%, #ff9dd1 100%);
+    border-image-slice: 1;
+  }
+
+  // shiden
+  &.header__border-1 {
+    border-image: linear-gradient(270deg, #5928b1 25%, #b092ea 100%);
+    border-image-slice: 1;
+  }
+
+  // shibuya
+  &.header__border-2 {
+    border-image: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+    border-image-slice: 1;
+  }
+
+  // zkEVM
+  &.header__border-3 {
+    border-image: linear-gradient(270deg, #703ac2 25%, #226dff 100%);
+    border-image-slice: 1;
+  }
+
+  // zKatana
+  &.header__border-4 {
+    border-image: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
+    border-image-slice: 1;
+  }
+}
+
+.body--dark {
+  .header {
+    border-bottom-width: 1px;
   }
 }
 
@@ -79,7 +110,7 @@ export default defineComponent({
   align-items: center;
   font-weight: 590;
   font-size: 1.625rem;
-  color: $navy-1;
+  color: white;
   padding: 0rem;
 }
 
@@ -88,30 +119,6 @@ export default defineComponent({
   height: 100%;
   align-items: center;
   padding: 0rem;
-}
-
-.body--dark {
-  .header {
-    background: rgba(8, 15, 46, 0.4);
-    backdrop-filter: blur(200px);
-    border-bottom: 1px solid !important;
-    border-image: linear-gradient(
-      90deg,
-      #e6007a -4%,
-      #e6007a -3.88%,
-      #703ac2 17.01%,
-      #0070eb 42.25%,
-      #0297fb 73.9%,
-      #0ae2ff 97.42%
-    );
-    border-image-slice: 1;
-  }
-
-  .header-left {
-    color: $gray-1;
-    @media (min-width: $lg) {
-      padding: 0px;
-    }
-  }
+  gap: 8px;
 }
 </style>
