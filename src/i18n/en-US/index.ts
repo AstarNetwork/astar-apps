@@ -492,11 +492,12 @@ export default {
     reward: 'Reward',
     lockedTokens: 'Locked tokens',
     vesting: 'Vesting',
+    reserved: 'Reserved',
     favorite: 'Favorite',
     addToFavorite: 'Add to favorite',
     removeFromFavorite: 'Remove from favorite',
     unifyAccounts: 'Unify accounts',
-    yourEstimatedRewards: 'Claim your estimated Rewards',
+    yourEstimatedRewards: 'Claim your estimated rewards',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',

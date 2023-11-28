@@ -50,7 +50,7 @@
         <astar-button
           :disabled="0 >= info.claimableAmount"
           class="button-unlock"
-          @click="sendTransaction"
+          @click="handleSendTransaction"
         >
           {{ $t('assets.modals.unlock') }}
         </astar-button>
@@ -98,11 +98,16 @@ export default defineComponent({
     };
     const { info, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } = useVesting();
 
+    const handleSendTransaction = async (): Promise<void> => {
+      await closeModal();
+      await sendTransaction();
+    };
+
     return {
       info,
       isClosingModal,
       closeModal,
-      sendTransaction,
+      handleSendTransaction,
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
