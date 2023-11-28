@@ -249,9 +249,7 @@ import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue'
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import Balloon from 'src/components/common/Balloon.vue';
 
 export default defineComponent({
   components: {
@@ -388,7 +386,6 @@ export default defineComponent({
       isExpand,
       isBalloonNativeToken,
       isBalloonNativeTokenClosing,
-
       width,
       screenSize,
       isTruncate,
