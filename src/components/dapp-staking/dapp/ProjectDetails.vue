@@ -230,7 +230,8 @@ export default defineComponent({
       const address = props.dapp.dapp.address;
       const blockscout = `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`;
       const subscan = `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`;
-      return address.startsWith('0x') ? blockscout + address : subscan + address;
+      const explorer = address.startsWith('0x') ? blockscout : subscan;
+      return explorer + address;
     });
 
     const copyAddress = (address: string): void => {
