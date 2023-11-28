@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
@@ -23,7 +23,7 @@ export default defineComponent({
       required: true,
     },
     amount: {
-      type: Object,
+      type: BigInt as unknown as PropType<BigInt>,
       required: true,
     },
   },
