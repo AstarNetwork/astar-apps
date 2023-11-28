@@ -252,7 +252,11 @@ export default defineComponent({
           (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
-          const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          const registeredDapp = await service.getDapp(
+            data.address,
+            currentNetworkName.value,
+            true
+          );
           isNewDapp.value = !registeredDapp;
           if (registeredDapp && !registeredDapp.tags) {
             registeredDapp.tags = [];
@@ -422,7 +426,7 @@ export default defineComponent({
 
 <style lang="scss">
 .q-field__native {
-  color: $navy-1 !important;
+  color: $gray-1 !important;
 }
 .body--dark {
   .q-field__native {

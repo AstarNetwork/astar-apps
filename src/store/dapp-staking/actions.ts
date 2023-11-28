@@ -88,7 +88,7 @@ export const hasExtrinsicFailedEvent = (
 const actions: ActionTree<State, StateInterface> = {
   async getDapps(
     { commit, dispatch },
-    { network, currentAccount }: { network: string; currentAccount: string }
+    { network, senderSs58Account }: { network: string; senderSs58Account: string }
   ) {
     const accountUnificationService = container.get<IAccountUnificationService>(
       Symbols.AccountUnificationService
@@ -98,9 +98,9 @@ const actions: ActionTree<State, StateInterface> = {
       // Fetch dapps
       const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dappssimple`;
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-      const address = isValidEvmAddress(currentAccount)
-        ? await accountUnificationService.getMappedNativeAddress(currentAccount)
-        : currentAccount;
+      const address = isValidEvmAddress(senderSs58Account)
+        ? await accountUnificationService.getMappedNativeAddress(senderSs58Account)
+        : senderSs58Account;
       const [dapps, combinedInfo] = await Promise.all([
         axios.get<DappItem[]>(dappsUrl),
         service.getCombinedInfo(address),

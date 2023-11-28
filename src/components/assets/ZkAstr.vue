@@ -1,50 +1,50 @@
 <template>
   <div data-testid="evm-native-token">
-    <div class="border--separator border--margin" />
-    <div class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
-            <div v-if="astrTokenSymbol && networkNameSubstrate" class="column--ticker">
-              <span class="text--title">{{ astrTokenSymbol }}</span>
-              <span class="text--label">{{ networkNameSubstrate }}</span>
-            </div>
-            <div v-else>
-              <q-skeleton animation="fade" class="skeleton--md" />
-            </div>
-          </div>
+    <div class="row row--transferable row--transferable-evm">
+      <div class="row__info">
+        <div class="column--token-name">
+          <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
+          <template v-if="astrTokenSymbol">
+            <span class="text--title">{{ astrTokenSymbol }}</span>
+          </template>
+          <template v-else>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </template>
         </div>
-        <div class="row__right row__right--evm-native-token">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <token-balance :balance="String(bal)" :symbol="astrTokenSymbol" />
-              </div>
-              <div class="text--label">
-                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="column--asset-buttons column--buttons--native-token">
-            <router-link to="/">
-              <button class="btn btn--sm" :disabled="true">
-                {{ $t('assets.bridge') }}
-              </button>
-            </router-link>
-            <router-link to="/">
-              <button class="btn btn--sm" :disabled="true">
-                {{ $t('assets.transfer') }}
-              </button>
-            </router-link>
-          </div>
+        <div class="column--balance">
+          <span class="column--amount text--amount">
+            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+          </span>
+          <span class="column--symbol text--symbol">{{ astrTokenSymbol }}</span>
         </div>
+      </div>
+
+      <div class="row__actions">
+        <router-link to="/">
+          <button class="btn btn--icon" :disabled="true">
+            <astar-icon-bridge />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+          </q-tooltip>
+        </router-link>
+
+        <router-link to="/">
+          <button class="btn btn--icon" :disabled="true">
+            <astar-icon-transfer />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.send') }}</span>
+          </q-tooltip>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { getUsdBySymbol } from '@astar-network/astar-sdk-core';
+import { getUsdBySymbol, truncate } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { useNetworkInfo } from 'src/hooks';
@@ -53,7 +53,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
-  components: { TokenBalance },
+  components: {},
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -90,12 +90,16 @@ export default defineComponent({
 
     watchEffect(handleAstrPrice);
 
+    const isTruncate = !astrTokenSymbol.value.toUpperCase().includes('BTC');
+
     return {
       astrTokenImg,
       astrTokenSymbol,
       networkNameSubstrate,
       bal,
       balUsd,
+      isTruncate,
+      truncate,
     };
   },
 });

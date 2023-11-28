@@ -1,50 +1,38 @@
 <template>
-  <div v-if="!isLoading" class="wrapper--assets">
-    <div class="separator--top container--account">
-      <div class="separator" />
-    </div>
+  <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
+    <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
-      <div class="container--account">
-        <div class="title--account">
-          <span class="text--xl">
-            {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
-          </span>
-        </div>
+      <div class="column--main">
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
-      </div>
-      <div class="row--links">
-        <dynamic-links />
-      </div>
-      <div>
-        <div class="container--account">
-          <div class="separator" />
-        </div>
-        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
-      </div>
-      <div class="container--asset-list">
-        <div v-if="isH160">
-          <evm-asset-list :tokens="evmAssets.assets" />
-        </div>
-        <div v-else class="container--assets">
-          <!-- Memo: hide xvm panel because AA might replace it -->
-          <!-- <xvm-native-asset-list v-if="isSupportAuTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+
+        <div class="container">
+          <div v-if="isH160">
+            <evm-asset-list :tokens="evmAssets.assets" />
+          </div>
+          <div v-else>
+            <!-- Memo: hide xvm panel because AA might replace it -->
+            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="column--links">
-      <dynamic-links />
+
+      <div class="column--links">
+        <side-ads />
+        <astar-domains />
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
-import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
+import SideAds from 'src/components/assets/SideAds.vue';
+import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
@@ -59,7 +47,8 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
-    DynamicLinks,
+    SideAds,
+    AstarDomains,
     EvmAssetList,
     XcmNativeAssetList,
   },
@@ -167,6 +156,20 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+
+    const bg_img = {
+      light: require('/src/assets/img/assets_bg_light.webp'),
+      dark: require('/src/assets/img/assets_bg_dark_A.webp'),
+    };
+
+    const bg = computed<String>(() => {
+      if (isDarkTheme.value) {
+        return bg_img.dark;
+      }
+      return bg_img.light;
+    });
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -180,6 +183,7 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      bg,
     };
   },
 });
