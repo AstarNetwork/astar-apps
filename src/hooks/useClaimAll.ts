@@ -105,7 +105,7 @@ export function useClaimAll() {
     }
   };
 
-  watch([isSendingTx, senderSs58Account, era], updateClaimEras);
+  watch([isSendingTx, senderSs58Account, era, dapps], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const dappStakingServiceFactory = container.get<() => IDappStakingService>(

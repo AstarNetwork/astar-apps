@@ -8,7 +8,7 @@ export const getHeaderName = (path: string): string => {
   } else if (path.includes('transfer')) {
     return 'Transfer Assets';
   } else if (path.includes('assets')) {
-    return 'Assets';
+    return 'Your Assets';
   } else if (path.includes('stake')) {
     return 'Stake';
   } else if (path.includes('dapp-staking-v3')) {

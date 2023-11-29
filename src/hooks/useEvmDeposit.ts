@@ -7,7 +7,6 @@ import { container } from 'src/v2/common';
 import { IAssetsService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export function useEvmDeposit() {
   const evmDeposit = ref<string>('0');
@@ -15,19 +14,11 @@ export function useEvmDeposit() {
   const isEvmDeposit = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
-  const { t } = useI18n();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
-  const sendTransaction = async (amount: number) => {
-    if (Number(amount) === 0) {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('toast.amountMustNotBeZero'),
-        alertType: 'error',
-      });
-      return;
-    }
+  const sendTransaction = async () => {
     const assetsService = container.get<IAssetsService>(Symbols.AssetsService);
     await assetsService.evmWithdraw({
       amount: evmDeposit.value,
