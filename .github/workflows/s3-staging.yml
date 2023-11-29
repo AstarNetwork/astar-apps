@@ -1,6 +1,6 @@
 name: Deploy to S3 Staging
 'on':
-  push:
+  pull_request:
     branches:
       - main
 jobs:
