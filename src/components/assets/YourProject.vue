@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { useAccount, useClaimAll, useNetworkInfo } from 'src/hooks';
+import { useAccount, useClaimAll } from 'src/hooks';
 import { buildOwnerPageLink } from 'src/router/routes';
 import { CombinedDappInfo, useDapps } from 'src/staking-v3';
 import { computed, defineComponent } from 'vue';
@@ -31,7 +31,6 @@ import { computed, defineComponent } from 'vue';
 export default defineComponent({
   setup() {
     const { currentAccount } = useAccount();
-    const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     useClaimAll();
     const { registeredDapps } = useDapps();
     const ownDapps = computed<CombinedDappInfo[]>(() => {
