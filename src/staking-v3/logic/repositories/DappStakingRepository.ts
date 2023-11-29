@@ -17,6 +17,8 @@ import {
   ProtocolStateChangedMessage,
   SingularStakingInfo,
   StakeAmount,
+  TiersConfiguration,
+  TvlAmountType,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
@@ -33,6 +35,7 @@ import {
   PalletDappStakingV3ProtocolState,
   PalletDappStakingV3SingularStakingInfo,
   PalletDappStakingV3StakeAmount,
+  PalletDappStakingV3TiersConfiguration,
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
@@ -212,17 +215,14 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getUnstakeAndUnlockCall(
+  public async getUnstakeAndUnlockCalls(
     contractAddress: string,
     amount: number
-  ): Promise<ExtrinsicPayload> {
+  ): Promise<ExtrinsicPayload[]> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
 
-    return api.tx.utility.batchAll([
-      await this.getUnstakeCall(contractAddress, amount),
-      await this.getUnlockCall(amount),
-    ]);
+    return [await this.getUnstakeCall(contractAddress, amount), await this.getUnlockCall(amount)];
   }
 
   //* @inheritdoc
@@ -296,6 +296,7 @@ export class DappStakingRepository implements IDappStakingRepository {
         api.consts.dappStaking.standardErasPerVotingPeriod
       )).toNumber(),
       unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
+      standardEraLength: (<u32>api.consts.dappStaking.standardEraLength).toNumber(),
     };
   }
 
@@ -404,6 +405,31 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.relockUnlocking();
   }
 
+  public async getTiersConfiguration(): Promise<TiersConfiguration> {
+    const api = await this.api.getApi();
+    const configuration =
+      await api.query.dappStaking.tierConfig<PalletDappStakingV3TiersConfiguration>();
+
+    return {
+      numberOfSlots: configuration.numberOfSlots.toNumber(),
+      slotsPerTier: configuration.slotsPerTier.map((slot) => slot.toNumber()),
+      rewardPortion: configuration.rewardPortion.map((portion) => portion.toNumber() / 1_000_000),
+      tierThresholds: configuration.tierThresholds.map((threshold) =>
+        threshold.isDynamicTvlAmount
+          ? {
+              type: TvlAmountType.DynamicTvlAmount,
+              amount: threshold.asDynamicTvlAmount.amount.toBigInt(),
+              minimumAmount: threshold.asDynamicTvlAmount.minimumAmount.toBigInt(),
+            }
+          : {
+              type: TvlAmountType.FixedTvlAmount,
+              amount: threshold.asFixedTvlAmount.amount.toBigInt(),
+            }
+      ),
+    };
+  }
+
+  // ------------------ MAPPERS ------------------
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),

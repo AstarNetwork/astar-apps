@@ -108,6 +108,7 @@ export interface Constants {
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
   unlockingPeriod: number;
+  standardEraLength: number;
 }
 
 export interface DAppTierRewards {
@@ -140,4 +141,22 @@ export interface ContractStakeAmount {
   readonly stakedFuture?: StakeAmount;
   //tierLabel is not used ATM.
   //tierLabel?: TierLabel;
+}
+
+export interface TiersConfiguration {
+  readonly numberOfSlots: number;
+  readonly slotsPerTier: number[];
+  readonly rewardPortion: number[];
+  readonly tierThresholds: TierThreshold[];
+}
+
+interface TierThreshold {
+  readonly amount: BigInt;
+  readonly minimumAmount?: BigInt;
+  readonly type: TvlAmountType;
+}
+
+export enum TvlAmountType {
+  FixedTvlAmount,
+  DynamicTvlAmount,
 }

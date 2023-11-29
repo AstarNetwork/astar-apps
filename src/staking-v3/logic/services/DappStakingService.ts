@@ -53,7 +53,7 @@ export class DappStakingService implements IDappStakingService {
   }
 
   // @inheritdoc
-  public async unstakeAndUnlock(
+  public async claimUnstakeAndUnlock(
     contractAddress: string,
     amount: number,
     senderAddress: string,
@@ -62,8 +62,16 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const call = await this.dappStakingRepository.getUnstakeAndUnlockCall(contractAddress, amount);
-    await this.signCall(call, senderAddress, successMessage);
+    const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
+    const unstakeCalls = await this.dappStakingRepository.getUnstakeAndUnlockCalls(
+      contractAddress,
+      amount
+    );
+    const batch = await this.dappStakingRepository.batchAllCalls([
+      ...claimStakerCalls,
+      ...unstakeCalls,
+    ]);
+    await this.signCall(batch, senderAddress, successMessage);
   }
 
   // @inheritdoc
@@ -202,19 +210,30 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  private async getClaimStakerAndBonusRewardsCalls(
+    senderAddress: string
+  ): Promise<ExtrinsicPayload[]> {
+    const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
+    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
+
+    if (!claimStakerCalls && !claimBonusCalls) {
+      return [];
+    }
+
+    return [
+      ...(claimStakerCalls ? claimStakerCalls : []),
+      ...(claimBonusCalls ? claimBonusCalls : []),
+    ];
+  }
+
   public async claimStakerAndBonusRewards(
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
-    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
-
-    const batch = await this.dappStakingRepository.batchAllCalls([
-      ...(claimStakerCalls ? claimStakerCalls : []),
-      ...(claimBonusCalls ? claimBonusCalls : []),
-    ]);
+    const calls = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
     await this.signCall(batch, senderAddress, successMessage);
   }
 

@@ -69,6 +69,10 @@ import {
   ProtocolStateChangedMessage,
 } from './staking-v3';
 import { useDappStaking, useDapps } from './staking-v3/hooks';
+import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
+import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
+import { $api } from './boot/api';
+import { ApiPromise } from '@polkadot/api';
 
 export default defineComponent({
   name: 'App',
@@ -85,8 +89,14 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
-    const { getAllRewards, getCurrentEraInfo, getDappTiers, fetchStakerInfoToStore } =
-      useDappStaking();
+    const {
+      protocolState,
+      getAllRewards,
+      getCurrentEraInfo,
+      getDappTiers,
+      fetchStakerInfoToStore,
+      fetchTiersConfigurationToStore,
+    } = useDappStaking();
     const { fetchStakeAmountsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
@@ -137,27 +147,32 @@ export default defineComponent({
     });
 
     // **** dApp staking v3
+    if (checkIsDappStakingV3($api as ApiPromise)) {
+      // dApp staking v3 data changed subscriptions.
+      container
+        .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+        .startProtocolStateSubscription();
 
-    eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
-      const message = m as ProtocolStateChangedMessage;
-      store.commit('stakingV3/setProtocolState', message.state, { root: true });
+      eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
+        const message = m as ProtocolStateChangedMessage;
+        store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
-      console.log('protocol state', message.state);
-      await Promise.all([
-        getAllRewards(),
-        getCurrentEraInfo(),
-        getDappTiers(message.state.era - 1),
-        fetchStakeAmountsToStore(),
-        fetchStakerInfoToStore(),
-      ]);
-    });
+        console.log('protocol state', message.state);
+        await Promise.all([
+          getAllRewards(),
+          getCurrentEraInfo(),
+          getDappTiers(message.state.era - 1),
+          fetchStakeAmountsToStore(),
+          fetchStakerInfoToStore(),
+        ]);
+      });
 
-    eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
-      const message = m as AccountLedgerChangedMessage;
-      store.commit('stakingV3/setLedger', message.ledger, { root: true });
-      console.log('ledger', message.ledger);
-    });
-
+      eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
+        const message = m as AccountLedgerChangedMessage;
+        store.commit('stakingV3/setLedger', message.ledger, { root: true });
+        console.log('ledger', message.ledger);
+      });
+    }
     // **** end dApp staking v3
 
     // Handle wallet change so we can inject proper wallet
@@ -166,12 +181,18 @@ export default defineComponent({
       setCurrentWallet(isEthWallet.value, currentWallet.value);
 
       // Subscribe to an account specific dApp staking v3 data.
-      if (currentAccount.value && currentAccount.value !== previousAddress) {
+      if (
+        checkIsDappStakingV3($api as ApiPromise) &&
+        currentAccount.value &&
+        currentAccount.value !== previousAddress
+      ) {
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
           .startAccountLedgerSubscription(currentAccount.value);
         fetchStakerInfoToStore();
         getAllRewards();
+        fetchTiersConfigurationToStore();
+        getDappTiers((protocolState.value?.era ?? 0) - 1);
 
         previousAddress = currentAccount.value;
       }

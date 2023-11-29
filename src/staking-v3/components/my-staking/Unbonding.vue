@@ -3,13 +3,15 @@
     <div class="chunk--row">
       <div>{{ $t('stakingV3.index') }}</div>
       <div>{{ $t('stakingV3.unbondingAmount') }}</div>
-      <div>Remaining blocks</div>
+      <div>{{ $t('stakingV3.remainingEras') }}</div>
       <div class="center">{{ $t('stakingV3.withdraw') }}</div>
     </div>
     <div v-for="(chunk, index) in chunks" :key="index" class="chunk--row">
       <div>{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
       <div class="right"><token-balance-native :balance="chunk.amount.toString()" /></div>
-      <div class="right">{{ chunk.remainingBlocks }}</div>
+      <div class="right">
+        {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
+      </div>
       <div class="buttons">
         <astar-button
           :disabled="chunk.remainingBlocks > 0"
@@ -18,13 +20,9 @@
           @click="withdraw"
           >{{ $t('stakingV3.withdraw') }}</astar-button
         >
-        <astar-button
-          :disabled="chunk.remainingBlocks <= 0"
-          :width="97"
-          :height="24"
-          @click="relock"
-          >{{ $t('stakingV3.relock') }}</astar-button
-        >
+        <astar-button :width="97" :height="24" @click="relock">{{
+          $t('stakingV3.relock')
+        }}</astar-button>
       </div>
     </div>
   </div>
@@ -42,7 +40,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { ledger, withdraw, relock } = useDappStaking();
+    const { ledger, constants, withdraw, relock } = useDappStaking();
     const chunks = computed(
       () =>
         ledger.value?.unlocking.map((chunk) => {
@@ -55,7 +53,11 @@ export default defineComponent({
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
-    return { chunks, withdraw, relock };
+    const getRemainingEras = (remainingBlocks: number): number => {
+      return constants.value ? Math.ceil(remainingBlocks / constants.value?.standardEraLength) : 0;
+    };
+
+    return { chunks, withdraw, relock, getRemainingEras };
   },
 });
 </script>

@@ -7,6 +7,7 @@
     <leaderboard />
     <ad />
     <dapps />
+    <data-list />
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import Staking from './my-staking/Staking.vue';
+import DataList from './data/DataList.vue';
 
 export default defineComponent({
   components: {
@@ -25,6 +27,7 @@ export default defineComponent({
     Dapps,
     Leaderboard,
     Staking,
+    DataList,
   },
   setup() {
     return {};

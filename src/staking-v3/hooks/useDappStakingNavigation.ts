@@ -20,5 +20,7 @@ export function useDappStakingNavigation() {
     router.push(url);
   };
 
-  return { navigateToVote, navigateToHome, navigateDappPage };
+  const goBack = () => router.go(-1);
+
+  return { navigateToVote, navigateToHome, navigateDappPage, goBack };
 }
