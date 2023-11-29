@@ -29,10 +29,10 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@astar-network/astar-sdk-core@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.5.tgz#fdaa80f9b0b28516723785135f43b1c5ad9166f5"
-  integrity sha512-BVr9RUYPmaSyHaoNBhrqMWygD15lG78/AnDdaW6S1UGL8hJ/jI1a7dxjanwXKJV4v623Ic0NPJxDWY0oE7Ejsw==
+"@astar-network/astar-sdk-core@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.7.tgz#378bd50fb32745a240dcfb1e518ddc27ee81f817"
+  integrity sha512-/kqdHVm4UZnGtfBv7RSaBRKOttyFDIzago8GWrjT01govGbohKx1npVOWl52w7MV9E494Q6vz2mJ7AoXnqJB5w==
   dependencies:
     "@ethersproject/bignumber" "^5.6.2"
     "@polkadot/util" "^12.3.2"
@@ -42,10 +42,10 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.104":
-  version "0.0.104"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.104.tgz#daa860f3db4a9771c0c05def14ecd86ee652ba2a"
-  integrity sha512-8/2sQfHPoRnGQKshNRd7WuWOytah7AX1oV2JT8VCICsNPJO7Idm4KhvrZjP29BhdHC6eYc3/MBD/QWacAVCuRA==
+"@astar-network/astar-ui@^0.0.136":
+  version "0.0.136"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.136.tgz#cbf468d5d099ced53ed6d5a4cab23af5390315d9"
+  integrity sha512-Kuizskf6J738hejB7Y7Az6n2PSUVSbpjwrWQ0m9Uh0Rtpmj5eb/MVXT9vyl5zZP3jxOchZcrbjhsMW8VrzARwA==
   dependencies:
     "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"
@@ -7337,15 +7337,10 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.30001503:
-  version "1.0.30001517"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001517.tgz#90fabae294215c3495807eb24fc809e11dc2f0a8"
-  integrity sha512-Vdhm5S11DaFVLlyiKu4hiUTkpZu+y1KA/rZZqVQfOD5YdDT/eQKlkt7NaE0WGOFgX32diqt9MiP9CAiFeRklaA==
-
-caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001280:
-  version "1.0.30001282"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001282.tgz#38c781ee0a90ccfe1fe7fefd00e43f5ffdcb96fd"
-  integrity sha512-YhF/hG6nqBEllymSIjLtR2iWDDnChvhnVJqp+vloyt2tEHFG1yBR+ac2B/rOw0qOK0m0lEXU2dv4E/sMk5P9Kg==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001280, caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.30001503:
+  version "1.0.30001561"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001561.tgz"
+  integrity sha512-NTt0DNoKe958Q0BE0j0c1V9jbUzhBxHIEJy7asmGrpE0yG63KTV7PLHPnK2E1O9RsQrQ081I3NLuXGS6zht3cw==
 
 canvas-renderer@~2.2.0:
   version "2.2.1"
@@ -16656,6 +16651,11 @@ swarm-js@^0.1.40:
     setimmediate "^1.0.5"
     tar "^4.0.2"
     xhr-request "^1.0.1"
+
+swiper@^11.0.3:
+  version "11.0.3"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-11.0.3.tgz#9c325154db2a4431f508b7e8e300621365eb4c3d"
+  integrity sha512-MyV9ooQsriAe2EibeamqewLjgCfSvl2xoyratl6S3ln5BXDL4BzlO6mxcbLMCzQL6Z60b/u0AS/nKrepL0+TAg==
 
 symbol-observable@^4.0.0:
   version "4.0.0"

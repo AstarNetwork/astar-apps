@@ -29,10 +29,15 @@
   margin-bottom: 8px;
 }
 
+.btn-margin-adjuster {
+  margin-top: 24px;
+}
+
 .row--box-error {
   padding: 10px 20px;
   border-radius: 6px;
   width: 344px;
+  margin-bottom: 24px;
   border: 1px solid $warning-red;
   background: $box-red;
   text-align: left;
@@ -103,13 +108,13 @@
   }
 }
 
-.btn-size-adjust {
-  width: 100%;
-  @media (min-width: $xs) {
-    width: 344px;
-  }
+.row--buttons {
+  display: grid;
+  row-gap: 16px;
   @media (min-width: $sm) {
-    width: 412px;
+    grid-template-columns: 48% 48%;
+    justify-content: space-between;
+    row-gap: 0px;
   }
 }
 
@@ -121,10 +126,10 @@
 }
 
 .button--confirm {
-  margin-top: 24px;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   height: 44px;
+  width: 100%;
 }
 
 .row--reverse {
@@ -155,19 +160,64 @@
   }
 }
 
-.body--dark {
-  .box--input-field,
-  .icon--reverse {
-    background: transparent;
-    border: 1px solid $gray-3;
-  }
-  input {
-    color: white;
-  }
+.container--approve {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
 
-  .row--box-error {
-    background: $box-red-dark;
-  }
+.input--checkbox {
+  display: flex;
+  column-gap: 8px;
+}
+
+.input--checkbox input[type='checkbox'] {
+  display: none;
+  width: 20px;
+}
+
+.input--checkbox input[type='checkbox'] + label {
+  display: none;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  padding-left: 32px;
+}
+
+.input--checkbox input[type='checkbox'] + label::before {
+  content: '';
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  left: 0;
+  top: 50%;
+  border: 1px solid;
+  border-color: $navy-1;
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+.input--checkbox--checked input[type='checkbox'] + label::before {
+  border-color: $astar-blue !important;
+}
+
+.input--checkbox input[type='checkbox']:checked + label::after {
+  content: '';
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  width: 14px;
+  height: 7px;
+  margin-top: -5px;
+  top: 50%;
+  left: 3px;
+  transform: rotate(-45deg);
+  border-bottom: 3px solid;
+  border-left: 3px solid;
+  border-color: $astar-blue;
 }
 
 .container--warning {
@@ -187,5 +237,23 @@
 
   ul {
     list-style-type: disc;
+  }
+}
+
+.body--dark {
+  input {
+    color: white;
+  }
+  .box--input-field,
+  .icon--reverse {
+    background: transparent;
+    border: 1px solid $gray-3;
+  }
+
+  .row--box-error {
+    background: $box-red-dark;
+  }
+  .input--checkbox input[type='checkbox'] + label::before {
+    border-color: $gray-3;
   }
 }

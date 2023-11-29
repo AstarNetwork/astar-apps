@@ -1,87 +1,118 @@
 <template>
   <div class="wrapper--account">
-    <div class="container">
-      <div class="row--details">
-        <div class="column-account-name">
-          <au-icon
-            v-if="isAccountUnified"
-            :native-address="unifiedAccount?.nativeAddress"
-            :icon-url="unifiedAccount?.avatarUrl"
-          />
-          <img
-            v-else-if="iconWallet"
-            width="24"
-            :src="iconWallet"
-            alt="wallet-icon"
-            :class="multisig && 'img--polkasafe'"
-          />
-          <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
-        </div>
-        <div class="column-address-icons">
-          <div class="column__address">
-            <span>{{ getShortenAddress(currentAccount) }}</span>
-          </div>
-          <div class="row__column--right">
-            <div class="screen--sm" :class="isH160 ? 'column--usd' : 'column--usd-native'">
-              <span class="text--accent">{{ $n(totalBal) }} USD</span>
-            </div>
-            <div class="column__icons">
-              <div v-if="isAccountUnification">
-                <button
-                  type="button"
-                  class="icon--primary icon--account"
-                  @click="showAccountUnificationModal()"
-                >
-                  <!-- TODO: will move a new icon to the AstarUI later -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="icon">
-                    <path
-                      d="M480-492.309q-57.749 0-98.874-41.124-41.125-41.125-41.125-98.874 0-57.75 41.125-98.874 41.125-41.125 98.874-41.125 57.749 0 98.874 41.125 41.125 41.124 41.125 98.874 0 57.749-41.125 98.874-41.125 41.124-98.874 41.124ZM180.001-187.694v-88.922q0-29.384 15.962-54.422 15.961-25.038 42.653-38.5 59.308-29.077 119.654-43.615T480-427.691q61.384 0 121.73 14.538 60.346 14.538 119.654 43.615 26.692 13.462 42.653 38.5 15.962 25.038 15.962 54.422v88.922H180.001ZM240-247.693h480v-28.923q0-12.154-7.039-22.5-7.038-10.346-19.115-16.885-51.692-25.461-105.418-38.577Q534.702-367.693 480-367.693t-108.428 13.115q-53.726 13.116-105.418 38.577-12.077 6.539-19.115 16.885Q240-288.77 240-276.616v28.923Zm240-304.614q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.614Z"
-                    />
-                  </svg>
-                </button>
-                <q-tooltip>
-                  <span class="text--tooltip">Unify accounts</span>
-                </q-tooltip>
-              </div>
-              <div>
-                <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
-                  <astar-icon-copy />
-                </button>
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t('copy') }}</span>
-                </q-tooltip>
-              </div>
-              <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-                <button class="icon--primary">
-                  <astar-icon-external-link />
-                </button>
+    <div class="row--account-rewards">
+      <div class="container--account" :class="`network-${currentNetworkIdx}`">
+        <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
-                <q-tooltip>
-                  <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-                </q-tooltip>
-              </a>
+        <div class="wallet-tab">
+          <div class="wallet-tab__bg">
+            <!-- EVM -->
+            <template v-if="isH160">
+              <!-- zkEVM -->
+              <template v-if="isZkEvm">
+                <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
+                <div v-if="isZkEvm" class="btn active">Astar zKatana</div>
+              </template>
+
+              <!-- Astar EVM -->
+              <template v-else>
+                <div class="btn active">
+                  {{ currentNetworkName.replace('Network', '') }}
+                  EVM (L1)
+                </div>
+                <a v-if="currentNetworkIdx === 2" class="btn" href="/zkatana-testnet/assets">
+                  Astar zKatana
+                </a>
+                <a v-else-if="currentNetworkIdx !== 1" class="btn" disabled>Astar zkEVM</a>
+              </template>
+            </template>
+
+            <!-- Native -->
+            <div v-else class="btn active">
+              {{ currentNetworkIdx === 4 ? 'Astar' : currentNetworkName.replace('Network', '') }}
+              {{ $t('native') }}
             </div>
           </div>
         </div>
-      </div>
-      <div v-if="isH160">
-        <evm-native-token />
-        <zk-astr v-if="isZkEvm" />
-      </div>
-      <div v-if="multisig" class="row--details-signatory">
-        <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-          <span class="text--accent">{{
-            $t('assets.theSignatory', { account: multisig.signatory.name })
-          }}</span>
+
+        <div class="row">
+          <div class="row--account-info">
+            <div class="column--account-icon">
+              <au-icon
+                v-if="isAccountUnified"
+                :native-address="unifiedAccount?.nativeAddress"
+                :icon-url="unifiedAccount?.avatarUrl"
+              />
+              <img
+                v-else-if="iconWallet"
+                width="24"
+                :src="iconWallet"
+                alt="wallet-icon"
+                :class="multisig && 'img--polkasafe'"
+              />
+            </div>
+
+            <div>
+              <div class="text--address">
+                <span>{{ getShortenAddress(currentAccount) }}</span>
+              </div>
+              <div class="text--balance">
+                {{ $n(totalBal) }}
+                <span>{{ $t('usd') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row--actions">
+            <div v-if="isAccountUnification">
+              <button type="button" class="btn--icon" @click="showAccountUnificationModal()">
+                <astar-icon-person />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.unifyAccounts') }}</span>
+              </q-tooltip>
+            </div>
+
+            <div>
+              <button id="copyAddress" type="button" class="btn--icon" @click="copyAddress">
+                <astar-icon-copy class="icon--copy" />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
+            </div>
+
+            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+              <button class="btn--icon">
+                <astar-icon-external-link class="icon--external-link" />
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+              </q-tooltip>
+            </a>
+          </div>
         </div>
       </div>
-      <div class="row screen--phone">
-        <span>{{ $t('assets.totalBalance') }}</span>
-        <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
-        <span v-else class="text--total-balance"> ${{ $n(totalBal) }} </span>
+
+      <rewards v-if="!isZkEvm" />
+    </div>
+
+    <template v-if="isH160">
+      <evm-native-token class="container" />
+      <zk-astr v-if="isZkEvm" class="container" />
+    </template>
+
+    <div v-if="multisig" class="row--details-signatory">
+      <div class="column-account-name">
+        <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
+        <span class="text--accent">{{
+          $t('assets.theSignatory', { account: multisig.signatory.name })
+        }}</span>
       </div>
-      <native-asset-list v-if="!isH160" />
+    </div>
+
+    <div v-if="!isH160" class="container">
+      <native-asset-list />
     </div>
   </div>
 </template>
@@ -111,6 +142,7 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Rewards from 'src/components/assets/Rewards.vue';
 
 export default defineComponent({
   components: {
@@ -118,6 +150,7 @@ export default defineComponent({
     EvmNativeToken,
     ZkAstr,
     AuIcon,
+    Rewards,
   },
   props: {
     ttlErc20Amount: {
@@ -240,6 +273,27 @@ export default defineComponent({
       { immediate: false }
     );
 
+    const bg_img = {
+      native: require('/src/assets/img/account_bg_native.webp'),
+      shiden: require('/src/assets/img/account_bg_shiden.webp'),
+      testnet: require('/src/assets/img/account_bg_testnet.webp'),
+      zk: require('/src/assets/img/account_bg_zk.webp'),
+      testnet_zk: require('/src/assets/img/account_bg_testnet_zk.webp'),
+    };
+
+    const bg = computed<String>(() => {
+      if (currentNetworkIdx.value === endpointKey.ASTAR) {
+        return bg_img.native;
+      } else if (currentNetworkIdx.value === endpointKey.SHIDEN) {
+        return bg_img.shiden;
+      } else if (currentNetworkIdx.value === endpointKey.ZKATANA) {
+        return bg_img.testnet_zk;
+      }
+      return bg_img.testnet;
+    });
+
+    const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
+
     return {
       iconWallet,
       currentAccountName,
@@ -260,6 +314,9 @@ export default defineComponent({
       unifiedAccount,
       isAccountUnified,
       isZkEvm,
+      bg,
+      currentNetworkIdx,
+      currentNetworkName,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

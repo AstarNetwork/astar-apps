@@ -172,7 +172,6 @@ import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, ref } from 'vue';
-import { productionOrigin } from 'src/links';
 
 export default defineComponent({
   props: {

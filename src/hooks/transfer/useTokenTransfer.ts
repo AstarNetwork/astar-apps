@@ -57,7 +57,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer, isZkEvm } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportAuTransfer, isZkEvm } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -75,7 +75,12 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const isNativeTokenSs58ToEvm =
       isSs58 && isTransferNativeToken.value && isValidEvmAddress(toAddress.value);
 
-    return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
+    return (
+      !isTransferNativeToken.value ||
+      isNativeTokenEvmToSs58 ||
+      isNativeTokenSs58ToEvm ||
+      isZkEvm.value
+    );
   });
 
   const fromAddressBalance = computed<number>(() =>
@@ -96,8 +101,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isValidDestAddress = computed<boolean>(() => {
     const isOnlyAcceptEvmAddress =
-      isH160.value && !isTransferNativeToken.value && !isSupportXvmTransfer.value;
-    return isOnlyAcceptEvmAddress
+      isH160.value && !isTransferNativeToken.value && !isSupportAuTransfer.value;
+    return isOnlyAcceptEvmAddress || isZkEvm.value
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
           isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||
@@ -106,7 +111,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const inputHandler = (event: any): void => {
     transferAmt.value = event.target.value;
-    errMsg.value = '';
   };
 
   const resetStates = (): void => {
@@ -141,6 +145,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+        return;
       } else if (
         isH160.value &&
         toAddress.value &&
@@ -194,7 +199,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       if (isH160.value) {
         const receivingAddress = isValidEvmAddress(toAddress)
           ? toAddress
-          : await accountUnificationService.getMappedEvmAddress(toAddress);
+          : await accountUnificationService.getConvertedEvmAddress(toAddress);
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
           transferAmt,
@@ -211,7 +216,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
-          ? await accountUnificationService.getMappedNativeAddress(toAddress)
+          ? await accountUnificationService.getConvertedNativeAddress(toAddress)
           : toAddress;
         const successMessage = t('assets.toast.completedMessage', {
           symbol,
@@ -264,7 +269,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
     const isSendToH160 = isValidEvmAddress(toAddress.value);
     const destAddress = isSendToH160
-      ? await accountUnificationService.getMappedNativeAddress(toAddress.value)
+      ? await accountUnificationService.getConvertedNativeAddress(toAddress.value)
       : toAddress.value;
     const srcChainId = evmNetworkIdx.value;
 
@@ -272,7 +277,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
       const address = isValidAddressPolkadotAddress(toAddress.value)
-        ? await accountUnificationService.getMappedEvmAddress(toAddress.value)
+        ? await accountUnificationService.getConvertedEvmAddress(toAddress.value)
         : toAddress.value;
 
       const balance = await getTokenBal({

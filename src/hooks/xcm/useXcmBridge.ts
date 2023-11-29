@@ -113,6 +113,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   );
 
   const isWithdrawalEthChain = computed<boolean>(() =>
+    // Memo: Moonbeam and Moonriver
     ethWalletChains.includes(destChain.value.name)
   );
 
@@ -349,7 +350,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       // if: SS58 Deposit
       const isSendToH160 = isValidEvmAddress(address);
       const destAddress = isSendToH160
-        ? await accountUnificationService.getMappedNativeAddress(address)
+        ? await accountUnificationService.getConvertedNativeAddress(address)
         : address;
       if (isAstarNativeTransfer.value) {
         const accountInfo = await $api?.query.system.account<SystemAccount>(address);
@@ -378,6 +379,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           address: inputtedAddress.value,
           tokenAddress,
           tokenSymbol: selectedToken.value.metadata.symbol,
+          // Withdraw GLMR or MOVR
+          isNativeToken: true,
         });
         return Number(balance);
       } else {

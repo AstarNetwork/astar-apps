@@ -48,4 +48,4 @@ polkadot
 astar-collator
 
 # Chopstick binaries
-db.sqlite
+db.sqlite*

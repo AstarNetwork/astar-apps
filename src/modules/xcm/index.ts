@@ -54,8 +54,8 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/polkadot.png'),
     parachainId: relaychainParaId,
     endpoints: [
-      'wss://polkadot.api.onfinality.io/public-ws',
       'wss://rpc.polkadot.io',
+      'wss://polkadot.api.onfinality.io/public-ws',
       'wss://1rpc.io/dot',
       'wss://polkadot-public-rpc.blockops.network/ws',
       'wss://polkadot-rpc.dwellir.com',
@@ -291,8 +291,8 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/pha.png'),
     parachainId: parachainIds.PHALA,
     endpoints: [
-      'wss://phala-rpc.dwellir.com',
       'wss://api.phala.network/ws',
+      'wss://phala-rpc.dwellir.com',
       'wss://phala.api.onfinality.io/public-ws',
     ],
     subscan: 'https://phala.subscan.io',
@@ -364,16 +364,11 @@ export const polkadotParachains = xcmChains.filter(
 
 // Todo: ideally use a content management to manage it
 export const restrictedXcmNetwork = {
-  [astarChain.ASTAR]: [
-    {
-      chain: Chain.MOONBEAM,
-      isRestrictedFromNative: false,
-      isRestrictedFromEvm: true,
-    },
-  ],
+  [astarChain.ASTAR]: [],
   [astarChain.SHIDEN]: [
     {
-      chain: Chain.MOONRIVER,
+      chain: '',
+      // chain: Chain.MOONRIVER,
       isRestrictedFromNative: false,
       isRestrictedFromEvm: true,
     },

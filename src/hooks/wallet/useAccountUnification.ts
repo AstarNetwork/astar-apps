@@ -5,6 +5,7 @@ import {
   getEvmGas,
   getIndividualClaimTxs,
   wait,
+  checkSumEvmAddress,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -84,7 +85,7 @@ export const useAccountUnification = () => {
     if (!provider || typeof window.ethereum === 'undefined') return;
     const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
     web3.value = new Web3(provider as any);
-    selectedEvmAddress.value = address;
+    selectedEvmAddress.value = checkSumEvmAddress(address);
     const chainId = `0x${evmNetworkIdx.value.toString(16)}`;
     if (provider.chainId !== chainId) {
       await setupNetwork({ network: evmNetworkIdx.value, provider });
@@ -127,7 +128,7 @@ export const useAccountUnification = () => {
       let isPendingWithdrawal = false;
       let stakingData: MyStakeInfo[] = [];
 
-      const mappedSS58Address = await accountUnificationService.getMappedNativeAddress(
+      const mappedSS58Address = await accountUnificationService.getConvertedNativeAddress(
         selectedEvmAddress.value
       );
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
@@ -284,11 +285,12 @@ export const useAccountUnification = () => {
       const from = selectedEvmAddress.value;
       const [nonce, gasPrice] = await Promise.all([
         web3.value.eth.getTransactionCount(from),
-        getEvmGas(web3.value, gas.value.evmGasPrice.fast),
+        getEvmGas(web3.value, '0'), // gas.value.evmGasPrice.fast),
       ]);
+      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const rawTx = {
         nonce,
-        gasPrice: web3.value.utils.toHex(gasPrice),
+        gasPrice: web3.value.utils.toHex(multipliedGas.toString()),
         from,
         to: evmPrecompiledContract.dispatch,
         value: '0x0',

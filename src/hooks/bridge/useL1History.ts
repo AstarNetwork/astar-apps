@@ -1,11 +1,12 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { EVM, buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
+import { buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import {
   BridgeHistory,
   EthBridgeChainId,
   EthBridgeNetworkName,
+  ZkChainId,
   checkIsL1,
   fetchAccountHistory,
   getChainIdFromNetId,
@@ -15,6 +16,9 @@ import { IZkBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useEthProvider } from '../custom-signature/useEthProvider';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { AbiItem } from 'web3-utils';
+import ERC20_ABI from 'src/config/abi/ERC20.json';
 
 export const useL1History = () => {
   const l1Network = computed<string>(() => {
@@ -45,7 +49,7 @@ export const useL1History = () => {
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
 
-  const handleNetwork = async (chainId: EVM): Promise<void> => {
+  const handleNetwork = async (chainId: ZkChainId): Promise<void> => {
     if (!web3Provider.value || !ethProvider.value) return;
     const connectedNetwork = await web3Provider.value!.eth.net.getId();
     if (connectedNetwork !== chainId) {
@@ -74,9 +78,11 @@ export const useL1History = () => {
       const formattedResult = await Promise.all(
         data.map(async (it) => {
           try {
-            const isL1 = checkIsL1(it['network_id']);
-            const web3 = isL1 ? l1Web3 : l2Web3;
-            if (!web3) return it;
+            const isTokenOriginL1 = checkIsL1(it['orig_net']);
+            const isL1Tx = checkIsL1(it['network_id']);
+            const web3 = isL1Tx ? l1Web3 : l2Web3;
+            const originNetWeb3 = isTokenOriginL1 ? l1Web3 : l2Web3;
+            if (!web3 || !originNetWeb3) return it;
             if (it.claim_tx_hash === '') {
               numberInProgress++;
             }
@@ -86,7 +92,24 @@ export const useL1History = () => {
             });
             const isActionRequired =
               it.claim_tx_hash === '' && !checkIsL1(it.network_id) && it.ready_for_claim;
-            return { ...it, timestamp, isActionRequired };
+
+            let name = 'Ether';
+            let symbol = 'ETH';
+            let decimal = 18;
+
+            if (it.orig_addr !== astarNativeTokenErcAddr) {
+              const contract = new originNetWeb3.eth.Contract(ERC20_ABI as AbiItem[], it.orig_addr);
+              const data = await Promise.all([
+                contract.methods.name().call(),
+                contract.methods.symbol().call(),
+                contract.methods.decimals().call(),
+              ]);
+              name = data[0];
+              symbol = data[1];
+              decimal = data[2];
+            }
+
+            return { ...it, timestamp, isActionRequired, name, symbol, decimal };
           } catch (error) {
             console.info('something went wrong: ', it);
             console.error(error);

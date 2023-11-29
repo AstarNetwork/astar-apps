@@ -35,16 +35,21 @@ export default defineComponent({
 @use '../styles/register.scss';
 
 .items-container {
-  border: 1px solid $gray-2;
-  transition: background-color 0.5s;
-  transition: border-color 0.5s;
+  border: 1px solid transparent;
+  transition: border-color 0.3s;
   border-radius: 6px;
   padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
+  &:hover {
+    border-color: $astar-blue;
+  }
 }
 
 .body--dark {
   .items-container {
-    border: 1px solid $gray-5;
+    background: $navy-1;
+    border-color: $gray-5;
   }
 }
 

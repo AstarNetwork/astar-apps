@@ -1,15 +1,17 @@
 <template>
   <div class="wrapper">
-    <header-comp :title="width >= screenSize.lg ? headerName : ''">
+    <header-comp :title="width >= screenSize.lg ? headerName : ''" :network="currentNetworkIdx">
       <template #left>
         <div class="icon"><logo /></div>
       </template>
-      <trouble-help />
-      <template v-if="!currentAccount">
+      <div v-if="!currentAccount">
         <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
           <astar-icon-wallet />
         </connect-button>
-      </template>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('wallet.connectWallet') }}</span>
+        </q-tooltip>
+      </div>
       <template v-else>
         <account-button
           :account="currentAccount"
@@ -18,6 +20,8 @@
         />
       </template>
       <network-button @show-network="clickNetworkBtn" />
+      <trouble-help />
+      <mobile-nav v-if="width <= screenSize.lg" />
     </header-comp>
 
     <!-- Modals -->
@@ -91,6 +95,7 @@ import TroubleHelp from 'src/components/header/TroubleHelp.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
+import MobileNav from 'src/components/header/mobile/MobileNav.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
@@ -121,6 +126,7 @@ export default defineComponent({
     TroubleHelp,
     ModalPolkasafe,
     ModalAccountUnification,
+    MobileNav,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -254,14 +260,13 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
-  background-color: $navy-2;
   @media (min-width: $lg) {
+    border-left: solid 1px $navy-3;
     width: 100%;
     position: absolute;
     top: 0;
     left: 224px;
     padding-right: 224px;
-    background-color: transparent;
   }
 }
 

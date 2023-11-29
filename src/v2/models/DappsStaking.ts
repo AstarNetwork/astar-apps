@@ -59,3 +59,11 @@ export interface AccountLedger {
 export interface DappStakingConstants {
   maxEraStakeValues: number;
 }
+
+export interface Campaign {
+  name: string;
+  shortDescription: string;
+  link?: string;
+  img: string;
+  address?: string;
+}

@@ -8,7 +8,7 @@ import {
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
 import { useStore } from 'src/store';
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';
@@ -82,7 +82,7 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
-  const isSupportXvmTransfer = computed<boolean>(() => {
+  const isSupportAuTransfer = computed<boolean>(() => {
     return !isMainnet.value && !isZkEvm.value;
   });
 
@@ -102,7 +102,7 @@ export function useNetworkInfo() {
     evmNetworkIdx,
     currentNetworkName,
     nativeTokenSymbol,
-    isSupportXvmTransfer,
+    isSupportAuTransfer,
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,

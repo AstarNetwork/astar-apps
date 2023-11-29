@@ -24,6 +24,13 @@
       <dapp-list category="Utility" />
       <dapp-list category="Others" />
     </div>
+
+    <Teleport to="#staking-top-bg">
+      <div
+        class="dapps-staking-bg"
+        :style="{ backgroundImage: `url(${isDarkTheme ? bg_img.dark : bg_img.light})` }"
+      />
+    </Teleport>
   </div>
   <div v-else />
 </template>
@@ -94,7 +101,13 @@ export default defineComponent({
       store.dispatch('dapps/getTvl');
     });
 
-    return { isReady, isZkEvm };
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const bg_img = {
+      light: require('/src/assets/img/dapps_staking_bg_light.webp'),
+      dark: require('/src/assets/img/dapps_staking_bg_dark.webp'),
+    };
+
+    return { isReady, isZkEvm, isDarkTheme, bg_img };
   },
 });
 </script>

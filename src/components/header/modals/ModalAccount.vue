@@ -226,6 +226,7 @@ export default defineComponent({
         const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
         wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
       }
+      store.commit('general/setCurrentWallet', props.selectedWallet);
       isSelected.value = true;
       isClosing.value = false;
       localStorage.removeItem(LOCAL_STORAGE.MULTISIG);

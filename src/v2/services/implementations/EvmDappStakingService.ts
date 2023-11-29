@@ -175,12 +175,13 @@ export class EvmDappStakingService implements IDappStakingService {
 
   public async getDapp(
     contractAddress: string,
-    network: string
+    network: string,
+    forEdit = false
   ): Promise<EditDappItem | undefined> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('network', network);
 
-    return await this.dappStakingRepository.getDapp(contractAddress, network);
+    return await this.dappStakingRepository.getDapp(contractAddress, network, forEdit);
   }
 
   public async getLedger(accountAddress: string): Promise<AccountLedger> {
