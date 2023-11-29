@@ -10,14 +10,17 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <div class="container">
-          <div v-if="isH160">
-            <evm-asset-list :tokens="evmAssets.assets" />
-          </div>
-          <div v-else>
-            <!-- Memo: hide xvm panel because AA might replace it -->
-            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+        <div v-if="isDappStakingV3">
+          <your-project />
+        </div>
+
+        <div v-if="isH160" class="container">
+          <evm-asset-list :tokens="evmAssets.assets" />
+        </div>
+
+        <div v-else>
+          <div v-if="isEnableXcm" class="container">
+            <xcm-native-asset-list :xcm-assets="xcmAssets.assets" />
           </div>
         </div>
       </div>
@@ -30,19 +33,23 @@
   </div>
 </template>
 <script lang="ts">
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { ApiPromise } from '@polkadot/api';
+import { $api } from 'src/boot/api';
 import Account from 'src/components/assets/Account.vue';
-import SideAds from 'src/components/assets/SideAds.vue';
-import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
+import SideAds from 'src/components/assets/SideAds.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
+import YourProject from 'src/components/assets/YourProject.vue';
+import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
+import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
+import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -51,6 +58,7 @@ export default defineComponent({
     AstarDomains,
     EvmAssetList,
     XcmNativeAssetList,
+    YourProject,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -59,10 +67,15 @@ export default defineComponent({
 
     const store = useStore();
     const { currentAccount } = useAccount();
+
     const { accountData } = useBalance(currentAccount);
     const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
+
+    const isDappStakingV3 = computed<boolean>(() => {
+      return checkIsDappStakingV3($api as ApiPromise);
+    });
 
     const evmNetworkId = computed(() => {
       return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
@@ -184,6 +197,7 @@ export default defineComponent({
       isModalXcmBridge,
       isLoading,
       bg,
+      isDappStakingV3,
     };
   },
 });
