@@ -78,17 +78,8 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getStakeInfo']
   );
 
-  const totalUserStake = computed<bigint>(() => {
-    let result = BigInt(0);
-
-    if (ledger.value?.stakedFuture) {
-      return ledger.value.stakedFuture.voting + ledger.value.stakedFuture.buildAndEarn;
-    } else if (ledger.value?.staked) {
-      return ledger.value.staked.voting + ledger.value.staked.buildAndEarn;
-    }
-
-    return result;
-  });
+  const isCurrentPeriod = (period: number): boolean =>
+    protocolState.value?.periodInfo.number === period;
 
   const hasStakerRewards = computed<boolean>(() => !!rewards.value?.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value?.dApp);
@@ -100,17 +91,11 @@ export function useDappStaking() {
   const totalStake = computed<bigint>(() => {
     let result = BigInt(0);
 
-    if (
-      ledger.value?.stakedFuture &&
-      ledger.value.stakedFuture.period === protocolState.value?.periodInfo.number
-    ) {
+    if (ledger.value?.stakedFuture && isCurrentPeriod(ledger.value.stakedFuture.period)) {
       result += !isRewardOrStakeExpired(ledger.value.stakedFuture.period)
         ? ledger.value.stakedFuture.voting + ledger.value.stakedFuture.buildAndEarn
         : BigInt(0);
-    } else if (
-      ledger.value &&
-      ledger.value.staked.period === protocolState.value?.periodInfo.number
-    ) {
+    } else if (ledger.value && isCurrentPeriod(ledger.value.staked.period)) {
       result += !isRewardOrStakeExpired(ledger.value.staked.period)
         ? ledger.value.staked.voting + ledger.value.staked.buildAndEarn
         : BigInt(0);
@@ -365,7 +350,7 @@ export function useDappStaking() {
     dAppTiers,
     isVotingPeriod,
     stakerInfo,
-    totalUserStake,
+    isCurrentPeriod,
     stake,
     unstake,
     claimStakerRewards,

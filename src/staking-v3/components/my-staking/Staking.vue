@@ -3,7 +3,7 @@
     <div class="wrapper--header">
       <div>{{ $t('common.staking') }}</div>
       <div class="total--rewards">
-        <token-balance-native :balance="totalUserStake?.toString() ?? '0'" />
+        <token-balance-native :balance="totalStake.toString() ?? '0'" />
       </div>
     </div>
     <tab-component
@@ -37,7 +37,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { ledger, rewards, stakerInfo, totalUserStake } = useDappStaking();
+    const { ledger, rewards, stakerInfo, totalStake } = useDappStaking();
     const currentTabIndex = ref<number>(0);
 
     const tabs = computed<TabDefinition[]>(() => [
@@ -50,7 +50,7 @@ export default defineComponent({
       () => (rewards?.value?.staker ?? BigInt(0)) + (rewards?.value?.bonus ?? BigInt(0))
     );
 
-    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalUserStake };
+    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalStake };
   },
 });
 </script>
