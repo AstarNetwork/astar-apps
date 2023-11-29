@@ -5,6 +5,7 @@
       :class="disableSelection && 'cursor--default'"
       @click="handleModalSelectDapp({ isOpen: true })"
     >
+      <div v-if="selectedDapp?.logoUrl"><img :src="selectedDapp?.logoUrl" class="logo" /></div>
       <div class="name">
         {{ selectedDapp?.name || placeholder }}
       </div>
@@ -75,5 +76,14 @@ export default defineComponent({
   line-height: normal;
   text-overflow: ellipsis;
   overflow: hidden;
+  margin-right: auto;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 8px;
 }
 </style>

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo } from '../models';
+import { CombinedDappInfo, DappStakeInfo, StakeAmount } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingRepository } from '../repositories';
@@ -202,6 +202,22 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  public async claimStakerAndBonusRewards(
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
+    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
+
+    const batch = await this.dappStakingRepository.batchAllCalls([
+      ...(claimStakerCalls ? claimStakerCalls : []),
+      ...(claimBonusCalls ? claimBonusCalls : []),
+    ]);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
   private async getClaimBonusRewardsCalls(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {
@@ -218,11 +234,10 @@ export class DappStakingService implements IDappStakingService {
   public async claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: Map<string, number>,
-    dappsToClaim: string[]
+    stakeInfo: DappStakeInfo[]
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
-    if (stakeInfo.size === 0) {
+    if (stakeInfo.length === 0) {
       throw 'No stakeInfo provided';
     }
     // TODO there is a possibility that some address is wrong or some amount is below min staking amount
@@ -233,11 +248,6 @@ export class DappStakingService implements IDappStakingService {
     // Staker rewards
     const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
     claimStakerCall && calls.push(...claimStakerCall);
-    // dApps rewards
-    for (const dApp of dappsToClaim) {
-      const claimDappCalls = await this.getClaimDappRewardsCalls(dApp);
-      claimDappCalls && calls.push(...claimDappCalls);
-    }
     // Bonus rewards
     const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
     claimBonusCalls && calls.push(...claimBonusCalls);
@@ -246,8 +256,8 @@ export class DappStakingService implements IDappStakingService {
       amountToLock > 0 ? await this.dappStakingRepository.getLockCall(amountToLock) : undefined;
     lockCall && calls.push(lockCall);
     // Stake tokens
-    for (let [key, value] of stakeInfo) {
-      calls.push(await this.dappStakingRepository.getStakeCall(key, value));
+    for (const info of stakeInfo) {
+      calls.push(await this.dappStakingRepository.getStakeCall(info.address, info.amount));
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
@@ -259,7 +269,7 @@ export class DappStakingService implements IDappStakingService {
   ): Promise<{ rewards: bigint; contractsToClaim: string[] }> {
     let result = { rewards: BigInt(0), contractsToClaim: Array<string>() };
     const [stakerInfo, protocolState, constants] = await Promise.all([
-      this.dappStakingRepository.getStakerInfo(senderAddress),
+      this.dappStakingRepository.getStakerInfo(senderAddress, true),
       this.dappStakingRepository.getProtocolState(),
       this.dappStakingRepository.getConstants(),
     ]);
@@ -288,6 +298,22 @@ export class DappStakingService implements IDappStakingService {
     return result;
   }
 
+  // @inheritdoc
+  public async claimUnlockedTokens(senderAddress: string): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
+    await this.signCall(call, senderAddress, 'success');
+  }
+
+  // @inheritdoc
+  public async relockUnlockingTokens(senderAddress: string): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();
+    await this.signCall(call, senderAddress, 'success');
+  }
+
   private async getDappRewardsAndErasToClaim(
     contractAddress: string
   ): Promise<{ rewards: bigint; erasToClaim: number[] }> {
@@ -314,10 +340,7 @@ export class DappStakingService implements IDappStakingService {
     // Find the first era to claim rewards from. If we are at the first period, then we need to
     // start from era 2 since era 1 was voting.
     const firstEra =
-      (protocolState &&
-        firstPeriod &&
-        (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra) ??
-      constants.standardErasPerVotingPeriod;
+      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0;
     const lastEra = protocolState!.era - 1;
 
     if (firstEra <= lastEra) {
@@ -359,8 +382,11 @@ export class DappStakingService implements IDappStakingService {
 
     let result = BigInt(0);
     if (
-      !protocolState ||
-      period < protocolState.periodInfo.number - constants.rewardRetentionInPeriods
+      this.hasRewardsExpired(
+        period,
+        protocolState!.periodInfo.number,
+        constants.rewardRetentionInPeriods
+      )
     ) {
       return result;
     }
@@ -393,6 +419,22 @@ export class DappStakingService implements IDappStakingService {
     return result;
   }
 
+  public async getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>> {
+    const protocolState = await this.dappStakingRepository.getProtocolState();
+    const result = new Map<number, StakeAmount | undefined>();
+    await Promise.all(
+      dappIds.map(async (dappId) => {
+        const contractStake = await this.dappStakingRepository.getContractStake(dappId);
+        const stake = contractStake.stakedFuture
+          ? contractStake.stakedFuture
+          : contractStake.staked;
+        result.set(dappId, protocolState!.periodInfo.number === stake.period ? stake : undefined);
+      })
+    );
+
+    return result;
+  }
+
   private async getStakerEraRange(senderAddress: string) {
     const [protocolState, ledger, constants] = await Promise.all([
       this.dappStakingRepository.getProtocolState(),
@@ -410,7 +452,9 @@ export class DappStakingService implements IDappStakingService {
     const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
     let lastStakedEra = 0;
 
-    if (lastStakedPeriod < currentPeriod - constants.rewardRetentionInPeriods) {
+    if (
+      this.hasRewardsExpired(lastStakedPeriod, currentPeriod, constants.rewardRetentionInPeriods)
+    ) {
       // Rewards expired.
       rewardsExpired = true;
     } else if (lastStakedPeriod < currentPeriod) {
@@ -440,6 +484,14 @@ export class DappStakingService implements IDappStakingService {
       rewardsExpired,
       eraRewardSpanLength: constants.eraRewardSpanLength,
     };
+  }
+
+  private hasRewardsExpired(
+    stakedPeriod: number,
+    currentPeriod: number,
+    rewardRetentionInPeriods: number
+  ): boolean {
+    return stakedPeriod < currentPeriod - rewardRetentionInPeriods;
   }
 
   private async signCall(

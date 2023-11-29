@@ -63,15 +63,12 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
 import {
   AccountLedgerChangedMessage,
   IDappStakingRepository,
-  IDappStakingService,
   ProtocolStateChangedMessage,
-  StakerInfoChangedMessage,
 } from './staking-v3';
-import { useDappStaking } from './staking-v3/hooks';
+import { useDappStaking, useDapps } from './staking-v3/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -88,7 +85,14 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
-    const { getAllRewards, getCurrentEraInfo, getDappTiers, isDappStakingV3 } = useDappStaking();
+    const {
+      getAllRewards,
+      getCurrentEraInfo,
+      getDappTiers,
+      fetchStakerInfoToStore,
+      isDappStakingV3,
+    } = useDappStaking();
+    const { fetchStakeAmountsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -107,7 +111,7 @@ export default defineComponent({
       showDisclaimerModal.value = isOpen;
     };
 
-    // Handle busy and extrisnsic call status messages.
+    // Handle busy and extrinsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
       const message = m as ExtrinsicStatusMessage;
@@ -149,6 +153,8 @@ export default defineComponent({
         getAllRewards(),
         getCurrentEraInfo(),
         getDappTiers(message.state.era - 1),
+        fetchStakeAmountsToStore(),
+        fetchStakerInfoToStore(),
       ]);
     });
 
@@ -157,12 +163,6 @@ export default defineComponent({
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
       console.log('ledger', message.ledger);
-    });
-
-    eventAggregator.subscribe(StakerInfoChangedMessage.name, (m) => {
-      if (!isDappStakingV3.value) return;
-      const message = m as StakerInfoChangedMessage;
-      store.commit('stakingV3/setStakerInfo', message.stakerInfo, { root: true });
     });
 
     // **** end dApp staking v3
@@ -178,10 +178,8 @@ export default defineComponent({
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
           .startAccountLedgerSubscription(currentAccount.value);
-
-        container
-          .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
-          .startGetStakerInfoSubscription(currentAccount.value);
+        fetchStakerInfoToStore();
+        getAllRewards();
 
         previousAddress = currentAccount.value;
       }
