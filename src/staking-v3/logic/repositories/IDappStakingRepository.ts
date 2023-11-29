@@ -36,7 +36,7 @@ export interface IDappStakingRepository {
    * Gets protocol state for the given network.
    * @param network The network to get protocol state for.
    */
-  getProtocolState(): Promise<ProtocolState>;
+  getProtocolState(): Promise<ProtocolState | undefined>;
 
   /**
    * Starts subscription to protocol state, so UI gets automatically updated when it changes.

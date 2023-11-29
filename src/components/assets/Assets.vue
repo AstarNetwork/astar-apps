@@ -46,6 +46,7 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
+import { useDappStaking } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
@@ -64,6 +65,7 @@ export default defineComponent({
     const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
+    const { isDappStakingV3 } = useDappStaking();
 
     const store = useStore();
     const { currentAccount } = useAccount();
@@ -72,10 +74,6 @@ export default defineComponent({
     const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
-
-    const isDappStakingV3 = computed<boolean>(() => {
-      return checkIsDappStakingV3($api as ApiPromise);
-    });
 
     const evmNetworkId = computed(() => {
       return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
