@@ -338,7 +338,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return this.mapsStakerInfo(
       stakerInfos,
-      protocolState.periodInfo.number,
+      protocolState!.periodInfo.number,
       includePreviousPeriods
     );
   }

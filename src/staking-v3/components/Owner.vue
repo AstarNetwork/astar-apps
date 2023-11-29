@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {},
+  // Todo: redirect to discover page if the connected account is not the owner
   setup() {
     const route = useRoute();
     const dappAddress = computed<string>(() => route.query.dapp as string);

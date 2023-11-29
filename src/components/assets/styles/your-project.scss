@@ -48,11 +48,17 @@
   width: 182px;
   background-color: $gray-1;
   border-radius: 16px;
-  display: flex;
   column-gap: 16px;
   height: 64px;
+  display: flex;
   align-items: center;
   padding: 16px;
+}
+
+.icon--dapp-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
 }
 
 .separator {

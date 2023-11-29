@@ -23,6 +23,7 @@ export {
   getHeaderName,
   buildXvmTransferPageLink,
   buildEthereumBridgePageLink,
+  buildOwnerPageLink,
 } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
@@ -44,6 +45,7 @@ export enum Path {
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
   Vote = '/vote',
+  Owner = '/owner',
 }
 
 const routes: RouteRecordRaw[] = [

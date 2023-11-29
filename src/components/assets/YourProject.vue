@@ -1,15 +1,22 @@
 <template>
-  <div class="container">
+  <div v-if="ownDapps.length > 0" class="container">
     <div class="wrapper--your-project">
       <div class="row--title">
         <span class="text--title">Your Project</span>
       </div>
       <div class="separator" />
       <div class="box--dapps">
-        <div class="card--dapp">
-          <div>Img</div>
-          <div>Name</div>
-        </div>
+        <router-link
+          v-for="dapp in ownDapps"
+          :key="dapp.basic.address"
+          :to="buildOwnerPageLink(dapp.basic.address)"
+          class="card--dapp"
+        >
+          <img class="icon--dapp-logo" :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
+          <div>
+            <span>{{ dapp.basic.name }}</span>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -17,8 +24,9 @@
 
 <script lang="ts">
 import { useAccount, useClaimAll, useNetworkInfo } from 'src/hooks';
+import { buildOwnerPageLink } from 'src/router/routes';
 import { CombinedDappInfo, useDapps } from 'src/staking-v3';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   setup() {
@@ -30,7 +38,8 @@ export default defineComponent({
       if (!registeredDapps.value) return [];
       return registeredDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
     });
-    return {};
+
+    return { ownDapps, buildOwnerPageLink };
   },
 });
 </script>
