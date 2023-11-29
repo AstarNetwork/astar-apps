@@ -34,8 +34,6 @@
 </template>
 <script lang="ts">
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
-import { ApiPromise } from '@polkadot/api';
-import { $api } from 'src/boot/api';
 import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import SideAds from 'src/components/assets/SideAds.vue';
@@ -45,7 +43,6 @@ import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
-import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { useDappStaking } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';

@@ -27,7 +27,7 @@
     "generate:defs": "node ./node_modules/.bin/polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces/ --input ./src/staking-v3/logic/interfaces/temp --endpoint ./src/staking-v3/logic/astar.json"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.2.5",
+    "@astar-network/astar-sdk-core": "^0.2.7",
     "@astar-network/astar-ui": "^0.0.136",
     "@astar-network/metamask-astar-adapter": "^0.5.4",
     "@astar-network/metamask-astar-types": "^0.6.1",
