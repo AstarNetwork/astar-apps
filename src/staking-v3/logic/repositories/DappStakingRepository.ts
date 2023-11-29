@@ -3,6 +3,7 @@ import {
   AccountLedger,
   AccountLedgerChangedMessage,
   Constants,
+  ContractStakeAmount,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -16,7 +17,6 @@ import {
   ProtocolStateChangedMessage,
   SingularStakingInfo,
   StakeAmount,
-  StakerInfoChangedMessage,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
@@ -24,6 +24,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
+  PalletDappStakingV3ContractStakeAmount,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3DAppTierRewards,
   PalletDappStakingV3EraInfo,
@@ -294,6 +295,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       standardErasPerVotingPeriod: (<u32>(
         api.consts.dappStaking.standardErasPerVotingPeriod
       )).toNumber(),
+      unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
     };
   }
 
@@ -319,33 +321,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  private stakerInfoUnsubscribe: Function | undefined = undefined;
-  //* @inheritdoc
-  public async startGetStakerInfoSubscription(address: string): Promise<void> {
+  public async getStakerInfo(
+    address: string,
+    includePreviousPeriods = false
+  ): Promise<Map<string, SingularStakingInfo>> {
     Guard.ThrowIfUndefined(address, 'address');
+
     const api = await this.api.getApi();
+    const [stakerInfos, protocolState] = await Promise.all([
+      api.query.dappStaking.stakerInfo.entries(address),
+      this.getProtocolState(),
+    ]);
 
-    if (this.stakerInfoUnsubscribe) {
-      this.stakerInfoUnsubscribe();
-    }
-
-    const unsubscribe = await api.query.dappStaking.stakerInfo.entries(
-      address,
-      (stakers: [StorageKey<AnyTuple>, Codec][]) => {
-        const result = this.mapsStakerInfo(stakers);
-        this.eventAggregator.publish(new StakerInfoChangedMessage(result));
-      }
+    return this.mapsStakerInfo(
+      stakerInfos,
+      protocolState.periodInfo.number,
+      includePreviousPeriods
     );
-
-    this.stakerInfoUnsubscribe = unsubscribe as unknown as Function;
-  }
-
-  public async getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>> {
-    Guard.ThrowIfUndefined(address, 'address');
-
-    const api = await this.api.getApi();
-    const stakerInfos = await api.query.dappStaking.stakerInfo.entries(address);
-    return this.mapsStakerInfo(stakerInfos);
   }
 
   //* @inheritdoc
@@ -392,6 +384,26 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  public async getContractStake(dappId: number): Promise<ContractStakeAmount> {
+    const api = await this.api.getApi();
+    const contractStake =
+      await api.query.dappStaking.contractStake<PalletDappStakingV3ContractStakeAmount>(dappId);
+
+    return this.mapContractStakeAmount(contractStake);
+  }
+
+  //* @inheritdoc
+  public async getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.claimUnlocked();
+  }
+
+  //* @inheritdoc
+  public async getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.relockUnlocking();
+  }
+
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
       era: state.era.toNumber(),
@@ -411,6 +423,17 @@ export class DappStakingRepository implements IDappStakingRepository {
       buildAndEarn: dapp.buildAndEarn.toBigInt(),
       era: dapp.era.toNumber(),
       period: dapp.period.toNumber(),
+    };
+  }
+
+  private mapContractStakeAmount(
+    amount: PalletDappStakingV3ContractStakeAmount
+  ): ContractStakeAmount {
+    return {
+      staked: this.mapStakeAmount(amount.staked),
+      stakedFuture: amount.stakedFuture.isSome
+        ? this.mapStakeAmount(amount.stakedFuture.unwrap())
+        : undefined,
     };
   }
 
@@ -444,7 +467,9 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   private mapsStakerInfo(
-    stakers: [StorageKey<AnyTuple>, Codec][]
+    stakers: [StorageKey<AnyTuple>, Codec][],
+    currentPeriod: number,
+    includePreviousPeriods: boolean
   ): Map<string, SingularStakingInfo> {
     const result = new Map<string, SingularStakingInfo>();
     stakers.forEach(([key, value]) => {
@@ -454,7 +479,10 @@ export class DappStakingRepository implements IDappStakingRepository {
         const unwrappedValue = v.unwrap();
         const address = this.getContractAddress(key.args[1] as unknown as SmartContractAddress);
 
-        if (address) {
+        if (
+          address &&
+          (unwrappedValue.staked.period.toNumber() === currentPeriod || includePreviousPeriods)
+        ) {
           result.set(address, <SingularStakingInfo>{
             loyalStaker: unwrappedValue.loyalStaker.isTrue,
             staked: this.mapStakeAmount(unwrappedValue.staked),
@@ -463,6 +491,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       }
     });
 
+    console.log('Staker info size: ' + result.size);
     return result;
   }
 }

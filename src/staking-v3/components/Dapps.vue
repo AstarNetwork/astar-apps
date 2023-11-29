@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--dapps">
     <div v-for="(dapp, index) in registeredDapps" :key="index">
-      <div v-if="dapp" class="card--dapp" @click="goDappPageLink(dapp.basic.address)">
+      <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
         <div class="card__top">
           <div>
             <img :src="dapp.basic.iconUrl" alt="icon" class="icon--dapp" />
@@ -18,7 +18,9 @@
             <span class="text--label">2,432</span>
           </div>
           <div>
-            <span class="text--label">1.078M ASTR</span>
+            <span class="text--label">
+              <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+            </span>
           </div>
         </div>
       </div>
@@ -27,24 +29,20 @@
 </template>
 
 <script lang="ts">
-import { Path, networkParam } from 'src/router/routes';
 import { defineComponent } from 'vue';
-import { useDappStaking, useDapps } from '../hooks';
-import { useRouter } from 'vue-router';
+import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
+  components: {
+    TokenBalanceNative,
+  },
   setup() {
     const { registeredDapps } = useDapps();
     const { getDappTier } = useDappStaking();
-    const router = useRouter();
+    const { navigateDappPage } = useDappStakingNavigation();
 
-    const goDappPageLink = (address: string): void => {
-      const base = networkParam + Path.DappStaking + Path.Dapp;
-      const url = `${base}?dapp=${address?.toLowerCase()}`;
-      router.push(url);
-    };
-
-    return { registeredDapps, getDappTier, goDappPageLink };
+    return { registeredDapps, getDappTier, navigateDappPage };
   },
 });
 </script>

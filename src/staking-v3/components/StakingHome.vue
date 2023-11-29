@@ -22,14 +22,11 @@
 <script lang="ts">
 import { defineComponent, onMounted, watch } from 'vue';
 import { useAccount } from 'src/hooks';
-import { useDappStaking, useDapps } from '../hooks';
-import { Path, networkParam } from 'src/router/routes';
-import { useRouter } from 'vue-router';
+import { useDappStaking, useDapps, useDappStakingNavigation } from '../hooks';
 
 export default defineComponent({
   components: {},
   setup() {
-    const router = useRouter();
     const { registeredDapps, fetchDappsToStore, fetchDappToStore } = useDapps();
     const {
       protocolState,
@@ -44,12 +41,8 @@ export default defineComponent({
       claimBonusRewards,
       getAllRewards,
     } = useDappStaking();
+    const { navigateToVote } = useDappStakingNavigation();
     const { currentAccount } = useAccount();
-
-    const navigateToVote = (): void => {
-      const base = networkParam + Path.DappStaking + Path.Vote;
-      router.push(base);
-    };
 
     onMounted(async () => {
       await fetchDappsToStore();

@@ -34,10 +34,12 @@ export class AccountLedgerChangedMessage {
 }
 
 /**
- * Used to notify subscribers about staker info changes.
+ * Contains info required to stake to a dApp.
  */
-export class StakerInfoChangedMessage {
-  constructor(public stakerInfo: Map<string, SingularStakingInfo>) {}
+export interface DappStakeInfo {
+  id: number;
+  address: string;
+  amount: number;
 }
 
 /**
@@ -105,6 +107,7 @@ export interface Constants {
   maxNumberOfContracts: number;
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
+  unlockingPeriod: number;
 }
 
 export interface DAppTierRewards {
@@ -130,4 +133,11 @@ export interface EraInfo {
   readonly unlocking: bigint;
   readonly currentStakeAmount: StakeAmount;
   readonly nextStakeAmount?: StakeAmount;
+}
+
+export interface ContractStakeAmount {
+  readonly staked: StakeAmount;
+  readonly stakedFuture?: StakeAmount;
+  //tierLabel is not used ATM.
+  //tierLabel?: TierLabel;
 }
