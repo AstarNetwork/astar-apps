@@ -8,21 +8,10 @@ import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
 import jsonParachainSpecTokyo from './chain-specs/tokyo.json';
 import { WellKnownChain } from '@substrate/connect';
+import { storedEvmAddressMapping } from 'src/hooks/helper/addressUtils';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  databaseURL: 'https://DATABASE_NAME.firebaseio.com',
-  projectId: 'ep-test-40025',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-  appId: 'YOUR_APP_ID',
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -184,20 +173,57 @@ export async function connectApi(
 
   try {
     await api.isReady;
-    const endTime = performance.now();
-    const responseTime = endTime - startTime;
-    const timestamp = new Date().toISOString();
 
-    // Create the document in Firestore
-    const docRef = await collection(db, 'response_times');
-    await addDoc(docRef, {
-      endpoint: endpoint,
-      responseTime: responseTime,
-      timestamp: timestamp,
-      clientIp: clientIp,
+    interface FirebaseConfig {
+      apiKey: string;
+      authDomain: string;
+      databaseURL: string;
+      projectId: string;
+      storageBucket: string;
+      messagingSenderId: string;
+      appId: string;
+    }
+
+    const secret_name = 'gcp-sa';
+    const client = new SecretsManagerClient({
+      region: 'ap-northeast-1',
     });
 
-    console.log('Document written with ID: ', docRef.id);
+    let secrets;
+    try {
+      secrets = await client.send(
+        new GetSecretValueCommand({
+          SecretId: secret_name,
+          VersionStage: 'AWSCURRENT',
+        })
+      );
+    } catch (error) {
+      throw error;
+    }
+
+    let firebaseConfig = JSON.parse(secrets.SecretString || '{}') as FirebaseConfig;
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+
+    const endTime = performance.now();
+    const responseTime = parseFloat(((endTime - startTime) / 1000).toFixed(3));
+    const timestamp = Timestamp.now();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const address =
+      localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS) === 'Ethereum Extension'
+        ? storedEvmAddressMapping()[0]?.evm
+        : localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+
+    const colRef = collection(db, 'response_times');
+    const response = await addDoc(colRef, {
+      endpoint,
+      responseTime,
+      timestamp,
+      timezone,
+      address,
+    });
+    console.log('response.id', response.id);
 
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
