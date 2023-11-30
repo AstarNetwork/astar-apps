@@ -95,7 +95,7 @@ export default defineComponent({
       fetchTiersConfigurationToStore,
       isDappStakingV3,
     } = useDappStaking();
-    const { fetchStakeAmountsToStore } = useDapps();
+    const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -156,6 +156,7 @@ export default defineComponent({
         store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
         console.log('protocol state', message.state);
+        await fetchDappsToStore();
         await Promise.all([
           getAllRewards(),
           getCurrentEraInfo(),
