@@ -183,7 +183,7 @@ export default {
       introduce: 'Introducing new technology, unified account',
       general: 'General',
       onceUnified: 'Once accounts are unified, they will not be separated.',
-      evmWallet: 'EVM wallet (Metamask only)',
+      evmWallet: 'EVM wallet (MetaMask only)',
       brandNewAccount: 'A brand-new empty account is recommended.',
       unstakedFirst:
         'If the EVM account holds any staked ASTR token, those need to be unstaked first, it will not be merged automatically.',
@@ -227,6 +227,19 @@ export default {
       noNfts:
         "You don't have NFTs minted at the moment. When you mint some you will be able to update your unified account with a NFT. For the moment default icon will be used.",
     },
+  },
+  snap: {
+    name: 'Astar Snap',
+    purpose: '',
+    description:
+      'Astar Snap is a new wallet that generates an Astar Native address within MetaMask. By installing Astar Snap, you will obtain a substrate address and be able to sign transactions.',
+    documentation: 'Check the documentation',
+    pleaseNote: 'Please note',
+    pn1: 'Make sure you have MetaMask installed in your browser (if not please check https://metamask.io/)',
+    pn2: 'Only one substrate address is created per MetaMask account',
+    pn3: 'Crosschain transfers (XCM) are not recommended until the other chain supports Astar Snap',
+    install: 'Install the Astar Snap in MetaMask',
+    gotoAssets: 'Go to Assets',
   },
   installWallet: {
     getWallet: 'Haven’t got {value} yet?',

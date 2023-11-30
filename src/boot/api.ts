@@ -17,7 +17,7 @@ import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
-import { initiatePolkdatodSnap } from 'src/modules/snap';
+import { initiatePolkadotSnap } from 'src/modules/snap';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 
 let $api: ApiPromise | undefined;
@@ -146,7 +146,7 @@ export default boot(async ({ store }) => {
   const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
 
   if (wallet === SupportWallet.Snap) {
-    const isSnapInstalled = await initiatePolkdatodSnap();
+    const isSnapInstalled = await initiatePolkadotSnap();
     isSnapInstalled && (await initPolkadotSnap());
   }
 

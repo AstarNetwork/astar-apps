@@ -7,6 +7,7 @@ import BridgeSelection from 'src/components/bridge/BridgeSelection.vue';
 import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import Snap from 'src/pages/Snap.vue';
 import Store from 'src/pages/DappStaking.vue';
 import StakingTop from 'components/dapp-staking/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
@@ -40,6 +41,7 @@ export enum Path {
   Transfer = '/transfer',
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
+  Snap = '/snap',
 }
 
 const routes: RouteRecordRaw[] = [
@@ -157,6 +159,11 @@ const routes: RouteRecordRaw[] = [
         component: RegisterDapp,
       },
     ],
+  },
+  {
+    path: Path.Snap,
+    name: 'Snap',
+    component: Snap,
   },
 
   // Always leave this as last one,
