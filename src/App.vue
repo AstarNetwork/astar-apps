@@ -85,8 +85,13 @@ export default defineComponent({
     useAppRouter();
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
-    const { getAllRewards, getCurrentEraInfo, getDappTiers, fetchStakerInfoToStore } =
-      useDappStaking();
+    const {
+      getAllRewards,
+      getCurrentEraInfo,
+      getDappTiers,
+      fetchStakerInfoToStore,
+      isDappStakingV3,
+    } = useDappStaking();
     const { fetchStakeAmountsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
@@ -139,6 +144,7 @@ export default defineComponent({
     // **** dApp staking v3
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
+      if (!isDappStakingV3.value) return;
       const message = m as ProtocolStateChangedMessage;
       store.commit('stakingV3/setProtocolState', message.state, { root: true });
 
@@ -153,6 +159,7 @@ export default defineComponent({
     });
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
+      if (!isDappStakingV3.value) return;
       const message = m as AccountLedgerChangedMessage;
       store.commit('stakingV3/setLedger', message.ledger, { root: true });
       console.log('ledger', message.ledger);
@@ -166,6 +173,7 @@ export default defineComponent({
       setCurrentWallet(isEthWallet.value, currentWallet.value);
 
       // Subscribe to an account specific dApp staking v3 data.
+      if (!isDappStakingV3.value) return;
       if (currentAccount.value && currentAccount.value !== previousAddress) {
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)

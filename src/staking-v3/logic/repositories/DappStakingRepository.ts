@@ -1,3 +1,4 @@
+import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
@@ -69,8 +70,9 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getProtocolState(): Promise<ProtocolState> {
+  public async getProtocolState(): Promise<ProtocolState | undefined> {
     const api = await this.api.getApi();
+    if (!checkIsDappStakingV3(api)) return undefined;
     const state =
       await api.query.dappStaking.activeProtocolState<PalletDappStakingV3ProtocolState>();
 
@@ -81,6 +83,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   private protocolStateSubscription: Function | undefined = undefined;
   public async startProtocolStateSubscription(): Promise<void> {
     const api = await this.api.getApi();
+    if (!checkIsDappStakingV3(api)) return undefined;
 
     if (this.protocolStateSubscription) {
       this.protocolStateSubscription();
@@ -335,7 +338,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return this.mapsStakerInfo(
       stakerInfos,
-      protocolState.periodInfo.number,
+      protocolState!.periodInfo.number,
       includePreviousPeriods
     );
   }
