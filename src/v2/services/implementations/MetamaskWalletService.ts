@@ -1,4 +1,3 @@
-import { getEvmGas } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
@@ -18,7 +17,6 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { checkIsSetGasByWallet } from 'src/config/web3';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -126,27 +124,22 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       const web3 = new Web3(this.provider as any);
       const [nonce, gasPrice] = await Promise.all([
         web3.eth.getTransactionCount(from),
-        // memo, ignore gas station for now.
-        getEvmGas(web3, '0'),
+        web3.eth.getGasPrice(),
       ]);
 
+      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const rawTx = {
         nonce,
         from,
         to,
         value: value ? value : '0x0',
         data,
+        gasPrice: web3.utils.toHex(multipliedGas.toString()),
       };
 
-      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
-      const connectedChainId = await web3.eth.net.getId();
-      const isSetGasByWallet = checkIsSetGasByWallet(connectedChainId);
-      const txParam = isSetGasByWallet
-        ? rawTx
-        : { ...rawTx, gasPrice: web3.utils.toHex(multipliedGas.toString()) };
-      const estimatedGas = await web3.eth.estimateGas(txParam);
+      const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
-        .sendTransaction({ ...txParam, gas: estimatedGas })
+        .sendTransaction({ ...rawTx, gas: estimatedGas })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })

@@ -11,7 +11,6 @@ export {
   getTokenDetails,
   getNativeBalance,
   getTransactionTimestamp,
-  checkIsSetGasByWallet,
   checkAllowance,
   getTokenImage,
 } from 'src/config/web3/utils';

@@ -1,12 +1,12 @@
-import { SupportWallet } from 'src/config/wallets';
+import { GasPrice, SelectedGas, Speed, fetchEvmGasPrice } from '@astar-network/astar-sdk-core';
 import { $web3 } from 'boot/api';
-import { useStore } from 'src/store';
-import { ref, watchEffect, computed, watch } from 'vue';
-import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '@astar-network/astar-sdk-core';
-import { GasPriceChangedMessage, TipPriceChangedMessage, IEventAggregator } from 'src/v2/messaging';
-import { container } from 'src/v2/common';
-import { Symbols } from 'src/v2/symbols';
+import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { IEventAggregator, TipPriceChangedMessage } from 'src/v2/messaging';
+import { Symbols } from 'src/v2/symbols';
+import { computed, ref, watch, watchEffect } from 'vue';
 
 const initialGasPrice = {
   slow: '0',
@@ -16,13 +16,8 @@ const initialGasPrice = {
 };
 
 export const useGasPrice = (isFetch = false) => {
-  const selectedGas = ref<SelectedGas>({ speed: 'average', price: '0' });
   const selectedTip = ref<SelectedGas>({ speed: 'average', price: '0' });
-  const evmGasPrice = ref<GasPrice>(initialGasPrice);
   const nativeTipPrice = ref<GasPrice>(initialGasPrice);
-
-  // Memo: Actual gas cost calculated by evmGasPrice and transaction data
-  const evmGasCost = ref<GasPrice>(initialGasPrice);
 
   const store = useStore();
   const gas = computed(() => store.getters['general/getGas']);
@@ -30,19 +25,8 @@ export const useGasPrice = (isFetch = false) => {
   const network = computed<string>(() => {
     return isMainnet ? currentNetworkName.value.toLowerCase() : 'shibuya';
   });
+
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const isShibuyaEvm = computed<boolean>(() => isH160.value && network.value === 'shibuya');
-
-  const setSelectedGas = (speed: Speed): void => {
-    selectedGas.value = {
-      speed,
-      price: evmGasPrice.value[speed],
-    };
-
-    // Notify of gas price change.
-    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-    eventAggregator.publish(new GasPriceChangedMessage(selectedGas.value));
-  };
 
   const setSelectedTip = (speed: Speed): void => {
     selectedTip.value = {
@@ -56,9 +40,6 @@ export const useGasPrice = (isFetch = false) => {
   };
 
   const updateDefaultSelectedGasValue = (): void => {
-    if (selectedGas.value.price === '0') {
-      setSelectedGas('average');
-    }
     if (selectedTip.value.price === '0') {
       setSelectedTip('average');
     }
@@ -66,12 +47,12 @@ export const useGasPrice = (isFetch = false) => {
 
   const setGasPrice = (): void => {
     if (!network.value || !gas.value) return;
-    evmGasPrice.value = gas.value.evmGasPrice;
     nativeTipPrice.value = gas.value.nativeTipPrice;
   };
 
   const dispatchGasPrice = async (network: string): Promise<void> => {
     try {
+      // Todo: remove `evmGasPrice` object
       const result = await fetchEvmGasPrice({
         network,
         isEip1559: false,
@@ -89,15 +70,13 @@ export const useGasPrice = (isFetch = false) => {
       currentWallet !== SupportWallet.TalismanEvm &&
       currentWallet !== SupportWallet.SubWalletEvm &&
       currentWallet !== SupportWallet.OneKeyEvm &&
-      !isShibuyaEvm.value &&
-      !isZkEvm.value
+      !isH160.value
     );
   });
 
   watch(
     [network, $web3],
     async () => {
-      // Todo: update the logic for zkEVM
       if (
         isFetch &&
         network.value &&
@@ -122,10 +101,6 @@ export const useGasPrice = (isFetch = false) => {
   });
 
   return {
-    evmGasPrice,
-    selectedGas,
-    setSelectedGas,
-    evmGasCost,
     selectedTip,
     nativeTipPrice,
     setSelectedTip,

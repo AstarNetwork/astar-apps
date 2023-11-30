@@ -106,9 +106,9 @@
 
       <speed-configuration
         v-if="isEnableSpeedConfiguration"
-        :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
-        :selected-gas="isH160 ? selectedGas : selectedTip"
-        :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
       />
 
       <div
@@ -243,11 +243,8 @@ export default defineComponent({
       isChecked,
       isH160,
       isRequiredCheck,
-      selectedGas,
-      evmGasCost,
       isTransferNativeToken,
       isEnableSpeedConfiguration,
-      setSelectedGas,
       inputHandler,
       setSelectedTip,
       transferAsset,
@@ -279,9 +276,7 @@ export default defineComponent({
       fromAddressBalance,
       isChecked,
       isEnableSpeedConfiguration,
-      evmGasCost,
       nativeTipPrice,
-      selectedGas,
       selectedTip,
       isH160,
       isRequiredCheck,
@@ -292,7 +287,6 @@ export default defineComponent({
       currentNetworkName,
       isSupportAuTransfer,
       isValidEvmAddress,
-      setSelectedGas,
       setSelectedTip,
       transfer,
       toMaxAmount,

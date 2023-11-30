@@ -304,23 +304,6 @@ export const fetchErc20TokenInfo = async ({
   }
 };
 
-export const checkIsSetGasByWallet = (chainId: EVM): boolean => {
-  switch (chainId) {
-    case EVM.SHIBUYA_TESTNET:
-      return true;
-    case EVM.ZKATANA_TESTNET:
-      return true;
-    case EVM.SEPOLIA_TESTNET:
-      return true;
-    case EVM.ETHEREUM_MAINNET:
-      return true;
-    case EVM.ASTAR_ZKEVM_MAINNET:
-      return true;
-    default:
-      return false;
-  }
-};
-
 export const getTransactionTimestamp = async ({
   web3,
   transactionHash,
