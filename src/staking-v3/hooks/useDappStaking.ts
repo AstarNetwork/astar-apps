@@ -35,6 +35,8 @@ export function useDappStaking() {
   const { decimal } = useChainMetadata();
   const { useableBalance } = useBalance(currentAccount);
 
+  const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
+
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
   );
@@ -374,6 +376,7 @@ export function useDappStaking() {
     stakerInfo,
     tiersConfiguration,
     totalStakerRewards,
+    currentBlock,
     isCurrentPeriod,
     stake,
     unstake,

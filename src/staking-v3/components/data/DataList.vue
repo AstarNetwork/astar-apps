@@ -34,8 +34,14 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { protocolState, constants, currentEraInfo, dAppTiers, tiersConfiguration } =
-      useDappStaking();
+    const {
+      protocolState,
+      constants,
+      currentEraInfo,
+      dAppTiers,
+      tiersConfiguration,
+      currentBlock,
+    } = useDappStaking();
     const { registeredDapps } = useDapps();
 
     const periodName = computed<string>(() =>
@@ -50,12 +56,29 @@ export default defineComponent({
         : constants.value?.standardErasPerBuildAndEarnPeriod
     );
 
-    const periodCurrentDay = computed<number>(
-      () =>
-        (periodDuration.value ?? 0) -
-        ((protocolState.value?.periodInfo.subperiodEndEra ?? 0) - (protocolState.value?.era ?? 0)) +
-        1
-    );
+    const periodCurrentDay = computed<number | undefined>(() => {
+      if (!protocolState.value || !constants.value) {
+        return undefined;
+      }
+
+      if (protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn) {
+        return (
+          (periodDuration.value ?? 0) -
+          (protocolState.value.periodInfo.subperiodEndEra - protocolState.value.era) +
+          1
+        );
+      } else {
+        // Voting is a bit special case. The subperiod takes standardErasPerVotingPeriod time,
+        // but at the end of the period era number will increase by 1.
+        return (
+          constants.value.standardErasPerVotingPeriod -
+          Math.floor(
+            (protocolState.value.nextEraStart - currentBlock.value) /
+              constants.value.standardEraLength
+          )
+        );
+      }
+    });
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
     const tvl = computed<string>(() => (currentEraInfo.value?.totalLocked ?? BigInt(0)).toString());
