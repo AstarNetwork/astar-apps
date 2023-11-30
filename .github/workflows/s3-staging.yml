@@ -1,6 +1,6 @@
 name: Deploy to S3 Staging
 'on':
-  push:
+  pull_request:
     branches:
       - main
 jobs:
@@ -17,6 +17,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION2 }}
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/spa  s3://astar-apps-staging --delete
