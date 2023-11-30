@@ -29,32 +29,6 @@
           </span>
         </div>
       </div>
-      <div class="separator--statistics" />
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.currentTier') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            {{ $n(1) }}
-          </span>
-        </div>
-      </div>
-      <div class="separator--statistics" />
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.totalEarned') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            {{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}
-          </span>
-        </div>
-      </div>
     </div>
   </div>
 </template>

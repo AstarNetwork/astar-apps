@@ -1,4 +1,4 @@
-import { CombinedDappInfo, DappStakeInfo, StakeAmount } from '../models';
+import { CombinedDappInfo } from '../models';
 
 /**
  * @interface IDappStakingService interface for a service containing business logic for dapp staking.
@@ -85,13 +85,6 @@ export interface IDappStakingService {
   claimBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
-   * Invokes calls to claim staker bonus rewards calls.
-   * @param senderAddress Address of the request sender.
-   * @param successMessage Message to be displayed on the call success.
-   */
-  claimStakerAndBonusRewards(senderAddress: string, successMessage: string): Promise<void>;
-
-  /**
    * Batches and invokes multiple calls
    * 1. Claims staker, dApp and bonus rewards if available
    * 2. Locks a given tokens amount
@@ -104,28 +97,9 @@ export interface IDappStakingService {
   claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: DappStakeInfo[]
+    stakeInfo: Map<string, number>,
+    dappsToClaim: string[]
   ): Promise<void>;
 
   getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;
-
-  /**
-   * Gets contract stake amounts for a given dApps ids.
-   * @param dappIds dApps ids to get stake amounts for.
-   * @returns A map containing dApp id and stake amount. If stake amount is undefined, it means that
-   *         there is no stakes for the dApp in the current period.
-   */
-  getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>>;
-
-  /**
-   * Claims all fully unlocked tokens.
-   * @param senderAddress Address of the request sender.
-   */
-  claimUnlockedTokens(senderAddress: string): Promise<void>;
-
-  /**
-   * Re locks all unbonding chunks.
-   * @param senderAddress Address of the request sender.
-   */
-  relockUnlockingTokens(senderAddress: string): Promise<void>;
 }

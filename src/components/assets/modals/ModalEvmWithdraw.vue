@@ -21,7 +21,7 @@
         <astar-button
           :disabled="0 >= numEvmDeposit"
           class="button--confirm"
-          @click="handleWithdraw"
+          @click="sendTransaction"
         >
           {{ $t('confirm') }}
         </astar-button>
@@ -64,16 +64,10 @@ export default defineComponent({
     };
     const { numEvmDeposit, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
       useEvmDeposit();
-
-    const handleWithdraw = async (): Promise<void> => {
-      await closeModal();
-      await sendTransaction();
-    };
-
     return {
       closeModal,
       numEvmDeposit,
-      handleWithdraw,
+      sendTransaction,
       isClosingModal,
       selectedTip,
       nativeTipPrice,

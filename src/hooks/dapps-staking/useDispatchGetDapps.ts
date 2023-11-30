@@ -6,7 +6,7 @@ import { computed, watch } from 'vue';
 export function useDispatchGetDapps() {
   const store = useStore();
   const { isZkEvm, networkNameSubstrate } = useNetworkInfo();
-  const { senderSs58Account } = useAccount();
+  const { currentAccount } = useAccount();
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
   // Memo: invoke this function whenever the users haven't connect to wallets
@@ -17,30 +17,30 @@ export function useDispatchGetDapps() {
 
     const isBrowsingOnly = !!(
       dapps.value.length === 0 &&
-      !senderSs58Account.value &&
+      !currentAccount.value &&
       networkNameSubstrate.value
     );
 
     if (isBrowsingOnly || isZkEvm.value) {
       store.dispatch('dapps/getDapps', {
         network: networkNameSubstrate.value.toLowerCase(),
-        senderSs58Account: '',
+        currentAccount: '',
       });
     }
   };
 
   const getDapps = async (): Promise<void> => {
-    const isConnectedWallet = networkNameSubstrate.value && senderSs58Account.value;
+    const isConnectedWallet = networkNameSubstrate.value && currentAccount.value;
     if (isConnectedWallet && !isZkEvm.value) {
-      const address = !senderSs58Account.value ? '' : senderSs58Account.value;
+      const address = !currentAccount.value ? '' : currentAccount.value;
       store.dispatch('dapps/getDapps', {
         network: networkNameSubstrate.value.toLowerCase(),
-        senderSs58Account: address,
+        currentAccount: address,
       });
     } else {
       getDappsForBrowser();
     }
   };
 
-  watch([senderSs58Account, networkNameSubstrate], getDapps, { immediate: true });
+  watch([currentAccount, networkNameSubstrate], getDapps, { immediate: true });
 }

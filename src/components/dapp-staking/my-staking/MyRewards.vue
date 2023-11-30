@@ -138,15 +138,11 @@
       <q-icon name="warning" size="20px" class="q-mr-sm" />
       <div>{{ $t('dappStaking.cantClaimWihtoutError') }}</div>
     </div>
+    <!-- TODO: Add a link to the doc -->
     <div v-if="isDappDeveloper" class="info--dapps-owners">
       <span>{{ $t('new') }}</span>
       {{ $t('myReward.dappsOwners') }}
-      <a
-        href="https://docs.astar.network/docs/build/dapp-staking/for-devs/create-promotion/"
-        target="_blank"
-        rel="noopener noreferrer"
-        >{{ $t('myReward.dappsOwnersLink') }}</a
-      >
+      <a href="#" target="_blank" rel="noopener noreferrer">{{ $t('myReward.dappsOwnersLink') }}</a>
     </div>
   </div>
 </template>

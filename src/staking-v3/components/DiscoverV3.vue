@@ -1,10 +1,8 @@
 <template>
   <div class="wrapper--discover">
     <!-- Todo: Delete -->
-    <!-- <staking-home /> -->
+    <staking-home />
     <feature-dapp />
-    <staking />
-    <leaderboard />
     <ad />
     <dapps />
   </div>
@@ -12,19 +10,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import StakingHome from './StakingHome.vue';
 import FeatureDapp from './FeatureDapp.vue';
 import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
-import Leaderboard from './leaderboard/Leaderboard.vue';
-import Staking from './my-staking/Staking.vue';
 
 export default defineComponent({
   components: {
+    StakingHome,
     FeatureDapp,
     Ad,
     Dapps,
-    Leaderboard,
-    Staking,
   },
   setup() {
     return {};

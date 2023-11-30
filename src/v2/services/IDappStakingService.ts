@@ -91,13 +91,8 @@ export interface IDappStakingService {
    * Gets dapp data from Firebase.
    * @param contractAddress Dapp contract address.
    * @param network Name of the network where dapp has been deployed.
-   * @param forEdit Flag to indicate if dapp data should be fetched with encoded images.
    */
-  getDapp(
-    contractAddress: string,
-    network: string,
-    forEdit?: boolean
-  ): Promise<EditDappItem | undefined>;
+  getDapp(contractAddress: string, network: string): Promise<EditDappItem | undefined>;
 
   /**
    * Gets dapps staking ledger for a given account.

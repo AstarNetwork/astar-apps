@@ -48,7 +48,9 @@ test.describe('account panel', () => {
   // Test case: AS001
   test('should transfer tokens from Alice to Bob', async ({ page, context }) => {
     const transferAmount = BigInt(1000);
-    page.getByTestId('transfer-link-button').click();
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -68,7 +70,9 @@ test.describe('account panel', () => {
     await selectMultisigAccount(page, context, false);
     // Memo: PolkaSafe SDK will check the balance of the Multisig account on mainnet before sending the transaction (the SDK through an error if the balance is not enough)
     const transferAmount = BigInt(1);
-    page.getByTestId('transfer-link-button').click();
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -80,7 +84,9 @@ test.describe('account panel', () => {
     await selectMultisigAccount(page, context, true);
     // Memo: PolkaSafe SDK will check the balance of the Multisig account on mainnet before sending the transaction (the SDK through an error if the balance is not enough)
     const transferAmount = BigInt(1);
-    page.getByTestId('transfer-link-button').click();
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
     await page.getByPlaceholder('0.0').fill(transferAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
@@ -95,7 +101,9 @@ test.describe('account panel', () => {
     page: Page;
   }) => {
     const baseTransferAmount = BigInt(1000);
-    page.getByTestId('transfer-link-button').click();
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
 
@@ -124,7 +132,8 @@ test.describe('account panel', () => {
     page: Page;
     context: BrowserContext;
   }) => {
-    page.getByTestId('transfer-link-button').click();
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
     const faucetAmount = BigInt(200);
     await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
     await page.getByPlaceholder('0.0').fill(faucetAmount.toString());

@@ -1,39 +1,42 @@
-import {
-  ExtrinsicPayload,
-  GeneralStakerInfo,
-  TOKEN_API_URL,
-  checkIsDappRegistered,
-  getDappAddressEnum,
-  isValidAddressPolkadotAddress,
-  wait,
-} from '@astar-network/astar-sdk-core';
-import { ApiPromise } from '@polkadot/api';
-import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { Option, Struct, u32 } from '@polkadot/types';
-import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
-import { Codec, ISubmittableResult } from '@polkadot/types/types';
-import { BN } from '@polkadot/util';
-import axios from 'axios';
-import { ethers } from 'ethers';
-import { inject, injectable } from 'inversify';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { checkIsDappStakingV3, checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
-import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
-import { EditDappItem } from 'src/store/dapp-staking/state';
-import { Guard } from 'src/v2/common';
+import { BN } from '@polkadot/util';
+import { u32, Option, Struct } from '@polkadot/types';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
+import { ApiPromise } from '@polkadot/api';
+import { injectable, inject } from 'inversify';
+import { DappAggregatedMetrics, IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
-import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
+import { Symbols } from 'src/v2/symbols';
 import {
-  AccountLedger,
-  DappStakingConstants,
   RewardDestination,
   SmartContract,
   SmartContractState,
   StakerInfo,
+  DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
-import { DappAggregatedMetrics, IDappStakingRepository } from 'src/v2/repositories';
+import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
+import {
+  GeneralStakerInfo,
+  checkIsDappRegistered,
+  TOKEN_API_URL,
+  PayloadWithWeight,
+  ExtrinsicPayload,
+} from '@astar-network/astar-sdk-core';
+import { ethers } from 'ethers';
+import { EditDappItem } from 'src/store/dapp-staking/state';
+import { StakeInfo, EraStakingPoints } from 'src/store/dapp-staking/actions';
+import axios from 'axios';
+import { Guard } from 'src/v2/common';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
+import {
+  wait,
+  getDappAddressEnum,
+  isValidAddressPolkadotAddress,
+} from '@astar-network/astar-sdk-core';
+import { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
 import { ParamClaimAll } from 'src/v2/services';
-import { Symbols } from 'src/v2/symbols';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -51,8 +54,7 @@ export interface ContractStakeInfo extends Struct {
 }
 
 interface RegisteredDapp extends Struct {
-  readonly developer?: AccountId;
-  readonly owner?: AccountId;
+  readonly developer: AccountId;
   readonly state: DappState;
 }
 
@@ -205,10 +207,8 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getRegisteredDapps(): Promise<SmartContract[]> {
     const api = await this.api.getApi();
-    const isV3 = checkIsDappStakingV3(api);
-    const dapps = isV3
-      ? await api.query.dappStaking.integratedDApps.entries()
-      : await api.query.dappsStaking.registeredDapps.entries();
+    const dapps = await api.query.dappsStaking.registeredDapps.entries();
+
     const result: SmartContract[] = [];
     dapps.forEach(([key, value]) => {
       const v = <Option<RegisteredDapp>>value;
@@ -218,9 +218,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
       if (v.isSome) {
         const unwrappedValue = v.unwrap();
-        developer = String(
-          isV3 ? unwrappedValue.owner?.toString() : unwrappedValue.developer?.toString()
-        );
+        developer = unwrappedValue.developer.toString();
         state = unwrappedValue.state.isUnregistered
           ? SmartContractState.Unregistered
           : SmartContractState.Registered;
@@ -266,13 +264,12 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getDapp(
     contractAddress: string,
-    network: string,
-    forEdit = false
+    network: string
   ): Promise<EditDappItem | undefined> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('network', network);
 
-    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${contractAddress}?forEdit=${forEdit}`;
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${contractAddress}`;
 
     try {
       const response = await axios.get<EditDappItem>(url);
