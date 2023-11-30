@@ -760,8 +760,10 @@ export default {
     era: 'Era',
     numberOfDapps: 'Number of dApps',
     tvl: 'TVL',
-    filledSlot: 'Filled slot',
-    unfilledSlot: 'Unfilled slot',
+    filledSlot: 'Filled slots',
+    unfilledSlot: 'Unfilled slots',
+    ourDapps: 'Our dApps',
+    ourData: 'Our data',
   },
   bridge: {
     bridge: 'Bridge',

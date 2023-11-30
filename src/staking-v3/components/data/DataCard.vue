@@ -31,7 +31,7 @@ export default defineComponent({
   border: 1px solid $navy-1;
   border-radius: 16px;
   padding: 24px;
-  min-width: 200px;
+  min-width: 160px;
 }
 
 .card--top {

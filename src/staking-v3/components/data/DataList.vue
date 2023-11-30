@@ -86,5 +86,9 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+
+  div {
+    flex: 1 1 0px;
+  }
 }
 </style>

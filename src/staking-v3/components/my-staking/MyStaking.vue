@@ -52,7 +52,8 @@ export default defineComponent({
 .wrapper--my-staking {
   width: 100%;
   display: flex;
-  column-gap: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
 
   div {
     flex-basis: 0;
