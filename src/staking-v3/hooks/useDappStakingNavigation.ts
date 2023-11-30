@@ -20,5 +20,9 @@ export function useDappStakingNavigation() {
     router.push(url);
   };
 
-  return { navigateToVote, navigateToHome, navigateDappPage };
+  const navigateOwnerPage = (address: string): string => {
+    return networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
+  };
+
+  return { navigateToVote, navigateToHome, navigateDappPage, navigateOwnerPage };
 }

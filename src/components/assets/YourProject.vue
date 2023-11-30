@@ -9,7 +9,7 @@
         <router-link
           v-for="dapp in ownDapps"
           :key="dapp.basic.address"
-          :to="buildOwnerPageLink(dapp.basic.address)"
+          :to="navigateOwnerPage(dapp.basic.address)"
           class="card--dapp"
         >
           <img class="icon--dapp-logo" :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
@@ -24,8 +24,7 @@
 
 <script lang="ts">
 import { useAccount, useClaimAll } from 'src/hooks';
-import { buildOwnerPageLink } from 'src/router/routes';
-import { CombinedDappInfo, useDapps } from 'src/staking-v3';
+import { CombinedDappInfo, useDappStakingNavigation, useDapps } from 'src/staking-v3';
 import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -33,12 +32,13 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     useClaimAll();
     const { registeredDapps } = useDapps();
+    const { navigateOwnerPage } = useDappStakingNavigation();
     const ownDapps = computed<CombinedDappInfo[]>(() => {
       if (!registeredDapps.value) return [];
       return registeredDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
     });
 
-    return { ownDapps, buildOwnerPageLink };
+    return { ownDapps, navigateOwnerPage };
   },
 });
 </script>

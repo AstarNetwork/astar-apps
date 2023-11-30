@@ -30,10 +30,6 @@ export const buildEthereumBridgePageLink = (): string => {
   return networkParam + Path.Bridge + Path.Ethereum;
 };
 
-export const buildOwnerPageLink = (dapp: string): string => {
-  return networkParam + Path.DappStaking + Path.Owner + `?dapp=${dapp}`;
-};
-
 export const buildXvmTransferPageLink = (symbol: string): string => {
   const base = networkParam + Path.Assets + Path.XvmTransfer;
   return `${base}?token=${symbol.toLowerCase()}`;
