@@ -1,8 +1,9 @@
 name: Deploy to S3 Staging
 'on':
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
