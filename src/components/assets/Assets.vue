@@ -1,72 +1,75 @@
 <template>
-  <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
-    <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
+  <div v-if="!isLoading" class="wrapper--assets">
+    <div class="separator--top container--account">
+      <div class="separator" />
+    </div>
     <div class="container--assets">
-      <div class="column--main">
+      <div class="container--account">
+        <div class="title--account">
+          <span class="text--xl">
+            {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
+          </span>
+        </div>
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
-
-        <div v-if="isDappStakingV3">
-          <your-project />
+      </div>
+      <div class="row--links">
+        <dynamic-links />
+      </div>
+      <div>
+        <div class="container--account">
+          <div class="separator" />
         </div>
-
-        <div v-if="isH160" class="container">
+        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
+      </div>
+      <div class="container--asset-list">
+        <div v-if="isH160">
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
-
-        <div v-else>
-          <div v-if="isEnableXcm" class="container">
-            <xcm-native-asset-list :xcm-assets="xcmAssets.assets" />
-          </div>
+        <div v-else class="container--assets">
+          <!-- Memo: hide xvm panel because AA might replace it -->
+          <!-- <xvm-native-asset-list v-if="isSupportAuTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
         </div>
       </div>
-
-      <div class="column--links">
-        <side-ads />
-        <astar-domains />
-      </div>
+    </div>
+    <div class="column--links">
+      <dynamic-links />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from 'src/components/assets/Account.vue';
+import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
-import SideAds from 'src/components/assets/SideAds.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import YourProject from 'src/components/assets/YourProject.vue';
-import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
-import { useDappStaking } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
 
 export default defineComponent({
   components: {
     Account,
-    SideAds,
-    AstarDomains,
+    DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
-    YourProject,
   },
   setup() {
     const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
-    const { isDappStakingV3 } = useDappStaking();
 
     const store = useStore();
     const { currentAccount } = useAccount();
-
     const { accountData } = useBalance(currentAccount);
     const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
@@ -164,20 +167,6 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
-
-    const bg_img = {
-      light: require('/src/assets/img/assets_bg_light.webp'),
-      dark: require('/src/assets/img/assets_bg_dark_A.webp'),
-    };
-
-    const bg = computed<String>(() => {
-      if (isDarkTheme.value) {
-        return bg_img.dark;
-      }
-      return bg_img.light;
-    });
-
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -191,8 +180,6 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
-      bg,
-      isDappStakingV3,
     };
   },
 });

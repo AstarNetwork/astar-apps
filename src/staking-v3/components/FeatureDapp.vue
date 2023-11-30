@@ -36,8 +36,8 @@
       </kpi-card>
     </div>
     <div v-if="!isVotingPeriod" class="row--start-staking">
-      <button class="button--staking" @click="navigateToVote()">
-        <span class="text--start-staking">Start Staking Now</span>
+      <button class="button--staking">
+        <span class="text--start-staking" @click="navigateToVote()">Start Staking Now</span>
       </button>
     </div>
   </div>
@@ -45,10 +45,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDappStaking, useDapps, useCampaign, useDappStakingNavigation } from '../hooks';
+import { useDappStaking, useDapps, useCampaign } from '../hooks';
 import { Campaign } from 'src/v2/models';
+import { Path, networkParam } from 'src/router/routes';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import KpiCard from './KpiCard.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -59,7 +61,7 @@ export default defineComponent({
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
-    const { navigateToVote } = useDappStakingNavigation();
+    const router = useRouter();
     // const { totalSupply } = useTokenCirculation();
 
     // const tvlPercentage = computed<number>(
@@ -71,6 +73,11 @@ export default defineComponent({
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined
     );
+
+    const navigateToVote = (dAppAddress: string | undefined = undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Vote;
+      router.push(`${base}?dappAddress=${dAppAddress ?? ''}`);
+    };
 
     return {
       constants,

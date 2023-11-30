@@ -1,7 +1,7 @@
 <template>
   <div v-if="currentAccount && isReady">
     <!-- Fixme: scroll to top when the app was routed from other page -->
-    <router-view id="assets-top" :style="`background-image: ${bg}`" />
+    <router-view id="assets-top" />
   </div>
   <div v-else />
 </template>
@@ -52,13 +52,9 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 #assets-top {
-  padding: 0 16px 64px 16px;
-  @media (min-width: $sm) {
-    padding-top: 16px;
-  }
   @media (min-width: $lg) {
-    padding: 0;
-    margin-top: 74px;
+    margin-top: 58px;
+    padding: 0 16px;
   }
 }
 </style>

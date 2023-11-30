@@ -6,6 +6,7 @@
       :slides-per-group="1"
       :space-between="16"
       :navigation="true"
+      :parallax="true"
       :modules="modules"
       :breakpoints="{
         '768': {

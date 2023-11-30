@@ -1,14 +1,77 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--account {
+  display: grid;
+  row-gap: 24px;
+}
+
+.row {
+  padding: 16px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row--details {
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  row-gap: 12px;
+  @media (min-width: $md) {
+    row-gap: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+  @media (min-width: $lg) {
+    padding-right: 32px;
+  }
 }
 
 .row--details-signatory {
   padding: 16px 14px;
   background-color: $body-bg-light;
+}
+
+.column--usd {
+  @media (min-width: $sm) {
+    margin-right: 24px;
+  }
+  @media (min-width: $md) {
+    margin-right: 72px;
+  }
+  @media (min-width: $lg) {
+    margin-right: 64px;
+  }
+  @media (min-width: $xl) {
+    margin-right: 298px;
+  }
+  @media (min-width: $xxl) {
+    margin-right: 398px;
+  }
+}
+
+.column--usd-native {
+  @media (min-width: $sm) {
+    margin-right: 24px;
+  }
+  @media (min-width: $md) {
+    margin-right: 70px;
+  }
+  @media (min-width: $lg) {
+    margin-right: 76px;
+  }
+  @media (min-width: $xl) {
+    margin-right: 200px;
+  }
+  @media (min-width: $xxl) {
+    margin-right: 300px;
+  }
+}
+
+.row__column--right {
+  display: flex;
+  align-items: center;
 }
 
 .column-account-name {
@@ -18,6 +81,50 @@
     flex-direction: row;
     align-items: center;
   }
+}
+
+.column-address-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column__address {
+  color: $gray-4;
+  @media (min-width: $md) {
+    margin-left: 42px;
+  }
+}
+
+.column__icons {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 24px;
+  @media (max-width: $sm) {
+    column-gap: 16px;
+  }
+}
+
+.text--switch-account {
+  cursor: pointer;
+  color: $astar-blue;
+}
+
+.text--total-balance {
+  font-size: 16px;
+  font-weight: 700;
+  color: $navy-1;
+}
+
+.row__icons {
+  display: flex;
+  column-gap: 24px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
 }
 
 .text--warning-bold {
@@ -36,309 +143,23 @@
 }
 
 .body--dark {
+  .column__address {
+    color: $gray-3;
+  }
+  .text--switch-account {
+    color: $astar-blue;
+  }
+  .text--total-balance {
+    color: $gray-1;
+  }
   .row--details-signatory {
     background-color: $body-bg-dark;
   }
 }
 
-.row--account-info {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: $navy-1;
-  position: relative;
-  z-index: 1;
-}
-.body--dark {
-  .row--account-info {
-    color: white;
-  }
-}
-
-.column--account-icon {
-  img {
-    width: 32px;
-    height: 32px;
-    // object-fit: cover;
-    // border-radius: 9999px;
-  }
-}
-
-.text--address {
-  font-size: 12px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.container--account {
-  // astar native
-  &.network-0 {
-    .text--address {
-      background: linear-gradient(90deg, #e6007a 25%, #ff9dd1 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-
-  // shiden
-  &.network-1 {
-    .text--address {
-      background: linear-gradient(90deg, #5928b1 25%, #b092ea 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-
-  // shibuya
-  &.network-2 {
-    .text--address {
-      background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-
-  // zkEVM
-  &.network-3 {
-    .text--address {
-      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-
-  // zKatana
-  &.network-4 {
-    .text--address {
-      background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-}
-
-.text--balance {
-  font-size: 24px;
-  font-weight: 700;
-  color: $navy-1;
-  span {
-    font-size: 16px;
-    font-weight: 600;
-  }
-}
-.row--actions {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  @media (min-width: $lg) {
-    justify-content: flex-start;
-  }
-  @media (min-width: $sm) {
-    gap: 16px;
-  }
-}
-.btn--icon {
-  display: flex;
-  height: 40px;
-  width: 40px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  margin: auto;
-  color: $navy-1;
-  transition: all 0.2s ease;
-  svg {
-    width: 22px;
-    height: 22px;
-    @media (min-width: $lg) {
-      width: 24px;
-      height: 24px;
-    }
-  }
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-  .icon--copy {
-    width: 30px;
-    height: 30px;
-    stroke: $navy-1;
-    @media (min-width: $lg) {
-      width: 34px;
-      height: 34px;
-    }
-  }
-  .icon--external-link {
-    width: 30px;
-    height: 30px;
-    stroke: $navy-1;
-    @media (min-width: $lg) {
-      width: 36px;
-      height: 36px;
-    }
-  }
-}
-
-.container {
-  border: solid 1px $gray-2;
-  background-color: white;
-  box-shadow: none;
-  border-radius: 16px;
-  padding: 16px 0;
-  @media (min-width: $sm) {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-}
-.body--dark {
-  .container {
-    background-color: $navy-1;
-    border-color: $navy-3;
-    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
-  }
-}
-
-.container--account {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-  border-radius: 0 0 16px 16px;
-  margin: 0 -16px;
-  border: solid 1px $gray-2;
-  background-color: white;
-  padding: 16px;
-  min-height: 180px;
-  @media (min-width: $sm) {
-    border-radius: 16px;
-    margin: 0;
-  }
-  .row {
-    padding: 0 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    @media (min-width: $lg) {
-      padding: 0 20px;
-    }
-  }
-}
-.body--dark {
-  .container--account {
-    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
-  }
-}
-
-.account-bg {
-  background-size: 100% 100%;
-  z-index: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.wallet-tab {
-  position: relative;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: flex-end;
-  .wallet-tab__bg {
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 4px;
-    border-radius: 9999px;
-    display: flex;
-  }
-  .btn {
-    border-radius: 9999px;
-    padding: 4px 12px;
-    color: $navy-1;
-    font-weight: 600;
-    font-size: 12px;
-    &.active {
-      color: white;
-      background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
-    }
-    &:not(.active){
-      cursor: pointer;
-    }
-  }
-}
-
-.container--account {
-  // astar native
-  &.network-0 {
-    .wallet-tab {
-      .btn {
-        &.active {
-          background: linear-gradient(270deg, #ff94cd 25%, #e6007a 100%);
-        }
-      }
-    }
-  }
-
-  // shiden
-  &.network-1 {
-    .wallet-tab {
-      .btn {
-        &.active {
-          background: linear-gradient(270deg, #5928b1 25%, #b092ea 100%);
-        }
-      }
-    }
-  }
-
-  // shibuya
-  &.network-2 {
-    .wallet-tab {
-      .btn {
-        &.active {
-          background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
-        }
-      }
-    }
-  }
-
-  // zkEVM
-  &.network-3 {
-    .wallet-tab {
-      .btn {
-        &.active {
-          background: linear-gradient(270deg, #226dff 25%, #703ac2 100%);
-        }
-      }
-    }
-  }
-
-  // zKatana
-  &.network-4 {
-    .wallet-tab {
-      .btn {
-        &.active {
-          background: linear-gradient(270deg, #6c6c6c 25%, #b7b7b7 100%);
-        }
-      }
-    }
-  }  
-}
-
-.row--account-rewards {
-  display: flex;
-  gap: 32px;
-  flex-direction: column;
-  @media (min-width: $sm) {
-    flex-direction: row;
-    gap: 16px;
+.icon--primary.icon--account{
+  fill: $astar-blue;
+  &:hover{
+    fill: white;
   }
 }

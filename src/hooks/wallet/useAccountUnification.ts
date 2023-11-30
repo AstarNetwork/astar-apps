@@ -285,12 +285,11 @@ export const useAccountUnification = () => {
       const from = selectedEvmAddress.value;
       const [nonce, gasPrice] = await Promise.all([
         web3.value.eth.getTransactionCount(from),
-        getEvmGas(web3.value, '0'), // gas.value.evmGasPrice.fast),
+        getEvmGas(web3.value, gas.value.evmGasPrice.fast),
       ]);
-      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const rawTx = {
         nonce,
-        gasPrice: web3.value.utils.toHex(multipliedGas.toString()),
+        gasPrice: web3.value.utils.toHex(gasPrice),
         from,
         to: evmPrecompiledContract.dispatch,
         value: '0x0',

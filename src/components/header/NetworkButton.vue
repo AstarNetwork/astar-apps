@@ -1,22 +1,26 @@
 <template>
   <div>
-    <div v-if="isNotSelectedEndpoint">
-      <connect-button @click="showNetworkModal">
-        <astar-icon-network />
-      </connect-button>
-      <q-tooltip>
-        <span class="text--tooltip">{{ $t('assets.transferPage.selectChain') }}</span>
-      </q-tooltip>
-    </div>
+    <connect-button v-if="isNotSelectedEndpoint" @click="showNetworkModal">
+      <astar-icon-network />
+    </connect-button>
     <template v-else>
       <meta-update-button
         v-if="isNeedUpdate(isLatestChain, extensionCount)"
         @updated-meta="isLatestChain = true"
       />
-      <button v-else type="button" class="btn--network" @click="showNetworkModal">
-        <img v-show="currentLogo" class="icon" width="24" :src="currentLogo" />
+      <button
+        v-else
+        type="button"
+        class="btn--network"
+        :class="screenSize.sm > width && 'm-btn--network'"
+        @click="showNetworkModal"
+      >
+        <astar-icon-base class="iconbase" stroke="currentColor" icon-name="network">
+          <astar-icon-network />
+        </astar-icon-base>
+        <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
         <div class="column--network-name">
-          <template v-if="width >= screenSize.sm">
+          <template v-if="width >= screenSize.md">
             <span class="text--network">
               {{ currentNetworkName.replace('Network', '') }}
             </span>
@@ -86,30 +90,135 @@ export default defineComponent({
 
 .btn--network {
   display: flex;
-  align-items: center;
   height: 32px;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 20px;
-  transition: all 0.2s ease;
-  border: solid 1px transparent;
-  img {
-    width: 32px;
-    height: 32px;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px 8px 12px;
+  border-radius: 16px;
+  margin-left: 8px;
+  transition: all 0.3s ease 0s;
+  background: transparent;
+  color: #fff;
+  border: 1px solid $gray-4;
+
+  @media (min-width: $lg) {
+    border: 1px solid $navy-3;
   }
-  &:hover {
-    border-color: $astar-blue;
-    background-color: $astar-blue;
-  }
+
   @media (min-width: $sm) {
-    height: 40px;
-    padding: 0 16px 0 12px;
-    gap: 8px;
-    img {
-      width: 24px;
-      height: 24px;
+    margin-left: 16px;
+  }
+
+  &:hover {
+    background: $astar-blue !important;
+    border: 1px solid transparent;
+    .iconbase {
+      color: $gray-1;
     }
+    .divider {
+      border-left: 1px solid $gray-1;
+    }
+    @media (min-width: $lg) {
+      background: transparent !important;
+      border: 1px solid $gray-4;
+      .iconbase {
+        color: $gray-5;
+      }
+      .divider {
+        border-left: 1px solid $navy-3;
+      }
+    }
+  }
+}
+
+.divider {
+  border-left: 1px solid $gray-3;
+  margin: 0 8px;
+  height: 22px;
+  transition: all 0.3s ease 0s;
+  @media (min-width: $lg) {
+    border-left: 1px solid $navy-3;
+  }
+}
+
+.iconbase {
+  color: $gray-3;
+  width: rem(22);
+  height: rem(22);
+  transition: all 0.3s ease 0s;
+  @media (min-width: $lg) {
+    color: $navy-3;
+  }
+}
+
+.icon {
+  margin-left: 8px;
+  @media (min-width: $sm) {
+    margin-right: 8px;
+  }
+}
+
+.m-btn--network {
+  background: transparent;
+  border: 1px solid $gray-4;
+  box-shadow: none;
+  padding: 8px;
+
+  @media (min-width: $lg) {
+    border: 1px solid $navy-3;
+  }
+
+  .divider {
+    margin: 0 8px;
+    border-left-color: $gray-4;
+    @media (min-width: $lg) {
+      border-left-color: $navy-3;
+    }
+  }
+}
+
+.column--network-name {
+  margin-top: -1px;
+}
+
+.text--network {
+  font-weight: 400;
+  font-size: 14px;
+  color: $gray-1;
+  @media (min-width: $lg) {
+    color: $navy-1;
+  }
+}
+
+.body--dark {
+  .btn--network {
+    border: 1px solid $gray-4;
+    &:hover {
+      background: $astar-blue !important;
+      border: 1px solid transparent;
+      .iconbase {
+        color: $gray-1;
+      }
+      .divider {
+        border-left: 1px solid $gray-1;
+      }
+    }
+  }
+
+  .iconbase {
+    color: $gray-3;
+  }
+
+  .m-btn--network {
+    border: 1px solid $gray-4;
+  }
+
+  .divider {
+    border-left: 1px solid $gray-4;
+  }
+
+  .text--network {
+    color: $gray-1;
   }
 }
 </style>

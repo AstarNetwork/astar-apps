@@ -188,7 +188,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const checkIsDisabledZkOption = (provider: ChainProvider): boolean => {
-      return !isH160.value && provider.displayName.toLowerCase().includes('zk');
+      return !isH160.value && provider.displayName.includes('zk');
     };
 
     const setInitialNewEndpoint = (): string => {

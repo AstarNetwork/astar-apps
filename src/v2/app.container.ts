@@ -203,7 +203,4 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container
     .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
     .startProtocolStateSubscription();
-
-  // Start block change subscription. Needed for remaining unlocking blocks calculation.
-  container.get<ISystemRepository>(Symbols.SystemRepository).startBlockSubscription();
 }

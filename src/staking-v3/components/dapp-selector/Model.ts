@@ -3,5 +3,4 @@ export interface Dapp {
   address: string;
   logoUrl: string;
   amount: number;
-  id: number;
 }
