@@ -7,7 +7,7 @@ interface EvmMappedAddress {
   ss58: string;
 }
 
-const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {
+export const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {
   const data = localStorage.getItem(LOCAL_STORAGE.EVM_ADDRESS_MAPPING);
   const addressMapping = data ? JSON.parse(data) : [];
   return addressMapping;
