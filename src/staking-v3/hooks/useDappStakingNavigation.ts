@@ -22,5 +22,9 @@ export function useDappStakingNavigation() {
 
   const goBack = () => router.go(-1);
 
-  return { navigateToVote, navigateToHome, navigateDappPage, goBack };
+  const navigateOwnerPage = (address: string): string => {
+    return networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
+  };
+
+  return { navigateToVote, navigateToHome, navigateDappPage, navigateOwnerPage, goBack };
 }

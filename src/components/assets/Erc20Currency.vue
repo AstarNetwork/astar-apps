@@ -136,22 +136,21 @@
   </div>
 </template>
 <script lang="ts">
-import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
-import { useNetworkInfo, useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import {
-  deleteImportedErc20Token,
   Erc20Token,
+  deleteImportedErc20Token,
   getErc20Explorer,
   getStoredERC20Tokens,
 } from 'src/modules/token';
-import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
+import { buildEthereumBridgePageLink, buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { PropType, computed, defineComponent, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

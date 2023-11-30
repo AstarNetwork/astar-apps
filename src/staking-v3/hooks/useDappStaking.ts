@@ -1,4 +1,5 @@
-import { computed } from 'vue';
+import { $api } from 'boot/api';
+import { watch, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
@@ -25,6 +26,8 @@ import { ethers } from 'ethers';
 
 import BN from 'bn.js';
 import { initialDappTiersConfiguration, initialTiersConfiguration } from '../store/state';
+import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
+import { ApiPromise } from '@polkadot/api';
 
 export function useDappStaking() {
   const { t } = useI18n();
@@ -36,6 +39,10 @@ export function useDappStaking() {
   const { useableBalance } = useBalance(currentAccount);
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
+
+  const isDappStakingV3 = computed<boolean>(() => {
+    return checkIsDappStakingV3($api as ApiPromise);
+  });
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
@@ -373,6 +380,7 @@ export function useDappStaking() {
     currentEraInfo,
     dAppTiers,
     isVotingPeriod,
+    isDappStakingV3,
     stakerInfo,
     tiersConfiguration,
     totalStakerRewards,

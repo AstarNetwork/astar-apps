@@ -70,9 +70,6 @@ import {
 } from './staking-v3';
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
-import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
-import { $api } from './boot/api';
-import { ApiPromise } from '@polkadot/api';
 
 export default defineComponent({
   name: 'App',
@@ -96,6 +93,7 @@ export default defineComponent({
       getDappTiers,
       fetchStakerInfoToStore,
       fetchTiersConfigurationToStore,
+      isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore } = useDapps();
 
@@ -147,7 +145,7 @@ export default defineComponent({
     });
 
     // **** dApp staking v3
-    if (checkIsDappStakingV3($api as ApiPromise)) {
+    if (isDappStakingV3) {
       // dApp staking v3 data changed subscriptions.
       container
         .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
@@ -181,11 +179,8 @@ export default defineComponent({
       setCurrentWallet(isEthWallet.value, currentWallet.value);
 
       // Subscribe to an account specific dApp staking v3 data.
-      if (
-        checkIsDappStakingV3($api as ApiPromise) &&
-        currentAccount.value &&
-        currentAccount.value !== previousAddress
-      ) {
+      if (!isDappStakingV3.value) return;
+      if (currentAccount.value && currentAccount.value !== previousAddress) {
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
           .startAccountLedgerSubscription(currentAccount.value);

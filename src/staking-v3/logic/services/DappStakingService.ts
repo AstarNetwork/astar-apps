@@ -298,6 +298,7 @@ export class DappStakingService implements IDappStakingService {
       // and if stake amount refers to the past period.
       if (
         info.loyalStaker &&
+        protocolState &&
         info.staked.period >=
           protocolState.periodInfo.number - constants.rewardRetentionInPeriods &&
         info.staked.period < protocolState.periodInfo.number
@@ -351,7 +352,7 @@ export class DappStakingService implements IDappStakingService {
 
     // In case of period < rewardRetentionInPeriods use period 1.
     const firstPeriod = Math.max(
-      protocolState.periodInfo.number - constants.rewardRetentionInPeriods,
+      protocolState!.periodInfo.number - constants.rewardRetentionInPeriods,
       1
     );
 
@@ -359,7 +360,7 @@ export class DappStakingService implements IDappStakingService {
     // start from era 2 since era 1 was voting.
     const firstEra =
       (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0;
-    const lastEra = protocolState.era - 1;
+    const lastEra = protocolState!.era - 1;
 
     if (firstEra <= lastEra) {
       const tierRewards = await Promise.all(
@@ -402,7 +403,7 @@ export class DappStakingService implements IDappStakingService {
     if (
       this.hasRewardsExpired(
         period,
-        protocolState.periodInfo.number,
+        protocolState!.periodInfo.number,
         constants.rewardRetentionInPeriods
       )
     ) {
@@ -446,7 +447,7 @@ export class DappStakingService implements IDappStakingService {
         const stake = contractStake.stakedFuture
           ? contractStake.stakedFuture
           : contractStake.staked;
-        result.set(dappId, protocolState.periodInfo.number === stake.period ? stake : undefined);
+        result.set(dappId, protocolState!.periodInfo.number === stake.period ? stake : undefined);
       })
     );
 
@@ -462,7 +463,7 @@ export class DappStakingService implements IDappStakingService {
     let rewardsExpired = false;
 
     // *** 1. Determine last claimable era.
-    const currentPeriod = protocolState.periodInfo.number;
+    const currentPeriod = protocolState!.periodInfo.number;
     const firstStakedEra = Math.min(
       ledger.staked.era > 0 ? ledger.staked.era : Infinity,
       ledger.stakedFuture?.era ?? Infinity
@@ -481,7 +482,7 @@ export class DappStakingService implements IDappStakingService {
       lastStakedEra = periodInfo?.finalEra ?? 0; // periodInfo shouldn't be undefined for this case.
     } else if (lastStakedPeriod === currentPeriod) {
       // Find last era from current period.
-      lastStakedEra = protocolState.era - 1;
+      lastStakedEra = protocolState!.era - 1;
     } else {
       throw 'Invalid operation.';
     }
