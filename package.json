@@ -21,14 +21,14 @@
     "heroku-postbuild": "yarn install && yarn build",
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
-    "playwright": "BASE_URL='http://localhost:8080' ENDPOINT='ws://127.0.0.1:9944' npx playwright test --project=chromium --debug",
+    "playwright": "BASE_URL='http://localhost:8080' ENDPOINT='ws://127.0.0.1:9944' npx playwright test --project=chromium",
     "playwright:ci": "node ./tests/chopsticks/start-chopsticks.js",
     "generate:meta": "node ./node_modules/.bin/polkadot-types-from-chain --package sample-polkadotjs-typegen/interfaces/ --endpoint ./src/staking-v3/logic/astar.json --output ./src/staking-v3/logic/interfaces/temp",
     "generate:defs": "node ./node_modules/.bin/polkadot-types-from-defs --package sample-polkadotjs-typegen/interfaces/ --input ./src/staking-v3/logic/interfaces/temp --endpoint ./src/staking-v3/logic/astar.json"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.2.5",
-    "@astar-network/astar-ui": "^0.0.104",
+    "@astar-network/astar-sdk-core": "^0.2.7",
+    "@astar-network/astar-ui": "^0.0.136",
     "@astar-network/metamask-astar-adapter": "^0.5.4",
     "@astar-network/metamask-astar-types": "^0.6.1",
     "@ethersproject/bignumber": "^5.5.0",

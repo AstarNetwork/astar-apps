@@ -40,8 +40,7 @@ test.beforeEach(async ({ page, context }) => {
 test.describe('Test case: XCM006', () => {
   test('should transfer Alice ASTR tokens from Astar to Acala', async ({ page, context }) => {
     const transferAmount = BigInt(1000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
     await page.getByRole('main').getByRole('button').first().click();
     await page.locator('#amount').fill(transferAmount.toString());
@@ -64,8 +63,7 @@ test.describe('Test case: XCM006', () => {
 test.describe('Test case: XCM003', () => {
   test('should transfer Alice ASTR tokens from Acala to Astar', async ({ page, context }) => {
     const transferAmount = BigInt(900);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
     // memo wait for from/to values to switch on UI, because if switch happens after amount is entered, the amount would be cleared
@@ -92,8 +90,7 @@ test.describe('Test case: XCM004', () => {
   test('should transfer Alice ACA tokens from Astar to Acala', async ({ page, context }) => {
     const assetId = '18446744073709551616';
     const transferAmount = BigInt(1000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
     await page.getByRole('main').getByRole('button').first().click();
@@ -124,8 +121,7 @@ test.describe('Test case: XCM001', () => {
   test('should transfer Alice ACA tokens from Acala to Astar', async ({ page, context }) => {
     const assetId = '18446744073709551616';
     const transferAmount = BigInt(900);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
     await page
@@ -155,8 +151,7 @@ test.describe('Test case: XCM001-1', () => {
   test('should transfer Alice DOT tokens from Polkadot to Astar', async ({ page, context }) => {
     const assetId = '340282366920938463463374607431768211455';
     const transferAmount = BigInt(100);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
     await page.locator('div:nth-child(3) > .wrapper--select-chain').click();
@@ -186,8 +181,7 @@ test.describe('Test case: XCM004-1', () => {
   test('should transfer Alice DOT tokens from Astar to Polkadot', async ({ page, context }) => {
     const assetId = '340282366920938463463374607431768211455';
     const transferAmount = BigInt(100);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
     await page.getByRole('main').getByRole('button').first().click();
 
@@ -218,8 +212,7 @@ test.describe('Test case: XCM001-2', () => {
   test('should transfer Alice USDT tokens from Statemint to Astar', async ({ page, context }) => {
     const assetId = '4294969280';
     const transferAmount = BigInt(10000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
     await page.locator('div:nth-child(3) > .wrapper--select-chain').click();
@@ -249,8 +242,7 @@ test.describe('Test case: XCM004-2', () => {
   test('should transfer Alice USDT tokens from Astar to Statemint', async ({ page, context }) => {
     const assetId = '4294969280';
     const transferAmount = BigInt(10000);
-    await page.locator('.icon--expand').first().click();
-    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+    page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
     await page.getByRole('main').getByRole('button').first().click();
 

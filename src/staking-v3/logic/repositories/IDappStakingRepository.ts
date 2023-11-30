@@ -2,6 +2,7 @@ import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
   Constants,
+  ContractStakeAmount,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -11,6 +12,7 @@ import {
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,
+  StakeAmount,
 } from '../models';
 
 /**
@@ -36,7 +38,7 @@ export interface IDappStakingRepository {
    * Gets protocol state for the given network.
    * @param network The network to get protocol state for.
    */
-  getProtocolState(): Promise<ProtocolState>;
+  getProtocolState(): Promise<ProtocolState | undefined>;
 
   /**
    * Starts subscription to protocol state, so UI gets automatically updated when it changes.
@@ -133,18 +135,16 @@ export interface IDappStakingRepository {
   getClaimBonusRewardsCalls(contractAddresses: string[]): Promise<ExtrinsicPayload[]>;
 
   /**
-   * Starts subscription to a staker info changes.
-   * @param address Staker address to get info for.
-   * @returns A promise that resolves to a map of staker address and staker info.
-   */
-  startGetStakerInfoSubscription(address: string): Promise<void>;
-
-  /**
    * Gets staker info for the given address.
    * @param address Address to get staker info for.
+   * @param includePreviousPeriods Indicates whether to include previous periods info.
+   *  Previous period info is needed for bonus rewards calculation.
    * @returns A promise that resolves to an array of staker info.
    */
-  getStakerInfo(address: string): Promise<Map<string, SingularStakingInfo>>;
+  getStakerInfo(
+    address: string,
+    includePreviousPeriods: boolean
+  ): Promise<Map<string, SingularStakingInfo>>;
 
   /**
    * Gets period end information (last era, bonus rewards, total stake)
@@ -185,4 +185,20 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the era info.
    */
   getCurrentEraInfo(): Promise<EraInfo>;
+
+  /**
+   * Gets the contract staking info.
+   * @param dappId Dapp id to get staking info for.
+   */
+  getContractStake(dappId: number): Promise<ContractStakeAmount>;
+
+  /**
+   * Gets a call to claim all fully unlocked chunks.
+   */
+  getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets a call to relock all unbonding chunks.
+   */
+  getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload>;
 }

@@ -13,8 +13,9 @@ import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
-import { Vote } from 'src/staking-v3';
+import Vote from 'src/staking-v3/components/Vote.vue';
 import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
+import Owner from 'src/staking-v3/components/Owner.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export {
@@ -43,6 +44,7 @@ export enum Path {
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
   Vote = '/vote',
+  Owner = '/owner',
 }
 
 const routes: RouteRecordRaw[] = [
@@ -146,6 +148,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'discover',
         component: networkParam === '/development' ? DiscoverV3 : StakingTop,
+      },
+      {
+        path: 'owner',
+        component: Owner,
       },
       {
         path: 'stake',
