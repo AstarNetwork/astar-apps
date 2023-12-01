@@ -117,7 +117,7 @@ export function useDappStaking() {
       : true;
 
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = await canStake(amount);
+    const [result, error] = await canStake(dappAddress, amount);
     if (!result) {
       throw error;
     }
@@ -239,6 +239,11 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
+  const getChainStateByAddress = (address: string): string | undefined => {
+    const dapp = registeredDapps.value.find((dapp) => dapp.chain.address === address);
+    return dapp?.chain.state;
+  };
+
   const getCurrentEraInfo = async (): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const eraInfo = await stakingRepo.getCurrentEraInfo();
@@ -246,22 +251,29 @@ export function useDappStaking() {
     store.commit('stakingV3/setCurrentEraInfo', eraInfo);
   };
 
-  const canStake = async (amount: number): Promise<[boolean, string]> => {
+  const canStake = async (
+    dappAddress: string,
+    amount: number,
+    ignoreCanClaim = false
+  ): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const balanceBN = new BN(useableBalance.value.toString());
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const constants = await stakingRepo.getConstants();
 
-    if (amount <= 0) {
+    if (!dappAddress) {
+      // Prevents NoDappSelected
+      return [false, t('stakingV3.noDappSelected')];
+    } else if (amount <= 0) {
       // Prevents dappStaking.ZeroAmount
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
     } else if ((ledger.value?.contractStakeCount ?? 0) >= constants.maxNumberOfStakedContracts) {
       // Prevents dappStaking.TooManyStakedContracts
       return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
-    } else if (hasRewards.value) {
-      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
+    } else if (hasRewards.value && !ignoreCanClaim) {
+      // Prevents dappStaking.UnclaimedRewards
       // May want to auto claim rewards here
-      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
@@ -269,19 +281,30 @@ export function useDappStaking() {
       // Prevents dappStaking.UnavailableStakeFunds
       return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
     } else if (
-      // Prevents dappStaking.PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
     ) {
+      // Prevents dappStaking.PeriodEndsInNextEra
       return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
+    } else if (getChainStateByAddress(dappAddress) === 'Unregistered') {
+      // Prevents dappStaking.NotOperatedDApp
+      return [false, t('stakingV3.dappStaking.NotOperatedDApp')];
     }
 
     return [true, ''];
   };
 
-  const canUnStake = async (address: string, amount: number): Promise<[boolean, string]> => {
+  const canUnStake = async (dappAddress: string, amount: number): Promise<[boolean, string]> => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount.toString()).toString());
     const stakedAmount = new BN(ledger.value?.locked?.toString() ?? 0);
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const [constants, stakerInfo] = await Promise.all([
+      stakingRepo.getConstants(),
+      stakingRepo.getStakerInfo(currentAccount.value, false),
+    ]);
+
+    console.log('ledger.value?.unlocking?.length)', ledger.value?.unlocking?.length);
+    console.log('constants.maxNumberOfUnlockingChunks', constants.maxUnlockingChunks);
 
     if (amount <= 0) {
       // Prevents dappStaking.ZeroAmount
@@ -290,18 +313,21 @@ export function useDappStaking() {
       // Prevents dappStaking.UnstakeAmountTooLarge
       return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
     } else if (hasRewards.value) {
-      // Prevents dappStaking.UnclaimedRewardsFromPastPeriods
+      // Prevents dappStaking.UnclaimedRewards
       // May want to auto claim rewards here
-      return [false, t('stakingV3.dappStaking.UnclaimedRewardsFromPastPeriods')];
+      return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
-    } else if (!address) {
+    } else if (!stakerInfo.get(dappAddress)) {
       // Prevents dappStaking.NoStakingInfo
       return [false, t('stakingV3.dappStaking.NoStakingInfo')];
     } else if (!amount) {
       // Prevents dappStaking.UnstakeFromPastPeriod
       return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
+    } else if ((ledger.value?.unlocking?.length ?? 0) >= constants.maxUnlockingChunks) {
+      // Prevents dappStaking.TooManyUnlockingChunks
+      return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
     }
 
     return [true, ''];

@@ -292,6 +292,7 @@ export class DappStakingRepository implements IDappStakingRepository {
         api.consts.dappStaking.maxNumberOfStakedContracts
       )).toNumber(),
       maxNumberOfContracts: (<u32>api.consts.dappStaking.maxNumberOfContracts).toNumber(),
+      maxUnlockingChunks: (<u32>api.consts.dappStaking.maxUnlockingChunks).toNumber(),
       standardErasPerBuildAndEarnPeriod: (<u32>(
         api.consts.dappStaking.standardErasPerBuildAndEarnPeriod
       )).toNumber(),
