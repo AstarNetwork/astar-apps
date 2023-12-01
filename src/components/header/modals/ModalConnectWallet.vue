@@ -272,9 +272,6 @@ export default defineComponent({
     };
 
     const handleMetaMaskSnap = async (): Promise<void> => {
-      const provider = get(window, supportEvmWalletObj[SupportWallet.MetaMask].ethExtension);
-      const [address] = (await provider.request({ method: 'eth_requestAccounts' })) as string;
-      if (!address) return;
       const isSnapInstalled = await initiatePolkdatodSnap();
       if (isSnapInstalled) {
         await initPolkadotSnap();
