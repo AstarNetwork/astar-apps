@@ -22,7 +22,7 @@ export interface SnapConfig {
 export const snapId = process.env.DEV ? 'local:http://localhost:8081' : 'npm:@astar-network/snap';
 
 export async function enablePolkadotSnap(
-  config: SnapConfig = { networkName: 'shibuya' },
+  config: SnapConfig = { networkName: 'astar' },
   snapOrigin?: string,
   snapInstallationParams: Record<SnapInstallationParamNames, unknown> = {}
 ): Promise<MetamaskPolkadotSnap> {
@@ -34,7 +34,7 @@ export async function enablePolkadotSnap(
     throw new Error("Current Metamask version doesn't support snaps");
   }
   if (!config.networkName) {
-    config.networkName = 'shibuya';
+    config.networkName = 'astar';
   }
 
   const isInstalled = await isPolkadotSnapInstalled(snapId);
@@ -56,7 +56,7 @@ export async function enablePolkadotSnap(
 
 export async function installPolkadotSnap(): Promise<boolean> {
   try {
-    await enablePolkadotSnap({ networkName: 'shibuya' }, snapId);
+    await enablePolkadotSnap({ networkName: 'astar' }, snapId);
     console.info('Snap installed!!');
     return true;
   } catch (err) {
@@ -87,7 +87,7 @@ export async function initiatePolkdatodSnap(): Promise<SnapInitializationRespons
   try {
     console.info('Attempting to connect to snap...');
     // Todo: update network params
-    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'shibuya' }, snapId);
+    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'astar' }, snapId);
     console.info('Snap installed!');
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
   } catch (e) {
