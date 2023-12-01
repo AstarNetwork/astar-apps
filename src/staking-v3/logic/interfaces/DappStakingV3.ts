@@ -1,5 +1,5 @@
 import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32, u8 } from '@polkadot/types';
-import { AccountId32 } from '@polkadot/types/interfaces';
+import { AccountId32, Permill } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 
 interface PalletDappStakingV3PeriodType extends Enum {
@@ -117,4 +117,24 @@ export interface PalletDappStakingV3ContractStakeAmount extends Struct {
   readonly staked: PalletDappStakingV3StakeAmount;
   readonly stakedFuture: Option<PalletDappStakingV3StakeAmount>;
   readonly tierLabel: Option<PalletDappStakingV3TierLabel>;
+}
+
+export interface PalletDappStakingV3TiersConfiguration extends Struct {
+  readonly numberOfSlots: Compact<u16>;
+  readonly slotsPerTier: Vec<u16>;
+  readonly rewardPortion: Vec<Permill>;
+  readonly tierThresholds: Vec<PalletDappStakingV3TierThreshold>;
+}
+
+interface PalletDappStakingV3TierThreshold extends Enum {
+  readonly isFixedTvlAmount: boolean;
+  readonly asFixedTvlAmount: {
+    readonly amount: u128;
+  } & Struct;
+  readonly isDynamicTvlAmount: boolean;
+  readonly asDynamicTvlAmount: {
+    readonly amount: u128;
+    readonly minimumAmount: u128;
+  } & Struct;
+  readonly type: 'FixedTvlAmount' | 'DynamicTvlAmount';
 }

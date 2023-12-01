@@ -39,7 +39,7 @@ export default defineComponent({
 .card {
   border-radius: 16px;
   background: rgba(63, 197, 251, 0.3);
-  padding: 16px 24px;
+  padding: 48px 24px;
 }
 
 .card--title {

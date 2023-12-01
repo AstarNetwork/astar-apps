@@ -1,0 +1,97 @@
+@import 'src/css/quasar.variables.scss';
+
+ul {
+  margin: 0 8px;
+  padding-left: 24px;
+}
+
+li {
+  list-style-type: disc;
+}
+
+.wrapper--vote {
+  padding: 16px;
+  max-width: 412px;
+  @media (min-width: $xl) {
+    justify-content: center;
+    margin-top: 30px;
+  }
+}
+
+.title {
+  color: $navy-1;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  letter-spacing: -0.64px;
+}
+
+.note {
+  padding: 16px;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: $gray-1;
+  margin: 16px 0;
+}
+
+.warning {
+  background-color: rgba(230, 0, 122, 0.05);
+  border: 1px solid $astar-pink;
+  color: $astar-pink;
+}
+
+.warning--text {
+  color: $astar-pink;
+}
+
+.note--row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dapp {
+  border-radius: 16px 16px 0px 0px;
+  border: 1px solid $gray-3;
+  border-bottom-width: 0px;
+  padding: 24px 8px;
+}
+
+.amount {
+  border-radius: 0px 0px 16px 16px;
+  border: 1px solid $gray-3;
+  border-top-width: 0px;
+  padding: 24px 8px;
+}
+
+.dapp-amount {
+  margin-bottom: 16px;
+}
+
+.amount-full-border {
+  border-radius: 16px;
+  border-width: 1px;
+}
+
+.body--dark {
+  .title {
+    color: $gray-1;
+  }
+
+  .note {
+    background-color: $navy-3;
+  }
+
+  .btn--confirm {
+    width: 100%;
+    font-size: 22px;
+    font-weight: 600;
+    height: 52px;
+  }
+
+  .wrapper--button {
+    width: 100%;
+    height: auto;
+  }
+}

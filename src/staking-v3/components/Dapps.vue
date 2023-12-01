@@ -15,9 +15,6 @@
             <span class="text--label">T{{ getDappTier(dapp.chain.id) ?? '-' }}</span>
           </div>
           <div>
-            <span class="text--label">2,432</span>
-          </div>
-          <div>
             <span class="text--label">
               <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
             </span>

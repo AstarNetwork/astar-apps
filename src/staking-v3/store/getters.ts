@@ -11,6 +11,7 @@ import {
   Constants,
   EraInfo,
   DAppTierRewards,
+  TiersConfiguration,
 } from '../logic';
 
 export interface DappStakingGetters {
@@ -23,7 +24,8 @@ export interface DappStakingGetters {
   getRewards(state: DappStakingState): Rewards | undefined;
   getConstants(state: DappStakingState): Constants | undefined;
   getCurrentEraInfo(state: DappStakingState): EraInfo | undefined;
-  getDappTiers(state: DappStakingState): DAppTierRewards | undefined;
+  getDappTiers(state: DappStakingState): DAppTierRewards;
+  getTiersConfiguration(state: DappStakingState): TiersConfiguration;
 }
 
 const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters = {
@@ -37,6 +39,7 @@ const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters
   getConstants: (state) => state.constants,
   getCurrentEraInfo: (state) => state.currentEra,
   getDappTiers: (state) => state.dAppTiers,
+  getTiersConfiguration: (state) => state.tiersConfiguration,
 };
 
 export default getters;
