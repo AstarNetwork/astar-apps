@@ -145,7 +145,7 @@ export default defineComponent({
     });
 
     // **** dApp staking v3
-    if (isDappStakingV3) {
+    if (isDappStakingV3.value) {
       // dApp staking v3 data changed subscriptions.
       container
         .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
