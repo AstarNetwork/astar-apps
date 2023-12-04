@@ -281,4 +281,4 @@ export const supportAllWallets = objToArray(supportAllWalletsObj) as Wallet[];
 
 // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
 // Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L225
-export const faucetBalRequirement = 0.01 / 2;
+export const faucetBalRequirement = 0.1 / 2;
