@@ -13,6 +13,7 @@ import {
   ProtocolState,
   SingularStakingInfo,
   StakeAmount,
+  TiersConfiguration,
 } from '../models';
 
 /**
@@ -108,7 +109,7 @@ export interface IDappStakingRepository {
    * @param contractAddress Address of the contract to be staked to.
    * @param amount Staking amount.
    */
-  getUnstakeAndUnlockCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
+  getUnstakeAndUnlockCalls(contractAddress: string, amount: number): Promise<ExtrinsicPayload[]>;
 
   /**
    * Gets claim staker rewards batch call. Situations when multiple claim staker call are required
@@ -201,4 +202,6 @@ export interface IDappStakingRepository {
    * Gets a call to relock all unbonding chunks.
    */
   getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload>;
+
+  getTiersConfiguration(): Promise<TiersConfiguration>;
 }

@@ -52,6 +52,8 @@
         :set-selected-gas="setSelectedTip"
       />
 
+      <rewards-panel />
+
       <div class="warning">
         <li>
           {{
@@ -95,12 +97,13 @@ import { wait } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { DappBase } from 'src/staking-v3/logic';
 import { useDappStaking } from 'src/staking-v3/hooks';
-import { constants } from 'buffer';
+import RewardsPanel from '../RewardsPanel.vue';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
     ModalWrapper,
+    RewardsPanel,
   },
   props: {
     show: {

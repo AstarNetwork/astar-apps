@@ -7,6 +7,7 @@ import {
   Constants,
   EraInfo,
   DAppTierRewards,
+  TiersConfiguration,
 } from '../logic';
 
 export interface DappStakingState {
@@ -18,7 +19,8 @@ export interface DappStakingState {
   rewards: Rewards | undefined;
   constants: Constants | undefined;
   currentEra: EraInfo | undefined;
-  dAppTiers: DAppTierRewards | undefined;
+  dAppTiers: DAppTierRewards;
+  tiersConfiguration: TiersConfiguration;
 }
 
 function state(): DappStakingState {
@@ -31,8 +33,22 @@ function state(): DappStakingState {
     rewards: undefined,
     constants: undefined,
     currentEra: undefined,
-    dAppTiers: undefined,
+    dAppTiers: initialDappTiersConfiguration,
+    tiersConfiguration: initialTiersConfiguration,
   };
 }
+
+export const initialTiersConfiguration: TiersConfiguration = {
+  numberOfSlots: 0,
+  slotsPerTier: [],
+  rewardPortion: [],
+  tierThresholds: [],
+};
+
+export const initialDappTiersConfiguration: DAppTierRewards = {
+  dapps: [],
+  rewards: [],
+  period: 0,
+};
 
 export default state;

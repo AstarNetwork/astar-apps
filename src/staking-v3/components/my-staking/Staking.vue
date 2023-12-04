@@ -37,7 +37,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { ledger, rewards, stakerInfo, totalStake } = useDappStaking();
+    const { ledger, totalStakerRewards, stakerInfo, totalStake } = useDappStaking();
     const currentTabIndex = ref<number>(0);
 
     const tabs = computed<TabDefinition[]>(() => [
@@ -45,10 +45,6 @@ export default defineComponent({
       { title: t('stakingV3.myDapps'), visible: stakerInfo.value?.size > 0 },
       { title: t('stakingV3.unbonding'), visible: !!ledger.value?.unlocking.length },
     ]);
-
-    const totalStakerRewards = computed<bigint>(
-      () => (rewards?.value?.staker ?? BigInt(0)) + (rewards?.value?.bonus ?? BigInt(0))
-    );
 
     return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalStake };
   },
