@@ -24,13 +24,25 @@ const calls = [
 const batch = api.tx.utility.batch(calls);
 const sudo = api.tx.sudo.sudo(batch);
 
-await sudo.signAndSend(alice, (result) => {
-  console.log(result.status.toHuman());
+const promiseToRegisterDapps = new Promise(async (resolve, reject) => {
+  try {
+    await sudo.signAndSend(alice, (result) => {
+      console.log(result.status.toHuman());
+      if (result.status.isFinalized) {
+        resolve(true);
+      }
+    });
+  } catch {
+    reject(false);
+  }
 });
 
-// Send some test tokens
-// api.tx.balances
-//   .transfer('XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa', BigInt('1000000000000000000000'))
-//   .signAndSend(alice, (result) => {
-//     console.log(result.status.toHuman());
-//   });
+const dappsRegistered = await promiseToRegisterDapps;
+if (dappsRegistered) {
+  // Send some test tokens
+  api.tx.balances
+    .transfer('XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa', BigInt('1000000000000000000000'))
+    .signAndSend(alice, (result) => {
+      console.log(result.status.toHuman());
+    });
+}
