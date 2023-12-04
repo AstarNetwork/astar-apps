@@ -99,56 +99,60 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             resolve(error.message);
           }
         } else {
-          const unsub = await extrinsic.signAndSend(
-            senderAddress,
-            {
-              signer: await this.getSigner(senderAddress),
-              nonce: -1,
-              tip,
-            },
-            (result) => {
-              try {
-                isDetectExtensionsAction && this.detectExtensionsAction(false);
-                isSnap && this.eventAggregator.publish(new BusyMessage(true));
-                if (result.isCompleted) {
-                  if (!this.isExtrinsicFailed(result.events)) {
-                    if (result.isError) {
-                      this.eventAggregator.publish(
-                        new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
-                      );
-                    } else {
-                      const subscanUrl = getSubscanExtrinsic({
-                        subscanBase: subscan,
-                        hash: result.txHash.toHex(),
-                      });
-                      this.eventAggregator.publish(
-                        new ExtrinsicStatusMessage({
-                          success: true,
-                          message: successMessage ?? AlertMsg.SUCCESS,
-                          method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                          explorerUrl: subscanUrl,
-                        })
-                      );
+          try {
+            const unsub = await extrinsic.signAndSend(
+              senderAddress,
+              {
+                signer: await this.getSigner(senderAddress),
+                nonce: -1,
+                tip,
+              },
+              (result) => {
+                try {
+                  isDetectExtensionsAction && this.detectExtensionsAction(false);
+                  isSnap && this.eventAggregator.publish(new BusyMessage(true));
+                  if (result.isCompleted) {
+                    if (!this.isExtrinsicFailed(result.events)) {
+                      if (result.isError) {
+                        this.eventAggregator.publish(
+                          new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+                        );
+                      } else {
+                        const subscanUrl = getSubscanExtrinsic({
+                          subscanBase: subscan,
+                          hash: result.txHash.toHex(),
+                        });
+                        this.eventAggregator.publish(
+                          new ExtrinsicStatusMessage({
+                            success: true,
+                            message: successMessage ?? AlertMsg.SUCCESS,
+                            method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                            explorerUrl: subscanUrl,
+                          })
+                        );
+                      }
+                    }
+                    this.eventAggregator.publish(new BusyMessage(false));
+                    if (finalizedCallback) {
+                      finalizedCallback(result);
+                    }
+                    resolve(extrinsic.hash.toHex());
+                    unsub();
+                  } else {
+                    if (isMobileDevice && !result.isCompleted) {
+                      this.eventAggregator.publish(new BusyMessage(true));
                     }
                   }
+                } catch (error) {
                   this.eventAggregator.publish(new BusyMessage(false));
-                  if (finalizedCallback) {
-                    finalizedCallback(result);
-                  }
-                  resolve(extrinsic.hash.toHex());
                   unsub();
-                } else {
-                  if (isMobileDevice && !result.isCompleted) {
-                    this.eventAggregator.publish(new BusyMessage(true));
-                  }
+                  reject(error as Error);
                 }
-              } catch (error) {
-                this.eventAggregator.publish(new BusyMessage(false));
-                unsub();
-                reject(error as Error);
               }
-            }
-          );
+            );
+          } catch (error) {
+            reject(error as Error);
+          }
         }
       });
     } catch (e) {
