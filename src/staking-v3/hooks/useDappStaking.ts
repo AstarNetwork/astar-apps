@@ -1,12 +1,12 @@
 import { $api } from 'boot/api';
-import { watch, computed } from 'vue';
+import { computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
 import {
   AccountLedger,
   Constants,
   DAppTierRewards,
+  DappInfo,
   DappStakeInfo,
   EraInfo,
   IDappStakingRepository,
@@ -31,7 +31,6 @@ import { ApiPromise } from '@polkadot/api';
 
 export function useDappStaking() {
   const { t } = useI18n();
-  const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
   const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore } = useDapps();
@@ -151,15 +150,15 @@ export function useDappStaking() {
     await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, successMessage);
   };
 
-  const unstake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = await canUnStake(dappAddress, amount);
+  const unstake = async (dapp: DappInfo, amount: number): Promise<void> => {
+    const [result, error] = await canUnStake(dapp.address, amount);
     if (!result) {
       throw error;
     }
 
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimUnstakeAndUnlock(
-      dappAddress,
+      dapp.address,
       amount,
       currentAccount.value,
       'success'
@@ -169,6 +168,8 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
     fetchStakerInfoToStore();
     getCurrentEraInfo();
+    // fetchStakeAmountsToStore([dapp.id]);
+    fetchStakeAmountsToStore();
   };
 
   const claimStakerRewards = async (): Promise<void> => {
@@ -192,7 +193,8 @@ export function useDappStaking() {
     await Promise.all([
       getAllRewards(),
       fetchStakerInfoToStore(),
-      fetchStakeAmountsToStore(stakeInfo.map((x) => x.id)),
+      // fetchStakeAmountsToStore(stakeInfo.map((x) => x.id)),
+      fetchStakeAmountsToStore(),
       getCurrentEraInfo(),
     ]);
   };
@@ -304,7 +306,7 @@ export function useDappStaking() {
     } else if (
       // Prevents dappStaking.PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
-      protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
+      protocolState.value.periodInfo.nextSubperiodStartEra <= protocolState.value.era + 1
     ) {
       return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
     }
