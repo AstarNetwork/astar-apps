@@ -8,6 +8,7 @@ import {
   isPolkadotSnapInstalled,
 } from '@astar-network/metamask-astar-adapter/build/utils';
 import type { UnitConfiguration } from '@astar-network/metamask-astar-types';
+import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 
 // Todo: move to Astar.js
 
@@ -86,8 +87,9 @@ export interface SnapInitializationResponse {
 export async function initiatePolkdatodSnap(): Promise<SnapInitializationResponse> {
   try {
     console.info('Attempting to connect to snap...');
-    // Todo: update network params
-    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'astar' }, snapId);
+    const { networkNameSubstrate } = useNetworkInfo();
+    const networkName = networkNameSubstrate.value.toLowerCase() as SnapNetworks;
+    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName }, snapId);
     console.info('Snap installed!');
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
   } catch (e) {
