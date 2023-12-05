@@ -1,5 +1,5 @@
 import { $api } from 'boot/api';
-import { watch, computed } from 'vue';
+import { computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from '../../hooks/useNetworkInfo';
 import { container } from 'src/v2/common';
@@ -34,7 +34,7 @@ export function useDappStaking() {
   const { currentNetworkIdx } = useNetworkInfo();
   const store = useStore();
   const { currentAccount } = useAccount();
-  const { registeredDapps, fetchStakeAmountsToStore } = useDapps();
+  const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { useableBalance } = useBalance(currentAccount);
 
@@ -272,11 +272,6 @@ export function useDappStaking() {
     store.commit('stakingV3/setConstants', constants);
   };
 
-  const getChainStateByAddress = (address: string): string | undefined => {
-    const dapp = registeredDapps.value.find((dapp) => dapp.chain.address === address);
-    return dapp?.chain.state;
-  };
-
   const getCurrentEraInfo = async (): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const eraInfo = await stakingRepo.getCurrentEraInfo();
@@ -319,7 +314,7 @@ export function useDappStaking() {
     ) {
       // Prevents dappStaking.PeriodEndsInNextEra
       return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
-    } else if (getChainStateByAddress(dappAddress) === 'Unregistered') {
+    } else if (getDapp(dappAddress)?.chain?.state === 'Unregistered') {
       // Prevents dappStaking.NotOperatedDApp
       return [false, t('stakingV3.dappStaking.NotOperatedDApp')];
     }
