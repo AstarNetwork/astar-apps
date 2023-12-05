@@ -105,6 +105,7 @@ export interface Constants {
   minBalanceAfterStaking: number;
   maxNumberOfStakedContracts: number;
   maxNumberOfContracts: number;
+  maxUnlockingChunks: number;
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
   unlockingPeriod: number;
