@@ -711,6 +711,7 @@ export default {
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
       'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
@@ -719,7 +720,9 @@ export default {
     availableToVote: 'Available to vote',
     totalTransferable: 'Total transferable',
     lockedForVoting: 'Locked for voting',
+    lockedForStaking: 'Locked for staking',
     alreadyVoted: 'Already voted',
+    alreadyStaked: 'Already staked',
     remainLockedToken: 'Remain locked token',
     voteLockedTokensWarning:
       'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',

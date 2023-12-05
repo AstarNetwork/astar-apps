@@ -293,14 +293,14 @@ export class DappStakingRepository implements IDappStakingRepository {
       )).toNumber(),
       maxNumberOfContracts: (<u32>api.consts.dappStaking.maxNumberOfContracts).toNumber(),
       maxUnlockingChunks: (<u32>api.consts.dappStaking.maxUnlockingChunks).toNumber(),
-      standardErasPerBuildAndEarnPeriod: (<u32>(
-        api.consts.dappStaking.standardErasPerBuildAndEarnPeriod
-      )).toNumber(),
-      standardErasPerVotingPeriod: (<u32>(
-        api.consts.dappStaking.standardErasPerVotingPeriod
-      )).toNumber(),
+      standardErasPerBuildAndEarnPeriod: 10, // (<u32>(
+      //   api.consts.dappStaking.standardErasPerBuildAndEarnPeriod
+      // )).toNumber(),
+      standardErasPerVotingPeriod: 2, // (<u32>(
+      //   api.consts.dappStaking.standardErasPerVotingPeriod
+      // )).toNumber(),
       unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
-      standardEraLength: (<u32>api.consts.dappStaking.standardEraLength).toNumber(),
+      standardEraLength: 30, // (<u32>api.consts.dappStaking.standardEraLength).toNumber(),
     };
   }
 
@@ -441,7 +441,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       periodInfo: {
         number: state.periodInfo.number.toNumber(),
         subperiod: <PeriodType>state.periodInfo.subperiod.type,
-        subperiodEndEra: state.periodInfo.subperiodEndEra.toNumber(),
+        nextSubperiodStartEra: state.periodInfo.nextSubperiodStartEra.toNumber(),
       },
       maintenance: state.maintenance.isTrue,
     };

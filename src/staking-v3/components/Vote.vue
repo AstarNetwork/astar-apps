@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper--vote">
     <back-to-page :text="$t('stakingV3.back')" :link="Path.DappStaking" />
-    <div class="title">{{ $t('stakingV3.voteTitle') }}</div>
+    <div class="title">
+      {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
+    </div>
     <div class="note">
       <b>{{ $t('toast.note') }}</b>
       <ul>
@@ -54,11 +56,15 @@
         <div><token-balance-native :balance="useableBalance" /></div>
       </div>
       <div class="note--row">
-        <div>{{ $t('stakingV3.lockedForVoting') }}</div>
+        <div>
+          {{ isVotingPeriod ? $t('stakingV3.lockedForVoting') : $t('stakingV3.lockedForStaking') }}
+        </div>
         <div><token-balance-native :balance="locked.toString()" /></div>
       </div>
       <div class="note--row">
-        <div>{{ $t('stakingV3.alreadyVoted') }}</div>
+        <div>
+          {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
+        </div>
         <div><token-balance-native :balance="totalStake.toString()" /></div>
       </div>
       <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
@@ -126,7 +132,7 @@ export default defineComponent({
     RewardsPanel,
   },
   setup() {
-    const { constants, ledger, totalStake, claimLockAndStake } = useDappStaking();
+    const { constants, ledger, totalStake, isVotingPeriod, claimLockAndStake } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { goBack } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -243,6 +249,7 @@ export default defineComponent({
       handleSelectDapp,
       canAddDapp,
       Path,
+      isVotingPeriod,
     };
   },
   computed: {

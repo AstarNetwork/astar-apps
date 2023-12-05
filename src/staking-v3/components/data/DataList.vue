@@ -64,7 +64,7 @@ export default defineComponent({
       if (protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn) {
         return (
           (periodDuration.value ?? 0) -
-          (protocolState.value.periodInfo.subperiodEndEra - protocolState.value.era) +
+          (protocolState.value.periodInfo.nextSubperiodStartEra - protocolState.value.era) +
           1
         );
       } else {
