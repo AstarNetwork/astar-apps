@@ -306,7 +306,7 @@ export function useDappStaking() {
     } else if (
       // Prevents dappStaking.PeriodEndsInNextEra
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
-      protocolState.value.periodInfo.subperiodEndEra <= protocolState.value.era + 1
+      protocolState.value.periodInfo.nextSubperiodStartEra <= protocolState.value.era + 1
     ) {
       return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
     }

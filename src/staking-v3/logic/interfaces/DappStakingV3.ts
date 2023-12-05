@@ -13,7 +13,7 @@ interface PalletDappStakingV3TierLabel extends Enum {}
 interface PalletDappStakingV3PeriodInfo extends Struct {
   readonly number: Compact<u32>;
   readonly subperiod: PalletDappStakingV3PeriodType;
-  readonly subperiodEndEra: Compact<u32>;
+  readonly nextSubperiodStartEra: Compact<u32>;
 }
 
 interface PalletDappStakingV3DAppState extends Enum {
