@@ -99,6 +99,12 @@ export interface IDappStakingRepository {
   getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
 
   /**
+   * Gets unstake from unregistered contract call.
+   * @param contractAddress Address of the contract to be unstaked from.
+   */
+  getUnstakeFromUnregisteredCall(contractAddress: string): Promise<ExtrinsicPayload>;
+
+  /**
    * Gets unlock call.
    * @param amount Amount of tokens to unlock.
    */

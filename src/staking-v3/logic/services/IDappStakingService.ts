@@ -45,6 +45,18 @@ export interface IDappStakingService {
   claimStakerRewards(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
+   * Invokes calls to claim all rewards and to unstake tokens from unregistered contract.
+   * @param senderAddress Address of the request sender.
+   * @param contractAddress Address of the contract to be un staked from.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimAllAndUnstakeFromUnregistered(
+    senderAddress: string,
+    contractAddress: string,
+    successMessage: string
+  ): Promise<void>;
+
+  /**
    * Calculates staker rewards.
    * @param senderAddress Staker address.
    * @returns Staker rewards amount.

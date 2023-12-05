@@ -206,6 +206,14 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
+  public async getUnstakeFromUnregisteredCall(contractAddress: string): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+
+    return api.tx.dappStaking.unstakeFromUnregistered(getDappAddressEnum(contractAddress));
+  }
+
+  //* @inheritdoc
   public async getUnlockCall(amount: number): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     const amountFormatted = this.getFormattedAmount(amount);

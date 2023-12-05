@@ -88,6 +88,30 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  // @inheritdoc
+  public async claimAllAndUnstakeFromUnregistered(
+    senderAddress: string,
+    contractAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const stakerRewards = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
+    const dAppRewards = (await this.getClaimDappRewardsCalls(contractAddress)) ?? [];
+    const unstakeCall = await this.dappStakingRepository.getUnstakeFromUnregisteredCall(
+      contractAddress
+    );
+
+    const batch = await this.dappStakingRepository.batchAllCalls([
+      ...stakerRewards,
+      ...dAppRewards,
+      unstakeCall,
+    ]);
+
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
   private async getClaimStakerRewardsCall(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {

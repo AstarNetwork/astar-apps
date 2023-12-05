@@ -168,7 +168,25 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
     fetchStakerInfoToStore();
     getCurrentEraInfo();
-    // fetchStakeAmountsToStore([dapp.id]);
+    fetchStakeAmountsToStore();
+  };
+
+  const unstakeFromUnregistered = async (dappAddress: string): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.claimAllAndUnstakeFromUnregistered(
+      currentAccount.value,
+      dappAddress,
+      'success'
+    );
+
+    const [staker, bonus, dApp] = await Promise.all([
+      stakingService.getStakerRewards(currentAccount.value),
+      stakingService.getBonusRewards(currentAccount.value),
+      stakingService.getDappRewards(dappAddress),
+    ]);
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus, dApp });
+    fetchStakerInfoToStore();
+    getCurrentEraInfo();
     fetchStakeAmountsToStore();
   };
 
@@ -431,5 +449,6 @@ export function useDappStaking() {
     fetchTiersConfigurationToStore,
     withdraw,
     relock,
+    unstakeFromUnregistered,
   };
 }

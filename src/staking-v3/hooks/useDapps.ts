@@ -25,6 +25,8 @@ export function useDapps() {
     () => store.getters['stakingV3/getRegisteredDapps']
   );
 
+  const allDapps = computed<CombinedDappInfo[]>(() => store.getters['stakingV3/getDapps']);
+
   const fetchDappsToStore = async (): Promise<void> => {
     // Don't fetch if we already have dApps.
     if (registeredDapps.value.length > 0) {
@@ -84,7 +86,7 @@ export function useDapps() {
   };
 
   const getDapp = (dappAddress: string): CombinedDappInfo | undefined =>
-    registeredDapps.value.find((d) => d.chain.address === dappAddress);
+    allDapps.value.find((d) => d.chain.address === dappAddress);
 
   return {
     registeredDapps,
