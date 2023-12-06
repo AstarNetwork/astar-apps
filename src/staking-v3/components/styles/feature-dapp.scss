@@ -32,7 +32,7 @@
 
 .card--data {
   background-color: $navy-1;
-  width: 80px;
+  width: 90px;
   height: 100px;
   border-radius: 10px;
   padding: 16px 8px;
@@ -41,6 +41,9 @@
   align-items: center;
   justify-content: space-between;
   text-align: center;
+  @media (min-width: $sm) {
+    width: 148px;
+  }
 }
 
 .card__top {

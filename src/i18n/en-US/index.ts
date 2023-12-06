@@ -355,6 +355,7 @@ export default {
       stats: 'Stats',
       v3: {
         currentTier: 'Current Tier',
+        numberOfStakers: 'Number of Stakers',
         totalEarned: 'Total Earned',
       },
     },
@@ -724,6 +725,7 @@ export default {
     basicRewards: 'Basic rewards',
     bonusRewards: 'Bonus rewards',
     dAppRewards: 'dApp rewards',
+
     tokensToBeLocked: 'Tokens to be locked',
     additionalTokensLockedWarning:
       'Additional tokens will be locked to be able to vote a desired amount.',

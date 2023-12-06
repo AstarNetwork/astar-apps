@@ -1,4 +1,4 @@
-endpoint: wss://rpc.astar.network
+endpoint: wss://astar-rpc.dwellir.com
 mock-signature-host: true
 block: ${env.ASTAR_BLOCK_NUMBER}
 db: ./db.sqlite
