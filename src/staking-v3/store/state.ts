@@ -8,6 +8,7 @@ import {
   EraInfo,
   DAppTierRewards,
   TiersConfiguration,
+  EraLengths,
 } from '../logic';
 
 export interface DappStakingState {
@@ -21,6 +22,7 @@ export interface DappStakingState {
   currentEra: EraInfo | undefined;
   dAppTiers: DAppTierRewards;
   tiersConfiguration: TiersConfiguration;
+  eraLengths: EraLengths;
 }
 
 function state(): DappStakingState {
@@ -35,6 +37,7 @@ function state(): DappStakingState {
     currentEra: undefined,
     dAppTiers: initialDappTiersConfiguration,
     tiersConfiguration: initialTiersConfiguration,
+    eraLengths: initialEraLengths,
   };
 }
 
@@ -49,6 +52,12 @@ export const initialDappTiersConfiguration: DAppTierRewards = {
   dapps: [],
   rewards: [],
   period: 0,
+};
+
+export const initialEraLengths: EraLengths = {
+  standardErasPerBuildAndEarnPeriod: 0,
+  standardErasPerVotingPeriod: 0,
+  standardEraLength: 0,
 };
 
 export default state;

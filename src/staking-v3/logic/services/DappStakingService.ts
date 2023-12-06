@@ -412,11 +412,12 @@ export class DappStakingService implements IDappStakingService {
   public async getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
-    const [protocolState, constants, dapp, periodInfo] = await Promise.all([
+    const [protocolState, constants, dapp, periodInfo, eraLengths] = await Promise.all([
       this.dappStakingRepository.getProtocolState(),
       this.dappStakingRepository.getConstants(),
       this.dappStakingRepository.getChainDapp(contractAddress),
       this.dappStakingRepository.getPeriodEndInfo(period),
+      this.dappStakingRepository.getEraLengths(),
     ]);
 
     if (!dapp) {
@@ -436,9 +437,9 @@ export class DappStakingService implements IDappStakingService {
 
     const lastEra = periodInfo?.finalEra ?? 0;
     const firstEra =
-      lastEra > constants.standardErasPerBuildAndEarnPeriod
-        ? lastEra - constants.standardErasPerBuildAndEarnPeriod + 1
-        : constants.standardErasPerVotingPeriod;
+      lastEra > eraLengths.standardErasPerBuildAndEarnPeriod
+        ? lastEra - eraLengths.standardErasPerBuildAndEarnPeriod + 1
+        : eraLengths.standardErasPerVotingPeriod;
 
     if (firstEra <= lastEra) {
       const tierRewards = await Promise.all(

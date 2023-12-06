@@ -12,6 +12,7 @@ import {
   DAppTierRewards,
   DappInfo,
   TiersConfiguration,
+  EraLengths,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -27,6 +28,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setCurrentEraInfo(state: DappStakingState, currentEra: EraInfo): void;
   setDappTiers(state: DappStakingState, dAppTiers: DAppTierRewards): void;
   setTiersConfiguration(state: DappStakingState, tiersConfiguration: TiersConfiguration): void;
+  setEraLengths(state: DappStakingState, eraLengths: EraLengths): void;
 }
 
 const updateDapp = (
@@ -94,6 +96,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setTiersConfiguration(state, tiersConfiguration) {
     state.tiersConfiguration = tiersConfiguration;
+  },
+  setEraLengths(state, eraLengths) {
+    state.eraLengths = eraLengths;
   },
 };
 

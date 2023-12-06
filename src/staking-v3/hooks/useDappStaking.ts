@@ -9,6 +9,7 @@ import {
   DappInfo,
   DappStakeInfo,
   EraInfo,
+  EraLengths,
   IDappStakingRepository,
   IDappStakingService,
   PeriodType,
@@ -77,6 +78,15 @@ export function useDappStaking() {
     }
 
     return consts;
+  });
+
+  const eraLengths = computed<EraLengths>(() => {
+    const lengths = store.getters['stakingV3/getEraLengths'];
+    if (!lengths) {
+      fetchEraLengthsToStore();
+    }
+
+    return lengths;
   });
 
   const currentEraInfo = computed<EraInfo | undefined>(() => {
@@ -412,6 +422,13 @@ export function useDappStaking() {
     store.commit('stakingV3/setTiersConfiguration', tiersConfiguration);
   };
 
+  const fetchEraLengthsToStore = async (): Promise<void> => {
+    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+    const eraLengths = await stakingRepo.getEraLengths();
+
+    store.commit('stakingV3/setEraLengths', eraLengths);
+  };
+
   return {
     protocolState,
     ledger,
@@ -430,6 +447,7 @@ export function useDappStaking() {
     tiersConfiguration,
     totalStakerRewards,
     currentBlock,
+    eraLengths,
     isCurrentPeriod,
     stake,
     unstake,
@@ -450,5 +468,6 @@ export function useDappStaking() {
     withdraw,
     relock,
     unstakeFromUnregistered,
+    fetchEraLengthsToStore,
   };
 }

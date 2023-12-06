@@ -93,6 +93,7 @@ export default defineComponent({
       getDappTiers,
       fetchStakerInfoToStore,
       fetchTiersConfigurationToStore,
+      fetchEraLengthsToStore,
       isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
@@ -163,6 +164,7 @@ export default defineComponent({
           getDappTiers(message.state.era - 1),
           fetchStakeAmountsToStore(),
           fetchStakerInfoToStore(),
+          fetchEraLengthsToStore(),
         ]);
       });
 

@@ -8,6 +8,7 @@ import {
   DappBase,
   DappInfo,
   EraInfo,
+  EraLengths,
   EraRewardSpan,
   PeriodEndInfo,
   ProtocolState,
@@ -210,4 +211,6 @@ export interface IDappStakingRepository {
   getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload>;
 
   getTiersConfiguration(): Promise<TiersConfiguration>;
+
+  getEraLengths(): Promise<EraLengths>;
 }

@@ -1,10 +1,10 @@
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 import { useDappStaking } from './useDappStaking';
 import { PeriodType } from '../logic';
 import { useI18n } from 'vue-i18n';
 
 export function usePeriod() {
-  const { protocolState, constants, currentBlock } = useDappStaking();
+  const { protocolState, constants, currentBlock, eraLengths } = useDappStaking();
   const { t } = useI18n();
 
   const periodName = computed<string>(() =>
@@ -15,8 +15,8 @@ export function usePeriod() {
 
   const periodDuration = computed<number | undefined>(() =>
     protocolState.value?.periodInfo.subperiod === PeriodType.Voting
-      ? constants.value?.standardErasPerVotingPeriod
-      : constants.value?.standardErasPerBuildAndEarnPeriod
+      ? eraLengths.value?.standardErasPerVotingPeriod
+      : eraLengths.value?.standardErasPerBuildAndEarnPeriod
   );
 
   const periodCurrentDay = computed<number | undefined>(() => {
@@ -27,25 +27,20 @@ export function usePeriod() {
     if (protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn) {
       return (
         (periodDuration.value ?? 0) -
-        (protocolState.value.periodInfo.nextSubperiodStartEra - protocolState.value.era)
+        (protocolState.value.periodInfo.nextSubperiodStartEra - protocolState.value.era) +
+        1
       );
     } else {
       // Voting is a bit special case. The subperiod takes standardErasPerVotingPeriod time,
       // but at the end of the period era number will increase by 1.
       return (
-        constants.value.standardErasPerVotingPeriod -
+        eraLengths.value.standardErasPerVotingPeriod -
         Math.floor(
           (protocolState.value.nextEraStart - currentBlock.value) /
-            constants.value.standardEraLength
+            eraLengths.value.standardEraLength
         )
       );
     }
-  });
-
-  watchEffect(() => {
-    console.log('periodName', periodName.value);
-    console.log('periodDuration', periodDuration.value);
-    console.log('periodCurrentDay', periodCurrentDay.value);
   });
 
   return { periodName, periodDuration, periodCurrentDay };
