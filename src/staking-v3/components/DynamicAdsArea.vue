@@ -91,29 +91,3 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './styles/ads-area.scss';
 </style>
-
-<style lang="scss">
-.swiper--ads-area {
-  .swiper-button-prev,
-  .swiper-button-next {
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    background-color: $navy-1;
-    &::after {
-      font-size: 12px;
-      font-weight: 600;
-    }
-  }
-  .swiper-button-prev {
-    padding-right: 2px;
-  }
-  .swiper-button-next {
-    padding-left: 2px;
-  }
-  .swiper-button-disabled {
-    display: none;
-  }
-}
-</style>

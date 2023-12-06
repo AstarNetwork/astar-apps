@@ -45,14 +45,14 @@
   height: 100%;
   transition: all 0.2s ease;
   cursor: pointer;
-  box-shadow: 0 0 16px 2px #00000014;
+  border: solid 1px $gray-2;
   border-radius: 6px;
   overflow: hidden;
   &:hover {
     background: rgba(255, 255, 255, 0.7);
   }
 }
-.body--dark{
+.body--dark {
   .card--swiper {
     background: rgba(255, 255, 255, 0.1);
     &:hover {
@@ -87,7 +87,7 @@
   font-weight: 700;
   color: $navy-1;
 }
-.body--dark{
+.body--dark {
   .text--name {
     color: $gray-1;
   }
@@ -104,7 +104,7 @@
   font-size: 20px;
   font-weight: 600;
 }
-.text--subtitle{
+.text--subtitle {
   color: $gray-3;
   font-weight: 600;
 }
@@ -112,5 +112,8 @@
 .body--dark {
   .text--description {
     color: $gray-1;
+  }
+  .card--swiper {
+    border-color: transparent;
   }
 }
