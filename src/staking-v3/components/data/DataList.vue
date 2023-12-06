@@ -106,12 +106,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wrapper--data--list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-
-  div {
-    flex: 1 1 0px;
+  display: grid;
+  width: 100%;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (min-width: $md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 </style>

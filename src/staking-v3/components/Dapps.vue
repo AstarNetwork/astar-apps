@@ -3,19 +3,20 @@
     <div v-for="(dapp, index) in registeredDapps" :key="index">
       <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
         <div class="card__top">
-          <div>
-            <img :src="dapp.basic.iconUrl" alt="icon" class="icon--dapp" />
+          <div class="icon--dapp">
+            <img :src="dapp.basic.iconUrl" alt="icon" />
           </div>
-          <div>
+          <div class="text--dapp">
             <span class="text--title">{{ dapp.basic.name }}</span>
           </div>
         </div>
+        <hr class="divider--dapp" />
         <div class="card__bottom">
           <div>
-            <span class="text--label">T{{ getDappTier(dapp.chain.id) ?? '-' }}</span>
+            <span class="">T{{ getDappTier(dapp.chain.id) ?? '-' }}</span>
           </div>
           <div>
-            <span class="text--label">
+            <span class="">
               <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
             </span>
           </div>

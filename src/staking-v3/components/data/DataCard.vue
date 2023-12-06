@@ -31,15 +31,17 @@ export default defineComponent({
   border: 1px solid $navy-1;
   border-radius: 16px;
   padding: 24px;
-  min-width: 160px;
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 150px;
 }
 
 .card--top {
   font-size: 14px;
   font-weight: 600;
-  line-height: normal;
-  height: 60px;
-  padding-bottom: 8px;
   display: flex;
   align-items: flex-end;
 }
@@ -47,11 +49,12 @@ export default defineComponent({
 .card--bottom {
   font-size: 24px;
   font-weight: 800;
-  line-height: normal;
-  letter-spacing: -0.48px;
-  height: 60px;
-  padding-top: 8px;
-  display: flex;
-  align-items: flex-start;
+  letter-spacing: -0.5px;
+}
+
+.body--dark {
+  .wrapper--data {
+    border-color: $gray-4;
+  }
 }
 </style>

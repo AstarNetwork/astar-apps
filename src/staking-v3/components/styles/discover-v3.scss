@@ -3,8 +3,12 @@
 .wrapper--discover {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   margin: 34px auto;
   row-gap: 40px;
   max-width: 1300px;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
 }

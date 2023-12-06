@@ -1,7 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--promo {
-  padding: 0 16px;
   @media (min-width: $lg) {
     padding: 60px 0 0 0;
   }
@@ -71,7 +70,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding-left: 36px;
+  padding-left: 32px;
   padding-right: 12px;
   margin: auto;
   @media (min-width: $sm) {
@@ -158,6 +157,14 @@
   .text--value-small,
   .text--card-title {
     color: $gray-1;
+  }
+  .outlined--button {
+    border-color: $gray-1;
+    background: $navy-1;
+    color: $gray-1;
+    &:hover {
+      background: $navy-4;
+    }
   }
 }
 
