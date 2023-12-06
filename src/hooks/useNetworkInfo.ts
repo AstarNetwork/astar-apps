@@ -57,10 +57,6 @@ export function useNetworkInfo() {
 
   // Memo: for showing substrate data if users connect to zkEVM network
   const networkNameSubstrate = computed<string>(() => {
-    if (!store || !store.getters) {
-      console.error('Store or getters not defined');
-      return '';
-    }
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return chain === astarChain.SHIBUYA
