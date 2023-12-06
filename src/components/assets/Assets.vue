@@ -18,10 +18,14 @@
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
 
-        <div v-else>
+        <template v-else>
           <div v-if="isEnableXcm" class="container">
             <xcm-native-asset-list :xcm-assets="xcmAssets.assets" />
           </div>
+        </template>
+
+        <div v-if="isDappStakingV3">
+          <staking />
         </div>
       </div>
 
@@ -48,6 +52,7 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
+import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
 
 export default defineComponent({
   components: {
@@ -57,6 +62,7 @@ export default defineComponent({
     EvmAssetList,
     XcmNativeAssetList,
     YourProject,
+    Staking,
   },
   setup() {
     const token = ref<Asset | null>(null);

@@ -3,7 +3,7 @@
     <!-- Todo: Delete -->
     <!-- <staking-home /> -->
     <feature-dapp />
-    <staking />
+    <!-- <staking /> -->
     <leaderboard />
     <!-- <ad /> -->
     <dynamic-ads-area />
@@ -36,7 +36,7 @@ export default defineComponent({
     // Ad,
     Dapps,
     Leaderboard,
-    Staking,
+    // Staking,
     DataList,
     DynamicAdsArea,
     ToggleButtons,
