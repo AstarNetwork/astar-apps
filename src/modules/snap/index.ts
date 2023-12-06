@@ -8,6 +8,8 @@ import {
   isPolkadotSnapInstalled,
 } from '@astar-network/metamask-astar-adapter/build/utils';
 import type { UnitConfiguration } from '@astar-network/metamask-astar-types';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { getNetworkName } from 'src/config/chainEndpoints';
 
 // Todo: move to Astar.js
 
@@ -22,7 +24,7 @@ export interface SnapConfig {
 export const snapId = 'npm:@astar-network/snap';
 
 export async function enablePolkadotSnap(
-  config: SnapConfig = { networkName: 'shibuya' },
+  config: SnapConfig = { networkName: 'astar' },
   snapOrigin?: string,
   snapInstallationParams: Record<SnapInstallationParamNames, unknown> = {}
 ): Promise<MetamaskPolkadotSnap> {
@@ -34,7 +36,7 @@ export async function enablePolkadotSnap(
     throw new Error("Current Metamask version doesn't support snaps");
   }
   if (!config.networkName) {
-    config.networkName = 'shibuya';
+    config.networkName = 'astar';
   }
 
   const isInstalled = await isPolkadotSnapInstalled(snapId);
@@ -56,7 +58,7 @@ export async function enablePolkadotSnap(
 
 export async function installPolkadotSnap(): Promise<boolean> {
   try {
-    await enablePolkadotSnap({ networkName: 'shibuya' }, snapId);
+    await enablePolkadotSnap({ networkName: 'astar' }, snapId);
     console.info('Snap installed!!');
     return true;
   } catch (err) {
@@ -86,8 +88,13 @@ export interface SnapInitializationResponse {
 export async function initiatePolkdatodSnap(): Promise<SnapInitializationResponse> {
   try {
     console.info('Attempting to connect to snap...');
-    // Todo: update network params
-    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: 'shibuya' }, snapId);
+    const { NETWORK_IDX } = LOCAL_STORAGE;
+    const networkIdx = localStorage.getItem(NETWORK_IDX);
+    const network = getNetworkName(Number(networkIdx));
+    const networkName = (
+      network === 'astar' || network === 'shiden' ? network : 'shibuya'
+    ) as SnapNetworks;
+    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName }, snapId);
     console.info('Snap installed!');
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
   } catch (e) {
