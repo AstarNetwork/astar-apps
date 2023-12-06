@@ -1,41 +1,39 @@
 <template>
   <div v-if="dappAddress && dapp" class="wrapper--owner">
     <div class="row--your-dashboard">
-      <span>Your dashboard</span>
+      <span>{{ $t('dappStaking.dappPage.v3.yourDashboard') }}</span>
     </div>
     <div class="container--dapp-hero">
       <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
       <span class="text--dapp-name">{{ dapp.basic.name }}</span>
       <div class="row--your-dashboard-mobile">
-        <span>Your dashboard</span>
+        <span>{{ $t('dappStaking.dappPage.v3.yourDashboard') }}</span>
       </div>
     </div>
     <div class="row--statistics">
       <kpi-card :title="$t('dappStaking.dappPage.v3.currentTier')">2</kpi-card>
       <kpi-card :title="$t('dappStaking.dappPage.v3.numberOfStakers')">100</kpi-card>
-      <kpi-card :title="$t('dappStaking.dappPage.v3.totalEarned')">{{
-        $t('amountToken', { amount: 100, token: nativeTokenSymbol })
-      }}</kpi-card>
+      <kpi-card :title="$t('dappStaking.dappPage.v3.totalEarned')">
+        {{ $t('amountToken', { amount: 100, token: nativeTokenSymbol }) }}
+      </kpi-card>
     </div>
-    <div>
-      <your-rewards />
-    </div>
-    <div>Edit</div>
+    <your-rewards />
+    <edit />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watchEffect } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps } from '../hooks';
 import { CombinedDappInfo } from '../logic';
+import Edit from './Edit.vue';
 import KpiCard from './KpiCard.vue';
 import YourRewards from './YourRewards.vue';
-import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
-  components: { KpiCard, YourRewards },
-  // Todo: redirect to discover page if the connected account is not the owner
+  components: { KpiCard, YourRewards, Edit },
   setup() {
     const route = useRoute();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -46,9 +44,7 @@ export default defineComponent({
         (dapp) => dapp.chain.address === dappAddress.value
       ) as CombinedDappInfo;
     });
-    watchEffect(() => {
-      console.log('dapp', dapp.value);
-    });
+
     return { dappAddress, dapp, nativeTokenSymbol };
   },
 });

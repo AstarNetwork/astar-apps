@@ -357,6 +357,28 @@ export default {
         currentTier: 'Current Tier',
         numberOfStakers: 'Number of Stakers',
         totalEarned: 'Total Earned',
+        yourDashboard: 'Your Dashboard',
+        edit: 'Edit',
+        editProjectPage: {
+          title: 'Edit Project Page',
+          text: 'You can change the images, description at any time.',
+        },
+        editYourInfo: {
+          title: 'Edit your owner info',
+          text: 'If you wish to change registered smart contract or rewards receiving address.',
+        },
+        addPromotion: {
+          title: 'Add a promotion card',
+          text: 'If you have anything to share with the community, you can create a card on the top page to promote about it!',
+        },
+        yourRewards: 'Your Rewards',
+        availableToClaim: 'Available to claim',
+        alreadyClaimed: 'Already claimed',
+        days: '{day} days',
+        claim: 'Claim',
+        claimed: 'Claimed',
+        period: 'Period {period}',
+        claimNow: 'Claim these rewards now, as they will expire at the end of the current period.',
       },
     },
     modals: {
