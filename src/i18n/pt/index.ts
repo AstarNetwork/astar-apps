@@ -49,7 +49,7 @@ export default {
     alphabeticalZtoA: 'Alfabético: Z para A',
   },
   warning: {
-    warning: Aviso
+    warning: 'Aviso',
     insufficientBalance: 'Balanço {token} insuficiente',
     insufficientFee: 'Atenção! Transaction might fail due to insufficient fee',
     inputtedInvalidDestAddress: 'Endereço inválido',
@@ -63,7 +63,8 @@ export default {
     insufficientExistentialDeposit:
       'Saldos da conta na rede {network} está abaixo do valor do depósito existencial',
     withdrawalNotSupport: 'O portal não suporta o saque para {chain} neste momento',
-    ledgerNotOpened: 'Ledger não abriu o aplicativo Astar. Por favor, abra-o e atualize esta página.',
+    ledgerNotOpened:
+      'Ledger não abriu o aplicativo Astar. Por favor, abra-o e atualize esta página.',
   },
   toast: {
     transactionFailed: 'Transação falhou com erro: {message}',
@@ -74,7 +75,7 @@ export default {
     copyAddressSuccessfully: 'Endereço copiado com sucesso!',
     clearedLocalStorage: 'Memória local limpa! O portal será atualizado em segundos',
     checkYourTransactions: 'Confira suas transações',
-    approveOnPolkasafe: Aprove no PolkaSafe',
+    approveOnPolkasafe: 'Aprove no PolkaSafe',
     success: 'Successo',
     note: 'Aviso',
     error: 'Erro',
@@ -111,10 +112,10 @@ export default {
       fast: 'Rápida',
       superFast: 'Super Rápida',
       tipHelp: 'Uma tip é importante para ajudar a acelerar as transações',
-   },
+    },
     decentralizedBanner: {
       bannerText:
-        Conenctado em Portal Astar: Edição Descentralizada. Está com problemas? Volte para',
+        'Conenctado em Portal Astar: Edição Descentralizada. Está com problemas? Volte para',
       goToClassicPortal: 'Portal Clássico',
     },
     status: {
@@ -148,7 +149,7 @@ export default {
     shibuyaTakes20mins: 'Poderá levar mais de 20 mins para conectar em Shibuya via Light client',
     takeLongerTimeToConnect: 'Poderá levar um tempo para carregar dados das cadeias',
     takeLongerTimeToSend: 'Poderá levar um tempo ou falhar no envio de transações',
-    zkNetworkTip: Por favor, conecte uma carteira EVM primeiro',
+    zkNetworkTip: 'Por favor, conecte uma carteira EVM primeiro',
   },
   wallet: {
     connectWallet: 'Conectar Carteira',
@@ -162,7 +163,7 @@ export default {
       switchNetwork: "Mude sua rede para 'Shiden' na extensão Math Wallet e atualize esta página",
     },
     showBalance: 'Mostrar saldo {token}',
-   isLedgerAccount: 'Essa é uma conta Ledger, conecatada e executando Astar app',
+    isLedgerAccount: 'Essa é uma conta Ledger, conecatada e executando Astar app',
     multisig: {
       initPolkasafe: 'Iniciando PolkaSafe SDK para assinatura; poderá levar um tempo',
       noAccounts: 'Contas multisig não encontradas',
@@ -206,7 +207,7 @@ export default {
         'Você também pode encontrar carteiras Substrate que podem ser mais amigáveis. ',
       checkNativeWallets: 'Verifique nossas carteiras Nativas.',
       haveStakingBalance:
-       'Você possui saldo em Stake. Esses tokens em stake não serão mesclados com a conta unificada. Por favor, retire o stake primeiro.',
+        'Você possui saldo em Stake. Esses tokens em stake não serão mesclados com a conta unificada. Por favor, retire o stake primeiro.',
       unifiedAccountName: 'Nome da Conta Unificada',
       accountIcon: 'Ícone da Conta',
       balanceTransferred: 'Seu saldo na conta EVM será transferido.',
@@ -220,9 +221,9 @@ export default {
       selectAvatar: 'Selecionar Avatar',
       save: 'Salvar',
       noNfts:
-       "Você não tem NFTs cunhados no momento. Ao cunhar alguns, você poderá atualizar sua conta unificada com um NFT. No momento, o ícone padrão será usado.",
+        'Você não tem NFTs cunhados no momento. Ao cunhar alguns, você poderá atualizar sua conta unificada com um NFT. No momento, o ícone padrão será usado.',
     },
-  },  
+  },
   installWallet: {
     getWallet: 'Não obteve o {value} ainda?',
     installWallet:
@@ -284,8 +285,7 @@ export default {
     restakeTip:
       'Ao ativar, suas recompensas serão colocadas em stake automaticamente quando você clamar.',
     claimable: {
-      limitation:
-       'Há uma limitação no número de eras que podem ser clamadas em uma transação.',
+      limitation: 'Há uma limitação no número de eras que podem ser clamadas em uma transação.',
       nativeWallets: 'Carteiras nativas: ≒56 eras',
       ledgerX: 'Ledger Nano X: 6 eras',
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
@@ -424,7 +424,8 @@ export default {
       successfullyWithdrawn: 'Saldo sacado com sucesso',
       successfullySetRewardDest: 'Você definiu com sucesso o destino da recompensa',
       successfullyStaked: 'Você fez stake com sucesso em {contractAddress}',
-      successfullyUnbond: 'Você iniciou com sucesso o processo de desvinculação para {contractAddress}',
+      successfullyUnbond:
+        'Você iniciou com sucesso o processo de desvinculação para {contractAddress}',
       successfullyNominationTransfer:
         'Você fez stake com sucesso em {targetContractId} de {fromContractId}',
     },
@@ -443,9 +444,7 @@ export default {
     astarEvmAccount: 'Astar Conta EVM',
     assets: 'Ativos',
     xcmAssets: 'Ativos XCM',
-    xcmAssets: 'Ativos XCM (Mensagem de Cadeia Cruzada)',
     xvmAssets: 'Ativos XVM ERC20',
-    xvmAssets: 'Ativos XVM (Máquina Virtual Cruzada) ERC-20',
     nativeAccount: 'Conta Nativa',
     evmAccount: 'Conta EVM',
     switchToEvm: 'Alternar para EVM',
@@ -523,7 +522,7 @@ export default {
       cannotBeSentErc20: 'Tokens ERC20 não podem ser enviados para endereços nativos {rede}',
       notSendToExchanges: 'NÃO estou enviando tokens para Corretoras',
       notSendToEvmExchanges:
-        "NÃO estou enviando tokens para endereços de depósito EVM de Corretora. Entendo que, se fizer isso, os fundos provavelmente serão perdidos.",
+        'NÃO estou enviando tokens para endereços de depósito EVM de Corretora. Entendo que, se fizer isso, os fundos provavelmente serão perdidos.',
       understandWarning: 'Entendo que se o fizer, os fundos provavelmente serão perdidos',
       notDestIsLedgerAccount:
         'O endereço de destino não é uma conta Ledger nativa nem um endereço de Corretora. Entendo que se eu fizer isso, os fundos provavelmente serão perdidos.',
@@ -577,7 +576,7 @@ export default {
         askCommunityDiscord: 'Pergunte à nossa comunidade Discord',
         askCommunityTip: 'Alguém está sempre lá para você.',
       },
-        xcmWarning: {
+      xcmWarning: {
         minBalIsRequired: 'Saldo min. é necessário na cadeia de origem',
         fee: 'A taxa é deduzida do valor inserido',
         notInputExchanges: 'Não insira o endereço da carteira de corretoras',
@@ -642,7 +641,8 @@ export default {
     },
     numberOfCalls: {
       title: 'Número de Transações',
-      tooltip: "Número de transações de usuários chamadas para o endereço de contrato inteligente do dApp",       
+      tooltip:
+        'Número de transações de usuários chamadas para o endereço de contrato inteligente do dApp',
     },
     treasury: 'Tesouro',
     other: 'Outro',
@@ -665,20 +665,14 @@ export default {
     terms: 'Termos de Serviço',
     privacy: 'Política de Privacidade',
     chapter1: '1. Responsabilidade:',
-    para1: `Você entende e concorda que a Astar Foundation não será responsabilizada por qualquer
-    danos diretos, indiretos, incidentais, especiais, consequenciais ou exemplares decorrentes de
-    seu uso dos dApps do ecossistema Astar. Isto inclui, mas não está limitado a, danos por
-    perda de lucros, fundo de comércio, utilização, dados ou outras perdas intangíveis.»,
+    para1:
+      'Você entende e concorda que a Astar Foundation não será responsabilizada por qualquer danos diretos, indiretos, incidentais, especiais, consequenciais ou exemplares decorrentes de seu uso dos dApps do ecossistema Astar. Isto inclui, mas não está limitado a, danos por perda de lucros, fundo de comércio, utilização, dados ou outras perdas intangíveis.',
     chapter2: '2. Assunção de riscos de rede:',
-    para2: `Você entende e concorda que a Astar Foundation não garante a segurança do
-    DApps do ecossistema Astar ou a segurança de suas informações pessoais, incluindo sua carteira
-    endereço, histórico de transações e chaves privadas. Você concorda em tomar medidas apropriadas para
-    proteger suas informações pessoais e impedir o acesso não autorizado à sua carteira.`,
+    para2:
+      'Você entende e concorda que a Astar Foundation não garante a segurança do DApps do ecossistema Astar ou a segurança de suas informações pessoais, incluindo sua carteira endereço, histórico de transações e chaves privadas. Você concorda em tomar medidas apropriadas para proteger suas informações pessoais e impedir o acesso não autorizado à sua carteira.',
     chapter3: '3. Nenhuma garantia de segurança:',
-    closeWord: `Você também confirma que não é uma "Pessoa Proibida" e que nem você nem qualquer
-    pessoa ou entidade que controla, é controlada por ou está sob controle comum com você é uma
-    Pessoa Proibida. Por fim, ao clicar em “Aceitar”, você concorda com os termos e condições
-    estabelecido acima. Se você não concordar, clique em "Recusar."`,
+    closeWord:
+      'Você também confirma que não é uma "Pessoa Proibida" e que nem você nem qualquer pessoa ou entidade que controla, é controlada por ou está sob controle comum com você é uma Pessoa Proibida. Por fim, ao clicar em “Aceitar”, você concorda com os termos e condições estabelecido acima. Se você não concordar, clique em "Recusar."',
     agree: 'Concordo',
     decline: 'Discordo',
   },
@@ -718,7 +712,7 @@ export default {
       fromChainBal: 'Do Saldo da Cadeia',
       destChainBal: 'Destino Saldo da Cadeia',
       tokenHasBeenAdded: 'O token já foi adicionado',
-      tokenNotSupported: "Este token não é compatível com zkEVM",
+      tokenNotSupported: 'Este token não é compatível com zkEVM',
       interactCarefully: 'Interaja cuidadosamente com tokens novos ou suspeitos',
     },
   },
