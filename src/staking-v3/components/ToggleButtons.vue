@@ -40,13 +40,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--buttons {
-  display: flex;
+  display: inline-flex;
   padding: 8px;
   border: 1px solid $gray-2;
   border-radius: 80px;
   gap: 4px;
   font-size: 16px;
   font-weight: 700;
+  margin-bottom: 24px;
 }
 
 .button {

@@ -7,12 +7,15 @@
     <leaderboard />
     <!-- <ad /> -->
     <dynamic-ads-area />
-    <toggle-buttons
-      :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
-      @button-selected="toggleDapps"
-    />
-    <dapps v-if="displayIndex === 0" />
-    <data-list v-if="displayIndex === 1" />
+
+    <div class="container--dapps-data">
+      <toggle-buttons
+        :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+        @button-selected="toggleDapps"
+      />
+      <dapps v-if="displayIndex === 0" />
+      <data-list v-if="displayIndex === 1" />
+    </div>
   </div>
 </template>
 

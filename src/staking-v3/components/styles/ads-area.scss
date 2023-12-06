@@ -8,13 +8,11 @@
     black calc(100% - 16px),
     transparent
   );
-  padding-top: 48px;
-  padding-bottom: 48px;
   margin-left: -16px;
   margin-right: -16px;
   padding-left: 16px;
   padding-right: 16px;
-  width: 100%;
+  width:calc(100% + 32px);
   @media (min-width: $md) {
     mask-image: linear-gradient(
       to right,
@@ -23,19 +21,15 @@
       black calc(100% - 48px),
       transparent
     );
-    margin-bottom: -48px;
     margin-left: -48px;
     margin-right: -48px;
     padding-left: 48px;
     padding-right: 48px;
+    width:calc(100% + 96px);
   }
 }
 .swiper {
   overflow: visible;
-  padding: 0 16px;
-  @media (min-width: $md) {
-    padding: 0;
-  }
 }
 .swiper-slide {
   height: auto;

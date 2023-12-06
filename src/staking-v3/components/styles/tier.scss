@@ -1,0 +1,55 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--tier {
+  background: rgba(255, 255, 255, 0.5);
+  height: 100%;
+  transition: all 0.2s ease;
+  border: solid 1px $gray-2;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  padding: 16px 12px;
+}
+
+.container--dapps{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dapp {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  gap: 16px;
+}
+
+.dapp--image {
+  flex-shrink: none;
+  img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: 4.8px;
+    box-shadow: 0px 0px 2.4000000953674316px 0px #0000001a;
+  }
+}
+
+.name{
+  flex: 1;
+}
+
+.body--dark {
+  .wrapper--tier {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: transparent;
+  }
+}

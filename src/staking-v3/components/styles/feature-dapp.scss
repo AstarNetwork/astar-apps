@@ -17,10 +17,13 @@
 }
 
 .text--promo-title {
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.25;
+  @media (min-width: $sm) {
+    font-size: 48px;
+  }
 }
 
 .text--promo-description {
