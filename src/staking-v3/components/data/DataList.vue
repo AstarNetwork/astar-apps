@@ -22,9 +22,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import DataCard from './DataCard.vue';
-import { useDappStaking, useDapps } from 'src/staking-v3/hooks';
-import { PeriodType } from '../../logic';
-import { useI18n } from 'vue-i18n';
+import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
@@ -33,52 +31,9 @@ export default defineComponent({
     TokenBalanceNative,
   },
   setup() {
-    const { t } = useI18n();
-    const {
-      protocolState,
-      constants,
-      currentEraInfo,
-      dAppTiers,
-      tiersConfiguration,
-      currentBlock,
-    } = useDappStaking();
+    const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
     const { registeredDapps } = useDapps();
-
-    const periodName = computed<string>(() =>
-      protocolState.value?.periodInfo.subperiod === PeriodType.Voting
-        ? t('stakingV3.vote')
-        : t('stakingV3.build')
-    );
-
-    const periodDuration = computed<number | undefined>(() =>
-      protocolState.value?.periodInfo.subperiod === PeriodType.Voting
-        ? constants.value?.standardErasPerVotingPeriod
-        : constants.value?.standardErasPerBuildAndEarnPeriod
-    );
-
-    const periodCurrentDay = computed<number | undefined>(() => {
-      if (!protocolState.value || !constants.value) {
-        return undefined;
-      }
-
-      if (protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn) {
-        return (
-          (periodDuration.value ?? 0) -
-          (protocolState.value.periodInfo.nextSubperiodStartEra - protocolState.value.era) +
-          1
-        );
-      } else {
-        // Voting is a bit special case. The subperiod takes standardErasPerVotingPeriod time,
-        // but at the end of the period era number will increase by 1.
-        return (
-          constants.value.standardErasPerVotingPeriod -
-          Math.floor(
-            (protocolState.value.nextEraStart - currentBlock.value) /
-              constants.value.standardEraLength
-          )
-        );
-      }
-    });
+    const { periodName, periodDuration, periodCurrentDay } = usePeriod();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
     const tvl = computed<string>(() => (currentEraInfo.value?.totalLocked ?? BigInt(0)).toString());
