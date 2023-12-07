@@ -13,14 +13,6 @@
         <div v-if="isDappStakingV3">
           <your-project />
         </div>
-
-        <!-- <div v-if="isH160" class="container">
-          <evm-asset-list :tokens="evmAssets.assets" />
-        </div>
-
-        <div v-else>
-          <div v-if="isEnableXcm" class="container">
-            <xcm-native-asset-list :xcm-assets="xcmAssets.assets" /> -->
         <div class="container">
           <div v-if="isH160">
             <evm-asset-list :tokens="evmAssets.assets" />
