@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper--vote">
-    <div class="title">{{ $t('stakingV3.voteTitle') }}</div>
+    <back-to-page :text="$t('stakingV3.back')" :link="Path.DappStaking" />
+    <div class="title">
+      {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
+    </div>
     <div class="note">
       <b>{{ $t('toast.note') }}</b>
       <ul>
@@ -53,11 +56,15 @@
         <div><token-balance-native :balance="useableBalance" /></div>
       </div>
       <div class="note--row">
-        <div>{{ $t('stakingV3.lockedForVoting') }}</div>
+        <div>
+          {{ isVotingPeriod ? $t('stakingV3.lockedForVoting') : $t('stakingV3.lockedForStaking') }}
+        </div>
         <div><token-balance-native :balance="locked.toString()" /></div>
       </div>
       <div class="note--row">
-        <div>{{ $t('stakingV3.alreadyVoted') }}</div>
+        <div>
+          {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
+        </div>
         <div><token-balance-native :balance="totalStake.toString()" /></div>
       </div>
       <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
@@ -80,17 +87,7 @@
         }}
       </div>
     </div>
-    <div v-if="hasRewards" class="note">
-      <b>{{ $t('stakingV3.rewardsWillBeClaimed') }}</b>
-      <div class="note--row">
-        <div>{{ $t('stakingV3.basicRewards') }}</div>
-        <div><token-balance-native :balance="rewards?.staker.toString() ?? ''" /></div>
-      </div>
-      <div class="note--row">
-        <div>{{ $t('stakingV3.bonusRewards') }}</div>
-        <div><token-balance-native :balance="rewards?.bonus.toString() ?? ''" /></div>
-      </div>
-    </div>
+    <rewards-panel />
     <div class="wrapper--button">
       <astar-button
         :disabled="!isConfirmable"
@@ -110,7 +107,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue';
-import { useDappStaking, useDapps } from '../hooks';
+import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { DappSelector, Dapp } from './dapp-selector';
 import Amount from './Amount.vue';
@@ -120,9 +117,10 @@ import { ethers } from 'ethers';
 import { abs } from 'src/v2/common';
 import { useRoute } from 'vue-router';
 import { useStore } from 'src/store';
-import { useI18n } from 'vue-i18n';
-import BN from 'bn.js';
 import { DappStakeInfo } from '../logic';
+import BackToPage from 'src/components/common/BackToPage.vue';
+import RewardsPanel from './RewardsPanel.vue';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
@@ -130,11 +128,13 @@ export default defineComponent({
     Amount,
     TokenBalanceNative,
     ModalSelectDapp,
+    BackToPage,
+    RewardsPanel,
   },
   setup() {
-    const { constants, ledger, totalStake, hasRewards, rewards, claimLockAndStake } =
-      useDappStaking();
+    const { constants, ledger, totalStake, isVotingPeriod, claimLockAndStake } = useDappStaking();
     const { registeredDapps } = useDapps();
+    const { goBack } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
@@ -154,10 +154,7 @@ export default defineComponent({
       return locked.value - stakeToken - totalStake.value;
     });
 
-    const { t } = useI18n();
     const store = useStore();
-    const protocolState = computed(() => store.getters['stakingV3/getProtocolState']);
-    const balanceBN = computed(() => new BN(useableBalance.value.toString()));
 
     // TODO this should be moved to useDappStaking.
     const canConfirm = (): [boolean, string] => {
@@ -204,6 +201,8 @@ export default defineComponent({
         stakeInfo,
         remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
       );
+
+      goBack();
     };
 
     watch(
@@ -239,9 +238,7 @@ export default defineComponent({
       useableBalance,
       totalStake,
       remainLockedToken,
-      hasRewards,
       canConfirm,
-      rewards,
       selectedDapps,
       isModalSelectDapp,
       handleDappsSelected,
@@ -251,6 +248,8 @@ export default defineComponent({
       handleModalSelectDapp,
       handleSelectDapp,
       canAddDapp,
+      Path,
+      isVotingPeriod,
     };
   },
   computed: {
@@ -266,100 +265,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-
-ul {
-  margin: 0 8px;
-  padding-left: 24px;
-}
-
-li {
-  list-style-type: disc;
-}
-
-.wrapper--vote {
-  padding: 16px;
-  max-width: 412px;
-  @media (min-width: $xl) {
-    justify-content: center;
-  }
-}
-
-.title {
-  color: $navy-1;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
-  letter-spacing: -0.64px;
-}
-
-.note {
-  padding: 16px;
-  gap: 8px;
-  align-self: stretch;
-  border-radius: 16px;
-  background-color: $gray-1;
-  margin: 16px 0;
-}
-
-.warning {
-  background-color: rgba(230, 0, 122, 0.05);
-  border: 1px solid $astar-pink;
-  color: $astar-pink;
-}
-
-.warning--text {
-  color: $astar-pink;
-}
-
-.note--row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.dapp {
-  border-radius: 16px 16px 0px 0px;
-  border: 1px solid $gray-3;
-  border-bottom-width: 0px;
-  padding: 24px 8px;
-}
-
-.amount {
-  border-radius: 0px 0px 16px 16px;
-  border: 1px solid $gray-3;
-  border-top-width: 0px;
-  padding: 24px 8px;
-}
-
-.dapp-amount {
-  margin-bottom: 16px;
-}
-
-.amount-full-border {
-  border-radius: 16px;
-  border-width: 1px;
-}
-
-.body--dark {
-  .title {
-    color: $gray-1;
-  }
-
-  .note {
-    background-color: $navy-3;
-  }
-
-  .btn--confirm {
-    width: 100%;
-    font-size: 22px;
-    font-weight: 600;
-    height: 52px;
-  }
-
-  .wrapper--button {
-    width: 100%;
-    height: auto;
-  }
-}
+@import './styles/vote.scss';
 </style>

@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { DappBase, SingularStakingInfo } from 'src/staking-v3/logic';
+import { CombinedDappInfo, SingularStakingInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
@@ -51,7 +51,7 @@ export default defineComponent({
     const { navigateToVote } = useDappStakingNavigation();
     const { unstake } = useDappStaking();
 
-    const dappToUnbond = ref<DappBase | undefined>();
+    const dappToUnbond = ref<CombinedDappInfo | undefined>();
     const showModalUnbond = ref<boolean>(false);
     const setShowModalUnbond = (isOpen: boolean): void => {
       showModalUnbond.value = isOpen;
@@ -66,7 +66,7 @@ export default defineComponent({
     };
 
     const handleUnbonding = (dappAddress: string): void => {
-      dappToUnbond.value = getDapp(dappAddress)?.basic;
+      dappToUnbond.value = getDapp(dappAddress);
       showModalUnbond.value = true;
     };
 

@@ -199,11 +199,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
   );
   container.addSingleton<IDappStakingService>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
 
-  // dApp staking v3 data changed subscriptions.
-  container
-    .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
-    .startProtocolStateSubscription();
-
   // Start block change subscription. Needed for remaining unlocking blocks calculation.
   container.get<ISystemRepository>(Symbols.SystemRepository).startBlockSubscription();
 }

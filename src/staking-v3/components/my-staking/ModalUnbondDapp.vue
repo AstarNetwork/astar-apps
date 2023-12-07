@@ -52,6 +52,8 @@
         :set-selected-gas="setSelectedTip"
       />
 
+      <rewards-panel />
+
       <div class="warning">
         <li>
           {{
@@ -93,14 +95,15 @@ import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
-import { DappBase } from 'src/staking-v3/logic';
+import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { useDappStaking } from 'src/staking-v3/hooks';
-import { constants } from 'buffer';
+import RewardsPanel from '../RewardsPanel.vue';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
     ModalWrapper,
+    RewardsPanel,
   },
   props: {
     show: {
@@ -108,7 +111,7 @@ export default defineComponent({
       default: false,
     },
     dapp: {
-      type: Object as PropType<DappBase>,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
     setIsOpen: {
@@ -135,7 +138,7 @@ export default defineComponent({
     });
 
     const maxAmount = computed<string>(() => {
-      const selectedDappStakes = stakerInfo.value?.get(props.dapp.address);
+      const selectedDappStakes = stakerInfo.value?.get(props.dapp.chain.address);
 
       return selectedDappStakes
         ? String(
@@ -172,7 +175,7 @@ export default defineComponent({
       const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
 
       if (unstakeAmount) {
-        await unstake(props.dapp.address, Number(unstakeAmount));
+        await unstake(props.dapp.chain, Number(unstakeAmount));
       } else {
         throw 'Invalid un-bonding amount';
       }

@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 import { useDappStaking } from '../../hooks';
 import MyStakingCard from './MyStakingCard.vue';
 
@@ -27,11 +27,13 @@ export default defineComponent({
     MyStakingCard,
   },
   setup() {
-    const { rewards, hasStakerRewards, hasBonusRewards, claimStakerAndBonusRewards } =
-      useDappStaking();
-    const totalStakerRewards = computed<BigInt>(
-      () => (rewards.value?.staker ?? BigInt(0)) + (rewards.value?.bonus ?? BigInt(0))
-    );
+    const {
+      rewards,
+      hasStakerRewards,
+      hasBonusRewards,
+      totalStakerRewards,
+      claimStakerAndBonusRewards,
+    } = useDappStaking();
 
     return {
       rewards,
@@ -50,7 +52,8 @@ export default defineComponent({
 .wrapper--my-staking {
   width: 100%;
   display: flex;
-  column-gap: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
 
   div {
     flex-basis: 0;

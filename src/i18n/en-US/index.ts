@@ -690,13 +690,16 @@ export default {
       Disabled: 'Pallet is disabled/in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
+      NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra: 'Period ends in the next era.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+      TooManyUnlockingChunks:
+        'Contract has too many unlocking chunks. Withdraw the existing chunks if possible or wait for current chunks to complete unlocking process to withdraw them.',
       UnavailableStakeFunds:
         'The staking amount surpasses the current balance available for staking.',
-      UnclaimedRewardsFromPastPeriods:
-        'There are unclaimed rewards remaining from past periods. They should be claimed before staking again.',
+      UnclaimedRewards:
+        'There are unclaimed rewards remaining from past eras or periods. They should be claimed before attempting any stake modification again.',
       UnstakeAmountTooLarge: 'Unstake amount is greater than the staked amount.',
       UnstakeFromPastPeriod:
         'Unstaking is rejected since the period in which past stake was active has passed.',
@@ -704,6 +707,7 @@ export default {
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
       'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
@@ -712,7 +716,9 @@ export default {
     availableToVote: 'Available to vote',
     totalTransferable: 'Total transferable',
     lockedForVoting: 'Locked for voting',
+    lockedForStaking: 'Locked for staking',
     alreadyVoted: 'Already voted',
+    alreadyStaked: 'Already staked',
     remainLockedToken: 'Remain locked token',
     voteLockedTokensWarning:
       'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
@@ -775,6 +781,16 @@ export default {
     claimed: 'Claimed',
     period: 'Period {period}',
     claimNow: 'Claim these rewards now, as they will expire at the end of the current period.',
+    remainingEras: 'Remaining eras / blocks',
+    back: 'Back',
+    day: 'Day',
+    era: 'Era',
+    numberOfDapps: 'Number of dApps',
+    tvl: 'TVL',
+    filledSlot: 'Filled slots',
+    unfilledSlot: 'Unfilled slots',
+    ourDapps: 'Our dApps',
+    ourData: 'Our data',
   },
   bridge: {
     bridge: 'Bridge',
