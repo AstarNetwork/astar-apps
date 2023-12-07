@@ -14,13 +14,21 @@
           <your-project />
         </div>
 
-        <div v-if="isH160" class="container">
+        <!-- <div v-if="isH160" class="container">
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
 
         <div v-else>
           <div v-if="isEnableXcm" class="container">
-            <xcm-native-asset-list :xcm-assets="xcmAssets.assets" />
+            <xcm-native-asset-list :xcm-assets="xcmAssets.assets" /> -->
+        <div class="container">
+          <div v-if="isH160">
+            <evm-asset-list :tokens="evmAssets.assets" />
+          </div>
+          <div v-else>
+            <!-- Memo: hide xvm panel because AA might replace it -->
+            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
           </div>
         </div>
       </div>
@@ -35,11 +43,11 @@
 <script lang="ts">
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from 'src/components/assets/Account.vue';
-import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import SideAds from 'src/components/assets/SideAds.vue';
+import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
+import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import YourProject from 'src/components/assets/YourProject.vue';
-import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
