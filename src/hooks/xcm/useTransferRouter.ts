@@ -19,7 +19,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { capitalize } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
-import { decentralizedOrigin, productionOrigin } from 'src/links';
+import { productionOrigin } from 'src/links';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
@@ -371,8 +371,7 @@ export function useTransferRouter() {
 
   const isDisableXcmEnvironment = computed<boolean>(() => {
     const isProductionPage = window.location.origin === productionOrigin;
-    const isDecentralizedPage = window.location.origin === decentralizedOrigin;
-    const isStagingOrDevPage = !isProductionPage && !isDecentralizedPage;
+    const isStagingOrDevPage = !isProductionPage;
     if (isStagingOrDevPage) {
       return false;
     }
