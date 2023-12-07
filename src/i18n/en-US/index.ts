@@ -353,10 +353,6 @@ export default {
       community: 'Community',
       wallets: 'Wallets',
       stats: 'Stats',
-      v3: {
-        currentTier: 'Current Tier',
-        totalEarned: 'Total Earned',
-      },
     },
     modals: {
       contractAddress: 'Contract address {address}',
@@ -730,6 +726,7 @@ export default {
     basicRewards: 'Basic rewards',
     bonusRewards: 'Bonus rewards',
     dAppRewards: 'dApp rewards',
+
     tokensToBeLocked: 'Tokens to be locked',
     additionalTokensLockedWarning:
       'Additional tokens will be locked to be able to vote a desired amount.',
@@ -760,6 +757,30 @@ export default {
     unbondingAmount: 'Unbonding amount',
     withdraw: 'Withdraw',
     relock: 'Re-lock',
+    currentTier: 'Current Tier',
+    numberOfStakers: 'Number of Stakers',
+    totalEarned: 'Total Earned',
+    yourDashboard: 'Your Dashboard',
+    edit: 'Edit',
+    editProjectPage: {
+      title: 'Edit Project Page',
+      text: 'You can change the images, description at any time.',
+    },
+    editYourInfo: {
+      title: 'Edit your owner info',
+      text: 'If you wish to change registered smart contract or rewards receiving address.',
+    },
+    addPromotion: {
+      title: 'Add a promotion card',
+      text: 'If you have anything to share with the community, you can create a card on the top page to promote about it!',
+    },
+    yourRewards: 'Your Rewards',
+    availableToClaim: 'Available to claim',
+    alreadyClaimed: 'Already claimed',
+    days: '{day} days',
+    claimed: 'Claimed',
+    period: 'Period {period}',
+    claimNow: 'Claim these rewards now, as they will expire at the end of the current period.',
     remainingEras: 'Remaining eras / blocks',
     back: 'Back',
     day: 'Day',

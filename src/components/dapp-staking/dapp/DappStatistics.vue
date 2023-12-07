@@ -33,7 +33,7 @@
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.currentTier') }}
+            {{ $t('stakingV3.currentTier') }}
           </span>
         </div>
         <div>
@@ -46,7 +46,7 @@
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.totalEarned') }}
+            {{ $t('stakingV3.totalEarned') }}
           </span>
         </div>
         <div>
