@@ -3,7 +3,78 @@
 .wrapper--owner {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 34px;
   margin-bottom: 34px;
+  margin-top: 54px;
+  padding: 0px 16px;
+  @media (min-width: $lg) {
+    margin: 104px 74px;
+    padding: 0;
+  }
+}
+
+.container--dapp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 16px;
+  }
+}
+
+.img--dapp-icon {
+  height: 48px;
+  width: 48px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  @media (min-width: $lg) {
+    height: 64px;
+    width: 64px;
+  }
+}
+
+.text--dapp-name {
+  font-weight: 800;
+  font-size: 32px;
+  color: $navy-1;
+}
+
+.row--your-dashboard {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+    font-weight: 800;
+    color: $navy-1;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.row--your-dashboard-mobile {
+  font-weight: 800;
+  font-size: 16px;
+  color: $navy-1;
+  margin-top: 16px;
+  margin-bottom: 84px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
+.row--statistics {
+  display: flex;
+  justify-content: center;
+  column-gap: 4px;
+  margin-bottom: 80px;
+  @media (min-width: $lg) {
+    margin-bottom: 160px;
+  }
+}
+
+.body--dark {
+  .text--dapp-name,
+  .row--your-dashboard,
+  .row--your-dashboard-mobile {
+    color: $gray-1;
+  }
 }
