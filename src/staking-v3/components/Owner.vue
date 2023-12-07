@@ -1,19 +1,19 @@
 <template>
   <div v-if="dappAddress && dapp" class="wrapper--owner">
     <div class="row--your-dashboard">
-      <span>{{ $t('dappStaking.dappPage.v3.yourDashboard') }}</span>
+      <span>{{ $t('stakingV3.yourDashboard') }}</span>
     </div>
     <div class="container--dapp-hero">
       <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
       <span class="text--dapp-name">{{ dapp.basic.name }}</span>
       <div class="row--your-dashboard-mobile">
-        <span>{{ $t('dappStaking.dappPage.v3.yourDashboard') }}</span>
+        <span>{{ $t('stakingV3.yourDashboard') }}</span>
       </div>
     </div>
     <div class="row--statistics">
-      <kpi-card :title="$t('dappStaking.dappPage.v3.currentTier')">2</kpi-card>
-      <kpi-card :title="$t('dappStaking.dappPage.v3.numberOfStakers')">100</kpi-card>
-      <kpi-card :title="$t('dappStaking.dappPage.v3.totalEarned')">
+      <kpi-card :title="$t('stakingV3.currentTier')">2</kpi-card>
+      <kpi-card :title="$t('stakingV3.numberOfStakers')">100</kpi-card>
+      <kpi-card :title="$t('stakingV3.totalEarned')">
         {{ $t('amountToken', { amount: 100, token: nativeTokenSymbol }) }}
       </kpi-card>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--your-rewards">
     <div class="row--title">
-      <span> {{ $t('dappStaking.dappPage.v3.yourRewards') }} </span>
+      <span> {{ $t('stakingV3.yourRewards') }} </span>
     </div>
     <!-- Memo: Temporary UI -->
     <div class="row--claim-temporary">
@@ -17,7 +17,7 @@
       </div>
       <div>
         <astar-button class="button--claim">
-          {{ $t('dappStaking.dappPage.v3.claim') }}
+          {{ $t('stakingV3.claim') }}
         </astar-button>
       </div>
     </div>
@@ -27,19 +27,19 @@
         <div class="box__row">
           <div>
             <span class="text--title">
-              {{ $t('dappStaking.dappPage.v3.period', { period: '006' }) }}
+              {{ $t('stakingV3.period', { period: '006' }) }}
             </span>
           </div>
           <div class="row--claim-info">
             <div>
               <span class="text--vivid">
-                {{ $t('dappStaking.dappPage.v3.availableToClaim') }}
+                {{ $t('stakingV3.availableToClaim') }}
               </span>
             </div>
             <div>
               <div>
                 <span class="text--vivid">
-                  {{ $t('dappStaking.dappPage.v3.days', { day: 10 }) }}
+                  {{ $t('stakingV3.days', { day: 10 }) }}
                 </span>
               </div>
               <div>
@@ -53,17 +53,17 @@
         <div class="box__row">
           <div>
             <span class="text--title">
-              {{ $t('dappStaking.dappPage.v3.period', { period: '005' }) }}
+              {{ $t('stakingV3.period', { period: '005' }) }}
             </span>
           </div>
           <div class="row--claim-info">
             <div>
-              <span class="text--info"> {{ $t('dappStaking.dappPage.v3.alreadyClaimed') }}</span>
+              <span class="text--info"> {{ $t('stakingV3.alreadyClaimed') }}</span>
             </div>
             <div>
               <div>
                 <span class="text--info">
-                  {{ $t('dappStaking.dappPage.v3.days', { day: 10 }) }}
+                  {{ $t('stakingV3.days', { day: 10 }) }}
                 </span>
               </div>
               <div>
@@ -75,12 +75,12 @@
           </div>
           <div class="row--claim-info">
             <div>
-              <span class="text--vivid"> {{ $t('dappStaking.dappPage.v3.availableToClaim') }}</span>
+              <span class="text--vivid"> {{ $t('stakingV3.availableToClaim') }}</span>
             </div>
             <div>
               <div>
                 <span class="text--vivid">
-                  {{ $t('dappStaking.dappPage.v3.days', { day: 10 }) }}
+                  {{ $t('stakingV3.days', { day: 10 }) }}
                 </span>
               </div>
               <div>
@@ -91,12 +91,12 @@
             </div>
           </div>
           <div class="row--attention">
-            <span> {{ $t('dappStaking.dappPage.v3.claimNow') }}</span>
+            <span> {{ $t('stakingV3.claimNow') }}</span>
           </div>
         </div>
         <div>
           <astar-button class="button--claim">
-            {{ $t('dappStaking.dappPage.v3.claim') }}
+            {{ $t('stakingV3.claim') }}
           </astar-button>
         </div>
       </div>
@@ -108,19 +108,19 @@
               <div class="box__column">
                 <div>
                   <span class="text--title">
-                    {{ $t('dappStaking.dappPage.v3.period', { period: '004' }) }}
+                    {{ $t('stakingV3.period', { period: '004' }) }}
                   </span>
                 </div>
                 <div>
                   <span class="text--info">
-                    {{ $t('dappStaking.dappPage.v3.days', { day: 123 }) }}
+                    {{ $t('stakingV3.days', { day: 123 }) }}
                   </span>
                 </div>
               </div>
               <div class="box__column">
                 <div class="column--status-claimed">
                   <span>
-                    {{ $t('dappStaking.dappPage.v3.claimed') }}
+                    {{ $t('stakingV3.claimed') }}
                   </span>
                 </div>
                 <div>
@@ -136,19 +136,19 @@
               <div class="box__column">
                 <div>
                   <span class="text--title">
-                    {{ $t('dappStaking.dappPage.v3.period', { period: '003' }) }}
+                    {{ $t('stakingV3.period', { period: '003' }) }}
                   </span>
                 </div>
                 <div>
                   <span class="text--info">
-                    {{ $t('dappStaking.dappPage.v3.days', { day: 123 }) }}
+                    {{ $t('stakingV3.days', { day: 123 }) }}
                   </span>
                 </div>
               </div>
               <div class="box__column">
                 <div class="column--status-claimed">
                   <span>
-                    {{ $t('dappStaking.dappPage.v3.claimed') }}
+                    {{ $t('stakingV3.claimed') }}
                   </span>
                 </div>
                 <div>

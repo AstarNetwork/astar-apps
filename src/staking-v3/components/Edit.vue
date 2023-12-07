@@ -1,35 +1,35 @@
 <template>
   <div class="wrapper--edit">
     <div class="row--title">
-      <span> {{ $t('dappStaking.dappPage.v3.edit') }} </span>
+      <span> {{ $t('stakingV3.edit') }} </span>
     </div>
     <div class="box--links">
       <!-- Todo: add links -->
       <div class="box--link">
         <div class="box__top" />
         <div class="box__middle">
-          <span>{{ $t('dappStaking.dappPage.v3.editProjectPage.title') }}</span>
+          <span>{{ $t('stakingV3.editProjectPage.title') }}</span>
         </div>
         <div class="box__bottom">
-          <span>{{ $t('dappStaking.dappPage.v3.editProjectPage.text') }}</span>
+          <span>{{ $t('stakingV3.editProjectPage.text') }}</span>
         </div>
       </div>
       <div class="box--link">
         <div class="box__top" />
         <div class="box__middle">
-          <span>{{ $t('dappStaking.dappPage.v3.editYourInfo.title') }}</span>
+          <span>{{ $t('stakingV3.editYourInfo.title') }}</span>
         </div>
         <div class="box__bottom">
-          <span>{{ $t('dappStaking.dappPage.v3.editYourInfo.text') }}</span>
+          <span>{{ $t('stakingV3.editYourInfo.text') }}</span>
         </div>
       </div>
       <div class="box--link">
         <div class="box__top" />
         <div class="box__middle">
-          <span>{{ $t('dappStaking.dappPage.v3.addPromotion.title') }}</span>
+          <span>{{ $t('stakingV3.addPromotion.title') }}</span>
         </div>
         <div class="box__bottom">
-          <span>{{ $t('dappStaking.dappPage.v3.addPromotion.text') }}</span>
+          <span>{{ $t('stakingV3.addPromotion.text') }}</span>
         </div>
       </div>
     </div>
