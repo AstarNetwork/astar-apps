@@ -1,6 +1,5 @@
 <template>
   <div>
-    <decentralized-banner />
     <dashboard-layout>
       <router-view v-slot="{ Component }">
         <keep-alive>
@@ -43,7 +42,6 @@ import 'reflect-metadata';
 import '@polkadot/api-augment';
 import { defineComponent, computed, ref, watch } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
-import DecentralizedBanner from 'src/components/common/DecentralizedBanner.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
@@ -63,7 +61,6 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -74,7 +71,6 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
-    DecentralizedBanner,
   },
   setup() {
     useAppRouter();
