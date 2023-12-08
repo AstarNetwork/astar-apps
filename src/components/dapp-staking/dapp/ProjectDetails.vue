@@ -203,7 +203,7 @@ import copy from 'copy-to-clipboard';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, hasProperty } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -243,7 +243,7 @@ export default defineComponent({
     };
 
     const communities = computed<Community[] | null>(() => {
-      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('communities')) {
+      if (props.dapp.dapp && hasProperty(props.dapp.dapp, 'communities')) {
         return props.dapp.dapp.communities as Community[];
       } else {
         return null;
@@ -251,7 +251,7 @@ export default defineComponent({
     });
 
     const virtualMachineTags = computed<string[]>(() => {
-      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('contractType')) {
+      if (props.dapp.dapp && hasProperty(props.dapp.dapp, 'contractType')) {
         if (props.dapp.dapp.contractType === 'wasm+evm') {
           return ['EVM', 'WASM'];
         } else {

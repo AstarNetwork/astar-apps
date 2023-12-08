@@ -23,7 +23,7 @@ import { PolkasafeRepository } from 'src/v2/repositories/implementations';
 import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
-import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
+import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
 import { IApi } from 'src/v2/integration';
 import { SupportWallet } from 'src/config/wallets';
 
@@ -227,7 +227,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         return;
       }
       if (data.id) {
-        if (data.response && data.response.hasOwnProperty('signature')) {
+        if (data.response && hasProperty(data.response, 'signature')) {
           this.eventAggregator.publish(new BusyMessage(true));
           return;
         }

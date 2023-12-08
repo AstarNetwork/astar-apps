@@ -1,5 +1,10 @@
 import { u128 } from '@polkadot/types';
-import { buildEvmAddress, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
+import {
+  buildEvmAddress,
+  hasProperty,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { AccountId32, H160 } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
@@ -31,7 +36,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
 
     const api = await this.api.getApi();
-    const nativeAddress = api.query.hasOwnProperty('unifiedAccounts')
+    const nativeAddress = hasProperty(api.query, 'unifiedAccounts')
       ? await api.query.unifiedAccounts.evmToNative<AccountId32>(evmAddress)
       : '';
 
@@ -42,7 +47,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     Guard.ThrowIfUndefined('nativeAddress', nativeAddress);
 
     const api = await this.api.getApi();
-    const evmAddress = api.query.hasOwnProperty('unifiedAccounts')
+    const evmAddress = hasProperty(api.query, 'unifiedAccounts')
       ? await api.query.unifiedAccounts.nativeToEvm<H160>(nativeAddress)
       : '';
 
@@ -66,7 +71,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
 
     const api = await this.api.getApi();
     const isEvmAddress = isValidEvmAddress(address);
-    const isRuntimeApplied = api.query.hasOwnProperty('unifiedAccounts');
+    const isRuntimeApplied = hasProperty(api.query, 'unifiedAccounts');
     if (!isRuntimeApplied) return false;
 
     const mappedAddress = isEvmAddress

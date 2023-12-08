@@ -13,6 +13,7 @@ import { HistoryTxType } from 'src/modules/account/index';
 import { SubstrateAccount } from 'src/store/general/state';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { hasProperty } from '@astar-network/astar-sdk-core';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -135,14 +136,14 @@ export const checkIsWalletExtension = async (): Promise<boolean> => {
 };
 
 export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {
-  return supportEvmWalletObj.hasOwnProperty(wallet);
+  return hasProperty(supportEvmWalletObj, wallet);
 };
 
 export const checkIsMobileMathWallet = async (): Promise<boolean> => {
   try {
     if (isMobileDevice) {
       const [wallet] = await getInjectedExtensions();
-      const isMath = wallet.hasOwnProperty('isMathWallet');
+      const isMath = hasProperty(wallet, 'isMathWallet');
       return isMath;
     } else {
       return false;
@@ -261,7 +262,7 @@ export const signAndSend = async ({
 };
 
 export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
-  return supportWalletObj.hasOwnProperty(selectedWallet);
+  return hasProperty(supportWalletObj, selectedWallet);
 };
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
