@@ -5,6 +5,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { Erc20Token, registeredErc20Tokens, tokenImageMap } from 'src/modules/token';
 import { xcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
+import { hasProperty } from '@astar-network/astar-sdk-core';
 
 export const getTokenImage = ({
   isNativeToken,
@@ -49,7 +50,7 @@ export const getRegisteredERC20Token = ({
   const storedTokens = getStoredERC20Tokens().map((it: Erc20Token) => {
     return {
       ...it,
-      image: tokenImageMap.hasOwnProperty(it.symbol)
+      image: hasProperty(tokenImageMap, it.symbol)
         ? tokenImageMap[it.symbol as keyof typeof tokenImageMap]
         : it.image
         ? it.image

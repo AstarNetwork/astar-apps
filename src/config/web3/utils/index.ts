@@ -1,4 +1,4 @@
-import { getRandomFromArray } from '@astar-network/astar-sdk-core';
+import { getRandomFromArray, hasProperty } from '@astar-network/astar-sdk-core';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
@@ -234,7 +234,7 @@ export const isXc20Token = (address: string): boolean => {
 };
 
 export const getTokenImage = async ({ symbol, address }: { symbol: string; address: string }) => {
-  const isRegisteredToken = tokenImageMap.hasOwnProperty(symbol);
+  const isRegisteredToken = hasProperty(tokenImageMap, symbol);
   if (isRegisteredToken) {
     return tokenImageMap[symbol as keyof typeof tokenImageMap];
   }

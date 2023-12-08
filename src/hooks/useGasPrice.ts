@@ -1,5 +1,4 @@
-import { GasPrice, SelectedGas, Speed, fetchEvmGasPrice } from '@astar-network/astar-sdk-core';
-import { $web3 } from 'boot/api';
+import { GasPrice, SelectedGas, Speed, fetchTipPrice } from '@astar-network/astar-sdk-core';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
@@ -53,10 +52,8 @@ export const useGasPrice = (isFetch = false) => {
   const dispatchGasPrice = async (network: string): Promise<void> => {
     try {
       // Todo: remove `evmGasPrice` object
-      const result = await fetchEvmGasPrice({
+      const result = await fetchTipPrice({
         network,
-        isEip1559: false,
-        web3: $web3.value!,
       });
       store.commit('general/setGas', result);
     } catch (error) {
@@ -75,15 +72,9 @@ export const useGasPrice = (isFetch = false) => {
   });
 
   watch(
-    [network, $web3],
+    [network],
     async () => {
-      if (
-        isFetch &&
-        network.value &&
-        !gas.value &&
-        $web3.value &&
-        isEnableSpeedConfiguration.value
-      ) {
+      if (isFetch && network.value && !gas.value && isEnableSpeedConfiguration.value) {
         // console.info('gas price', network.value, gas.value);
         await dispatchGasPrice(network.value);
       }
