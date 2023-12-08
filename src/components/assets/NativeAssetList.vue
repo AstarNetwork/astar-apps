@@ -258,6 +258,7 @@ import {
   useNetworkInfo,
   usePrice,
   useBreakpoints,
+  useFaucet,
 } from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from '@astar-network/astar-sdk-core';
 import { getTokenImage } from 'src/modules/token';
@@ -269,7 +270,6 @@ import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue'
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
-import { faucetBalRequirement } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -301,7 +301,7 @@ export default defineComponent({
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
     const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
-
+    const { faucetBalRequirement } = useFaucet();
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
     const nativeTokenImg = computed(() =>
@@ -337,7 +337,7 @@ export default defineComponent({
         isRocstar.value = tokenSymbolRef === 'RSTR';
         isFaucet.value = isRocstar.value
           ? false
-          : isShibuya.value || faucetBalRequirement > bal.value;
+          : isShibuya.value || faucetBalRequirement.value > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
         } else {

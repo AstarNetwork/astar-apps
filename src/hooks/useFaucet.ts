@@ -3,7 +3,7 @@ import axios from 'axios';
 import { DateTime } from 'luxon';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
-import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
+import { onUnmounted, ref, Ref, watch, watchEffect, computed } from 'vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { ethers } from 'ethers';
 import { fetchNativeBalance } from '@astar-network/astar-sdk-core';
@@ -31,6 +31,7 @@ interface Countdown {
 export function useFaucet(isModalFaucet?: Ref<boolean>) {
   const timestamps = ref<Timestamps | null>(null);
   const faucetAmount = ref<number>(0);
+  const faucetBalRequirement = computed<number>(() => faucetAmount.value / 2);
   const unit = ref<string>('');
   const isAbleToFaucet = ref<boolean>(false);
   const hash = ref<string>('');
@@ -146,7 +147,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
     async () => {
       const senderSs58AccountRef = senderSs58Account.value;
       const isModalFaucetRef = isModalFaucet && isModalFaucet.value;
-      if (!senderSs58AccountRef || !isModalFaucetRef) return;
+      if (!senderSs58AccountRef || faucetAmount.value > 0) return;
       const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
 
       const data = await getFaucetInfo({ account: senderSs58AccountRef, endpoint });
@@ -161,7 +162,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
       timestamps.value = data.timestamps;
       faucetHotWalletBalance.value = ethers.utils.formatEther(hotWalletBal);
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   return {
@@ -172,5 +173,6 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
     isAbleToFaucet,
     countDown,
     faucetHotWalletBalance,
+    faucetBalRequirement,
   };
 }
