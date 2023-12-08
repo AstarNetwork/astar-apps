@@ -398,7 +398,7 @@ export class DappStakingService implements IDappStakingService {
         }
       });
     } else {
-      throw `First reward era can't be determined for dApp id ${dapp.id}.`;
+      console.warn(`First reward era can't be determined for dApp id ${dapp.id}.`);
     }
 
     return result;
@@ -454,7 +454,7 @@ export class DappStakingService implements IDappStakingService {
         }
       });
     } else {
-      throw `First reward era can't be determined for dApp id ${dapp.id}.`;
+      console.warn(`First reward era can't be determined for dApp id ${dapp.id}.`);
     }
 
     return [result, erasWithRewards];

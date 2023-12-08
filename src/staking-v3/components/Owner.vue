@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
-import { computed, defineComponent, watch, ref } from 'vue';
+import { computed, defineComponent, watch, ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } from '../hooks';
 import { CombinedDappInfo } from '../logic';
@@ -51,22 +51,33 @@ export default defineComponent({
     const totalRewards = ref<bigint>(BigInt(0));
     const rewardsPerPeriod = ref<RewardsPerPeriod[]>([]);
 
-    const claimRewards = async () => {
+    const fetchRewards = async () => {
       if (dapp.value) {
-        await claimDappRewards(dapp.value.chain.address);
-        totalRewards.value = await getDappRewards(dapp.value.chain.address);
-        rewardsPerPeriod.value = await getUnclaimedDappRewardsPerPeriod(dapp.value.chain.address);
+        [totalRewards.value, rewardsPerPeriod.value] = await Promise.all([
+          getDappRewards(dapp.value.chain.address),
+          getUnclaimedDappRewardsPerPeriod(dapp.value.chain.address),
+        ]);
       }
     };
 
+    const claimRewards = async () => {
+      if (dapp.value) {
+        await claimDappRewards(dapp.value.chain.address);
+        await fetchRewards();
+      }
+    };
+
+    onBeforeMount(() => {
+      if (!dapp.value) {
+        navigateToHome();
+      }
+    });
+
     watch(
       [dapp],
-      async () => {
-        if (!dapp.value) {
-          navigateToHome();
-        } else {
-          totalRewards.value = await getDappRewards(dapp.value.chain.address);
-          rewardsPerPeriod.value = await getUnclaimedDappRewardsPerPeriod(dapp.value.chain.address);
+      () => {
+        if (dapp.value) {
+          fetchRewards();
         }
       },
       { immediate: true }

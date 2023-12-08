@@ -12,7 +12,7 @@
       <div>
         <span class="text--lg">Claimable Amount: </span>
         <span class="text--lg">
-          <token-balance-native :balance="totalRewards.toString()" />
+          <b><token-balance-native :balance="totalRewards.toString()" /></b>
         </span>
       </div>
       <div>
@@ -25,7 +25,7 @@
         </astar-button>
       </div>
     </div>
-    <div class="container--rewards">
+    <div v-if="rewardsPerPeriod.length > 0" class="container--rewards">
       <div class="box--rewards">
         <div v-for="reward in rewardsPerPeriod" :key="reward.period" class="box__row">
           <div>
@@ -95,7 +95,7 @@
                 </div>
                 <div>
                   <span class="text--info-bond">
-                    <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
+                    <token-balance-native :balance="'1000'" />
                   </span>
                 </div>
               </div>
