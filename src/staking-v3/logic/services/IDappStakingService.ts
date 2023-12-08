@@ -112,6 +112,7 @@ export interface IDappStakingService {
    * @param amountToLock Tokens to lock
    * @param stakeInfo A map containing contract addresses and amounts to stake.
    * @param dappsToClaim List of dApp owned by sender to claim dApp rewards for.
+   * @returns Staker rewards amount and eras to be rewarded.
    */
   claimLockAndStake(
     senderAddress: string,
@@ -119,7 +120,7 @@ export interface IDappStakingService {
     stakeInfo: DappStakeInfo[]
   ): Promise<void>;
 
-  getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;
+  getDappRewardsForPeriod(contractAddress: string, period: number): Promise<[bigint, number]>;
 
   /**
    * Gets contract stake amounts for a given dApps ids.

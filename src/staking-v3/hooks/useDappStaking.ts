@@ -30,6 +30,12 @@ import { initialDappTiersConfiguration, initialTiersConfiguration } from '../sto
 import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { ApiPromise } from '@polkadot/api';
 
+export interface RewardsPerPeriod {
+  period: number;
+  rewards: bigint;
+  erasToReward: number;
+}
+
 export function useDappStaking() {
   const { t } = useI18n();
   const store = useStore();
@@ -118,6 +124,9 @@ export function useDappStaking() {
 
   const isCurrentPeriod = (period: number): boolean =>
     protocolState.value?.periodInfo.number === period;
+
+  const rewardExpiresInNextPeriod = (period: number): boolean =>
+    period == protocolState.value!.periodInfo.number - constants.value!.rewardRetentionInPeriods;
 
   const hasStakerRewards = computed<boolean>(() => !!rewards.value.staker);
   const hasDappRewards = computed<boolean>(() => !!rewards.value.dApp);
@@ -221,7 +230,6 @@ export function useDappStaking() {
     await Promise.all([
       getAllRewards(),
       fetchStakerInfoToStore(),
-      // fetchStakeAmountsToStore(stakeInfo.map((x) => x.id)),
       fetchStakeAmountsToStore(),
       getCurrentEraInfo(),
     ]);
@@ -234,9 +242,8 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
 
-  const claimDappRewards = async (): Promise<void> => {
+  const claimDappRewards = async (contractAddress: string): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    const contractAddress = getOwnedDappAddress();
 
     if (contractAddress) {
       await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
@@ -286,11 +293,35 @@ export function useDappStaking() {
     store.commit('stakingV3/setRewards', { staker, dApp, bonus }, { root: true });
   };
 
+  const getDappRewards = async (contractAddress: string): Promise<bigint> => {
+    const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+
+    return await stakingV3service.getDappRewards(contractAddress ?? '');
+  };
+
+  const getUnclaimedDappRewardsPerPeriod = async (
+    contractAddress: string
+  ): Promise<RewardsPerPeriod[]> => {
+    const result: RewardsPerPeriod[] = [];
+
+    if (protocolState.value && constants.value) {
+      const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+      const currentPeriod = protocolState.value.periodInfo.number;
+      for (
+        let period = currentPeriod;
+        period >= Math.max(currentPeriod - constants.value.rewardRetentionInPeriods, 1);
+        period--
+      ) {
+        const rewards = await stakingV3service.getDappRewardsForPeriod(contractAddress, period);
+        result.push({ period, rewards: rewards[0], erasToReward: rewards[1] });
+      }
+    }
+
+    return result;
+  };
+
   const getOwnedDappAddress = (): string | undefined => {
-    return registeredDapps.value.find(
-      (x) =>
-        x.chain.rewardDestination === currentAccount.value || x.chain.owner === currentAccount.value
-    )?.chain.address;
+    return registeredDapps.value.find((x) => x.chain.owner === currentAccount.value)?.chain.address;
   };
 
   const fetchConstantsToStore = async (): Promise<void> => {
@@ -458,6 +489,7 @@ export function useDappStaking() {
     claimBonusRewards,
     claimStakerAndBonusRewards,
     getAllRewards,
+    getDappRewards,
     fetchConstantsToStore,
     claimLockAndStake,
     getCurrentEraInfo,
@@ -469,5 +501,7 @@ export function useDappStaking() {
     relock,
     unstakeFromUnregistered,
     fetchEraLengthsToStore,
+    getUnclaimedDappRewardsPerPeriod,
+    rewardExpiresInNextPeriod,
   };
 }
