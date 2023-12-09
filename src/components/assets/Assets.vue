@@ -24,9 +24,9 @@
           </div>
         </template>
 
-        <div v-if="isDappStakingV3">
+        <template v-if="isDappStakingV3">
           <staking />
-        </div>
+        </template>
       </div>
 
       <div class="column--links">

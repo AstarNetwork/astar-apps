@@ -1,19 +1,23 @@
 <template>
-  <div class="wrapper--staking">
-    <div class="wrapper--header">
-      <div>{{ $t('common.staking') }}</div>
-      <div class="total--rewards">
-        <token-balance-native :balance="totalStake.toString() ?? '0'" />
+  <div class="container">
+    <div class="wrapper--staking">
+      <div class="wrapper--header">
+        <div class="row--title">
+          <astar-icon-dapp-staking />
+          <span class="text--title">{{ $t('common.staking') }}</span>
+        </div>
+        <div class="total--rewards">
+          <token-balance-native :balance="totalStake.toString() ?? '0'" />
+        </div>
       </div>
+
+      <div class="separator" />
+
+      <tab-component :tabs="tabs" :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)" />
+      <my-staking v-if="currentTabIndex === 0" />
+      <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
+      <unbonding v-if="currentTabIndex === 2" />
     </div>
-    <tab-component
-      class="tab"
-      :tabs="tabs"
-      :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
-    />
-    <my-staking v-if="currentTabIndex === 0" />
-    <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
-    <unbonding v-if="currentTabIndex === 2" />
   </div>
 </template>
 
@@ -55,29 +59,58 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--staking {
-  width: 100%;
-  padding: 24px;
-  gap: 10px;
-  border-radius: 16px;
-  border: 1px solid $gray-2;
+  padding: 8px 16px;
+  @media (min-width: $lg) {
+    padding: 16px;
+  }
+}
+
+.separator {
+  background-color: $gray-2;
+  height: 1px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .wrapper--header {
-  width: 100%;
   display: flex;
-  font-size: 14px;
-  font-style: normal;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.row--title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  svg {
+    width: 32px;
+    height: 32px;
+    color: $navy-4;
+  }
+}
+
+.text--title {
   font-weight: 600;
-  line-height: normal;
-  padding-bottom: 16px;
-  border-bottom: 1px solid $gray-2;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
 }
 
 .total--rewards {
-  margin-left: auto;
+  font-weight: 600;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
 }
 
-.tab {
-  margin-bottom: 16px;
+.body--dark {
+  .row--title {
+    svg {
+      color: $gray-1;
+    }
+  }
+  .separator {
+    background-color: $navy-3;
+  }
 }
 </style>
