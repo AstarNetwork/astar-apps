@@ -8,16 +8,15 @@
 }
 
 .box--dapps {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
 
-  @media (min-width: $sm) {
-  }
   @media (min-width: $md) {
-    flex-direction: row;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -29,6 +28,14 @@
 }
 
 .row--title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  svg {
+    width: 32px;
+    height: 32px;
+    color: $navy-4;
+  }
 }
 
 .container {
@@ -45,20 +52,23 @@
 
 .card--dapp {
   cursor: pointer;
-  width: 182px;
   background-color: $gray-1;
   border-radius: 16px;
-  column-gap: 16px;
-  height: 64px;
+  column-gap: 10px;
   display: flex;
   align-items: center;
   padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: $navy-1;
+  line-height: 1.25;
 }
 
 .icon--dapp-logo {
   width: 32px;
   height: 32px;
   border-radius: 8px;
+  object-fit: contain;
 }
 
 .separator {

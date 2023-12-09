@@ -502,6 +502,7 @@ export default {
     removeFromFavorite: 'Remove from favorite',
     unifyAccounts: 'Unify accounts',
     yourEstimatedRewards: 'Claim your estimated rewards',
+    yourProject: 'Your Project',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
