@@ -62,5 +62,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/leaderboard.scss';
+@import './styles/leaderboard.scss';
 </style>
