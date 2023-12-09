@@ -1,108 +1,120 @@
 <template>
-  <div class="wrapper--vote">
-    <back-to-page :text="$t('stakingV3.back')" :link="Path.DappStaking" />
-    <div class="title">
-      {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
-    </div>
-    <div class="note">
-      <b>{{ $t('toast.note') }}</b>
-      <ul>
-        <li>
-          {{
-            $t('stakingV3.minimumStakingAmount', {
-              amount: constants?.minStakeAmountToken,
-              symbol: nativeTokenSymbol,
-            })
-          }}
-        </li>
-        <li>
-          {{
-            $t('stakingV3.minBalanceAfterStaking', {
-              amount: constants?.minBalanceAfterStaking,
-              symbol: nativeTokenSymbol,
-            })
-          }}
-        </li>
-      </ul>
-    </div>
-    <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
-      <div class="dapp">
-        <dapp-selector
-          :dapps="dapps"
-          :on-select-dapps="handleSelectDapp"
-          :placeholder="$t('stakingV3.chooseProject')"
-          :selected-dapp="dapp"
-          :disable-selection="!canAddDapp"
-        />
+  <div>
+    <div class="wrapper--vote">
+      <back-to-page :text="$t('stakingV3.back')" :link="Path.DappStaking" />
+      <div class="title">
+        {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
       </div>
-      <div class="amount">
-        <amount
-          :amount="dapp.amount"
-          :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
-        />
-      </div>
-    </div>
-    <div v-if="canAddDapp" class="dapp amount-full-border">
-      <dapp-selector
-        :dapps="dapps"
-        :on-select-dapps="handleSelectDapp"
-        :placeholder="$t('stakingV3.chooseProject')"
-      />
-    </div>
-    <div class="note">
-      <b>{{ $t('stakingV3.availableToVote') }}</b>
-      <div class="note--row">
-        <div>{{ $t('stakingV3.totalTransferable') }}</div>
-        <div><token-balance-native :balance="useableBalance" /></div>
-      </div>
-      <div class="note--row">
+      <div class="inner--vote">
         <div>
-          {{ isVotingPeriod ? $t('stakingV3.lockedForVoting') : $t('stakingV3.lockedForStaking') }}
+          <div class="note">
+            <b>{{ $t('toast.note') }}</b>
+            <ul>
+              <li>
+                {{
+                  $t('stakingV3.minimumStakingAmount', {
+                    amount: constants?.minStakeAmountToken,
+                    symbol: nativeTokenSymbol,
+                  })
+                }}
+              </li>
+              <li>
+                {{
+                  $t('stakingV3.minBalanceAfterStaking', {
+                    amount: constants?.minBalanceAfterStaking,
+                    symbol: nativeTokenSymbol,
+                  })
+                }}
+              </li>
+            </ul>
+          </div>
+          <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
+            <div class="dapp">
+              <dapp-selector
+                :dapps="dapps"
+                :on-select-dapps="handleSelectDapp"
+                :placeholder="$t('stakingV3.chooseProject')"
+                :selected-dapp="dapp"
+                :disable-selection="!canAddDapp"
+              />
+            </div>
+            <div class="amount">
+              <amount
+                :amount="dapp.amount"
+                :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
+              />
+            </div>
+          </div>
+          <div v-if="canAddDapp" class="dapp amount-full-border">
+            <dapp-selector
+              :dapps="dapps"
+              :on-select-dapps="handleSelectDapp"
+              :placeholder="$t('stakingV3.chooseProject')"
+            />
+          </div>
+          <div class="note">
+            <b>{{ $t('stakingV3.availableToVote') }}</b>
+            <div class="note--row">
+              <div>{{ $t('stakingV3.totalTransferable') }}</div>
+              <div><token-balance-native :balance="useableBalance" /></div>
+            </div>
+            <div class="note--row">
+              <div>
+                {{
+                  isVotingPeriod
+                    ? $t('stakingV3.lockedForVoting')
+                    : $t('stakingV3.lockedForStaking')
+                }}
+              </div>
+              <div><token-balance-native :balance="locked.toString()" /></div>
+            </div>
+            <div class="note--row">
+              <div>
+                {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
+              </div>
+              <div><token-balance-native :balance="totalStake.toString()" /></div>
+            </div>
+            <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+              <div>
+                <b>{{
+                  remainLockedToken >= 0
+                    ? $t('stakingV3.remainLockedToken')
+                    : $t('stakingV3.tokensToBeLocked')
+                }}</b>
+              </div>
+              <div>
+                <b><token-balance-native :balance="abs(remainLockedToken).toString()" /></b>
+              </div>
+            </div>
+            <div v-if="remainLockedToken !== BigInt(0)" class="note warning">
+              {{
+                remainLockedToken > BigInt(0)
+                  ? $t('stakingV3.voteLockedTokensWarning')
+                  : $t('stakingV3.additionalTokensLockedWarning')
+              }}
+            </div>
+          </div>
+          <rewards-panel />
+          <div class="wrapper--button">
+            <astar-button
+              :disabled="!isConfirmable"
+              style="width: 100%; height: 52px; font-size: 22px"
+              @click="confirm"
+            >
+              {{ $t('confirm') }}
+            </astar-button>
+          </div>
+          <modal-select-dapp
+            :dapps="dapps"
+            :is-modal-select-dapp="isModalSelectDapp"
+            :handle-modal-select-dapp="handleModalSelectDapp"
+            :dapps-selected="handleDappsSelected"
+          />
         </div>
-        <div><token-balance-native :balance="locked.toString()" /></div>
-      </div>
-      <div class="note--row">
-        <div>
-          {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
-        </div>
-        <div><token-balance-native :balance="totalStake.toString()" /></div>
-      </div>
-      <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
-        <div>
-          <b>{{
-            remainLockedToken >= 0
-              ? $t('stakingV3.remainLockedToken')
-              : $t('stakingV3.tokensToBeLocked')
-          }}</b>
-        </div>
-        <div>
-          <b><token-balance-native :balance="abs(remainLockedToken).toString()" /></b>
-        </div>
-      </div>
-      <div v-if="remainLockedToken !== BigInt(0)" class="note warning">
-        {{
-          remainLockedToken > BigInt(0)
-            ? $t('stakingV3.voteLockedTokensWarning')
-            : $t('stakingV3.additionalTokensLockedWarning')
-        }}
+        <div class="column--help">Voting Time!</div>
       </div>
     </div>
-    <rewards-panel />
-    <div class="wrapper--button">
-      <astar-button
-        :disabled="!isConfirmable"
-        style="width: 100%; height: 52px; font-size: 22px"
-        @click="confirm"
-      >
-        {{ $t('confirm') }}
-      </astar-button>
-    </div>
-    <modal-select-dapp
-      :dapps="dapps"
-      :is-modal-select-dapp="isModalSelectDapp"
-      :handle-modal-select-dapp="handleModalSelectDapp"
-      :dapps-selected="handleDappsSelected"
-    />
+    <div class="bg--vote" :style="{ backgroundImage: `url(${bg})` }" />
   </div>
 </template>
 <script lang="ts">
@@ -230,6 +242,20 @@ export default defineComponent({
       }
     );
 
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+
+    const bg_img = {
+      light: require('/src/staking-v3/assets/vote_bg_light.webp'),
+      dark: require('/src/staking-v3/assets/vote_bg_light.webp'),
+    };
+
+    const bg = computed<String>(() => {
+      if (isDarkTheme.value) {
+        return bg_img.dark;
+      }
+      return bg_img.light;
+    });
+
     return {
       constants,
       nativeTokenSymbol,
@@ -250,6 +276,7 @@ export default defineComponent({
       canAddDapp,
       Path,
       isVotingPeriod,
+      bg,
     };
   },
   computed: {

@@ -9,12 +9,48 @@ li {
   list-style-type: disc;
 }
 
+.bg--vote {
+  background-color: white;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: -1;
+}
+
 .wrapper--vote {
-  padding: 16px;
-  max-width: 412px;
-  @media (min-width: $xl) {
-    justify-content: center;
-    margin-top: 30px;
+  max-width: 880px;
+  min-height: calc(100vh - 64px);
+  margin: auto;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
+  padding: 0 16px 40px 16px;
+  @media (min-width: $sm) {
+    padding: 0 40px 40px 40px;
+  }
+  @media (min-width: $lg) {
+    margin: -3rem auto;
+    padding: 40px;
+    padding-top: 110px;
+    min-height: 100vh;
+  }
+}
+
+.inner--vote {
+  gap: 40px;
+  display: flex;
+}
+
+.column--help {
+  width: 320px;
+  padding: 16px 0;
+  display: none;
+  @media (min-width: $sm) {
+    display: block;
   }
 }
 
@@ -83,15 +119,7 @@ li {
     background-color: $navy-3;
   }
 
-  .btn--confirm {
-    width: 100%;
-    font-size: 22px;
-    font-weight: 600;
-    height: 52px;
-  }
-
-  .wrapper--button {
-    width: 100%;
-    height: auto;
+  .wrapper--vote {
+    background: rgba($navy-1, 0.6);
   }
 }
