@@ -31,7 +31,6 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
-  const isSnapEnabled = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
   const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
 
   const isAccountUnification = computed<boolean>(() => {
@@ -217,15 +216,6 @@ export const useAccount = () => {
     { immediate: true }
   );
 
-  const checkIsResetSnap = async (): Promise<void> => {
-    const storedWallet = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET));
-    if (!isSnapEnabled.value && storedWallet === SupportWallet.Snap) {
-      await disconnectAccount();
-      window.location.reload();
-    }
-  };
-
-  watch([currentAddress], checkIsResetSnap, { immediate: true });
   watch([unifiedAccount], () => {
     if (unifiedAccount.value) {
       currentAccountName.value = unifiedAccount.value.name;
@@ -239,7 +229,6 @@ export const useAccount = () => {
     senderSs58Account,
     multisig,
     isMultisig,
-    isSnapEnabled,
     isAccountUnification,
     isH160Formatted,
     disconnectAccount,
