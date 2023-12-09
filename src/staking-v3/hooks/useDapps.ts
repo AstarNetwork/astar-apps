@@ -10,17 +10,6 @@ export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
 
-  // let isLoadingDapps = false;
-  // const registeredDapps = computed<CombinedDappInfo[]>(() => {
-  //   const dapps = store.getters['stakingV3/getRegisteredDapps'];
-  //   if (!dapps.length && !isLoadingDapps) {
-  //     isLoadingDapps = true;
-  //     fetchDappsToStore();
-  //   }
-
-  //   return dapps;
-  // });
-
   const registeredDapps = computed<CombinedDappInfo[]>(
     () => store.getters['stakingV3/getRegisteredDapps']
   );
@@ -90,6 +79,7 @@ export function useDapps() {
 
   return {
     registeredDapps,
+    allDapps,
     fetchDappsToStore,
     fetchDappToStore,
     fetchStakeAmountsToStore,

@@ -5,7 +5,7 @@
     </div>
     <div class="container--dapp-hero">
       <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-      <span class="text--dapp-name">{{ dapp.basic.name }}</span>
+      <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
       <div class="row--your-dashboard-mobile">
         <span>{{ $t('stakingV3.yourDashboard') }}</span>
       </div>
