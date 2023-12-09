@@ -57,9 +57,9 @@
         <span class="text--value-small">%</span></kpi-card
       >
       <kpi-card :title="$t('dashboard.tvl')">
-        <span class="text--value-small">
-          <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''"
-        /></span>
+        <span class="text--value">
+          <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
+        </span>
       </kpi-card>
       <div v-if="!isVotingPeriod" class="row--start-staking">
         <button class="button--staking" @click="navigateToVote()">
