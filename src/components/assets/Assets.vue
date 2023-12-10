@@ -10,7 +10,7 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <div class="container">
+        <div v-if="!isLoading" class="container">
           <div v-if="isH160">
             <evm-asset-list :tokens="evmAssets.assets" />
           </div>

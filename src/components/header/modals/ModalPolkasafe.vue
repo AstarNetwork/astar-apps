@@ -134,6 +134,7 @@
 import {
   fetchNativeBalance,
   getShortenAddress,
+  hasProperty,
   isValidAddressPolkadotAddress,
   truncate,
   wait,
@@ -276,7 +277,7 @@ export default defineComponent({
     const setMultisigAccounts = async (c: Polkasafe, signatory: string): Promise<void> => {
       const { data, error } = await c.connectAddress(signatory);
       if (error) throw Error(error);
-      if (!data.hasOwnProperty('multisigAddresses')) {
+      if (!hasProperty(data, 'multisigAddresses')) {
         throw Error('error fetching multisig accounts');
       }
 

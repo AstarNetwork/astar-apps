@@ -1,3 +1,4 @@
+import { hasProperty } from '@astar-network/astar-sdk-core';
 import { SupportMultisig } from './wallets';
 
 export enum LOCAL_STORAGE {
@@ -43,9 +44,9 @@ export const getAccountHistories = ({
   }
   */
   const data = histories ? JSON.parse(histories) : {};
-  if (data.hasOwnProperty(address)) {
+  if (hasProperty(data, address)) {
     const addressData = data[address];
-    if (addressData.hasOwnProperty(network)) {
+    if (hasProperty(addressData, network)) {
       return addressData[network];
     }
   }
@@ -76,7 +77,7 @@ export const updateAccountHistories = ({
   const historiesData = histories ? JSON.parse(histories) : {};
   const networkName = network === 'shibuya-testnet' ? 'shibuya' : network;
 
-  if (historiesData.hasOwnProperty(address)) {
+  if (hasProperty(historiesData, address)) {
     const addressData = historiesData[address];
     newDataObj = { ...historiesData, [address]: { ...addressData, [networkName]: txs } };
   } else {

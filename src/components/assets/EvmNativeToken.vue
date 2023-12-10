@@ -87,8 +87,7 @@ import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { faucetBalRequirement } from 'src/config/wallets';
-import { useAccount, useNetworkInfo, usePrice, useBreakpoints } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePrice, useBreakpoints, useFaucet } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
@@ -112,6 +111,7 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const { faucetBalRequirement } = useFaucet();
 
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({
@@ -130,7 +130,7 @@ export default defineComponent({
         isRocstar.value = nativeTokenSymbol.value === 'RSTR';
         isFaucet.value = isRocstar.value
           ? false
-          : isShibuya.value || faucetBalRequirement > bal.value;
+          : isShibuya.value || faucetBalRequirement.value > bal.value;
         if (nativeTokenUsd) {
           balUsd.value = nativeTokenUsd * bal.value;
         }
