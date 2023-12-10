@@ -76,4 +76,10 @@ export default defineComponent({
   height: 24px;
   margin-right: 8px;
 }
+
+.body--dark {
+  .input--amount {
+    color: $gray-1;
+  }
+}
 </style>

@@ -1,10 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--promo {
+  width: 100%;
   @media (min-width: $lg) {
     padding: 60px 0 0 0;
   }
-  width: 100%;
 }
 
 .row--title {
@@ -45,13 +45,14 @@
 
 .promo__data {
   background-color: $navy-1;
-  flex: 1;
   height: 110px;
   border-radius: 16px;
   padding: 16px 8px;
-  max-width: 147px;
+  flex: 1;
   @media (min-width: $sm) {
-    padding: 24px 8px 16px 8px;
+    padding: 24px 16px 16px 16px;
+    min-width: 134px;
+    flex: none;
   }
 }
 
@@ -126,8 +127,8 @@
 .row--start-staking {
   width: 100%;
   @media (min-width: $sm) {
-    max-width: 147px;
-    flex: 1;
+    min-width: 134px;
+    width: auto;
   }
 }
 

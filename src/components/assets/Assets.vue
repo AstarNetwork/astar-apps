@@ -14,16 +14,18 @@
           <your-project />
         </template>
 
-        <div class="container">
-          <div v-if="isH160">
-            <evm-asset-list :tokens="evmAssets.assets" />
-          </div>
-          <div v-else>
-            <!-- Memo: hide xvm panel because AA might replace it -->
-            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-          </div>
-        </div>
+        <template v-if="isH160">
+          <evm-asset-list class="container" :tokens="evmAssets.assets" />
+        </template>
+        <template v-else>
+          <!-- Memo: hide xvm panel because AA might replace it -->
+          <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+          <xcm-native-asset-list
+            v-if="isEnableXcm"
+            class="container"
+            :xcm-assets="xcmAssets.assets"
+          />
+        </template>
 
         <template v-if="isDappStakingV3">
           <staking />

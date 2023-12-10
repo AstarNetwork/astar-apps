@@ -1,8 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 ul {
-  margin: 0 8px;
-  padding-left: 24px;
+  padding-left: 20px;
 }
 
 li {
@@ -70,12 +69,16 @@ li {
   border-radius: 16px;
   background-color: $gray-1;
   margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px $gray-2;
 }
 
 .warning {
   background-color: rgba(230, 0, 122, 0.05);
   border: 1px solid $astar-pink;
   color: $astar-pink;
+  margin: 0;
 }
 
 .warning--text {
@@ -91,14 +94,14 @@ li {
   border-radius: 16px 16px 0px 0px;
   border: 1px solid $gray-3;
   border-bottom-width: 0px;
-  padding: 24px 8px;
+  padding: 24px 24px 24px 16px;
 }
 
 .amount {
   border-radius: 0px 0px 16px 16px;
   border: 1px solid $gray-3;
   border-top-width: 0px;
-  padding: 24px 8px;
+  padding: 24px 24px 24px 16px;
 }
 
 .dapp-amount {
@@ -117,9 +120,15 @@ li {
 
   .note {
     background-color: $navy-3;
+    border-color: lighten($navy-3, 10%);
   }
 
   .wrapper--vote {
     background: rgba($navy-1, 0.6);
+  }
+
+  .warning {
+    background-color: rgba(230, 0, 122, 0.05);
+    border-color: $astar-pink;
   }
 }

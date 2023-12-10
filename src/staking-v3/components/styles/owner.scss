@@ -3,11 +3,11 @@
 .wrapper--owner {
   display: flex;
   flex-direction: column;
-  margin-bottom: 34px;
-  margin-top: 54px;
+  margin: 40px auto;
   padding: 0px 16px;
+  max-width: 1140px;
   @media (min-width: $lg) {
-    margin: 104px 74px;
+    margin-top: 100px;
     padding: 0;
   }
 }
@@ -19,6 +19,7 @@
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 16px;
+    margin-bottom: 100px;
   }
 }
 
@@ -26,7 +27,7 @@
   height: 48px;
   width: 48px;
   border-radius: 16px;
-  margin-bottom: 16px;
+  object-fit: contain;
   @media (min-width: $lg) {
     height: 64px;
     width: 64px;
