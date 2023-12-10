@@ -116,11 +116,6 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'Tipは送金スピードを上げるのに重要です。',
   },
-  decentralizedBanner: {
-    bannerText:
-       'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
-    goToClassicPortal: 'our Classic Portal',
-  },
   status: {
     working: 'Working',
     fixing: 'Fixing',
