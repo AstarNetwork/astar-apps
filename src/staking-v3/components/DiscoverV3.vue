@@ -12,7 +12,13 @@
       :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
       @button-selected="toggleDapps"
     />
-    <dapps v-if="displayIndex === 0" />
+    <div v-if="displayIndex === 0">
+      <dapps category="DeFi" />
+      <dapps category="NFT" />
+      <dapps category="Tooling" />
+      <dapps category="Utility" />
+      <dapps category="Others" />
+    </div>
     <data-list v-if="displayIndex === 1" />
   </div>
 </template>

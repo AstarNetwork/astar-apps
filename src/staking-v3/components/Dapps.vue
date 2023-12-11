@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--dapps">
-    <div v-for="(dapp, index) in registeredDapps" :key="index">
+    <div v-for="(dapp, index) in dapps" :key="index">
       <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
         <div class="card__top">
           <div>
@@ -26,20 +26,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { CombinedDappInfo } from '../logic';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
   },
-  setup() {
+  props: {
+    category: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
     const { registeredDapps } = useDapps();
     const { getDappTier } = useDappStaking();
     const { navigateDappPage } = useDappStakingNavigation();
 
-    return { registeredDapps, getDappTier, navigateDappPage };
+    const dapps = computed<CombinedDappInfo[]>(() =>
+      registeredDapps.value.filter(
+        (x) =>
+          x.basic.mainCategory?.toLowerCase() === props.category.toLowerCase() ||
+          (x.basic.mainCategory === undefined && props.category.toLowerCase() === 'others')
+      )
+    );
+
+    return { dapps, getDappTier, navigateDappPage };
   },
 });
 </script>
