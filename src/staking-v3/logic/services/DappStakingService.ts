@@ -272,7 +272,8 @@ export class DappStakingService implements IDappStakingService {
   public async claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: DappStakeInfo[]
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     if (stakeInfo.length === 0) {
@@ -299,7 +300,7 @@ export class DappStakingService implements IDappStakingService {
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
-    await this.signCall(batch, senderAddress, 'success');
+    await this.signCall(batch, senderAddress, successMessage);
   }
 
   private async getBonusRewardsAndContractsToClaim(

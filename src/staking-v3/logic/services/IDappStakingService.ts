@@ -117,7 +117,8 @@ export interface IDappStakingService {
   claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: DappStakeInfo[]
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
   ): Promise<void>;
 
   getDappRewardsForPeriod(contractAddress: string, period: number): Promise<[bigint, number]>;
