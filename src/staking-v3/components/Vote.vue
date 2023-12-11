@@ -111,10 +111,10 @@
             :dapps-selected="handleDappsSelected"
           />
         </div>
-        <div class="column--help">Voting Time!</div>
+        <div class="column--help">Banners</div>
       </div>
     </div>
-    <div class="bg--vote" :style="{ backgroundImage: `url(${bg})` }" />
+    <div class="bg--vote" :style="{ backgroundImage: `url(${bg_img.light})` }" />
   </div>
 </template>
 <script lang="ts">
@@ -242,19 +242,9 @@ export default defineComponent({
       }
     );
 
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
-
     const bg_img = {
       light: require('/src/staking-v3/assets/vote_bg_light.webp'),
-      dark: require('/src/staking-v3/assets/vote_bg_light.webp'),
     };
-
-    const bg = computed<String>(() => {
-      if (isDarkTheme.value) {
-        return bg_img.dark;
-      }
-      return bg_img.light;
-    });
 
     return {
       constants,
@@ -276,7 +266,7 @@ export default defineComponent({
       canAddDapp,
       Path,
       isVotingPeriod,
-      bg,
+      bg_img,
     };
   },
   computed: {

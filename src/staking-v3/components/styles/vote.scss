@@ -114,21 +114,7 @@ li {
 }
 
 .body--dark {
-  .title {
-    color: $gray-1;
-  }
-
-  .note {
-    background-color: $navy-3;
-    border-color: lighten($navy-3, 10%);
-  }
-
   .wrapper--vote {
-    background: rgba($navy-1, 0.6);
-  }
-
-  .warning {
-    background-color: rgba(230, 0, 122, 0.05);
-    border-color: $astar-pink;
+    color: $navy-1;
   }
 }
