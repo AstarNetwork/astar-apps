@@ -78,8 +78,8 @@ export default defineComponent({
 }
 
 .body--dark {
-  .input--amount {
-    color: $gray-1;
+  .text--title {
+    color: $navy-1;
   }
 }
 </style>
