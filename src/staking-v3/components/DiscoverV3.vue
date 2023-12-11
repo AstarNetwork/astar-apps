@@ -5,6 +5,7 @@
     <feature-dapp />
     <staking />
     <leaderboard />
+    <leaderboard-vote />
     <!-- <ad /> -->
     <dynamic-ads-area />
     <toggle-buttons
@@ -22,6 +23,7 @@ import FeatureDapp from './FeatureDapp.vue';
 // import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
+import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import Staking from './my-staking/Staking.vue';
 import DataList from './data/DataList.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
@@ -33,6 +35,7 @@ export default defineComponent({
     // Ad,
     Dapps,
     Leaderboard,
+    LeaderboardVote,
     Staking,
     DataList,
     DynamicAdsArea,

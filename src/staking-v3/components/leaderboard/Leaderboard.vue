@@ -1,5 +1,5 @@
 <template>
-  <div class="container--leaderboard">
+  <div v-if="!isLeaderboardEmpty" class="container--leaderboard">
     <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
     <div class="tier--boards">
       <div v-for="[tier, dapps] in leaderBoards" :key="tier">
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 import { useLeaderboard } from 'src/staking-v3/hooks';
 import Tier from './Tier.vue';
 
@@ -19,9 +19,9 @@ export default defineComponent({
     Tier,
   },
   setup() {
-    const { leaderBoards } = useLeaderboard();
+    const { leaderBoards, isLeaderboardEmpty } = useLeaderboard();
 
-    return { leaderBoards };
+    return { leaderBoards, isLeaderboardEmpty };
   },
 });
 </script>
