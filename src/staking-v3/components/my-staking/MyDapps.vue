@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <div class="table--wrapper">
-      <div class="chunk--row header--row">
-        <div>{{ $t('stakingV3.dApp') }}</div>
-        <div>{{ $t('stakingV3.stakedAmount') }}</div>
-        <div>{{ $t('stakingV3.bonusReward') }}</div>
-        <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
-      </div>
-      <div v-for="[key, value] in stakedDapps" :key="key" class="chunk--row">
+  <div class="table--wrapper">
+    <div class="chunk--row header--row">
+      <div>{{ $t('stakingV3.dApp') }}</div>
+      <div>{{ $t('stakingV3.stakedAmount') }}</div>
+      <div>{{ $t('stakingV3.bonusReward') }}</div>
+      <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
+    </div>
+    <div v-for="[key, value] in stakedDapps" :key="key">
+      <div class="chunk--row">
         <div>{{ getDappName(key) }}</div>
         <div class="right">
           <token-balance-native :balance="getStakedAmount(value).toString()" />
         </div>
         <div class="right">{{ value.loyalStaker ? 'Yes' : 'No' }}</div>
-        <div class="buttons">
+        <div v-if="isRegistered(key)" class="buttons">
           <astar-button :width="97" :height="24" @click="navigateToVote(key)">{{
             $t('stakingV3.add')
           }}</astar-button>
@@ -21,6 +21,14 @@
             $t('stakingV3.unbond')
           }}</astar-button>
         </div>
+        <div v-else class="button--single">
+          <astar-button :width="97" :height="24" @click="unstakeFromUnregistered(key)">{{
+            $t('stakingV3.unbond')
+          }}</astar-button>
+        </div>
+      </div>
+      <div v-if="!isRegistered(key)" class="unregistered--dapp">
+        <astar-icon-warning size="20" />{{ $t('stakingV3.unregisteredDappInfo') }}
       </div>
     </div>
     <modal-unbond-dapp
@@ -33,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { CombinedDappInfo, SingularStakingInfo } from 'src/staking-v3/logic';
+import { CombinedDappInfo, DappState, SingularStakingInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
@@ -54,7 +62,7 @@ export default defineComponent({
   setup() {
     const { registeredDapps, getDapp } = useDapps();
     const { navigateToVote } = useDappStakingNavigation();
-    const { unstake } = useDappStaking();
+    const { unstake, unstakeFromUnregistered } = useDappStaking();
 
     const dappToUnbond = ref<CombinedDappInfo | undefined>();
     const showModalUnbond = ref<boolean>(false);
@@ -68,6 +76,10 @@ export default defineComponent({
 
     const getStakedAmount = (stakingInfo: SingularStakingInfo): bigint => {
       return stakingInfo.staked.voting + stakingInfo.staked.buildAndEarn;
+    };
+
+    const isRegistered = (dappAddress: string): boolean => {
+      return getDapp(dappAddress)?.chain.state === DappState.Registered ?? false;
     };
 
     const handleUnbonding = (dappAddress: string): void => {
@@ -88,12 +100,16 @@ export default defineComponent({
       navigateToVote,
       unstake,
       handleUnbonding,
+      isRegistered,
+      unstakeFromUnregistered,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .table--wrapper {
   background-color: $gray-1;
   padding: 20px 12px;

@@ -11,6 +11,7 @@ import {
   DappInfo,
   DappState,
   EraInfo,
+  EraLengths,
   EraRewardSpan,
   PeriodEndInfo,
   PeriodType,
@@ -40,11 +41,12 @@ import {
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
-import { Option, StorageKey, u32, u128 } from '@polkadot/types';
+import { Option, StorageKey, u32, u128, Bytes } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
+import { u8aToNumber } from '@polkadot/util';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -206,6 +208,14 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
+  public async getUnstakeFromUnregisteredCall(contractAddress: string): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    const api = await this.api.getApi();
+
+    return api.tx.dappStaking.unstakeFromUnregistered(getDappAddressEnum(contractAddress));
+  }
+
+  //* @inheritdoc
   public async getUnlockCall(amount: number): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     const amountFormatted = this.getFormattedAmount(amount);
@@ -279,6 +289,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  public async getEraLengths(): Promise<EraLengths> {
+    const getNumber = (bytes: Bytes): number => u8aToNumber(bytes.toU8a().slice(1, 4));
+    const api = await this.api.getApi();
+
+    const [erasPerBuildAndEarn, erasPerVoting, eraLength] = await Promise.all([
+      api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
+      api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
+      api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
+    ]);
+
+    return {
+      standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
+      standardErasPerVotingPeriod: getNumber(erasPerVoting),
+      standardEraLength: getNumber(eraLength),
+    };
+  }
+
   //* @inheritdoc
   public async getConstants(): Promise<Constants> {
     const api = await this.api.getApi();
@@ -293,14 +320,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       )).toNumber(),
       maxNumberOfContracts: (<u32>api.consts.dappStaking.maxNumberOfContracts).toNumber(),
       maxUnlockingChunks: (<u32>api.consts.dappStaking.maxUnlockingChunks).toNumber(),
-      standardErasPerBuildAndEarnPeriod: 10, // (<u32>(
-      //   api.consts.dappStaking.standardErasPerBuildAndEarnPeriod
-      // )).toNumber(),
-      standardErasPerVotingPeriod: 2, // (<u32>(
-      //   api.consts.dappStaking.standardErasPerVotingPeriod
-      // )).toNumber(),
       unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
-      standardEraLength: 30, // (<u32>api.consts.dappStaking.standardEraLength).toNumber(),
     };
   }
 

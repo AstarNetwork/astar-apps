@@ -214,7 +214,7 @@ export default defineComponent({
     };
 
     watch(
-      [dapps],
+      [registeredDapps],
       () => {
         if (dapps.value.length === 0) {
           dapps.value = registeredDapps.value.map((dapp) => ({

@@ -5,19 +5,23 @@
     </div>
     <div class="container--dapp-hero">
       <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-      <span class="text--dapp-name">{{ dapp.basic.name }}</span>
+      <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
       <div class="row--your-dashboard-mobile">
         <span>{{ $t('stakingV3.yourDashboard') }}</span>
       </div>
     </div>
     <div class="row--statistics">
-      <kpi-card :title="$t('stakingV3.currentTier')">2</kpi-card>
-      <kpi-card :title="$t('stakingV3.numberOfStakers')">100</kpi-card>
-      <kpi-card :title="$t('stakingV3.totalEarned')">
-        {{ $t('amountToken', { amount: 100, token: nativeTokenSymbol }) }}
-      </kpi-card>
+      <kpi-card :title="$t('stakingV3.currentTier')">{{
+        getDappTier(dapp.chain.id) ?? '--'
+      }}</kpi-card>
+      <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
+      <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
     </div>
-    <your-rewards />
+    <your-rewards
+      :total-rewards="totalRewards"
+      :rewards-per-period="rewardsPerPeriod"
+      :claim-rewards="claimRewards"
+    />
     <edit />
     <div class="bg--owner" />
   </div>
@@ -25,9 +29,9 @@
 
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watch, ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
-import { useDapps } from '../hooks';
+import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } from '../hooks';
 import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
 import KpiCard from './KpiCard.vue';
@@ -38,15 +42,57 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { getDapp } = useDapps();
+    const { getDappTier, getDappRewards, getUnclaimedDappRewardsPerPeriod, claimDappRewards } =
+      useDappStaking();
+    const { navigateToHome } = useDappStakingNavigation();
     const dappAddress = computed<string>(() => route.query.dapp as string);
-    const { registeredDapps } = useDapps();
-    const dapp = computed<CombinedDappInfo>(() => {
-      return registeredDapps.value.find(
-        (dapp) => dapp.chain.address === dappAddress.value
-      ) as CombinedDappInfo;
+
+    const dapp = computed<CombinedDappInfo | undefined>(() => getDapp(dappAddress.value));
+    const totalRewards = ref<bigint>(BigInt(0));
+    const rewardsPerPeriod = ref<RewardsPerPeriod[]>([]);
+
+    const fetchRewards = async () => {
+      if (dapp.value) {
+        [totalRewards.value, rewardsPerPeriod.value] = await Promise.all([
+          getDappRewards(dapp.value.chain.address),
+          getUnclaimedDappRewardsPerPeriod(dapp.value.chain.address),
+        ]);
+      }
+    };
+
+    const claimRewards = async () => {
+      if (dapp.value) {
+        await claimDappRewards(dapp.value.chain.address);
+        await fetchRewards();
+      }
+    };
+
+    onBeforeMount(() => {
+      if (!dapp.value) {
+        navigateToHome();
+      }
     });
 
-    return { dappAddress, dapp, nativeTokenSymbol };
+    watch(
+      [dapp],
+      () => {
+        if (dapp.value) {
+          fetchRewards();
+        }
+      },
+      { immediate: true }
+    );
+
+    return {
+      dappAddress,
+      dapp,
+      nativeTokenSymbol,
+      totalRewards,
+      rewardsPerPeriod,
+      getDappTier,
+      claimRewards,
+    };
   },
 });
 </script>

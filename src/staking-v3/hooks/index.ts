@@ -3,3 +3,4 @@ export * from './useDappStaking';
 export * from './useCampaign';
 export * from './useLeaderboard';
 export * from './useDappStakingNavigation';
+export * from './usePeriod';

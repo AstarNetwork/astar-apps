@@ -39,7 +39,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { ledger, constants, withdraw, relock } = useDappStaking();
+    const { ledger, eraLengths, withdraw, relock } = useDappStaking();
     const chunks = computed(
       () =>
         ledger.value?.unlocking.map((chunk) => {
@@ -57,7 +57,9 @@ export default defineComponent({
     const canRelock = computed(() => chunks.value.length > 0);
 
     const getRemainingEras = (remainingBlocks: number): number => {
-      return constants.value ? Math.ceil(remainingBlocks / constants.value?.standardEraLength) : 0;
+      return eraLengths.value
+        ? Math.ceil(remainingBlocks / eraLengths.value?.standardEraLength)
+        : 0;
     };
 
     const { width, screenSize } = useBreakpoints();
