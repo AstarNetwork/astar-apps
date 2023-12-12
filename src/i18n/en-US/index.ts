@@ -791,6 +791,9 @@ export default {
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
+    unregisteredDappInfo:
+      "This project has been unregistered. You don't have to do anything - If you do not move funds within this period, you will continue to earn basic rewards and be entitled to receive bonus.",
+    voteSuccess: 'You successfully voted to {number} dApp(s). All pending rewards are claimed.',
   },
   bridge: {
     bridge: 'Bridge',

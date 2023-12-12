@@ -7,27 +7,30 @@
     <div class="row--claim-temporary">
       <div>
         <span class="text--lg">Unclaimed Eras: </span>
-        <span class="text--lg">20</span>
+        <span class="text--lg">--</span>
       </div>
       <div>
         <span class="text--lg">Claimable Amount: </span>
         <span class="text--lg">
-          {{ $t('amountToken', { amount: 100, token: nativeTokenSymbol }) }}
+          <b><token-balance-native :balance="totalRewards.toString()" /></b>
         </span>
       </div>
       <div>
-        <astar-button class="button--claim">
+        <astar-button
+          :disabled="totalRewards <= BigInt(0)"
+          class="button--claim"
+          @click="claimRewards"
+        >
           {{ $t('stakingV3.claim') }}
         </astar-button>
       </div>
     </div>
-    <!-- Memo: mocked UI -->
-    <div class="container--rewards">
+    <div v-if="rewardsPerPeriod.length > 0" class="container--rewards">
       <div class="box--rewards">
-        <div class="box__row">
+        <div v-for="reward in rewardsPerPeriod" :key="reward.period" class="box__row">
           <div>
             <span class="text--title">
-              {{ $t('stakingV3.period', { period: '006' }) }}
+              {{ $t('stakingV3.period', { period: formatPeriod(reward.period) }) }}
             </span>
           </div>
           <div class="row--claim-info">
@@ -39,69 +42,36 @@
             <div>
               <div>
                 <span class="text--vivid">
-                  {{ $t('stakingV3.days', { day: 10 }) }}
+                  {{ $t('stakingV3.days', { day: reward.erasToReward }) }}
                 </span>
               </div>
               <div>
                 <span class="text--vivid-bond">
-                  <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
+                  <token-balance-native :balance="reward.rewards.toString()" />
                 </span>
               </div>
             </div>
           </div>
-        </div>
-        <div class="box__row">
-          <div>
-            <span class="text--title">
-              {{ $t('stakingV3.period', { period: '005' }) }}
-            </span>
-          </div>
-          <div class="row--claim-info">
-            <div>
-              <span class="text--info"> {{ $t('stakingV3.alreadyClaimed') }}</span>
-            </div>
-            <div>
-              <div>
-                <span class="text--info">
-                  {{ $t('stakingV3.days', { day: 10 }) }}
-                </span>
-              </div>
-              <div>
-                <span class="text--info-bond">
-                  <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="row--claim-info">
-            <div>
-              <span class="text--vivid"> {{ $t('stakingV3.availableToClaim') }}</span>
-            </div>
-            <div>
-              <div>
-                <span class="text--vivid">
-                  {{ $t('stakingV3.days', { day: 10 }) }}
-                </span>
-              </div>
-              <div>
-                <span class="text--vivid-bond">
-                  <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="row--attention">
+          <div
+            v-if="rewardExpiresInNextPeriod(reward.period) && reward.rewards > BigInt(0)"
+            class="row--attention"
+          >
             <span> {{ $t('stakingV3.claimNow') }}</span>
           </div>
         </div>
         <div>
-          <astar-button class="button--claim">
+          <astar-button
+            :disabled="totalRewards <= BigInt(0)"
+            class="button--claim"
+            @click="claimRewards"
+          >
             {{ $t('stakingV3.claim') }}
           </astar-button>
         </div>
       </div>
 
-      <div>
+      <!-- Memo: mocked UI - waiting for indexer -->
+      <div v-if="false">
         <div class="box--rewards">
           <div class="box__row">
             <div class="row--claim-info">
@@ -125,7 +95,7 @@
                 </div>
                 <div>
                   <span class="text--info-bond">
-                    <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
+                    <token-balance-native :balance="'1000'" />
                   </span>
                 </div>
               </div>
@@ -153,7 +123,7 @@
                 </div>
                 <div>
                   <span class="text--info-bond">
-                    <token-balance :balance="'1000'" :symbol="nativeTokenSymbol" />
+                    <token-balance-native :balance="'1000'" />
                   </span>
                 </div>
               </div>
@@ -167,15 +137,35 @@
 
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
-import { defineComponent } from 'vue';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { RewardsPerPeriod, useDappStaking } from '../hooks';
+import { defineComponent, PropType } from 'vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
-  components: { TokenBalance },
+  components: { TokenBalanceNative },
+  props: {
+    totalRewards: {
+      type: BigInt as unknown as PropType<bigint>,
+      required: true,
+    },
+    rewardsPerPeriod: {
+      type: Array as unknown as PropType<RewardsPerPeriod[]>,
+      required: true,
+    },
+    claimRewards: {
+      type: Function as unknown as PropType<(contractAddress: string) => Promise<void>>,
+      required: true,
+    },
+  },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { rewardExpiresInNextPeriod } = useDappStaking();
 
-    return { nativeTokenSymbol };
+    const formatPeriod = (period: number): string => {
+      return period.toString().padStart(3, '0');
+    };
+
+    return { nativeTokenSymbol, formatPeriod, rewardExpiresInNextPeriod };
   },
 });
 </script>

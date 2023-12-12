@@ -106,9 +106,12 @@ export interface Constants {
   maxNumberOfStakedContracts: number;
   maxNumberOfContracts: number;
   maxUnlockingChunks: number;
+  unlockingPeriod: number;
+}
+
+export interface EraLengths {
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
-  unlockingPeriod: number;
   standardEraLength: number;
 }
 

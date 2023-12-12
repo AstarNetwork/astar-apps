@@ -8,6 +8,7 @@ import {
   DappBase,
   DappInfo,
   EraInfo,
+  EraLengths,
   EraRewardSpan,
   PeriodEndInfo,
   ProtocolState,
@@ -97,6 +98,12 @@ export interface IDappStakingRepository {
    * @param amount Unstaking amount.
    */
   getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets unstake from unregistered contract call.
+   * @param contractAddress Address of the contract to be unstaked from.
+   */
+  getUnstakeFromUnregisteredCall(contractAddress: string): Promise<ExtrinsicPayload>;
 
   /**
    * Gets unlock call.
@@ -204,4 +211,6 @@ export interface IDappStakingRepository {
   getRelockUnlockingTokensCall(): Promise<ExtrinsicPayload>;
 
   getTiersConfiguration(): Promise<TiersConfiguration>;
+
+  getEraLengths(): Promise<EraLengths>;
 }

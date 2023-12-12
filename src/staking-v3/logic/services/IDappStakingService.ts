@@ -45,6 +45,18 @@ export interface IDappStakingService {
   claimStakerRewards(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
+   * Invokes calls to claim all rewards and to unstake tokens from unregistered contract.
+   * @param senderAddress Address of the request sender.
+   * @param contractAddress Address of the contract to be un staked from.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimAllAndUnstakeFromUnregistered(
+    senderAddress: string,
+    contractAddress: string,
+    successMessage: string
+  ): Promise<void>;
+
+  /**
    * Calculates staker rewards.
    * @param senderAddress Staker address.
    * @returns Staker rewards amount.
@@ -100,14 +112,16 @@ export interface IDappStakingService {
    * @param amountToLock Tokens to lock
    * @param stakeInfo A map containing contract addresses and amounts to stake.
    * @param dappsToClaim List of dApp owned by sender to claim dApp rewards for.
+   * @returns Staker rewards amount and eras to be rewarded.
    */
   claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: DappStakeInfo[]
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
   ): Promise<void>;
 
-  getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint>;
+  getDappRewardsForPeriod(contractAddress: string, period: number): Promise<[bigint, number]>;
 
   /**
    * Gets contract stake amounts for a given dApps ids.

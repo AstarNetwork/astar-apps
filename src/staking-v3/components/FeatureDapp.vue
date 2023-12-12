@@ -21,16 +21,12 @@
       </astar-button>
     </div>
     <div class="row--data">
-      <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.build').toUpperCase()">
-        <span class="text--value">{{ registeredDapps.length }}</span>
-        <span class="text--value-small">/{{ constants?.maxNumberOfContracts ?? '-' }}</span>
+      <kpi-card :title="periodName.toUpperCase()">
+        <span class="text--value">{{ periodCurrentDay }}</span>
+        <span class="text--value-small">/{{ periodDuration }}</span>
       </kpi-card>
-      <kpi-card v-if="isVotingPeriod" :title="$t('stakingV3.vote')">
-        <span class="text--value">2</span>
-        <span class="text--value-small">/14</span>
-      </kpi-card>
-      <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')">9.7%</kpi-card>
-      <kpi-card :title="$t('stakingV3.bonusRewards')">2.3%</kpi-card>
+      <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')">-- %</kpi-card>
+      <kpi-card :title="$t('stakingV3.bonusRewards')">-- %</kpi-card>
       <kpi-card :title="$t('dashboard.tvl')">
         <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
       </kpi-card>
@@ -45,7 +41,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDappStaking, useDapps, useCampaign, useDappStakingNavigation } from '../hooks';
+import {
+  useDappStaking,
+  useDapps,
+  useCampaign,
+  useDappStakingNavigation,
+  usePeriod,
+} from '../hooks';
 import { Campaign } from 'src/v2/models';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import KpiCard from './KpiCard.vue';
@@ -60,6 +62,7 @@ export default defineComponent({
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
+    const { periodCurrentDay, periodDuration, periodName } = usePeriod();
     // const { totalSupply } = useTokenCirculation();
 
     // const tvlPercentage = computed<number>(
@@ -78,6 +81,9 @@ export default defineComponent({
       promotedDapp,
       currentEraInfo,
       isVotingPeriod,
+      periodCurrentDay,
+      periodDuration,
+      periodName,
       navigateToVote,
     };
   },

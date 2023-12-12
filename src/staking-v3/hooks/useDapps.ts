@@ -10,20 +10,11 @@ export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
 
-  // let isLoadingDapps = false;
-  // const registeredDapps = computed<CombinedDappInfo[]>(() => {
-  //   const dapps = store.getters['stakingV3/getRegisteredDapps'];
-  //   if (!dapps.length && !isLoadingDapps) {
-  //     isLoadingDapps = true;
-  //     fetchDappsToStore();
-  //   }
-
-  //   return dapps;
-  // });
-
   const registeredDapps = computed<CombinedDappInfo[]>(
     () => store.getters['stakingV3/getRegisteredDapps']
   );
+
+  const allDapps = computed<CombinedDappInfo[]>(() => store.getters['stakingV3/getDapps']);
 
   const fetchDappsToStore = async (): Promise<void> => {
     // Don't fetch if we already have dApps.
@@ -84,10 +75,11 @@ export function useDapps() {
   };
 
   const getDapp = (dappAddress: string): CombinedDappInfo | undefined =>
-    registeredDapps.value.find((d) => d.chain.address === dappAddress);
+    allDapps.value.find((d) => d.chain.address === dappAddress);
 
   return {
     registeredDapps,
+    allDapps,
     fetchDappsToStore,
     fetchDappToStore,
     fetchStakeAmountsToStore,

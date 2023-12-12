@@ -15,7 +15,7 @@ const charlie = keyring.addFromUri('//Charlie', { name: 'Charlie' });
 // Register dApps
 const calls = [
   api.tx.dappStaking.register(alice.address, { Evm: '0x0000000000000000000000000000000000000005' }),
-  api.tx.dappStaking.register(bob.address, { Evm: '0x0000000000000000000000000000000000000006' }),
+  api.tx.dappStaking.register(alice.address, { Evm: '0x0000000000000000000000000000000000000006' }),
   api.tx.dappStaking.register(charlie.address, {
     Evm: '0x0000000000000000000000000000000000000007',
   }),

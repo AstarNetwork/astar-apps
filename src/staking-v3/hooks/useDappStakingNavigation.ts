@@ -10,7 +10,7 @@ export function useDappStakingNavigation() {
   };
 
   const navigateToHome = (): void => {
-    const base = networkParam + Path.DappStaking;
+    const base = networkParam + Path.DappStaking + Path.Discover;
     router.push(base);
   };
 

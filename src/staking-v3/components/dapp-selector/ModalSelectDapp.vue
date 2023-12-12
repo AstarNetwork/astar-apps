@@ -74,7 +74,10 @@ export default defineComponent({
     const selectedDapps = ref<Dapp[]>([]);
     const searchTerm = ref<string>('');
     const filteredDapps = computed<Dapp[]>(() =>
-      props.dapps.filter((dapp) => dapp.name.toLowerCase().includes(searchTerm.value.toLowerCase()))
+      props.dapps.filter(
+        (dapp) =>
+          dapp.name.toLowerCase().includes(searchTerm.value.toLowerCase()) || isSelected(dapp)
+      )
     );
 
     const closeModal = async (): Promise<void> => {

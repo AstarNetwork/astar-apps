@@ -31,11 +31,11 @@ export default defineComponent({
   setup() {
     const { currentAccount } = useAccount();
     useClaimAll();
-    const { registeredDapps } = useDapps();
+    const { allDapps } = useDapps();
     const { navigateOwnerPage } = useDappStakingNavigation();
     const ownDapps = computed<CombinedDappInfo[]>(() => {
-      if (!registeredDapps.value) return [];
-      return registeredDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
+      if (!allDapps.value) return [];
+      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
     });
 
     return { ownDapps, navigateOwnerPage };

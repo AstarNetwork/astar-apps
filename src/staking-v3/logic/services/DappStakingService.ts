@@ -88,6 +88,25 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  // @inheritdoc
+  public async claimAllAndUnstakeFromUnregistered(
+    senderAddress: string,
+    contractAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const stakerRewards = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
+    const unstakeCall = await this.dappStakingRepository.getUnstakeFromUnregisteredCall(
+      contractAddress
+    );
+
+    const batch = await this.dappStakingRepository.batchAllCalls([...stakerRewards, unstakeCall]);
+
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
   private async getClaimStakerRewardsCall(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {
@@ -253,7 +272,8 @@ export class DappStakingService implements IDappStakingService {
   public async claimLockAndStake(
     senderAddress: string,
     amountToLock: number,
-    stakeInfo: DappStakeInfo[]
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     if (stakeInfo.length === 0) {
@@ -280,7 +300,7 @@ export class DappStakingService implements IDappStakingService {
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
-    await this.signCall(batch, senderAddress, 'success');
+    await this.signCall(batch, senderAddress, successMessage);
   }
 
   private async getBonusRewardsAndContractsToClaim(
@@ -359,7 +379,7 @@ export class DappStakingService implements IDappStakingService {
     // Find the first era to claim rewards from. If we are at the first period, then we need to
     // start from era 2 since era 1 was voting.
     const firstEra =
-      (await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0;
+      ((await this.dappStakingRepository.getPeriodEndInfo(firstPeriod - 1))?.finalEra ?? 0) + 1;
     const lastEra = protocolState!.era - 1;
 
     if (firstEra <= lastEra) {
@@ -379,20 +399,24 @@ export class DappStakingService implements IDappStakingService {
         }
       });
     } else {
-      throw `First reward era can't be determined for dApp id ${dapp.id}.`;
+      console.warn(`First reward era can't be determined for dApp id ${dapp.id}.`);
     }
 
     return result;
   }
 
-  public async getDappRewardsForPeriod(contractAddress: string, period: number): Promise<bigint> {
+  public async getDappRewardsForPeriod(
+    contractAddress: string,
+    period: number
+  ): Promise<[bigint, number]> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
-    const [protocolState, constants, dapp, periodInfo] = await Promise.all([
+    const [protocolState, constants, dapp, periodInfo, prevPeriodInfo] = await Promise.all([
       this.dappStakingRepository.getProtocolState(),
       this.dappStakingRepository.getConstants(),
       this.dappStakingRepository.getChainDapp(contractAddress),
       this.dappStakingRepository.getPeriodEndInfo(period),
+      this.dappStakingRepository.getPeriodEndInfo(period - 1),
     ]);
 
     if (!dapp) {
@@ -400,6 +424,7 @@ export class DappStakingService implements IDappStakingService {
     }
 
     let result = BigInt(0);
+    let erasWithRewards = 0;
     if (
       this.hasRewardsExpired(
         period,
@@ -407,14 +432,11 @@ export class DappStakingService implements IDappStakingService {
         constants.rewardRetentionInPeriods
       )
     ) {
-      return result;
+      return [result, erasWithRewards];
     }
 
-    const lastEra = periodInfo?.finalEra ?? 0;
-    const firstEra =
-      lastEra > constants.standardErasPerBuildAndEarnPeriod
-        ? lastEra - constants.standardErasPerBuildAndEarnPeriod + 1
-        : constants.standardErasPerVotingPeriod;
+    const lastEra = periodInfo?.finalEra ?? protocolState!.era - 1;
+    const firstEra = (prevPeriodInfo?.finalEra ?? 0) + 1;
 
     if (firstEra <= lastEra) {
       const tierRewards = await Promise.all(
@@ -427,15 +449,16 @@ export class DappStakingService implements IDappStakingService {
         if (tierReward) {
           const dApp = tierReward?.dapps.find((d) => d.dappId === dapp.id);
           if (dApp && dApp.tierId !== undefined) {
+            erasWithRewards++;
             result += tierReward.rewards[dApp.tierId];
           }
         }
       });
     } else {
-      throw `First reward era can't be determined for dApp id ${dapp.id}.`;
+      console.warn(`First reward era can't be determined for dApp id ${dapp.id}.`);
     }
 
-    return result;
+    return [result, erasWithRewards];
   }
 
   public async getContractStakes(dappIds: number[]): Promise<Map<number, StakeAmount | undefined>> {
