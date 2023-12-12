@@ -25,12 +25,18 @@
     </header-comp>
 
     <!-- Modals -->
-    <modal-network
+    <modal-network-wallet
       v-if="modalNetwork"
       v-model:isOpen="modalNetwork"
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
+    <!-- <modal-network
+      v-if="modalNetwork"
+      v-model:isOpen="modalNetwork"
+      v-model:selectNetwork="currentNetworkIdx"
+      :network-idx="currentNetworkIdx"
+    /> -->
 
     <modal-connect-wallet
       :is-modal-connect-wallet="
@@ -101,6 +107,7 @@ import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
 import ModalAccountUnification from 'src/components/header/modals/ModalAccountUnification.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
+import ModalNetworkWallet from 'src/components/header/modals/ModalNetworkWallet.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
 import { WalletModalOption } from 'src/config/wallets';
@@ -120,7 +127,7 @@ export default defineComponent({
     NetworkButton,
     ModalAccount,
     ModalConnectWallet,
-    ModalNetwork,
+    ModalNetworkWallet,
     Logo,
     HeaderComp,
     TroubleHelp,

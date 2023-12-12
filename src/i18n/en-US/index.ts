@@ -146,6 +146,8 @@ export default {
     comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
+    network: 'Network',
+    wallet: 'Wallet',
     endpoint: 'Endpoint',
     viaEndpoint: 'via {value}',
     lightClientWarning: 'Connecting via Light client is in beta. Use at your own risk.',
