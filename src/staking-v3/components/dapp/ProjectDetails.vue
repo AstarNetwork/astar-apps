@@ -15,7 +15,7 @@
             :width="140"
             :height="25"
             class="button--website"
-            @click="goLink(dapp.dapp.url)"
+            @click="goLink(dapp.extended?.url ?? '/')"
           >
             {{ $t('dappStaking.dappPage.goToWebsite') }}
           </astar-irregular-button>
@@ -54,10 +54,10 @@
         </div>
         <div class="row--address">
           <div class="column--address">
-            <span class="tag">{{ getShortenAddress(dapp.dapp.address, 8) }}</span>
+            <span class="tag">{{ getShortenAddress(dapp.chain.address, 8) }}</span>
           </div>
           <div class="icons">
-            <button class="box--share btn--primary" @click="copyAddress(dapp.dapp.address)">
+            <button class="box--share btn--primary" @click="copyAddress(dapp.chain.address)">
               <div class="icon--primary">
                 <astar-icon-copy />
               </div>
@@ -72,7 +72,7 @@
                 </div>
                 <q-tooltip>
                   <span class="text--tooltip">
-                    {{ $t(dapp.dapp.address.startsWith('0x') ? 'blockscout' : 'subscan') }}
+                    {{ $t(dapp.chain.address.startsWith('0x') ? 'blockscout' : 'subscan') }}
                   </span>
                 </q-tooltip>
               </button>
@@ -92,7 +92,7 @@
         </div>
         <div>
           <div class="tag">
-            <span class="text--tag">{{ dapp.dapp.license }}</span>
+            <span class="text--tag">{{ dapp.extended?.license }}</span>
           </div>
         </div>
       </div>
@@ -203,21 +203,17 @@ import copy from 'copy-to-clipboard';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { Community, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CommunityType } from '@astar-network/astar-sdk-core';
-
-interface Community {
-  type: string;
-  handle: string;
-}
+import { CombinedDappInfo } from 'src/staking-v3/logic';
 
 export default defineComponent({
   props: {
     dapp: {
-      type: Object,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
   },
@@ -227,7 +223,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const explorerUrl = computed<string>(() => {
-      const address = props.dapp.dapp.address;
+      const address = props.dapp.chain.address;
       const blockscout = `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`;
       const subscan = `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`;
       const explorer = address.startsWith('0x') ? blockscout : subscan;
@@ -243,19 +239,19 @@ export default defineComponent({
     };
 
     const communities = computed<Community[] | null>(() => {
-      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('communities')) {
-        return props.dapp.dapp.communities as Community[];
+      if (props.dapp.extended && props.dapp.extended.hasOwnProperty('communities')) {
+        return props.dapp.extended.communities as Community[];
       } else {
         return null;
       }
     });
 
     const virtualMachineTags = computed<string[]>(() => {
-      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('contractType')) {
-        if (props.dapp.dapp.contractType === 'wasm+evm') {
+      if (props.dapp.extended && props.dapp.extended.hasOwnProperty('contractType')) {
+        if (props.dapp.extended.contractType === 'wasm+evm') {
           return ['EVM', 'WASM'];
         } else {
-          return [props.dapp.dapp.contractType];
+          return [props.dapp.extended.contractType];
         }
       } else {
         return ['EVM'];
@@ -281,5 +277,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/project-details.scss';
+@use 'src/staking-v3/components/dapp/styles/project-details.scss';
 </style>

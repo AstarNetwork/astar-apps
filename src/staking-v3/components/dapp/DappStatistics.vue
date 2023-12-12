@@ -9,14 +9,11 @@
         </div>
         <div>
           <span class="text--statistics-value">
-            <token-balance
-              :balance="dapp.stakerInfo.totalStakeFormatted"
-              :symbol="nativeTokenSymbol"
-            />
+            <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
           </span>
         </div>
       </div>
-      <div class="separator--statistics" />
+      <!-- <div class="separator--statistics" />
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">
@@ -28,21 +25,21 @@
             {{ $n(dapp.stakerInfo.stakersCount) }}
           </span>
         </div>
-      </div>
+      </div> -->
       <div class="separator--statistics" />
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.currentTier') }}
+            {{ $t('stakingV3.tier') }}
           </span>
         </div>
         <div>
           <span class="text--statistics-value">
-            {{ $n(1) }}
+            {{ getDappTier(dapp.chain.id) ?? '--' }}
           </span>
         </div>
       </div>
-      <div class="separator--statistics" />
+      <!-- <div class="separator--statistics" />
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">
@@ -54,31 +51,33 @@
             {{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}
           </span>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 <script lang="ts">
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useNetworkInfo } from 'src/hooks';
-import { defineComponent } from 'vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { useDappStaking } from 'src/staking-v3/hooks';
+import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { defineComponent, PropType } from 'vue';
 export default defineComponent({
   components: {
-    TokenBalance,
+    TokenBalanceNative,
   },
   props: {
     dapp: {
-      type: Object,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
   },
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
-    return { nativeTokenSymbol };
+    const { getDappTier } = useDappStaking();
+
+    return { getDappTier };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-statistics.scss';
+@use 'src/staking-v3/components/dapp/styles/dapp-statistics.scss';
 </style>
