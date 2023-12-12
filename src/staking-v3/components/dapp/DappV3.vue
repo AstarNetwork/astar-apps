@@ -34,7 +34,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent, watch, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation } from '../../hooks';
 import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
@@ -54,7 +54,7 @@ export default defineComponent({
     const route = useRoute();
     const { currentNetworkName, isZkEvm } = useNetworkInfo();
     const { getDapp, registeredDapps } = useDapps();
-    const { navigateToVote } = useDappStakingNavigation();
+    const { navigateToVote, navigateToHome } = useDappStakingNavigation();
     const store = useStore();
 
     const dappAddress = computed<string>(() => route.query.dapp as string);
@@ -85,6 +85,12 @@ export default defineComponent({
         store.commit('general/setLoading', false, { root: true });
       }
     };
+
+    onBeforeMount(() => {
+      if (!dapp.value) {
+        navigateToHome();
+      }
+    });
 
     watch(
       [dapp, registeredDapps],
