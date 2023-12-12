@@ -1,8 +1,5 @@
 <template>
   <div class="wrapper--project-overview">
-    <div class="row--overview-title">
-      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.projectOverview') }}</span>
-    </div>
     <div class="box--overview">
       <!-- eslint-disable vue/no-v-html -->
       <div class="markdown" v-html="sanitizeData(dapp.dapp.description)" />
@@ -26,6 +23,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/project-overview.scss';
+@use './styles/project-overview.scss';
 @use 'src/css/markdown.scss';
 </style>

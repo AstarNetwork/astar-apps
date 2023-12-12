@@ -5,18 +5,38 @@
     <dapp-statistics :dapp="dapp" />
     <dapp-images :dapp="dapp" />
     <builders :dapp="dapp" />
+
+    <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
     <div class="row--project-overview">
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
+
     <dapp-stats-charts :dapp="dapp" />
+
     <div class="bottom--links">
-      <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :height="28" class="btn--stake-switch" :disabled="isZkEvm">
-          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
-        </astar-irregular-button>
-      </router-link>
-      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
+      <div class="bottom--links__inner">
+        <button class="button--start-staking" @click="navigateToVote(dapp.dapp.address)">
+          {{ $t('stakingV3.dapp.StartStakingNow') }}
+        </button>
+
+        <div class="column--action">
+          <!-- TODO: add logic -->
+          <a class="button--icon button--favorite">
+            <astar-icon-heart />
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
+            </q-tooltip>
+          </a>
+
+          <a :href="twitterUrl" target="_blank" class="button--icon button--share">
+            <astar-icon-share />
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('share') }}</span>
+            </q-tooltip>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="bg--dapp" />
   </div>
@@ -40,6 +60,7 @@ import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useDappStakingNavigation } from '../../hooks';
 
 export default defineComponent({
   components: {
@@ -62,15 +83,6 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-
-    const buildStakePageLink = (address: string): string => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      return `${base}?dapp=${address.toLowerCase()}`;
-    };
-
-    const goLink = (url: string) => {
-      window.open(url, '_blank');
-    };
 
     const dapp = computed(() => {
       if (dapps.value.length > 0 && dappAddress.value) {
@@ -116,14 +128,18 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const { navigateToVote } = useDappStakingNavigation();
+
+    const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
+
     return {
       Path,
       dapp,
       stakingList,
-      goLink,
-      buildStakePageLink,
       isH160,
       isZkEvm,
+      navigateToVote,
+      twitterUrl,
     };
   },
 });

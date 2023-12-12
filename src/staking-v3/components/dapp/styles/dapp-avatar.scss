@@ -3,85 +3,113 @@
 .wrapper--dapp-avatar {
   display: flex;
   flex-direction: column;
+  gap: 28px;
   padding-top: 24px;
-  padding-bottom: 80px;
-  border-bottom: 1px solid $gray-2;
-  @media (min-width: $lg) {
+  align-items: center;
+  @media (min-width: $sm) {
     flex-direction: row;
     justify-content: space-between;
   }
 }
 
-.column--edit {
-  display: none;
-  @media (min-width: $lg) {
-    display: block;
-    align-self: flex-end;
-  }
-}
-
 .column--avatar {
   display: flex;
-  column-gap: 24px;
+  flex-direction: column;
+  gap: 28px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
 }
 
 .image--dapp-icon {
   width: 120px;
   height: 120px;
   border-radius: 16px;
+  object-fit: contain;
+  overflow: hidden;
 }
 
 .row--dapp-title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
   margin-bottom: 4px;
+  text-align: center;
+  @media (min-width: $lg) {
+    text-align: left;
+  }
+}
+
+.row--dapp-description {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  @media (min-width: $lg) {
+    text-align: left;
+  }
 }
 
 .row--tags {
   display: flex;
-  column-gap: 8px;
-  margin-bottom: 24px;
+  column-gap: 4px;
+  margin-top: 24px;
+  justify-content: center;
+  @media (min-width: $lg) {
+    justify-content: flex-start;
+  }
 }
 
 .tag {
-  background-color: $navy-3;
-  border-radius: 6px;
+  background-color: $gray-1;
   padding: 2px 8px;
-}
-
-.text--tag {
+  border-radius: 6px;
+  line-height: 1.25;
   font-weight: 500;
   font-size: 12px;
-  color: #fff;
 }
 
-.row--stake {
-  margin-bottom: auto;
+.column--action {
+  display: none;
+  @media (min-width: $sm) {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+}
+
+.button--icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  border: solid 1px $astar-blue;
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: $astar-blue;
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: $astar-blue;
+    color: white;
+  }
 }
 
-.btn-size--stake {
-  width: 88px;
-  height: 32px;
+.button--favorite {
+  svg {
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+  }
 }
 
-.text--btn-stake {
+.button--share {
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.button--edit {
+  padding: 0 24px;
+  height: 48px;
   font-size: 16px;
-  font-weight: 600;
-}
-
-.column--details {
-  display: flex;
-  flex-direction: column;
-}
-
-.body--dark {
-  .tag {
-    background-color: $navy-3;
-  }
-  .text--tag {
-    color: $gray-3;
-  }
-  .wrapper--dapp-avatar {
-    border-bottom: 1px solid $navy-3;
-  }
 }

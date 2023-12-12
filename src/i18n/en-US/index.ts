@@ -792,6 +792,11 @@ export default {
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
+    dapp: {
+      voteAndStake: 'Vote & Stake',
+      overview: 'Overview',
+      StartStakingNow: 'Start staking now',
+    },
   },
   bridge: {
     bridge: 'Bridge',

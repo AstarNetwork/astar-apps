@@ -6,38 +6,38 @@
       </div>
       <div class="column--details">
         <div class="row--dapp-title">
-          <span class="text--xl text--color">{{ dapp.dapp.name }}</span>
+          {{ dapp.dapp.name }}
+        </div>
+        <div class="row--dapp-description">
+          {{ dapp.dapp.description }}
         </div>
         <div v-if="dapp.dapp.tags" class="row--tags">
           <div v-for="tag in dapp.dapp.tags" :key="tag" class="tag">
-            <span class="text--tag"> {{ tag }} </span>
+            {{ tag }}
           </div>
-        </div>
-        <div class="row--stake">
-          <astar-button
-            class="btn-size--stake"
-            :disabled="isZkEvm"
-            @click="goStakeLink(dapp.dapp.address)"
-          >
-            <span class="text--btn-stake">
-              {{ $t('dappStaking.stake') }}
-            </span>
-          </astar-button>
-          <a :href="twitterUrl" target="_blank" class="twitter-link">
-            <astar-icon-base class="twitter-icon" viewBox="0 0 512 512" icon-name="Twitter">
-              <astar-icon-twitter />
-            </astar-icon-base>
-            {{ $t('share') }}
-          </a>
         </div>
       </div>
     </div>
-    <div class="column--edit">
-      <astar-button v-if="!isDisabledEditButton" class="btn-size--stake" @click="goEditLink">
-        <span class="text--btn-stake">
-          {{ $t('dappStaking.edit') }}
-        </span>
+
+    <div class="column--action">
+      <astar-button v-if="!isDisabledEditButton" class="button--edit" @click="goEditLink">
+        {{ $t('dappStaking.edit') }}
       </astar-button>
+
+      <!-- TODO: add logic -->
+      <a class="button--icon button--favorite">
+        <astar-icon-heart />
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
+        </q-tooltip>
+      </a>
+
+      <a :href="twitterUrl" target="_blank" class="button--icon button--share">
+        <astar-icon-share />
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('share') }}</span>
+        </q-tooltip>
+      </a>
     </div>
   </div>
 </template>
@@ -65,12 +65,6 @@ export default defineComponent({
       router.push(url);
     };
 
-    const goStakeLink = (address: string): void => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      const url = `${base}?dapp=${address.toLowerCase()}`;
-      router.push(url);
-    };
-
     const isDisabledEditButton = computed<boolean>(
       () => currentAccount.value !== props.dapp.contract.developerAddress
     );
@@ -78,7 +72,6 @@ export default defineComponent({
     return {
       isDisabledEditButton,
       goEditLink,
-      goStakeLink,
       twitterUrl,
       isZkEvm,
     };
@@ -87,20 +80,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-avatar.scss';
-
-.twitter-icon {
-  width: 20px;
-  margin-left: 24px;
-  margin-right: 8px;
-  color: #1da1f2;
-}
-
-.twitter-link {
-  display: flex;
-  align-items: center;
-  color: #1da1f2;
-  font-size: 14px;
-  font-weight: 600;
-}
+@use './styles/dapp-avatar.scss';
 </style>

@@ -1,7 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dapp-images {
-  border-bottom: 1px solid $gray-2;
   padding-bottom: 80px;
   margin-bottom: 24px;
 }
@@ -103,10 +102,4 @@
 .dapp-image {
   width: 1px;
   height: 1px;
-}
-
-.body--dark {
-  .wrapper--dapp-images {
-    border-bottom: 1px solid $navy-3;
-  }
 }
