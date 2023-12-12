@@ -114,20 +114,8 @@
 }
 
 .body--dark {
-  .text--info,
-  .text--info-bond {
-    color: $gray-1;
-  }
-  .row--title {
-    color: $gray-1;
-  }
-  .box--rewards {
-    border: solid 1px $gray-1;
-  }
-  .box__row {
-    background: $container-bg-dark;
-  }
-  .column--status-claimed {
-    background: rgba(47, 211, 63, 0.2);
+  .text--title,
+  .text--lg {
+    color: $navy-1;
   }
 }

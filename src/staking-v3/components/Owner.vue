@@ -19,6 +19,7 @@
     </div>
     <your-rewards />
     <edit />
+    <div class="bg--owner" />
   </div>
 </template>
 

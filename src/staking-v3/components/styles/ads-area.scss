@@ -12,7 +12,7 @@
   margin-right: -16px;
   padding-left: 16px;
   padding-right: 16px;
-  width:calc(100% + 32px);
+  width: calc(100% + 32px);
   @media (min-width: $md) {
     mask-image: linear-gradient(
       to right,
@@ -25,17 +25,19 @@
     margin-right: -48px;
     padding-left: 48px;
     padding-right: 48px;
-    width:calc(100% + 96px);
+    width: calc(100% + 96px);
   }
 }
+
 .swiper {
   overflow: visible;
 }
+
 .swiper-slide {
   height: auto;
 }
+
 .card--swiper {
-  background: rgba(255, 255, 255, 0.5);
   height: 100%;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -43,28 +45,23 @@
   border-radius: 6px;
   overflow: hidden;
   &:hover {
-    background: rgba(255, 255, 255, 0.7);
+    background-color: $gray-1;
   }
 }
-.body--dark {
-  .card--swiper {
-    background: rgba(255, 255, 255, 0.1);
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  }
-}
+
 .card__img {
   aspect-ratio: 16/9;
   object-fit: cover;
   width: 100%;
 }
+
 .card__bottom {
   padding: 16px;
   @media (min-width: $lg) {
     padding: 16px 24px;
   }
 }
+
 .text--accent {
   font-size: 12px;
   font-weight: 700;
@@ -75,17 +72,14 @@
     color: $astar-pink;
   }
 }
+
 .text--name {
   margin: 4px 0 16px 0;
   font-size: 16px;
   font-weight: 700;
   color: $navy-1;
 }
-.body--dark {
-  .text--name {
-    color: $gray-1;
-  }
-}
+
 .text--description {
   overflow: hidden;
   display: -webkit-box;
@@ -93,21 +87,14 @@
   -webkit-line-clamp: 3;
   color: $navy-1;
 }
+
 .text--title {
   margin: 4px 0 16px 0;
   font-size: 20px;
   font-weight: 600;
 }
+
 .text--subtitle {
   color: $gray-3;
   font-weight: 600;
-}
-
-.body--dark {
-  .text--description {
-    color: $gray-1;
-  }
-  .card--swiper {
-    border-color: transparent;
-  }
 }

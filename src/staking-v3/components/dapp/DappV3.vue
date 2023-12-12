@@ -18,6 +18,7 @@
       </router-link>
       <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     </div>
+    <div class="bg--dapp" />
   </div>
 </template>
 <script lang="ts">

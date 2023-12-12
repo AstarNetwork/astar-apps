@@ -40,8 +40,18 @@
   margin: 0 auto;
 }
 
+.bg--dapp {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: -1;
+}
+
 .body--dark {
-  .row--project-overview {
-    border-bottom: 1px solid $navy-3;
+  .container--dapp-staking {
+    color: $navy-1;
   }
 }

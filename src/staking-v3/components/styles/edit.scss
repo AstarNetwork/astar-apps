@@ -63,17 +63,3 @@
   color: $navy-1;
   align-self: end;
 }
-
-.body--dark {
-  .box__middle,
-  .box__bottom,
-  .row--title {
-    color: $gray-1;
-  }
-  .box--link {
-    border-color: $gray-1;
-    &:hover {
-      background-color: $navy-4;
-    }
-  }
-}

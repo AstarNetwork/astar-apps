@@ -16,6 +16,7 @@
       <dapps v-if="displayIndex === 0" />
       <data-list v-if="displayIndex === 1" />
     </div>
+    <div class="bg--discover" />
   </div>
 </template>
 

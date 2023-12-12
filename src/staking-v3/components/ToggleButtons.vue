@@ -71,22 +71,4 @@ export default defineComponent({
     background-color: $navy-1;
   }
 }
-
-.body--dark {
-  .wrapper--buttons {
-    border-color: $gray-4;
-  }
-  .button {
-    &:hover {
-      background-color: $navy-4;
-    }
-  }
-  .button--selected {
-    background-color: $gray-1;
-    color: $navy-1;
-    &:hover {
-      background-color: $gray-1;
-    }
-  }
-}
 </style>

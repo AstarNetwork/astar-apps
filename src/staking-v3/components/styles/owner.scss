@@ -72,10 +72,18 @@
   }
 }
 
+.bg--owner {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: -1;
+}
+
 .body--dark {
-  .text--dapp-name,
-  .row--your-dashboard,
-  .row--your-dashboard-mobile {
-    color: $gray-1;
+  .wrapper--owner {
+    color: $navy-1;
   }
 }
