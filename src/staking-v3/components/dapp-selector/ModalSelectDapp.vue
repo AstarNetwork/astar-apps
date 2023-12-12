@@ -44,6 +44,7 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/v2/common';
 import { Dapp } from './Model';
+import { useDappStaking } from 'src/staking-v3/hooks';
 
 export default defineComponent({
   components: {
@@ -69,7 +70,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const maxDappsToSelect = 10;
+    const { constants } = useDappStaking();
+    const maxDappsToSelect = computed<number>(
+      () => constants.value?.maxNumberOfStakedContracts ?? 0
+    );
     const isClosingModal = ref<boolean>(false);
     const selectedDapps = ref<Dapp[]>([]);
     const searchTerm = ref<string>('');
@@ -92,7 +96,7 @@ export default defineComponent({
       if (indexToRemove >= 0) {
         selectedDapps.value.splice(indexToRemove, 1);
       } else {
-        if (selectedDapps.value.length < maxDappsToSelect) {
+        if (selectedDapps.value.length < maxDappsToSelect.value) {
           selectedDapps.value.push(dapp);
         }
       }
