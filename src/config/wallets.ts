@@ -123,7 +123,7 @@ export const supportWalletObj = {
     isSupportMobileApp: true,
   },
   [SupportWallet.SubWalletNative]: {
-    img: require('/src/assets/img/logo-subwallet.svg'),
+    img: require('/src/assets/img/logo-subwallet.png'),
     name: 'SubWallet (Native)',
     source: SupportWallet.SubWalletNative,
     walletUrl: 'https://subwallet.app/download.html',
@@ -229,7 +229,7 @@ export const supportEvmWalletObj = {
     ethExtension: 'talismanEth',
   },
   [SupportWallet.SubWalletEvm]: {
-    img: require('/src/assets/img/logo-subwallet.svg'),
+    img: require('/src/assets/img/logo-subwallet.png'),
     name: 'SubWallet (EVM)',
     source: SupportWallet.SubWalletEvm,
     walletUrl: 'https://subwallet.app/download.html',
