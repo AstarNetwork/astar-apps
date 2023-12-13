@@ -440,6 +440,11 @@ export default {
       warningLeaveMinAmount:
         'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
     },
+    maintenance: {
+      switching: 'Switching to',
+      willBeBack: 'We will be back',
+      verySoon: 'very soon',
+    },
   },
   assets: {
     astarNativeAccount: 'Astar Native Account',
