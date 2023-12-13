@@ -38,7 +38,7 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
   });
 
-  // TODO - remove after v3 is live on Astar
+  // TODO - remove after the portal v3 is live.
   Router.beforeEach((to, from, next) => {
     // Prevent accessing to dApp staking pages if v3 is deployed to a node, but not supported by UI
     const networksSupportV3 = ['development'];
