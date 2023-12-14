@@ -3,7 +3,7 @@
     <div class="row--tier-header">
       <div class="title">{{ $t('stakingV3.tier') }} {{ tier }}</div>
       <div class="column--reward">
-        <div class="text--reward">Reward per day</div>
+        <div class="text--reward">{{ $t('stakingV3.rewardPerDay') }}</div>
         <div class="text--amount">-- ASTR</div>
       </div>
     </div>
