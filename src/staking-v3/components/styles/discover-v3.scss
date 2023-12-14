@@ -17,6 +17,22 @@
   width: 100%;
 }
 
+.row--dapps-data-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.input--search {
+  border: solid 1px $gray-2;
+  color: $navy-3;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  min-width: 300px;
+  outline-color: $astar-blue;
+}
+
 .bg--discover {
   background-color: white;
   position: fixed;

@@ -9,11 +9,21 @@
     <dynamic-ads-area />
 
     <div class="container--dapps-data">
-      <toggle-buttons
-        :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
-        @button-selected="toggleDapps"
-      />
-      <dapps v-if="displayIndex === 0" />
+      <div class="row--dapps-data-header">
+        <toggle-buttons
+          :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+          @button-selected="toggleDapps"
+        />
+        <div v-if="displayIndex === 0">
+          <input
+            v-model="searchText"
+            type="text"
+            :placeholder="$t('stakingV3.searchDapps')"
+            class="input--search"
+          />
+        </div>
+      </div>
+      <dapps v-if="displayIndex === 0" :search="searchText" />
       <data-list v-if="displayIndex === 1" />
     </div>
     <div class="bg--discover" />
@@ -49,7 +59,9 @@ export default defineComponent({
       displayIndex.value = index;
     };
 
-    return { displayIndex, toggleDapps };
+    const searchText = ref('');
+
+    return { displayIndex, searchText, toggleDapps };
   },
 });
 </script>
