@@ -7,18 +7,14 @@
             <img :src="dapp.basic.iconUrl" alt="icon" />
           </div>
           <div class="text--dapp">
-            <span class="text--title">{{ dapp.basic.name }}</span>
+            <div class="text--title">{{ dapp.basic.name }}</div>
+            <div class="text--description">{{ dapp.basic.shortDescription }}</div>
           </div>
         </div>
-        <hr class="divider--dapp" />
         <div class="card__bottom">
+          <div>T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
           <div>
-            <span class="">T{{ getDappTier(dapp.chain.id) ?? '-' }}</span>
-          </div>
-          <div>
-            <span class="">
-              <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
-            </span>
+            <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
           </div>
         </div>
       </div>
