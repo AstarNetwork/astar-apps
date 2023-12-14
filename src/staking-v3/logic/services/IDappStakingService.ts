@@ -135,11 +135,11 @@ export interface IDappStakingService {
    * Claims all fully unlocked tokens.
    * @param senderAddress Address of the request sender.
    */
-  claimUnlockedTokens(senderAddress: string): Promise<void>;
+  claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
    * Re locks all unbonding chunks.
    * @param senderAddress Address of the request sender.
    */
-  relockUnlockingTokens(senderAddress: string): Promise<void>;
+  relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void>;
 }

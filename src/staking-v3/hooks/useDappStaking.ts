@@ -4,9 +4,9 @@ import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
 import {
   AccountLedger,
+  CombinedDappInfo,
   Constants,
   DAppTierRewards,
-  DappInfo,
   DappStakeInfo,
   EraInfo,
   EraLengths,
@@ -169,18 +169,18 @@ export function useDappStaking() {
     await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, successMessage);
   };
 
-  const unstake = async (dapp: DappInfo, amount: number): Promise<void> => {
-    const [result, error] = await canUnStake(dapp.address, amount);
+  const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
+    const [result, error] = await canUnStake(dapp.chain.address, amount);
     if (!result) {
       throw error;
     }
 
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimUnstakeAndUnlock(
-      dapp.address,
+      dapp.chain.address,
       amount,
       currentAccount.value,
-      'success'
+      t('stakingV3.unbondSuccess', { dapp: dapp.basic.name })
     );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
@@ -190,12 +190,12 @@ export function useDappStaking() {
     fetchStakeAmountsToStore();
   };
 
-  const unstakeFromUnregistered = async (dappAddress: string): Promise<void> => {
+  const unstakeFromUnregistered = async (dappAddress: string, dappName: string): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.claimAllAndUnstakeFromUnregistered(
       currentAccount.value,
       dappAddress,
-      'success'
+      t('stakingV3.unbondFromUnregisteredSuccess', { dapp: dappName })
     );
 
     const [staker, bonus, dApp] = await Promise.all([
@@ -257,7 +257,10 @@ export function useDappStaking() {
 
   const claimStakerAndBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.claimStakerAndBonusRewards(currentAccount.value, 'success');
+    await stakingService.claimStakerAndBonusRewards(
+      currentAccount.value,
+      t('stakingV3.claimRewardSuccess')
+    );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
@@ -265,13 +268,13 @@ export function useDappStaking() {
 
   const withdraw = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.claimUnlockedTokens(currentAccount.value);
+    await stakingService.claimUnlockedTokens(currentAccount.value, t('stakingV3.withdrawSuccess'));
     getCurrentEraInfo();
   };
 
   const relock = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.relockUnlockingTokens(currentAccount.value);
+    await stakingService.relockUnlockingTokens(currentAccount.value, t('stakingV3.relockSuccess'));
   };
 
   const getAllRewards = async (): Promise<void> => {
@@ -402,10 +405,6 @@ export function useDappStaking() {
     } else if (stakeAmount.gt(stakedAmount)) {
       // Prevents dappStaking.UnstakeAmountTooLarge
       return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
-    } else if (hasRewards.value) {
-      // Prevents dappStaking.UnclaimedRewards
-      // May want to auto claim rewards here
-      return [false, t('stakingV3.dappStaking.UnclaimedRewards')];
     } else if (protocolState.value?.maintenance) {
       // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];

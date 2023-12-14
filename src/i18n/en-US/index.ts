@@ -795,6 +795,11 @@ export default {
     unregisteredDappInfo:
       "This project has been unregistered. You don't have to do anything - If you do not move funds within this period, you will continue to earn basic rewards and be entitled to receive bonus.",
     voteSuccess: 'You successfully voted to {number} dApp(s). All pending rewards are claimed.',
+    unbondSuccess: 'You successfully unbonded from {dapp}.',
+    unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
+    claimRewardSuccess: 'You successfully claimed your rewards.',
+    withdrawSuccess: 'You successfully withdrew your locked tokens.',
+    relockSuccess: 'You successfully re-locked your tokens.',
   },
   bridge: {
     bridge: 'Bridge',

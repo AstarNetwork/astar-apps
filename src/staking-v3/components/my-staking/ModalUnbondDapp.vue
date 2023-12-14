@@ -175,7 +175,7 @@ export default defineComponent({
       const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
 
       if (unstakeAmount) {
-        await unstake(props.dapp.chain, Number(unstakeAmount));
+        await unstake(props.dapp, Number(unstakeAmount));
       } else {
         throw 'Invalid un-bonding amount';
       }
