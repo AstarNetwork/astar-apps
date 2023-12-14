@@ -2,14 +2,14 @@
   <div class="wrapper--dapp-avatar">
     <div class="column--avatar">
       <div>
-        <img class="image--dapp-icon" :src="dapp.dapp.iconUrl" :alt="dapp.dapp.name" />
+        <img class="image--dapp-icon" :src="dapp.extended?.iconUrl" :alt="dapp.extended?.name" />
       </div>
       <div class="column--details">
         <div class="row--dapp-title">
-          <span class="text--xl text--color">{{ dapp.dapp.name }}</span>
+          <span class="text--xl text--color">{{ dapp.extended?.name }}</span>
         </div>
-        <div v-if="dapp.dapp.tags" class="row--tags">
-          <div v-for="tag in dapp.dapp.tags" :key="tag" class="tag">
+        <div v-if="dapp.extended?.tags" class="row--tags">
+          <div v-for="tag in dapp.extended?.tags" :key="tag" class="tag">
             <span class="text--tag"> {{ tag }} </span>
           </div>
         </div>
@@ -17,7 +17,7 @@
           <astar-button
             class="btn-size--stake"
             :disabled="isZkEvm"
-            @click="goStakeLink(dapp.dapp.address)"
+            @click="navigateToVote(dapp.chain.address)"
           >
             <span class="text--btn-stake">
               {{ $t('dappStaking.stake') }}
@@ -44,13 +44,15 @@
 <script lang="ts">
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
-import { defineComponent, computed } from 'vue';
+import { useDappStakingNavigation } from 'src/staking-v3/hooks';
+import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { defineComponent, computed, PropType } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
   props: {
     dapp: {
-      type: Object,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
   },
@@ -58,6 +60,7 @@ export default defineComponent({
     const router = useRouter();
     const { currentAccount } = useAccount();
     const { isZkEvm } = useNetworkInfo();
+    const { navigateToVote } = useDappStakingNavigation();
     const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
 
     const goEditLink = (): void => {
@@ -65,20 +68,15 @@ export default defineComponent({
       router.push(url);
     };
 
-    const goStakeLink = (address: string): void => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      const url = `${base}?dapp=${address.toLowerCase()}`;
-      router.push(url);
-    };
-
+    // Disable dApp editing for now
     const isDisabledEditButton = computed<boolean>(
-      () => currentAccount.value !== props.dapp.contract.developerAddress
+      () => true // currentAccount.value !== props.dapp.chain.owner
     );
 
     return {
       isDisabledEditButton,
       goEditLink,
-      goStakeLink,
+      navigateToVote,
       twitterUrl,
       isZkEvm,
     };
@@ -87,7 +85,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-avatar.scss';
+@use 'src/staking-v3/components/dapp/styles/dapp-avatar.scss';
 
 .twitter-icon {
   width: 20px;

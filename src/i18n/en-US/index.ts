@@ -741,6 +741,7 @@ export default {
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
+    leaderboard: 'Leaderboard',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',

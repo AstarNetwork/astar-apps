@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp && dapp.dapp" class="container--dapp-staking">
+  <div v-if="dapp && dapp.extended" class="container--dapp-staking">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <dapp-avatar :dapp="dapp" />
     <dapp-statistics :dapp="dapp" />
@@ -7,15 +7,15 @@
     <builders :dapp="dapp" />
     <div class="row--project-overview">
       <project-overview :dapp="dapp" />
-      <project-details :dapp="dapp" />
+      <project-details :dapp="dapp" class="project--details" />
     </div>
-    <dapp-stats-charts :dapp="dapp" />
+    <!-- <dapp-stats-charts :dapp="dapp" /> -->
     <div class="bottom--links">
-      <router-link :to="buildStakePageLink(dapp.dapp.address)">
+      <div @click="navigateToVote(dapp.chain.address)">
         <astar-irregular-button :height="28" class="btn--stake-switch" :disabled="isZkEvm">
-          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
+          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.extended.name }}
         </astar-irregular-button>
-      </router-link>
+      </div>
       <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     </div>
   </div>
@@ -26,19 +26,18 @@ import Builders from './Builders.vue';
 import DappAvatar from './DappAvatar.vue';
 import DappImages from './DappImages.vue';
 import DappStatistics from './DappStatistics.vue';
-import DappStatsCharts from './DappStatsCharts.vue';
+// import DappStatsCharts from './DappStatsCharts.vue';
 import ProjectDetails from './ProjectDetails.vue';
 import ProjectOverview from './ProjectOverview.vue';
-import { useDappRedirect, useDispatchGetDapps, useNetworkInfo, useStakingList } from 'src/hooks';
+import { useNetworkInfo } from 'src/hooks';
 import { Path } from 'src/router';
-import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { DappCombinedInfo } from 'src/v2/models';
-import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent, watch, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
+import { useDapps, useDappStakingNavigation } from '../../hooks';
+import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
 
 export default defineComponent({
   components: {
@@ -49,67 +48,55 @@ export default defineComponent({
     ProjectOverview,
     ProjectDetails,
     BackToPage,
-    DappStatsCharts,
+    // DappStatsCharts,
   },
   setup() {
     const route = useRoute();
     const { currentNetworkName, isZkEvm } = useNetworkInfo();
-    useDappRedirect();
-    useDispatchGetDapps();
+    const { getDapp, registeredDapps } = useDapps();
+    const { navigateToVote, navigateToHome } = useDappStakingNavigation();
     const store = useStore();
 
-    const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-
-    const buildStakePageLink = (address: string): string => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      return `${base}?dapp=${address.toLowerCase()}`;
-    };
 
     const goLink = (url: string) => {
       window.open(url, '_blank');
     };
 
-    const dapp = computed(() => {
-      if (dapps.value.length > 0 && dappAddress.value) {
-        return dapps.value.find((it: DappCombinedInfo) => {
-          try {
-            if (!it.dapp) return null;
-            return it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase();
-          } catch (error) {
-            return null;
-          }
-        });
-      }
-      return null;
-    });
+    const dapp = computed<CombinedDappInfo | undefined>(() => getDapp(dappAddress.value));
 
     // Fetch full dApp model from API. Initially, store contains dapp with props required for the main page.
-    const getDapp = async () => {
-      if (dapp.value?.dapp?.description) {
+    const getDappFromApi = async () => {
+      if (dapp.value?.extended) {
         // Full dapp model is already loaded to the store. No need to fetch dapp from API.
         return;
       }
       try {
         store.commit('general/setLoading', true, { root: true });
-        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-        const loadedDapp = await service.getDapp(
-          dappAddress.value,
-          currentNetworkName.value.toLowerCase()
+        const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+        const loadedDapp = await repository.getDapp(
+          currentNetworkName.value.toLowerCase(),
+          dappAddress.value
         );
         if (loadedDapp) {
-          store.commit('dapps/updateDapp', loadedDapp);
+          store.commit('stakingV3/updateDappExtended', loadedDapp);
         }
       } finally {
         store.commit('general/setLoading', false, { root: true });
       }
     };
+
+    onBeforeMount(() => {
+      if (!dapp.value) {
+        navigateToHome();
+      }
+    });
+
     watch(
-      [dapps],
+      [dapp, registeredDapps],
       () => {
-        if (dapps.value.length > 0) {
-          getDapp();
+        if (dapp != undefined) {
+          getDappFromApi();
         }
       },
       { immediate: true }
@@ -118,10 +105,8 @@ export default defineComponent({
     return {
       Path,
       dapp,
-      stakingList,
       goLink,
-      buildStakePageLink,
-      isH160,
+      navigateToVote,
       isZkEvm,
     };
   },

@@ -1,4 +1,5 @@
 import { DappInfo, ProtocolState } from './Node';
+import { Community } from '@astar-network/astar-sdk-core';
 
 /**
  * Dapp model containing the basic information so dApps can be displayed on the homepage.
@@ -6,6 +7,7 @@ import { DappInfo, ProtocolState } from './Node';
 export interface DappBase {
   address: string;
   name: string;
+  description: string;
   iconUrl: string;
   mainCategory?: string;
   creationTime: number;
@@ -17,7 +19,13 @@ export interface DappBase {
 /**
  * Full dApp model used to display a dApp details.
  */
-export interface Dapp extends DappBase {}
+export interface Dapp extends DappBase {
+  tags: string[];
+  developers: Developer[];
+  communities: Community[];
+  contractType: string;
+  license: string;
+}
 
 /**
  * Used to notify subscribers about protocol state changes.
@@ -49,6 +57,14 @@ export interface CombinedDappInfo {
   basic: DappBase;
   extended?: Dapp;
   chain: DappInfo;
+}
+
+export interface Developer {
+  githubAccountUrl: string;
+  twitterAccountUrl: string;
+  linkedInAccountUrl: string;
+  iconFile: string;
+  name: string;
 }
 
 interface UnlockingChunk {
