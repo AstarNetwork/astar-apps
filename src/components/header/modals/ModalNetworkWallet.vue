@@ -75,7 +75,57 @@
                 </div>
                 <div class="expand-container">
                   <div :id="isExpand ? 'network-expand' : 'network-expand-close'">
-                    <span>inside</span>
+                    <div class="container--endpoints">
+                      <div class="box--endpoints">
+                        <div class="title--endpoint">
+                          <span class="text--network">Astar RPC</span>
+                        </div>
+                        <div>
+                          <div class="column--options">
+                            <div
+                              v-for="(endpointObj, i) in providerEndpoints[0].endpoints"
+                              :key="i"
+                            >
+                              <div
+                                class="column--network-option"
+                                @click="setSelEndpoint({ endpointObj, networkIdx: 0 })"
+                              >
+                                <div class="box-input--endpoint">
+                                  <input
+                                    name="choose_endpoint"
+                                    type="radio"
+                                    :checked="
+                                      checkIsCheckedEndpoint({
+                                        index: 0,
+                                        endpoint: endpointObj.endpoint,
+                                      })
+                                    "
+                                    class="input--endpoint"
+                                  />
+                                </div>
+                                <span class="text--endpoint">{{ endpointObj.name }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row--custom-endpoints">
+                        <button class="box--endpoints">
+                          <span class="text--network">Local Network</span>
+                        </button>
+                        <button class="box--endpoints">
+                          <span class="text--network">Custom Network</span>
+                        </button>
+                      </div>
+                      <div>
+                        <input
+                          v-model="newEndpoint"
+                          type="text"
+                          placeholder="ws://127.0.0.1:9944"
+                          class="ip-input"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -103,7 +153,7 @@ import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainE
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
-import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
+import { computed, defineComponent, ref, watch, onUnmounted, watchEffect } from 'vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import NetworkWalletTab from './NetworkWalletTab.vue';
@@ -349,24 +399,6 @@ export default defineComponent({
       }
     };
 
-    // Memo: Displays Light client option if:
-    // A: the portal is opened on 'localhost' or 'staging URL'
-    // B: Shibuya
-    const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
-      // As asked by @gluneau Light client is enabled for all networks.
-      return true;
-      // const origin = window.location.origin;
-      // const stagingDomain = '.web.app';
-      // const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
-      // const isForDeveloper = devPaths.some((it) => origin.includes(it));
-      // // Memo: enables selecting light client endpoint for Shibuya on the production page
-      // if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
-      //   return true;
-      // } else {
-      //   return !checkIsLightClient(endpoint);
-      // }
-    };
-
     watch(
       [selNetwork],
       () => {
@@ -392,25 +424,13 @@ export default defineComponent({
       isNetwork.value = result;
     };
 
-    // watchEffect(() => {
-    //   const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
-    //   if (selectedAddress && !currentAccount.value) {
-    //     console.log('out!!');
-    //     // window.location.reload();
-    //   }
-    // });
-
-    watch(
-      [currentAccount],
-      () => {
-        const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
-        if (selectedAddress && !currentAccount.value) {
-          console.log('out!!');
-          // window.location.reload();
-        }
-      },
-      { immediate: true }
-    );
+    watchEffect(() => {
+      console.log('selEndpointAstar', selEndpointAstar.value);
+      console.log('selEndpointAstar', selEndpointShiden.value);
+      console.log('selEndpointAstar', selEndpointShibuya.value);
+      console.log('selEndpointAstar', selEndpointAstarZkevm.value);
+      console.log('selEndpointAstar', selEndpointZkatana.value);
+    });
 
     return {
       isClosing,
@@ -419,6 +439,27 @@ export default defineComponent({
       setIsNetwork,
       expandNetwork,
       isExpand,
+
+      newEndpoint,
+      selNetwork,
+      classRadioOn,
+      classRadioOff,
+      providerEndpoints,
+      endpointKey,
+      isDisabled,
+      isCustomNetwork,
+      selEndpointAstar,
+      selEndpointShiden,
+      selEndpointShibuya,
+      windowHeight,
+      isSelectLightClient,
+      isLightClientExtension,
+      isZkEvm,
+      isH160,
+      setSelEndpoint,
+      checkIsCheckedEndpoint,
+      selectNetwork,
+      checkIsDisabledZkOption,
     };
   },
 });
