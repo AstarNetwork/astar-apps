@@ -67,8 +67,8 @@ export default defineComponent({
 
 <style lang="scss">
 .swiper--leaderboard {
-  .swiper-button-prev,
-  .swiper-button-next {
+  > .swiper-button-prev,
+  > .swiper-button-next {
     color: white;
     width: 40px;
     height: 40px;
@@ -79,13 +79,13 @@ export default defineComponent({
       font-weight: 600;
     }
   }
-  .swiper-button-prev {
+  > .swiper-button-prev {
     padding-right: 2px;
   }
-  .swiper-button-next {
+  > .swiper-button-next {
     padding-left: 2px;
   }
-  .swiper-button-disabled {
+  > .swiper-button-disabled {
     display: none;
   }
 }

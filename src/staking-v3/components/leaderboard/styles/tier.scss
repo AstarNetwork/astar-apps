@@ -16,7 +16,7 @@
   padding: 16px 12px;
 }
 
-.title {
+.text--title {
   font-size: 24px;
   font-weight: 700;
 }
@@ -87,16 +87,14 @@
   flex: 1;
 }
 
-.row--pagination {
+.swiper--tier {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 8px;
-  color: $astar-blue;
-  .btn--icon {
-    cursor: pointer;
-    transition: all 0.2s ease;
-    &:hover {
-      color: $astar-blue-dark;
-    }
+}
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
   }
 }
