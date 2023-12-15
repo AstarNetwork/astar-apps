@@ -1,22 +1,13 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--dapps {
-  display: grid;
-  gap: 8px;
-  width: 100%;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  @media (min-width: $sm) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  @media (min-width: $xxl) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+.container--dapps {
+  flex: 1;
 }
 
 .title {
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
   line-height: 27px;
   margin-bottom: 8px;
 }
@@ -80,9 +71,27 @@
   }
 }
 
-.box--no-result{
-  text-align: center;
-  padding: 24px 0;
+.wrapper--dapps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
+.title--category {
+  background-color: $navy-1;
+  color: $gray-1;
+  border-radius: 16px;
+  padding: 24px;
+  font-size: 20px;
+  font-weight: 700;
+  min-height: 180px;
+  min-width: 180px;
+  @media (min-width: $xl) {
+    min-width: 280px;
+  }
 }
 
 .body--dark {

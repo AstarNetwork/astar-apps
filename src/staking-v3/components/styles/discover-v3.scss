@@ -19,9 +19,15 @@
 
 .row--dapps-data-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  flex-direction: column;
   margin-bottom: 24px;
+  gap: 24px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 .input--search {
@@ -31,6 +37,10 @@
   border-radius: 9999px;
   min-width: 300px;
   outline-color: $astar-blue;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: auto;
+  }
 }
 
 .bg--discover {

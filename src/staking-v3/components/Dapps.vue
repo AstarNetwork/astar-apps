@@ -1,26 +1,43 @@
 <template>
-  <div v-if="filteredDapps.length > 0">
-    <div class="title">{{ category }}</div>
-    <div class="wrapper--dapps">
-      <div v-for="(dapp, index) in filteredDapps" :key="index">
-        <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
-          <div class="card__top">
-            <div class="icon--dapp">
-              <img :src="dapp.basic.iconUrl" alt="icon" />
+  <div v-if="filteredDapps.length > 0" class="wrapper--dapps">
+    <div class="title--category">{{ category }}</div>
+    <div class="container--dapps">
+      <swiper
+        class="swiper--dapps"
+        :slides-per-view="1.5"
+        :slides-per-group="1"
+        :space-between="8"
+        :breakpoints="{
+          '640': {
+            slidesPerView: 2.5,
+            slidesPerGroup: 2,
+          },
+          '1440': {
+            slidesPerView: 3.5,
+            slidesPerGroup: 3,
+          },
+        }"
+      >
+        <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
+          <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
+            <div class="card__top">
+              <div class="icon--dapp">
+                <img :src="dapp.basic.iconUrl" alt="icon" />
+              </div>
+              <div class="text--dapp">
+                <div class="text--title">{{ dapp.basic.name }}</div>
+                <div class="text--description">{{ dapp.basic.shortDescription }}</div>
+              </div>
             </div>
-            <div class="text--dapp">
-              <div class="text--title">{{ dapp.basic.name }}</div>
-              <div class="text--description">{{ dapp.basic.shortDescription }}</div>
+            <div class="card__bottom">
+              <div>T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
+              <div>
+                <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+              </div>
             </div>
           </div>
-          <div class="card__bottom">
-            <div>T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
-            <div>
-              <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
-            </div>
-          </div>
-        </div>
-      </div>
+        </swiper-slide>
+      </swiper>
     </div>
   </div>
 </template>
@@ -31,9 +48,16 @@ import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
 
+// Import Swiper
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    Swiper,
+    SwiperSlide,
   },
   props: {
     search: {

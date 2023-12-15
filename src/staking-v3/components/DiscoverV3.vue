@@ -15,14 +15,13 @@
           :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
           @button-selected="toggleDapps"
         />
-        <div v-if="displayIndex === 0">
-          <input
-            v-model="searchText"
-            type="text"
-            :placeholder="$t('stakingV3.searchDapps')"
-            class="input--search"
-          />
-        </div>
+        <input
+          v-if="displayIndex === 0"
+          v-model="searchText"
+          type="text"
+          :placeholder="$t('stakingV3.searchDapps')"
+          class="input--search"
+        />
       </div>
       <div v-if="displayIndex === 0" class="dapps">
         <dapps category="DeFi" :search="searchText" />
