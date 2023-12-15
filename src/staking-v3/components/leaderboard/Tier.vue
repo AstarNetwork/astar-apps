@@ -11,38 +11,25 @@
     <swiper class="swiper--tier" :navigation="true" :modules="modules">
       <swiper-slide>
         <div class="container--dapps">
-          <div v-for="(dapp, index) in slicedDapps" :key="dapp.chain.id">
-            <div class="dapp">
-              <div>{{ index + 1 }}</div>
-              <div class="dapp--button" @click="navigateDappPage(dapp.basic.address)">
-                <div class="dapp--image">
-                  <img :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
-                </div>
-                <div>{{ dapp.basic.name }}</div>
-              </div>
-              <div class="amount">
-                <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
-              </div>
-            </div>
+          <div v-for="(dapp, index) in page1" :key="dapp.chain.id">
+            <dapp-item :index="index" :dapp="dapp" />
           </div>
-          <div v-for="index in itemsToShow - slicedDapps.length" :key="index">
-            <div class="dapp">
-              <div>{{ index + slicedDapps.length }}</div>
-              <div class="dapp--button">
-                <div class="dapp--image">
-                  <img :src="require('../../assets/burn.png')" alt="Burn" />
-                </div>
-                <div>No Entry</div>
-              </div>
-              <div class="amount">Burn</div>
-            </div>
+          <div v-for="index in itemsPerPage - page1.length" :key="index">
+            <no-entry :index="index" :length="page1.length" />
           </div>
         </div>
       </swiper-slide>
 
-      <swiper-slide>slide 2</swiper-slide>
-
-      <swiper-slide>slide 3</swiper-slide>
+      <swiper-slide>
+        <div class="container--dapps">
+          <div v-for="(dapp, index) in page2" :key="dapp.chain.id">
+            <dapp-item :index="index + itemsPerPage" :dapp="dapp" />
+          </div>
+          <div v-for="index in itemsPerPage - page2.length" :key="index">
+            <no-entry :index="index + itemsPerPage" :length="page2.length" />
+          </div>
+        </div>
+      </swiper-slide>
     </swiper>
   </div>
 </template>
@@ -50,8 +37,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { CombinedDappInfo } from '../../logic';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useDappStakingNavigation } from '../../hooks';
+// import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import DappItem from './DappItem.vue';
+import noEntry from './noEntry.vue';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -61,9 +50,11 @@ import { Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
+    // TokenBalanceNative,
     Swiper,
     SwiperSlide,
+    DappItem,
+    noEntry,
   },
   props: {
     tier: {
@@ -76,15 +67,21 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const itemsToShow = 5;
+    const itemsToShow = 10;
+    const itemsPerPage = 5;
     const slicedDapps = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsToShow));
+
+    const page1 = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsPerPage));
+    const page2 = computed<CombinedDappInfo[]>(() => props.dapps.slice(itemsPerPage, itemsToShow));
 
     const { navigateDappPage } = useDappStakingNavigation();
 
     return {
       modules: [Navigation],
       slicedDapps,
-      itemsToShow,
+      itemsPerPage,
+      page1,
+      page2,
       navigateDappPage,
     };
   },
