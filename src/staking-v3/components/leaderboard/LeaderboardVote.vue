@@ -48,44 +48,4 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './styles/leaderboard.scss';
 @import './styles/tier.scss';
-// @use 'src/css/quasar.variables.scss';
-// .wrapper {
-//   background-color: $gray-1;
-//   border-radius: 16px;
-//   padding: 16px;
-//   width: 100%;
-// }
-// .title {
-//   font-size: 32px;
-//   font-style: normal;
-//   font-weight: 700;
-//   line-height: normal;
-//   margin-bottom: 20px;
-// }
-// .dapps--container {
-//   display: flex;
-//   flex-flow: column wrap;
-// }
-
-// .dapp {
-//   display: flex;
-//   align-items: center;
-//   gap: 24px;
-//   padding: 16px 0;
-//   font-size: 14px;
-//   font-style: normal;
-//   font-weight: 600;
-//   line-height: normal;
-// }
-
-// .dapp--image {
-//   width: 24px;
-//   height: 24px;
-//   border-radius: 6px;
-// }
-
-// .amount {
-//   text-align: right;
-//   width: 120px;
-// }
 </style>

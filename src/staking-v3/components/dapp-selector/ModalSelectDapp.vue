@@ -202,8 +202,5 @@ export default defineComponent({
       background-color: $navy-1;
     }
   }
-  //   .selection--order {
-  //   background-color: $$astar-blue
-  // }
 }
 </style>

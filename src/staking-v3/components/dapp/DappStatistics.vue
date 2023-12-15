@@ -45,8 +45,6 @@ export default defineComponent({
     const { getDappTier } = useDappStaking();
     const { navigateToVote } = useDappStakingNavigation();
 
-    console.log('dapp', props.dapp);
-
     return { getDappTier, navigateToVote };
   },
 });
