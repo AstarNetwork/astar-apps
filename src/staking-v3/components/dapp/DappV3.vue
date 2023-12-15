@@ -95,11 +95,14 @@ export default defineComponent({
         return;
       }
       try {
+        if (!dapp.value) {
+          return;
+        }
         store.commit('general/setLoading', true, { root: true });
         const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
         const loadedDapp = await repository.getDapp(
           currentNetworkName.value.toLowerCase(),
-          dappAddress.value
+          dapp.value.chain.address
         );
         if (loadedDapp) {
           store.commit('stakingV3/updateDappExtended', loadedDapp);
