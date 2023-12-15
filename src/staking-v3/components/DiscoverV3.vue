@@ -36,7 +36,7 @@ import FeatureDapp from './FeatureDapp.vue';
 // import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
-import Staking from './my-staking/Staking.vue';
+// import Staking from './my-staking/Staking.vue';
 import DataList from './data/DataList.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';

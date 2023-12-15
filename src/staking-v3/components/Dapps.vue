@@ -65,7 +65,9 @@ export default defineComponent({
       return result.length > 0 ? result : [];
     });
 
-    return { registeredDapps, filteredDapps, getDappTier, navigateDappPage };
+    console.log('registeredDapps', registeredDapps.value);
+
+    return { filteredDapps, getDappTier, navigateDappPage };
   },
 });
 </script>
