@@ -20,9 +20,9 @@
 <script lang="ts">
 import StatsChart from './StatsChart.vue';
 import { useNetworkInfo } from 'src/hooks';
-import { DappCombinedInfo } from 'src/v2/models';
 import { defineComponent, PropType, ref, watchEffect } from 'vue';
 import { StatsDetail, fetchDappTransactions, fetchDappUAW } from '@astar-network/astar-sdk-core';
+import { DappCombinedInfo } from 'src/v2/models';
 
 export default defineComponent({
   components: {

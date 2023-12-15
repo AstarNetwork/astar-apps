@@ -743,6 +743,7 @@ export default {
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
     rewardPerDay: 'Reward per day',
+    leaderboard: 'Leaderboard',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
@@ -796,7 +797,6 @@ export default {
     dapp: {
       voteAndStake: 'Vote & Stake',
       overview: 'Overview',
-      StartStakingNow: 'Start staking now',
     },
     unregisteredDappInfo:
       "This project has been unregistered. You don't have to do anything - If you do not move funds within this period, you will continue to earn basic rewards and be entitled to receive bonus.",

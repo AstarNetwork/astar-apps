@@ -1,10 +1,10 @@
 <template>
-  <div class="wrapper--leaderboard">
+  <div v-if="!isLeaderboardEmpty" class="wrapper--leaderboard">
     <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
 
     <div class="container--boards">
       <swiper
-        class="swiper--ads-area"
+        class="swiper--leaderboard"
         :slides-per-view="1.25"
         :slides-per-group="1"
         :space-between="8"
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 import { useLeaderboard } from 'src/staking-v3/hooks';
 import Tier from './Tier.vue';
 
@@ -54,13 +54,39 @@ export default defineComponent({
     SwiperSlide,
   },
   setup() {
-    const { leaderBoards } = useLeaderboard();
+    const { leaderBoards, isLeaderboardEmpty } = useLeaderboard();
 
-    return { modules: [Navigation], leaderBoards };
+    return { leaderBoards, isLeaderboardEmpty, modules: [Navigation] };
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @import './styles/leaderboard.scss';
+</style>
+
+<style lang="scss">
+.swiper--leaderboard {
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $navy-1;
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .swiper-button-prev {
+    padding-right: 2px;
+  }
+  .swiper-button-next {
+    padding-left: 2px;
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+}
 </style>

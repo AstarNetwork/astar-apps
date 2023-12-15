@@ -294,6 +294,11 @@ export class DappStakingService implements IDappStakingService {
     const lockCall =
       amountToLock > 0 ? await this.dappStakingRepository.getLockCall(amountToLock) : undefined;
     lockCall && calls.push(lockCall);
+    // Cleanup expired entries if we reached maxNumberOfStakedContracts
+    if (await this.shouldCleanupExpiredEntries(senderAddress)) {
+      const cleanupCall = await this.dappStakingRepository.getCleanupExpiredEntriesCall();
+      calls.push(cleanupCall);
+    }
     // Stake tokens
     for (const info of stakeInfo) {
       calls.push(await this.dappStakingRepository.getStakeCall(info.address, info.amount));
@@ -301,6 +306,27 @@ export class DappStakingService implements IDappStakingService {
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
     await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  private async shouldCleanupExpiredEntries(senderAddress: string): Promise<boolean> {
+    const [stakerInfo, constants, protocolState] = await Promise.all([
+      this.dappStakingRepository.getStakerInfo(senderAddress, true),
+      this.dappStakingRepository.getConstants(),
+      this.dappStakingRepository.getProtocolState(),
+    ]);
+
+    let expiredEntries = 0;
+
+    stakerInfo.forEach((info) => {
+      if (
+        (info.staked.period < protocolState.periodInfo.number && !info.loyalStaker) ||
+        info.staked.period < protocolState.periodInfo.number - constants.rewardRetentionInPeriods
+      ) {
+        expiredEntries++;
+      }
+    });
+
+    return expiredEntries > 0;
   }
 
   private async getBonusRewardsAndContractsToClaim(

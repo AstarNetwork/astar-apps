@@ -7,7 +7,7 @@
     <div class="box--builders">
       <div v-for="(team, index) in teams" :key="index" class="card--builders">
         <div class="row--details">
-          <img class="image--builder-icon" :src="team.iconFile" :alt="dapp.dapp.name" />
+          <img class="image--builder-icon" :src="team.iconFile" :alt="dapp.basic.name" />
           <div>
             <div class="text--name">{{ team.name }}</div>
           </div>
@@ -55,28 +55,22 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-
-interface Developer {
-  iconFile: string;
-  name: string;
-  githubAccountUrl: string;
-  linkedInAccountUrl: string;
-  twitterAccountUrl: string;
-}
+import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { defineComponent, computed, PropType } from 'vue';
+import { Developer } from 'src/staking-v3/logic';
 
 export default defineComponent({
   props: {
     dapp: {
-      type: Object,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
   },
   setup(props) {
     const teams = computed<Developer[] | null>(() => {
       try {
-        if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('developers')) {
-          const developers = props.dapp.dapp.developers as Developer[];
+        if (props.dapp.extended && props.dapp.extended.hasOwnProperty('developers')) {
+          const developers = props.dapp.extended.developers as Developer[];
           return developers.map((it) => {
             return {
               ...it,

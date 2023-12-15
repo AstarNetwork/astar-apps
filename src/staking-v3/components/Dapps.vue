@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="filteredDapps.length > 0">
+    <div class="title">{{ category }}</div>
     <div class="wrapper--dapps">
       <div v-for="(dapp, index) in filteredDapps" :key="index">
         <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
@@ -21,9 +22,6 @@
         </div>
       </div>
     </div>
-    <div v-if="search.length > 0 && filteredDapps.length === 0" class="box--no-result">
-      <span class="text--title">{{ $t('assets.noResults') }}</span>
-    </div>
   </div>
 </template>
 
@@ -31,6 +29,7 @@
 import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { CombinedDappInfo } from '../logic';
 
 export default defineComponent({
   components: {
@@ -41,14 +40,22 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    category: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const { registeredDapps } = useDapps();
     const { getDappTier } = useDappStaking();
     const { navigateDappPage } = useDappStakingNavigation();
 
-    const filteredDapps = computed(() => {
-      const dapps = registeredDapps.value;
+    const filteredDapps = computed<(CombinedDappInfo | undefined)[]>(() => {
+      const dapps = registeredDapps.value.filter(
+        (x) =>
+          x.basic.mainCategory?.toLowerCase() === props.category.toLowerCase() ||
+          (x.basic.mainCategory === undefined && props.category.toLowerCase() === 'others')
+      );
 
       if (props.search === '') return dapps;
 
@@ -64,8 +71,6 @@ export default defineComponent({
         .filter((it) => it !== undefined);
       return result.length > 0 ? result : [];
     });
-
-    console.log('registeredDapps', registeredDapps.value);
 
     return { filteredDapps, getDappTier, navigateDappPage };
   },

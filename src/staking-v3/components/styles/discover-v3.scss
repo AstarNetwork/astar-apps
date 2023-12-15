@@ -48,3 +48,10 @@
     color: $navy-1;
   }
 }
+
+.dapps {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 24px;
+}

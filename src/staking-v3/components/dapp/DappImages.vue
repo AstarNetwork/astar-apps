@@ -57,11 +57,12 @@
 </template>
 <script lang="ts">
 import { useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, ref, watchEffect, onUnmounted } from 'vue';
+import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { computed, defineComponent, ref, watchEffect, onUnmounted, PropType } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
-      type: Object,
+      type: Object as PropType<CombinedDappInfo>,
       required: true,
     },
   },
@@ -73,8 +74,11 @@ export default defineComponent({
     const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
     const images = computed<string[]>(() => {
       try {
-        const isImages = props.dapp && props.dapp.dapp.imagesUrl.length > 0;
-        return isImages ? props.dapp.dapp.imagesUrl : [];
+        if (props.dapp.extended !== undefined && props.dapp.extended.imagesUrl.length > 0) {
+          return props.dapp.extended.imagesUrl;
+        }
+
+        return [];
       } catch (error) {
         return [];
       }

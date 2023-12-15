@@ -5,6 +5,7 @@
     <feature-dapp />
     <!-- <staking /> -->
     <leaderboard />
+    <leaderboard-vote />
     <!-- <ad /> -->
     <dynamic-ads-area />
 
@@ -23,9 +24,16 @@
           />
         </div>
       </div>
-      <dapps v-if="displayIndex === 0" :search="searchText" />
+      <div v-if="displayIndex === 0" class="dapps">
+        <dapps category="DeFi" :search="searchText" />
+        <dapps category="NFT" :search="searchText" />
+        <dapps category="Tooling" :search="searchText" />
+        <dapps category="Utility" :search="searchText" />
+        <dapps category="Others" :search="searchText" />
+      </div>
       <data-list v-if="displayIndex === 1" />
     </div>
+
     <div class="bg--discover" />
   </div>
 </template>
@@ -36,6 +44,7 @@ import FeatureDapp from './FeatureDapp.vue';
 // import Ad from './Ad.vue';
 import Dapps from './Dapps.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
+import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 // import Staking from './my-staking/Staking.vue';
 import DataList from './data/DataList.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
@@ -47,6 +56,7 @@ export default defineComponent({
     // Ad,
     Dapps,
     Leaderboard,
+    LeaderboardVote,
     // Staking,
     DataList,
     DynamicAdsArea,
