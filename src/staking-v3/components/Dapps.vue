@@ -74,7 +74,7 @@ export default defineComponent({
     const { getDappTier } = useDappStaking();
     const { navigateDappPage } = useDappStakingNavigation();
 
-    const filteredDapps = computed<(CombinedDappInfo | undefined)[]>(() => {
+    const filteredDapps = computed<CombinedDappInfo[]>(() => {
       const dapps = registeredDapps.value.filter(
         (x) =>
           x.basic.mainCategory?.toLowerCase() === props.category.toLowerCase() ||
@@ -85,14 +85,11 @@ export default defineComponent({
 
       const value = props.search.toLowerCase();
 
-      const result = dapps
-        .map((dapp) => {
-          const isFoundDapp =
-            dapp.basic.name.toLowerCase().includes(value) ||
-            dapp.basic.shortDescription.toLowerCase().includes(value);
-          return isFoundDapp ? dapp : undefined;
-        })
-        .filter((it) => it !== undefined);
+      const result = dapps.filter(
+        (dapp) =>
+          dapp.basic.name.toLowerCase().includes(value) ||
+          dapp.basic.shortDescription.toLowerCase().includes(value)
+      );
       return result.length > 0 ? result : [];
     });
 
