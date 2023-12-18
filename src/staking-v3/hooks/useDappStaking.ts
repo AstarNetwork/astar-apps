@@ -19,6 +19,7 @@ import {
   TiersConfiguration,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
 import { useAccount, useChainMetadata, useBalance } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
@@ -159,7 +160,8 @@ export function useDappStaking() {
   const stake = async (dappAddress: string, amount: number): Promise<void> => {
     const [result, error] = await canStake(dappAddress, amount);
     if (!result) {
-      throw error;
+      popError(error);
+      return;
     }
 
     const successMessage = t('stakingV3.successfullyStaked', {
@@ -172,7 +174,8 @@ export function useDappStaking() {
   const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
     const [result, error] = await canUnStake(dapp.chain.address, amount);
     if (!result) {
-      throw error;
+      popError(error);
+      return;
     }
 
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
@@ -396,9 +399,6 @@ export function useDappStaking() {
       stakingRepo.getStakerInfo(currentAccount.value, false),
     ]);
 
-    console.log('ledger.value?.unlocking?.length)', ledger.value?.unlocking?.length);
-    console.log('constants.maxNumberOfUnlockingChunks', constants.maxUnlockingChunks);
-
     if (amount <= 0) {
       // Prevents dappStaking.ZeroAmount
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
@@ -458,6 +458,12 @@ export function useDappStaking() {
     const eraLengths = await stakingRepo.getEraLengths();
 
     store.commit('stakingV3/setEraLengths', eraLengths);
+  };
+
+  const popError = (error: string): void => {
+    const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    aggregator.publish(new ExtrinsicStatusMessage({ success: false, message: error }));
+    return;
   };
 
   return {
