@@ -122,19 +122,14 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
-      const [nonce, gasPrice] = await Promise.all([
-        web3.eth.getTransactionCount(from),
-        web3.eth.getGasPrice(),
-      ]);
+      const nonce = await web3.eth.getTransactionCount(from);
 
-      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const rawTx = {
         nonce,
         from,
         to,
         value: value ? value : '0x0',
         data,
-        gasPrice: web3.utils.toHex(multipliedGas.toString()),
       };
 
       const estimatedGas = await web3.eth.estimateGas(rawTx);

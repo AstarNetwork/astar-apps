@@ -280,14 +280,10 @@ export const useAccountUnification = () => {
     try {
       isSendingXc20Tokens.value = true;
       const from = selectedEvmAddress.value;
-      const [nonce, gasPrice] = await Promise.all([
-        web3.value.eth.getTransactionCount(from),
-        web3.value.eth.getGasPrice(),
-      ]);
-      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
+      const nonce = await web3.value.eth.getTransactionCount(from);
+
       const rawTx = {
         nonce,
-        gasPrice: web3.value.utils.toHex(multipliedGas.toString()),
         from,
         to: evmPrecompiledContract.dispatch,
         value: '0x0',

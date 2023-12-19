@@ -73,16 +73,10 @@ export class XcmEvmService implements IXcmEvmService {
         const provider = getEvmProvider(this.currentWallet as any);
         const web3 = new Web3(provider as any);
         const contract = new web3.eth.Contract(ABI as AbiItem[], evmPrecompiledContract.xcm);
-
-        const [nonce, gasPrice] = await Promise.all([
-          web3.eth.getTransactionCount(senderAddress),
-          web3.eth.getGasPrice(),
-        ]);
-        const multipliedGas = Math.round(Number(gasPrice) * 1.01);
+        const nonce = await web3.eth.getTransactionCount(senderAddress);
 
         const rawTx: TransactionConfig = {
           nonce,
-          gasPrice: web3.utils.toHex(multipliedGas.toString()),
           from: senderAddress,
           to: evmPrecompiledContract.xcm,
           value: '0x0',
