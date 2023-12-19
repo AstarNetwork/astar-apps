@@ -17,6 +17,7 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { getRawEvmTransaction } from 'src/modules/evm';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -122,16 +123,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
-      const nonce = await web3.eth.getTransactionCount(from);
-
-      const rawTx = {
-        nonce,
-        from,
-        to,
-        value: value ? value : '0x0',
-        data,
-      };
-
+      const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
       const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
         .sendTransaction({ ...rawTx, gas: estimatedGas })
