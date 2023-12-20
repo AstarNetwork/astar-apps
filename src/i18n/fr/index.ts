@@ -59,13 +59,16 @@ export default {
     inputtedNotUnifiedDestAddress: "L'adresse de destination n'a pas été unifiée",
     blankDestAddress: "L'adresse de destination est vide",
     inputtedInvalidAddress: 'Adresse saisie invalide',
-    selectedInvalidNetworkInWallet: "Le réseau sélectionné dans votre portefeuille n'est pas valide",
+    selectedInvalidNetworkInWallet:
+      "Le réseau sélectionné dans votre portefeuille n'est pas valide",
     insufficientBridgeAmount: 'Le montant minimum du transfert est de {amount} {token}',
-    insufficientOriginChainBalance: 'Le solde minimum sur le réseau {chain} est de {amount} {token}',
+    insufficientOriginChainBalance:
+      'Le solde minimum sur le réseau {chain} est de {amount} {token}',
     insufficientOriginChainNativeBalance: 'Le solde en jeton natif est insuffisant sur {chain}',
     insufficientExistentialDeposit:
       'Le solde sur le réseau {network} est inférieur au montant du dépôt existentiel',
-    withdrawalNotSupport: 'Le portail ne prend pas en charge le retrait vers {chain} pour le moment',
+    withdrawalNotSupport:
+      'Le portail ne prend pas en charge le retrait vers {chain} pour le moment',
     ledgerNotOpened: "Ledger n'a pas ouvert l'App Astar. Ouvrez là et rafraichissez la page.",
   },
   toast: {
@@ -75,7 +78,8 @@ export default {
     unableCalculateMsgPayload: 'Impossible de calculer le bloc de message',
     amountMustNotBeZero: 'La quantité de jeton à transmettre ne doit pas être zéro',
     copyAddressSuccessfully: "Copie de l'adresse réussie !",
-    clearedLocalStorage: 'Effacer votre cache local! Le portail sera rechargé dans quelques secondes',
+    clearedLocalStorage:
+      'Effacer votre cache local! Le portail sera rechargé dans quelques secondes',
     checkYourTransactions: 'Vérifiez vos transactions',
     approveOnPolkasafe: 'Approuvez sur PolkaSafe',
     success: 'Succès',
@@ -143,10 +147,14 @@ export default {
   drawer: {
     endpoint: "Point d'accès",
     viaEndpoint: 'via {value}',
-    lightClientWarning: 'La connection avec un client léger est en en béta. A utiliser à vos risques et périls.',
-    shibuyaTakes20mins: 'Cela pourrait prendre plus de 20 minutes pour se connecter à Shibuya via un client léger',
-    takeLongerTimeToConnect: 'Cela pourrait prendre plus de temps pour charger les données de la chaîne',
-    takeLongerTimeToSend: 'Cela pourrait prendre plus de temps ou échouer pour envoyer des transactions',
+    lightClientWarning:
+      'La connection avec un client léger est en en béta. A utiliser à vos risques et périls.',
+    shibuyaTakes20mins:
+      'Cela pourrait prendre plus de 20 minutes pour se connecter à Shibuya via un client léger',
+    takeLongerTimeToConnect:
+      'Cela pourrait prendre plus de temps pour charger les données de la chaîne',
+    takeLongerTimeToSend:
+      'Cela pourrait prendre plus de temps ou échouer pour envoyer des transactions',
     zkNetworkTip: "Connectez le portefeuille EVM d'abord ",
   },
   wallet: {
@@ -164,7 +172,8 @@ export default {
     showBalance: 'Afficher le solde des {token}',
     isLedgerAccount: "Ceci est un compte Ledger, connecté et en cours d'exécution sur l'app Astar",
     multisig: {
-      initPolkasafe: 'Initialisation du SDK PolkaSafe pour une demande de signature; Ceci peut prendre un moment ',
+      initPolkasafe:
+        'Initialisation du SDK PolkaSafe pour une demande de signature; Ceci peut prendre un moment ',
       noAccounts: "Aucun compte multi-signature n'a été trouvé",
       goToPokasafe: 'Allez sur PolkaSafe pour en créer un',
       proxy: 'Proxy',
@@ -185,22 +194,22 @@ export default {
       xcTokens:
         "Si vous disposez de jetons xc personnalisés ou si des jetons xc ne sont pas répertoriés sur le portail Astar EVM, vous devez d'abord les transférer vers un autre compte. Nous ne pourrons pas trouver ces jetons et nous ne pourrons donc pas les déplacer vers le nouveau compte.",
       automaticallyTransferred:
-        "Tous les autres jetons xc déjà répertoriés ainsi que les jetons ERC20 seront automatiquement transférés vers le nouveau compte unifié.",
+        'Tous les autres jetons xc déjà répertoriés ainsi que les jetons ERC20 seront automatiquement transférés vers le nouveau compte unifié.',
       override:
         "Si vous disposez déjà d'un identifiant de compte créé sur l'application Polkadot.js, ces informations d'unification de compte seront remplacées.",
-      agreeToProceed:
-        "J'ai tout lu et j'aimerais procéder à la création d'un compte unifié.",
+      agreeToProceed: "J'ai tout lu et j'aimerais procéder à la création d'un compte unifié.",
       agreeToDeposit: "La création d'un compte unifié coûte {cost}",
-      agreeToSubmit: "Je comprends qu'une fois les comptes unifiés, ils ne peuvent pas être séparés.",
+      agreeToSubmit:
+        "Je comprends qu'une fois les comptes unifiés, ils ne peuvent pas être séparés.",
       requirement:
-        "Pour créer un compte unifié, les extensions de portefeuilles Substrate et EVM est requise et il est actuellement impossible de le faire à partir des applications mobiles.",
+        'Pour créer un compte unifié, les extensions de portefeuilles Substrate et EVM est requise et il est actuellement impossible de le faire à partir des applications mobiles.',
       haveAstarNative: "😎 J'AI un compte natif Astar",
       connectAstarNative:
         "Le compte unifié appartient à un compte natif Astar. Veuillez vous connecter avec l'adresse souhaitée et créer un compte.",
       selectWallet: 'Sélectionnez un portefeuille',
       notHaveAstarNative: "🥲 Je N'AI PAS de compte natif Astar",
       withoutUnifying:
-        "Vous pouvez bénéficier de tous les avantages lorsque vous vous connectez au compte EVM sans vous unifier. Donc rien à craindre si vous ne possédez pas de compte Natif Astar. Cependant, il peut y avoir une fonctionnalité dont le compte unifié peut bénéficier et vous pouvez toujours créer un compte à tout moment.",
+        'Vous pouvez bénéficier de tous les avantages lorsque vous vous connectez au compte EVM sans vous unifier. Donc rien à craindre si vous ne possédez pas de compte Natif Astar. Cependant, il peut y avoir une fonctionnalité dont le compte unifié peut bénéficier et vous pouvez toujours créer un compte à tout moment.',
       howToCreate: 'Comment créer un compte Natif Astar',
       findSubstrateWallets:
         'Vous pouvez également trouver des portefeuilles Substrate qui pourraient être plus conviviaux.',
@@ -273,7 +282,7 @@ export default {
     turnOff: 'Désactiver',
     totalEarned: 'Total gagné (toutes ères confondues)',
     availableToClaimTip:
-      "Le montant des récompenses non réclamées est une estimation et il peut y avoir une légère différence entre ce qui est affiché et ce que vous recevez réellement.",
+      'Le montant des récompenses on réclamées est une estimation et il peut y avoir une légère différence entre ce qui est affiché et ce que vous recevez réellement.',
     availableToClaimTip2:
       "Le nombre d'ères affiché ici est par dApp. Vous devrez peut-être réclamer plusieurs fois si vous avez trop d'ères non réclamées.",
     restakeTip:
@@ -286,7 +295,8 @@ export default {
       ledgerSPlus: 'Ledger Nano S Plus: 6 ères',
       ledgerS: 'Ledger Nano S: 2 ères',
     },
-    dappsOwners: "Propriétaires de DApps! Nous pouvons désormais vous aider à promouvoir votre campagne. Vérifiez s'il vous plaît",
+    dappsOwners:
+      "Propriétaires de DApps! Nous pouvons désormais vous aider à promouvoir votre campagne. Vérifiez s'il vous plaît",
     dappsOwnersLink: 'les détails.',
   },
   dappStaking: {
@@ -308,9 +318,10 @@ export default {
     stake: 'Mettre en staking',
     claim: 'Récupérer',
     withdraw: 'Retirer',
-    unbondingEra: 'La libération prend {unbondingPeriod} ères avant que vous puissiez retirer vos jetons.',
+    unbondingEra:
+      'La libération prend {unbondingPeriod} ères avant que vous puissiez retirer vos jetons.',
     willUnstakeAll:
-      "Cela débloquera tout votre solde mis en staking car le montant minimum est de {minStakingAmount} {symbol}",
+      'Cela débloquera tout votre solde mis en staking car le montant minimum est de {minStakingAmount} {symbol}',
     turnOn: 'Activer',
     turnOff: 'Désactiver',
     on: 'ON',
@@ -388,7 +399,7 @@ export default {
       introduction: {
         title: 'Encore une chose !',
         promotionCard:
-          "Lorsque vous êtes enregistrés, une carte de promotion apparaîtra comme ceci, veuillez remplir la description dans la limite des 65 caractères.",
+          'Lorsque vous êtes enregistrés, une carte de promotion apparaîtra comme ceci, veuillez remplir la description dans la limite des 65 caractères.',
         placeholder: 'Veuillez ajouter votre introduction',
         characters: '{characters} caractères sur 65',
       },
@@ -420,7 +431,8 @@ export default {
       successfullyWithdrawn: 'Solde retiré avec succès',
       successfullySetRewardDest: 'Vous avez défini la destination des récompenses avec succès',
       successfullyStaked: 'Vous avez voté avec succès sur {contractAddress}',
-      successfullyUnbond: "Vous avez commencé avec succès le process de retrait sur {contractAddress}",
+      successfullyUnbond:
+        'Vous avez commencé avec succès le process de retrait sur {contractAddress}',
       successfullyNominationTransfer:
         'You avez transférer avec succès votre mise de {fromContractId} vers {targetContractId}',
     },
@@ -481,7 +493,8 @@ export default {
     hideSmallBalances: 'Cacher les petits soldes',
     unhideSmallBalances: 'Afficher les petits soldes',
     tokenHasBeenAdded: 'Le jeton a déjà été ajouté',
-    assetsAreNowFolded: 'Tous les services pour le jeton {token} sont maintenant repliés – ouvrez-les ici!',
+    assetsAreNowFolded:
+      'Tous les services pour le jeton {token} sont maintenant repliés – ouvrez-les ici!',
     theSignatory: '{account} est le signataire',
     myWallet: 'Mon portefeuille',
     reward: 'Récompense',
@@ -512,13 +525,15 @@ export default {
       mintTransferAmount: 'Le montant minimum du transfert est de {amount} {symbol}',
       howToUsePortal: 'COMMENT UTILISER LE PORTAIL',
       xcmIsDisabled: 'XCM avec {network} est temporairement désactivé',
-      xcmEvmIsDisabled: 'XCM vers {network} avec les portefeuilles EVM est temporairement désactivé',
+      xcmEvmIsDisabled:
+        'XCM vers {network} avec les portefeuilles EVM est temporairement désactivé',
     },
     modals: {
       max: 'Max',
       balance: 'Solde : {amount} {token}',
       available: 'Disponible: {amount} {token}',
-      cannotBeSentErc20: 'Les jetons ERC20 ne peuvent pas être envoyés aux adresses {network} natives',
+      cannotBeSentErc20:
+        'Les jetons ERC20 ne peuvent pas être envoyés aux adresses {network} natives',
       notSendToExchanges: "Je n'envoie PAS de jetons vers des exchanges",
       notSendToEvmExchanges:
         "Je n'envoie PAS de jetons aux adresses de dépôt EVM sur un Exchange. Je comprends que si je le fais, les fonds seront probablement perdus.",
@@ -533,7 +548,8 @@ export default {
       faucetBalance: 'Solde du Faucet : {amount} {symbol}',
       faucetIntro:
         "Il y a de petits frais pour chaque transaction, et ceci sont payés en utilisant des {symbol} jetons. Si vous n'avez pas de {symbol} sur votre compte, vous ne pouvez pas envoyer de jetons. Le faucet envoie suffisamment de {symbol} pour couvrir les frais de transaction.",
-      faucetDriedOut: "Si le Faucet est vide. Veuillez le signaler à l'un des membres de notre équipe sur Discord",
+      faucetDriedOut:
+        "Si le Faucet est vide. Veuillez le signaler à l'un des membres de notre équipe sur Discord",
       availableToWithdraw: 'Retrait disponible',
       totalDistribution: 'Répartition totale',
       alreadyVested: 'Déjà acquis',
@@ -558,12 +574,13 @@ export default {
       connectionTroubles: {
         connectionTroubles: 'Problèmes de connexion',
         tipsDescription:
-          "Il existe de nombreuses raisons qui peuvent vous empêcher de vous connecter. Essayez les solutions ci-dessous, si le problème persiste, demandez à un membre de la communauté.",
+          'Il existe de nombreuses raisons qui peuvent vous empêcher de vous connecter. Essayez les solutions ci-dessous, si le problème persiste, demandez à un membre de la communauté.',
         tryOtherEndpoints: 'Essayez un autre endpoint',
         changeFromHeader: "Changez l'endpoint depuis le bouton réseau sur l'en-tête",
         clearLocalStorage: 'Effacez le cache local',
-        clearLocalStorageTip: 'Cela signifie que votre cache du portail sur ce navigateur sera vidé',
-        metaUpdate:"Mettez à jour les métadonnées sur l'application Polkadot.js",
+        clearLocalStorageTip:
+          'Cela signifie que votre cache du portail sur ce navigateur sera vidé',
+        metaUpdate: "Mettez à jour les métadonnées sur l'application Polkadot.js",
         metaUpdateTip:
           "Pour vous assurer que votre extension de portefeuille est à jour, vérifiez l'onglet Métadonnées et mettez les à jour si vous y êtes invité.",
         goToDocs: 'Allez dans Dépannage dans la documentation',
