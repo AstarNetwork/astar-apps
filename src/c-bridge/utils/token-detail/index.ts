@@ -7,6 +7,7 @@ import {
   PeggedPairConfig,
   Token,
 } from 'src/c-bridge';
+import { hasProperty } from '@astar-network/astar-sdk-core';
 
 export const getSelectedToken = ({
   srcChainId,
@@ -69,7 +70,7 @@ export const checkIsCbridgeToken = (token: Erc20Token): boolean => {
 
 export const castCbridgeTokenData = (token: Erc20Token): Erc20Token => {
   const symbolKey = token.symbol.toUpperCase();
-  if (cbridgeCastToken.hasOwnProperty(symbolKey)) {
+  if (hasProperty(cbridgeCastToken, symbolKey)) {
     const data = cbridgeCastToken[symbolKey as keyof typeof cbridgeCastToken];
     return {
       ...token,

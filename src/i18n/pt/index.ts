@@ -113,11 +113,6 @@ export default {
       superFast: 'Super Rápida',
       tipHelp: 'Uma tip é importante para ajudar a acelerar as transações',
     },
-    decentralizedBanner: {
-      bannerText:
-        'Conenctado em Portal Astar: Edição Descentralizada. Está com problemas? Volte para',
-      goToClassicPortal: 'Portal Clássico',
-    },
     status: {
       working: 'Trabalhando',
       fixing: 'Concertando',
