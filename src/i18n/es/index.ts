@@ -62,11 +62,13 @@ export default {
     selectedInvalidNetworkInWallet: 'Red no válida seleccionada en su cartera',
     insufficientBridgeAmount: 'Mínimo monto transferible es {amount} {token}',
     insufficientOriginChainBalance: 'Balance mínimo en la red {chain} es {amount} {token}',
-    insufficientOriginChainNativeBalance: 'Balance insuficiente de tokens nativos en la red {chain}',
+    insufficientOriginChainNativeBalance:
+      'Balance insuficiente de tokens nativos en la red {chain}',
     insufficientExistentialDeposit:
       'Los saldos de las cuentas en la red {network} son inferiores al importe del depósito existencial',
     withdrawalNotSupport: 'El Portal no admite retiros en la red {chain} en este momento',
-    ledgerNotOpened: 'Ledger no ha abierto la aplicación Astar. Por favor, ábrala y actualice esta página.',
+    ledgerNotOpened:
+      'Ledger no ha abierto la aplicación Astar. Por favor, ábrala y actualice esta página.',
   },
   toast: {
     transactionFailed: 'Transacción fallida con el error: {message}',
@@ -75,7 +77,8 @@ export default {
     unableCalculateMsgPayload: 'No se ha podido calcular la carga útil del mensaje',
     amountMustNotBeZero: 'La cantidad de token a transmitir no debe ser cero',
     copyAddressSuccessfully: '¡Copiada la dirección correctamente!',
-    clearedLocalStorage: '¡Has borrado tu almacenamiento local! El portal se recargará en unos segundos',
+    clearedLocalStorage:
+      '¡Has borrado tu almacenamiento local! El portal se recargará en unos segundos',
     checkYourTransactions: 'Compruebe sus transacciones',
     approveOnPolkasafe: 'Aprobar en PolkaSafe',
     success: 'Éxito',
@@ -143,8 +146,10 @@ export default {
   drawer: {
     endpoint: 'Endpoint',
     viaEndpoint: 'via {value}',
-    lightClientWarning: 'La conexión a través del cliente Light está en fase beta. Utilícelo bajo su propia responsabilidad.',
-    shibuyaTakes20mins: 'Puede tardar más de 20 minutos en conectar con Shibuya a través del cliente Light',
+    lightClientWarning:
+      'La conexión a través del cliente Light está en fase beta. Utilícelo bajo su propia responsabilidad.',
+    shibuyaTakes20mins:
+      'Puede tardar más de 20 minutos en conectar con Shibuya a través del cliente Light',
     takeLongerTimeToConnect: 'Puede que tarde más en cargar los datos de las cadenas',
     takeLongerTimeToSend: 'Puede tardar más o fallar en el envío de transacciones',
     zkNetworkTip: 'Por favor, conéctese primero a las billeteras EVM',
@@ -158,13 +163,13 @@ export default {
     accountUnification: 'Unificación de cuentas',
     math: {
       supportsNetwork: 'Math Wallet solo es compatible con la red Shiden',
-      switchNetwork:
-        "Cambia tu red a 'Shiden' en la extensión Math Wallet y actualiza esta página",
+      switchNetwork: 'Cambia tu red a "Shiden" en la extensión Math Wallet y actualiza esta página',
     },
     showBalance: 'Mostrar {token} de saldo',
     isLedgerAccount: 'Esta es una cuenta Ledger, conectada y ejecutando la aplicación Astar',
     multisig: {
-      initPolkasafe: 'Inicializando PolkaSafe SDK para la solicitud de firma; esto puede tardar un rato',
+      initPolkasafe:
+        'Inicializando PolkaSafe SDK para la solicitud de firma; esto puede tardar un rato',
       noAccounts: 'No se han encontrado cuentas multisig',
       goToPokasafe: 'Vaya a PolkaSafe para crear una',
       proxy: 'Proxy',
@@ -191,7 +196,7 @@ export default {
       agreeToProceed:
         'He leído todo y me gustaría proceder a crear una cuenta unificada por favor.',
       agreeToDeposit: 'Costos de crear una cuenta unificada {cost}',
-      agreeToSubmit: 'Entiendo que una vez unificadas las cuentas, no se pueden separar.',
+      agreeToSubmit: 'Entiendo que una vez unificadas las cuentas, no se podrán separar.',
       requirement:
         'Para crear una cuenta unificada, se requiere tanto la extensión de Substrate como la de la billetera EVM y actualmente no es posible desde las aplicaciones móviles.',
       haveAstarNative: '😎 TENGO una cuenta Astar nativa',
@@ -212,7 +217,8 @@ export default {
       balanceTransferred: 'Su saldo en la cuenta EVM va a ser transferido.',
       readyToUnify:
         'Ahora los xcTokens han sido enviados y estás listo para unificar ambas cuentas. Por favor, compruebe a continuación antes de confirmar.',
-      congrats: '¡Felicidades! \n¡Tu cuenta está unificada!\n\n¡Ya no es necesario depositar en EVM!',
+      congrats:
+        '¡Felicidades! \n¡Tu cuenta está unificada!\n\n¡Ya no es necesario depositar en EVM!',
       onlyShibuya: 'Esta característica está únicamente disponible para la testnet Shibuya.',
       userTutorials: 'Documentación y tutoriales',
       sendingXc20: 'Comienza el envío de tokens XC20, por favor espere...',
@@ -220,13 +226,13 @@ export default {
       selectAvatar: 'Selecciona Avatar',
       save: 'Guardar',
       noNfts:
-        "De momento no tienes NFT minteados. Cuando mintees algunos podrás actualizar tu cuenta unificada con un NFT. Por el momento se utilizará el icono por defecto.",
+        'De momento no tienes NFT minteados. Cuando mintees algunos podrás actualizar tu cuenta unificada con un NFT. Por el momento se utilizará el icono por defecto.',
     },
   },
   installWallet: {
     getWallet: '¿Todavía no tienes {value}?',
     installWallet:
-      "Tendrás que instalar {value} para continuar. Una vez instalado, actualiza la página.",
+      'Tendrás que instalar {value} para continuar. Una vez instalado, actualiza la página.',
     install: 'Instalar',
     learn: 'Aprender',
   },
@@ -238,7 +244,7 @@ export default {
     eraInfo: '(ETA: {eta})',
     stakersRewards: 'Recompensas para los stakers',
     currentBlock: 'Bloque actual',
-    totalDapps: 'dApps totakes',
+    totalDapps: 'dApps totales',
     apr: 'APR',
     apy: 'APY',
   },
@@ -286,7 +292,8 @@ export default {
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
     },
-    dappsOwners: '¡Propietarios de DApps! Ahora podemos ayudarle a promocionar su campaña. Por favor, compruebe',
+    dappsOwners:
+      '¡Propietarios de dApps! Ahora podemos ayudarles a promocionar sus campañas. Por favor, compruebe',
     dappsOwnersLink: 'los detalles.',
   },
   dappStaking: {
@@ -359,7 +366,7 @@ export default {
         githubAccount: 'Cuenta de GitHub',
         twitterAccount: 'Cuenta de Twitter',
         linkedInAccount: 'Cuenta de LinkedIn',
-        image: "Imágenes de los creadores (Tamaño máximo del archivo a subir: {size})",
+        image: 'Imágenes de los creadores (Tamaño máximo del archivo a subir: {size})',
         imageRecomendation: 'Se recomienda una imagen cuadrada de 500px como mínimo.',
         error: {
           name: 'El nombre del creador es requerido',
@@ -426,7 +433,7 @@ export default {
     },
     error: {
       onlySupportsSubstrate: 'dApp staking sólo admite billeteras Substrate',
-      notSupportZkEvm: "dApp staking no soporta redes zkEVM",
+      notSupportZkEvm: 'dApp staking no soporta redes zkEVM',
       notEnoughMinAmount:
         'La cantidad de fichas a hacer Staking debe ser superior a {amount} {symbol}',
       allFundsWillBeTransferred:
@@ -467,7 +474,7 @@ export default {
     yourEvmDeposit: 'Tu depósito EVM',
     yourVestingInfo: 'Sus datos de adquisición',
     yourStaking: 'Tu Staking',
-    cantTransferToExcahges: "No se puede transferir a Exchanges",
+    cantTransferToExcahges: 'No se puede transferir a Exchanges',
     noHash: 'Tu transacción no tendrá un hash',
     addToWallet: 'Añadir a la billetera',
     noResults: 'No se han encontrado resultados :(',
@@ -481,7 +488,8 @@ export default {
     hideSmallBalances: 'Ocultar saldos pequeños',
     unhideSmallBalances: 'Desocultar saldos pequeños',
     tokenHasBeenAdded: 'El token ya ha sido añadido',
-    assetsAreNowFolded: 'Todas las utilidades para el token {token} están ahora plegadas - ¡Abre aquí!',
+    assetsAreNowFolded:
+      'Todas las utilidades para el token {token} están ahora plegadas - ¡Abre aquí!',
     theSignatory: '{account} es el firmante',
     myWallet: 'Mi billetera',
     reward: 'Recompensa',
@@ -508,7 +516,7 @@ export default {
       goBack: 'Regresar',
       selectChain: 'Seleccionar cadena',
       selectToken: 'Seleccionar token',
-      noTxRecords: "La cuenta aún no tiene ningún registro de transacciones",
+      noTxRecords: 'La cuenta aún no tiene ningún registro de transacciones',
       mintTransferAmount: 'El importe mínimo de transferencia es {amount} {symbol}',
       howToUsePortal: '¿CÓMO USAR EL PORTAL?',
       xcmIsDisabled: 'XCM con {network} está temporalmente desabilitado',
@@ -521,7 +529,7 @@ export default {
       cannotBeSentErc20: 'Los tokens ERC20 no pueden enviarse a direcciones nativas {network}',
       notSendToExchanges: 'NO estoy enviando tokens a Exchanges',
       notSendToEvmExchanges:
-        "NO voy a enviar tokens a las direcciones de depósito EVM de Exchange. Entiendo que si lo hago, es probable que los fondos se pierdan.",
+        'NO voy a enviar tokens a las direcciones de depósito EVM de Exchange. Entiendo que si lo hago, es probable que los fondos se pierdan.',
       understandWarning: 'Entiendo que si lo hago, es probable que los fondos se pierdan',
       notDestIsLedgerAccount:
         'La dirección de destino no es ni una cuenta nativa de ledger ni una dirección de exchange. Entiendo que si lo hago, es probable que los fondos se pierdan.',
@@ -533,7 +541,8 @@ export default {
       faucetBalance: 'Balance del faucet: {amount} {symbol}',
       faucetIntro:
         'Hay una pequeña comisión por cada transacción, que se paga con tokens {symbol}. Si no tienes {symbol} en tu cuenta, no puedes enviar ningún token. Faucet envía suficientes {symbol} para cubrir la comisión de la transacción.',
-      faucetDriedOut: 'La identificación del faucet se ha secado. Por favor, informe a uno de los miembros de nuestro equipo en Discord',
+      faucetDriedOut:
+        'La identificación del faucet se ha secado. Por favor, informe a uno de los miembros de nuestro equipo en Discord',
       availableToWithdraw: 'Disponible para retirar',
       totalDistribution: 'Distribución total',
       alreadyVested: 'Ya adquirido',
@@ -637,7 +646,8 @@ export default {
     },
     numberOfCalls: {
       title: 'Número de transacciones',
-      tooltip: "Número de transacciones que los usuarios han llamado a la dirección del contrato inteligente de la dApp",
+      tooltip:
+        'Número de transacciones que los usuarios han llamado a la dirección del contrato inteligente de la dApp',
     },
     treasury: 'Tesorería',
     other: 'Otro',
@@ -713,7 +723,7 @@ export default {
       fromChainBal: 'Desde el balance de la cadena',
       destChainBal: 'Balance de la cadena de destino',
       tokenHasBeenAdded: 'El token ya ha sido añadido',
-      tokenNotSupported: "Este token no es compatible con zkEVM",
+      tokenNotSupported: 'Este token no es compatible con zkEVM',
       interactCarefully: 'Interactúa con cuidado con tokens nuevos o sospechosos',
     },
   },

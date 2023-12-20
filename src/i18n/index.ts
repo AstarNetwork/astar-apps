@@ -45,7 +45,7 @@ export const languagesSelector = [
   {
     text: 'Español',
     code: 'es',
-  }
+  },
 ];
 
 export default {
@@ -57,7 +57,7 @@ export default {
   pt,
   kr,
   it,
-  es
+  es,
 };
 
 export type CultureCode = 'it' | 'en-US' | 'ja' | 'fr' | 'pt' | 'kr' | 'zh' | 'zh-TW' | 'es';
