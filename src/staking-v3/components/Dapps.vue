@@ -90,7 +90,7 @@ export default defineComponent({
           dapp.basic.name.toLowerCase().includes(value) ||
           dapp.basic.shortDescription.toLowerCase().includes(value)
       );
-      return result.length > 0 ? result : [];
+      return result;
     });
 
     return { filteredDapps, getDappTier, navigateDappPage };
