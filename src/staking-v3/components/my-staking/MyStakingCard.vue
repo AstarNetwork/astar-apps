@@ -37,32 +37,29 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .card {
-  border-radius: 16px;
-  background: rgba(63, 197, 251, 0.3);
-  padding: 48px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .card--title {
-  font-size: 15px;
-  font-weight: 800;
-  line-height: normal;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .card--balance {
   display: flex;
   align-items: flex-end;
+  gap: 8px;
 }
 
 .card--amount {
   font-size: 16px;
   font-weight: 700;
-  line-height: normal;
 }
 
 .card--symbol {
   font-size: 14px;
   font-weight: 600;
-  line-height: normal;
-  padding: 0px 8px;
 }
 </style>

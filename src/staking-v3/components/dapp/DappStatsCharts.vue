@@ -1,7 +1,7 @@
 <template>
   <div v-if="transactions.length > 0" class="wrapper--dapp-stats-charts">
     <div v-if="isDisplayCharts" class="row--stats-title">
-      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.stats') }}</span>
+      {{ $t('dappStaking.dappPage.stats') }}
     </div>
     <div class="container--charts">
       <stats-chart
@@ -69,5 +69,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-stats-charts.scss';
+@use './styles/dapp-stats-charts.scss';
 </style>

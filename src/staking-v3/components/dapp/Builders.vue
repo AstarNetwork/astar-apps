@@ -1,8 +1,9 @@
 <template>
   <div v-if="teams" class="wrapper--builders">
     <div class="row--builders-title">
-      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.team') }}</span>
+      {{ $t('dappStaking.dappPage.team') }}
     </div>
+
     <div class="box--builders">
       <div v-for="(team, index) in teams" :key="index" class="card--builders">
         <div class="row--details">
@@ -89,5 +90,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/staking-v3/components/dapp/styles/builders.scss';
+@use './styles/builders.scss';
 </style>

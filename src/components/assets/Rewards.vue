@@ -1,21 +1,19 @@
 <template>
-  <div>
-    <button v-if="!isDappDeveloper" class="wrapper--rewards" @click="handleClaim">
-      <div class="container--rewards">
-        <div class="text--title">
-          {{ $t('assets.yourEstimatedRewards') }}
-        </div>
-        <div class="row--data">
-          <div class="value">
-            <div>
-              <span class="text--amount">{{ $n(pendingRewards || 0) }}</span>
-              <span class="text--symbol">{{ nativeTokenSymbol }}</span>
-            </div>
+  <button v-if="!isDappDeveloper" class="wrapper--rewards" @click="handleClaim">
+    <div class="container--rewards">
+      <div class="text--title">
+        {{ $t('assets.yourEstimatedRewards') }}
+      </div>
+      <div class="row--data">
+        <div class="value">
+          <div>
+            <span class="text--amount">{{ $n(pendingRewards || 0) }}</span>
+            <span class="text--symbol">{{ nativeTokenSymbol }}</span>
           </div>
         </div>
       </div>
-    </button>
-  </div>
+    </div>
+  </button>
 </template>
 
 <script lang="ts">

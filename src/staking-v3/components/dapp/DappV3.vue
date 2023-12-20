@@ -5,19 +5,42 @@
     <dapp-statistics :dapp="dapp" />
     <dapp-images :dapp="dapp" />
     <builders :dapp="dapp" />
+
+    <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
     <div class="row--project-overview">
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" class="project--details" />
     </div>
     <!-- <dapp-stats-charts :dapp="dapp" /> -->
     <div class="bottom--links">
-      <div @click="navigateToVote(dapp.chain.address)">
-        <astar-irregular-button :height="28" class="btn--stake-switch" :disabled="isZkEvm">
+      <div class="bottom--links__inner">
+        <button
+          class="button--start-staking"
+          :disabled="isZkEvm"
+          @click="navigateToVote(dapp.chain.address)"
+        >
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.extended.name }}
-        </astar-irregular-button>
+        </button>
+
+        <div class="column--action">
+          <!-- TODO: add logic -->
+          <a class="button--icon button--favorite">
+            <astar-icon-heart />
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
+            </q-tooltip>
+          </a>
+
+          <a :href="twitterUrl" target="_blank" class="button--icon button--share">
+            <astar-icon-share />
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('share') }}</span>
+            </q-tooltip>
+          </a>
+        </div>
       </div>
-      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     </div>
+    <div class="bg--dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -72,11 +95,14 @@ export default defineComponent({
         return;
       }
       try {
+        if (!dapp.value) {
+          return;
+        }
         store.commit('general/setLoading', true, { root: true });
         const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
         const loadedDapp = await repository.getDapp(
           currentNetworkName.value.toLowerCase(),
-          dappAddress.value
+          dapp.value.chain.address
         );
         if (loadedDapp) {
           store.commit('stakingV3/updateDappExtended', loadedDapp);
@@ -102,12 +128,15 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
+
     return {
       Path,
       dapp,
       goLink,
       navigateToVote,
       isZkEvm,
+      twitterUrl,
     };
   },
 });

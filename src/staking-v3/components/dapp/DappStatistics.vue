@@ -1,68 +1,39 @@
 <template>
   <div class="wrapper--dapp-statistics">
-    <div class="column--statistics">
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.totalStaked') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
-          </span>
-        </div>
-      </div>
-      <!-- <div class="separator--statistics" />
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.totalStaker') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            {{ $n(dapp.stakerInfo.stakersCount) }}
-          </span>
-        </div>
-      </div> -->
-      <div class="separator--statistics" />
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('stakingV3.tier') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            {{ getDappTier(dapp.chain.id) ?? '--' }}
-          </span>
-        </div>
-      </div>
-      <!-- <div class="separator--statistics" />
-      <div class="row--statistics">
-        <div>
-          <span class="text--statistics-title">
-            {{ $t('dappStaking.dappPage.v3.totalEarned') }}
-          </span>
-        </div>
-        <div>
-          <span class="text--statistics-value">
-            {{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}
-          </span>
-        </div>
-      </div> -->
+    <div class="row--data">
+      <button class="button--vote-stake" @click="navigateToVote(dapp.extended?.address)">
+        {{ $t('stakingV3.dapp.voteAndStake') }}
+      </button>
+
+      <kpi-card :title="$t('dappStaking.dappPage.totalStaked')">
+        <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
+      </kpi-card>
+
+      <!-- <kpi-card :title="$t('dappStaking.dappPage.totalStaker')">
+        <span>{{ $n(dapp.stakerInfo.stakersCount) }}</span>
+      </kpi-card> -->
+
+      <kpi-card :title="$t('stakingV3.currentTier')">
+        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
+      </kpi-card>
+
+      <!-- <kpi-card :title="$t('stakingV3.totalEarned')">
+        <span>{{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}</span>
+      </kpi-card> -->
     </div>
   </div>
 </template>
 <script lang="ts">
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import { useDappStaking } from 'src/staking-v3/hooks';
+import { useDappStaking, useDappStakingNavigation } from 'src/staking-v3/hooks';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType } from 'vue';
+import KpiCard from '../KpiCard.vue';
+
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    KpiCard,
   },
   props: {
     dapp: {
@@ -70,14 +41,15 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const { getDappTier } = useDappStaking();
+    const { navigateToVote } = useDappStakingNavigation();
 
-    return { getDappTier };
+    return { getDappTier, navigateToVote };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/staking-v3/components/dapp/styles/dapp-statistics.scss';
+@use './styles/dapp-statistics.scss';
 </style>

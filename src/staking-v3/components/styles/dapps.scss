@@ -1,60 +1,101 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--dapps {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 16px;
-  gap: 16px;
-  width: 100%;
-  @media (min-width: $md) {
-    padding: 0;
-  }
+.container--dapps {
+  flex: 1;
 }
 
 .title {
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
   line-height: 27px;
   margin-bottom: 8px;
 }
 
 .card--dapp {
-  width: 280px;
-  height: 196px;
   border: 1px solid $navy-1;
   border-radius: 16px;
-  padding: 32px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  overflow: hidden;
 }
 
 .card__top {
   display: flex;
-  align-items: center;
   column-gap: 16px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid $navy-3;
+  padding: 16px 24px;
 }
 
 .icon--dapp {
-  width: 80px;
-  height: 80px;
+  flex-shrink: none;
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+}
+
+.text--dapp {
+  flex: 1;
+}
+
+.text--title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 12px 0 4px 0;
+}
+
+.text--description {
+  color: $navy-4;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .card__bottom {
+  background-color: $gray-1;
   display: flex;
   align-items: center;
-  column-gap: 16px;
-}
-
-.body--dark {
-}
-
-.body--dark {
-  .card--dapp {
-    border: 1px solid $gray-1;
+  padding: 20px 24px;
+  gap: 4px;
+  div {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: solid 1px $gray-2;
+    font-size: 12px;
+    font-weight: 600;
+    color: $gray-3;
   }
-  .card__top {
-    border-bottom: 1px solid $gray-4;
+}
+
+.wrapper--dapps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
+.title--category {
+  background-color: $navy-1;
+  color: $gray-1;
+  border-radius: 16px;
+  padding: 24px;
+  font-size: 20px;
+  font-weight: 700;
+  min-height: 180px;
+  min-width: 180px;
+  @media (min-width: $xl) {
+    min-width: 280px;
+  }
+}
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
   }
 }

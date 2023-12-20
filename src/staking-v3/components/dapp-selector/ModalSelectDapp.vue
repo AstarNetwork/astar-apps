@@ -159,7 +159,7 @@ export default defineComponent({
 }
 
 .selected--dapp {
-  border: 1px solid $primary;
+  border: 1px solid $astar-blue;
 }
 
 .selection--order {
@@ -168,7 +168,7 @@ export default defineComponent({
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  background-color: $primary;
+  background-color: $astar-blue;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -189,10 +189,18 @@ export default defineComponent({
   border: 1px solid $navy-1;
   padding: 16px;
   margin-bottom: 24px;
-
   input {
     outline: none;
     width: 100%;
+  }
+}
+
+.body--dark {
+  .search {
+    border-color: $gray-1;
+    input {
+      background-color: $navy-1;
+    }
   }
 }
 </style>

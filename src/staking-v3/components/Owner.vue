@@ -23,6 +23,7 @@
       :claim-rewards="claimRewards"
     />
     <edit />
+    <div class="bg--owner" />
   </div>
 </template>
 
