@@ -1,8 +1,6 @@
 import {
   ExtrinsicPayload,
-  GasTip,
   PayloadWithWeight,
-  getEvmGas,
   getIndividualClaimTxs,
   wait,
   checkSumEvmAddress,
@@ -68,7 +66,6 @@ export const useAccountUnification = () => {
 
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
-  const gas = computed<GasTip>(() => store.getters['general/getGas']);
 
   const unifiedAccount = computed<UnifiedAccount | undefined>(
     () => store.getters['general/getUnifiedAccount']
@@ -285,7 +282,7 @@ export const useAccountUnification = () => {
       const from = selectedEvmAddress.value;
       const [nonce, gasPrice] = await Promise.all([
         web3.value.eth.getTransactionCount(from),
-        getEvmGas(web3.value, '0'), // gas.value.evmGasPrice.fast),
+        web3.value.eth.getGasPrice(),
       ]);
       const multipliedGas = Math.round(Number(gasPrice) * 1.01);
       const rawTx = {

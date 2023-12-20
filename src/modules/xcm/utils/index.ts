@@ -9,7 +9,7 @@ import {
   updateAccountHistories,
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
-import { getTimestamp, capitalize } from '@astar-network/astar-sdk-core';
+import { getTimestamp, capitalize, hasProperty } from '@astar-network/astar-sdk-core';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
@@ -260,7 +260,7 @@ export const castXcmEndpoint = (endpoint: string): string => {
     if (isSelectedChopsticksEndpoint) {
       const chains = Object.values(xcmChainObj);
       const chain = chains.find((it) => it.endpoints.find((that) => that === endpoint));
-      return chain && chain.hasOwnProperty('chopsticksEndpoint')
+      return chain && hasProperty(chain, 'chopsticksEndpoint')
         ? String(chain.chopsticksEndpoint)
         : endpoint;
     }

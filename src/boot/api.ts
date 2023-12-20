@@ -1,4 +1,9 @@
-import { capitalize, getRandomFromArray, objToArray } from '@astar-network/astar-sdk-core';
+import {
+  capitalize,
+  getRandomFromArray,
+  hasProperty,
+  objToArray,
+} from '@astar-network/astar-sdk-core';
 import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
@@ -58,7 +63,7 @@ export default boot(async ({ store }) => {
     store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
 
-  let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
+  let endpoint = hasProperty(selectedEndpoint, networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
     : defaultEndpoint;
   if (networkIdx.value === endpointKey.CUSTOM) {
@@ -143,7 +148,7 @@ export default boot(async ({ store }) => {
 
   // execute extension process automatically if selectedAddress is linked or mobile device
   const wallet = String(localStorage.getItem(SELECTED_WALLET));
-  const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+  const isSubstrateWallet = hasProperty(supportWalletObj, wallet);
 
   if (wallet === SupportWallet.Snap) {
     const isSnapInstalled = await initiatePolkdatodSnap();

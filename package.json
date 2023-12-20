@@ -25,7 +25,7 @@
     "playwright:ci": "node ./tests/chopsticks/start-chopsticks.js"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.2.7",
+    "@astar-network/astar-sdk-core": "^0.2.8",
     "@astar-network/astar-ui": "^0.0.136",
     "@astar-network/metamask-astar-adapter": "^0.5.4",
     "@astar-network/metamask-astar-types": "^0.6.1",
