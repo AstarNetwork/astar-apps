@@ -189,13 +189,17 @@ export default defineComponent({
 }
 
 .search {
-  border-radius: 6px;
-  border: 1px solid $navy-1;
-  padding: 16px;
   margin-bottom: 24px;
   input {
     outline: none;
     width: 100%;
+    border-radius: 6px;
+    border: 1px solid $navy-1;
+    padding: 16px;
+    &:hover,
+    &:focus {
+      border-color: $astar-blue;
+    }
   }
 }
 

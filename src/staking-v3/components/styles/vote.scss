@@ -103,27 +103,25 @@ li {
   justify-content: space-between;
 }
 
-.dapp {
-  border-radius: 16px 16px 0px 0px;
-  border: 1px solid $gray-3;
-  border-bottom-width: 0px;
-  padding: 24px 24px 24px 16px;
-}
-
 .amount {
-  border-radius: 0px 0px 16px 16px;
-  border: 1px solid $gray-3;
-  border-top-width: 0px;
   padding: 24px 24px 24px 16px;
 }
 
 .dapp-amount {
   margin-bottom: 16px;
+  border: solid 1px $gray-3;
+  border-radius: 16px;
+  &:hover {
+    border-color: $astar-blue;
+  }
 }
 
 .amount-full-border {
   border-radius: 16px;
   border-width: 1px;
+  &:hover {
+    border-color: $astar-blue;
+  }
 }
 
 .body--dark {

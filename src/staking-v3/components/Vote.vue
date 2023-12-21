@@ -8,15 +8,13 @@
     <div class="inner--vote">
       <div class="column--main">
         <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
-          <div class="dapp">
-            <dapp-selector
-              :dapps="dapps"
-              :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
-              :selected-dapp="dapp"
-              :disable-selection="!canAddDapp"
-            />
-          </div>
+          <dapp-selector
+            :dapps="dapps"
+            :on-select-dapps="handleSelectDapp"
+            :placeholder="$t('stakingV3.chooseProject')"
+            :selected-dapp="dapp"
+            :disable-selection="!canAddDapp"
+          />
           <div class="amount">
             <amount
               :amount="dapp.amount"

@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <div
-      class="selector-wrapper"
-      :class="disableSelection && 'cursor--default'"
-      @click="handleModalSelectDapp({ isOpen: true })"
-    >
-      <div v-if="selectedDapp?.logoUrl"><img :src="selectedDapp?.logoUrl" class="logo" /></div>
-      <div class="name">
-        {{ selectedDapp?.name || placeholder }}
-      </div>
-      <div><astar-icon-expand size="20" /></div>
+  <div
+    class="selector-wrapper"
+    :class="disableSelection && 'cursor--default'"
+    @click="handleModalSelectDapp({ isOpen: true })"
+  >
+    <div v-if="selectedDapp?.logoUrl"><img :src="selectedDapp?.logoUrl" class="logo" /></div>
+    <div class="name">
+      {{ selectedDapp?.name || placeholder }}
     </div>
+    <div><astar-icon-expand size="20" /></div>
   </div>
 </template>
 
@@ -63,6 +61,7 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: 24px 24px 24px 16px;
 }
 
 .cursor--default {
