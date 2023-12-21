@@ -81,16 +81,13 @@ export default defineComponent({
           (x.basic.mainCategory === undefined && props.category.toLowerCase() === 'others')
       );
 
-      if (props.search === '') return dapps;
-
       const value = props.search.toLowerCase();
-
       const result = dapps.filter(
         (dapp) =>
           dapp.basic.name.toLowerCase().includes(value) ||
           dapp.basic.shortDescription.toLowerCase().includes(value)
       );
-      return result.length > 0 ? result : [];
+      return result;
     });
 
     return { filteredDapps, getDappTier, navigateDappPage };

@@ -49,6 +49,8 @@ export function useLeaderboard() {
     });
   };
 
+  const getDailyReward = (tier: number): bigint => dAppTiers.value.rewards[tier - 1];
+
   watch(
     registeredDapps,
     () => {
@@ -57,5 +59,5 @@ export function useLeaderboard() {
     { immediate: true }
   );
 
-  return { leaderBoards, isLeaderboardEmpty, sortedDapps };
+  return { leaderBoards, isLeaderboardEmpty, sortedDapps, getDailyReward };
 }
