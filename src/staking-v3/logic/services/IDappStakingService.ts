@@ -10,20 +10,6 @@ export interface IDappStakingService {
   getDapps(network: string): Promise<CombinedDappInfo[]>;
 
   /**
-   * Invokes lock and stake calls.
-   * @param contractAddress Address of the contract to be staked to.
-   * @param amount Staking amount.
-   * @param senderAddress Address of the request sender.
-   * @param successMessage Message to be displayed on the call success.
-   */
-  lockAndStake(
-    contractAddress: string,
-    amount: number,
-    senderAddress: string,
-    successMessage: string
-  ): Promise<void>;
-
-  /**
    * Invokes claim staker rewards, unstake and unlock calls.
    * @param contractAddress Address of the contract to be staked to.
    * @param amount Staking amount.
@@ -116,7 +102,7 @@ export interface IDappStakingService {
    */
   claimLockAndStake(
     senderAddress: string,
-    amountToLock: number,
+    amountToLock: bigint,
     stakeInfo: DappStakeInfo[],
     successMessage: string
   ): Promise<void>;

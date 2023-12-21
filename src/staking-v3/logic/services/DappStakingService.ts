@@ -41,20 +41,6 @@ export class DappStakingService implements IDappStakingService {
   }
 
   // @inheritdoc
-  public async lockAndStake(
-    contractAddress: string,
-    amount: number,
-    senderAddress: string,
-    successMessage: string
-  ): Promise<void> {
-    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
-    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
-
-    const call = await this.dappStakingRepository.getLockAndStakeCall(contractAddress, amount);
-    await this.signCall(call, senderAddress, successMessage);
-  }
-
-  // @inheritdoc
   public async claimUnstakeAndUnlock(
     contractAddress: string,
     amount: number,
@@ -273,7 +259,7 @@ export class DappStakingService implements IDappStakingService {
   // @inheritdoc
   public async claimLockAndStake(
     senderAddress: string,
-    amountToLock: number,
+    amountToLock: bigint,
     stakeInfo: DappStakeInfo[],
     successMessage: string
   ): Promise<void> {

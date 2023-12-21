@@ -157,20 +157,6 @@ export function useDappStaking() {
       ? protocolState.value.periodInfo.number < period - constants.value.rewardRetentionInPeriods
       : true;
 
-  const stake = async (dappAddress: string, amount: number): Promise<void> => {
-    const [result, error] = await canStake(dappAddress, amount);
-    if (!result) {
-      popError(error);
-      return;
-    }
-
-    const successMessage = t('stakingV3.successfullyStaked', {
-      contractAddress: getShortenAddress(dappAddress, 5),
-    });
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-    await stakingService.lockAndStake(dappAddress, amount, currentAccount.value, successMessage);
-  };
-
   const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
     const [result, error] = await canUnStake(dapp.chain.address, amount);
     if (!result) {
@@ -486,7 +472,6 @@ export function useDappStaking() {
     currentBlock,
     eraLengths,
     isCurrentPeriod,
-    stake,
     unstake,
     claimStakerRewards,
     canStake,
