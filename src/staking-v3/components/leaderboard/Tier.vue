@@ -4,7 +4,9 @@
       <div class="text--title">{{ $t('stakingV3.tier') }} {{ tier }}</div>
       <div class="column--reward">
         <div class="text--reward">{{ $t('stakingV3.rewardPerDay') }}</div>
-        <div class="text--amount"><token-balance-native :balance="dailyReward.toString()" /></div>
+        <div class="text--amount">
+          <token-balance-native :balance="dailyReward?.toString() ?? '0'" />
+        </div>
       </div>
     </div>
 

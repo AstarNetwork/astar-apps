@@ -227,7 +227,7 @@ export function useDappStaking() {
 
     await stakingService.claimLockAndStake(
       currentAccount.value,
-      Number(ethers.utils.formatEther(lockAmount.toString())),
+      lockAmount,
       stakeInfo,
       t('stakingV3.voteSuccess', { number: stakeInfo.length })
     );

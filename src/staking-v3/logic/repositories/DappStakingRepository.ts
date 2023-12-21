@@ -164,11 +164,10 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getLockCall(amount: number): Promise<ExtrinsicPayload> {
+  public async getLockCall(amount: bigint): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
-    const amountFormatted = this.getFormattedAmount(amount);
 
-    return api.tx.dappStaking.lock(amountFormatted);
+    return api.tx.dappStaking.lock(amount);
   }
 
   //* @inheritdoc
@@ -178,21 +177,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     const amountFormatted = this.getFormattedAmount(amount);
 
     return api.tx.dappStaking.stake(getDappAddressEnum(contractAddress), amountFormatted);
-  }
-
-  //* @inheritdoc
-  public async getLockAndStakeCall(
-    contractAddress: string,
-    amount: number
-  ): Promise<ExtrinsicPayload> {
-    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
-    const api = await this.api.getApi();
-
-    return api.tx.utility.batchAll([
-      api.tx.dappStaking.cleanupExpiredEntries(), // TODO not sure if this will be called automatically by a node.
-      await this.getLockCall(amount),
-      await this.getStakeCall(contractAddress, amount),
-    ]);
   }
 
   //* @inheritdoc

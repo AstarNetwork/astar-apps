@@ -26,7 +26,9 @@ export class DappStakingService implements IDappStakingService {
     // Map on chain and in store dApps
     const dApps: CombinedDappInfo[] = [];
     chainDapps.forEach((chainDapp) => {
-      const storeDapp = storeDapps.find((x) => x.address === chainDapp.address);
+      const storeDapp = storeDapps.find(
+        (x) => x.address.toLowerCase() === chainDapp.address.toLowerCase()
+      );
       if (storeDapp) {
         dApps.push({
           basic: storeDapp,

@@ -52,16 +52,17 @@
           />
         </div>
         <div class="note">
-          <b>{{ $t('stakingV3.availableToVote') }}</b>
           <div class="note--row">
-            <div>{{ $t('stakingV3.totalTransferable') }}</div>
-            <div><token-balance-native :balance="useableBalance" /></div>
+            <div>
+              <b>{{ $t('stakingV3.availableToVote') }}</b>
+            </div>
+            <div>
+              <b><token-balance-native :balance="useableBalance" /></b>
+            </div>
           </div>
           <div class="note--row">
             <div>
-              {{
-                isVotingPeriod ? $t('stakingV3.lockedForVoting') : $t('stakingV3.lockedForStaking')
-              }}
+              {{ $t('stakingV3.lockedBalance') }}
             </div>
             <div><token-balance-native :balance="locked.toString()" /></div>
           </div>
@@ -73,22 +74,24 @@
           </div>
           <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
             <div>
-              <b>{{
-                remainLockedToken >= 0
-                  ? $t('stakingV3.remainLockedToken')
-                  : $t('stakingV3.tokensToBeLocked')
-              }}</b>
+              <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
             </div>
             <div>
-              <b><token-balance-native :balance="abs(remainLockedToken).toString()" /></b>
+              <b
+                ><token-balance-native :balance="max(remainLockedToken, BigInt(0)).toString()"
+              /></b>
             </div>
           </div>
-          <div v-if="remainLockedToken !== BigInt(0)" class="note warning">
-            {{
-              remainLockedToken > BigInt(0)
-                ? $t('stakingV3.voteLockedTokensWarning')
-                : $t('stakingV3.additionalTokensLockedWarning')
-            }}
+          <div v-if="remainLockedToken > BigInt(0)" class="note warning">
+            {{ $t('stakingV3.voteLockedTokensWarning') }}
+          </div>
+          <div class="note--row">
+            <div>
+              <b>{{ isVotingPeriod ? $t('stakingV3.totalVote') : $t('stakingV3.totalStake') }}</b>
+            </div>
+            <div>
+              <b><token-balance-native :balance="totalStakeAmountBigInt?.toString() ?? '0'" /></b>
+            </div>
           </div>
         </div>
         <rewards-panel />
@@ -122,7 +125,7 @@ import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
-import { abs } from 'src/v2/common';
+import { max } from 'src/v2/common';
 import { useRoute } from 'vue-router';
 import { useStore } from 'src/store';
 import { DappStakeInfo } from '../logic';
@@ -154,6 +157,9 @@ export default defineComponent({
     const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const totalStakeAmount = computed<number>(() =>
       selectedDapps.value.reduce((total, dapp) => total + dapp.amount, 0)
+    );
+    const totalStakeAmountBigInt = computed<bigint>(() =>
+      ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt()
     );
     const isModalSelectDapp = ref<boolean>(false);
 
@@ -249,6 +255,7 @@ export default defineComponent({
       locked,
       useableBalance,
       totalStake,
+      totalStakeAmountBigInt,
       remainLockedToken,
       canConfirm,
       selectedDapps,
@@ -256,7 +263,7 @@ export default defineComponent({
       handleDappsSelected,
       handleAmountChanged,
       confirm,
-      abs,
+      max,
       handleModalSelectDapp,
       handleSelectDapp,
       canAddDapp,

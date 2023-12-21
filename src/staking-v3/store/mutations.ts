@@ -64,7 +64,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
     }
   },
   updateDappChain(state: DappStakingState, dapp: DappInfo): void {
-    const dappToUpdate = state.dapps.find((x) => x.basic.address === dapp.address);
+    const dappToUpdate = state.dapps.find(
+      (x) => x.basic.address.toLowerCase() === dapp.address.toLowerCase()
+    );
 
     if (dappToUpdate) {
       const index = state.dapps.indexOf(dappToUpdate);

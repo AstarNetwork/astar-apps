@@ -5,4 +5,8 @@ const wait = (ms: number): Promise<number> => {
 
 const abs = (number: bigint): bigint => (number >= 0 ? number : number * BigInt(-1));
 
-export { wait, abs };
+const min = (a: bigint, b: bigint): bigint => (a < b ? a : b);
+
+const max = (a: bigint, b: bigint): bigint => (a > b ? a : b);
+
+export { wait, abs, min, max };

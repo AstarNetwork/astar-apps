@@ -76,7 +76,7 @@ export interface IDappStakingRepository {
    * Gets tokens lock call. Tokens needs to be locks in order to be staked
    * @param amount Amount of tokens to lock.
    */
-  getLockCall(amount: number): Promise<ExtrinsicPayload>;
+  getLockCall(amount: bigint): Promise<ExtrinsicPayload>;
 
   /**
    * Gets stake call. Tokens needs to be locked in order to be staked.
@@ -84,13 +84,6 @@ export interface IDappStakingRepository {
    * @param amount Staking amount.
    */
   getStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
-
-  /**
-   * Gets batch call made of lock and stake calls.
-   * @param contractAddress Address of the contract to be staked to.
-   * @param amount Staking amount.
-   */
-  getLockAndStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
 
   /**
    * Gets unstake call.
