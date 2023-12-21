@@ -5,7 +5,7 @@
         isVotingPeriod ? $t('stakingV3.votingNow') : $t('stakingV3.newDappPromotion')
       }}</span>
     </div>
-    <div>
+    <div class="text--promo-description">
       <span>{{ isVotingPeriod ? $t('stakingV3.voteToday') : promotedDapp?.shortDescription }}</span>
     </div>
     <div class="row--button">
@@ -15,9 +15,15 @@
         @click="navigateToVote()"
       >
         {{ $t('stakingV3.voteNow') }}
+        <astar-icon-arrow-up-right />
       </astar-button>
-      <astar-button v-else class="button--link" @click="navigateToVote(promotedDapp?.address)">
+      <astar-button
+        v-else
+        class="button--link outlined--button"
+        @click="navigateToVote(promotedDapp?.address)"
+      >
         {{ $t('stakingV3.stakeOn', { name: promotedDapp?.name }) }}
+        <astar-icon-arrow-up-right />
       </astar-button>
     </div>
     <div class="row--data">
@@ -30,11 +36,11 @@
       <kpi-card :title="$t('dashboard.tvl')">
         <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
       </kpi-card>
-    </div>
-    <div v-if="!isVotingPeriod" class="row--start-staking">
-      <button class="button--staking" @click="navigateToVote()">
-        <span class="text--start-staking">Start Staking Now</span>
-      </button>
+      <div v-if="!isVotingPeriod" class="row--start-staking">
+        <button class="button--staking" @click="navigateToVote()">
+          <span class="text--start-staking">Start Staking Now</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>

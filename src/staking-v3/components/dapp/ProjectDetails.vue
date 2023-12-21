@@ -96,6 +96,7 @@
           </div>
         </div>
       </div>
+
       <div v-if="communities" class="separator--details" />
       <div v-if="communities" class="row--item">
         <div class="row--item-title">
@@ -108,7 +109,7 @@
         </div>
         <div class="row--social-icons">
           <div v-for="(it, index) in communities" :key="index">
-            <button v-if="it.type === CommunityType.GitHub" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.GitHub" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.GitHub">
@@ -120,7 +121,7 @@
                 <span class="text--tooltip">{{ $t('common.github') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.Discord" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Discord" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Discord">
@@ -132,7 +133,7 @@
                 <span class="text--tooltip">{{ $t('common.discord') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.Twitter" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Twitter" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Twitter">
@@ -144,7 +145,7 @@
                 <span class="text--tooltip">{{ $t('common.twitter') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.Reddit" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Reddit" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base :icon-name="CommunityType.Reddit">
@@ -156,7 +157,7 @@
                 <span class="text--tooltip">{{ $t('common.reddit') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.Facebook" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Facebook" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 19 19" :icon-name="CommunityType.Facebook">
@@ -168,7 +169,7 @@
                 <span class="text--tooltip">{{ $t('common.facebook') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.YouTube" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.YouTube" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 20 17" :icon-name="CommunityType.YouTube">
@@ -180,7 +181,7 @@
                 <span class="text--tooltip">{{ $t('common.youtube') }}</span>
               </q-tooltip>
             </button>
-            <button v-if="it.type === CommunityType.Instagram" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Instagram" class="btn--social">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Instagram">
@@ -277,5 +278,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/staking-v3/components/dapp/styles/project-details.scss';
+@use './styles/project-details.scss';
 </style>

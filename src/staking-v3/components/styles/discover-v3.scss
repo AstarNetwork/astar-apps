@@ -3,10 +3,60 @@
 .wrapper--discover {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 34px;
-  margin-bottom: 34px;
-  row-gap: 40px;
+  align-items: flex-start;
+  margin: 34px auto;
+  row-gap: 100px;
+  max-width: 1300px;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.container--dapps-data {
+  width: 100%;
+}
+
+.row--dapps-data-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-bottom: 24px;
+  gap: 24px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.input--search {
+  border: solid 1px $gray-2;
+  color: $navy-3;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  min-width: 300px;
+  outline-color: $astar-blue;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: auto;
+  }
+}
+
+.bg--discover {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: -1;
+}
+
+.body--dark {
+  .wrapper--discover {
+    color: $navy-1;
+  }
 }
 
 .dapps {

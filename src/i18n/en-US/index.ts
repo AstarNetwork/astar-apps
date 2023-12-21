@@ -116,11 +116,6 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
-    decentralizedBanner: {
-      bannerText:
-        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
-      goToClassicPortal: 'our Classic Portal',
-    },
     status: {
       working: 'Working',
       fixing: 'Fixing',
@@ -498,6 +493,7 @@ export default {
     removeFromFavorite: 'Remove from favorite',
     unifyAccounts: 'Unify accounts',
     yourEstimatedRewards: 'Claim your estimated rewards',
+    yourProject: 'Your Project',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
@@ -741,6 +737,7 @@ export default {
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
+    rewardPerDay: 'Reward per day',
     leaderboard: 'Leaderboard',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
@@ -792,6 +789,10 @@ export default {
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
+    dapp: {
+      voteAndStake: 'Vote & Stake',
+      overview: 'Overview',
+    },
     unregisteredDappInfo:
       "This project has been unregistered. You don't have to do anything - If you do not move funds within this period, you will continue to earn basic rewards and be entitled to receive bonus.",
     voteSuccess: 'You successfully voted to {number} dApp(s). All pending rewards are claimed.',
@@ -800,6 +801,7 @@ export default {
     claimRewardSuccess: 'You successfully claimed your rewards.',
     withdrawSuccess: 'You successfully withdrew your locked tokens.',
     relockSuccess: 'You successfully re-locked your tokens.',
+    searchDapps: 'Search dapps',
   },
   bridge: {
     bridge: 'Bridge',

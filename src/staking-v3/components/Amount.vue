@@ -76,4 +76,10 @@ export default defineComponent({
   height: 24px;
   margin-right: 8px;
 }
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
+  }
+}
 </style>

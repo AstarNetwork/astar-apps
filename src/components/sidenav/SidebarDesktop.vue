@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" :class="isDecentralized && 'sidebar--height-decentralized '">
+  <div class="sidebar">
     <div class="icon">
       <logo />
     </div>
@@ -132,7 +132,6 @@ import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
 import IconEcosystem from './components/IconEcosystem.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
-import { decentralizedOrigin } from 'src/links';
 import { socialUrl } from 'src/links';
 
 export default defineComponent({
@@ -153,10 +152,6 @@ export default defineComponent({
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
-
-    const isDecentralized = computed<boolean>(() => {
-      return window.location.origin === decentralizedOrigin;
-    });
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -182,7 +177,6 @@ export default defineComponent({
       router,
       path,
       RoutePath,
-      isDecentralized,
       socialUrl,
       isZkatana,
     };

@@ -44,16 +44,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       : '0';
     return Number(balance);
   });
-  const {
-    evmGasPrice,
-    selectedGas,
-    setSelectedGas,
-    evmGasCost,
-    selectedTip,
-    nativeTipPrice,
-    setSelectedTip,
-    isEnableSpeedConfiguration,
-  } = useGasPrice();
+  const { selectedTip, nativeTipPrice, setSelectedTip, isEnableSpeedConfiguration } = useGasPrice();
   const route = useRoute();
   const router = useRouter();
 
@@ -297,47 +288,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
   };
 
-  const setEvmGasCost = async (): Promise<void> => {
-    if (!selectedGas.value || !isH160.value) return;
-    try {
-      const isErc20 = !isTransferNativeToken.value;
-      const transferAmtRef = transferAmt.value || '0';
-      const value = isErc20 ? '0x0' : transferAmtRef;
-      const destination = ethers.utils.isAddress(toAddress.value)
-        ? toAddress.value
-        : sampleEvmWalletAddress;
-
-      const destAddress = isErc20 ? selectedToken.value.mappedERC20Addr : destination;
-      const contract = isErc20
-        ? new $web3.value!.eth.Contract(ABI as AbiItem[], selectedToken.value.mappedERC20Addr)
-        : undefined;
-
-      const encodedData = isErc20
-        ? contract!.methods
-            .transfer(
-              destination,
-              ethers.utils.parseUnits(transferAmtRef, selectedToken.value.metadata.decimals)
-            )
-            .encodeABI()
-        : undefined;
-
-      evmGasCost.value = await getEvmGasCost({
-        isNativeToken: !isErc20,
-        evmGasPrice: evmGasPrice.value,
-        fromAddress: currentAccount.value,
-        toAddress: destAddress,
-        web3: $web3.value!,
-        value,
-        encodedData,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   watchEffect(setErrorMsg);
   watchEffect(setToAddressBalance);
-  watchEffect(setEvmGasCost);
   watch([tokenSymbol], resetStates);
 
   return {
@@ -352,11 +304,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     isChecked,
     isH160,
     isTransferNativeToken,
-    selectedGas,
-    evmGasCost,
     isRequiredCheck,
     isEnableSpeedConfiguration,
-    setSelectedGas,
     setSelectedTip,
     inputHandler,
     resetStates,

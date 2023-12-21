@@ -71,6 +71,7 @@ export default defineComponent({
 .row--tab {
   display: flex;
   justify-content: center;
+  margin-bottom: 32px;
   @media (min-width: $md) {
     justify-content: flex-start;
   }
@@ -81,7 +82,7 @@ export default defineComponent({
 }
 
 .tab {
-  padding: 16px;
+  padding: 10px;
 }
 
 .selected-tab {
@@ -93,15 +94,22 @@ export default defineComponent({
 .unselected-tab {
   color: $navy-1;
   cursor: pointer;
-  transition: all 0.3s ease 0s;
+  transition: all 0.2s ease 0s;
   border-bottom: 3px solid transparent;
 }
 
 .text--title-tab {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .text--selected {
   font-weight: 600;
+}
+
+.body--dark {
+  .selected-tab,
+  .unselected-tab {
+    color: $gray-1;
+  }
 }
 </style>

@@ -5,7 +5,6 @@ import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import {
   isValidAddressPolkadotAddress,
-  getEvmGas,
   getPubkeyFromSS58Addr,
   isValidEvmAddress,
 } from '@astar-network/astar-sdk-core';
@@ -77,7 +76,7 @@ export class XcmEvmService implements IXcmEvmService {
 
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(senderAddress),
-          getEvmGas(web3, '0'), //this.gasPriceProvider.getGas().price),
+          web3.eth.getGasPrice(),
         ]);
         const multipliedGas = Math.round(Number(gasPrice) * 1.01);
 

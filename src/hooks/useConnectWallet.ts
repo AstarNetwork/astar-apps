@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import { wait, checkSumEvmAddress, astarChain } from '@astar-network/astar-sdk-core';
+import { wait, checkSumEvmAddress, astarChain, hasProperty } from '@astar-network/astar-sdk-core';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
@@ -191,7 +191,7 @@ export const useConnectWallet = () => {
 
   const requestExtensionsIfFirstAccess = async (wallet: SupportWallet): Promise<void> => {
     // Memo: displays accounts menu for users who use the portal first time
-    const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+    const isSubstrateWallet = hasProperty(supportWalletObj, wallet);
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const isFirstAccess = storedAddress === null || storedAddress === ETHEREUM_EXTENSION;
 
@@ -228,7 +228,7 @@ export const useConnectWallet = () => {
       window.open(deepLinkUrl);
       return;
     }
-    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
+    if (hasProperty(supportEvmWalletObj, wallet)) {
       setEvmWallet(wallet);
       return;
     }

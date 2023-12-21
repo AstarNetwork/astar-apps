@@ -1,10 +1,11 @@
 <template>
-  <div class="unbonding--wrapper">
+  <div>
     <div class="table--wrapper">
-      <div class="chunk--row">
+      <div class="chunk--row header--row">
         <div>{{ $t('stakingV3.index') }}</div>
         <div>{{ $t('stakingV3.unbondingAmount') }}</div>
         <div class="right">{{ $t('stakingV3.remainingEras') }}</div>
+        <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
       </div>
       <div v-for="(chunk, index) in chunks" :key="index" class="chunk--row">
         <div>{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
@@ -12,15 +13,15 @@
         <div class="right">
           {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
         </div>
+        <div class="buttons">
+          <astar-button :disabled="!canWithdraw" :width="97" :height="28" @click="withdraw">{{
+            $t('stakingV3.withdraw')
+          }}</astar-button>
+          <astar-button :disabled="!canRelock" :width="97" :height="28" @click="relock">{{
+            $t('stakingV3.relock')
+          }}</astar-button>
+        </div>
       </div>
-    </div>
-    <div class="buttons">
-      <astar-button :disabled="!canWithdraw" :width="97" :height="28" @click="withdraw">{{
-        $t('stakingV3.withdraw')
-      }}</astar-button>
-      <astar-button :disabled="!canRelock" :width="97" :height="28" @click="relock">{{
-        $t('stakingV3.relock')
-      }}</astar-button>
     </div>
   </div>
 </template>
@@ -30,6 +31,7 @@ import { useDappStaking } from 'src/staking-v3/hooks';
 import { defineComponent, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useStore } from 'src/store';
+import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -60,7 +62,18 @@ export default defineComponent({
         : 0;
     };
 
-    return { chunks, withdraw, relock, getRemainingEras, canWithdraw, canRelock };
+    const { width, screenSize } = useBreakpoints();
+
+    return {
+      chunks,
+      withdraw,
+      relock,
+      getRemainingEras,
+      canWithdraw,
+      canRelock,
+      width,
+      screenSize,
+    };
   },
 });
 </script>
@@ -69,34 +82,36 @@ export default defineComponent({
 // TODO refactor to separate file since the style is shared between MyDapps and Unbonding components.
 @import 'src/css/quasar.variables.scss';
 
-.unbonding--wrapper {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .table--wrapper {
-  flex-basis: 0;
-  flex-grow: 1;
-  margin-right: 16px;
-}
-
-.header--row {
-  display: flex;
-  justify-content: space-between;
+  background-color: $gray-1;
+  padding: 20px 12px;
+  border-radius: 16px;
+  @media (min-width: $sm) {
+    padding: 40px 24px;
+  }
 }
 
 .chunk--row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: normal;
-
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: solid 1px $gray-2;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+  }
   div {
     flex-basis: 0;
     flex-grow: 1;
     padding: 16px;
   }
+}
+
+.header--row {
+  background: rgba(0, 0, 0, 0.03);
+  color: $gray-4;
+  border: 0;
 }
 
 .center {
@@ -108,10 +123,25 @@ export default defineComponent({
 }
 
 .buttons {
-  margin-left: auto;
-  width: 200px;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  justify-content: center;
+  column-gap: 16px;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: auto;
+  }
+}
+
+.body--dark {
+  .table--wrapper {
+    background-color: $navy-3;
+  }
+  .header--row {
+    color: $gray-2;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .chunk--row {
+    border-color: lighten($navy-3, 10%);
+  }
 }
 </style>

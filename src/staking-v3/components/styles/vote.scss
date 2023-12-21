@@ -1,20 +1,55 @@
 @import 'src/css/quasar.variables.scss';
 
 ul {
-  margin: 0 8px;
-  padding-left: 24px;
+  padding-left: 20px;
 }
 
 li {
   list-style-type: disc;
 }
 
+.bg--vote {
+  background-color: white;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: -1;
+}
+
 .wrapper--vote {
-  padding: 16px;
-  max-width: 412px;
-  @media (min-width: $xl) {
-    justify-content: center;
-    margin-top: 30px;
+  max-width: 880px;
+  min-height: calc(100vh - 64px);
+  margin: auto;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
+  padding: 0 16px 40px 16px;
+  @media (min-width: $sm) {
+    padding: 0 40px 40px 40px;
+  }
+  @media (min-width: $lg) {
+    margin: -3rem auto;
+    padding: 40px;
+    padding-top: 110px;
+    min-height: 100vh;
+  }
+}
+
+.inner--vote {
+  gap: 40px;
+  display: flex;
+}
+
+.column--help {
+  width: 320px;
+  padding: 16px 0;
+  display: none;
+  @media (min-width: $sm) {
+    display: block;
   }
 }
 
@@ -34,12 +69,16 @@ li {
   border-radius: 16px;
   background-color: $gray-1;
   margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px $gray-2;
 }
 
 .warning {
   background-color: rgba(230, 0, 122, 0.05);
   border: 1px solid $astar-pink;
   color: $astar-pink;
+  margin: 0;
 }
 
 .warning--text {
@@ -55,14 +94,14 @@ li {
   border-radius: 16px 16px 0px 0px;
   border: 1px solid $gray-3;
   border-bottom-width: 0px;
-  padding: 24px 8px;
+  padding: 24px 24px 24px 16px;
 }
 
 .amount {
   border-radius: 0px 0px 16px 16px;
   border: 1px solid $gray-3;
   border-top-width: 0px;
-  padding: 24px 8px;
+  padding: 24px 24px 24px 16px;
 }
 
 .dapp-amount {
@@ -75,23 +114,7 @@ li {
 }
 
 .body--dark {
-  .title {
-    color: $gray-1;
-  }
-
-  .note {
-    background-color: $navy-3;
-  }
-
-  .btn--confirm {
-    width: 100%;
-    font-size: 22px;
-    font-weight: 600;
-    height: 52px;
-  }
-
-  .wrapper--button {
-    width: 100%;
-    height: auto;
+  .wrapper--vote {
+    color: $navy-1;
   }
 }

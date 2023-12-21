@@ -2,7 +2,8 @@
   <div v-if="ownDapps.length > 0" class="container">
     <div class="wrapper--your-project">
       <div class="row--title">
-        <span class="text--title">Your Project</span>
+        <astar-icon-project />
+        <span class="text--title">{{ $t('assets.yourProject') }}</span>
       </div>
       <div class="separator" />
       <div class="box--dapps">

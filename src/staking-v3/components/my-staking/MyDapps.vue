@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <div class="dapp--row">
+  <div class="table--wrapper">
+    <div class="chunk--row header--row">
       <div>{{ $t('stakingV3.dApp') }}</div>
       <div>{{ $t('stakingV3.stakedAmount') }}</div>
       <div>{{ $t('stakingV3.bonusReward') }}</div>
-      <div class="center">{{ $t('stakingV3.manage') }}</div>
+      <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
     </div>
     <div v-for="[key, value] in stakedDapps" :key="key">
-      <div class="dapp--row">
+      <div class="chunk--row">
         <div>{{ getDappName(key) }}</div>
         <div class="right">
           <token-balance-native :balance="getStakedAmount(value).toString()" />
@@ -49,6 +49,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalUnbondDapp from './ModalUnbondDapp.vue';
+import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -89,9 +90,13 @@ export default defineComponent({
       showModalUnbond.value = true;
     };
 
+    const { width, screenSize } = useBreakpoints();
+
     return {
       showModalUnbond,
       dappToUnbond,
+      width,
+      screenSize,
       setShowModalUnbond,
       getDappName,
       getStakedAmount,
@@ -108,23 +113,36 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.header--row {
-  display: flex;
-  justify-content: space-between;
+.table--wrapper {
+  background-color: $gray-1;
+  padding: 20px 12px;
+  border-radius: 16px;
+  @media (min-width: $sm) {
+    padding: 40px 24px;
+  }
 }
 
-.dapp--row {
+.chunk--row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: normal;
-
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: solid 1px $gray-2;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+  }
   div {
     flex-basis: 0;
     flex-grow: 1;
     padding: 16px;
   }
+}
+
+.header--row {
+  background: rgba(0, 0, 0, 0.03);
+  color: $gray-4;
+  border: 0;
 }
 
 .center {
@@ -139,20 +157,22 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   column-gap: 16px;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: auto;
+  }
 }
 
-.unregistered--dapp {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  margin: 0 16px;
-  gap: 8px;
-  background-color: $transparent-yellow;
-  border: 1px solid $border-yellow;
-  border-radius: 8px;
-}
-
-.button--single {
-  text-align: end;
+.body--dark {
+  .table--wrapper {
+    background-color: $navy-3;
+  }
+  .header--row {
+    color: $gray-2;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .chunk--row {
+    border-color: lighten($navy-3, 10%);
+  }
 }
 </style>

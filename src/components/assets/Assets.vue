@@ -10,17 +10,22 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <div v-if="isDappStakingV3">
+        <template v-if="isDappStakingV3">
           <your-project />
-        </div>
+        </template>
+        <template v-if="isDappStakingV3">
+          <staking />
+        </template>
         <div class="container">
-          <div v-if="isH160">
-            <evm-asset-list :tokens="evmAssets.assets" />
-          </div>
-          <div v-else>
-            <!-- Memo: hide xvm panel because AA might replace it -->
-            <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <div v-if="!isLoading" class="container">
+            <div v-if="isH160">
+              <evm-asset-list :tokens="evmAssets.assets" />
+            </div>
+            <div v-else>
+              <!-- Memo: hide xvm panel because AA might replace it -->
+              <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
+              <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+            </div>
           </div>
         </div>
       </div>
@@ -48,6 +53,7 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
+import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
 
 export default defineComponent({
   components: {
@@ -57,6 +63,7 @@ export default defineComponent({
     EvmAssetList,
     XcmNativeAssetList,
     YourProject,
+    Staking,
   },
   setup() {
     const token = ref<Asset | null>(null);

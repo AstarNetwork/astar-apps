@@ -1,6 +1,5 @@
 <template>
   <div>
-    <decentralized-banner />
     <dashboard-layout>
       <router-view v-slot="{ Component }">
         <keep-alive>
@@ -41,9 +40,8 @@
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
 import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
-import DecentralizedBanner from 'src/components/common/DecentralizedBanner.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
@@ -80,7 +78,6 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
-    DecentralizedBanner,
   },
   setup() {
     useAppRouter();
@@ -146,17 +143,21 @@ export default defineComponent({
     });
 
     // **** dApp staking v3
-    if (isDappStakingV3.value) {
-      // dApp staking v3 data changed subscriptions.
-      container
-        .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
-        .startProtocolStateSubscription();
+    // dApp staking v3 data changed subscriptions.
+    onMounted(() => {
+      if (isDappStakingV3.value) {
+        container
+          .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+          .startProtocolStateSubscription();
+      }
+    });
 
-      eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
-        const message = m as ProtocolStateChangedMessage;
+    eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
+      const message = m as ProtocolStateChangedMessage;
+      console.log('protocol state', message.state);
+
+      if (message.state) {
         store.commit('stakingV3/setProtocolState', message.state, { root: true });
-
-        console.log('protocol state', message.state);
         await fetchDappsToStore();
         await Promise.all([
           getAllRewards(),
@@ -166,14 +167,14 @@ export default defineComponent({
           fetchStakerInfoToStore(),
           fetchEraLengthsToStore(),
         ]);
-      });
+      }
+    });
 
-      eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
-        const message = m as AccountLedgerChangedMessage;
-        store.commit('stakingV3/setLedger', message.ledger, { root: true });
-        console.log('ledger', message.ledger);
-      });
-    }
+    eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
+      const message = m as AccountLedgerChangedMessage;
+      store.commit('stakingV3/setLedger', message.ledger, { root: true });
+      console.log('ledger', message.ledger);
+    });
     // **** end dApp staking v3
 
     // Handle wallet change so we can inject proper wallet

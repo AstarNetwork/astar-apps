@@ -23,7 +23,7 @@ import { PolkasafeRepository } from 'src/v2/repositories/implementations';
 import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
-import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
+import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
 import { IApi } from 'src/v2/integration';
 import { SupportWallet } from 'src/config/wallets';
 
@@ -99,56 +99,60 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             resolve(error.message);
           }
         } else {
-          const unsub = await extrinsic.signAndSend(
-            senderAddress,
-            {
-              signer: await this.getSigner(senderAddress),
-              nonce: -1,
-              tip,
-            },
-            (result) => {
-              try {
-                isDetectExtensionsAction && this.detectExtensionsAction(false);
-                isSnap && this.eventAggregator.publish(new BusyMessage(true));
-                if (result.isCompleted) {
-                  if (!this.isExtrinsicFailed(result.events)) {
-                    if (result.isError) {
-                      this.eventAggregator.publish(
-                        new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
-                      );
-                    } else {
-                      const subscanUrl = getSubscanExtrinsic({
-                        subscanBase: subscan,
-                        hash: result.txHash.toHex(),
-                      });
-                      this.eventAggregator.publish(
-                        new ExtrinsicStatusMessage({
-                          success: true,
-                          message: successMessage ?? AlertMsg.SUCCESS,
-                          method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                          explorerUrl: subscanUrl,
-                        })
-                      );
+          try {
+            const unsub = await extrinsic.signAndSend(
+              senderAddress,
+              {
+                signer: await this.getSigner(senderAddress),
+                nonce: -1,
+                tip,
+              },
+              (result) => {
+                try {
+                  isDetectExtensionsAction && this.detectExtensionsAction(false);
+                  isSnap && this.eventAggregator.publish(new BusyMessage(true));
+                  if (result.isCompleted) {
+                    if (!this.isExtrinsicFailed(result.events)) {
+                      if (result.isError) {
+                        this.eventAggregator.publish(
+                          new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+                        );
+                      } else {
+                        const subscanUrl = getSubscanExtrinsic({
+                          subscanBase: subscan,
+                          hash: result.txHash.toHex(),
+                        });
+                        this.eventAggregator.publish(
+                          new ExtrinsicStatusMessage({
+                            success: true,
+                            message: successMessage ?? AlertMsg.SUCCESS,
+                            method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                            explorerUrl: subscanUrl,
+                          })
+                        );
+                      }
+                    }
+                    this.eventAggregator.publish(new BusyMessage(false));
+                    if (finalizedCallback) {
+                      finalizedCallback(result);
+                    }
+                    resolve(extrinsic.hash.toHex());
+                    unsub();
+                  } else {
+                    if (isMobileDevice && !result.isCompleted) {
+                      this.eventAggregator.publish(new BusyMessage(true));
                     }
                   }
+                } catch (error) {
                   this.eventAggregator.publish(new BusyMessage(false));
-                  if (finalizedCallback) {
-                    finalizedCallback(result);
-                  }
-                  resolve(extrinsic.hash.toHex());
                   unsub();
-                } else {
-                  if (isMobileDevice && !result.isCompleted) {
-                    this.eventAggregator.publish(new BusyMessage(true));
-                  }
+                  reject(error as Error);
                 }
-              } catch (error) {
-                this.eventAggregator.publish(new BusyMessage(false));
-                unsub();
-                reject(error as Error);
               }
-            }
-          );
+            );
+          } catch (error) {
+            reject(error as Error);
+          }
         }
       });
     } catch (e) {
@@ -227,7 +231,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         return;
       }
       if (data.id) {
-        if (data.response && data.response.hasOwnProperty('signature')) {
+        if (data.response && hasProperty(data.response, 'signature')) {
           this.eventAggregator.publish(new BusyMessage(true));
           return;
         }
