@@ -22,9 +22,12 @@
           }}</astar-button>
         </div>
         <div v-else class="button--single">
-          <astar-button :width="97" :height="24" @click="unstakeFromUnregistered(key)">{{
-            $t('stakingV3.unbond')
-          }}</astar-button>
+          <astar-button
+            :width="97"
+            :height="24"
+            @click="unstakeFromUnregistered(key, getDappName(key))"
+            >{{ $t('stakingV3.unbond') }}</astar-button
+          >
         </div>
       </div>
       <div v-if="!isRegistered(key)" class="unregistered--dapp">

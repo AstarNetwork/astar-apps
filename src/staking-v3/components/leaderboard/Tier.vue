@@ -4,7 +4,7 @@
       <div class="text--title">{{ $t('stakingV3.tier') }} {{ tier }}</div>
       <div class="column--reward">
         <div class="text--reward">{{ $t('stakingV3.rewardPerDay') }}</div>
-        <div class="text--amount">-- ASTR</div>
+        <div class="text--amount"><token-balance-native :balance="dailyReward.toString()" /></div>
       </div>
     </div>
 
@@ -38,7 +38,7 @@
 import { defineComponent, PropType, computed } from 'vue';
 import { CombinedDappInfo } from '../../logic';
 import { useDappStakingNavigation } from '../../hooks';
-// import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import DappItem from './DappItem.vue';
 import noEntry from './noEntry.vue';
 
@@ -50,7 +50,7 @@ import { Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
-    // TokenBalanceNative,
+    TokenBalanceNative,
     Swiper,
     SwiperSlide,
     DappItem,
@@ -63,6 +63,10 @@ export default defineComponent({
     },
     dapps: {
       type: Object as PropType<CombinedDappInfo[]>,
+      required: true,
+    },
+    dailyReward: {
+      type: BigInt as unknown as PropType<bigint>,
       required: true,
     },
   },

@@ -29,7 +29,7 @@
         }"
       >
         <swiper-slide v-for="[tier, dapps] in leaderBoards" :key="tier">
-          <tier :tier="tier" :dapps="dapps" />
+          <tier :tier="tier" :dapps="dapps" :daily-reward="getDailyReward(tier)" />
         </swiper-slide>
       </swiper>
     </div>
@@ -54,9 +54,9 @@ export default defineComponent({
     SwiperSlide,
   },
   setup() {
-    const { leaderBoards, isLeaderboardEmpty } = useLeaderboard();
+    const { leaderBoards, isLeaderboardEmpty, getDailyReward } = useLeaderboard();
 
-    return { leaderBoards, isLeaderboardEmpty, modules: [Navigation] };
+    return { leaderBoards, isLeaderboardEmpty, getDailyReward, modules: [Navigation] };
   },
 });
 </script>
