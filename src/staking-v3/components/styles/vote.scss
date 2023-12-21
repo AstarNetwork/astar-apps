@@ -40,16 +40,25 @@ li {
 }
 
 .inner--vote {
-  gap: 40px;
+  gap: 16px;
   display: flex;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    gap: 40px;
+  }
+}
+
+.column--main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .column--help {
-  width: 320px;
-  padding: 16px 0;
-  display: none;
   @media (min-width: $sm) {
-    display: block;
+    width: 320px;
   }
 }
 
@@ -60,6 +69,11 @@ li {
   font-weight: 800;
   line-height: normal;
   letter-spacing: -0.64px;
+  margin-bottom: 16px;
+}
+
+.text--title {
+  margin-bottom: 16px;
 }
 
 .note {
@@ -68,7 +82,6 @@ li {
   align-self: stretch;
   border-radius: 16px;
   background-color: $gray-1;
-  margin: 16px 0;
   display: flex;
   flex-direction: column;
   border: solid 1px $gray-2;
@@ -114,7 +127,8 @@ li {
 }
 
 .body--dark {
-  .wrapper--vote {
+  .wrapper--vote,
+  .text--title {
     color: $navy-1;
   }
 }

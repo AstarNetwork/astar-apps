@@ -139,6 +139,10 @@ export default defineComponent({
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  padding: 0 35px 35px 35px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
 
 .dapp--logo {

@@ -4,29 +4,9 @@
     <div class="title">
       {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
     </div>
+    <div v-if="isVotingPeriod" class="text--title">{{ $t('stakingV3.voteText') }}</div>
     <div class="inner--vote">
-      <div>
-        <div class="note">
-          <b>{{ $t('toast.note') }}</b>
-          <ul>
-            <li>
-              {{
-                $t('stakingV3.minimumStakingAmount', {
-                  amount: constants?.minStakeAmountToken,
-                  symbol: nativeTokenSymbol,
-                })
-              }}
-            </li>
-            <li>
-              {{
-                $t('stakingV3.minBalanceAfterStaking', {
-                  amount: constants?.minBalanceAfterStaking,
-                  symbol: nativeTokenSymbol,
-                })
-              }}
-            </li>
-          </ul>
-        </div>
+      <div class="column--main">
         <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
           <div class="dapp">
             <dapp-selector
@@ -111,8 +91,32 @@
           :dapps-selected="handleDappsSelected"
         />
       </div>
-      <div class="column--help">Banners</div>
+
+      <div class="column--help">
+        <div class="note">
+          <b>{{ $t('toast.note') }}</b>
+          <ul>
+            <li>
+              {{
+                $t('stakingV3.minimumStakingAmount', {
+                  amount: constants?.minStakeAmountToken,
+                  symbol: nativeTokenSymbol,
+                })
+              }}
+            </li>
+            <li>
+              {{
+                $t('stakingV3.minBalanceAfterStaking', {
+                  amount: constants?.minBalanceAfterStaking,
+                  symbol: nativeTokenSymbol,
+                })
+              }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+
     <div class="bg--vote" :style="{ backgroundImage: `url(${bg_img.light})` }" />
   </div>
 </template>
