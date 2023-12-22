@@ -207,7 +207,9 @@ export function useDappStaking() {
 
   const claimLockAndStake = async (
     stakeInfo: DappStakeInfo[],
-    lockAmount: bigint
+    lockAmount: bigint,
+    unstakeFromAddress: string,
+    unstakeAmount: bigint
   ): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
@@ -215,6 +217,8 @@ export function useDappStaking() {
       currentAccount.value,
       lockAmount,
       stakeInfo,
+      unstakeFromAddress,
+      unstakeAmount,
       t('stakingV3.voteSuccess', { number: stakeInfo.length })
     );
     await Promise.all([

@@ -127,8 +127,7 @@ import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
 import { max } from 'src/v2/common';
 import { useRoute } from 'vue-router';
-import { useStore } from 'src/store';
-import { DappStakeInfo } from '../logic';
+import { CombinedDappInfo, DappStakeInfo } from '../logic';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
 import { Path } from 'src/router';
@@ -144,7 +143,8 @@ export default defineComponent({
   },
   setup() {
     const { constants, ledger, totalStake, isVotingPeriod, claimLockAndStake } = useDappStaking();
-    const { registeredDapps } = useDapps();
+    const { registeredDapps, getDapp } = useDapps();
+    const { stakerInfo } = useDappStaking();
     const { goBack } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
@@ -154,6 +154,7 @@ export default defineComponent({
     const dapps = ref<Dapp[]>([]);
     const selectedDapps = ref<Dapp[]>([]);
     const selectedDappAddress = ref<string>((route.query.dappAddress as string) ?? '');
+    const dAppToMoveFromAddress = ref<string>((route.query.moveFromAddress as string) ?? '');
     const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
     const totalStakeAmount = computed<number>(() =>
       selectedDapps.value.reduce((total, dapp) => total + dapp.amount, 0)
@@ -168,7 +169,25 @@ export default defineComponent({
       return locked.value - stakeToken - totalStake.value;
     });
 
-    const store = useStore();
+    // Needed to display dApp name and logo on the page.
+    const dAppToMoveTokensFrom = computed<CombinedDappInfo | undefined>(() =>
+      getDapp(dAppToMoveFromAddress.value)
+    );
+
+    const availableToMove = computed<bigint>(() => {
+      const info = stakerInfo?.value?.get(dAppToMoveFromAddress.value);
+      if (info) {
+        return info.staked.buildAndEarn + info.staked.voting;
+      }
+
+      return BigInt(0);
+    });
+
+    const amountToUnstake = computed<bigint>(() =>
+      availableToMove.value > totalStakeAmountBigInt.value
+        ? totalStakeAmountBigInt.value
+        : availableToMove.value
+    );
 
     // TODO this should be moved to useDappStaking.
     const canConfirm = (): [boolean, string] => {
@@ -213,7 +232,9 @@ export default defineComponent({
       // If additional funds locking is required remainLockedToken value will be negative.
       await claimLockAndStake(
         stakeInfo,
-        remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0)
+        remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0),
+        dAppToMoveFromAddress.value,
+        amountToUnstake.value
       );
 
       goBack();

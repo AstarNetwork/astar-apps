@@ -9,6 +9,11 @@ export function useDappStakingNavigation() {
     router.push(`${base}?dappAddress=${dAppAddress ?? ''}`);
   };
 
+  const navigateToMove = (dAppAddress: string): void => {
+    const base = networkParam + Path.DappStaking + Path.Vote;
+    router.push(`${base}?moveFromAddress=${dAppAddress ?? ''}`);
+  };
+
   const navigateToHome = (): void => {
     const base = networkParam + Path.DappStaking + Path.Discover;
     router.push(base);
@@ -26,5 +31,12 @@ export function useDappStakingNavigation() {
     return networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
   };
 
-  return { navigateToVote, navigateToHome, navigateDappPage, navigateOwnerPage, goBack };
+  return {
+    navigateToVote,
+    navigateToMove,
+    navigateToHome,
+    navigateDappPage,
+    navigateOwnerPage,
+    goBack,
+  };
 }

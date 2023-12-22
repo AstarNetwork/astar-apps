@@ -6,6 +6,7 @@ import { IDappStakingRepository } from '../repositories';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
+import { ethers } from 'ethers';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -261,12 +262,19 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     amountToLock: bigint,
     stakeInfo: DappStakeInfo[],
+    unstakeFromAddress: string,
+    unstakeAmount: bigint,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     if (stakeInfo.length === 0) {
       throw 'No stakeInfo provided';
     }
+
+    if (unstakeAmount > BigInt(0) && !unstakeFromAddress) {
+      throw 'Unstake from address is required.';
+    }
+
     // TODO there is a possibility that some address is wrong or some amount is below min staking amount
     // Check this also
 
@@ -286,6 +294,14 @@ export class DappStakingService implements IDappStakingService {
     if (await this.shouldCleanupExpiredEntries(senderAddress)) {
       const cleanupCall = await this.dappStakingRepository.getCleanupExpiredEntriesCall();
       calls.push(cleanupCall);
+    }
+    // Unstake tokens
+    if (unstakeAmount > BigInt(0)) {
+      const unstakeCall = await this.dappStakingRepository.getUnstakeCall(
+        unstakeFromAddress,
+        Number(ethers.utils.formatEther(unstakeAmount.toString()))
+      );
+      calls.push(unstakeCall);
     }
     // Stake tokens
     for (const info of stakeInfo) {

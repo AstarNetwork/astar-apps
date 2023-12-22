@@ -98,12 +98,17 @@ export interface IDappStakingService {
    * @param amountToLock Tokens to lock
    * @param stakeInfo A map containing contract addresses and amounts to stake.
    * @param dappsToClaim List of dApp owned by sender to claim dApp rewards for.
+   * @param unstakeFromAddress Address of the contract to be unstaked from.
+   * @param unstakeAmount Amount of tokens to unstake.
+   * @param successMessage Message to be displayed on the call success.
    * @returns Staker rewards amount and eras to be rewarded.
    */
   claimLockAndStake(
     senderAddress: string,
     amountToLock: bigint,
     stakeInfo: DappStakeInfo[],
+    unstakeFromAddress: string,
+    unstakeAmount: bigint,
     successMessage: string
   ): Promise<void>;
 

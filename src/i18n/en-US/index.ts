@@ -747,6 +747,7 @@ export default {
     manage: 'Manage',
     add: 'Add',
     unbond: 'Unbond',
+    move: 'Move',
     index: 'Index',
     chunk: 'Chunk',
     unbondingAmount: 'Unbonding amount',
