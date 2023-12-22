@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo, DappStakeInfo, StakeAmount } from '../models';
+import { CombinedDappInfo, DappStakeInfo, SingularStakingInfo, StakeAmount } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingRepository } from '../repositories';
@@ -11,8 +11,9 @@ import { ethers } from 'ethers';
 @injectable()
 export class DappStakingService implements IDappStakingService {
   constructor(
-    @inject(Symbols.DappStakingRepositoryV3) private dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService
+    @inject(Symbols.DappStakingRepositoryV3)
+    protected dappStakingRepository: IDappStakingRepository,
+    @inject(Symbols.WalletFactory) protected walletFactory: () => IWalletService
   ) {}
 
   // @inheritdoc
@@ -266,6 +267,25 @@ export class DappStakingService implements IDappStakingService {
     unstakeAmount: bigint,
     successMessage: string
   ): Promise<void> {
+    this.guardStake(senderAddress, stakeInfo, unstakeFromAddress, unstakeAmount);
+
+    const batch = await this.getClaimLockAndStakeBatch(
+      senderAddress,
+      amountToLock,
+      stakeInfo,
+      unstakeFromAddress,
+      unstakeAmount
+    );
+
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  protected guardStake(
+    senderAddress: string,
+    stakeInfo: DappStakeInfo[],
+    unstakeFromAddress: string,
+    unstakeAmount: bigint
+  ): void {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     if (stakeInfo.length === 0) {
       throw 'No stakeInfo provided';
@@ -277,7 +297,15 @@ export class DappStakingService implements IDappStakingService {
 
     // TODO there is a possibility that some address is wrong or some amount is below min staking amount
     // Check this also
+  }
 
+  protected async getClaimLockAndStakeBatch(
+    senderAddress: string,
+    amountToLock: bigint,
+    stakeInfo: DappStakeInfo[],
+    unstakeFromAddress: string,
+    unstakeAmount: bigint
+  ): Promise<ExtrinsicPayload> {
     const calls: ExtrinsicPayload[] = [];
 
     // Staker rewards
@@ -309,7 +337,8 @@ export class DappStakingService implements IDappStakingService {
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
-    await this.signCall(batch, senderAddress, successMessage);
+
+    return batch;
   }
 
   private async shouldCleanupExpiredEntries(senderAddress: string): Promise<boolean> {
@@ -505,6 +534,15 @@ export class DappStakingService implements IDappStakingService {
     );
 
     return result;
+  }
+
+  public async getStakerInfo(
+    address: string,
+    includePreviousPeriods: boolean
+  ): Promise<Map<string, SingularStakingInfo>> {
+    Guard.ThrowIfUndefined('address', address);
+
+    return await this.dappStakingRepository.getStakerInfo(address, includePreviousPeriods);
   }
 
   private async getStakerEraRange(senderAddress: string) {

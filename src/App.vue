@@ -82,7 +82,7 @@ export default defineComponent({
   setup() {
     useAppRouter();
     const store = useStore();
-    const { currentAccountName, currentAccount } = useAccount();
+    const { currentAccountName, currentAccount, senderSs58Account } = useAccount();
     const {
       protocolState,
       getAllRewards,
@@ -187,7 +187,7 @@ export default defineComponent({
       if (currentAccount.value && currentAccount.value !== previousAddress) {
         container
           .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
-          .startAccountLedgerSubscription(currentAccount.value);
+          .startAccountLedgerSubscription(senderSs58Account.value);
         fetchStakerInfoToStore();
         getAllRewards();
         fetchTiersConfigurationToStore();

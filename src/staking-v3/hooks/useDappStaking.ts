@@ -1,6 +1,5 @@
 import { $api } from 'boot/api';
 import { computed } from 'vue';
-import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
 import {
   AccountLedger,
@@ -211,7 +210,9 @@ export function useDappStaking() {
     unstakeFromAddress: string,
     unstakeAmount: bigint
   ): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
 
     await stakingService.claimLockAndStake(
       currentAccount.value,
@@ -430,8 +431,10 @@ export function useDappStaking() {
       return;
     }
 
-    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const stakerInfo = await stakingRepo.getStakerInfo(currentAccount.value, false);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
+    const stakerInfo = await stakingService.getStakerInfo(currentAccount.value, false);
 
     store.commit('stakingV3/setStakerInfo', stakerInfo, { root: true });
   };
