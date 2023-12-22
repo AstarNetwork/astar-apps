@@ -16,11 +16,11 @@ import { Chain, ethWalletChains } from 'src/v2/models';
 import { IGasPriceProvider, IXcmEvmService, TransferParam } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AlertMsg } from 'src/modules/toast';
 import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
+import { getRawEvmTransaction } from 'src/modules/evm';
 
 @injectable()
 export class XcmEvmService implements IXcmEvmService {
@@ -73,31 +73,23 @@ export class XcmEvmService implements IXcmEvmService {
         const provider = getEvmProvider(this.currentWallet as any);
         const web3 = new Web3(provider as any);
         const contract = new web3.eth.Contract(ABI as AbiItem[], evmPrecompiledContract.xcm);
-
-        const [nonce, gasPrice] = await Promise.all([
-          web3.eth.getTransactionCount(senderAddress),
-          web3.eth.getGasPrice(),
-        ]);
-        const multipliedGas = Math.round(Number(gasPrice) * 1.01);
-
-        const rawTx: TransactionConfig = {
-          nonce,
-          gasPrice: web3.utils.toHex(multipliedGas.toString()),
-          from: senderAddress,
-          to: evmPrecompiledContract.xcm,
-          value: '0x0',
-          data: contract.methods
-            .assets_withdraw(
-              assetIds,
-              assetAmounts,
-              recipientAccountId,
-              isRelay,
-              parachainId,
-              feeIndex
-            )
-            .encodeABI(),
-        };
-
+        const data = contract.methods
+          .assets_withdraw(
+            assetIds,
+            assetAmounts,
+            recipientAccountId,
+            isRelay,
+            parachainId,
+            feeIndex
+          )
+          .encodeABI();
+        const rawTx = await getRawEvmTransaction(
+          web3,
+          senderAddress,
+          evmPrecompiledContract.xcm,
+          data,
+          '0x0'
+        );
         const estimatedGas = await web3.eth.estimateGas(rawTx);
         await web3.eth
           .sendTransaction({ ...rawTx, gas: estimatedGas })
