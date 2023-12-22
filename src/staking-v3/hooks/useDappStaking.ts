@@ -272,7 +272,9 @@ export function useDappStaking() {
   };
 
   const getAllRewards = async (): Promise<void> => {
-    const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingV3service = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     const ownedContractAddress = getOwnedDappAddress();
 
     let staker = BigInt(0);

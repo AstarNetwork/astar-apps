@@ -36,7 +36,7 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
 
     const api = await this.api.getApi();
-    const nativeAddress = api.query.hasOwnProperty('unifiedAccounts') // hasProperty(api.query, 'unifiedAccounts')
+    const nativeAddress = hasProperty(api.query, 'unifiedAccounts')
       ? await api.query.unifiedAccounts.evmToNative<AccountId32>(evmAddress)
       : '';
 
