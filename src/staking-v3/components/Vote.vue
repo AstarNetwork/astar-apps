@@ -97,7 +97,7 @@
         <rewards-panel />
         <div class="wrapper--button">
           <astar-button
-            :disabled="!isConfirmable"
+            :disabled="!canConfirm()"
             style="width: 100%; height: 52px; font-size: 22px"
             @click="confirm"
           >
@@ -189,9 +189,9 @@ export default defineComponent({
         : availableToMove.value
     );
 
-    // TODO this should be moved to useDappStaking.
-    const canConfirm = (): [boolean, string] => {
-      return [true, ''];
+    const canConfirm = (): boolean => {
+      // TODO use canStake from useDappStaking after multiple stakes will be supported.
+      return totalStakeAmount.value > 0;
     };
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
@@ -213,11 +213,6 @@ export default defineComponent({
     const canAddDapp = computed<boolean>((): boolean => selectedDappAddress.value === '');
 
     const confirm = async (): Promise<void> => {
-      const [result, error] = canConfirm();
-      if (!result) {
-        throw error;
-      }
-
       const stakeInfo: DappStakeInfo[] = [];
       selectedDapps.value.forEach((dapp) => {
         if (dapp.amount > 0) {
@@ -292,15 +287,6 @@ export default defineComponent({
       isVotingPeriod,
       bg_img,
     };
-  },
-  computed: {
-    isConfirmable() {
-      const [confirmable, errorMessage] = this.canConfirm();
-      if (!confirmable) {
-        // console.log(errorMessage);
-      }
-      return confirmable;
-    },
   },
 });
 </script>
