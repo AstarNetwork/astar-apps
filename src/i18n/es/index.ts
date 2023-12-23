@@ -46,10 +46,10 @@ export default {
   multisig: 'Multisig',
   sort: {
     sortBy: 'Ordenar por',
-    amountHightToLow: 'Cantidad: De mayor a menor',
-    amountLowToHigh: 'Cantidad: De menor a mayor',
-    alphabeticalAtoZ: 'Alfabéticamente: De la A a la Z',
-    alphabeticalZtoA: 'Alfabéticamente: De la Z a la A',
+    amountHightToLow: 'Cantidad: mayor a menor',
+    amountLowToHigh: 'Cantidad: menor a mayor',
+    alphabeticalAtoZ: 'Letra inicial: A a la Z',
+    alphabeticalZtoA: 'Letra inicial: Z a la A',
   },
   warning: {
     warning: 'Advertencia',
@@ -138,7 +138,7 @@ export default {
     github: 'Github',
     docs: 'Documentos',
     settings: 'Configuraciones',
-    language: 'Lenguaje',
+    language: 'Idioma',
     theme: 'Tema',
     close: 'Cerrar',
     comingsoon: 'Pronto habrá ink!redible',
@@ -165,7 +165,7 @@ export default {
       supportsNetwork: 'Math Wallet solo es compatible con la red Shiden',
       switchNetwork: 'Cambia tu red a "Shiden" en la extensión Math Wallet y actualiza esta página',
     },
-    showBalance: 'Mostrar {token} de saldo',
+    showBalance: 'Mostrar saldo en {token}',
     isLedgerAccount: 'Esta es una cuenta Ledger, conectada y ejecutando la aplicación Astar',
     multisig: {
       initPolkasafe:
@@ -507,7 +507,7 @@ export default {
     },
     transferPage: {
       backToAssets: 'Regresar a activos',
-      crossChainTransfer: 'Transferencia entre cadenas',
+      crossChainTransfer: 'Transferir Cross-chain',
       xcm: '(XCM)',
       faq: 'FAQ',
       recentHistory: 'Historia reciente',
