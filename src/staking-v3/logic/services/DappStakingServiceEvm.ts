@@ -94,18 +94,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     return await super.getStakerInfo(ss58Address, includePreviousPeriods);
   }
 
-  // @inheritdoc
-  // public async getStakerRewards(senderAddress: string): Promise<bigint> {
-  //   const ss58Address = await this.getSS58Address(senderAddress);
-  //   return await super.getStakerRewards(ss58Address);
-  // }
-
-  // @inheritdoc
-  // public async getBonusRewards(senderAddress: string): Promise<bigint> {
-  //   const ss58Address = await this.getSS58Address(senderAddress);
-  //   return await super.getBonusRewards(ss58Address);
-  // }
-
   private async getSS58Address(evmAddress: string): Promise<string> {
     return await this.accountUnificationRepository.getConvertedNativeAddress(evmAddress);
   }
