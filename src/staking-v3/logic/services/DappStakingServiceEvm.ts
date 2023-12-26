@@ -7,6 +7,7 @@ import { IDappStakingRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { IAccountUnificationRepository } from 'src/v2/repositories';
+import { Guard } from 'src/v2/common';
 
 const { dispatch } = evmPrecompiledContract;
 
@@ -54,6 +55,37 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   }
 
   // @inheritdoc
+  public async claimUnstakeAndUnlock(
+    contractAddress: string,
+    amount: number,
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    const ss58Address = await this.getSS58Address(senderAddress);
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    Guard.ThrowIfNegative('amount', amount);
+
+    const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
+    const unstakeCalls = await this.dappStakingRepository.getUnstakeAndUnlockCalls(
+      contractAddress,
+      amount
+    );
+    const batch = await this.dappStakingRepository.batchAllCalls([
+      ...claimStakerCalls,
+      ...unstakeCalls,
+    ]);
+
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
   public async getStakerInfo(
     address: string,
     includePreviousPeriods: boolean
@@ -63,16 +95,16 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   }
 
   // @inheritdoc
-  public async getStakerRewards(senderAddress: string): Promise<bigint> {
-    const ss58Address = await this.getSS58Address(senderAddress);
-    return await super.getStakerRewards(ss58Address);
-  }
+  // public async getStakerRewards(senderAddress: string): Promise<bigint> {
+  //   const ss58Address = await this.getSS58Address(senderAddress);
+  //   return await super.getStakerRewards(ss58Address);
+  // }
 
   // @inheritdoc
-  public async getBonusRewards(senderAddress: string): Promise<bigint> {
-    const ss58Address = await this.getSS58Address(senderAddress);
-    return await super.getBonusRewards(ss58Address);
-  }
+  // public async getBonusRewards(senderAddress: string): Promise<bigint> {
+  //   const ss58Address = await this.getSS58Address(senderAddress);
+  //   return await super.getBonusRewards(ss58Address);
+  // }
 
   private async getSS58Address(evmAddress: string): Promise<string> {
     return await this.accountUnificationRepository.getConvertedNativeAddress(evmAddress);
