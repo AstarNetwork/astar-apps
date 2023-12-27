@@ -14,10 +14,13 @@
         </div>
         <div class="right">{{ value.loyalStaker ? 'Yes' : 'No' }}</div>
         <div v-if="isRegistered(key)" class="buttons">
-          <astar-button :width="97" :height="24" @click="navigateToVote(key)">{{
+          <astar-button :width="50" :height="24" @click="navigateToMove(key)">{{
+            $t('stakingV3.move')
+          }}</astar-button>
+          <astar-button :width="50" :height="24" @click="navigateToVote(key)">{{
             $t('stakingV3.add')
           }}</astar-button>
-          <astar-button :width="97" :height="24" @click="handleUnbonding(key)">{{
+          <astar-button :width="90" :height="24" @click="handleUnbonding(key)">{{
             $t('stakingV3.unbond')
           }}</astar-button>
         </div>
@@ -64,7 +67,7 @@ export default defineComponent({
   },
   setup() {
     const { registeredDapps, getDapp } = useDapps();
-    const { navigateToVote } = useDappStakingNavigation();
+    const { navigateToVote, navigateToMove } = useDappStakingNavigation();
     const { unstake, unstakeFromUnregistered } = useDappStaking();
 
     const dappToUnbond = ref<CombinedDappInfo | undefined>();
@@ -101,6 +104,7 @@ export default defineComponent({
       getDappName,
       getStakedAmount,
       navigateToVote,
+      navigateToMove,
       unstake,
       handleUnbonding,
       isRegistered,
@@ -156,7 +160,7 @@ export default defineComponent({
 .buttons {
   display: flex;
   justify-content: center;
-  column-gap: 16px;
+  column-gap: 8px;
   width: 100%;
   @media (min-width: $sm) {
     width: auto;

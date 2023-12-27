@@ -3,7 +3,7 @@
     <data-card :title="`${$t('stakingV3.vote')}/${$t('stakingV3.build')}`">{{
       periodName
     }}</data-card>
-    <data-card :title="`${$t('stakingV3.day')} /${periodDuration}`">{{
+    <data-card :title="`${$t('stakingV3.era')} /${periodDuration}`">{{
       periodCurrentDay
     }}</data-card>
     <data-card :title="$t('stakingV3.era')">{{ protocolState?.era }}</data-card>

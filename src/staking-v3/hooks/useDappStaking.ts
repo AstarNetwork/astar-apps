@@ -207,7 +207,9 @@ export function useDappStaking() {
 
   const claimLockAndStake = async (
     stakeInfo: DappStakeInfo[],
-    lockAmount: bigint
+    lockAmount: bigint,
+    unstakeFromAddress: string,
+    unstakeAmount: bigint
   ): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
@@ -215,6 +217,8 @@ export function useDappStaking() {
       currentAccount.value,
       lockAmount,
       stakeInfo,
+      unstakeFromAddress,
+      unstakeAmount,
       t('stakingV3.voteSuccess', { number: stakeInfo.length })
     );
     await Promise.all([
@@ -264,6 +268,15 @@ export function useDappStaking() {
   const relock = async (): Promise<void> => {
     const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     await stakingService.relockUnlockingTokens(currentAccount.value, t('stakingV3.relockSuccess'));
+  };
+
+  const unlock = async (amount: bigint): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.unlockTokens(
+      currentAccount.value,
+      Number(ethers.utils.formatEther(amount)),
+      t('stakingV3.relockSuccess')
+    );
   };
 
   const getAllRewards = async (): Promise<void> => {
@@ -489,6 +502,7 @@ export function useDappStaking() {
     fetchStakerInfoToStore,
     fetchTiersConfigurationToStore,
     withdraw,
+    unlock,
     relock,
     unstakeFromUnregistered,
     fetchEraLengthsToStore,

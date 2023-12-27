@@ -42,7 +42,7 @@
             <div>
               <div>
                 <span class="text--vivid">
-                  {{ $t('stakingV3.days', { day: reward.erasToReward }) }}
+                  {{ $t('stakingV3.eras', { era: reward.erasToReward }) }}
                 </span>
               </div>
               <div>
@@ -83,7 +83,7 @@
                 </div>
                 <div>
                   <span class="text--info">
-                    {{ $t('stakingV3.days', { day: 123 }) }}
+                    {{ $t('stakingV3.eras', { era: 123 }) }}
                   </span>
                 </div>
               </div>
@@ -111,7 +111,7 @@
                 </div>
                 <div>
                   <span class="text--info">
-                    {{ $t('stakingV3.days', { day: 123 }) }}
+                    {{ $t('stakingV3.eras', { era: 123 }) }}
                   </span>
                 </div>
               </div>
