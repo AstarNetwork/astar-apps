@@ -270,6 +270,15 @@ export function useDappStaking() {
     await stakingService.relockUnlockingTokens(currentAccount.value, t('stakingV3.relockSuccess'));
   };
 
+  const unlock = async (amount: bigint): Promise<void> => {
+    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    await stakingService.unlockTokens(
+      currentAccount.value,
+      Number(ethers.utils.formatEther(amount)),
+      t('stakingV3.relockSuccess')
+    );
+  };
+
   const getAllRewards = async (): Promise<void> => {
     const stakingV3service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const ownedContractAddress = getOwnedDappAddress();
@@ -493,6 +502,7 @@ export function useDappStaking() {
     fetchStakerInfoToStore,
     fetchTiersConfigurationToStore,
     withdraw,
+    unlock,
     relock,
     unstakeFromUnregistered,
     fetchEraLengthsToStore,

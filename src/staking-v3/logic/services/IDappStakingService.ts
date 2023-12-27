@@ -133,4 +133,6 @@ export interface IDappStakingService {
    * @param senderAddress Address of the request sender.
    */
   relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void>;
+
+  unlockTokens(senderAddress: string, amount: number, successMessage: string): Promise<void>;
 }
