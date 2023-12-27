@@ -730,6 +730,7 @@ export default {
     newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
+    voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
     voteToday: 'Vote today and be eligible for  bonus rewards',
     stakeOn: 'Stake on {name}',
