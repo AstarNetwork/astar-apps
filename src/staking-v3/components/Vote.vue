@@ -249,7 +249,9 @@ export default defineComponent({
         }
 
         if (selectedDappAddress.value) {
-          const dapp = dapps.value.find((dapp) => dapp.address === selectedDappAddress.value);
+          const dapp = dapps.value.find(
+            (dapp) => dapp.address.toLowerCase() === selectedDappAddress.value.toLowerCase()
+          );
           if (dapp) {
             selectedDapps.value = [dapp];
           }
