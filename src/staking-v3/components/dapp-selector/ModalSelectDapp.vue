@@ -205,9 +205,13 @@ export default defineComponent({
 
 .body--dark {
   .search {
-    border-color: $gray-1;
     input {
+      border-color: $gray-3;
       background-color: $navy-1;
+      &:hover,
+      &:focus {
+        border-color: $astar-blue;
+      }
     }
   }
 }

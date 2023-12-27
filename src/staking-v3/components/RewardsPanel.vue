@@ -1,14 +1,19 @@
 <template>
-  <div v-if="hasRewards" class="note">
-    <b>{{ $t('stakingV3.rewardsWillBeClaimed') }}</b>
-    <div class="note--row">
-      <div>{{ $t('stakingV3.basicRewards') }}</div>
+  <div v-if="hasRewards" class="rewards">
+    <div class="rewards--row title--rewards">{{ $t('stakingV3.rewardsWillBeClaimed') }}</div>
+    <div class="rewards--row">
+      <div class="text--rewards">{{ $t('stakingV3.basicRewards') }}</div>
       <div><token-balance-native :balance="rewards?.staker.toString() ?? ''" /></div>
     </div>
-    <div class="note--row">
-      <div>{{ $t('stakingV3.bonusRewards') }}</div>
+    <div class="rewards--row">
+      <div class="text--rewards">{{ $t('stakingV3.bonusRewards') }}</div>
       <div><token-balance-native :balance="rewards?.bonus.toString() ?? ''" /></div>
     </div>
+    <img
+      class="bg--rewards"
+      :src="require('/src/staking-v3/assets/unclaimed_rewards_bg.webp')"
+      alt="wallet-icon"
+    />
   </div>
 </template>
 

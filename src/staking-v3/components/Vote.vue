@@ -29,8 +29,9 @@
             :placeholder="$t('stakingV3.chooseProject')"
           />
         </div>
-        <div class="note">
-          <div class="note--row">
+
+        <div class="balance">
+          <div class="balance--row">
             <div>
               <b>{{ $t('stakingV3.availableToVote') }}</b>
             </div>
@@ -38,32 +39,36 @@
               <b><token-balance-native :balance="useableBalance" /></b>
             </div>
           </div>
-          <div class="note--row">
-            <div>
-              {{ $t('stakingV3.lockedBalance') }}
+
+          <div class="container--locked-balance">
+            <div class="balance--row">
+              <div>
+                {{ $t('stakingV3.lockedBalance') }}
+              </div>
+              <div><token-balance-native :balance="locked.toString()" /></div>
             </div>
-            <div><token-balance-native :balance="locked.toString()" /></div>
-          </div>
-          <div class="note--row">
-            <div>
-              {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
+            <div class="balance--row">
+              <div>
+                {{ isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked') }}
+              </div>
+              <div><token-balance-native :balance="totalStake.toString()" /></div>
             </div>
-            <div><token-balance-native :balance="totalStake.toString()" /></div>
-          </div>
-          <div class="note--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
-            <div>
-              <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
+            <div class="balance--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+              <div>
+                <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
+              </div>
+              <div>
+                <b
+                  ><token-balance-native :balance="max(remainLockedToken, BigInt(0)).toString()"
+                /></b>
+              </div>
             </div>
-            <div>
-              <b
-                ><token-balance-native :balance="max(remainLockedToken, BigInt(0)).toString()"
-              /></b>
+            <div v-if="remainLockedToken > BigInt(0)" class="note warning">
+              {{ $t('stakingV3.voteLockedTokensWarning') }}
             </div>
           </div>
-          <div v-if="remainLockedToken > BigInt(0)" class="note warning">
-            {{ $t('stakingV3.voteLockedTokensWarning') }}
-          </div>
-          <div class="note--row">
+
+          <div class="balance--row">
             <div>
               <b>{{ isVotingPeriod ? $t('stakingV3.totalVote') : $t('stakingV3.totalStake') }}</b>
             </div>
@@ -115,7 +120,10 @@
       </div>
     </div>
 
-    <div class="bg--vote" :style="{ backgroundImage: `url(${bg_img.light})` }" />
+    <div
+      class="bg--vote"
+      :style="{ backgroundImage: `url(${require('/src/staking-v3/assets/vote_bg.webp')})` }"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -262,10 +270,6 @@ export default defineComponent({
       }
     );
 
-    const bg_img = {
-      light: require('/src/staking-v3/assets/vote_bg_light.webp'),
-    };
-
     return {
       constants,
       nativeTokenSymbol,
@@ -287,7 +291,6 @@ export default defineComponent({
       canAddDapp,
       Path,
       isVotingPeriod,
-      bg_img,
     };
   },
 });
