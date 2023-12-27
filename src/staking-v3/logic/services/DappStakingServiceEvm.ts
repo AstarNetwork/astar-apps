@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { IDappStakingService } from './IDappStakingService';
 import { DappStakingService } from './DappStakingService';
-import { DappStakeInfo, SingularStakingInfo } from '../models';
+import { DappStakeInfo } from '../models';
 import { IWalletService } from '../../../v2/services/IWalletService';
 import { IDappStakingRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
@@ -23,35 +23,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   ) {
     super(dappStakingRepository, walletFactory);
     this.wallet = walletFactory();
-  }
-
-  // @inheritdoc
-  public async claimLockAndStake(
-    senderAddress: string,
-    amountToLock: bigint,
-    stakeInfo: DappStakeInfo[],
-    unstakeFromAddress: string,
-    unstakeAmount: bigint,
-    successMessage: string
-  ): Promise<void> {
-    const ss58Address = await this.getSS58Address(senderAddress);
-    this.guardStake(ss58Address, stakeInfo, unstakeFromAddress, unstakeAmount);
-
-    const batch = await this.getClaimLockAndStakeBatch(
-      ss58Address,
-      amountToLock,
-      stakeInfo,
-      unstakeFromAddress,
-      unstakeAmount
-    );
-
-    await this.wallet.sendEvmTransaction({
-      from: senderAddress,
-      to: dispatch,
-      data: batch.method.toHex(),
-      successMessage,
-      failureMessage: 'Call failed',
-    });
   }
 
   // @inheritdoc
@@ -86,12 +57,178 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   }
 
   // @inheritdoc
-  public async getStakerInfo(
-    address: string,
-    includePreviousPeriods: boolean
-  ): Promise<Map<string, SingularStakingInfo>> {
-    const ss58Address = await this.getSS58Address(address);
-    return await super.getStakerInfo(ss58Address, includePreviousPeriods);
+  public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
+    console.log('claimStakerRewards EVM');
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+
+    const ss58Address = await this.getSS58Address(senderAddress);
+    const calls = await this.getClaimStakerRewardsCall(ss58Address);
+
+    if (!calls) {
+      throw 'Staker rewards expired.';
+    }
+
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async claimAllAndUnstakeFromUnregistered(
+    senderAddress: string,
+    contractAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    console.log('claimAllAndUnstakeFromUnregistered EVM');
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
+    const ss58Address = await this.getSS58Address(senderAddress);
+    const stakerRewards = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
+    const unstakeCall = await this.dappStakingRepository.getUnstakeFromUnregisteredCall(
+      contractAddress
+    );
+
+    const batch = await this.dappStakingRepository.batchAllCalls([...stakerRewards, unstakeCall]);
+
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async claimDappRewards(
+    contractAddress: string,
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    console.log('claimDappRewards EVM');
+    const calls = await this.getClaimDappRewardsCalls(contractAddress);
+
+    if (!calls) {
+      throw `No dApp rewards to claim for contract address ${contractAddress}.`;
+    }
+
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
+    console.log('claimBonusRewards EVM');
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    const ss58Address = await this.getSS58Address(senderAddress);
+    const calls = await this.getClaimBonusRewardsCalls(ss58Address);
+
+    if (!calls) {
+      throw `No bonus rewards to claim for sender address ${senderAddress}.`;
+    }
+
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  public async claimStakerAndBonusRewards(
+    senderAddress: string,
+    successMessage: string
+  ): Promise<void> {
+    console.log('claimStakerAndBonusRewards EVM');
+
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    const ss58Address = await this.getSS58Address(senderAddress);
+
+    const calls = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async claimLockAndStake(
+    senderAddress: string,
+    amountToLock: bigint,
+    stakeInfo: DappStakeInfo[],
+    unstakeFromAddress: string,
+    unstakeAmount: bigint,
+    successMessage: string
+  ): Promise<void> {
+    const ss58Address = await this.getSS58Address(senderAddress);
+    this.guardStake(ss58Address, stakeInfo, unstakeFromAddress, unstakeAmount);
+
+    const batch = await this.getClaimLockAndStakeBatch(
+      ss58Address,
+      amountToLock,
+      stakeInfo,
+      unstakeFromAddress,
+      unstakeAmount
+    );
+
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
+    console.log('claimUnlockedTokens EVM');
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
+    // Memo: check if the call works with EVM
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: call.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
+  public async relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void> {
+    console.log('relockUnlockingTokens EVM');
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();
+    // Memo: check if the call works with EVM
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: call.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
   }
 
   private async getSS58Address(evmAddress: string): Promise<string> {

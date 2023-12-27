@@ -163,7 +163,6 @@ export function useDappStaking() {
       return;
     }
 
-    // const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
@@ -182,7 +181,9 @@ export function useDappStaking() {
   };
 
   const unstakeFromUnregistered = async (dappAddress: string, dappName: string): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     await stakingService.claimAllAndUnstakeFromUnregistered(
       currentAccount.value,
       dappAddress,
@@ -201,7 +202,9 @@ export function useDappStaking() {
   };
 
   const claimStakerRewards = async (): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
     const staker = await stakingService.getStakerRewards(senderSs58Account.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
@@ -234,15 +237,19 @@ export function useDappStaking() {
   };
 
   const claimBonusRewards = async (): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
+
     await stakingService.claimBonusRewards(currentAccount.value, 'success');
     const bonus = await stakingService.getBonusRewards(senderSs58Account.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
 
   const claimDappRewards = async (contractAddress: string): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     if (contractAddress) {
       await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
       const dApp = await stakingService.getDappRewards(contractAddress);
@@ -253,7 +260,10 @@ export function useDappStaking() {
   };
 
   const claimStakerAndBonusRewards = async (): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
+
     await stakingService.claimStakerAndBonusRewards(
       currentAccount.value,
       t('stakingV3.claimRewardSuccess')
@@ -264,13 +274,17 @@ export function useDappStaking() {
   };
 
   const withdraw = async (): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     await stakingService.claimUnlockedTokens(currentAccount.value, t('stakingV3.withdrawSuccess'));
     getCurrentEraInfo();
   };
 
   const relock = async (): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     await stakingService.relockUnlockingTokens(currentAccount.value, t('stakingV3.relockSuccess'));
   };
 
@@ -439,7 +453,7 @@ export function useDappStaking() {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
-    const stakerInfo = await stakingService.getStakerInfo(currentAccount.value, false);
+    const stakerInfo = await stakingService.getStakerInfo(senderSs58Account.value, false);
 
     store.commit('stakingV3/setStakerInfo', stakerInfo, { root: true });
   };
