@@ -49,7 +49,6 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimUnstakeAndUnlock native');
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
@@ -67,7 +66,6 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimStakerRewards native');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const calls = await this.getClaimStakerRewardsCall(senderAddress);
@@ -86,7 +84,6 @@ export class DappStakingService implements IDappStakingService {
     contractAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimAllAndUnstakeFromUnregistered native');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
@@ -119,8 +116,6 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async getStakerRewards(senderAddress: string): Promise<bigint> {
-    console.log('getStakerRewards native');
-    console.log('senderAddress', senderAddress);
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
@@ -170,7 +165,6 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async getDappRewards(contractAddress: string): Promise<bigint> {
-    console.log('getDappRewards native');
     const result = await this.getDappRewardsAndErasToClaim(contractAddress);
 
     return result.rewards;
@@ -181,7 +175,6 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimDappRewards native');
     const calls = await this.getClaimDappRewardsCalls(contractAddress);
 
     if (!calls) {
@@ -209,14 +202,12 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async getBonusRewards(senderAddress: string): Promise<bigint> {
-    console.log('getBonusRewards native');
     const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
 
     return result.rewards;
   }
 
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimBonusRewards native');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     const calls = await this.getClaimBonusRewardsCalls(senderAddress);
 
@@ -231,7 +222,6 @@ export class DappStakingService implements IDappStakingService {
   protected async getClaimStakerAndBonusRewardsCalls(
     senderAddress: string
   ): Promise<ExtrinsicPayload[]> {
-    console.log('getClaimStakerAndBonusRewardsCalls native');
     const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
     const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
 
@@ -249,8 +239,6 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimStakerAndBonusRewards native');
-
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const calls = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
@@ -279,7 +267,6 @@ export class DappStakingService implements IDappStakingService {
     unstakeAmount: bigint,
     successMessage: string
   ): Promise<void> {
-    console.log('claimLockAndStake');
     this.guardStake(senderAddress, stakeInfo, unstakeFromAddress, unstakeAmount);
 
     const batch = await this.getClaimLockAndStakeBatch(
@@ -411,7 +398,6 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimUnlockedTokens native');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
@@ -420,7 +406,6 @@ export class DappStakingService implements IDappStakingService {
 
   // @inheritdoc
   public async relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('relockUnlockingTokens native');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();

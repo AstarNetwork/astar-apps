@@ -58,7 +58,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   // @inheritdoc
   public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimStakerRewards EVM');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const ss58Address = await this.getSS58Address(senderAddress);
@@ -84,7 +83,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     contractAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimAllAndUnstakeFromUnregistered EVM');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
@@ -111,7 +109,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimDappRewards EVM');
     const calls = await this.getClaimDappRewardsCalls(contractAddress);
 
     if (!calls) {
@@ -130,7 +127,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   // @inheritdoc
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimBonusRewards EVM');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     const ss58Address = await this.getSS58Address(senderAddress);
     const calls = await this.getClaimBonusRewardsCalls(ss58Address);
@@ -153,8 +149,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    console.log('claimStakerAndBonusRewards EVM');
-
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     const ss58Address = await this.getSS58Address(senderAddress);
 
@@ -201,7 +195,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   // @inheritdoc
   public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('claimUnlockedTokens EVM');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
@@ -217,7 +210,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   // @inheritdoc
   public async relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void> {
-    console.log('relockUnlockingTokens EVM');
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();
