@@ -67,7 +67,8 @@ export default defineComponent({
   height: 100%;
   @media (min-width: $lg) {
     padding: 0 40px;
-    padding-top: 12px;
+    padding-top: 42px;
+    // padding-top: 12px; without the header warning banner
   }
 }
 </style>
