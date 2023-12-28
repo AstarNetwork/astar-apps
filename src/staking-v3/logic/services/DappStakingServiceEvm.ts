@@ -6,7 +6,7 @@ import { IWalletService } from '../../../v2/services/IWalletService';
 import { IDappStakingRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
-import { IAccountUnificationRepository } from 'src/v2/repositories';
+import { IAccountUnificationRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
 
 const { dispatch } = evmPrecompiledContract;
@@ -18,10 +18,11 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   constructor(
     @inject(Symbols.DappStakingRepositoryV3) dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
-    @inject(Symbols.AccountUnificationRepository),
-    private accountUnificationRepository: IAccountUnificationRepository
+    @inject(Symbols.AccountUnificationRepository)
+    private accountUnificationRepository: IAccountUnificationRepository,
+    @inject(Symbols.MetadataRepository) metadataRepository: IMetadataRepository
   ) {
-    super(dappStakingRepository, walletFactory);
+    super(dappStakingRepository, walletFactory, metadataRepository);
     this.wallet = walletFactory();
   }
 
