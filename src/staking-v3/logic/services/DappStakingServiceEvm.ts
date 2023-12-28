@@ -18,7 +18,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   constructor(
     @inject(Symbols.DappStakingRepositoryV3) dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
-    @inject(Symbols.AccountUnificationRepository)
+    @inject(Symbols.AccountUnificationRepository),
     private accountUnificationRepository: IAccountUnificationRepository
   ) {
     super(dappStakingRepository, walletFactory);
@@ -98,6 +98,23 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
       from: senderAddress,
       to: dispatch,
       data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  public async unlockTokens(
+    senderAddress: string,
+    amount: number,
+    successMessage: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+
+    const call = await this.dappStakingRepository.getUnlockCall(amount);
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: call.method.toHex(),
       successMessage,
       failureMessage: 'Call failed',
     });
@@ -198,7 +215,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
-    // Memo: check if the call works with EVM
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
@@ -213,7 +229,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     const call = await this.dappStakingRepository.getRelockUnlockingTokensCall();
-    // Memo: check if the call works with EVM
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
