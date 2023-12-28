@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { IDappStakingService } from './IDappStakingService';
 import { DappStakingService } from './DappStakingService';
-import { DappStakeInfo } from '../models';
+import { DappStakeInfo, SingularStakingInfo } from '../models';
 import { IWalletService } from '../../../v2/services/IWalletService';
 import { IDappStakingRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
@@ -210,6 +210,33 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
       successMessage,
       failureMessage: 'Call failed',
     });
+  }
+
+  public async getStakerInfo(
+    address: string,
+    includePreviousPeriods: boolean
+  ): Promise<Map<string, SingularStakingInfo>> {
+    const ss58Address = await this.getSS58Address(address);
+
+    return await super.getStakerInfo(ss58Address, includePreviousPeriods);
+  }
+
+  public async getStakerRewards(senderAddress: string): Promise<bigint> {
+    const ss58Address = await this.getSS58Address(senderAddress);
+
+    return await super.getStakerRewards(ss58Address);
+  }
+
+  public async getBonusRewards(senderAddress: string): Promise<bigint> {
+    const ss58Address = await this.getSS58Address(senderAddress);
+
+    return await super.getBonusRewards(ss58Address);
+  }
+
+  public async startAccountLedgerSubscription(address: string): Promise<void> {
+    const ss58Address = await this.getSS58Address(address);
+
+    await super.startAccountLedgerSubscription(ss58Address);
   }
 
   private async getSS58Address(evmAddress: string): Promise<string> {

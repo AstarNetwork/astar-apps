@@ -140,4 +140,6 @@ export interface IDappStakingService {
     address: string,
     includePreviousPeriods: boolean
   ): Promise<Map<string, SingularStakingInfo>>;
+
+  startAccountLedgerSubscription(address: string): Promise<void>;
 }

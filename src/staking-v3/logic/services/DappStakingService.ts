@@ -600,6 +600,12 @@ export class DappStakingService implements IDappStakingService {
     return await this.dappStakingRepository.getStakerInfo(address, includePreviousPeriods);
   }
 
+  public async startAccountLedgerSubscription(address: string): Promise<void> {
+    Guard.ThrowIfUndefined('address', address);
+
+    await this.dappStakingRepository.startAccountLedgerSubscription(address);
+  }
+
   private async getStakerEraRange(senderAddress: string) {
     const [protocolState, ledger, constants] = await Promise.all([
       this.dappStakingRepository.getProtocolState(),
