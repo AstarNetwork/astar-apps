@@ -308,8 +308,8 @@ export function useDappStaking() {
     let bonus = BigInt(0);
 
     if (currentAccount.value) {
-      staker = await stakingV3service.getStakerRewards(senderSs58Account.value);
-      bonus = await stakingV3service.getBonusRewards(senderSs58Account.value);
+      staker = await stakingV3service.getStakerRewards(currentAccount.value);
+      bonus = await stakingV3service.getBonusRewards(currentAccount.value);
 
       if (ownedContractAddress) {
         dApp = await stakingV3service.getDappRewards(ownedContractAddress ?? '');
@@ -462,7 +462,7 @@ export function useDappStaking() {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
-    const stakerInfo = await stakingService.getStakerInfo(senderSs58Account.value, false);
+    const stakerInfo = await stakingService.getStakerInfo(currentAccount.value, false);
 
     store.commit('stakingV3/setStakerInfo', stakerInfo, { root: true });
   };
