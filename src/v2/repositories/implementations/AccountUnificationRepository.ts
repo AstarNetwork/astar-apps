@@ -12,6 +12,7 @@ import { ExtrinsicPayload, IApi } from 'src/v2/integration';
 import { IdentityData } from 'src/v2/models';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
+import e from 'express';
 
 @injectable()
 export class AccountUnificationRepository implements IAccountUnificationRepository {
@@ -34,6 +35,10 @@ export class AccountUnificationRepository implements IAccountUnificationReposito
 
   public async getMappedNativeAddress(evmAddress: string): Promise<string> {
     Guard.ThrowIfUndefined('evmAddress', evmAddress);
+
+    if (!isValidEvmAddress(evmAddress)) {
+      return evmAddress;
+    }
 
     const api = await this.api.getApi();
     const nativeAddress = hasProperty(api.query, 'unifiedAccounts')

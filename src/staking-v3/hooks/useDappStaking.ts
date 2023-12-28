@@ -39,7 +39,7 @@ export interface RewardsPerPeriod {
 export function useDappStaking() {
   const { t } = useI18n();
   const store = useStore();
-  const { currentAccount, senderSs58Account } = useAccount();
+  const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { useableBalance } = useBalance(currentAccount);
@@ -172,8 +172,8 @@ export function useDappStaking() {
       currentAccount.value,
       t('stakingV3.unbondSuccess', { dapp: dapp.basic.name })
     );
-    const staker = await stakingService.getStakerRewards(senderSs58Account.value);
-    const bonus = await stakingService.getBonusRewards(senderSs58Account.value);
+    const staker = await stakingService.getStakerRewards(currentAccount.value);
+    const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
     fetchStakerInfoToStore();
     getCurrentEraInfo();
@@ -191,8 +191,8 @@ export function useDappStaking() {
     );
 
     const [staker, bonus, dApp] = await Promise.all([
-      stakingService.getStakerRewards(senderSs58Account.value),
-      stakingService.getBonusRewards(senderSs58Account.value),
+      stakingService.getStakerRewards(currentAccount.value),
+      stakingService.getBonusRewards(currentAccount.value),
       stakingService.getDappRewards(dappAddress),
     ]);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus, dApp });
@@ -206,7 +206,7 @@ export function useDappStaking() {
       Symbols.DappStakingServiceFactoryV3
     )();
     await stakingService.claimStakerRewards(currentAccount.value, 'success');
-    const staker = await stakingService.getStakerRewards(senderSs58Account.value);
+    const staker = await stakingService.getStakerRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
 
@@ -242,7 +242,7 @@ export function useDappStaking() {
     )();
 
     await stakingService.claimBonusRewards(currentAccount.value, 'success');
-    const bonus = await stakingService.getBonusRewards(senderSs58Account.value);
+    const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
 
@@ -268,8 +268,8 @@ export function useDappStaking() {
       currentAccount.value,
       t('stakingV3.claimRewardSuccess')
     );
-    const staker = await stakingService.getStakerRewards(senderSs58Account.value);
-    const bonus = await stakingService.getBonusRewards(senderSs58Account.value);
+    const staker = await stakingService.getStakerRewards(currentAccount.value);
+    const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
   };
 
@@ -415,7 +415,7 @@ export function useDappStaking() {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const [constants, stakerInfo] = await Promise.all([
       stakingRepo.getConstants(),
-      stakingRepo.getStakerInfo(senderSs58Account.value, false),
+      stakingRepo.getStakerInfo(currentAccount.value, false),
     ]);
 
     if (amount <= 0) {
