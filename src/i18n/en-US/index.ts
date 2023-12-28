@@ -732,7 +732,7 @@ export default {
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
-    voteToday: 'Vote today and be eligible for  bonus rewards',
+    voteToday: 'Be entitled to bonus pool today',
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
