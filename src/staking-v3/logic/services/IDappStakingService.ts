@@ -134,19 +134,5 @@ export interface IDappStakingService {
    */
   relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void>;
 
-<<<<<<< HEAD
-  /**
-   * Gets staker info for the given address.
-   * @param address Address to get staker info for.
-   * @param includePreviousPeriods Indicates whether to include previous periods info.
-   *  Previous period info is needed for bonus rewards calculation.
-   * @returns A promise that resolves to an array of staker info.
-   */
-  getStakerInfo(
-    address: string,
-    includePreviousPeriods: boolean
-  ): Promise<Map<string, SingularStakingInfo>>;
-=======
   unlockTokens(senderAddress: string, amount: number, successMessage: string): Promise<void>;
->>>>>>> af705b28726a11bf8287a136e24f0d4b754bcb99
 }
