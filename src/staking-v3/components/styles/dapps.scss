@@ -2,7 +2,12 @@
 
 .container--dapps {
   flex: 1;
-  width: 76%;
+  @media (min-width: $sm) {
+    width: calc(100% - 188px);
+  }
+  @media (min-width: $xl) {
+    width: calc(100% - 288px);
+  }
 }
 
 .title {

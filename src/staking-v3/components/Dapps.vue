@@ -51,7 +51,6 @@ import { CombinedDappInfo } from '../logic';
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
-import 'swiper/css/navigation';
 
 export default defineComponent({
   components: {
