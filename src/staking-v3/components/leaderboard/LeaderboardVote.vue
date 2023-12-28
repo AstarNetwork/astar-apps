@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLeaderboardEmpty" class="wrapper--leaderboard">
-    <div class="title">{{ $t('stakingV3.leaderboard') }}</div>
+    <div class="title">{{ $t('stakingV3.projectLeaderboards') }}</div>
 
     <div class="container--boards">
       <div class="wrapper--tier">
