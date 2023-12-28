@@ -704,6 +704,8 @@ export default {
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
     voteText: 'I would like to vote my tokens with',
+    transferText: 'I would like to move my funds from',
+    stakeVoteOn: 'And vote/stake on',
     stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:

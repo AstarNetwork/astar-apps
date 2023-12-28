@@ -4,9 +4,19 @@
     <div class="title">
       {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
     </div>
-    <div v-if="isVotingPeriod" class="text--title">{{ $t('stakingV3.voteText') }}</div>
+    <div v-if="dAppToMoveTokensFrom" class="text--title">
+      {{ $t('stakingV3.transferText') }}
+    </div>
+    <div v-else-if="isVotingPeriod" class="text--title">{{ $t('stakingV3.voteText') }}</div>
     <div class="inner--vote">
       <div class="column--main">
+        <div v-if="dAppToMoveTokensFrom">
+          <div class="move--from">
+            <img :src="dAppToMoveTokensFrom.basic.iconUrl" />
+            <div>{{ dAppToMoveTokensFrom.basic.name }}</div>
+          </div>
+          <div class="text--title stake--on">{{ $t('stakingV3.stakeVoteOn') }}</div>
+        </div>
         <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
           <dapp-selector
             :dapps="dapps"
@@ -291,6 +301,7 @@ export default defineComponent({
       canAddDapp,
       Path,
       isVotingPeriod,
+      dAppToMoveTokensFrom,
     };
   },
 });
