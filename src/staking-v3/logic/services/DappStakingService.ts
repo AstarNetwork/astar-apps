@@ -97,7 +97,7 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
-  private async getClaimStakerRewardsCall(
+  protected async getClaimStakerRewardsCall(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {
     const { firstSpanIndex, lastSpanIndex, rewardsExpired, eraRewardSpanLength } =
@@ -185,7 +185,7 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
-  private async getClaimDappRewardsCalls(
+  protected async getClaimDappRewardsCalls(
     contractAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {
     const result = await this.getDappRewardsAndErasToClaim(contractAddress);
@@ -219,7 +219,7 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
-  private async getClaimStakerAndBonusRewardsCalls(
+  protected async getClaimStakerAndBonusRewardsCalls(
     senderAddress: string
   ): Promise<ExtrinsicPayload[]> {
     const claimStakerCalls = await this.getClaimStakerRewardsCall(senderAddress);
@@ -246,7 +246,7 @@ export class DappStakingService implements IDappStakingService {
     await this.signCall(batch, senderAddress, successMessage);
   }
 
-  private async getClaimBonusRewardsCalls(
+  protected async getClaimBonusRewardsCalls(
     senderAddress: string
   ): Promise<ExtrinsicPayload[] | undefined> {
     const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);

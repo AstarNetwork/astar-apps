@@ -66,7 +66,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { registeredDapps, getDapp } = useDapps();
+    const { getDapp } = useDapps();
     const { navigateToVote, navigateToMove } = useDappStakingNavigation();
     const { unstake, unstakeFromUnregistered } = useDappStaking();
 
