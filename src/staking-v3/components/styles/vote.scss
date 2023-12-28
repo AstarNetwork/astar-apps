@@ -54,11 +54,17 @@ li {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  order: 2;
+  @media (min-width: $sm) {
+    order: 1;
+  }
 }
 
 .column--help {
+  order: 1;
   @media (min-width: $sm) {
     width: 320px;
+    order: 2;
   }
 }
 
