@@ -137,9 +137,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         gasPrice: web3.utils.toHex(multipliedGas.toString()),
       };
 
-      const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
-        .sendTransaction({ ...rawTx, gas: estimatedGas })
+        .sendTransaction({ ...rawTx })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })
