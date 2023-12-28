@@ -38,15 +38,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     Guard.ThrowIfNegative('amount', amount);
 
     const ss58Address = await this.getSS58Address(senderAddress);
-    const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
-    const unstakeCalls = await this.dappStakingRepository.getUnstakeAndUnlockCalls(
-      contractAddress,
-      amount
-    );
-    const batch = await this.dappStakingRepository.batchAllCalls([
-      ...claimStakerCalls,
-      ...unstakeCalls,
-    ]);
+    const batch = await this.getClaimUnstakeAndUnlockBatch(contractAddress, amount, ss58Address);
 
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
@@ -62,13 +54,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const ss58Address = await this.getSS58Address(senderAddress);
-    const calls = await this.getClaimStakerRewardsCall(ss58Address);
-
-    if (!calls) {
-      throw 'Staker rewards expired.';
-    }
-
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    const batch = await this.getClaimStakerRewardsBatch(ss58Address);
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
@@ -88,12 +74,11 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
     const ss58Address = await this.getSS58Address(senderAddress);
-    const stakerRewards = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
-    const unstakeCall = await this.dappStakingRepository.getUnstakeFromUnregisteredCall(
+
+    const batch = await this.getClaimAllAndUnstakeFromUnregisteredBatch(
+      ss58Address,
       contractAddress
     );
-
-    const batch = await this.dappStakingRepository.batchAllCalls([...stakerRewards, unstakeCall]);
 
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
@@ -127,13 +112,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    const calls = await this.getClaimDappRewardsCalls(contractAddress);
-
-    if (!calls) {
-      throw `No dApp rewards to claim for contract address ${contractAddress}.`;
-    }
-
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    const batch = await this.getClaimDappRewardsBatch(contractAddress);
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
@@ -147,13 +126,8 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     const ss58Address = await this.getSS58Address(senderAddress);
-    const calls = await this.getClaimBonusRewardsCalls(ss58Address);
+    const batch = await this.claimBonusRewardsBatch(ss58Address);
 
-    if (!calls) {
-      throw `No bonus rewards to claim for sender address ${senderAddress}.`;
-    }
-
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
@@ -169,7 +143,6 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     const ss58Address = await this.getSS58Address(senderAddress);
-
     const calls = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
     const batch = await this.dappStakingRepository.batchAllCalls(calls);
 

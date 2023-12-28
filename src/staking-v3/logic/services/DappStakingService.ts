@@ -54,6 +54,15 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
+    const batch = await this.getClaimUnstakeAndUnlockBatch(contractAddress, amount, senderAddress);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  protected async getClaimUnstakeAndUnlockBatch(
+    contractAddress: string,
+    amount: number,
+    senderAddress: string
+  ): Promise<ExtrinsicPayload> {
     const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
     const unstakeCalls = await this.dappStakingRepository.getUnstakeAndUnlockCalls(
       contractAddress,
@@ -63,21 +72,25 @@ export class DappStakingService implements IDappStakingService {
       ...claimStakerCalls,
       ...unstakeCalls,
     ]);
-    await this.signCall(batch, senderAddress, successMessage);
+
+    return batch;
   }
 
   // @inheritdoc
   public async claimStakerRewards(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    const batch = await this.getClaimStakerRewardsBatch(senderAddress);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
 
+  protected async getClaimStakerRewardsBatch(senderAddress: string) {
     const calls = await this.getClaimStakerRewardsCall(senderAddress);
 
     if (!calls) {
       throw 'Staker rewards expired.';
     }
 
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
-    await this.signCall(batch, senderAddress, successMessage);
+    return await this.dappStakingRepository.batchAllCalls(calls);
   }
 
   // @inheritdoc
@@ -89,14 +102,27 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
 
+    const batch = await this.getClaimAllAndUnstakeFromUnregisteredBatch(
+      senderAddress,
+      contractAddress
+    );
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  // @inheritdoc
+  public async getClaimAllAndUnstakeFromUnregisteredBatch(
+    senderAddress: string,
+    contractAddress: string
+  ): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
+    Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
+
     const stakerRewards = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
     const unstakeCall = await this.dappStakingRepository.getUnstakeFromUnregisteredCall(
       contractAddress
     );
 
-    const batch = await this.dappStakingRepository.batchAllCalls([...stakerRewards, unstakeCall]);
-
-    await this.signCall(batch, senderAddress, successMessage);
+    return await this.dappStakingRepository.batchAllCalls([...stakerRewards, unstakeCall]);
   }
 
   public async unlockTokens(
@@ -192,13 +218,7 @@ export class DappStakingService implements IDappStakingService {
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    const calls = await this.getClaimDappRewardsCalls(contractAddress);
-
-    if (!calls) {
-      throw `No dApp rewards to claim for contract address ${contractAddress}.`;
-    }
-
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+    const batch = await this.getClaimDappRewardsBatch(contractAddress);
     await this.signCall(batch, senderAddress, successMessage);
   }
 
@@ -217,6 +237,16 @@ export class DappStakingService implements IDappStakingService {
     );
   }
 
+  protected async getClaimDappRewardsBatch(contractAddress: string): Promise<ExtrinsicPayload> {
+    const calls = await this.getClaimDappRewardsCalls(contractAddress);
+
+    if (!calls) {
+      throw `No dApp rewards to claim for contract address ${contractAddress}.`;
+    }
+
+    return await this.dappStakingRepository.batchAllCalls(calls);
+  }
+
   // @inheritdoc
   public async getBonusRewards(senderAddress: string): Promise<bigint> {
     const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
@@ -226,14 +256,19 @@ export class DappStakingService implements IDappStakingService {
 
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    const batch = await this.claimBonusRewardsBatch(senderAddress);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
+  protected async claimBonusRewardsBatch(senderAddress: string): Promise<ExtrinsicPayload> {
     const calls = await this.getClaimBonusRewardsCalls(senderAddress);
 
     if (!calls) {
       throw `No bonus rewards to claim for sender address ${senderAddress}.`;
     }
 
-    const batch = await this.dappStakingRepository.batchAllCalls(calls);
-    await this.signCall(batch, senderAddress, successMessage);
+    return this.dappStakingRepository.batchAllCalls(calls);
   }
 
   protected async getClaimStakerAndBonusRewardsCalls(
