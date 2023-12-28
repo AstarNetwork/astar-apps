@@ -24,10 +24,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .banner {
-  color: white;
+  color: $gray-2;
   font-weight: 600;
   padding: 4px 16px 8px 16px;
   line-height: 1.25;
+  font-size: 12px;
+  @media (min-width: $sm) {
+    font-size: 14px;
+  }
 
   // shibuya, zKatana, local
   background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
