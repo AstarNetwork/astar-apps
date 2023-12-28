@@ -33,11 +33,11 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
-    const ss58Address = await this.getSS58Address(senderAddress);
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
     Guard.ThrowIfNegative('amount', amount);
 
+    const ss58Address = await this.getSS58Address(senderAddress);
     const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(ss58Address);
     const unstakeCalls = await this.dappStakingRepository.getUnstakeAndUnlockCalls(
       contractAddress,
@@ -193,7 +193,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   ): Promise<void> {
     const ss58Address = await this.getSS58Address(senderAddress);
     this.guardStake(ss58Address, stakeInfo, unstakeFromAddress, unstakeAmount);
-
+    
     const batch = await this.getClaimLockAndStakeBatch(
       ss58Address,
       amountToLock,
