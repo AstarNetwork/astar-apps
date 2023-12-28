@@ -139,6 +139,10 @@ export default defineComponent({
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  padding: 0 35px 35px 35px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
 
 .dapp--logo {
@@ -185,21 +189,29 @@ export default defineComponent({
 }
 
 .search {
-  border-radius: 6px;
-  border: 1px solid $navy-1;
-  padding: 16px;
   margin-bottom: 24px;
   input {
     outline: none;
     width: 100%;
+    border-radius: 6px;
+    border: 1px solid $navy-1;
+    padding: 16px;
+    &:hover,
+    &:focus {
+      border-color: $astar-blue;
+    }
   }
 }
 
 .body--dark {
   .search {
-    border-color: $gray-1;
     input {
+      border-color: $gray-3;
       background-color: $navy-1;
+      &:hover,
+      &:focus {
+        border-color: $astar-blue;
+      }
     }
   }
 }

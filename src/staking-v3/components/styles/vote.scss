@@ -40,16 +40,31 @@ li {
 }
 
 .inner--vote {
-  gap: 40px;
+  gap: 16px;
   display: flex;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    gap: 40px;
+  }
+}
+
+.column--main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  order: 2;
+  @media (min-width: $sm) {
+    order: 1;
+  }
 }
 
 .column--help {
-  width: 320px;
-  padding: 16px 0;
-  display: none;
+  order: 1;
   @media (min-width: $sm) {
-    display: block;
+    width: 320px;
+    order: 2;
   }
 }
 
@@ -60,6 +75,11 @@ li {
   font-weight: 800;
   line-height: normal;
   letter-spacing: -0.64px;
+  margin-bottom: 16px;
+}
+
+.text--title {
+  margin-bottom: 16px;
 }
 
 .note {
@@ -68,7 +88,6 @@ li {
   align-self: stretch;
   border-radius: 16px;
   background-color: $gray-1;
-  margin: 16px 0;
   display: flex;
   flex-direction: column;
   border: solid 1px $gray-2;
@@ -78,7 +97,7 @@ li {
   background-color: rgba(230, 0, 122, 0.05);
   border: 1px solid $astar-pink;
   color: $astar-pink;
-  margin: 0;
+  margin: 4px 16px;
 }
 
 .warning--text {
@@ -90,31 +109,83 @@ li {
   justify-content: space-between;
 }
 
-.dapp {
-  border-radius: 16px 16px 0px 0px;
-  border: 1px solid $gray-3;
-  border-bottom-width: 0px;
-  padding: 24px 24px 24px 16px;
-}
-
 .amount {
-  border-radius: 0px 0px 16px 16px;
-  border: 1px solid $gray-3;
-  border-top-width: 0px;
   padding: 24px 24px 24px 16px;
 }
 
 .dapp-amount {
   margin-bottom: 16px;
+  border: solid 1px $gray-3;
+  border-radius: 16px;
+  &:hover {
+    border-color: $astar-blue;
+  }
 }
 
 .amount-full-border {
   border-radius: 16px;
   border-width: 1px;
+  &:hover {
+    border-color: $astar-blue;
+  }
+}
+
+.balance {
+  gap: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: $gray-1;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px $gray-2;
+  padding: 12px 0;
+}
+
+.balance--row,
+.rewards--row {
+  padding: 4px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.container--locked-balance {
+  background-color: rgba($astar-pink, 5%);
+  padding: 4px 0;
+}
+
+.rewards {
+  border-radius: 16px;
+  background: linear-gradient(0deg, #0ae2ff -1.31%, #0297fb 63.05%);
+  color: white;
+  padding: 16px;
+  padding: 12px 0;
+  font-weight: 600;
+  overflow: hidden;
+  position: relative;
+}
+
+.bg--rewards {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  mix-blend-mode: color-burn;
+  z-index: 0;
+}
+
+.title--rewards {
+  font-weight: 800;
+}
+
+.text--rewards {
+  font-weight: 700;
 }
 
 .body--dark {
-  .wrapper--vote {
+  .wrapper--vote,
+  .text--title {
     color: $navy-1;
   }
 }
