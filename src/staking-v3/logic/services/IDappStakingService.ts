@@ -135,4 +135,9 @@ export interface IDappStakingService {
   relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void>;
 
   unlockTokens(senderAddress: string, amount: number, successMessage: string): Promise<void>;
+
+  getStakerInfo(
+    address: string,
+    includePreviousPeriods: boolean
+  ): Promise<Map<string, SingularStakingInfo>>;
 }

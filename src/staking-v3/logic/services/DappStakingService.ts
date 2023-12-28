@@ -12,7 +12,8 @@ import { IMetadataRepository } from 'src/v2/repositories';
 @injectable()
 export class DappStakingService implements IDappStakingService {
   constructor(
-    @inject(Symbols.DappStakingRepositoryV3) protected dappStakingRepository: IDappStakingRepository,
+    @inject(Symbols.DappStakingRepositoryV3)
+    protected dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository
   ) {}

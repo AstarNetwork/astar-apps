@@ -193,7 +193,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   ): Promise<void> {
     const ss58Address = await this.getSS58Address(senderAddress);
     this.guardStake(ss58Address, stakeInfo, unstakeFromAddress, unstakeAmount);
-    
+
     const batch = await this.getClaimLockAndStakeBatch(
       ss58Address,
       amountToLock,
