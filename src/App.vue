@@ -63,12 +63,11 @@ import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
-  IDappStakingRepository,
+  IDappStakingService,
   ProtocolStateChangedMessage,
 } from './staking-v3';
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
-import { IAccountUnificationRepository } from './v2/repositories';
 
 export default defineComponent({
   name: 'App',
@@ -189,15 +188,10 @@ export default defineComponent({
       // Memo: Can't use senderSs58Account here because unified account is not stored to vuex yet
       // and senderSs58Account contains evm mapped address which is incorrect for unified account.
       if (currentAccount.value && currentAccount.value !== previousAddress) {
-        const accountUnificationRepo = container.get<IAccountUnificationRepository>(
-          Symbols.AccountUnificationService
-        );
-        const ss58Address = await accountUnificationRepo.getMappedNativeAddress(
-          currentAccount.value
-        );
-        container
-          .get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3)
-          .startAccountLedgerSubscription(ss58Address);
+        const stakingService = container.get<() => IDappStakingService>(
+          Symbols.DappStakingServiceFactoryV3
+        )();
+        await stakingService.startAccountLedgerSubscription(currentAccount.value);
         fetchStakerInfoToStore();
         getAllRewards();
         fetchTiersConfigurationToStore();

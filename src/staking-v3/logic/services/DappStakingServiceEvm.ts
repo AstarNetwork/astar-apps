@@ -260,6 +260,12 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     return await super.getBonusRewards(ss58Address);
   }
 
+  public async startAccountLedgerSubscription(address: string): Promise<void> {
+    const ss58Address = await this.getSS58Address(address);
+
+    await super.startAccountLedgerSubscription(ss58Address);
+  }
+
   private async getSS58Address(evmAddress: string): Promise<string> {
     return await this.accountUnificationRepository.getConvertedNativeAddress(evmAddress);
   }
