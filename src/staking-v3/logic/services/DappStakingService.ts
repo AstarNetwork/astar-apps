@@ -146,7 +146,6 @@ export class DappStakingService implements IDappStakingService {
       return undefined;
     }
 
-    // TODO fix, something is not right here.
     const numberOfClaimCalls = (lastSpanIndex - firstSpanIndex) / eraRewardSpanLength + 1;
     const result = await this.dappStakingRepository.getClaimStakerRewardsCalls(numberOfClaimCalls);
 

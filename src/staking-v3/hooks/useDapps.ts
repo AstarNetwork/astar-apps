@@ -30,7 +30,7 @@ export function useDapps() {
       aggregator.publish(new BusyMessage(true));
       const dApps = await service.getDapps(currentNetworkName.value.toLowerCase());
       store.commit('stakingV3/addDapps', dApps);
-      // TODO, be careful, this can a heavy operations since we are querying all dapps stakes for a chain.
+      // Memo: this can a heavy operations since we are querying all dapps stakes for a chain.
       await fetchStakeAmountsToStore();
     } finally {
       aggregator.publish(new BusyMessage(false));

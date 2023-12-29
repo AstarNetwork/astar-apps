@@ -24,7 +24,6 @@
         {{ $t('dappStaking.edit') }}
       </astar-button>
 
-      <!-- TODO: add logic -->
       <a class="button--icon button--favorite">
         <astar-icon-heart />
         <q-tooltip>
