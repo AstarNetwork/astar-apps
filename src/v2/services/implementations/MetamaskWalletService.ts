@@ -124,9 +124,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     try {
       const web3 = new Web3(this.provider as any);
       const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
-      const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
-        .sendTransaction({ ...rawTx, gas: estimatedGas })
+        .sendTransaction({ ...rawTx })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })

@@ -6,7 +6,7 @@ export function useDappStakingNavigation() {
 
   const navigateToVote = (dAppAddress: string | undefined = undefined): void => {
     const base = networkParam + Path.DappStaking + Path.Vote;
-    router.push(`${base}?dappAddress=${dAppAddress ?? ''}`);
+    router.push(`${base}?dappAddress=${dAppAddress?.toLowerCase() ?? ''}`);
   };
 
   const navigateToMove = (dAppAddress: string): void => {
