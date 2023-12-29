@@ -67,6 +67,8 @@ export default {
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
     ledgerNotOpened: 'Ledger has not opened Astar App. Please open it and refresh this page.',
+    claimRewards:
+      'DApp Staking V3 is coming early next year! Make sure to claim your rewards and stay tuned for the release date.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
