@@ -37,7 +37,6 @@ export default defineComponent({
   },
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
-    // const amount = ref<number | undefined>(undefined);
 
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })

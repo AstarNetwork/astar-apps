@@ -1,7 +1,5 @@
 <template>
   <div class="wrapper--discover">
-    <!-- Todo: Delete -->
-    <!-- <staking-home /> -->
     <feature-dapp />
     <!-- <staking /> -->
     <leaderboard />
@@ -68,7 +66,7 @@ export default defineComponent({
       displayIndex.value = index;
     };
 
-    const searchText = ref('');
+    const searchText = ref<string>('');
 
     return { displayIndex, searchText, toggleDapps };
   },

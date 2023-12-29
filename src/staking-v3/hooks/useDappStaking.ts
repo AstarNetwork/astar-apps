@@ -452,6 +452,10 @@ export function useDappStaking() {
   };
 
   const getDappTier = (dappId: number): number | undefined => {
+    if (dAppTiers.value.period !== protocolState.value?.periodInfo.number) {
+      return undefined;
+    }
+
     const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
 
     return tierId !== undefined ? tierId + 1 : undefined;
