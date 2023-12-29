@@ -6,8 +6,8 @@ import {
   createWebHistory,
 } from 'vue-router';
 import { StateInterface } from 'src/store';
-import routes from 'src/router/routes';
-
+import routes, { Path } from 'src/router/routes';
+import { $api } from '../boot/api';
 export { Path } from 'src/router/routes';
 export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
 
@@ -36,6 +36,23 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+  });
+
+  // TODO - remove after the portal v3 is live.
+  Router.beforeEach((to, from, next) => {
+    // Prevent accessing to dApp staking pages if v3 is deployed to a node, but not supported by UI
+    const networksSupportV3 = ['development', 'shibuya-testnet'];
+    const isStakingV3 = $api?.query.hasOwnProperty('dappStaking');
+    const dontNavigateToDappStaking =
+      to.path.includes('/dapp-staking') &&
+      !to.path.includes('/maintenance') &&
+      !networksSupportV3.includes(to.params?.network?.toString());
+
+    if (isStakingV3 && dontNavigateToDappStaking) {
+      next({ path: Path.DappStaking + Path.Maintenance });
+    } else {
+      next();
+    }
   });
 
   return Router;
