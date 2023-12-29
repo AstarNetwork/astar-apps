@@ -290,7 +290,9 @@ export function useDappStaking() {
   };
 
   const unlock = async (amount: bigint): Promise<void> => {
-    const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
     await stakingService.unlockTokens(
       currentAccount.value,
       Number(ethers.utils.formatEther(amount)),
