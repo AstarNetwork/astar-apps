@@ -157,7 +157,7 @@ export function useDappStaking() {
       : true;
 
   const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
-    // TODO ckeck implementation canStake, canUnstake 
+    // TODO check implementation canStake, canUnstake
     // const [result, error] = await canUnStake(dapp.chain.address, amount);
     // if (!result) {
     //   popError(error);
