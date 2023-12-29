@@ -123,7 +123,7 @@ export const supportWalletObj = {
     isSupportMobileApp: true,
   },
   [SupportWallet.SubWalletNative]: {
-    img: require('/src/assets/img/logo-subwallet.svg'),
+    img: require('/src/assets/img/logo-subwallet.webp'),
     name: 'SubWallet (Native)',
     source: SupportWallet.SubWalletNative,
     walletUrl: 'https://subwallet.app/download.html',
@@ -229,7 +229,7 @@ export const supportEvmWalletObj = {
     ethExtension: 'talismanEth',
   },
   [SupportWallet.SubWalletEvm]: {
-    img: require('/src/assets/img/logo-subwallet.svg'),
+    img: require('/src/assets/img/logo-subwallet.webp'),
     name: 'SubWallet (EVM)',
     source: SupportWallet.SubWalletEvm,
     walletUrl: 'https://subwallet.app/download.html',
@@ -278,7 +278,3 @@ export const supportAllWalletsObj = {
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
 export const supportAllWallets = objToArray(supportAllWalletsObj) as Wallet[];
-
-// Memo: defined by hard-coding to avoid sending too many requests to faucet API server
-// Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L225
-export const faucetBalRequirement = 0.01 / 2;

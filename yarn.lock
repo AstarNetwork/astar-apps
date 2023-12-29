@@ -29,10 +29,10 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@astar-network/astar-sdk-core@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.7.tgz#378bd50fb32745a240dcfb1e518ddc27ee81f817"
-  integrity sha512-/kqdHVm4UZnGtfBv7RSaBRKOttyFDIzago8GWrjT01govGbohKx1npVOWl52w7MV9E494Q6vz2mJ7AoXnqJB5w==
+"@astar-network/astar-sdk-core@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.8.tgz#51bfb5704131fb31dfa626c84eeb1b61c0ba3c7e"
+  integrity sha512-k9MC7TBYP2HsqEtDsdGzwjfDLMLwKyF5hfd+s87bbUQc2QM657Spi7L1+zAVV7bVqFORG081IJm1+NqRY6CpoA==
   dependencies:
     "@ethersproject/bignumber" "^5.6.2"
     "@polkadot/util" "^12.3.2"

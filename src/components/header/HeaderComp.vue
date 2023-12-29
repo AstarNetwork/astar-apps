@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="header"
-    :class="`${isDecentralized && 'margin--decentralized'} header__border-${network}`"
-  >
+  <div class="header" :class="`header__border-${network}`">
     <div class="header-left">
       <div v-if="title">{{ title }}</div>
       <div v-else>
@@ -17,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { decentralizedOrigin } from 'src/links';
 
 export default defineComponent({
   name: 'HeaderComp',
@@ -32,23 +28,13 @@ export default defineComponent({
     },
   },
   setup() {
-    const isDecentralized = computed<boolean>(() => {
-      return window.location.origin === decentralizedOrigin;
-    });
-
-    return { isDecentralized };
+    return {};
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
-
-.margin--decentralized {
-  @media (min-width: $lg) {
-    margin-top: 40px;
-  }
-}
 
 .header {
   display: flex;

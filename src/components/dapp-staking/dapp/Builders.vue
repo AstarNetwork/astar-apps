@@ -54,6 +54,7 @@
   </div>
 </template>
 <script lang="ts">
+import { hasProperty } from '@astar-network/astar-sdk-core';
 import { defineComponent, computed } from 'vue';
 
 interface Developer {
@@ -74,7 +75,7 @@ export default defineComponent({
   setup(props) {
     const teams = computed<Developer[] | null>(() => {
       try {
-        if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('developers')) {
+        if (props.dapp.dapp && hasProperty(props.dapp.dapp, 'developers')) {
           const developers = props.dapp.dapp.developers as Developer[];
           return developers.map((it) => {
             return {

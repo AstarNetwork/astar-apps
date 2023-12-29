@@ -116,11 +116,6 @@ export default {
       superFast: 'Super Fast',
       tipHelp: 'A tip is important to help speed up transactions',
     },
-    decentralizedBanner: {
-      bannerText:
-        'Connected to Astar Portal: Decentralized Edition. Experiencing issues? Return to',
-      goToClassicPortal: 'our Classic Portal',
-    },
     status: {
       working: 'Working',
       fixing: 'Fixing',
@@ -441,6 +436,11 @@ export default {
       invalidBalance: 'Insufficient transferrable balance to complete the transaction',
       warningLeaveMinAmount:
         'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
+    },
+    maintenance: {
+      switching: 'Switching to',
+      willBeBack: 'We will be back',
+      verySoon: 'very soon',
     },
   },
   assets: {

@@ -1,8 +1,6 @@
 import {
   ExtrinsicPayload,
-  GasTip,
   PayloadWithWeight,
-  getEvmGas,
   getIndividualClaimTxs,
   wait,
   checkSumEvmAddress,
@@ -35,6 +33,7 @@ import { AbiItem } from 'web3-utils';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
+import { getRawEvmTransaction } from 'src/modules/evm';
 
 const provider = get(window, 'ethereum') as any;
 
@@ -68,7 +67,6 @@ export const useAccountUnification = () => {
 
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
-  const gas = computed<GasTip>(() => store.getters['general/getGas']);
 
   const unifiedAccount = computed<UnifiedAccount | undefined>(
     () => store.getters['general/getUnifiedAccount']
@@ -283,19 +281,14 @@ export const useAccountUnification = () => {
     try {
       isSendingXc20Tokens.value = true;
       const from = selectedEvmAddress.value;
-      const [nonce, gasPrice] = await Promise.all([
-        web3.value.eth.getTransactionCount(from),
-        getEvmGas(web3.value, '0'), // gas.value.evmGasPrice.fast),
-      ]);
-      const multipliedGas = Math.round(Number(gasPrice) * 1.01);
-      const rawTx = {
-        nonce,
-        gasPrice: web3.value.utils.toHex(multipliedGas.toString()),
+      const rawTx = await getRawEvmTransaction(
+        web3.value,
         from,
-        to: evmPrecompiledContract.dispatch,
-        value: '0x0',
-        data: transferXc20CallData.value,
-      };
+        evmPrecompiledContract.dispatch,
+        transferXc20CallData.value,
+        '0x0'
+      );
+
       const estimatedGas = await web3.value.eth.estimateGas(rawTx);
       await web3.value.eth
         .sendTransaction({ ...rawTx, gas: estimatedGas })
