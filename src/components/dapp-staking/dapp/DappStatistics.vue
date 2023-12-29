@@ -51,6 +51,7 @@
         </div>
         <div>
           <span class="text--statistics-value">
+            <!-- Todo: Update logic -->
             {{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}
           </span>
         </div>
