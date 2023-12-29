@@ -16,6 +16,7 @@ import DappPage from 'src/pages/DappPage.vue';
 import Vote from 'src/staking-v3/components/Vote.vue';
 import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
 import Owner from 'src/staking-v3/components/Owner.vue';
+import MaintenanceMode from 'src/staking-v3/components/MaintenanceMode.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export {
@@ -45,6 +46,7 @@ export enum Path {
   Register = '/register',
   Vote = '/vote',
   Owner = '/owner',
+  Maintenance = '/maintenance',
 }
 
 const routes: RouteRecordRaw[] = [
@@ -72,6 +74,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: Path.DappStaking + Path.Discover,
     redirect: networkParam + Path.DappStaking + Path.Discover,
+  },
+  {
+    path: Path.DappStaking + Path.Maintenance,
+    redirect: networkParam + Path.DappStaking + Path.Maintenance,
   },
   {
     path: '/store/discover-dapps',
@@ -171,6 +177,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'vote',
         component: Vote,
+      },
+      {
+        path: 'maintenance',
+        component: MaintenanceMode,
       },
     ],
   },

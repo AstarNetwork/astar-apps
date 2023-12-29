@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="column--my-staking amounts">
-        <div class="amount--row">
+        <div v-if="lockedButUnstaked > BigInt(0)" class="amount--row">
           <div class="cell">{{ $t('stakingV3.unstakedAmount') }}</div>
           <div class="cell">
             <token-balance-native :balance="lockedButUnstaked.toString()" />

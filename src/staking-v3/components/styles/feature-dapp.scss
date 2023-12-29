@@ -139,8 +139,10 @@
   transition: all 0.2s ease;
   width: 100%;
   height: 80px;
+  line-height: 1.25;
   @media (min-width: $sm) {
     height: 110px;
+    max-width: 134px;
   }
   &:hover {
     background-color: lighten($astar-pink, 10%);
@@ -151,4 +153,101 @@
   font-weight: 700;
   font-size: 16px;
   color: white;
+}
+
+.button--vote {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
+  color: white;
+  line-height: 1.25;
+  transition: all 0.2s ease;
+  background-color: #0048e6;
+  width: 100%;
+  height: 80px;
+  @media (min-width: $sm) {
+    max-width: 134px;
+    height: 110px;
+  }
+  &:hover {
+    filter: brightness(1.2);
+  }
+  span {
+    position: relative;
+    z-index: 1;
+  }
+  iframe {
+    position: absolute;
+    z-index: 0;
+    transform-origin: top left;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    @media (min-width: $sm) {
+      scale: 30%;
+    }
+  }
+}
+
+.bg--vote {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  @media (min-width: $sm) {
+    top: 96px;
+  }
+  img {
+    height: 100vw;
+    object-fit: cover;
+    margin: auto;
+    z-index: 0;
+    @media (min-width: $sm) {
+      max-width: 1100px;
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.wrapper--promo.voting-period {
+  height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .wrapper--promo__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .text--promo-title {
+    color: $gray-1;
+    text-shadow: 4px 8px 15px rgba(8, 15, 46, 0.6);
+    font-size: 48px;
+    font-weight: 800;
+    @media (min-width: $sm) {
+      font-size: 72px;
+    }
+  }
+
+  .row--countdown {
+    color: $gray-1;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 16px;
+    margin: 16px 0;
+  }
+
+  .text--promo-description {
+    color: $gray-1;
+    font-size: 16px;
+    font-weight: 800;
+    max-width: inherit;
+  }
 }

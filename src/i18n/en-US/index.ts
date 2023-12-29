@@ -435,6 +435,11 @@ export default {
       warningLeaveMinAmount:
         'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
     },
+    maintenance: {
+      switching: 'Switching to',
+      willBeBack: 'We will be back',
+      verySoon: 'very soon',
+    },
   },
   assets: {
     astarNativeAccount: 'Astar Native Account',
@@ -703,6 +708,9 @@ export default {
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    voteText: 'I would like to vote my tokens with',
+    transferText: 'I would like to move my funds from',
+    stakeVoteOn: 'And vote/stake on',
     stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
@@ -729,13 +737,14 @@ export default {
     newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
+    voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
-    voteToday: 'Vote today and be eligible for  bonus rewards',
+    voteToday: 'Be entitled to bonus pool today',
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
+    projectLeaderboards: 'Project Leaderboards',
     rewardPerDay: 'Reward per era',
-    leaderboard: 'Leaderboard',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
