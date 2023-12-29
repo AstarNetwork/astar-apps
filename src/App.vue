@@ -154,9 +154,9 @@ export default defineComponent({
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
       const message = m as ProtocolStateChangedMessage;
-      console.log('protocol state', message.state);
 
       if (message.state) {
+        console.log('protocol state', message.state);
         store.commit('stakingV3/setProtocolState', message.state, { root: true });
         await fetchDappsToStore();
         await Promise.all([
@@ -172,8 +172,10 @@ export default defineComponent({
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
       const message = m as AccountLedgerChangedMessage;
-      store.commit('stakingV3/setLedger', message.ledger, { root: true });
-      console.log('ledger', message.ledger);
+      if (message.ledger) {
+        store.commit('stakingV3/setLedger', message.ledger, { root: true });
+        console.log('ledger', message.ledger);
+      }
     });
     // **** end dApp staking v3
 
