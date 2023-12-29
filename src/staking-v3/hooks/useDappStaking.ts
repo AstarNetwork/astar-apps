@@ -106,12 +106,14 @@ export function useDappStaking() {
 
   const dAppTiers = computed<DAppTierRewards>(() => {
     const tiers = store.getters['stakingV3/getDappTiers'];
-    if (!tiers) {
+    if (!tiers && tiers.period === protocolState.value?.periodInfo.number) {
       const era = protocolState.value?.era;
       getDappTiers(era ? era - 1 : 0);
+
+      return tiers;
     }
 
-    return tiers ?? initialDappTiersConfiguration;
+    return initialDappTiersConfiguration;
   });
 
   const stakerInfo = computed<Map<string, SingularStakingInfo>>(
@@ -452,10 +454,6 @@ export function useDappStaking() {
   };
 
   const getDappTier = (dappId: number): number | undefined => {
-    if (dAppTiers.value.period !== protocolState.value?.periodInfo.number) {
-      return undefined;
-    }
-
     const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
 
     return tierId !== undefined ? tierId + 1 : undefined;

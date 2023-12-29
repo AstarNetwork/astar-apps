@@ -91,9 +91,10 @@ export interface IDappStakingService {
 
   /**
    * Batches and invokes multiple calls
-   * 1. Claims staker, dApp and bonus rewards if available
+   * 1. Claims staker and bonus rewards if available
    * 2. Locks a given tokens amount
-   * 3. Stakes a given tokens amount
+   * 3. Unstakes a given tokens amount from a given dApp (nomination transfer)
+   * 4. Stakes a given tokens amount
    * @param senderAddress Staker address.
    * @param amountToLock Tokens to lock
    * @param stakeInfo A map containing contract addresses and amounts to stake.

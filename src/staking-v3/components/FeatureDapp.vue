@@ -40,7 +40,7 @@
         </kpi-card>
         <div v-if="!isVotingPeriod" class="row--start-staking">
           <button class="button--staking" @click="navigateToVote()">
-            <span class="text--start-staking">Start Staking Now</span>
+            <span class="text--start-staking">{{ $t('stakingV3.startStakingNow') }}</span>
           </button>
         </div>
       </div>
@@ -77,13 +77,6 @@ export default defineComponent({
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
     const { periodCurrentDay, periodDuration, periodName } = usePeriod();
-    // const { totalSupply } = useTokenCirculation();
-
-    // const tvlPercentage = computed<number>(
-    //   () =>
-    //     Number(ethers.utils.formatEther(currentEraInfo.value?.totalLocked.toString() ?? 0)) /
-    //     totalSupply.value
-    // );
 
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined

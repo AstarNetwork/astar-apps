@@ -811,6 +811,9 @@ export default {
     withdrawSuccess: 'You successfully withdrew your locked tokens.',
     relockSuccess: 'You successfully re-locked your tokens.',
     searchDapps: 'Search dapps',
+    startStakingNow: 'Start Staking Now',
+    noEntry: 'No entry',
+    burn: 'Burn',
   },
   bridge: {
     bridge: 'Bridge',

@@ -186,7 +186,7 @@ export default defineComponent({
 
     const remainLockedToken = computed<bigint>(() => {
       const stakeToken = ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt();
-      return locked.value - stakeToken - totalStake.value;
+      return locked.value + availableToMove.value - stakeToken - totalStake.value;
     });
 
     // Needed to display dApp name and logo on the page.

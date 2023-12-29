@@ -3,11 +3,11 @@
     <div>{{ index + length }}</div>
     <div class="dapp--button">
       <div class="dapp--image">
-        <img :src="require('../../assets/burn.png')" alt="Burn" />
+        <img :src="require('../../assets/burn.png')" :alt="$t('stakingV3.burn')" />
       </div>
-      <div>No Entry</div>
+      <div>{{ $t('stakingV3.noEntry') }}</div>
     </div>
-    <div class="amount">Burn</div>
+    <div class="amount">{{ $t('stakingV3.burn') }}</div>
   </div>
 </template>
 

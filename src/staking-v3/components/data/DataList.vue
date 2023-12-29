@@ -14,8 +14,12 @@
       <token-balance-native :balance="unlocking" />
     </data-card>
     <data-card :title="$t('stakingV3.numberOfDapps')">{{ totalDapps }}</data-card>
-    <data-card :title="$t('stakingV3.filledSlot')">{{ dAppTiers?.dapps.length ?? 0 }}</data-card>
-    <data-card :title="$t('stakingV3.unfilledSlot')">{{ unfilledSlots }}</data-card>
+    <data-card :title="$t('stakingV3.filledSlot')">
+      {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
+    </data-card>
+    <data-card :title="$t('stakingV3.unfilledSlot')">
+      {{ unfilledSlots }} / {{ tiersConfiguration.numberOfSlots }}
+    </data-card>
   </div>
 </template>
 
@@ -54,6 +58,7 @@ export default defineComponent({
       unlocking,
       dAppTiers,
       unfilledSlots,
+      tiersConfiguration,
     };
   },
 });
