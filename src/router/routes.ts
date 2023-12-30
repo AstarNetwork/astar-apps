@@ -13,6 +13,7 @@ import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
+import MaintenanceMode from 'src/staking-v3/components/MaintenanceMode.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export {
@@ -40,6 +41,7 @@ export enum Path {
   Transfer = '/transfer',
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
+  Maintenance = '/maintenance',
 }
 
 const routes: RouteRecordRaw[] = [
@@ -67,6 +69,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: Path.DappStaking + Path.Discover,
     redirect: networkParam + Path.DappStaking + Path.Discover,
+  },
+  {
+    path: Path.DappStaking + Path.Maintenance,
+    redirect: networkParam + Path.DappStaking + Path.Maintenance,
   },
   {
     path: '/store/discover-dapps',
@@ -155,6 +161,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'register',
         component: RegisterDapp,
+      },
+      {
+        path: 'maintenance',
+        component: MaintenanceMode,
       },
     ],
   },
