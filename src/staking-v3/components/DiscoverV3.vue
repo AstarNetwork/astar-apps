@@ -44,6 +44,7 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DataList from './data/DataList.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
+import { useAprV3 } from '../hooks';
 
 export default defineComponent({
   components: {
@@ -58,6 +59,7 @@ export default defineComponent({
   },
   setup() {
     const displayIndex = ref<number>(0);
+    useAprV3();
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;
