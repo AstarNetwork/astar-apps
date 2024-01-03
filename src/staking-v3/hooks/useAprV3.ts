@@ -56,8 +56,12 @@ export const useAprV3 = () => {
 
         console.log('stakedPercent', stakedPercent); // 0.012028247575185265
 
+        // 0.25 + 0.35 * Math.min(1, 0.012 / 0.2)
         const stakerRewardPercent =
           baseStakersPart + adjustableStakersPart * Math.min(1, stakedPercent / idealStakingRate);
+
+        console.log('stakerRewardPercent', stakerRewardPercent); // 0.2710494332565742
+        // (0.01 * 0.27) / 0.12
         const apr = (yearlyInflation * stakerRewardPercent) / stakedPercent;
 
         console.log('apr', apr); // 0.2253
