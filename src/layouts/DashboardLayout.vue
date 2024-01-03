@@ -64,7 +64,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wrapper--components {
-  height: 100%;
   @media (min-width: $lg) {
     padding: 0 40px;
     padding-top: 12px;
