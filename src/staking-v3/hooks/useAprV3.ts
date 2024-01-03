@@ -36,6 +36,7 @@ export const useAprV3 = () => {
           totalLocked: string;
           currentStakeAmount: {
             voting: string;
+            buildAndEarn: string;
           };
         };
 
@@ -51,23 +52,29 @@ export const useAprV3 = () => {
 
         console.log('idealStakingRate', idealStakingRate); // 0.2
 
-        // 58946 / 4900630.7
+        // 58946 + 8905
+        const currentStakeAmount =
+          toAstr(currentEraInformation.currentStakeAmount.voting) +
+          toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
+        console.log('currentStakeAmount', currentStakeAmount); // 67851
+
+        // 58946 / 67851
         const stakedPercent =
-          toAstr(currentEraInformation.currentStakeAmount.voting) /
-          toAstr(currentEraInformation.totalLocked);
+          toAstr(currentEraInformation.currentStakeAmount.voting) / currentStakeAmount;
 
-        console.log('stakedPercent', stakedPercent); // 0.012028247575185265
+        console.log('stakedPercent', stakedPercent); // 0.8687565400657322
 
-        // 0.25 + 0.35 * Math.min(1, 0.012 / 0.2)
+        // 0.25 + 0.35 * Math.min(1, 0.86 / 0.2)
         const stakerRewardPercent =
           baseStakersPart + adjustableStakersPart * Math.min(1, stakedPercent / idealStakingRate);
 
-        console.log('stakerRewardPercent', stakerRewardPercent); // 0.2710494332565742
-        // (0.01 * 0.27) / 0.12
+        console.log('stakerRewardPercent', stakerRewardPercent); // 0.6
+
+        // (0.01 * 0.6) / 0.86
         const apr = (yearlyInflation * stakerRewardPercent) / stakedPercent;
 
-        console.log('apr', apr); // 0.2253
-        return 0;
+        console.log('apr', apr); // 0.0069
+        return apr;
       } catch (error) {
         return 0;
       }
