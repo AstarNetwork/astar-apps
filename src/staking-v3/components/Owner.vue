@@ -24,6 +24,7 @@
     />
     <edit />
     <div class="bg--owner" />
+    <dapp-background :dapp="dapp" />
   </div>
 </template>
 
@@ -36,9 +37,10 @@ import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
 import KpiCard from './KpiCard.vue';
 import YourRewards from './YourRewards.vue';
+import DappBackground from './dapp/DappBackground.vue';
 
 export default defineComponent({
-  components: { KpiCard, YourRewards, Edit },
+  components: { KpiCard, YourRewards, Edit, DappBackground },
   setup() {
     const route = useRoute();
     const { nativeTokenSymbol } = useNetworkInfo();
