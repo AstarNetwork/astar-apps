@@ -80,22 +80,6 @@
           </div>
         </div>
       </div>
-      <div class="separator--details" />
-      <div class="row--item">
-        <div class="row--item-title">
-          <div class="icon">
-            <astar-icon-verified />
-          </div>
-          <span>
-            {{ $t('dappStaking.dappPage.license') }}
-          </span>
-        </div>
-        <div>
-          <div class="tag">
-            <span class="text--tag">{{ dapp.extended?.license }}</span>
-          </div>
-        </div>
-      </div>
 
       <div v-if="communities" class="separator--details" />
       <div v-if="communities" class="row--item">
