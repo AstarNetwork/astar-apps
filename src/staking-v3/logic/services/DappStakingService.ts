@@ -173,10 +173,9 @@ export class DappStakingService implements IDappStakingService {
       let stakedSum = BigInt(0);
 
       if (ledger.staked.era <= era) {
-        stakedSum += ledger.staked.voting + ledger.staked.buildAndEarn;
-      }
-      if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
-        stakedSum += ledger.stakedFuture.voting + ledger.stakedFuture.buildAndEarn;
+        stakedSum += ledger.staked.totalStake;
+      } else if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
+        stakedSum += ledger.stakedFuture.totalStake;
       }
 
       claimableEras.set(era, stakedSum);

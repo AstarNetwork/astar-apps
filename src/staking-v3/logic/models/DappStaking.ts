@@ -77,6 +77,7 @@ export interface StakeAmount {
   readonly buildAndEarn: bigint;
   readonly era: number;
   readonly period: number;
+  readonly totalStake: bigint;
 }
 
 /**

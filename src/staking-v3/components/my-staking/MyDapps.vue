@@ -81,7 +81,7 @@ export default defineComponent({
     };
 
     const getStakedAmount = (stakingInfo: SingularStakingInfo): bigint => {
-      return stakingInfo.staked.voting + stakingInfo.staked.buildAndEarn;
+      return stakingInfo.staked.totalStake;
     };
 
     const isRegistered = (dappAddress: string): boolean => {
