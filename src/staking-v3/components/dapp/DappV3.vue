@@ -41,6 +41,7 @@
       </div>
     </div>
     <div class="bg--dapp" />
+    <dapp-background :dapp="dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -61,6 +62,7 @@ import { computed, defineComponent, watch, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation } from '../../hooks';
 import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
+import DappBackground from './DappBackground.vue';
 
 export default defineComponent({
   components: {
@@ -72,6 +74,7 @@ export default defineComponent({
     ProjectDetails,
     BackToPage,
     // DappStatsCharts,
+    DappBackground,
   },
   setup() {
     const route = useRoute();
