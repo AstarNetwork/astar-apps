@@ -132,30 +132,7 @@
   }
 }
 
-.button--staking {
-  background-color: $astar-pink;
-  border-radius: 16px;
-  padding: 16px;
-  transition: all 0.2s ease;
-  width: 100%;
-  height: 80px;
-  line-height: 1.25;
-  @media (min-width: $sm) {
-    height: 110px;
-    max-width: 134px;
-  }
-  &:hover {
-    background-color: lighten($astar-pink, 10%);
-  }
-}
-
-.text--start-staking {
-  font-weight: 700;
-  font-size: 16px;
-  color: white;
-}
-
-.button--vote {
+.button--vote-stake {
   position: relative;
   overflow: hidden;
   border-radius: 16px;

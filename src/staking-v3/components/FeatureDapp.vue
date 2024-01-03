@@ -25,9 +25,9 @@
         </astar-button>
       </div>
       <div class="row--data">
-        <button v-if="isVotingPeriod" class="button--vote" @click="navigateToVote()">
+        <button v-if="isVotingPeriod" class="button--vote-stake" @click="navigateToVote()">
           <span>{{ $t('stakingV3.voteStakeToday') }}</span>
-          <vote-button-bg />
+          <vote-stake-button-bg />
         </button>
         <kpi-card :title="periodName.toUpperCase()">
           <span class="text--value">{{ periodCurrentDay }}</span>
@@ -39,8 +39,9 @@
           <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
         </kpi-card>
         <div v-if="!isVotingPeriod" class="row--start-staking">
-          <button class="button--staking" @click="navigateToVote()">
-            <span class="text--start-staking">{{ $t('stakingV3.startStakingNow') }}</span>
+          <button class="button--vote-stake" @click="navigateToVote()">
+            <span>{{ $t('stakingV3.startStakingNow') }}</span>
+            <vote-stake-button-bg />
           </button>
         </div>
       </div>
@@ -63,13 +64,13 @@ import {
 import { Campaign } from 'src/v2/models';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import KpiCard from './KpiCard.vue';
-import VoteButtonBg from './VoteButtonBg.vue';
+import VoteStakeButtonBg from './VoteStakeButtonBg.vue';
 
 export default defineComponent({
   components: {
     FormatBalance,
     KpiCard,
-    VoteButtonBg,
+    VoteStakeButtonBg,
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
