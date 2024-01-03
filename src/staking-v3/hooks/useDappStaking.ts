@@ -106,10 +106,10 @@ export function useDappStaking() {
 
   const dAppTiers = computed<DAppTierRewards>(() => {
     const tiers = store.getters['stakingV3/getDappTiers'];
-    if (!tiers && tiers.period === protocolState.value?.periodInfo.number) {
+    if (!tiers) {
       const era = protocolState.value?.era;
       getDappTiers(era ? era - 1 : 0);
-
+    } else if (tiers.period === protocolState.value?.periodInfo.number) {
       return tiers;
     }
 
