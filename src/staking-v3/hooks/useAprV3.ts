@@ -50,6 +50,16 @@ export const useAprV3 = () => {
         const idealStakingRate = percentageToNumber(inflationParams.idealStakingRate);
 
         console.log('idealStakingRate', idealStakingRate); // 0.2
+        console.log(
+          'toAstr(currentEraInformation.currentStakeAmount.voting)',
+          toAstr(currentEraInformation.currentStakeAmount.voting)
+        );
+        console.log(
+          'toAstr(currentEraInformation.totalLocked)',
+          toAstr(currentEraInformation.totalLocked)
+        );
+
+        // 58946 / 4900630.7
         const stakedPercent =
           toAstr(currentEraInformation.currentStakeAmount.voting) /
           toAstr(currentEraInformation.totalLocked);
