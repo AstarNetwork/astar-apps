@@ -75,7 +75,7 @@ export const useAprV3 = () => {
         // (0.01 * 0.25) / 0.00056 * 100
         const apr = ((yearlyInflation * stakerRewardPercent) / stakedPercent) * 100;
 
-        console.log('apr', apr); // 446
+        console.log('apr (*100)', apr); // 446
         return apr;
       } catch (error) {
         return 0;
