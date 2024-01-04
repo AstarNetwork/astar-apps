@@ -29,12 +29,14 @@ export default defineComponent({
   width: 100%;
   left: 0;
   top: 0;
-  z-index: -1;
+  z-index: 0;
   height: 100vh;
   opacity: 0.8;
 }
 
 .container--dapp-staking {
   height: 100%;
+  z-index: 1;
+  position: relative;
 }
 </style>
