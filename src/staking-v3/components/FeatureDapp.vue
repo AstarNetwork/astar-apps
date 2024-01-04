@@ -33,7 +33,9 @@
           <span class="text--value">{{ periodCurrentDay }}</span>
           <span class="text--value-small">/{{ periodDuration }}</span>
         </kpi-card>
-        <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')">-- %</kpi-card>
+        <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')"
+          >{{ $n(stakerApr) }} %</kpi-card
+        >
         <kpi-card :title="$t('stakingV3.bonusRewards')">-- %</kpi-card>
         <kpi-card :title="$t('dashboard.tvl')">
           <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
@@ -59,6 +61,7 @@ import {
   useCampaign,
   useDappStakingNavigation,
   usePeriod,
+  useAprV3,
 } from '../hooks';
 import { Campaign } from 'src/v2/models';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
@@ -73,6 +76,7 @@ export default defineComponent({
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
+    const { stakerApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
@@ -91,6 +95,7 @@ export default defineComponent({
       periodCurrentDay,
       periodDuration,
       periodName,
+      stakerApr,
       navigateToVote,
     };
   },

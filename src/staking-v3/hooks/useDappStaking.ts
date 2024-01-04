@@ -273,7 +273,7 @@ export function useDappStaking() {
     );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
-    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker: 10, bonus });
   };
 
   const withdraw = async (): Promise<void> => {

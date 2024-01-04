@@ -20,9 +20,10 @@ export const useAprV3 = () => {
       try {
         const api = $api!;
 
-        const [inflation, currentEraInfo] = await Promise.all([
+        const [inflation, currentEraInfo, totalIssuanceRaw] = await Promise.all([
           api.query.inflation.inflationParams(),
           api.query.dappStaking.currentEraInfo(),
+          api.query.balances.totalIssuance(),
         ]);
 
         const inflationParams = inflation.toHuman() as {
@@ -33,12 +34,14 @@ export const useAprV3 = () => {
         };
 
         const currentEraInformation = currentEraInfo.toHuman() as {
-          totalLocked: string;
           currentStakeAmount: {
             voting: string;
             buildAndEarn: string;
           };
         };
+
+        const totalIssuance = Number(ethers.utils.formatEther(totalIssuanceRaw.toString()));
+        console.log('totalIssuance', totalIssuance); // 119491326.7
 
         const yearlyInflation = percentageToNumber(inflationParams.maxInflationRate);
         console.log('yearlyInflation', yearlyInflation); //0.01
@@ -58,22 +61,21 @@ export const useAprV3 = () => {
           toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
         console.log('currentStakeAmount', currentStakeAmount); // 67851
 
-        // 58946 / 67851
-        const stakedPercent =
-          toAstr(currentEraInformation.currentStakeAmount.voting) / currentStakeAmount;
+        // 67851 / 119491326
+        const stakedPercent = currentStakeAmount / totalIssuance;
 
-        console.log('stakedPercent', stakedPercent); // 0.8687565400657322
+        console.log('stakedPercent', stakedPercent); // 0.00056
 
-        // 0.25 + 0.35 * Math.min(1, 0.86 / 0.2)
+        // 0.25 + 0.35 * Math.min(1, 0.00056 / 0.2)
         const stakerRewardPercent =
           baseStakersPart + adjustableStakersPart * Math.min(1, stakedPercent / idealStakingRate);
 
-        console.log('stakerRewardPercent', stakerRewardPercent); // 0.6
+        console.log('stakerRewardPercent', stakerRewardPercent); // 0.25
 
-        // (0.01 * 0.6) / 0.86
-        const apr = (yearlyInflation * stakerRewardPercent) / stakedPercent;
+        // (0.01 * 0.25) / 0.00056 * 100
+        const apr = ((yearlyInflation * stakerRewardPercent) / stakedPercent) * 100;
 
-        console.log('apr', apr); // 0.0069
+        console.log('apr', apr); // 446
         return apr;
       } catch (error) {
         return 0;
