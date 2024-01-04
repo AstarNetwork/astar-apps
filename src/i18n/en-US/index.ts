@@ -69,6 +69,8 @@ export default {
     ledgerNotOpened: 'Ledger has not opened Astar App. Please open it and refresh this page.',
     claimRewards:
       'DApp Staking V3 is coming early 2024! Make sure to claim your rewards and stay tuned for the release date.',
+    underDevelopmentShibuyaWarning:
+      'dApp Staking V3 is beta. We are adding fixes and improves everyday to get ready for the launch.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
