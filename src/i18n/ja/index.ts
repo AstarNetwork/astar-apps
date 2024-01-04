@@ -147,7 +147,7 @@ export default {
     shibuyaTakes20mins: 'ライトクライアント経由でShibuyaに接続するのに20分以上かかるかもしれません。',
     takeLongerTimeToConnect: 'チェーンからデータをロードするのに時間がかかる場合があります。',
     takeLongerTimeToSend: 'トランザクションの送信に時間がかかったり、失敗する可能性があります。',
-    zkNetworkTip: 'まずはじめに、EVMウォレットに接続してください',
+    zkNetworkTip: 'まずはじめに、EVMウォレットに接続してください。',
   },
   wallet: {
     connectWallet: 'ウォレットを接続',
@@ -224,7 +224,7 @@ export default {
     },
   },
   installWallet: {
-    getWallet: 'まだ {value} を得ていませんか？?',
+    getWallet: 'まだ {value} を得ていませんか？',
     installWallet:
       "続行するには {value} をインストールする必要があります。インストールしたら、このページを更新してください。",
     install: 'インストール',
@@ -433,7 +433,7 @@ export default {
         '最小ステーキング額が {minStakingAmount} {symbol} であるため、すべての資金が送金されます。',
       invalidBalance: ' 取引を完了するには譲渡可能な残高が不足しています。', 
       warningLeaveMinAmount:
-        'ステーキングする際には、 {amount} {symbol} 以上の譲渡可能な資金をアカウントに保有する必要があります。',
+        'ステーキングする際には、{amount} {symbol} 以上の譲渡可能な資金をアカウントに保有する必要があります。',
     },
     maintenance: {
       switching: 'Switching to',
@@ -565,13 +565,13 @@ export default {
         tipsDescription:
           '接続できない理由はさまざまです。解決しない場合は、以下の方法をお試しください。',
         tryOtherEndpoints: '他のエンドポイントを試す',
-        changeFromHeader: 'ヘッダーのネットワークボタンからエンドポイントを変更する',
+        changeFromHeader: 'ヘッダーのネットワークボタンからエンドポイントを変更します。',
         clearLocalStorage: 'ローカルストレージのクリア',
         clearLocalStorageTip: 'これは、このブラウザのポータルのキャッシュがクリアされることを意味します。',
         metaUpdate: 'Polkadot.jsアプリのメタデータ更新',
         metaUpdateTip:
-          'ウォレットの拡張機能が最新であることを確認するには、メタデータタブをチェックし、プロンプトが表示されたら更新してください',
-        goToDocs: 'ドキュメントのトラブルシューティングへs',
+          'ウォレットの拡張機能が最新であることを確認するには、メタデータタブをチェックし、プロンプトが表示されたら更新してください。',
+        goToDocs: 'ドキュメントのトラブルシューティングへ',
         goToDocsTip: 'その他の問題については、ドキュメントを参照してください。',
         askCommunity: 'コミュニティに尋ねる',
         askCommunityDiscord: '私たちのディスコードコミュニティに質問してください。',
@@ -705,11 +705,11 @@ export default {
     },
     celetBridge: {
       title: 'Celer ブリッジ',
-      text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへブリッジ資産', 
+      text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへ資産をブリッジ', 
     },
-    warning32blocks: 'ファイナライズには10～20分以上かかるでしょう',
+    warning32blocks: 'ファイナライズには10～20分以上かかるでしょう。',
     warning2steps:
-      'L1（イーサリアム）へのブリッジングには2つのステップがあり、ユーザーにはL1ネットワークでの請求が必要です。（最近の履歴で利用可能）。',
+      'L1（イーサリアム）へのブリッジングには2つのステップがあり、ユーザーにはL1ネットワークでの請求が必要です（最近の履歴で利用可能）。',
     tokenInfo: {
       invalidTokenAddress: '無効なトークンアドレス',
       tokenAddress: '{network} トークンアドレス',
