@@ -4,3 +4,4 @@ export * from './useCampaign';
 export * from './useLeaderboard';
 export * from './useDappStakingNavigation';
 export * from './usePeriod';
+export * from './useVotingCountdown';

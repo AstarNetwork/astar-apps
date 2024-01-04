@@ -7,7 +7,7 @@
         }}</span>
       </div>
       <div v-if="isVotingPeriod" class="row--countdown">
-        <span>--:--:--:--</span>
+        <span>{{ timeLeftFormatted }}</span>
       </div>
       <div class="text--promo-description">
         <span>{{
@@ -59,6 +59,7 @@ import {
   useCampaign,
   useDappStakingNavigation,
   usePeriod,
+  useVotingCountdown,
 } from '../hooks';
 import { Campaign } from 'src/v2/models';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
@@ -77,6 +78,7 @@ export default defineComponent({
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
     const { periodCurrentDay, periodDuration, periodName } = usePeriod();
+    const { timeLeftFormatted } = useVotingCountdown();
 
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined
@@ -91,6 +93,7 @@ export default defineComponent({
       periodCurrentDay,
       periodDuration,
       periodName,
+      timeLeftFormatted,
       navigateToVote,
     };
   },
