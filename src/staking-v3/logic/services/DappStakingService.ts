@@ -7,15 +7,13 @@ import { Guard } from 'src/v2/common';
 import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
-import { IMetadataRepository } from 'src/v2/repositories';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
   constructor(
     @inject(Symbols.DappStakingRepositoryV3)
     protected dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService,
-    @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository
+    @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService
   ) {}
 
   // @inheritdoc
@@ -160,8 +158,14 @@ export class DappStakingService implements IDappStakingService {
     let result = BigInt(0);
 
     // *** 1. Determine last claimable era.
-    const { firstStakedEra, lastStakedEra, firstSpanIndex, lastSpanIndex, rewardsExpired } =
-      await this.getStakerEraRange(senderAddress);
+    const {
+      firstStakedEra,
+      lastStakedEra,
+      firstSpanIndex,
+      lastSpanIndex,
+      rewardsExpired,
+      eraRewardSpanLength,
+    } = await this.getStakerEraRange(senderAddress);
 
     if (rewardsExpired) {
       return result;
@@ -173,18 +177,21 @@ export class DappStakingService implements IDappStakingService {
       let stakedSum = BigInt(0);
 
       if (ledger.staked.era <= era) {
-        stakedSum += ledger.staked.voting + ledger.staked.buildAndEarn;
+        stakedSum += ledger.staked.totalStake;
       }
       if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
-        stakedSum += ledger.stakedFuture.voting + ledger.stakedFuture.buildAndEarn;
+        stakedSum += ledger.stakedFuture.totalStake;
       }
 
       claimableEras.set(era, stakedSum);
     }
 
     // *** 3. Calculate rewards.
-    const multiplier = await this.getMultiplier();
-    for (let spanIndex = firstSpanIndex; spanIndex <= lastSpanIndex; spanIndex++) {
+    for (
+      let spanIndex = firstSpanIndex;
+      spanIndex <= lastSpanIndex;
+      spanIndex += eraRewardSpanLength
+    ) {
       const span = await this.dappStakingRepository.getEraRewards(spanIndex);
       if (!span) {
         continue;
@@ -193,11 +200,8 @@ export class DappStakingService implements IDappStakingService {
       for (let era = span.firstEra; era <= span.lastEra; era++) {
         const staked = claimableEras.get(era);
         if (staked) {
-          const spanIndex = era - span.firstEra;
-          result +=
-            (((staked * multiplier) / span.span[spanIndex].staked) *
-              span.span[spanIndex].stakerRewardPool) /
-            multiplier;
+          const eraIndex = era - span.firstEra;
+          result += (staked * span.span[eraIndex].stakerRewardPool) / span.span[eraIndex].staked;
         }
       }
     }
@@ -423,10 +427,9 @@ export class DappStakingService implements IDappStakingService {
       this.dappStakingRepository.getConstants(),
     ]);
 
-    const multiplier = await this.getMultiplier();
     for (const [contract, info] of stakerInfo.entries()) {
       // Staker is eligible to bonus rewards if he is a loyal staker and if rewards are not expired
-      // and if stake amount refers to the past period.
+      // and if stake amount doesn't refer to the past period.
       if (
         info.loyalStaker &&
         protocolState &&
@@ -437,9 +440,7 @@ export class DappStakingService implements IDappStakingService {
         const periodEndInfo = await this.dappStakingRepository.getPeriodEndInfo(info.staked.period);
         if (periodEndInfo) {
           result.rewards +=
-            (((info.staked.voting * multiplier) / periodEndInfo.totalVpStake) *
-              periodEndInfo.bonusRewardPool) /
-            multiplier;
+            (info.staked.voting * periodEndInfo.bonusRewardPool) / periodEndInfo.totalVpStake;
           result.contractsToClaim.push(contract);
         } else {
           throw `Period end info not found for period ${info.staked.period}.`;
@@ -675,10 +676,5 @@ export class DappStakingService implements IDappStakingService {
       senderAddress: senderAddress,
       successMessage,
     });
-  }
-
-  private async getMultiplier(): Promise<bigint> {
-    const metadata = await this.metadataRepository.getChainMetadata();
-    return BigInt(10 ** metadata.decimals);
   }
 }

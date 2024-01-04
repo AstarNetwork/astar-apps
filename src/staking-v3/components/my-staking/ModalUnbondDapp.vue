@@ -141,11 +141,7 @@ export default defineComponent({
       const selectedDappStakes = stakerInfo.value?.get(props.dapp.chain.address);
 
       return selectedDappStakes
-        ? String(
-            ethers.utils.formatEther(
-              (selectedDappStakes.staked.voting + selectedDappStakes.staked.buildAndEarn).toString()
-            )
-          )
+        ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
         : '0';
     });
     const amount = ref<string | null>(null);

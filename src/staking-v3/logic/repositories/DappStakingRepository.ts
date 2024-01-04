@@ -459,6 +459,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       buildAndEarn: dapp.buildAndEarn.toBigInt(),
       era: dapp.era.toNumber(),
       period: dapp.period.toNumber(),
+      totalStake: dapp.voting.toBigInt() + dapp.buildAndEarn.toBigInt(),
     };
   }
 

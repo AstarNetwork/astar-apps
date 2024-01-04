@@ -106,10 +106,10 @@ export function useDappStaking() {
 
   const dAppTiers = computed<DAppTierRewards>(() => {
     const tiers = store.getters['stakingV3/getDappTiers'];
-    if (!tiers && tiers.period === protocolState.value?.periodInfo.number) {
+    if (!tiers) {
       const era = protocolState.value?.era;
       getDappTiers(era ? era - 1 : 0);
-
+    } else if (tiers.period === protocolState.value?.periodInfo.number) {
       return tiers;
     }
 
@@ -142,11 +142,11 @@ export function useDappStaking() {
 
     if (ledger.value?.stakedFuture && isCurrentPeriod(ledger.value.stakedFuture.period)) {
       result += !isRewardOrStakeExpired(ledger.value.stakedFuture.period)
-        ? ledger.value.stakedFuture.voting + ledger.value.stakedFuture.buildAndEarn
+        ? ledger.value.stakedFuture.totalStake
         : BigInt(0);
     } else if (ledger.value && isCurrentPeriod(ledger.value.staked.period)) {
       result += !isRewardOrStakeExpired(ledger.value.staked.period)
-        ? ledger.value.staked.voting + ledger.value.staked.buildAndEarn
+        ? ledger.value.staked.totalStake
         : BigInt(0);
     }
 
