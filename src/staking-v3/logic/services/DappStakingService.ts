@@ -158,8 +158,14 @@ export class DappStakingService implements IDappStakingService {
     let result = BigInt(0);
 
     // *** 1. Determine last claimable era.
-    const { firstStakedEra, lastStakedEra, firstSpanIndex, lastSpanIndex, rewardsExpired } =
-      await this.getStakerEraRange(senderAddress);
+    const {
+      firstStakedEra,
+      lastStakedEra,
+      firstSpanIndex,
+      lastSpanIndex,
+      rewardsExpired,
+      eraRewardSpanLength,
+    } = await this.getStakerEraRange(senderAddress);
 
     if (rewardsExpired) {
       return result;
@@ -172,7 +178,8 @@ export class DappStakingService implements IDappStakingService {
 
       if (ledger.staked.era <= era) {
         stakedSum += ledger.staked.totalStake;
-      } else if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
+      }
+      if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
         stakedSum += ledger.stakedFuture.totalStake;
       }
 
@@ -180,7 +187,11 @@ export class DappStakingService implements IDappStakingService {
     }
 
     // *** 3. Calculate rewards.
-    for (let spanIndex = firstSpanIndex; spanIndex <= lastSpanIndex; spanIndex++) {
+    for (
+      let spanIndex = firstSpanIndex;
+      spanIndex <= lastSpanIndex;
+      spanIndex += eraRewardSpanLength
+    ) {
       const span = await this.dappStakingRepository.getEraRewards(spanIndex);
       if (!span) {
         continue;

@@ -50,7 +50,7 @@
               <b>{{ $t('stakingV3.availableToVote') }}</b>
             </div>
             <div>
-              <b><token-balance-native :balance="useableBalance" /></b>
+              <b><token-balance-native :balance="availableToVote.toString()" /></b>
             </div>
           </div>
 
@@ -207,6 +207,10 @@ export default defineComponent({
       return BigInt(0);
     });
 
+    const availableToVote = computed<bigint>(
+      () => BigInt(useableBalance.value) + max(remainLockedToken.value, BigInt(0))
+    );
+
     const amountToUnstake = computed<bigint>(() =>
       availableToMove.value > totalStakeAmountBigInt.value
         ? totalStakeAmountBigInt.value
@@ -293,7 +297,7 @@ export default defineComponent({
       nativeTokenSymbol,
       dapps,
       locked,
-      useableBalance,
+      availableToVote,
       totalStake,
       totalStakeAmountBigInt,
       remainLockedToken,
