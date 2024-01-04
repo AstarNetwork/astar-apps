@@ -15,7 +15,7 @@ export default {
   forget: 'Forget',
   remove: 'Remove',
   close: 'Close',
-  manage: 'Manage',
+  manage: '管理',
   subscan: 'Subscan',
   blockscout: 'Blockscout',
   usd: 'USD',
@@ -25,7 +25,7 @@ export default {
   clover: 'Clover',
   mathwallet: 'Math Wallet',
   wallet3: 'Wallet 3',
-  alert: 'Alert',
+  alert: 'アラート',
   max: '最大',
   clear: 'Clear',
   join: 'Join',
@@ -34,9 +34,9 @@ export default {
   wasm: 'WASM',
   new: '新',
   next: '次',
-  addressFormat: '{network} Wallet アドレス',
-  addressPlaceholder: '送金先 {network} アドレス',
-  evmAddressPlaceholder: '送金先 EVM アドレス',
+  addressFormat: '{network} ウォレットアドレス',
+  addressPlaceholder: '宛先 {network} アドレス',
+  evmAddressPlaceholder: '宛先EVMアドレス',
   ticker: 'Ticker',
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
@@ -52,7 +52,7 @@ export default {
     alphabeticalZtoA: 'Alphabetical: Z to A',
   },
   warning: {
-    warning: 'Warning',
+    warning: '警告',
     insufficientBalance: '{token} の残高不足',
     insufficientFee: '<注意> 資金不足のためトランザクションが失敗する可能性があります。',
     inputtedInvalidDestAddress: '無効な宛先アドレスが入力されました。',
@@ -61,12 +61,12 @@ export default {
     inputtedInvalidAddress: 'アドレスが有効ではありません。',
     selectedInvalidNetworkInWallet: 'ウォレットに対して無効なネットワークです。',
     insufficientBridgeAmount: '最小送金額は {amount} {token} です。',
-    insufficientOriginChainBalance: ' {chain} network の最低必要残高は {amount} {token} です。',
+    insufficientOriginChainBalance: ' {chain} ネットワーク の最低必要残高は {amount} {token} です。',
     insufficientOriginChainNativeBalance: '{chain} のネイティブトークンの残高不足です。',
     insufficientExistentialDeposit:
-      '{network} network にある残高が existential depositi 以下です。',
+      '{network} ネットワークにある残高が existential depositi 以下です。',
     withdrawalNotSupport: '現在のところ {chain} への送金はサポートされていません。',
-    ledgerNotOpened: 'Ledger が Astar アプリを開いていません。アプリを開き、このページを更新してください。',
+    ledgerNotOpened: 'LedgerがAstarアプリを開いていません。アプリを開き、このページを更新してください。',
   },
   toast: {
     transactionFailed: '送金失敗: {message}',
@@ -77,7 +77,7 @@ export default {
     copyAddressSuccessfully: 'コピー完了!',
     clearedLocalStorage: 'ローカルストレージをクリアしました！ポータルは数秒で再読み込みされます。',
     checkYourTransactions: 'トランザクションをチェックしてください。',
-    approveOnPolkasafe: 'Approve on PolkaSafe',
+    approveOnPolkasafe: 'PolkaSafeで承認',
     success: '成功',
     note: 'Note',
     error: 'エラー',
@@ -87,8 +87,8 @@ export default {
       'PolkaSafeの機能を有効にするには、ウォレットエクステンションにサインオンしてください。ポップアップが表示されるまで時間がかかる場合があります。',
   },
   common: {
-    updateMetadata: 'Metadata をアップデートしてください。',
-    metadataAlreadyInstalled: 'Metadata はインストールされています。',
+    updateMetadata: 'Metadataをアップデートしてください。',
+    metadataAlreadyInstalled: 'Metadataはインストールされています。',
     lightTheme: 'ライトテーマ',
     darkTheme: 'ダークテーマ',
     dApps: 'dApps',
@@ -112,20 +112,20 @@ export default {
       speed: 'トランザクションスピード',
       speedTip: 'トランザクションスピード(Tip)',
       average: '平均',
-      fast: 'Fast',
-      superFast: 'Super Fast',
+      fast: '高速',
+      superFast: '超高速',
       tipHelp: 'Tipは送金スピードを上げるのに重要です。',
     },
     status: {
-      working: 'Working',
-      fixing: 'Fixing',
-      restricted: 'Restricted',
+      working: '稼働中',
+      fixing: '修復中',
+      restricted: '制限中',
     },
   },
   sidenavi: {
     community: 'コミュニティ',
     myAssets: 'マイアセット',
-    data: 'Data',
+    data: 'データ',
     discord: 'ディスコード',
     twitter: 'X',
     telegram: 'テレグラム',
@@ -137,12 +137,12 @@ export default {
     settings: '設定',
     language: '言語',
     theme: 'テーマ',
-    close: 'Close',
+    close: '閉じる',
     comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
     endpoint: 'エンドポイント',
-    viaEndpoint: '{value}経由',
+    viaEndpoint: '{value} 経由',
     lightClientWarning: 'ライトクライアントによる接続はベータ版です。自己責任でご利用ください。',
     shibuyaTakes20mins: 'ライトクライアント経由でShibuyaに接続するのに20分以上かかるかもしれません。',
     takeLongerTimeToConnect: 'チェーンからデータをロードするのに時間がかかる場合があります。',
@@ -157,17 +157,17 @@ export default {
     multisigAccount: 'マルチシグ アカウント',
     accountUnification: 'Account Unification',
     math: {
-      supportsNetwork: 'MathウォレットはShidenネットワークにのみ対応です。',
+      supportsNetwork: 'Math WalletはShidenネットワークにのみ対応です。',
       switchNetwork:
-        'Mathウォレットの拡張機能であなたのネットワークをShidenに切り替え、このページを更新してください。',
+        'Math Walletの拡張機能であなたのネットワークをShidenに切り替え、このページを更新してください。',
     },
     showBalance: '{token}の残高を表示する',
-    isLedgerAccount: 'これはLedgerアカウントです。Ledgerを接続し、Astar app が動いています。',
+    isLedgerAccount: 'これはLedgerアカウントです。Ledgerを接続し、Astar appが動いています。',
     multisig: {
       initPolkasafe: '署名要求のためにPolkaSafe SDKを初期化しています。しばらく時間がかかります。',
       noAccounts: 'マルチシグアカウントが見つかりません。',
       goToPokasafe: 'PolkaSafe で作成します。',
-      proxy: 'Proxy',
+      proxy: 'プロキシ',
     },
     unifiedAccount: {
       create: 'Unified Accountを作成',
@@ -183,17 +183,17 @@ export default {
       unstakedFirst:
         'もし、EVMアカウントがASTRトークンを保持している場合は、まずそれらのトークンをアンステークする必要があります。',
       xcTokens:
-        'カスタム xcTokens をお持ちの場合、または Astar EVM ポータルにリストされていない xcTokens をお持ちの場合は、まず別のアカウントに転送する必要があります。私たちはトークンが見つからないため、新しいアカウントに移動できません。',
+        'カスタムxcTokensをお持ちの場合、または Astar EVMポータルにリストされていないxcTokensをお持ちの場合は、まず別のアカウントに転送する必要があります。私たちはトークンが見つからないため、新しいアカウントに移動できません。',
       automaticallyTransferred:
         'ERC20トークンだけでなく、すでにリストアップされている他のすべてのxcTokensは、新しいunified accountに自動的に転送されます。',
       override:
         'Polkadot.jsアプリで作成されたアカウントIDをすでにお持ちの場合は、このアカウント統一情報が上書きされます。',
       agreeToProceed:
         'すべて読みましたので、unified accountの作成に進みたいと思います。',
-      agreeToDeposit: 'unified accountの作成には{cost}の費用がかかります。',
+      agreeToDeposit: 'unified accountの作成には {cost} の費用がかかります。',
       agreeToSubmit: '私は一度統合されたアカウントは、切り離すことはできないと理解しています。',
       requirement:
-        'unified accountを作成するには、SubstrateとEVM ウォレットの両方の拡張機能が必要であり、現在のところモバイルアプリからは不可能です。',
+        'unified accountを作成するには、SubstrateとEVMウォレットの両方の拡張機能が必要であり、現在のところモバイルアプリからは不可能です。',
       haveAstarNative: '😎 私はAstar Nativeアカウントを持っています。',
       connectAstarNative:
         'Unified account はAstar Nativeアカウントが所有しています。ご希望のアドレスで接続し、アカウントを作成してください。',
@@ -207,7 +207,7 @@ export default {
       checkNativeWallets: 'Native ウォレットをチェックします。',
       haveStakingBalance:
         'ステーキング残高があります。これらのステークされたトークンはunified accountにマージされません。まずはステークを解除してください。',
-      unifiedAccountName: 'Unified Account 名',
+      unifiedAccountName: 'Unified Account名',
       accountIcon: 'アカウントアイコン',
       balanceTransferred: 'EVMアカウントの残高が転送されます。',
       readyToUnify:
@@ -224,9 +224,9 @@ export default {
     },
   },
   installWallet: {
-    getWallet: 'まだ{value}を得ていませんか？?',
+    getWallet: 'まだ {value} を得ていませんか？?',
     installWallet:
-      "続行するには{value}をインストールする必要があります。インストールしたら、このページを更新してください。",
+      "続行するには {value} をインストールする必要があります。インストールしたら、このページを更新してください。",
     install: 'インストール',
     learn: '学ぶ',
   },
@@ -243,7 +243,7 @@ export default {
     apy: 'APY',
   },
   myDapps: {
-    index: 'Index',
+    index: 'インデックス',
     dapps: 'dApps',
     stakedAmount: 'ステークされた量',
     unbondingAmount: 'アンボンドしている量',
@@ -310,7 +310,7 @@ export default {
     withdraw: '引き出し',
     unbondingEra: 'アンボンディングは、あなたが引き出しができるようになるまでに {unbondingPeriod} eras を必要とします。',
     willUnstakeAll:
-      '最低ステーク額が{minStakingAmount} {symbol}であるため、ステーク残高をすべて解除します。',
+      '最低ステーク額が {minStakingAmount} {symbol} であるため、ステーク残高をすべて解除します。',
     turnOn: 'オンにする',
     turnOff: 'オフにする',
     on: 'オン',
@@ -353,7 +353,7 @@ export default {
       contractAddress: 'コントラクトアドレス {address}',
       license: 'ライセンス',
       startUnbonding: 'アンボンディング開始',
-      unbondFrom: '{name}からアンボンド',
+      unbondFrom: '{name} からアンボンド',
       builder: {
         title: '開発者',
         githubAccount: 'GitHub アカウント',
@@ -375,8 +375,8 @@ export default {
       communityLabel: 'コミュニティ',
       community: {
         title: 'コミュニティ',
-        discordAccount: 'ディスコード　アカウント',
-        twitterAccount: 'X　アカウント',
+        discordAccount: 'ディスコード アカウント',
+        twitterAccount: 'X アカウント',
         redditAccount: 'レディット アカウント',
         facebookAccount: 'フェイスブック アカウント',
         tiktokAccount: 'ティックトック アカウント',
@@ -413,7 +413,7 @@ export default {
       projectLogo: 'プロジェクトロゴ',
     },
     toast: {
-      successfullyClaimed: '{amount}の請求に成功しました。',
+      successfullyClaimed: '{amount} の請求に成功しました。',
       requiredClaimFirst: 'お取引の前に報酬をご請求ください。',
       requiredClaimFirstCompounding:
         '{message} -複利計算を無効にし、報酬を請求した後、再び複利計算を有効にします。',
@@ -470,7 +470,7 @@ export default {
     transferable: '譲渡可能',
     evmDeposit: 'EVM deposit',
     yourEvmDeposit: 'あなたの EVM deposit',
-    yourVestingInfo: 'あなたの配当情報',
+    yourVestingInfo: 'あなたの Vesting Info',
     yourStaking: 'あなたのステーキング',
     cantTransferToExcahges: "あなたは取引所への転送できません。",
     noHash: 'あなたのトランザクションはハッシュを持ちません。',
@@ -541,8 +541,8 @@ export default {
       faucetDriedOut: '蛇口IDが乾いてしまいました。ディスコードでチームメンバーに報告してください。', 
       availableToWithdraw: '引き出し可能',
       totalDistribution: '分配金総額',
-      alreadyVested: '既に配当済み',
-      remainingVests: '残りの配当',
+      alreadyVested: 'Already vested',
+      remainingVests: 'Remaining vests',
       unlockPerBlock: 'ブロック {untilBlock} までブロックごとに {perToken} {symbol}',
       availableToUnlock: 'アンロック可能',
       unlock: 'アンロック',
@@ -559,7 +559,7 @@ export default {
       erc20ContractAddress: 'ERC-20 トークンコントラクトアドレス',
       tipDestAddressFormat: '自分のチェーンのアドレスをどこで見つけることができますか？',
       titleWithdraw: '引き出し {token}',
-      titleVesting: '配当情報',
+      titleVesting: 'Vesting info',
       connectionTroubles: {
         connectionTroubles: '接続のトラブル',
         tipsDescription:
