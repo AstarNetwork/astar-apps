@@ -1,35 +1,36 @@
 <template>
-  <div class="wrapper--discover">
-    <feature-dapp />
-    <!-- <staking /> -->
-    <leaderboard />
-    <leaderboard-vote />
-    <dynamic-ads-area />
+  <div>
+    <div class="wrapper--discover">
+      <feature-dapp />
+      <!-- <staking /> -->
+      <leaderboard />
+      <leaderboard-vote />
+      <dynamic-ads-area />
 
-    <div class="container--dapps-data">
-      <div class="row--dapps-data-header">
-        <toggle-buttons
-          :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
-          @button-selected="toggleDapps"
-        />
-        <input
-          v-if="displayIndex === 0"
-          v-model="searchText"
-          type="text"
-          :placeholder="$t('stakingV3.searchDapps')"
-          class="input--search"
-        />
+      <div class="container--dapps-data">
+        <div class="row--dapps-data-header">
+          <toggle-buttons
+            :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+            @button-selected="toggleDapps"
+          />
+          <input
+            v-if="displayIndex === 0"
+            v-model="searchText"
+            type="text"
+            :placeholder="$t('stakingV3.searchDapps')"
+            class="input--search"
+          />
+        </div>
+        <div v-if="displayIndex === 0" class="dapps">
+          <dapps category="DeFi" :search="searchText" />
+          <dapps category="NFT" :search="searchText" />
+          <dapps category="Tooling" :search="searchText" />
+          <dapps category="Utility" :search="searchText" />
+          <dapps category="Others" :search="searchText" />
+        </div>
+        <data-list v-if="displayIndex === 1" />
       </div>
-      <div v-if="displayIndex === 0" class="dapps">
-        <dapps category="DeFi" :search="searchText" />
-        <dapps category="NFT" :search="searchText" />
-        <dapps category="Tooling" :search="searchText" />
-        <dapps category="Utility" :search="searchText" />
-        <dapps category="Others" :search="searchText" />
-      </div>
-      <data-list v-if="displayIndex === 1" />
     </div>
-
     <div class="bg--discover" />
   </div>
 </template>

@@ -1,19 +1,11 @@
 <template>
-  <div id="app--main" class="tw-h-screen tw-flex tw-overflow-hidden">
+  <div id="app--main" class="wrapper--dashboard-layout">
     <template v-if="width >= screenSize.lg">
       <sidebar-desktop />
     </template>
-    <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
+    <div class="wrapper--dashboard-layout__inner">
       <portal-header />
-      <main
-        id="assets-top"
-        class="
-          tw-flex-1 tw-relative tw-z-0
-          lg:tw-py-12 lg:tw-overflow-y-auto
-          tw-overflow-x-hidden
-          focus:tw-outline-none
-        "
-      >
+      <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <slot />
         </div>
@@ -63,10 +55,33 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.wrapper--dashboard-layout {
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.wrapper--dashboard-layout__inner {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.wrapper--main {
+  flex: 1;
+  position: relative;
+  overflow-x: hidden;
+  padding: 0 0 120px 0;
+  &:focus {
+    outline: 0;
+  }
+  @media (min-width: $lg) {
+    padding-top: 36px;
+  }
+}
+
 .wrapper--components {
   @media (min-width: $lg) {
     padding: 0 40px;
-    padding-top: 12px;
   }
 }
 </style>

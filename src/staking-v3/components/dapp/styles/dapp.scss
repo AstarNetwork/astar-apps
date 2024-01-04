@@ -3,11 +3,8 @@
 .container--dapp-staking {
   max-width: $container-max-width;
   margin: 0 auto;
-  padding-top: 12px;
-  padding-bottom: 140px;
-  @media (min-width: $lg) {
-    padding-bottom: 200px;
-  }
+  position: relative;
+  z-index: 1;
 }
 
 .row--project-overview {
@@ -26,90 +23,13 @@
   left: 0;
   right: 0;
   min-height: 100vh;
-  z-index: -1;
+  z-index: 0;
 }
 
 .text--title {
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 24px;
-}
-
-.bottom--links {
-  position: fixed;
-  background-color: white;
-  box-shadow: 0px -2px 8px 0px rgba(0, 0, 0, 0.08);
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99999999;
-  padding: 10px;
-  width: 100%;
-  @media (min-width: $lg) {
-    width: calc(100vw - 224px);
-    left: 224px;
-    padding: 32px 40px 80px 40px;
-  }
-}
-
-.bottom--links__inner {
-  max-width: $container-max-width;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.button--start-staking {
-  background-color: $astar-pink;
-  height: 80px;
-  padding: 16px 8px;
-  border-radius: 16px;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-  flex: 1;
-  transition: all 0.2s ease;
-  &:hover {
-    background: lighten($astar-pink, 10%);
-  }
-}
-
-.column--action {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.button--icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 9999px;
-  border: solid 1px $astar-blue;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $astar-blue;
-  transition: all 0.2s ease;
-  &:hover {
-    background-color: $astar-blue;
-    color: white;
-  }
-}
-
-.button--favorite {
-  svg {
-    width: 24px;
-    height: 24px;
-    margin-top: 2px;
-  }
-}
-
-.button--share {
-  svg {
-    width: 18px;
-    height: 18px;
-  }
 }
 
 .body--dark {

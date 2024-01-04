@@ -1,28 +1,30 @@
 <template>
-  <div v-if="dappAddress && dapp" class="wrapper--owner">
-    <div class="row--your-dashboard">
-      <span>{{ $t('stakingV3.yourDashboard') }}</span>
-    </div>
-    <div class="container--dapp-hero">
-      <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-      <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
-      <div class="row--your-dashboard-mobile">
+  <div>
+    <div v-if="dappAddress && dapp" class="wrapper--owner">
+      <div class="row--your-dashboard">
         <span>{{ $t('stakingV3.yourDashboard') }}</span>
       </div>
+      <div class="container--dapp-hero">
+        <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
+        <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+        <div class="row--your-dashboard-mobile">
+          <span>{{ $t('stakingV3.yourDashboard') }}</span>
+        </div>
+      </div>
+      <div class="row--statistics">
+        <kpi-card :title="$t('stakingV3.currentTier')">{{
+          getDappTier(dapp.chain.id) ?? '--'
+        }}</kpi-card>
+        <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
+        <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
+      </div>
+      <your-rewards
+        :total-rewards="totalRewards"
+        :rewards-per-period="rewardsPerPeriod"
+        :claim-rewards="claimRewards"
+      />
+      <edit />
     </div>
-    <div class="row--statistics">
-      <kpi-card :title="$t('stakingV3.currentTier')">{{
-        getDappTier(dapp.chain.id) ?? '--'
-      }}</kpi-card>
-      <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
-      <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
-    </div>
-    <your-rewards
-      :total-rewards="totalRewards"
-      :rewards-per-period="rewardsPerPeriod"
-      :claim-rewards="claimRewards"
-    />
-    <edit />
     <div class="bg--owner" />
     <dapp-background :dapp="dapp" />
   </div>

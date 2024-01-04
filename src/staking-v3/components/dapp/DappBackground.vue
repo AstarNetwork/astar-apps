@@ -25,7 +25,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper--dapp-background {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   right: calc(50% - 200px);
   top: -200px;
   @media (min-width: $sm) {

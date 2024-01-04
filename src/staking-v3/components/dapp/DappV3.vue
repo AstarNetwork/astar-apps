@@ -1,44 +1,18 @@
 <template>
-  <div v-if="dapp && dapp.extended" class="container--dapp-staking">
-    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
-    <dapp-avatar :dapp="dapp" />
-    <dapp-statistics :dapp="dapp" />
-    <dapp-images :dapp="dapp" />
-    <builders :dapp="dapp" />
+  <div>
+    <div v-if="dapp && dapp.extended" class="container--dapp-staking">
+      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
+      <dapp-avatar :dapp="dapp" />
+      <dapp-statistics :dapp="dapp" />
+      <dapp-images :dapp="dapp" />
+      <builders :dapp="dapp" />
 
-    <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
-    <div class="row--project-overview">
-      <project-overview :dapp="dapp" />
-      <project-details :dapp="dapp" class="project--details" />
-    </div>
-    <!-- <dapp-stats-charts :dapp="dapp" /> -->
-    <div class="bottom--links">
-      <div class="bottom--links__inner">
-        <button
-          class="button--start-staking"
-          :disabled="isZkEvm"
-          @click="navigateToVote(dapp.chain.address)"
-        >
-          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.extended.name }}
-        </button>
-
-        <div class="column--action">
-          <!-- TODO: add logic -->
-          <a class="button--icon button--favorite">
-            <astar-icon-heart />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
-            </q-tooltip>
-          </a>
-
-          <a :href="twitterUrl" target="_blank" class="button--icon button--share">
-            <astar-icon-share />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('share') }}</span>
-            </q-tooltip>
-          </a>
-        </div>
+      <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
+      <div class="row--project-overview">
+        <project-overview :dapp="dapp" />
+        <project-details :dapp="dapp" class="project--details" />
       </div>
+      <!-- <dapp-stats-charts :dapp="dapp" /> -->
     </div>
     <div class="bg--dapp" />
     <dapp-background :dapp="dapp" />
