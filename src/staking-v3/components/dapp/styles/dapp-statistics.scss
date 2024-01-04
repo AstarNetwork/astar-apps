@@ -52,3 +52,19 @@
     }
   }
 }
+
+.wrapper--dapp-statistics.small{
+  margin: 0;
+  .button--vote-stake{
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 14px;
+    border-radius: 12px;
+    @media (min-width: $sm) {
+      height: 60px;
+      font-size: 16px;
+      border-radius: 16px;
+    }
+  }
+}

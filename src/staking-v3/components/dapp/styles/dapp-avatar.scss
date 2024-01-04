@@ -114,3 +114,33 @@
   height: 48px;
   font-size: 16px;
 }
+
+.wrapper--dapp-avatar.small {
+  padding: 0;
+  @media (min-width: $sm) {
+    flex: 1;
+  }
+  .column--avatar {
+    align-items: center;
+    gap: 12px;
+    flex-direction: row;
+    @media (min-width: $sm) {
+      gap: 16px;
+    }
+  }
+  .image--dapp-icon {
+    width: 44px;
+    height: 44px;
+    @media (min-width: $sm) {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  .row--dapp-title {
+    font-size: 16px;
+    margin: 0;
+    @media (min-width: $sm) {
+      font-size: 24px;
+    }
+  }
+}

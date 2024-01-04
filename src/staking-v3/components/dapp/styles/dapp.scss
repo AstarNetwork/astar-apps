@@ -32,9 +32,39 @@
   margin-bottom: 24px;
 }
 
+.wrapper--small-header {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  @media (min-width: $lg) {
+    top: 0;
+    left: 224px;
+    padding: 16px 24px;
+  }
+}
+
 .body--dark {
   .container--dapp-staking,
   .text--title {
     color: $navy-1;
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }

@@ -64,12 +64,12 @@ export default defineComponent({
 .wrapper--dashboard-layout__inner {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .wrapper--main {
   flex: 1;
   position: relative;
-  overflow-x: hidden;
   padding: 0 0 120px 0;
   &:focus {
     outline: 0;

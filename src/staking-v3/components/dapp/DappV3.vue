@@ -2,8 +2,19 @@
   <div>
     <div v-if="dapp && dapp.extended" class="container--dapp-staking">
       <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
-      <dapp-avatar :dapp="dapp" />
-      <dapp-statistics :dapp="dapp" />
+
+      <Transition>
+        <div v-if="!isVisible" class="wrapper--small-header">
+          <dapp-avatar :dapp="dapp" small />
+          <dapp-statistics :dapp="dapp" small />
+        </div>
+      </Transition>
+
+      <div v-intersection="onIntersection">
+        <dapp-avatar :dapp="dapp" />
+        <dapp-statistics :dapp="dapp" />
+      </div>
+
       <dapp-images :dapp="dapp" />
       <builders :dapp="dapp" />
 
@@ -32,7 +43,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, watch, onBeforeMount } from 'vue';
+import { computed, defineComponent, watch, onBeforeMount, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation } from '../../hooks';
 import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
@@ -107,6 +118,12 @@ export default defineComponent({
 
     const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
 
+    const isVisible = ref(true);
+
+    const onIntersection = (entry: any) => {
+      isVisible.value = entry.isIntersecting;
+    };
+
     return {
       Path,
       dapp,
@@ -114,6 +131,8 @@ export default defineComponent({
       navigateToVote,
       isZkEvm,
       twitterUrl,
+      isVisible,
+      onIntersection,
     };
   },
 });
