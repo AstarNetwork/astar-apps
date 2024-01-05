@@ -70,7 +70,7 @@ export default {
     claimRewards:
       'DApp Staking V3 is coming early 2024! Make sure to claim your rewards and stay tuned for the release date.',
     underDevelopmentShibuyaWarning:
-      'dApp Staking V3 is beta. We are adding fixes and improves everyday to get ready for the launch.',
+      'dApp Staking V3 is in beta. We are adding fixes and improves everyday to get ready for the launch.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',

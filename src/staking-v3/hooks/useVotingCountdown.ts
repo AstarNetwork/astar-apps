@@ -3,7 +3,7 @@ import { useDappStaking } from './useDappStaking';
 import { PeriodType } from '../logic';
 
 export function useVotingCountdown() {
-  const { protocolState, currentBlock, eraLengths } = useDappStaking();
+  const { protocolState, currentBlock } = useDappStaking();
   const blockTimeInSeconds = 12;
 
   const secondsLeft = computed<number>(() => {
@@ -15,14 +15,7 @@ export function useVotingCountdown() {
       return 0;
     }
 
-    const blocksUntilNextEra = protocolState.value.nextEraStart - currentBlock.value;
-    const blocksUntilNextSubperiod =
-      blocksUntilNextEra +
-      (protocolState.value.periodInfo.nextSubperiodStartEra - protocolState.value.era - 1) *
-        eraLengths.value.standardEraLength;
-    const secondsUntilNextSubperiod = blocksUntilNextSubperiod * blockTimeInSeconds;
-
-    return secondsUntilNextSubperiod;
+    return (protocolState.value.nextEraStart - currentBlock.value) * blockTimeInSeconds;
   });
 
   const timeLeftFormatted = computed<string>(() => {

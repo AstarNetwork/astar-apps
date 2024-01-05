@@ -222,7 +222,11 @@ export default defineComponent({
 
     const canConfirm = (): boolean => {
       // TODO use canStake from useDappStaking after multiple stakes will be supported.
-      return totalStakeAmount.value > 0;
+      return (
+        totalStakeAmount.value > 0 &&
+        availableToVote.value >
+          ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt()
+      );
     };
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
