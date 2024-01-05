@@ -112,6 +112,7 @@ export default {
     youtube: 'YouTube',
     docs: 'Documentation',
     loading: 'Loading...',
+    comingSoon: 'Coming soon',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',

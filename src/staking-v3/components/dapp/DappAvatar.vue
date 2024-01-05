@@ -27,7 +27,7 @@
       <a class="button--icon button--favorite">
         <astar-icon-heart />
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
+          <span class="text--tooltip">{{ $t('common.comingSoon') }}</span>
         </q-tooltip>
       </a>
 
