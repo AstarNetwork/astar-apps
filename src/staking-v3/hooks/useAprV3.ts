@@ -31,7 +31,7 @@ export const useAprV3 = () => {
     const periodLength =
       eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
 
-    // Todo: fetched it by API
+    // Todo: fetch it via API
     const periodsPerCycle = 2;
     const eraPerCycle = periodLength * periodsPerCycle;
     const blocksStandardEraLength = eraLength.standardEraLength;

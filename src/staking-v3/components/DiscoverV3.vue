@@ -59,7 +59,6 @@ export default defineComponent({
   },
   setup() {
     const displayIndex = ref<number>(0);
-    useAprV3();
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;

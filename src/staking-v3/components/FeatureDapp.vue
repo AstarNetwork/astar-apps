@@ -33,8 +33,12 @@
           <span class="text--value">{{ periodCurrentDay }}</span>
           <span class="text--value-small">/{{ periodDuration }}</span>
         </kpi-card>
-        <kpi-card :title="$t('stakingV3.basicRewards')">{{ $n(truncate(stakerApr)) }} %</kpi-card>
-        <kpi-card :title="$t('stakingV3.bonusRewards')">{{ $n(truncate(bonusApr)) }} %</kpi-card>
+        <kpi-card :title="$t('stakingV3.basicRewards')">
+          {{ stakerApr ? $n(truncate(stakerApr, 2)) : '-' }} %
+        </kpi-card>
+        <kpi-card :title="$t('stakingV3.bonusRewards')">
+          {{ bonusApr ? $n(truncate(bonusApr, 2)) : '-' }} %
+        </kpi-card>
         <kpi-card :title="$t('dashboard.tvl')">
           <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
         </kpi-card>
