@@ -330,6 +330,13 @@ export default {
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
+    migrationSupport: {
+      actionRequired: 'Action Required',
+      yourTokensAreLocked:
+        'Your tokens are locked in dAppStaking V2. Please migrate your funds to V3 today and start participating.',
+      balanceFromV2: 'Balance from V2 (locked)',
+      migrateNow: 'Migrate Now',
+    },
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring your funds from?',
@@ -749,7 +756,6 @@ export default {
     tierLeaderboard: 'Tier Leaderboard',
     projectLeaderboards: 'Project Leaderboards',
     rewardPerDay: 'Reward per era',
-    myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
