@@ -756,6 +756,7 @@ export default {
     tierLeaderboard: 'Tier Leaderboard',
     projectLeaderboards: 'Project Leaderboards',
     rewardPerDay: 'Reward per era',
+    myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
