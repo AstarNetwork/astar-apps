@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 34px auto;
+  margin: 0 auto;
   row-gap: 100px;
   max-width: 1300px;
   padding: 0 16px;
@@ -54,6 +54,24 @@
   right: 0;
   min-height: 100vh;
   z-index: 0;
+}
+
+.bg--voting-period {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  img {
+    height: 100vw;
+    object-fit: cover;
+    margin: auto;
+    @media (min-width: $sm) {
+      max-width: 1100px;
+      width: 100%;
+      height: auto;
+    }
+  }
 }
 
 .body--dark {

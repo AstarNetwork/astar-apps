@@ -46,9 +46,6 @@
         </div>
       </div>
     </div>
-    <div v-if="isVotingPeriod" class="bg--vote">
-      <img :src="require('/src/staking-v3/assets/vote_hero_bg.webp')" alt="" />
-    </div>
   </div>
 </template>
 

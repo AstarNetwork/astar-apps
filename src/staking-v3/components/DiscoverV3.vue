@@ -32,6 +32,9 @@
       </div>
     </div>
     <div class="bg--discover" />
+    <div v-if="isVotingPeriod" class="bg--voting-period">
+      <img :src="require('/src/staking-v3/assets/vote_hero_bg.webp')" alt="" />
+    </div>
   </div>
 </template>
 
@@ -45,6 +48,7 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DataList from './data/DataList.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
+import { useDappStaking } from '../hooks';
 
 export default defineComponent({
   components: {
@@ -66,7 +70,9 @@ export default defineComponent({
 
     const searchText = ref<string>('');
 
-    return { displayIndex, searchText, toggleDapps };
+    const { isVotingPeriod } = useDappStaking();
+
+    return { displayIndex, searchText, isVotingPeriod, toggleDapps };
   },
 });
 </script>

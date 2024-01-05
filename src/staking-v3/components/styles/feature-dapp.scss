@@ -5,6 +5,7 @@
 }
 
 .row--title {
+  margin-top: 34px;
   margin-bottom: 8px;
 }
 
@@ -167,29 +168,8 @@
   }
 }
 
-.bg--vote {
-  position: absolute;
-  top: 64px;
-  left: 0;
-  width: 100%;
-  @media (min-width: $sm) {
-    top: 96px;
-  }
-  img {
-    height: 100vw;
-    object-fit: cover;
-    margin: auto;
-    z-index: 0;
-    @media (min-width: $sm) {
-      max-width: 1100px;
-      width: 100%;
-      height: auto;
-    }
-  }
-}
-
 .wrapper--promo.voting-period {
-  height: 75vh;
+  height: 70vh;
   display: flex;
   align-items: center;
   justify-content: center;
