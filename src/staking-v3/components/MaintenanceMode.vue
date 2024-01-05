@@ -21,8 +21,10 @@
   font-weight: 700;
   line-height: normal;
   background: url('/images/bk_maintenance.png') no-repeat center;
-  background-size: contain;
   color: $container-bg-white;
+  @media (min-width: $lg) {
+    background-size: contain;
+  }
 }
 
 .header--text {
