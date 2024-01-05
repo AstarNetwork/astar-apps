@@ -14,6 +14,10 @@
           <div class="move--from">
             <img :src="dAppToMoveTokensFrom.basic.iconUrl" />
             <div>{{ dAppToMoveTokensFrom.basic.name }}</div>
+            <token-balance-native
+              :balance="availableToMove.toString()"
+              class="nomination--balance"
+            />
           </div>
           <div class="text--title stake--on">{{ $t('stakingV3.stakeVoteOn') }}</div>
         </div>
@@ -46,7 +50,7 @@
               <b>{{ $t('stakingV3.availableToVote') }}</b>
             </div>
             <div>
-              <b><token-balance-native :balance="useableBalance" /></b>
+              <b><token-balance-native :balance="availableToVote.toString()" /></b>
             </div>
           </div>
 
@@ -186,7 +190,7 @@ export default defineComponent({
 
     const remainLockedToken = computed<bigint>(() => {
       const stakeToken = ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt();
-      return locked.value + availableToMove.value - stakeToken - totalStake.value;
+      return locked.value - stakeToken - totalStake.value;
     });
 
     // Needed to display dApp name and logo on the page.
@@ -197,11 +201,15 @@ export default defineComponent({
     const availableToMove = computed<bigint>(() => {
       const info = stakerInfo?.value?.get(dAppToMoveFromAddress.value);
       if (info) {
-        return info.staked.buildAndEarn + info.staked.voting;
+        return info.staked.totalStake;
       }
 
       return BigInt(0);
     });
+
+    const availableToVote = computed<bigint>(
+      () => BigInt(useableBalance.value) + max(remainLockedToken.value, BigInt(0))
+    );
 
     const amountToUnstake = computed<bigint>(() =>
       availableToMove.value > totalStakeAmountBigInt.value
@@ -245,9 +253,11 @@ export default defineComponent({
       });
 
       // If additional funds locking is required remainLockedToken value will be negative.
+      // In case of nomination transfer no additional funds locking is required.
+      const tokensToLock = remainLockedToken.value + availableToMove.value;
       await claimLockAndStake(
         stakeInfo,
-        remainLockedToken.value < 0 ? remainLockedToken.value * BigInt(-1) : BigInt(0),
+        tokensToLock < 0 ? tokensToLock * BigInt(-1) : BigInt(0),
         dAppToMoveFromAddress.value,
         amountToUnstake.value
       );
@@ -287,7 +297,7 @@ export default defineComponent({
       nativeTokenSymbol,
       dapps,
       locked,
-      useableBalance,
+      availableToVote,
       totalStake,
       totalStakeAmountBigInt,
       remainLockedToken,
@@ -304,6 +314,7 @@ export default defineComponent({
       Path,
       isVotingPeriod,
       dAppToMoveTokensFrom,
+      availableToMove,
     };
   },
 });

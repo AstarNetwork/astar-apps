@@ -64,7 +64,7 @@ export function useDapps() {
       if (stake) {
         chain.stakeVoting = stake.voting;
         chain.stakeBuildAndEarn = stake.buildAndEarn;
-        chain.totalStake = stake.buildAndEarn + stake.voting;
+        chain.totalStake = stake.totalStake;
         store.commit('stakingV3/updateDappChain', chain);
       } else {
         chain.stakeVoting = chain.stakeBuildAndEarn = chain.totalStake = undefined;
