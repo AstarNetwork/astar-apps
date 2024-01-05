@@ -20,101 +20,28 @@
                 class="nomination--balance"
               />
             </div>
-            <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
-              <dapp-selector
-                :dapps="dapps"
-                :on-select-dapps="handleSelectDapp"
-                :placeholder="$t('stakingV3.chooseProject')"
-                :selected-dapp="dapp"
-                :disable-selection="!canAddDapp"
-              />
-              <div class="amount">
-                <amount
-                  :amount="dapp.amount"
-                  :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
-                />
-              </div>
-            </div>
-            <div v-if="canAddDapp" class="dapp amount-full-border">
-              <dapp-selector
-                :dapps="dapps"
-                :on-select-dapps="handleSelectDapp"
-                :placeholder="$t('stakingV3.chooseProject')"
-              />
-            </div>
-
-            <div class="balance">
-              <div class="balance--row">
-                <div>
-                  <b>{{ $t('stakingV3.availableToVote') }}</b>
-                </div>
-                <div>
-                  <b><token-balance-native :balance="useableBalance" /></b>
-                </div>
-              </div>
-
-              <div class="container--locked-balance">
-                <div class="balance--row">
-                  <div>
-                    {{ $t('stakingV3.lockedBalance') }}
-                  </div>
-                  <div><token-balance-native :balance="locked.toString()" /></div>
-                </div>
-                <div class="balance--row">
-                  <div>
-                    {{
-                      isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked')
-                    }}
-                  </div>
-                  <div><token-balance-native :balance="totalStake.toString()" /></div>
-                </div>
-                <div
-                  class="balance--row"
-                  :class="remainLockedToken !== BigInt(0) && 'warning--text'"
-                >
-                  <div>
-                    <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
-                  </div>
-                  <div>
-                    <b
-                      ><token-balance-native
-                        :balance="max(remainLockedToken, BigInt(0)).toString()"
-                    /></b>
-                  </div>
-                </div>
-                <div v-if="remainLockedToken > BigInt(0)" class="note warning">
-                  {{ $t('stakingV3.voteLockedTokensWarning') }}
-                </div>
-              </div>
-
-              <div class="balance--row">
-                <div>
-                  <b>{{
-                    isVotingPeriod ? $t('stakingV3.totalVote') : $t('stakingV3.totalStake')
-                  }}</b>
-                </div>
-                <div>
-                  <b
-                    ><token-balance-native :balance="totalStakeAmountBigInt?.toString() ?? '0'"
-                  /></b>
-                </div>
-              </div>
-            </div>
-            <rewards-panel />
-            <div class="wrapper--button">
-              <astar-button
-                :disabled="!canConfirm()"
-                style="width: 100%; height: 52px; font-size: 22px"
-                @click="confirm"
-              >
-                {{ $t('confirm') }}
-              </astar-button>
-            </div>
-            <modal-select-dapp
+            <div class="text--title stake--on">{{ $t('stakingV3.stakeVoteOn') }}</div>
+          </div>
+          <div v-for="dapp in selectedDapps" :key="dapp.address" class="dapp-amount">
+            <dapp-selector
               :dapps="dapps"
-              :is-modal-select-dapp="isModalSelectDapp"
-              :handle-modal-select-dapp="handleModalSelectDapp"
-              :dapps-selected="handleDappsSelected"
+              :on-select-dapps="handleSelectDapp"
+              :placeholder="$t('stakingV3.chooseProject')"
+              :selected-dapp="dapp"
+              :disable-selection="!canAddDapp"
+            />
+            <div class="amount">
+              <amount
+                :amount="dapp.amount"
+                :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
+              />
+            </div>
+          </div>
+          <div v-if="canAddDapp" class="dapp amount-full-border">
+            <dapp-selector
+              :dapps="dapps"
+              :on-select-dapps="handleSelectDapp"
+              :placeholder="$t('stakingV3.chooseProject')"
             />
           </div>
 
@@ -127,6 +54,85 @@
                 <b><token-balance-native :balance="availableToVote.toString()" /></b>
               </div>
             </div>
+
+            <div class="container--locked-balance">
+              <div class="balance--row">
+                <div>
+                  {{ $t('stakingV3.lockedBalance') }}
+                </div>
+                <div><token-balance-native :balance="locked.toString()" /></div>
+              </div>
+              <div class="balance--row">
+                <div>
+                  {{
+                    isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked')
+                  }}
+                </div>
+                <div><token-balance-native :balance="totalStake.toString()" /></div>
+              </div>
+              <div class="balance--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+                <div>
+                  <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
+                </div>
+                <div>
+                  <b
+                    ><token-balance-native :balance="max(remainLockedToken, BigInt(0)).toString()"
+                  /></b>
+                </div>
+              </div>
+              <div v-if="remainLockedToken > BigInt(0)" class="note warning">
+                {{ $t('stakingV3.voteLockedTokensWarning') }}
+              </div>
+            </div>
+
+            <div class="balance--row">
+              <div>
+                <b>{{ isVotingPeriod ? $t('stakingV3.totalVote') : $t('stakingV3.totalStake') }}</b>
+              </div>
+              <div>
+                <b><token-balance-native :balance="totalStakeAmountBigInt?.toString() ?? '0'" /></b>
+              </div>
+            </div>
+          </div>
+          <rewards-panel />
+          <div class="wrapper--button">
+            <astar-button
+              :disabled="!canConfirm()"
+              style="width: 100%; height: 52px; font-size: 22px"
+              @click="confirm"
+            >
+              {{ $t('confirm') }}
+            </astar-button>
+          </div>
+          <modal-select-dapp
+            :dapps="dapps"
+            :is-modal-select-dapp="isModalSelectDapp"
+            :handle-modal-select-dapp="handleModalSelectDapp"
+            :dapps-selected="handleDappsSelected"
+          />
+        </div>
+
+        <div class="column--help">
+          <div class="note">
+            <b>{{ $t('toast.note') }}</b>
+            <ul>
+              <li>
+                {{
+                  $t('stakingV3.minimumStakingAmount', {
+                    amount: constants?.minStakeAmountToken,
+                    symbol: nativeTokenSymbol,
+                  })
+                }}
+              </li>
+              <li>
+                {{
+                  $t('stakingV3.minBalanceAfterStaking', {
+                    amount: constants?.minBalanceAfterStaking,
+                    symbol: nativeTokenSymbol,
+                  })
+                }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
