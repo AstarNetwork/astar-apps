@@ -20,7 +20,12 @@ export function usePeriod() {
   );
 
   const periodCurrentDay = computed<number | undefined>(() => {
-    if (!protocolState.value || !constants.value) {
+    if (
+      !protocolState.value ||
+      !constants.value ||
+      !currentBlock.value ||
+      eraLengths.value.standardErasPerVotingPeriod === 0
+    ) {
       return undefined;
     }
 
