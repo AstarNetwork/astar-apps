@@ -41,7 +41,7 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
   // TODO - remove after the portal v3 is live.
   Router.beforeEach((to, from, next) => {
     // Prevent accessing to dApp staking pages if v3 is deployed to a node, but not supported by UI
-    const networksSupportV3 = ['development', 'shibuya-testnet'];
+    const networksSupportV3 = ['development', 'shibuya-testnet', 'custom-node'];
     const isStakingV3 = $api?.query.hasOwnProperty('dappStaking');
     const dontNavigateToDappStaking =
       to.path.includes('/dapp-staking') &&

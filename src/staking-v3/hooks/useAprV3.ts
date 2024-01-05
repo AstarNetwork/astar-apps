@@ -2,28 +2,33 @@ import { aprToApy } from 'apr-tools';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { ref, watchEffect } from 'vue';
+import { useDappStaking } from './useDappStaking';
 
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
   const stakerApy = ref<number>(0);
+  const { eraLengths, protocolState } = useDappStaking();
 
   const percentageToNumber = (percent: string): number => {
     return parseFloat(String(percent)) * 0.01;
   };
 
   const toAstr = (wei: string): number => {
-    return Number(ethers.utils.formatEther(wei.replace(/,/g, '')));
+    return Number(ethers.utils.formatEther(BigInt(wei)));
   };
 
   watchEffect(async () => {
     const getApr = async () => {
       try {
-        const api = $api!;
+        if (protocolState.value?.periodInfo.subperiod === 'Voting') {
+          return 0;
+        }
+        const apiRef = $api!;
 
         const [inflation, currentEraInfo, totalIssuanceRaw] = await Promise.all([
-          api.query.inflation.inflationParams(),
-          api.query.dappStaking.currentEraInfo(),
-          api.query.balances.totalIssuance(),
+          apiRef.query.inflation.inflationParams(),
+          apiRef.query.dappStaking.currentEraInfo(),
+          apiRef.query.balances.totalIssuance(),
         ]);
 
         const inflationParams = inflation.toHuman() as {
@@ -33,14 +38,10 @@ export const useAprV3 = () => {
           idealStakingRate: string;
         };
 
-        const currentEraInformation = currentEraInfo.toHuman() as {
-          currentStakeAmount: {
-            voting: string;
-            buildAndEarn: string;
-          };
-        };
-
+        const currentEraInformation = JSON.parse(currentEraInfo.toString());
         const totalIssuance = Number(ethers.utils.formatEther(totalIssuanceRaw.toString()));
+
+        console.log('currentEraInformation', currentEraInformation);
         console.log('totalIssuance', totalIssuance); // 119491326.7
 
         const yearlyInflation = percentageToNumber(inflationParams.maxInflationRate);
@@ -55,7 +56,6 @@ export const useAprV3 = () => {
 
         console.log('idealStakingRate', idealStakingRate); // 0.2
 
-        // 58946 + 8905
         const currentStakeAmount =
           toAstr(currentEraInformation.currentStakeAmount.voting) +
           toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
@@ -72,10 +72,19 @@ export const useAprV3 = () => {
 
         console.log('stakerRewardPercent', stakerRewardPercent); // 0.25
 
-        // (0.01 * 0.25) / 0.00056 * 100
-        const apr = ((yearlyInflation * stakerRewardPercent) / stakedPercent) * 100;
+        const secBlockProductionRate = 12;
+        console.log('eraLengths', eraLengths.value);
+        const blocksStandardEraLength = 1800;
+        const eraPerCycle = 56;
+        const blockPerCycle = blocksStandardEraLength * eraPerCycle;
+        const secsOneYear = 365 * 24 * 60 * 60;
+        const cyclesPerYear = secsOneYear / secBlockProductionRate / blockPerCycle;
+        console.log('cyclesPerYear', cyclesPerYear); // 26.0714
 
-        console.log('apr (*100)', apr); // 446
+        // (0.01 * 0.2509) / 0.0005678 * 26.0714 * 100
+        const apr = ((yearlyInflation * stakerRewardPercent) / stakedPercent) * cyclesPerYear * 100;
+
+        console.log('apr (*100)', apr); // 11523
         return apr;
       } catch (error) {
         return 0;
