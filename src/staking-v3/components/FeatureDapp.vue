@@ -33,10 +33,8 @@
           <span class="text--value">{{ periodCurrentDay }}</span>
           <span class="text--value-small">/{{ periodDuration }}</span>
         </kpi-card>
-        <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')"
-          >{{ $n(stakerApr) }} %</kpi-card
-        >
-        <kpi-card :title="$t('stakingV3.bonusRewards')">-- %</kpi-card>
+        <kpi-card :title="$t('stakingV3.basicRewards')">{{ $n(truncate(stakerApr)) }} %</kpi-card>
+        <kpi-card :title="$t('stakingV3.bonusRewards')">{{ $n(truncate(bonusApr)) }} %</kpi-card>
         <kpi-card :title="$t('dashboard.tvl')">
           <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
         </kpi-card>
@@ -68,6 +66,7 @@ import { Campaign } from 'src/v2/models';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import KpiCard from './KpiCard.vue';
 import VoteButtonBg from './VoteButtonBg.vue';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -77,7 +76,7 @@ export default defineComponent({
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
-    const { stakerApr } = useAprV3();
+    const { stakerApr, bonusApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
@@ -98,8 +97,10 @@ export default defineComponent({
       periodDuration,
       periodName,
       stakerApr,
+      bonusApr,
       timeLeftFormatted,
       navigateToVote,
+      truncate,
     };
   },
 });

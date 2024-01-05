@@ -15,7 +15,7 @@ interface InflationParam {
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
-  const { eraLengths, protocolState } = useDappStaking();
+  const { eraLengths, isVotingPeriod } = useDappStaking();
 
   const percentageToNumber = (percent: string): number => {
     return parseFloat(String(percent)) * 0.01;
@@ -43,13 +43,8 @@ export const useAprV3 = () => {
   const getApr = async (): Promise<{ stakerApr: number; bonusApr: number }> => {
     try {
       const apiRef = $api!;
-      const protocolStateRef = protocolState.value;
       const eraLengthRef = eraLengths.value;
-      if (
-        !protocolStateRef ||
-        !eraLengthRef.standardEraLength ||
-        protocolStateRef?.periodInfo.subperiod === 'Voting'
-      ) {
+      if (!eraLengthRef.standardEraLength) {
         return { stakerApr: 0, bonusApr: 0 };
       }
 
@@ -70,9 +65,10 @@ export const useAprV3 = () => {
       const bonusPart = percentageToNumber(inflationParams.bonusPart);
 
       const cyclesPerYear = getCyclePerYear(eraLengthRef);
-      const currentStakeAmount =
-        toAstr(currentEraInformation.currentStakeAmount.voting) +
-        toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
+      const currentStakeAmount = isVotingPeriod.value
+        ? toAstr(currentEraInformation.nextStakeAmount.voting)
+        : toAstr(currentEraInformation.currentStakeAmount.voting) +
+          toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
 
       const stakedPercent = currentStakeAmount / totalIssuance;
       const stakerRewardPercent =
@@ -81,8 +77,8 @@ export const useAprV3 = () => {
       const stakerApr =
         ((yearlyInflation * stakerRewardPercent) / stakedPercent) * cyclesPerYear * 100;
 
-      // Todo: staked percent
-      const bonusApr = ((yearlyInflation * bonusPart) / 0.1) * cyclesPerYear * 100;
+      // Todo: Update it
+      const bonusApr = 0;
 
       return { stakerApr, bonusApr };
     } catch (error) {
@@ -91,7 +87,7 @@ export const useAprV3 = () => {
   };
 
   watch(
-    [protocolState, eraLengths],
+    [isVotingPeriod, eraLengths],
     async () => {
       const apr = await getApr();
       stakerApr.value = apr.stakerApr;
@@ -99,6 +95,7 @@ export const useAprV3 = () => {
     },
     { immediate: true }
   );
+
   return {
     stakerApr,
     bonusApr,
