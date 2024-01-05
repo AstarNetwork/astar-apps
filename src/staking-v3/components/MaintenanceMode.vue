@@ -10,18 +10,18 @@
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 .wrapper--maintenance {
-  margin-top: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 70vh;
   width: 100%;
   font-size: 24px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   background: url('/images/bk_maintenance.png') no-repeat center;
+  background-size: contain;
   color: $container-bg-white;
 }
 
