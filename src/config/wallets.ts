@@ -25,7 +25,8 @@ export enum SupportWallet {
   OneKeyEvm = 'OneKeyEvm',
   OneKeyNative = 'OneKey',
   Snap = 'Snap',
-  Enkrypt = 'enkrypt',
+  EnkryptEvm = 'enkryptEvm',
+  EnkryptNative = 'enkrypt',
 }
 
 export enum SupportMultisig {
@@ -56,7 +57,8 @@ export const WalletModalOption = {
   OneKey: SupportWallet.OneKeyNative,
   OneKeyEvm: SupportWallet.OneKeyEvm,
   Snap: SupportWallet.Snap,
-  Enkrypt: SupportWallet.Enkrypt,
+  EnkryptEvm: SupportWallet.EnkryptEvm,
+  EnkryptNative: SupportWallet.EnkryptNative,
 };
 
 export const SubstrateWallets = [
@@ -72,7 +74,7 @@ export const SubstrateWallets = [
   SupportWallet.HanaNative,
   SupportWallet.OneKeyNative,
   SupportWallet.Snap,
-  SupportWallet.Enkrypt,
+  SupportWallet.EnkryptNative,
 ];
 
 export interface Wallet {
@@ -188,10 +190,10 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: true,
   },
-  [SupportWallet.Enkrypt]: {
+  [SupportWallet.EnkryptNative]: {
     img: require('/src/assets/img/logo-enkrypt.svg'),
-    name: 'Enkrypt',
-    source: SupportWallet.Enkrypt,
+    name: 'Enkrypt (Native)',
+    source: SupportWallet.EnkryptNative,
     walletUrl: 'https://www.enkrypt.com',
     guideUrl: 'https://myetherwallet.gitbook.io/enkrypt-documentation/',
     isSupportBrowserExtension: true,
@@ -280,10 +282,10 @@ export const supportEvmWalletObj = {
     isSupportMobileApp: false,
     ethExtension: 'hanaWalletEth',
   },
-  [SupportWallet.Enkrypt]: {
+  [SupportWallet.EnkryptEvm]: {
     img: require('/src/assets/img/logo-enkrypt.svg'),
-    name: 'Enkrypt',
-    source: SupportWallet.Enkrypt,
+    name: 'Enkrypt (EVM)',
+    source: SupportWallet.EnkryptEvm,
     walletUrl: 'https://www.enkrypt.com',
     guideUrl: 'https://myetherwallet.gitbook.io/enkrypt-documentation/',
     isSupportBrowserExtension: true,
