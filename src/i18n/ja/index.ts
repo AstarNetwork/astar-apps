@@ -69,6 +69,8 @@ export default {
     withdrawalNotSupport: '現在のところ {chain} への送金はサポートされていません。',
     ledgerNotOpened:
       'LedgerがAstarアプリを開いていません。アプリを開き、このページを更新してください。',
+    claimRewards:
+      'DApp ステーキング V3 は 2024 年初頭に登場します! 必ず報酬を受け取り、リリース日を楽しみにお待ちください。',
   },
   toast: {
     transactionFailed: '送金失敗: {message}',
