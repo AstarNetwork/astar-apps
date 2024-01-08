@@ -13,8 +13,8 @@
 
       <div class="separator" />
 
-      <!-- TODO: add logic -->
-      <migration-support />
+      <!-- TODO: add logic and show the component -->
+      <migration-support v-if="false" />
 
       <tab-component :tabs="tabs" :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)" />
       <my-staking v-if="currentTabIndex === 0" />
