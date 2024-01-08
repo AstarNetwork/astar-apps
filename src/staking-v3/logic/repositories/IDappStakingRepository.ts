@@ -10,10 +10,10 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
+  InflationParam,
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,
-  StakeAmount,
   TiersConfiguration,
 } from '../models';
 
@@ -187,6 +187,17 @@ export interface IDappStakingRepository {
    */
   getCurrentEraInfo(): Promise<EraInfo>;
 
+  /**
+   * Gets the inflation info.
+   * @returns A promise that resolves to the inflation info.
+   */
+  getInflationParams(): Promise<InflationParam>;
+
+  /**
+   * Gets the amount of bonus rewards pool per period.
+   * @returns A promise that resolves to the value (wei).
+   */
+  getBonusRewardPoolPerPeriod(): Promise<string>;
   /**
    * Gets the contract staking info.
    * @param dappId Dapp id to get staking info for.

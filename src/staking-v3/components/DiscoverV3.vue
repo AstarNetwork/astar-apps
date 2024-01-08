@@ -40,15 +40,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import FeatureDapp from './FeatureDapp.vue';
 import Dapps from './Dapps.vue';
+import FeatureDapp from './FeatureDapp.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 // import Staking from './my-staking/Staking.vue';
-import DataList from './data/DataList.vue';
+import { useDappStaking } from '../hooks';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
-import { useDappStaking } from '../hooks';
+import DataList from './data/DataList.vue';
 
 export default defineComponent({
   components: {
@@ -56,7 +56,6 @@ export default defineComponent({
     Dapps,
     Leaderboard,
     LeaderboardVote,
-    // Staking,
     DataList,
     DynamicAdsArea,
     ToggleButtons,

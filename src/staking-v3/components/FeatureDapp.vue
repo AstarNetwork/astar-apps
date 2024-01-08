@@ -33,8 +33,12 @@
           <span class="text--value">{{ periodCurrentDay }}</span>
           <span class="text--value-small">/{{ periodDuration }}</span>
         </kpi-card>
-        <kpi-card v-if="!isVotingPeriod" :title="$t('stakingV3.basicRewards')">-- %</kpi-card>
-        <kpi-card :title="$t('stakingV3.bonusRewards')">-- %</kpi-card>
+        <kpi-card :title="$t('stakingV3.basicRewards')">
+          {{ stakerApr ? $n(truncate(stakerApr, 2)) : '-' }} %
+        </kpi-card>
+        <kpi-card :title="$t('stakingV3.bonusRewards')">
+          {{ bonusApr ? $n(truncate(bonusApr, 2)) : '-' }} %
+        </kpi-card>
         <kpi-card :title="$t('dashboard.tvl')">
           <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
         </kpi-card>
@@ -50,17 +54,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { truncate } from '@astar-network/astar-sdk-core';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
+import { Campaign } from 'src/v2/models';
+import { computed, defineComponent } from 'vue';
 import {
-  useDappStaking,
-  useDapps,
+  useAprV3,
   useCampaign,
+  useDappStaking,
   useDappStakingNavigation,
+  useDapps,
   usePeriod,
   useVotingCountdown,
 } from '../hooks';
-import { Campaign } from 'src/v2/models';
-import FormatBalance from 'src/components/common/FormatBalance.vue';
 import KpiCard from './KpiCard.vue';
 import VoteStakeButtonBg from './VoteStakeButtonBg.vue';
 
@@ -72,6 +78,7 @@ export default defineComponent({
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
+    const { stakerApr, bonusApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
@@ -91,8 +98,11 @@ export default defineComponent({
       periodCurrentDay,
       periodDuration,
       periodName,
+      stakerApr,
+      bonusApr,
       timeLeftFormatted,
       navigateToVote,
+      truncate,
     };
   },
 });

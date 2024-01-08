@@ -154,7 +154,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'discover',
         component:
-          networkParam === '/development' || networkParam === '/shibuya-testnet'
+          networkParam === '/development' ||
+          networkParam === '/shibuya-testnet' ||
+          networkParam === '/custom-node'
             ? DiscoverV3
             : StakingTop,
       },
