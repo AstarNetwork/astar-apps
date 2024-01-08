@@ -78,8 +78,8 @@ export const useAprV3 = () => {
     eraLength: EraLengths;
     bonusRewardsPoolPerPeriod: string;
   }): number => {
-    // Memo: Any amount can be simulated here
-    const simulatedVoteAmount = 100;
+    // Memo: Any amount can be simulated
+    const simulatedVoteAmount = 1000;
 
     const cyclesPerYear = getCyclePerYear(eraLength);
 
