@@ -264,13 +264,10 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
+  position: sticky;
+  top: 0;
   @media (min-width: $lg) {
-    border-left: solid 1px $navy-3;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 224px;
-    padding-right: 224px;
+    position: relative;
   }
 }
 
