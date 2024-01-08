@@ -2,15 +2,17 @@ import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { EraInfo, EraLengths, IDappStakingRepository, InflationParam } from '../logic';
 import { useDappStaking } from './useDappStaking';
 import { u128 } from '@polkadot/types';
+import { useNetworkInfo } from 'src/hooks';
 
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo } = useDappStaking();
+  const { currentNetworkName } = useNetworkInfo();
 
   const percentageToNumber = (percent: string): number => {
     // e.g.: percent 1%: 10000000000000000
@@ -22,7 +24,9 @@ export const useAprV3 = () => {
   };
 
   // Todo: fetch it via API
-  const periodsPerCycle = 2;
+  const periodsPerCycle = computed(() => {
+    return currentNetworkName.value === 'Shibuya' ? 2 : 4;
+  });
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
     const secBlockProductionRate = 12;
@@ -30,7 +34,7 @@ export const useAprV3 = () => {
     const periodLength =
       eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
 
-    const eraPerCycle = periodLength * periodsPerCycle;
+    const eraPerCycle = periodLength * periodsPerCycle.value;
     const blocksStandardEraLength = eraLength.standardEraLength;
     const blockPerCycle = blocksStandardEraLength * eraPerCycle;
     const cyclePerYear = secsOneYear / secBlockProductionRate / blockPerCycle;
@@ -94,7 +98,7 @@ export const useAprV3 = () => {
 
     const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
     const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
-    const periodsPerYear = periodsPerCycle * cyclesPerYear;
+    const periodsPerYear = periodsPerCycle.value * cyclesPerYear;
     const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
     const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;
     return bonusApr;
@@ -140,7 +144,7 @@ export const useAprV3 = () => {
   };
 
   watch(
-    [isVotingPeriod, eraLengths, currentEraInfo],
+    [isVotingPeriod, eraLengths, currentEraInfo, periodsPerCycle],
     async () => {
       const apr = await getApr();
       stakerApr.value = apr.stakerApr;
