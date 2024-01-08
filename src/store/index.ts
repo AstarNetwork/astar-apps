@@ -11,6 +11,8 @@ import general from './general';
 import contracts from './contracts';
 import dapps from './dapp-staking';
 import assets from './assets';
+import stakingV3 from '../staking-v3/store';
+import { DappStakingState } from 'src/staking-v3/store/state';
 
 /*
  * If not building with SSR mode, you can
@@ -29,6 +31,7 @@ export interface StateInterface {
   contracts: ContractsStateInterface;
   dapps: DappStateInterface;
   assets: AssetsStateInterface;
+  stakingV3: DappStakingState;
 }
 
 // provide typings for `this.$store`
@@ -48,6 +51,7 @@ export default store(function (/* { ssrContext } */) {
       contracts,
       dapps,
       assets,
+      stakingV3,
     },
 
     // enable strict mode (adds overhead!)

@@ -1,0 +1,90 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--owner {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 64px 16px 0 16px;
+  max-width: 1140px;
+  position: relative;
+  z-index: 1;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.container--dapp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 16px;
+    margin-bottom: 100px;
+  }
+}
+
+.img--dapp-icon {
+  height: 48px;
+  width: 48px;
+  border-radius: 16px;
+  object-fit: contain;
+  @media (min-width: $lg) {
+    height: 64px;
+    width: 64px;
+  }
+}
+
+.text--dapp-name {
+  font-weight: 800;
+  font-size: 32px;
+  color: $navy-1;
+}
+
+.row--your-dashboard {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+    font-weight: 800;
+    color: $navy-1;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.row--your-dashboard-mobile {
+  font-weight: 800;
+  font-size: 16px;
+  color: $navy-1;
+  margin-top: 16px;
+  margin-bottom: 84px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
+.row--statistics {
+  display: flex;
+  justify-content: center;
+  column-gap: 4px;
+  margin-bottom: 80px;
+  @media (min-width: $lg) {
+    margin-bottom: 160px;
+  }
+}
+
+.bg--owner {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.body--dark {
+  .wrapper--owner {
+    color: $navy-1;
+  }
+}

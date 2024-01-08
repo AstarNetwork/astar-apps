@@ -1,6 +1,6 @@
 <template>
   <div class="banner" :class="`banner--${network}`">
-    {{ $t('warning.claimRewards') }}
+    {{ network !== 2 ? $t('warning.claimRewards') : $t('warning.underDevelopmentShibuyaWarning') }}
   </div>
 </template>
 
