@@ -49,6 +49,10 @@ export interface PalletDappStakingV3InflationParams extends Struct {
   readonly idealStakingRate: String;
 }
 
+export interface PalletDappStakingV3ActiveInflationConfig extends Struct {
+  readonly bonusRewardPoolPerPeriod: String;
+}
+
 export interface PalletDappStakingV3DAppInfo extends Struct {
   readonly owner: AccountId32;
   readonly id: Compact<u16>;

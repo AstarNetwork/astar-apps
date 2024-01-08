@@ -28,6 +28,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
+  PalletDappStakingV3ActiveInflationConfig,
   PalletDappStakingV3ContractStakeAmount,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3DAppTierRewards,
@@ -402,6 +403,13 @@ export class DappStakingRepository implements IDappStakingRepository {
       baseStakersPart: String(data.baseStakersPart),
       idealStakingRate: String(data.idealStakingRate),
     };
+  }
+
+  public async getBonusRewardPoolPerPeriod(): Promise<string> {
+    const api = await this.api.getApi();
+    const data =
+      await api.query.inflation.activeInflationConfig<PalletDappStakingV3ActiveInflationConfig>();
+    return String(data.bonusRewardPoolPerPeriod);
   }
 
   public async getContractStake(dappId: number): Promise<ContractStakeAmount> {
