@@ -17,14 +17,18 @@
           <staking />
         </template>
 
-        <div v-if="!isLoading" class="container">
+        <div v-if="!isLoading">
           <div v-if="isH160">
-            <evm-asset-list :tokens="evmAssets.assets" />
+            <evm-asset-list :tokens="evmAssets.assets" class="container" />
           </div>
           <div v-else>
             <!-- Memo: hide xvm panel because AA might replace it -->
             <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
-            <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+            <xcm-native-asset-list
+              v-if="isEnableXcm"
+              :xcm-assets="xcmAssets.assets"
+              class="container"
+            />
           </div>
         </div>
       </div>

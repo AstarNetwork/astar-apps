@@ -32,8 +32,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .dapp-top {
   padding: 0 16px;
-  @media (min-width: $lg) {
-    margin-top: 50px;
-  }
 }
 </style>

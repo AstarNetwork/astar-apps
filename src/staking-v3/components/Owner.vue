@@ -1,29 +1,32 @@
 <template>
-  <div v-if="dappAddress && dapp" class="wrapper--owner">
-    <div class="row--your-dashboard">
-      <span>{{ $t('stakingV3.yourDashboard') }}</span>
-    </div>
-    <div class="container--dapp-hero">
-      <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-      <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
-      <div class="row--your-dashboard-mobile">
+  <div>
+    <div v-if="dappAddress && dapp" class="wrapper--owner">
+      <div class="row--your-dashboard">
         <span>{{ $t('stakingV3.yourDashboard') }}</span>
       </div>
+      <div class="container--dapp-hero">
+        <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
+        <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+        <div class="row--your-dashboard-mobile">
+          <span>{{ $t('stakingV3.yourDashboard') }}</span>
+        </div>
+      </div>
+      <div class="row--statistics">
+        <kpi-card :title="$t('stakingV3.currentTier')">{{
+          getDappTier(dapp.chain.id) ?? '--'
+        }}</kpi-card>
+        <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
+        <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
+      </div>
+      <your-rewards
+        :total-rewards="totalRewards"
+        :rewards-per-period="rewardsPerPeriod"
+        :claim-rewards="claimRewards"
+      />
+      <edit />
     </div>
-    <div class="row--statistics">
-      <kpi-card :title="$t('stakingV3.currentTier')">{{
-        getDappTier(dapp.chain.id) ?? '--'
-      }}</kpi-card>
-      <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
-      <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
-    </div>
-    <your-rewards
-      :total-rewards="totalRewards"
-      :rewards-per-period="rewardsPerPeriod"
-      :claim-rewards="claimRewards"
-    />
-    <edit />
     <div class="bg--owner" />
+    <dapp-background :dapp="dapp" />
   </div>
 </template>
 
@@ -36,9 +39,10 @@ import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
 import KpiCard from './KpiCard.vue';
 import YourRewards from './YourRewards.vue';
+import DappBackground from './dapp/DappBackground.vue';
 
 export default defineComponent({
-  components: { KpiCard, YourRewards, Edit },
+  components: { KpiCard, YourRewards, Edit, DappBackground },
   setup() {
     const route = useRoute();
     const { nativeTokenSymbol } = useNetworkInfo();

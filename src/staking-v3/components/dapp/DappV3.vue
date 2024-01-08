@@ -1,46 +1,32 @@
 <template>
-  <div v-if="dapp && dapp.extended" class="container--dapp-staking">
-    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
-    <dapp-avatar :dapp="dapp" />
-    <dapp-statistics :dapp="dapp" />
-    <dapp-images :dapp="dapp" />
-    <builders :dapp="dapp" />
+  <div>
+    <div v-if="dapp && dapp.extended" class="container--dapp-staking">
+      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
 
-    <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
-    <div class="row--project-overview">
-      <project-overview :dapp="dapp" />
-      <project-details :dapp="dapp" class="project--details" />
-    </div>
-    <!-- <dapp-stats-charts :dapp="dapp" /> -->
-    <div class="bottom--links">
-      <div class="bottom--links__inner">
-        <button
-          class="button--start-staking"
-          :disabled="isZkEvm"
-          @click="navigateToVote(dapp.chain.address)"
-        >
-          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.extended.name }}
-        </button>
-
-        <div class="column--action">
-          <!-- TODO: add logic -->
-          <a class="button--icon button--favorite">
-            <astar-icon-heart />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
-            </q-tooltip>
-          </a>
-
-          <a :href="twitterUrl" target="_blank" class="button--icon button--share">
-            <astar-icon-share />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('share') }}</span>
-            </q-tooltip>
-          </a>
+      <Transition>
+        <div v-if="!isVisible" class="wrapper--small-header">
+          <dapp-avatar :dapp="dapp" small />
+          <dapp-statistics :dapp="dapp" small />
         </div>
+      </Transition>
+
+      <div v-intersection="onIntersection">
+        <dapp-avatar :dapp="dapp" />
+        <dapp-statistics :dapp="dapp" />
       </div>
+
+      <dapp-images :dapp="dapp" />
+      <builders :dapp="dapp" />
+
+      <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
+      <div class="row--project-overview">
+        <project-overview :dapp="dapp" />
+        <project-details :dapp="dapp" class="project--details" />
+      </div>
+      <!-- <dapp-stats-charts :dapp="dapp" /> -->
     </div>
     <div class="bg--dapp" />
+    <dapp-background :dapp="dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -57,10 +43,11 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, watch, onBeforeMount } from 'vue';
+import { computed, defineComponent, watch, onBeforeMount, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation } from '../../hooks';
 import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
+import DappBackground from './DappBackground.vue';
 
 export default defineComponent({
   components: {
@@ -72,6 +59,7 @@ export default defineComponent({
     ProjectDetails,
     BackToPage,
     // DappStatsCharts,
+    DappBackground,
   },
   setup() {
     const route = useRoute();
@@ -130,6 +118,12 @@ export default defineComponent({
 
     const twitterUrl = `https://twitter.com/intent/tweet?text=Nominate and Stake with us on @AstarNetwork!&hashtags=dAppStaking,Build2Earn&url=${window.location.href}`;
 
+    const isVisible = ref(true);
+
+    const onIntersection = (entry: any) => {
+      isVisible.value = entry.isIntersecting;
+    };
+
     return {
       Path,
       dapp,
@@ -137,6 +131,8 @@ export default defineComponent({
       navigateToVote,
       isZkEvm,
       twitterUrl,
+      isVisible,
+      onIntersection,
     };
   },
 });

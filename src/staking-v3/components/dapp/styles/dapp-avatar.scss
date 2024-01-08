@@ -27,6 +27,7 @@
   border-radius: 16px;
   object-fit: contain;
   overflow: hidden;
+  margin: auto;
 }
 
 .row--dapp-title {
@@ -35,7 +36,7 @@
   line-height: 1.25;
   margin-bottom: 4px;
   text-align: center;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     text-align: left;
   }
 }
@@ -44,7 +45,7 @@
   font-size: 14px;
   font-weight: 600;
   text-align: center;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     text-align: left;
   }
 }
@@ -54,7 +55,7 @@
   column-gap: 4px;
   margin-top: 24px;
   justify-content: center;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     justify-content: flex-start;
   }
 }
@@ -112,4 +113,34 @@
   padding: 0 24px;
   height: 48px;
   font-size: 16px;
+}
+
+.wrapper--dapp-avatar.small {
+  padding: 0;
+  @media (min-width: $sm) {
+    flex: 1;
+  }
+  .column--avatar {
+    align-items: center;
+    gap: 12px;
+    flex-direction: row;
+    @media (min-width: $sm) {
+      gap: 16px;
+    }
+  }
+  .image--dapp-icon {
+    width: 44px;
+    height: 44px;
+    @media (min-width: $sm) {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  .row--dapp-title {
+    font-size: 16px;
+    margin: 0;
+    @media (min-width: $sm) {
+      font-size: 24px;
+    }
+  }
 }

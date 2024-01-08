@@ -1,50 +1,54 @@
 <template>
-  <div class="wrapper--discover">
-    <feature-dapp />
-    <!-- <staking /> -->
-    <leaderboard />
-    <leaderboard-vote />
-    <dynamic-ads-area />
+  <div>
+    <div class="wrapper--discover">
+      <feature-dapp />
+      <!-- <staking /> -->
+      <leaderboard />
+      <leaderboard-vote />
+      <dynamic-ads-area />
 
-    <div class="container--dapps-data">
-      <div class="row--dapps-data-header">
-        <toggle-buttons
-          :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
-          @button-selected="toggleDapps"
-        />
-        <input
-          v-if="displayIndex === 0"
-          v-model="searchText"
-          type="text"
-          :placeholder="$t('stakingV3.searchDapps')"
-          class="input--search"
-        />
+      <div class="container--dapps-data">
+        <div class="row--dapps-data-header">
+          <toggle-buttons
+            :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+            @button-selected="toggleDapps"
+          />
+          <input
+            v-if="displayIndex === 0"
+            v-model="searchText"
+            type="text"
+            :placeholder="$t('stakingV3.searchDapps')"
+            class="input--search"
+          />
+        </div>
+        <div v-if="displayIndex === 0" class="dapps">
+          <dapps category="DeFi" :search="searchText" />
+          <dapps category="NFT" :search="searchText" />
+          <dapps category="Tooling" :search="searchText" />
+          <dapps category="Utility" :search="searchText" />
+          <dapps category="Others" :search="searchText" />
+        </div>
+        <data-list v-if="displayIndex === 1" />
       </div>
-      <div v-if="displayIndex === 0" class="dapps">
-        <dapps category="DeFi" :search="searchText" />
-        <dapps category="NFT" :search="searchText" />
-        <dapps category="Tooling" :search="searchText" />
-        <dapps category="Utility" :search="searchText" />
-        <dapps category="Others" :search="searchText" />
-      </div>
-      <data-list v-if="displayIndex === 1" />
     </div>
-
     <div class="bg--discover" />
+    <div v-if="isVotingPeriod" class="bg--voting-period">
+      <img :src="require('/src/staking-v3/assets/vote_hero_bg.webp')" alt="" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import FeatureDapp from './FeatureDapp.vue';
 import Dapps from './Dapps.vue';
+import FeatureDapp from './FeatureDapp.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 // import Staking from './my-staking/Staking.vue';
-import DataList from './data/DataList.vue';
+import { useDappStaking } from '../hooks';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
-import { useAprV3 } from '../hooks';
+import DataList from './data/DataList.vue';
 
 export default defineComponent({
   components: {
@@ -52,7 +56,6 @@ export default defineComponent({
     Dapps,
     Leaderboard,
     LeaderboardVote,
-    // Staking,
     DataList,
     DynamicAdsArea,
     ToggleButtons,
@@ -66,7 +69,9 @@ export default defineComponent({
 
     const searchText = ref<string>('');
 
-    return { displayIndex, searchText, toggleDapps };
+    const { isVotingPeriod } = useDappStaking();
+
+    return { displayIndex, searchText, isVotingPeriod, toggleDapps };
   },
 });
 </script>

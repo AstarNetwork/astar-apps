@@ -13,6 +13,9 @@
 
       <div class="separator" />
 
+      <!-- TODO: add logic and show the component -->
+      <migration-support v-if="false" />
+
       <tab-component :tabs="tabs" :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)" />
       <my-staking v-if="currentTabIndex === 0" />
       <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
@@ -30,6 +33,7 @@ import MyStaking from './MyStaking.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import MyDapps from './MyDapps.vue';
 import Unbonding from './Unbonding.vue';
+import MigrationSupport from './MigrationSupport.vue';
 
 export default defineComponent({
   components: {
@@ -38,6 +42,7 @@ export default defineComponent({
     MyStaking,
     MyDapps,
     Unbonding,
+    MigrationSupport,
   },
   setup() {
     const { t } = useI18n();

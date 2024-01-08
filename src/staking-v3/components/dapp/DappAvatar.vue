@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--dapp-avatar">
+  <div :class="`wrapper--dapp-avatar ${small ? 'small' : ''}`">
     <div class="column--avatar">
       <div>
         <img class="image--dapp-icon" :src="dapp.extended?.iconUrl" :alt="dapp.extended?.name" />
@@ -8,10 +8,10 @@
         <div class="row--dapp-title">
           {{ dapp.extended?.name }}
         </div>
-        <div class="row--dapp-description">
+        <div v-if="!small" class="row--dapp-description">
           {{ dapp.extended?.description }}
         </div>
-        <div v-if="dapp.extended?.tags" class="row--tags">
+        <div v-if="dapp.extended?.tags && !small" class="row--tags">
           <div v-for="tag in dapp.extended?.tags" :key="tag" class="tag">
             <span class="text--tag"> {{ tag }} </span>
           </div>
@@ -27,7 +27,7 @@
       <a class="button--icon button--favorite">
         <astar-icon-heart />
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('assets.addToFavorite') }}</span>
+          <span class="text--tooltip">{{ $t('common.comingSoon') }}</span>
         </q-tooltip>
       </a>
 
@@ -53,6 +53,11 @@ export default defineComponent({
     dapp: {
       type: Object as PropType<CombinedDappInfo>,
       required: true,
+    },
+    small: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup(props) {

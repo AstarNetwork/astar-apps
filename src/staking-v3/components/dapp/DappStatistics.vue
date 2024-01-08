@@ -1,11 +1,12 @@
 <template>
-  <div class="wrapper--dapp-statistics">
+  <div :class="`wrapper--dapp-statistics ${small ? 'small' : ''}`">
     <div class="row--data">
       <button class="button--vote-stake" @click="navigateToVote(dapp.extended?.address)">
-        {{ $t('stakingV3.dapp.voteAndStake') }}
+        <span>{{ $t('stakingV3.dapp.voteAndStake') }}</span>
+        <vote-stake-button-bg />
       </button>
 
-      <kpi-card :title="$t('dappStaking.dappPage.totalStaked')">
+      <kpi-card v-if="!small" :title="$t('dappStaking.dappPage.totalStaked')">
         <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
       </kpi-card>
 
@@ -13,7 +14,7 @@
         <span>{{ $n(dapp.stakerInfo.stakersCount) }}</span>
       </kpi-card> -->
 
-      <kpi-card :title="$t('stakingV3.currentTier')">
+      <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
         <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
       </kpi-card>
 
@@ -29,16 +30,23 @@ import { useDappStaking, useDappStakingNavigation } from 'src/staking-v3/hooks';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType } from 'vue';
 import KpiCard from '../KpiCard.vue';
+import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
     KpiCard,
+    VoteStakeButtonBg,
   },
   props: {
     dapp: {
       type: Object as PropType<CombinedDappInfo>,
       required: true,
+    },
+    small: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup(props) {
