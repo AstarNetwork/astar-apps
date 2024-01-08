@@ -24,7 +24,7 @@ export const useAprV3 = () => {
   };
 
   // Todo: fetch it via API
-  const periodsPerCycle = computed(() => {
+  const periodsPerCycle = computed<number>(() => {
     return currentNetworkName.value === 'Shibuya' ? 2 : 4;
   });
 
