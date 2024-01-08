@@ -61,12 +61,14 @@ export default {
     inputtedInvalidAddress: 'アドレスが有効ではありません。',
     selectedInvalidNetworkInWallet: 'ウォレットに対して無効なネットワークです。',
     insufficientBridgeAmount: '最小送金額は {amount} {token} です。',
-    insufficientOriginChainBalance: ' {chain} ネットワーク の最低必要残高は {amount} {token} です。',
+    insufficientOriginChainBalance:
+      ' {chain} ネットワーク の最低必要残高は {amount} {token} です。',
     insufficientOriginChainNativeBalance: '{chain} のネイティブトークンの残高不足です。',
     insufficientExistentialDeposit:
       '{network} ネットワークにある残高が existential depositi 以下です。',
     withdrawalNotSupport: '現在のところ {chain} への送金はサポートされていません。',
-    ledgerNotOpened: 'LedgerがAstarアプリを開いていません。アプリを開き、このページを更新してください。',
+    ledgerNotOpened:
+      'LedgerがAstarアプリを開いていません。アプリを開き、このページを更新してください。',
   },
   toast: {
     transactionFailed: '送金失敗: {message}',
@@ -144,7 +146,8 @@ export default {
     endpoint: 'エンドポイント',
     viaEndpoint: '{value} 経由',
     lightClientWarning: 'ライトクライアントによる接続はベータ版です。自己責任でご利用ください。',
-    shibuyaTakes20mins: 'ライトクライアント経由でShibuyaに接続するのに20分以上かかるかもしれません。',
+    shibuyaTakes20mins:
+      'ライトクライアント経由でShibuyaに接続するのに20分以上かかるかもしれません。',
     takeLongerTimeToConnect: 'チェーンからデータをロードするのに時間がかかる場合があります。',
     takeLongerTimeToSend: 'トランザクションの送信に時間がかかったり、失敗する可能性があります。',
     zkNetworkTip: 'まずはじめに、EVMウォレットに接続してください。',
@@ -188,8 +191,7 @@ export default {
         'ERC20トークンだけでなく、すでにリストアップされている他のすべてのxcTokensは、新しいunified accountに自動的に転送されます。',
       override:
         'Polkadot.jsアプリで作成されたアカウントIDをすでにお持ちの場合は、このアカウント統一情報が上書きされます。',
-      agreeToProceed:
-        'すべて読みましたので、unified accountの作成に進みたいと思います。',
+      agreeToProceed: 'すべて読みましたので、unified accountの作成に進みたいと思います。',
       agreeToDeposit: 'unified accountの作成には {cost} の費用がかかります。',
       agreeToSubmit: '私は一度統合されたアカウントは、切り離すことはできないと理解しています。',
       requirement:
@@ -212,7 +214,8 @@ export default {
       balanceTransferred: 'EVMアカウントの残高が転送されます。',
       readyToUnify:
         'これで xcTokens が送信され、両方のアカウントを統合する準備ができました！確認する前に以下をチェックしてください。',
-      congrats: 'おめでとうございます！\nあなたのアカウントは統合されました！\n\nもうEVM deposit（入金）は必要ありません！',
+      congrats:
+        'おめでとうございます！\nあなたのアカウントは統合されました！\n\nもうEVM deposit（入金）は必要ありません！',
       onlyShibuya: 'この機能はShibuyaテストネットのみで利用可能です。',
       userTutorials: 'ドキュメントとチュートリアル',
       sendingXc20: 'XC20 トークンの送信を開始します。お待ちください...',
@@ -226,7 +229,7 @@ export default {
   installWallet: {
     getWallet: 'まだ {value} を得ていませんか？',
     installWallet:
-      "続行するには {value} をインストールする必要があります。インストールしたら、このページを更新してください。",
+      '続行するには {value} をインストールする必要があります。インストールしたら、このページを更新してください。',
     install: 'インストール',
     learn: '学ぶ',
   },
@@ -276,17 +279,16 @@ export default {
       '未請求の報奨金の金額は推定であり、表示されている金額と実際に受け取る金額には若干の差がある場合があります。',
     availableToClaimTip2:
       'ここに表示されているERA数はdAppごとのものです。未請求のERAが多すぎる場合は、複数回請求する必要があるかもしれません。',
-    restakeTip:
-      'オンにすることで、クレーム時に報酬が自動的に再ステークされます。',
+    restakeTip: 'オンにすることで、クレーム時に報酬が自動的に再ステークされます。',
     claimable: {
-      limitation:
-        '1回の取引で請求できるERA数には制限があります。',
+      limitation: '1回の取引で請求できるERA数には制限があります。',
       nativeWallets: 'Native wallets: ≒56 eras',
       ledgerX: 'Ledger Nano X: 6 eras',
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
     },
-    dappsOwners: 'dAppsオーナー！私たちはあなたのキャンペーンを促進するお手伝いをします。ご確認ください。',
+    dappsOwners:
+      'dAppsオーナー！私たちはあなたのキャンペーンを促進するお手伝いをします。ご確認ください。',
     dappsOwnersLink: '詳細はこちら',
   },
   dappStaking: {
@@ -294,7 +296,8 @@ export default {
     myRewards: '報酬情報',
     unbonding: 'アンボンド中',
     myDapps: 'ステークされたdApps',
-    dappRegistered: 'おめでとうございます！あなたのコントラクトが承認されました。詳細を送信してください。',
+    dappRegistered:
+      'おめでとうございます！あなたのコントラクトが承認されました。詳細を送信してください。',
     welcomeBanner:
       'おめでとうございます 🎉 あなたのアプリケーションの概要をより分かりやすくするために、dApp情報を記入してください。 更新されたデータは、まもなくdAppのページに掲載されます。',
     desktopOnlyBanner: 'dAppの登録はデスクトップでのみ可能です。',
@@ -308,7 +311,8 @@ export default {
     stake: 'ステーク',
     claim: '請求',
     withdraw: '引き出し',
-    unbondingEra: 'アンボンディングは、あなたが引き出しができるようになるまでに {unbondingPeriod} eras を必要とします。',
+    unbondingEra:
+      'アンボンディングは、あなたが引き出しができるようになるまでに {unbondingPeriod} eras を必要とします。',
     willUnstakeAll:
       '最低ステーク額が {minStakingAmount} {symbol} であるため、ステーク残高をすべて解除します。',
     turnOn: 'オンにする',
@@ -359,7 +363,7 @@ export default {
         githubAccount: 'GitHub アカウント',
         twitterAccount: 'X アカウント',
         linkedInAccount: 'LinkedIn アカウント',
-        image: "開発者の画像 (最大アップロードファイルサイズ: {size})",
+        image: '開発者の画像 (最大アップロードファイルサイズ: {size})',
         imageRecomendation: '最小500px 正方形の画像を推奨。',
         error: {
           name: '開発者名が必要です。',
@@ -431,7 +435,7 @@ export default {
         'ステーキングするトークンの量は {amount} {symbol} よりも大きくなければなりません。',
       allFundsWillBeTransferred:
         '最小ステーキング額が {minStakingAmount} {symbol} であるため、すべての資金が送金されます。',
-      invalidBalance: ' 取引を完了するには譲渡可能な残高が不足しています。', 
+      invalidBalance: ' 取引を完了するには譲渡可能な残高が不足しています。',
       warningLeaveMinAmount:
         'ステーキングする際には、{amount} {symbol} 以上の譲渡可能な資金をアカウントに保有する必要があります。',
     },
@@ -472,7 +476,7 @@ export default {
     yourEvmDeposit: 'あなたの EVM deposit',
     yourVestingInfo: 'あなたの Vesting Info',
     yourStaking: 'あなたのステーキング',
-    cantTransferToExcahges: "あなたは取引所への転送できません。",
+    cantTransferToExcahges: 'あなたは取引所への転送できません。',
     noHash: 'あなたのトランザクションはハッシュを持ちません。',
     addToWallet: 'ウォレットに追加',
     noResults: '該当する結果は見つかりませんでした :(',
@@ -486,7 +490,8 @@ export default {
     hideSmallBalances: '小額残高の非表示',
     unhideSmallBalances: '小額残高の再表示',
     tokenHasBeenAdded: 'トークンはすでに追加されています。',
-    assetsAreNowFolded: 'トークンのすべてのユーティリティがまとめらました。 - ここで開いてください！',
+    assetsAreNowFolded:
+      'トークンのすべてのユーティリティがまとめらました。 - ここで開いてください！',
     theSignatory: '{account} は署名者です。',
     myWallet: 'マイウォレット',
     reward: '報酬',
@@ -500,7 +505,8 @@ export default {
     yourEstimatedRewards: '推定報酬を請求する',
     toast: {
       completedMessage: 'あなたは {transferAmt} {symbol} を {toAddress} に送信しました。',
-      completedBridgeMessage: 'あなたは {transferAmt} {symbol} を {fromChain} から {toChain} に送信しました。',
+      completedBridgeMessage:
+        'あなたは {transferAmt} {symbol} を {fromChain} から {toChain} に送信しました。',
     },
     transferPage: {
       backToAssets: 'アセットに戻る',
@@ -513,7 +519,7 @@ export default {
       goBack: '戻る',
       selectChain: 'チェーンの選択',
       selectToken: 'トークンの選択',
-      noTxRecords: "このアカウントにはまだ取引記録がありません。",
+      noTxRecords: 'このアカウントにはまだ取引記録がありません。',
       mintTransferAmount: '最低送金額は {amount} {symbol} です。',
       howToUsePortal: 'ポータルの使い方',
       xcmIsDisabled: '{network} のXCMが一時的に無効です。',
@@ -523,7 +529,8 @@ export default {
       max: '最大',
       balance: '残高: {amount} {token}',
       available: '利用可能: {amount} {token}',
-      cannotBeSentErc20: 'ERC20 トークンは {network} ネイティブアドレスに送信することはできません。',
+      cannotBeSentErc20:
+        'ERC20 トークンは {network} ネイティブアドレスに送信することはできません。',
       notSendToExchanges: '私は取引所にトークンを送っていません。',
       notSendToEvmExchanges:
         '私は取引所のEVM depositアドレスにトークンを送っていません。それをすると、資金が失われる可能性が高いことを理解しているからです。',
@@ -538,7 +545,8 @@ export default {
       faucetBalance: '蛇口の残高: {amount} {symbol}',
       faucetIntro:
         '各取引には少額の手数料がかかり、これは {symbol} トークンを使って支払われます。アカウントに {symbol} がない場合は、トークンを送信できません。蛇口は取引手数料をカバーするのに十分な {symbol} を送信します。',
-      faucetDriedOut: '蛇口IDが乾いてしまいました。ディスコードでチームメンバーに報告してください。', 
+      faucetDriedOut:
+        '蛇口IDが乾いてしまいました。ディスコードでチームメンバーに報告してください。',
       availableToWithdraw: '引き出し可能',
       totalDistribution: '分配金総額',
       alreadyVested: 'Already vested',
@@ -552,7 +560,7 @@ export default {
       depositToNative: 'Deposit to Native',
       depositToEvm: 'Deposit to EVM',
       evmWalletAddress: 'EVM ウォレットアドレス',
-      howToImportXvmTokens: 'XVM経由でERC-20トークンをインポートする方法をご覧ください。', 
+      howToImportXvmTokens: 'XVM経由でERC-20トークンをインポートする方法をご覧ください。',
       riskOfImportTokens:
         '既存のトークンの偽バージョンを作成することも含め、誰でもトークンを作成できるリスクにご注意ください。',
       tokenContractAddress: 'トークンコントラクトアドレス',
@@ -567,7 +575,8 @@ export default {
         tryOtherEndpoints: '他のエンドポイントを試す',
         changeFromHeader: 'ヘッダーのネットワークボタンからエンドポイントを変更します。',
         clearLocalStorage: 'ローカルストレージのクリア',
-        clearLocalStorageTip: 'これは、このブラウザのポータルのキャッシュがクリアされることを意味します。',
+        clearLocalStorageTip:
+          'これは、このブラウザのポータルのキャッシュがクリアされることを意味します。',
         metaUpdate: 'Polkadot.jsアプリのメタデータ更新',
         metaUpdateTip:
           'ウォレットの拡張機能が最新であることを確認するには、メタデータタブをチェックし、プロンプトが表示されたら更新してください。',
@@ -705,7 +714,7 @@ export default {
     },
     celetBridge: {
       title: 'Celer ブリッジ',
-      text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへ資産をブリッジ', 
+      text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへ資産をブリッジ',
     },
     warning32blocks: 'ファイナライズには10～20分以上かかるでしょう。',
     warning2steps:
@@ -718,7 +727,7 @@ export default {
       fromChainBal: '送信元チェーン残高',
       destChainBal: '宛先チェーン残高',
       tokenHasBeenAdded: 'トークンはすでに追加されています。',
-      tokenNotSupported: "このトークンは zkEVM ではサポートされていません。",
+      tokenNotSupported: 'このトークンは zkEVM ではサポートされていません。',
       interactCarefully: '新しいトークンや不審なトークンには慎重に対応してください。',
     },
   },
