@@ -12,6 +12,7 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
+  InflationParam,
   PeriodEndInfo,
   PeriodType,
   ProtocolState,
@@ -32,6 +33,7 @@ import {
   PalletDappStakingV3DAppTierRewards,
   PalletDappStakingV3EraInfo,
   PalletDappStakingV3EraRewardSpan,
+  PalletDappStakingV3InflationParams,
   PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
   PalletDappStakingV3SingularStakingInfo,
@@ -387,6 +389,18 @@ export class DappStakingRepository implements IDappStakingRepository {
       unlocking: info.unlocking.toBigInt(),
       currentStakeAmount: this.mapStakeAmount(info.currentStakeAmount),
       nextStakeAmount: this.mapStakeAmount(info.nextStakeAmount),
+    };
+  }
+
+  public async getInflationParams(): Promise<InflationParam> {
+    const api = await this.api.getApi();
+    const data = await api.query.inflation.inflationParams<PalletDappStakingV3InflationParams>();
+
+    return {
+      maxInflationRate: String(data.maxInflationRate),
+      adjustableStakersPart: String(data.adjustableStakersPart),
+      baseStakersPart: String(data.baseStakersPart),
+      idealStakingRate: String(data.idealStakingRate),
     };
   }
 

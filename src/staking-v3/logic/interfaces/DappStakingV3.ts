@@ -42,6 +42,13 @@ export interface PalletDappStakingV3ProtocolState extends Struct {
   readonly maintenance: bool;
 }
 
+export interface PalletDappStakingV3InflationParams extends Struct {
+  readonly maxInflationRate: String;
+  readonly adjustableStakersPart: String;
+  readonly baseStakersPart: String;
+  readonly idealStakingRate: String;
+}
+
 export interface PalletDappStakingV3DAppInfo extends Struct {
   readonly owner: AccountId32;
   readonly id: Compact<u16>;

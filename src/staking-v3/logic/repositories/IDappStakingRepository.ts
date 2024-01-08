@@ -10,10 +10,10 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
+  InflationParam,
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,
-  StakeAmount,
   TiersConfiguration,
 } from '../models';
 
@@ -186,6 +186,12 @@ export interface IDappStakingRepository {
    * @returns A promise that resolves to the era info.
    */
   getCurrentEraInfo(): Promise<EraInfo>;
+
+  /**
+   * Gets the inflation info.
+   * @returns A promise that resolves to the inflation info.
+   */
+  getInflationParams(): Promise<InflationParam>;
 
   /**
    * Gets the contract staking info.

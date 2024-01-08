@@ -1,28 +1,23 @@
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 import { ref, watch } from 'vue';
-import { EraLengths } from '../logic';
+import { EraLengths, IDappStakingRepository } from '../logic';
 import { useDappStaking } from './useDappStaking';
-
-interface InflationParam {
-  maxInflationRate: string;
-  adjustableStakersPart: string;
-  baseStakersPart: string;
-  idealStakingRate: string;
-  bonusPart: string;
-}
 
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
-  const { eraLengths, isVotingPeriod } = useDappStaking();
+  const { eraLengths, isVotingPeriod, currentEraInfo } = useDappStaking();
 
   const percentageToNumber = (percent: string): number => {
-    return parseFloat(String(percent)) * 0.01;
+    // e.g.: percent 1%: 10000000000000000
+    return Number(percent) * 0.0000000000000001 * 0.01;
   };
 
-  const toAstr = (wei: string): number => {
-    return Number(ethers.utils.formatEther(BigInt(wei)));
+  const toAstr = (wei: bigint): number => {
+    return Number(ethers.utils.formatEther(String(wei)));
   };
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
@@ -44,31 +39,33 @@ export const useAprV3 = () => {
     try {
       const apiRef = $api!;
       const eraLengthRef = eraLengths.value;
-      if (!eraLengthRef.standardEraLength) {
+      const currentEraInfoRef = currentEraInfo.value;
+      if (
+        !eraLengthRef.standardEraLength ||
+        !currentEraInfoRef ||
+        !currentEraInfoRef.nextStakeAmount
+      ) {
         return { stakerApr: 0, bonusApr: 0 };
       }
 
-      const [inflation, currentEraInfo, totalIssuanceRaw] = await Promise.all([
-        apiRef.query.inflation.inflationParams(),
-        apiRef.query.dappStaking.currentEraInfo(),
+      const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
+      const [inflationParams, totalIssuanceRaw] = await Promise.all([
+        stakingRepo.getInflationParams(),
         apiRef.query.balances.totalIssuance(),
       ]);
 
-      const inflationParams = inflation.toHuman() as unknown as InflationParam;
-      const currentEraInformation = JSON.parse(currentEraInfo.toString());
       const totalIssuance = Number(ethers.utils.formatEther(totalIssuanceRaw.toString()));
 
       const yearlyInflation = percentageToNumber(inflationParams.maxInflationRate);
       const baseStakersPart = percentageToNumber(inflationParams.baseStakersPart);
       const adjustableStakersPart = percentageToNumber(inflationParams.adjustableStakersPart);
       const idealStakingRate = percentageToNumber(inflationParams.idealStakingRate);
-      const bonusPart = percentageToNumber(inflationParams.bonusPart);
 
       const cyclesPerYear = getCyclePerYear(eraLengthRef);
       const currentStakeAmount = isVotingPeriod.value
-        ? toAstr(currentEraInformation.nextStakeAmount.voting)
-        : toAstr(currentEraInformation.currentStakeAmount.voting) +
-          toAstr(currentEraInformation.currentStakeAmount.buildAndEarn);
+        ? toAstr(currentEraInfoRef.nextStakeAmount.voting)
+        : toAstr(currentEraInfoRef.currentStakeAmount.voting) +
+          toAstr(currentEraInfoRef.currentStakeAmount.buildAndEarn);
 
       const stakedPercent = currentStakeAmount / totalIssuance;
       const stakerRewardPercent =
@@ -87,7 +84,7 @@ export const useAprV3 = () => {
   };
 
   watch(
-    [isVotingPeriod, eraLengths],
+    [isVotingPeriod, eraLengths, currentEraInfo],
     async () => {
       const apr = await getApr();
       stakerApr.value = apr.stakerApr;
