@@ -125,28 +125,6 @@ const actions: ActionTree<State, StateInterface> = {
   async registerDappApi({ commit, dispatch }, parameters: RegisterParameters): Promise<boolean> {
     if (parameters.api) {
       try {
-        if (!parameters.signature) {
-          // If no signature received, it means we are using the
-          // old dapp registration logic (to be removed after all networks are updated.)
-          const transaction = parameters.api.tx.dappsStaking.register(
-            getDappAddressEnum(parameters.dapp.address)
-          );
-
-          const signedTransaction = await sign({
-            transaction,
-            senderAddress: parameters.senderAddress,
-            substrateAccounts: parameters.substrateAccounts,
-            isCustomSignature: parameters.isCustomSignature,
-            dispatch,
-            tip: parameters.tip,
-            getCallFunc: parameters.getCallFunc,
-          });
-
-          if (signedTransaction) {
-            parameters.signature = signedTransaction.toJSON();
-          }
-        }
-
         const payload = {
           name: parameters.dapp.name,
           iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
@@ -166,7 +144,7 @@ const actions: ActionTree<State, StateInterface> = {
         };
 
         commit('general/setLoading', true, { root: true });
-        const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
+        const url = `http://127.0.0.1:5001/astar-token-api/us-central1/app/api/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
         const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
