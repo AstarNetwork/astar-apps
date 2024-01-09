@@ -58,6 +58,17 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         const web3 = new Web3(this.provider as any);
         const accounts = await web3.eth.getAccounts();
 
+        const balWei = await web3.eth.getBalance(accounts[0]);
+        console.log('balWei,  accounts[0]', balWei, accounts[0]);
+        const useableBalance = Number(ethers.utils.formatEther(balWei));
+        console.log('useableBalance', useableBalance);
+        const message = 'Minimum balance on the network is 0.01';
+        if (Number(useableBalance) < Number(100000000000000000)) {
+          this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(message);
+        }
+
         const signedPayload = await this.provider.request({
           method: 'personal_sign',
           params: [accounts[0], payload],
