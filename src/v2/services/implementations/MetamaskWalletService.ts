@@ -62,11 +62,12 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         console.log('balWei,  accounts[0]', balWei, accounts[0]);
         const useableBalance = Number(ethers.utils.formatEther(balWei));
         console.log('useableBalance', useableBalance);
-        const message = 'Minimum balance on the network is 0.01';
-        if (Number(useableBalance) < Number(100000000000000000)) {
-          this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
+        if (Number(useableBalance) < Number(500000000000000000)) {
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
+          );
           this.eventAggregator.publish(new BusyMessage(false));
-          throw Error(message);
+          throw Error(AlertMsg.MINIMUM_BALANCE);
         }
 
         const signedPayload = await this.provider.request({
