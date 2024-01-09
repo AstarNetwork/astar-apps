@@ -77,6 +77,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
         }
 
+        const useableBalance = await this.assetsRepository.getNativeBalance(senderAddress);
+        const message = 'Minimum balance on the network is 0.01';
+        if (Number(useableBalance) < Number(100000000000000000)) {
+          this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message }));
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(message);
+        }
+
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
           try {
