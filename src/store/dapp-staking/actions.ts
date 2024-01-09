@@ -144,7 +144,7 @@ const actions: ActionTree<State, StateInterface> = {
         };
 
         commit('general/setLoading', true, { root: true });
-        const url = `http://127.0.0.1:5001/astar-token-api/us-central1/app/api/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
+        const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
         const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
