@@ -58,18 +58,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         const web3 = new Web3(this.provider as any);
         const accounts = await web3.eth.getAccounts();
 
-        const balWei = await web3.eth.getBalance(accounts[0]);
-        console.log('balWei,  accounts[0]', balWei, accounts[0]);
-        const useableBalance = Number(ethers.utils.formatEther(balWei));
-        console.log('useableBalance', useableBalance);
-        if (Number(useableBalance) < Number(500000000000000000)) {
-          this.eventAggregator.publish(
-            new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
-          );
-          this.eventAggregator.publish(new BusyMessage(false));
-          throw Error(AlertMsg.MINIMUM_BALANCE);
-        }
-
         const signedPayload = await this.provider.request({
           method: 'personal_sign',
           params: [accounts[0], payload],
@@ -135,6 +123,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
+
+      const balWei = await web3.eth.getBalance(from);
+      const useableBalance = Number(ethers.utils.formatEther(balWei));
+      if (useableBalance < 0.05) {
+        throw Error(AlertMsg.MINIMUM_BALANCE);
+      }
+
       const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
       const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
