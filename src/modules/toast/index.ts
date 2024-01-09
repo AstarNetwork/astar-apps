@@ -6,3 +6,5 @@ export enum AlertMsg {
   COMPLETED_HASH = 'Completed at transaction hash',
   MINIMUM_BALANCE = 'Minimum balance on the network is 0.05',
 }
+
+export const REQUIRED_MINIMUM_BALANCE: number = 0.05;

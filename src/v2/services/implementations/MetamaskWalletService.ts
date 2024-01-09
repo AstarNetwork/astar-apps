@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmExplorerUrl, getSubscanExtrinsic } from 'src/links';
-import { AlertMsg } from 'src/modules/toast';
+import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
@@ -126,7 +126,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
       const balWei = await web3.eth.getBalance(from);
       const useableBalance = Number(ethers.utils.formatEther(balWei));
-      if (useableBalance < 0.05) {
+      const isBalanceNotEnough = useableBalance < REQUIRED_MINIMUM_BALANCE;
+      if (isBalanceNotEnough) {
         throw Error(AlertMsg.MINIMUM_BALANCE);
       }
 
