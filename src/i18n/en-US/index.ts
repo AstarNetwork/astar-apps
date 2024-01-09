@@ -431,7 +431,7 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
-      invalidBalance: 'Insufficient transferrable balance to complete the transaction',
+      invalidBalance: 'You do not have enough tokens to pay the transaction fee',
       warningLeaveMinAmount:
         'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
     },
