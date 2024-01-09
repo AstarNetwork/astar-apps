@@ -3,6 +3,7 @@
     <div class="wrapper--discover">
       <feature-dapp />
       <!-- <staking /> -->
+      <register-banner />
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
@@ -49,6 +50,7 @@ import { useDappStaking } from '../hooks';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
+import RegisterBanner from './RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -59,6 +61,7 @@ export default defineComponent({
     DataList,
     DynamicAdsArea,
     ToggleButtons,
+    RegisterBanner,
   },
   setup() {
     const displayIndex = ref<number>(0);

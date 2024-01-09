@@ -1,7 +1,7 @@
 <template>
   <div class="container--register">
-    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <div class="wrapper--register-form">
+      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
       <welcome-banner v-if="isNewDapp && !isMobileDevice" />
       <desktop-only-banner v-if="isMobileDevice" />
       <q-form v-if="!isMobileDevice" ref="dappForm">
@@ -124,7 +124,7 @@ import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from './components/ItemsToggle.vue';
 import { container } from 'src/v2/common';
-import { IDappStakingService } from 'src/v2/services';
+import { IDappStakingServiceV2V3 } from 'src/staking-v3/logic/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
@@ -245,7 +245,7 @@ export default defineComponent({
     const getDapp = async (): Promise<void> => {
       try {
         store.commit('general/setLoading', true);
-        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const service = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
         const developerContract =
           currentAddress.value &&
           !isH160.value &&

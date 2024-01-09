@@ -1,5 +1,11 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo, DappStakeInfo, SingularStakingInfo, StakeAmount } from '../models';
+import {
+  CombinedDappInfo,
+  DappInfo,
+  DappStakeInfo,
+  SingularStakingInfo,
+  StakeAmount,
+} from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingRepository } from '../repositories';
@@ -17,7 +23,9 @@ export class DappStakingService implements IDappStakingService {
   ) {}
 
   // @inheritdoc
-  public async getDapps(network: string): Promise<CombinedDappInfo[]> {
+  public async getDapps(
+    network: string
+  ): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }> {
     Guard.ThrowIfUndefined(network, 'network');
 
     const [storeDapps, chainDapps] = await Promise.all([
@@ -27,6 +35,7 @@ export class DappStakingService implements IDappStakingService {
 
     // Map on chain and in store dApps
     const dApps: CombinedDappInfo[] = [];
+    const onlyChain: DappInfo[] = [];
     chainDapps.forEach((chainDapp) => {
       const storeDapp = storeDapps.find(
         (x) => x.address.toLowerCase() === chainDapp.address.toLowerCase()
@@ -36,10 +45,12 @@ export class DappStakingService implements IDappStakingService {
           basic: storeDapp,
           chain: chainDapp,
         });
+      } else {
+        onlyChain.push(chainDapp);
       }
     });
 
-    return dApps;
+    return { fullInfo: dApps, chainInfo: onlyChain };
   }
 
   // @inheritdoc

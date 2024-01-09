@@ -826,6 +826,8 @@ export default {
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
     burn: 'Burn',
+    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    registerNow: 'Register now',
   },
   bridge: {
     bridge: 'Bridge',
