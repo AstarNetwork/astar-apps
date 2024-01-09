@@ -31,7 +31,7 @@ export class UniqueXcmRepository extends XcmRepository {
       throw 'Token must be UNQ';
     }
 
-    const tokenData = { NativeAssetId: 'Here' };
+    const unqCollectionId = 0;
 
     const destination = {
       V2: {
@@ -61,7 +61,7 @@ export class UniqueXcmRepository extends XcmRepository {
       endpoint,
       'xTokens',
       'transfer',
-      tokenData,
+      unqCollectionId,
       amount,
       destination,
       destWeight
