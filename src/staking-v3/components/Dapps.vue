@@ -31,6 +31,7 @@
             </div>
             <div class="card__bottom">
               <div>T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
+              <div>{{ dapp.dappDetails?.stakersCount ?? '--' }}</div>
               <div>
                 <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
               </div>

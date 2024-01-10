@@ -13,6 +13,7 @@ import {
   DappInfo,
   TiersConfiguration,
   EraLengths,
+  ProviderDappData,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -20,6 +21,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   updateDappChain(state: DappStakingState, dapp: DappInfo): void;
+  updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void;
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
   setLedger(state: DappStakingState, ledger: AccountLedger): void;
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
@@ -54,7 +56,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
     state.dapps.push(dapp);
   },
   updateDappExtended(state, dapp) {
-    const dappToUpdate = state.dapps.find((x) => x.basic.address === dapp.address);
+    const dappToUpdate = state.dapps.find(
+      (x) => x.basic.address.toLowerCase() === dapp.address.toLowerCase()
+    );
 
     if (dappToUpdate) {
       const index = state.dapps.indexOf(dappToUpdate);
@@ -73,6 +77,18 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
       state.dapps.splice(index, 1, { ...dappToUpdate, chain: dapp });
     } else {
       console.warn(`Dapp with address ${dapp.address} not found in the store.`);
+    }
+  },
+  updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void {
+    const dappToUpdate = state.dapps.find(
+      (x) => x.basic.address.toLowerCase() === dapp.contractAddress.toLowerCase()
+    );
+
+    if (dappToUpdate) {
+      const index = state.dapps.indexOf(dappToUpdate);
+      state.dapps.splice(index, 1, { ...dappToUpdate, dappDetails: dapp });
+    } else {
+      console.warn(`Dapp with address ${dapp.contractAddress} not found in the store.`);
     }
   },
   setProtocolState(state, protocolState) {

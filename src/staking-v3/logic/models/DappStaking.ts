@@ -57,6 +57,7 @@ export interface CombinedDappInfo {
   basic: DappBase;
   extended?: Dapp;
   chain: DappInfo;
+  dappDetails?: ProviderDappData;
 }
 
 export interface Developer {
@@ -187,4 +188,13 @@ export interface InflationParam {
 export enum TvlAmountType {
   FixedTvlAmount,
   DynamicTvlAmount,
+}
+
+export interface ProviderDappData {
+  contractAddress: string;
+  stakersCount: number;
+  registeredAt: number;
+  registrationBlockNumber: number;
+  unregisteredAt?: number;
+  unregistrationBlockNumber?: number;
 }
