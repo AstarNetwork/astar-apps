@@ -717,6 +717,7 @@ export default {
       UnstakeFromPastPeriod:
         'Unstaking is rejected since the period in which past stake was active has passed.',
       ZeroAmount: 'Amount must be greater than 0.',
+      LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
