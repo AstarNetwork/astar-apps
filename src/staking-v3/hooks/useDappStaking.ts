@@ -497,6 +497,13 @@ export function useDappStaking() {
     return;
   };
 
+  /**
+   * Updates number of stakers for dApps in Vuex store. Stakers count comes from an indexer through Token API
+   * and it doesn't make sense to reload from there because most likely the new stakers count won't be indexed
+   * at the time of the call.
+   * @param stakedContracts List of contract addresses for which stakers count should be updated.
+   * @param amount expected value +1 in case of staking and -1 when unstaking.
+   */
   const updateStakersCount = (stakedContracts: string[], amount: number): void => {
     for (const contract of stakedContracts) {
       const alreadyStaked = stakerInfo.value.get(contract);
