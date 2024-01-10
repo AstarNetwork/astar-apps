@@ -8,7 +8,7 @@ import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { getSubscanExtrinsic, polkasafeUrl } from 'src/links';
-import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast/index';
+import { AlertMsg } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
@@ -75,17 +75,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         if (!tip) {
           tip = this.gasPriceProvider.getTip().price;
           tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
-        }
-
-        const useableBalance = await this.assetsRepository.getNativeBalance(senderAddress);
-        const isBalanceNotEnough =
-          Number(ethers.utils.formatEther(useableBalance)) < REQUIRED_MINIMUM_BALANCE;
-        if (isBalanceNotEnough) {
-          this.eventAggregator.publish(
-            new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
-          );
-          this.eventAggregator.publish(new BusyMessage(false));
-          throw Error(AlertMsg.MINIMUM_BALANCE);
         }
 
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);

@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmExplorerUrl, getSubscanExtrinsic } from 'src/links';
-import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast';
+import { AlertMsg } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
@@ -123,14 +123,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
-
-      const balWei = await web3.eth.getBalance(from);
-      const useableBalance = Number(ethers.utils.formatEther(balWei));
-      const isBalanceNotEnough = useableBalance < REQUIRED_MINIMUM_BALANCE;
-      if (isBalanceNotEnough) {
-        throw Error(AlertMsg.MINIMUM_BALANCE);
-      }
-
       const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
       const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
