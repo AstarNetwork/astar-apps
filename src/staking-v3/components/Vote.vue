@@ -95,7 +95,7 @@
             </div>
           </div>
           <rewards-panel />
-          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+          <error-panel :error-message="errorMessage" />
           <div class="wrapper--button">
             <astar-button
               :disabled="!canConfirm()"
@@ -158,6 +158,7 @@ import { useRoute } from 'vue-router';
 import { CombinedDappInfo, DappStakeInfo } from '../logic';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
+import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
 
 export default defineComponent({
@@ -168,6 +169,7 @@ export default defineComponent({
     ModalSelectDapp,
     BackToPage,
     RewardsPanel,
+    ErrorPanel,
   },
   setup() {
     const {

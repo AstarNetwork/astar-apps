@@ -158,13 +158,6 @@ export function useDappStaking() {
       : true;
 
   const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
-    // TODO check implementation canStake, canUnstake
-    // const [result, error] = await canUnStake(dapp.chain.address, amount);
-    // if (!result) {
-    //   popError(error);
-    //   return;
-    // }
-
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
@@ -412,33 +405,33 @@ export function useDappStaking() {
     return [true, ''];
   };
 
-  const canUnStake = async (dappAddress: string, amount: number): Promise<[boolean, string]> => {
-    const stakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
-    const stakedAmount = BigInt(ledger.value?.locked?.toString() ?? 0);
-    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const [constants, stakerInfo] = await Promise.all([
-      stakingRepo.getConstants(),
-      stakingRepo.getStakerInfo(currentAccount.value, false),
-    ]);
+  const canUnStake = (dappAddress: string, amount: number): [boolean, string] => {
+    const unstakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
+    const dappInfo = stakerInfo.value.get(dappAddress);
+    const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
 
     if (amount <= 0) {
-      // Prevents dappStaking.ZeroAmount
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
-    } else if (stakeAmount > stakedAmount) {
-      // Prevents dappStaking.UnstakeAmountTooLarge
+    } else if (unstakeAmount > stakedAmount) {
       return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
     } else if (protocolState.value?.maintenance) {
-      // Prevents dappStaking.Disabled
       return [false, t('stakingV3.dappStaking.Disabled')];
-    } else if (!stakerInfo.get(dappAddress)) {
-      // Prevents dappStaking.NoStakingInfo
+    } else if (!dappInfo) {
       return [false, t('stakingV3.dappStaking.NoStakingInfo')];
     } else if (!amount) {
-      // Prevents dappStaking.UnstakeFromPastPeriod
       return [false, t('stakingV3.dappStaking.UnstakeFromPastPeriod')];
-    } else if ((ledger.value?.unlocking?.length ?? 0) >= constants.maxUnlockingChunks) {
-      // Prevents dappStaking.TooManyUnlockingChunks
+    } else if (
+      constants.value &&
+      (ledger.value?.unlocking?.length ?? 0) >= constants.value.maxUnlockingChunks
+    ) {
       return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
+    } else if (constants.value && constants.value.minStakeAmount > stakedAmount - unstakeAmount) {
+      return [
+        true,
+        t('stakingV3.willUnstakeAll', {
+          amount: constants.value.minStakeAmountToken,
+        }),
+      ];
     }
 
     return [true, ''];

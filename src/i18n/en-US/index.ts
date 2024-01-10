@@ -827,6 +827,8 @@ export default {
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
     burn: 'Burn',
+    willUnstakeAll:
+      'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
   },
   bridge: {
     bridge: 'Bridge',
