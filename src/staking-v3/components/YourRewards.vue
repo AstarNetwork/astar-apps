@@ -7,7 +7,9 @@
     <div class="row--claim-temporary">
       <div>
         <span class="text--lg">Unclaimed Eras: </span>
-        <span class="text--lg">{{ unclaimedEras }}</span>
+        <span class="text--lg">
+          <b>{{ unclaimedEras }}</b>
+        </span>
       </div>
       <div>
         <span class="text--lg">Claimable Amount: </span>
