@@ -150,7 +150,7 @@ export default {
     wallet: 'Wallet',
     endpoint: 'Endpoint',
     viaEndpoint: 'via {value}',
-    lightClientWarning: 'Connecting via Light client is in beta. Use at your own risk.',
+    lightClientWarning: 'Light client is in beta. Use at your own risk.',
     shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
     takeLongerTimeToConnect: 'It might take a longer time to load data from chains',
     takeLongerTimeToSend: 'It might take a longer time or fail in sending transactions',
@@ -236,6 +236,7 @@ export default {
       "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page.",
     install: 'Install',
     learn: 'Learn',
+    installSubstrateConnect: 'Install Substrate-connect',
   },
   topMetric: {
     build2earn: 'Build2Earn',

@@ -170,6 +170,32 @@
 .radio--endpoint {
 }
 
+.border--active {
+  border: 1px solid $astar-blue !important;
+}
+
+.box--light-client-warning {
+  display: none;
+  @media (min-width: $sm) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    margin-top: 24px;
+  }
+}
+
+.ul--warnings {
+  list-style: disc;
+  text-align: left;
+  padding-left: 24px;
+}
+
+.text--download {
+  display: block;
+  text-decoration: underline;
+  color: $astar-blue;
+}
+
 .column--network-option {
   display: flex;
   align-items: center;

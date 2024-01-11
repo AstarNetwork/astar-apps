@@ -8,12 +8,20 @@
         <div class="box--networks">
           <div v-if="isNetwork">
             <div class="row--astars">
-              <button class="card--astar">
+              <button
+                class="card--astar box--hover--active"
+                :class="selNetwork === endpointKey.ASTAR && 'border--active'"
+                @click="setSelNetwork(endpointKey.ASTAR)"
+              >
                 <img class="img--astar" :src="require('src/assets/img/chain/astar.png')" alt="" />
                 <span class="text--title">Astar (L1)</span>
               </button>
 
-              <button class="card--astar">
+              <button
+                class="card--astar box--hover--active"
+                :class="selNetwork === endpointKey.ASTAR_ZKEVM && 'border--active'"
+                @click="setSelNetwork(endpointKey.ASTAR_ZKEVM)"
+              >
                 <img
                   class="img--astar"
                   :src="require('src/assets/img/chain/zkatana-logo.png')"
@@ -28,7 +36,11 @@
                 <span class="text--network">Other networks</span>
               </div>
               <div class="row--shiden">
-                <button class="row--network">
+                <button
+                  class="row--network box--hover--active"
+                  :class="selNetwork === endpointKey.SHIDEN && 'border--active'"
+                  @click="setSelNetwork(endpointKey.SHIDEN)"
+                >
                   <img
                     class="img--network-logo"
                     :src="require('src/assets/img/chain/shiden.png')"
@@ -38,7 +50,11 @@
                 </button>
               </div>
               <div class="row--testnets">
-                <button class="row--network">
+                <button
+                  class="row--network box--hover--active"
+                  :class="selNetwork === endpointKey.SHIBUYA && 'border--active'"
+                  @click="setSelNetwork(endpointKey.SHIBUYA)"
+                >
                   <img
                     class="img--network-logo"
                     :src="require('src/assets/img/chain/astar-logo-white.svg')"
@@ -46,7 +62,11 @@
                   />
                   <span class="text--network">Astar Testnet</span>
                 </button>
-                <button class="row--network">
+                <button
+                  class="row--network box--hover--active"
+                  :class="selNetwork === endpointKey.ZKATANA && 'border--active'"
+                  @click="setSelNetwork(endpointKey.ZKATANA)"
+                >
                   <img
                     class="img--network-logo"
                     :src="require('src/assets/img/chain/astar-zkevm-logo-white.svg')"
@@ -76,19 +96,25 @@
                 <div class="expand-container">
                   <div :id="isExpand ? 'network-expand' : 'network-expand-close'">
                     <div class="container--endpoints">
-                      <div class="box--endpoints">
+                      <div
+                        v-if="selNetwork !== endpointKey.CUSTOM && selNetwork !== endpointKey.LOCAL"
+                        class="box--endpoints"
+                      >
                         <div class="title--endpoint">
-                          <span class="text--network">Astar RPC</span>
+                          <span class="text--network">
+                            {{ providerEndpoints[selNetwork].displayName.replace('Network', '') }}
+                            {{ isZkEvm ? 'RPC' : 'Endpoint' }}
+                          </span>
                         </div>
                         <div>
                           <div class="column--options">
                             <div
-                              v-for="(endpointObj, i) in providerEndpoints[0].endpoints"
+                              v-for="(endpointObj, i) in providerEndpoints[selNetwork].endpoints"
                               :key="i"
                             >
                               <div
                                 class="column--network-option"
-                                @click="setSelEndpoint({ endpointObj, networkIdx: 0 })"
+                                @click="setSelEndpoint({ endpointObj, networkIdx: selNetwork })"
                               >
                                 <div class="box-input--endpoint">
                                   <input
@@ -96,7 +122,7 @@
                                     type="radio"
                                     :checked="
                                       checkIsCheckedEndpoint({
-                                        index: 0,
+                                        index: selNetwork,
                                         endpoint: endpointObj.endpoint,
                                       })
                                     "
@@ -106,20 +132,69 @@
                                 <span class="text--endpoint">{{ endpointObj.name }}</span>
                               </div>
                             </div>
+                            <div v-if="isSelectLightClient" class="box--light-client-warning">
+                              <span class="text--accent">
+                                {{ $t('drawer.lightClientWarning') }}
+                              </span>
+                              <ul v-if="isLightClientExtension" class="ul--warnings">
+                                <li>
+                                  <span>
+                                    {{ $t('drawer.takeLongerTimeToConnect') }}
+                                  </span>
+                                </li>
+                                <li>
+                                  <span> {{ $t('drawer.takeLongerTimeToSend') }}</span>
+                                </li>
+                                <li v-if="selNetwork === endpointKey.SHIBUYA">
+                                  <span>
+                                    {{ $t('drawer.shibuyaTakes20mins') }}
+                                  </span>
+                                </li>
+                              </ul>
+                              <div v-else>
+                                <ul class="ul--warnings">
+                                  <li>
+                                    <span>
+                                      {{
+                                        $t('installWallet.installWallet', {
+                                          value: 'Substrate_connect',
+                                        })
+                                      }}
+                                    </span>
+                                    <a
+                                      class="text--download"
+                                      href="https://substrate.io/developers/substrate-connect/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {{ $t('installWallet.installSubstrateConnect') }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div class="row--custom-endpoints">
-                        <button class="box--endpoints">
+                        <button
+                          class="box--endpoints box--hover--active"
+                          :class="selNetwork === endpointKey.LOCAL && 'border--active'"
+                          @click="setSelNetwork(endpointKey.LOCAL)"
+                        >
                           <span class="text--network">Local Network</span>
                         </button>
-                        <button class="box--endpoints">
+                        <button
+                          class="box--endpoints box--hover--active"
+                          :class="selNetwork === endpointKey.CUSTOM && 'border--active'"
+                          @click="setSelNetwork(endpointKey.CUSTOM)"
+                        >
                           <span class="text--network">Custom Network</span>
                         </button>
                       </div>
-                      <div>
+                      <div v-if="selNetwork === endpointKey.CUSTOM">
                         <input
-                          v-model="newEndpoint"
+                          v-model="customEndpoint"
                           type="text"
                           placeholder="ws://127.0.0.1:9944"
                           class="ip-input"
@@ -130,11 +205,13 @@
                 </div>
               </div>
             </div>
-            <astar-button class="button--action">Next</astar-button>
+            <astar-button class="button--action" @click="setIsNetwork(false)">Next</astar-button>
           </div>
           <div v-if="!isNetwork">
             <span>wallet</span>
-            <astar-button class="button--action">Confirm</astar-button>
+            <astar-button class="button--action" :disabled="isDisabled" @click="selectNetwork()">
+              Confirm
+            </astar-button>
           </div>
         </div>
         <div>
@@ -149,7 +226,12 @@ import {
   checkIsLightClient,
   checkIsSubstrateConnectInstalled,
 } from 'src/config/api/polkadot/connectApi';
-import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  ChainProvider,
+  endpointKey,
+  getNetworkName,
+  providerEndpoints,
+} from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
@@ -170,7 +252,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:select-network', 'update:is-open'],
+  // emits: ['update:select-network', 'update:is-open'],
   setup(props, { emit }) {
     const isExpand = ref<boolean>(false);
 
@@ -182,30 +264,17 @@ export default defineComponent({
       el && el.classList.toggle('network-collapsed');
     };
 
-    const classRadioOn = 'class-radio-on';
-    const classRadioOff = 'class-radio-off';
-
-    const newEndpoint = ref('');
     const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
 
-    const { isZkEvm } = useNetworkInfo();
-    const store = useStore();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const { currentAccount } = useAccount();
-
-    const checkIsDisabledZkOption = (provider: ChainProvider): boolean => {
-      return !isH160.value && provider.displayName.toLowerCase().includes('zk');
-    };
-
-    const setInitialNewEndpoint = (): string => {
+    const setInitialCustomEndpoint = (): string => {
       const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
       const selectedEndpoint = JSON.parse(selectedEndpointStored);
       const networkId = Object.keys(selectedEndpoint)[0];
       const connectedCustomEndpoint = Object.values(selectedEndpoint)[0] as string;
       return networkId === String(endpointKey.CUSTOM) ? connectedCustomEndpoint : '';
     };
-    newEndpoint.value = setInitialNewEndpoint();
 
+    const customEndpoint = ref<string>(setInitialCustomEndpoint());
     const isClosing = ref<boolean>(false);
 
     const closeModal = async (): Promise<void> => {
@@ -236,25 +305,26 @@ export default defineComponent({
       }
     };
 
-    const selectNetwork = async (networkIdx: number): Promise<void> => {
-      localStorage.setItem(NETWORK_IDX, networkIdx.toString());
-      localStorage.setItem(
-        SELECTED_ENDPOINT,
-        JSON.stringify({
-          [networkIdx]:
-            newEndpoint.value && selNetwork.value === endpointKey.CUSTOM
-              ? newEndpoint.value
-              : getSelectedNetwork(networkIdx),
-        })
-      );
-
-      const network = providerEndpoints[networkIdx].networkAlias;
-      const url = buildNetworkUrl(network);
-
-      window.open(url, '_self');
-
-      emit('update:is-open', false);
-      emit('update:select-network', networkIdx);
+    const selectNetwork = async (): Promise<void> => {
+      const networkIdxRef = selNetwork.value;
+      const isNetworkChange = networkIdxRef !== props.networkIdx;
+      if (isNetworkChange) {
+        localStorage.setItem(NETWORK_IDX, networkIdxRef.toString());
+        localStorage.setItem(
+          SELECTED_ENDPOINT,
+          JSON.stringify({
+            [networkIdxRef]:
+              customEndpoint.value && selNetwork.value === endpointKey.CUSTOM
+                ? customEndpoint.value
+                : getSelectedNetwork(networkIdxRef),
+          })
+        );
+        const network = providerEndpoints[networkIdxRef].networkAlias;
+        const url = buildNetworkUrl(network);
+        window.open(url, '_self');
+        // emit('update:is-open', false);
+        // emit('update:select-network', networkIdx);
+      }
     };
 
     const setInitialSelEndpoint = (): string => {
@@ -272,11 +342,10 @@ export default defineComponent({
       if (isSelectLightClient.value) {
         return !isLightClientExtension.value;
       } else {
-        return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+        return selNetwork.value === endpointKey.CUSTOM && !customEndpoint.value;
       }
     });
 
-    const isCustomNetwork = computed<boolean>(() => selNetwork.value === endpointKey.CUSTOM);
     const isSelectLightClient = computed<boolean>(() => {
       switch (selNetwork.value) {
         case endpointKey.ASTAR:
@@ -308,13 +377,16 @@ export default defineComponent({
         : selEndpointZkatana.value === endpoint;
     };
 
+    const setSelNetwork = (networkId: number) => {
+      selNetwork.value = networkId;
+    };
+
     const setSelEndpoint = ({
       endpointObj,
       networkIdx,
     }: {
       endpointObj: { name: string; endpoint: string };
       networkIdx: number;
-      selEndpointRef: string;
     }): void => {
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = endpointObj.endpoint;
@@ -407,30 +479,16 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const windowHeight = ref<number>(window.innerHeight);
-    const onHeightChange = () => {
-      windowHeight.value = window.innerHeight - 300;
-    };
-
-    window.addEventListener('resize', onHeightChange);
-    onHeightChange();
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', onHeightChange);
-    });
-
     const isNetwork = ref<boolean>(true);
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
     };
 
-    watchEffect(() => {
-      console.log('selEndpointAstar', selEndpointAstar.value);
-      console.log('selEndpointAstar', selEndpointShiden.value);
-      console.log('selEndpointAstar', selEndpointShibuya.value);
-      console.log('selEndpointAstar', selEndpointAstarZkevm.value);
-      console.log('selEndpointAstar', selEndpointZkatana.value);
-    });
+    const isZkEvm = computed<boolean>(
+      () => selNetwork.value === endpointKey.ASTAR_ZKEVM || selNetwork.value === endpointKey.ZKATANA
+    );
+
+    watchEffect(() => {});
 
     return {
       isClosing,
@@ -439,27 +497,19 @@ export default defineComponent({
       setIsNetwork,
       expandNetwork,
       isExpand,
-
-      newEndpoint,
       selNetwork,
-      classRadioOn,
-      classRadioOff,
+      setSelNetwork,
+      checkIsCheckedEndpoint,
+      customEndpoint,
+      selectNetwork,
+      setSelEndpoint,
       providerEndpoints,
       endpointKey,
-      isDisabled,
-      isCustomNetwork,
-      selEndpointAstar,
-      selEndpointShiden,
-      selEndpointShibuya,
-      windowHeight,
       isSelectLightClient,
       isLightClientExtension,
+      getNetworkName,
       isZkEvm,
-      isH160,
-      setSelEndpoint,
-      checkIsCheckedEndpoint,
-      selectNetwork,
-      checkIsDisabledZkOption,
+      isDisabled,
     };
   },
 });
@@ -467,27 +517,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/modal-network-wallet.scss';
-
-/* Memo: somehow these classes won't work in light theme if the classes defined on modal-network.scss  */
-/* .box--light-client-warning {
-  display: none;
-  @media (min-width: $sm) {
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-    margin-top: 24px;
-  }
-}
-
-.ul--warnings {
-  list-style: disc;
-  text-align: left;
-  padding-left: 24px;
-}
-
-.text--download {
-  display: block;
-  text-decoration: underline;
-  color: $astar-blue;
-} */
 </style>
