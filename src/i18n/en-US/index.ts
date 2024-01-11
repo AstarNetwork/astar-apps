@@ -780,7 +780,7 @@ export default {
     withdraw: 'Withdraw',
     relock: 'Re-lock',
     currentTier: 'Current Tier',
-    numberOfStakers: 'Number of Stakers',
+    numberOfStakers: 'Number of stakers',
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',

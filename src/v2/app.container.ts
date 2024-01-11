@@ -79,6 +79,7 @@ import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -197,6 +198,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addSingleton<IDappStakingRepositoryV3>(
     DappStakingRepositoryV3,
     Symbols.DappStakingRepositoryV3
+  );
+  container.addSingleton<IDataProviderRepository>(
+    TokenApiProviderRepository,
+    Symbols.TokenApiProviderRepository
   );
   container.addSingleton<IDappStakingServiceV3>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
   container.addSingleton<IDappStakingServiceV3>(
