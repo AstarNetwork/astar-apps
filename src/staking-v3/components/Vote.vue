@@ -205,6 +205,7 @@ export default defineComponent({
       const stakeToken = ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt();
       return locked.value - stakeToken - totalStake.value;
     });
+    let remainLockedTokenInitial = BigInt(0);
 
     // Needed to display dApp name and logo on the page.
     const dAppToMoveTokensFrom = computed<CombinedDappInfo | undefined>(() =>
@@ -221,7 +222,7 @@ export default defineComponent({
     });
 
     const availableToVote = computed<bigint>(
-      () => BigInt(useableBalance.value) + max(remainLockedToken.value, BigInt(0))
+      () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
     );
 
     const amountToUnstake = computed<bigint>(() =>
@@ -311,6 +312,16 @@ export default defineComponent({
       {
         immediate: true,
       }
+    );
+
+    watch(
+      [remainLockedToken],
+      () => {
+        if (remainLockedTokenInitial === BigInt(0)) {
+          remainLockedTokenInitial = remainLockedToken.value;
+        }
+      },
+      { immediate: true }
     );
 
     return {
