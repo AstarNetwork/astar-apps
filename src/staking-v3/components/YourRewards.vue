@@ -7,7 +7,7 @@
     <div class="row--claim-temporary">
       <div>
         <span class="text--lg">Unclaimed Eras: </span>
-        <span class="text--lg">--</span>
+        <span class="text--lg">{{ unclaimedEras }}</span>
       </div>
       <div>
         <span class="text--lg">Claimable Amount: </span>
@@ -138,7 +138,7 @@
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
 import { RewardsPerPeriod, useDappStaking } from '../hooks';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
@@ -157,7 +157,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
     const { rewardExpiresInNextPeriod } = useDappStaking();
 
@@ -165,7 +165,11 @@ export default defineComponent({
       return period.toString().padStart(3, '0');
     };
 
-    return { nativeTokenSymbol, formatPeriod, rewardExpiresInNextPeriod };
+    const unclaimedEras = computed<number>(() =>
+      props.rewardsPerPeriod.reduce((acc, cur) => acc + cur.erasToReward, 0)
+    );
+
+    return { nativeTokenSymbol, unclaimedEras, formatPeriod, rewardExpiresInNextPeriod };
   },
 });
 </script>
