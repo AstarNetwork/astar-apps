@@ -19,7 +19,7 @@
         }"
       >
         <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
-          <div v-if="dapp" class="card--dapp" @click="navigateDappPage(dapp.basic.address)">
+          <a v-if="dapp" class="card--dapp" :href="getDappPageUrl(dapp.basic.address)">
             <div class="card__top">
               <div class="icon--dapp">
                 <img :src="dapp.basic.iconUrl" alt="icon" />
@@ -35,7 +35,7 @@
                 <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
               </div>
             </div>
-          </div>
+          </a>
         </swiper-slide>
       </swiper>
     </div>
@@ -47,8 +47,6 @@ import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
-
-// Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 
@@ -71,7 +69,7 @@ export default defineComponent({
   setup(props) {
     const { registeredDapps } = useDapps();
     const { getDappTier } = useDappStaking();
-    const { navigateDappPage } = useDappStakingNavigation();
+    const { getDappPageUrl } = useDappStakingNavigation();
 
     const filteredDapps = computed<CombinedDappInfo[]>(() => {
       const dapps = registeredDapps.value.filter(
@@ -89,7 +87,7 @@ export default defineComponent({
       return result;
     });
 
-    return { filteredDapps, getDappTier, navigateDappPage };
+    return { filteredDapps, getDappTier, getDappPageUrl };
   },
 });
 </script>
