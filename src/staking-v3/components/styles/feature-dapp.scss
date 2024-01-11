@@ -1,0 +1,207 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--promo {
+  width: 100%;
+}
+
+.row--title {
+  margin-top: 34px;
+  margin-bottom: 8px;
+}
+
+.row--button {
+  margin-top: 24px;
+  margin-bottom: 68px;
+}
+
+.text--promo-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  @media (min-width: $sm) {
+    font-size: 48px;
+  }
+}
+
+.text--promo-description {
+  font-size: 14px;
+  font-weight: 600;
+  max-width: 420px;
+}
+
+.row--data {
+  column-gap: 4px;
+  row-gap: 16px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+  }
+}
+
+.promo__data {
+  background-color: $navy-1;
+  height: 110px;
+  border-radius: 16px;
+  padding: 16px 8px;
+  flex: 1;
+  @media (min-width: $sm) {
+    padding: 24px 16px 16px 16px;
+    min-width: 134px;
+    flex: none;
+  }
+}
+
+.card--data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  line-height: 1.25;
+  height: 100%;
+}
+
+.button--link {
+  height: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-left: 32px;
+  padding-right: 12px;
+  margin: auto;
+  @media (min-width: $sm) {
+    min-width: 216px;
+    margin: 0;
+  }
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.pink--button {
+  background: $astar-pink;
+  &:hover {
+    background: lighten($astar-pink, 10%);
+  }
+}
+
+.outlined--button {
+  border: solid 1px $navy-1;
+  background: white;
+  color: $navy-1;
+  &:hover {
+    background: $gray-1;
+  }
+}
+
+.text--value {
+  font-weight: 800;
+  font-size: 20px;
+  color: white;
+  @media (min-width: $sm) {
+    font-size: 24px;
+  }
+}
+
+.text--value-small {
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+}
+
+.text--card-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+.row--start-staking {
+  width: 100%;
+  @media (min-width: $sm) {
+    min-width: 134px;
+    width: auto;
+  }
+}
+
+.button--vote-stake {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
+  color: white;
+  line-height: 1.25;
+  transition: all 0.2s ease;
+  background-color: #0048e6;
+  width: 100%;
+  height: 80px;
+  @media (min-width: $sm) {
+    max-width: 134px;
+    height: 110px;
+  }
+  &:hover {
+    filter: brightness(1.2);
+  }
+  span {
+    position: relative;
+    z-index: 1;
+  }
+  iframe {
+    position: absolute;
+    z-index: 0;
+    transform-origin: top left;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    @media (min-width: $sm) {
+      scale: 30%;
+    }
+  }
+}
+
+.wrapper--promo.voting-period {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .wrapper--promo__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .text--promo-title {
+    color: $gray-1;
+    text-shadow: 4px 8px 15px rgba(8, 15, 46, 0.6);
+    font-size: 48px;
+    font-weight: 800;
+    @media (min-width: $sm) {
+      font-size: 72px;
+    }
+  }
+
+  .row--countdown {
+    color: $gray-1;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 16px;
+    margin: 16px 0;
+  }
+
+  .text--promo-description {
+    color: $gray-1;
+    font-size: 16px;
+    font-weight: 800;
+    max-width: inherit;
+  }
+}

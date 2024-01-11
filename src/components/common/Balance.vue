@@ -2,14 +2,14 @@
   <div v-if="formattedBalance">{{ `${formattedBalance}` }}</div>
 </template>
 <script lang="ts">
-import { defineComponent, watch, ref, PropType } from 'vue';
+import { defineComponent, watch, ref } from 'vue';
 import { BN } from '@polkadot/util';
 import { formatBalance } from '@polkadot/util';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 export default defineComponent({
   props: {
     balance: {
-      type: Object as PropType<BN> | Object as PropType<string> | undefined,
+      type: [BN, String],
       required: true,
     }, //the balance should be in `femto `
     decimals: { type: Number, required: true },

@@ -1,0 +1,88 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--discover {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0 auto;
+  row-gap: 100px;
+  max-width: 1300px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.container--dapps-data {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.row--dapps-data-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-bottom: 24px;
+  gap: 24px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.input--search {
+  border: solid 1px $gray-2;
+  color: $navy-3;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  min-width: 300px;
+  outline-color: $astar-blue;
+  width: 100%;
+  @media (min-width: $sm) {
+    width: auto;
+  }
+}
+
+.bg--discover {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.bg--voting-period {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  img {
+    height: 100vw;
+    object-fit: cover;
+    margin: auto;
+    @media (min-width: $sm) {
+      max-width: 1100px;
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.body--dark {
+  .wrapper--discover {
+    color: $navy-1;
+  }
+}
+
+.dapps {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 24px;
+}

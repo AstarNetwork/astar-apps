@@ -65,7 +65,6 @@ export default defineComponent({
   border-radius: 6px;
   padding: 24px;
   cursor: pointer;
-  margin-top: 50px;
   color: $gray-1;
   font-size: 16px;
 }

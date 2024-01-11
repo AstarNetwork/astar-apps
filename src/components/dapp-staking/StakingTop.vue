@@ -118,6 +118,8 @@ export default defineComponent({
 .extra-wrapper {
   max-width: $container-max-width;
   margin: 0 auto;
+  z-index: 1;
+  position: relative;
 }
 
 .container--main {

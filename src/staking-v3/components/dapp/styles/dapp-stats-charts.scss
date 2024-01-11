@@ -1,0 +1,28 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp-stats-charts {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.row--stats-title {
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.container--charts {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  width: 100%;
+  row-gap: 24px;
+  column-gap: 32px;
+  @media (min-width: $xxl) {
+    row-gap: 32px;
+    margin-bottom: 16px;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

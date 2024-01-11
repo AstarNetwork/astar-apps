@@ -29,8 +29,5 @@ export default defineComponent({
 
 .wrapper--dashboard {
   padding: 0 16px;
-  @media (min-width: $lg) {
-    margin-top: 70px;
-  }
 }
 </style>
