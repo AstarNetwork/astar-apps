@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { useChainMetadata } from 'src/hooks';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { IEventAggregator } from 'src/v2/messaging';
 import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
@@ -28,15 +29,14 @@ export class AssetsService implements IAssetsService {
   }
 
   public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
+    const { decimal } = useChainMetadata();
     const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
-    const isBalanceNotEnough =
-      Number(ethers.utils.formatUnits(useableBalance, 18)) -
-        Number(ethers.utils.formatUnits(param.amount, 18)) <
+    const isBalanceEnough =
+      Number(ethers.utils.formatUnits(useableBalance, decimal.value)) -
+        Number(ethers.utils.formatUnits(param.amount, decimal.value)) >
       REQUIRED_MINIMUM_BALANCE;
 
-    if (isBalanceNotEnough) {
-      throw new Error(AlertMsg.MINIMUM_BALANCE);
-    } else {
+    if (isBalanceEnough) {
       const transaction = await this.AssetsRepository.getNativeTransferCall(param);
       const hash = await this.wallet.signAndSend({
         extrinsic: transaction,
@@ -44,19 +44,20 @@ export class AssetsService implements IAssetsService {
         successMessage: param.successMessage,
       });
       param.finalizedCallback(String(hash));
+    } else {
+      throw new Error(AlertMsg.MINIMUM_BALANCE);
     }
   }
 
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
+    const { decimal } = useChainMetadata();
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 
     const balWei = await web3.eth.getBalance(param.senderAddress);
-    const useableBalance = Number(ethers.utils.formatUnits(balWei, 18));
-    const isBalanceNotEnough = useableBalance - Number(param.amount) < REQUIRED_MINIMUM_BALANCE;
-    if (isBalanceNotEnough) {
-      throw Error(AlertMsg.MINIMUM_BALANCE);
-    } else {
+    const useableBalance = Number(ethers.utils.formatUnits(balWei, decimal.value));
+    const isBalanceEnough = useableBalance - Number(param.amount) > REQUIRED_MINIMUM_BALANCE;
+    if (isBalanceEnough) {
       const rawTx = await this.AssetsRepository.getEvmTransferData({
         param,
         web3,
@@ -72,6 +73,8 @@ export class AssetsService implements IAssetsService {
       });
 
       param.finalizedCallback(transactionHash);
+    } else {
+      throw Error(AlertMsg.MINIMUM_BALANCE);
     }
   }
 
