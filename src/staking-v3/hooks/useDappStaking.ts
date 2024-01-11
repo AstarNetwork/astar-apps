@@ -20,7 +20,7 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import { useAccount, useChainMetadata, useBalance } from 'src/hooks';
+import { useAccount, useChainMetadata, useNetworkInfo } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
@@ -41,7 +41,7 @@ export function useDappStaking() {
   const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
-  const { useableBalance } = useBalance(currentAccount);
+  const { nativeTokenSymbol } = useNetworkInfo();
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
@@ -367,7 +367,7 @@ export function useDappStaking() {
     let stakeSum = BigInt(0);
 
     for (const stake of stakes) {
-      const stakeAmount = BigInt(ethers.utils.parseEther(stake.amount.toString()).toString());
+      const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
       stakeSum += stakeAmount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected')];
@@ -392,6 +392,18 @@ export function useDappStaking() {
         return [false, t('stakingV3.dappStaking.Disabled')];
       } else if (stakeSum > availableTokensBalance) {
         return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
+      } else if (
+        constants.value &&
+        ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
+          availableTokensBalance - stakeSum
+      ) {
+        return [
+          false,
+          t('stakingV3.minBalanceAfterStaking', {
+            amount: constants.value.minBalanceAfterStaking,
+            symbol: nativeTokenSymbol.value,
+          }),
+        ];
       } else if (
         protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
         protocolState.value.periodInfo.nextSubperiodStartEra <= protocolState.value.era + 1

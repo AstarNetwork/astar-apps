@@ -445,7 +445,7 @@ export default {
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
       invalidBalance: 'Insufficient transferrable balance to complete the transaction',
       warningLeaveMinAmount:
-        'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
+        'Account must hold amount greater than {amount}{symbol} in transferrable after you stake.',
     },
     maintenance: {
       switching: 'Switching to',
@@ -704,7 +704,8 @@ export default {
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
-      PeriodEndsNextEra: 'Period ends in the next era.',
+      PeriodEndsNextEra:
+        'Period ends in the next era. It is not possible to stake in the last period of an era.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
       TooManyUnlockingChunks:
