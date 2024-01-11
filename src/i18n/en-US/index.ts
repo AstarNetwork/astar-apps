@@ -705,7 +705,7 @@ export default {
       NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
-        'Period ends in the next era. It is not possible to stake in the last period of an era.',
+        'Period ends in the next era. It is not possible to stake in the last era of an period.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
       TooManyUnlockingChunks:
