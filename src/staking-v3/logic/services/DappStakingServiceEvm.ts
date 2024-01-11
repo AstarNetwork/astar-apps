@@ -3,7 +3,7 @@ import { IDappStakingService } from './IDappStakingService';
 import { DappStakingService } from './DappStakingService';
 import { DappStakeInfo, SingularStakingInfo } from '../models';
 import { IWalletService } from '../../../v2/services/IWalletService';
-import { IDappStakingRepository } from '../repositories';
+import { IDappStakingRepository, IDataProviderRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { IAccountUnificationRepository } from 'src/v2/repositories';
@@ -17,11 +17,12 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   constructor(
     @inject(Symbols.DappStakingRepositoryV3) dappStakingRepository: IDappStakingRepository,
+    @inject(Symbols.TokenApiProviderRepository) tokenApiRepository: IDataProviderRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.AccountUnificationRepository)
     private accountUnificationRepository: IAccountUnificationRepository
   ) {
-    super(dappStakingRepository, walletFactory);
+    super(dappStakingRepository, tokenApiRepository, walletFactory);
     this.wallet = walletFactory();
   }
 

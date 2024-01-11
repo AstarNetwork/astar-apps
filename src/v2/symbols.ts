@@ -41,4 +41,5 @@ export const Symbols = {
   DappStakingServiceEvmV3: Symbol.for('DappStakingServiceEvmV3'),
   DappStakingServiceFactoryV3: Symbol.for('DappStakingServiceFactoryV3'),
   DappStakingServiceV2V3: Symbol.for('DappStakingServiceV2V3'),
+  TokenApiProviderRepository: Symbol.for('TokenApiProviderRepository'),
 };

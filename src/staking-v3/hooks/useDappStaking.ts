@@ -178,9 +178,10 @@ export function useDappStaking() {
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
-    fetchStakerInfoToStore();
     getCurrentEraInfo();
     fetchStakeAmountsToStore();
+    await fetchStakerInfoToStore();
+    updateStakersCount([dapp.chain.address], -1);
   };
 
   const unstakeFromUnregistered = async (dappAddress: string, dappName: string): Promise<void> => {
@@ -230,6 +231,10 @@ export function useDappStaking() {
       unstakeFromAddress,
       unstakeAmount,
       t('stakingV3.voteSuccess', { number: stakeInfo.length })
+    );
+    updateStakersCount(
+      stakeInfo.map((x) => x.address),
+      1
     );
     await Promise.all([
       getAllRewards(),
@@ -490,6 +495,27 @@ export function useDappStaking() {
     const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     aggregator.publish(new ExtrinsicStatusMessage({ success: false, message: error }));
     return;
+  };
+
+  /**
+   * Updates number of stakers for dApps in Vuex store. Stakers count comes from an indexer through Token API
+   * and it doesn't make sense to reload from there because most likely the new stakers count won't be indexed
+   * at the time of the call.
+   * @param stakedContracts List of contract addresses for which stakers count should be updated.
+   * @param amount expected value +1 in case of staking and -1 when unstaking.
+   */
+  const updateStakersCount = (stakedContracts: string[], amount: number): void => {
+    for (const contract of stakedContracts) {
+      const alreadyStaked = stakerInfo.value.get(contract);
+      if (!alreadyStaked) {
+        const dapp = getDapp(contract);
+        if (dapp && dapp.dappDetails) {
+          const detailsClone = { ...dapp.dappDetails };
+          detailsClone.stakersCount += amount;
+          store.commit('stakingV3/updateDappDetails', detailsClone);
+        }
+      }
+    }
   };
 
   return {

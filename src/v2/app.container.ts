@@ -83,6 +83,7 @@ import {
   DappStakingServiceV2V3,
   IDappStakingServiceV2V3,
 } from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
+import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -201,6 +202,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addSingleton<IDappStakingRepositoryV3>(
     DappStakingRepositoryV3,
     Symbols.DappStakingRepositoryV3
+  );
+  container.addSingleton<IDataProviderRepository>(
+    TokenApiProviderRepository,
+    Symbols.TokenApiProviderRepository
   );
   container.addSingleton<IDappStakingServiceV3>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
   container.addSingleton<IDappStakingServiceV3>(

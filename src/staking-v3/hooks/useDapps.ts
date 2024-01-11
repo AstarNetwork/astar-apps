@@ -82,7 +82,7 @@ export function useDapps() {
   };
 
   const getDapp = (dappAddress: string): CombinedDappInfo | undefined =>
-    allDapps.value.find((d) => d.chain.address === dappAddress);
+    allDapps.value.find((d) => d.chain.address.toLowerCase() === dappAddress?.toLowerCase());
 
   const getDappByOwner = (ownerAddress: string): DappInfo | undefined => {
     const dapps = [...allDapps.value.map((x) => x.chain), ...newDapps.value];
