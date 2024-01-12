@@ -17,7 +17,7 @@ type Provider = WsProvider | ScProvider;
 
 export const checkIsLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
 export const checkIsSubstrateConnectInstalled = (): boolean =>
-  !!document.getElementById('substrateConnectExtensionAvailable');
+  !!document.getElementById('substrateConnectExtensionAvailableV2');
 
 const getParachainSpec = (networkIdx: endpointKey): string => {
   switch (networkIdx) {
