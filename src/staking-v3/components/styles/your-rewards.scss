@@ -1,0 +1,121 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--your-rewards {
+  margin-bottom: 80px;
+}
+
+.row--title {
+  font-weight: 800;
+  font-size: 32px;
+  color: $navy-1;
+  margin-bottom: 24px;
+  @media (min-width: $xl) {
+    margin-bottom: 44px;
+  }
+}
+
+.button--claim {
+  width: 100%;
+  max-width: 400px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
+.row--claim-temporary {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  margin-bottom: 40px;
+}
+
+.box__row {
+  background: $gray-1;
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  @media (min-width: $sm) {
+    padding: 16px;
+  }
+}
+
+.text--vivid {
+  color: $astar-pink-01;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.text--info {
+  color: $navy-1;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.text--info-bond {
+  color: $navy-1;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.text--vivid-bond {
+  color: $astar-pink-01;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.container--rewards {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+  }
+}
+
+.box--rewards {
+  padding: 16px 12px;
+  border: solid 1px $navy-1;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  @media (min-width: $sm) {
+    padding: 32px 24px;
+  }
+}
+
+.row--claim-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box__column {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+}
+
+.column--status-claimed {
+  width: 108px;
+  border: 1px solid rgba(47, 211, 63, 1);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(47, 211, 63, 1);
+  background: rgba(47, 211, 63, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.body--dark {
+  .text--title,
+  .text--lg {
+    color: $navy-1;
+  }
+}

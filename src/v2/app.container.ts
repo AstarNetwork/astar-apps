@@ -62,6 +62,13 @@ import {
   AccountUnificationService,
   IdentityService,
 } from './services/implementations';
+import {
+  IDappStakingRepository as IDappStakingRepositoryV3,
+  DappStakingRepository as DappStakingRepositoryV3,
+  IDappStakingService as IDappStakingServiceV3,
+  DappStakingService as DappStakingServiceV3,
+  DappStakingServiceEvm as DappStakingServiceEvmV3,
+} from 'src/staking-v3';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
@@ -72,6 +79,7 @@ import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -185,4 +193,33 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
+
+  //dApp staking v3
+  container.addSingleton<IDappStakingRepositoryV3>(
+    DappStakingRepositoryV3,
+    Symbols.DappStakingRepositoryV3
+  );
+  container.addSingleton<IDataProviderRepository>(
+    TokenApiProviderRepository,
+    Symbols.TokenApiProviderRepository
+  );
+  container.addSingleton<IDappStakingServiceV3>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
+  container.addSingleton<IDappStakingServiceV3>(
+    DappStakingServiceEvmV3,
+    Symbols.DappStakingServiceEvmV3
+  );
+
+  container
+    .bind<interfaces.Factory<IDappStakingServiceV3>>(Symbols.DappStakingServiceFactoryV3)
+    .toFactory(() => {
+      return () =>
+        container.get<IDappStakingServiceV3>(
+          currentWalletType === WalletType.Polkadot
+            ? Symbols.DappStakingServiceV3
+            : Symbols.DappStakingServiceEvmV3
+        );
+    });
+
+  // Start block change subscription. Needed for remaining unlocking blocks calculation.
+  container.get<ISystemRepository>(Symbols.SystemRepository).startBlockSubscription();
 }

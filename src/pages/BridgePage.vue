@@ -25,14 +25,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 #bridge-top {
   @media (min-width: $lg) {
-    margin-top: 50px;
     padding: 0 16px;
   }
 }
 
 .page--bridge {
   @media (min-width: $lg) {
-    height: calc(100vh - 160px);
+    height: calc(100vh - 96px - 36px - 120px);
   }
 }
 </style>

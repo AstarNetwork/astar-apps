@@ -24,6 +24,8 @@
       <mobile-nav v-if="width <= screenSize.lg" />
     </header-comp>
 
+    <claim-warning-banner :network="currentNetworkIdx" />
+
     <!-- Modals -->
     <modal-network
       v-if="modalNetwork"
@@ -108,6 +110,7 @@ import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { Symbols } from 'src/v2/symbols';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
+import ClaimWarningBanner from './ClaimWarningBanner.vue';
 
 interface Modal {
   modalNetwork: boolean;
@@ -127,6 +130,7 @@ export default defineComponent({
     ModalPolkasafe,
     ModalAccountUnification,
     MobileNav,
+    ClaimWarningBanner,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -260,13 +264,10 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
+  position: sticky;
+  top: 0;
   @media (min-width: $lg) {
-    border-left: solid 1px $navy-3;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 224px;
-    padding-right: 224px;
+    position: relative;
   }
 }
 
