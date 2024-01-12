@@ -15,7 +15,8 @@ export function useSignPayload() {
     developerAddress: string,
     contractAddress: string
   ): Promise<string> => {
-    const payload = $api?.tx[isDappStakingV3 ? 'dappStaking' : 'dappsStaking']
+    const palletName = isDappStakingV3.value ? 'dappStaking' : 'dappsStaking';
+    const payload = $api?.tx[palletName]
       .register(developerAddress, getDappAddressEnum(contractAddress))
       .toHex();
     const injector = await getInjector(substrateAccounts.value);
