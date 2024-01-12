@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--dapp-background">
-    <img class="image--dapp-icon" :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
+    <img class="image--dapp-icon" :src="dapp?.basic.iconUrl" :alt="dapp?.basic.name" />
   </div>
 </template>
 <script lang="ts">

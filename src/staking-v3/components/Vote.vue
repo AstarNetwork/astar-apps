@@ -95,6 +95,7 @@
             </div>
           </div>
           <rewards-panel />
+          <error-panel :error-message="errorMessage" />
           <div class="wrapper--button">
             <astar-button
               :disabled="!canConfirm()"
@@ -157,6 +158,7 @@ import { useRoute } from 'vue-router';
 import { CombinedDappInfo, DappStakeInfo } from '../logic';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
+import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
 
 export default defineComponent({
@@ -167,11 +169,19 @@ export default defineComponent({
     ModalSelectDapp,
     BackToPage,
     RewardsPanel,
+    ErrorPanel,
   },
   setup() {
-    const { constants, ledger, totalStake, isVotingPeriod, claimLockAndStake } = useDappStaking();
+    const {
+      constants,
+      ledger,
+      totalStake,
+      isVotingPeriod,
+      stakerInfo,
+      canStake,
+      claimLockAndStake,
+    } = useDappStaking();
     const { registeredDapps, getDapp } = useDapps();
-    const { stakerInfo } = useDappStaking();
     const { goBack } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
@@ -195,6 +205,7 @@ export default defineComponent({
       const stakeToken = ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt();
       return locked.value - stakeToken - totalStake.value;
     });
+    let remainLockedTokenInitial = BigInt(0);
 
     // Needed to display dApp name and logo on the page.
     const dAppToMoveTokensFrom = computed<CombinedDappInfo | undefined>(() =>
@@ -211,7 +222,7 @@ export default defineComponent({
     });
 
     const availableToVote = computed<bigint>(
-      () => BigInt(useableBalance.value) + max(remainLockedToken.value, BigInt(0))
+      () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
     );
 
     const amountToUnstake = computed<bigint>(() =>
@@ -220,13 +231,28 @@ export default defineComponent({
         : availableToMove.value
     );
 
+    const stakeInfo = computed<DappStakeInfo[]>(() => {
+      const stakeInfo: DappStakeInfo[] = [];
+      selectedDapps.value.forEach((dapp) => {
+        if (dapp.amount > 0) {
+          stakeInfo.push({
+            id: dapp.id,
+            address: dapp.address,
+            amount: dapp.amount,
+          });
+        }
+      });
+
+      return stakeInfo;
+    });
+
+    const errorMessage = ref<string>('');
+
     const canConfirm = (): boolean => {
-      // TODO use canStake from useDappStaking after multiple stakes will be supported.
-      return (
-        totalStakeAmount.value > 0 &&
-        availableToVote.value >
-          ethers.utils.parseEther(totalStakeAmount.value.toString()).toBigInt()
-      );
+      const [enabled, message] = canStake(stakeInfo.value, availableToVote.value);
+      errorMessage.value = message;
+
+      return enabled && totalStakeAmount.value > 0;
     };
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
@@ -248,22 +274,11 @@ export default defineComponent({
     const canAddDapp = computed<boolean>((): boolean => selectedDappAddress.value === '');
 
     const confirm = async (): Promise<void> => {
-      const stakeInfo: DappStakeInfo[] = [];
-      selectedDapps.value.forEach((dapp) => {
-        if (dapp.amount > 0) {
-          stakeInfo.push({
-            id: dapp.id,
-            address: dapp.address,
-            amount: dapp.amount,
-          });
-        }
-      });
-
       // If additional funds locking is required remainLockedToken value will be negative.
       // In case of nomination transfer no additional funds locking is required.
       const tokensToLock = remainLockedToken.value + availableToMove.value;
       await claimLockAndStake(
-        stakeInfo,
+        stakeInfo.value,
         tokensToLock < 0 ? tokensToLock * BigInt(-1) : BigInt(0),
         dAppToMoveFromAddress.value,
         amountToUnstake.value
@@ -299,6 +314,16 @@ export default defineComponent({
       }
     );
 
+    watch(
+      [remainLockedToken],
+      () => {
+        if (remainLockedTokenInitial === BigInt(0)) {
+          remainLockedTokenInitial = remainLockedToken.value;
+        }
+      },
+      { immediate: true }
+    );
+
     return {
       constants,
       nativeTokenSymbol,
@@ -322,6 +347,7 @@ export default defineComponent({
       isVotingPeriod,
       dAppToMoveTokensFrom,
       availableToMove,
+      errorMessage,
     };
   },
 });
