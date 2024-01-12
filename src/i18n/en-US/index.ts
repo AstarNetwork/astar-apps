@@ -443,9 +443,9 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
-      invalidBalance: 'Insufficient transferrable balance to complete the transaction',
+      invalidBalance: 'Insufficient transferable balance to complete the transaction',
       warningLeaveMinAmount:
-        'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
+        'Account must hold greater than {amount}{symbol} in transferable when you stake.',
     },
     maintenance: {
       switching: 'Switching to',
@@ -726,7 +726,7 @@ export default {
     stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
-      'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
+      'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
     availableToVote: 'Available to vote',

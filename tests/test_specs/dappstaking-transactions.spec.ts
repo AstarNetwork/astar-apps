@@ -77,7 +77,7 @@ test.describe('dApp staking transactions', () => {
       page
         .locator('div')
         .filter({
-          hasText: /^Account must hold greater than 10ASTR in transferrable when you stake\.$/,
+          hasText: /^Account must hold greater than 10ASTR in transferable when you stake\.$/,
         })
         .locator('span')
     ).toBeVisible();
