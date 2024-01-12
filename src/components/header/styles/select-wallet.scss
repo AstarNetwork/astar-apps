@@ -1,0 +1,155 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--modal--wallet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // padding-top: 38px;
+  // padding-bottom: 20px;
+  row-gap: 32px;
+}
+
+.title--account-type {
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 16px;
+  color: $gray-5;
+  text-align: left;
+  margin-bottom: 16px;
+  @media (min-width: 500px) {
+    margin-left: 0px;
+  }
+}
+
+.wrapper--wallets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.box__row--wallet {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  align-items: center;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-5;
+  cursor: pointer;
+  padding: 16px;
+  padding-left: 24px;
+  margin: 0 auto;
+  border: 1px solid $navy-1;
+
+  @media (min-width: 500px) {
+    flex-direction: row;
+    font-size: 16px;
+    column-gap: 8px;
+  }
+
+  &:hover {
+    border: 1px solid $astar-blue;
+  }
+
+  &:active {
+    border: 2px solid $astar-blue;
+  }
+
+  .box--img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.border--active {
+  border: 1px solid $astar-blue !important;
+}
+
+.btn--disconnect {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  height: 52px;
+  background-color: transparent;
+  border: 1px solid $astar-blue;
+  color: $astar-blue;
+  transition: all 0.4s ease 0s;
+  &:hover {
+    background-color: $gray-5;
+    border: 1px solid $gray-2;
+    color: $gray-2;
+  }
+}
+
+.box--no-extension {
+  margin-top: 32px;
+  background: $astar-blue;
+  border-radius: 6px;
+  padding: 16px;
+  padding-bottom: 22px;
+  text-align: left;
+}
+
+.title--no-extension {
+  margin-bottom: 8px;
+}
+
+.row--no-extension {
+  margin-bottom: 22px;
+}
+
+.row--icon-links {
+}
+
+.button--link {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.icon--link {
+  font-size: 20px;
+  transition: all 0.4s ease 0s;
+  border-radius: 50%;
+  stroke: $gray-1;
+}
+
+.row--icon-links {
+  display: flex;
+  column-gap: 26px;
+}
+
+.text--install-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: $gray-1;
+}
+
+.text--install {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.text--install-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.astar-account {
+  margin-top: -8px;
+}
+
+.body--dark {
+  .title--account-type {
+    color: $gray-1;
+  }
+  .box__row--wallet {
+    color: $gray-1;
+    border: 1px solid $gray-3;
+  }
+}

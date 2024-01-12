@@ -1,9 +1,19 @@
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
-.wrapper--select-network {
-  position: relative;
-  flex-grow: 1;
+.row--back {
+  text-align: left;
+  color: $gray-4;
+  font-weight: 500;
+  @media (min-width: $lg) {
+    margin-top: -10px;
+  }
+}
+.button--back {
+  &:hover {
+    transition: all 0.3s ease 0s;
+    color: $astar-blue;
+  }
 }
 
 .list--account {
@@ -20,6 +30,7 @@
 
 .text--is-ledger {
   font-weight: 600;
+  font-size: 13px;
   color: $gray-5;
 }
 
@@ -252,6 +263,10 @@
   }
   .class-radio-off {
     border: 1px solid $gray-3;
+  }
+
+  .row--back {
+    color: $gray-3;
   }
 
   .text--is-ledger {

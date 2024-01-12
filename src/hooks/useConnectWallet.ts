@@ -234,6 +234,10 @@ export const useConnectWallet = () => {
     }
   };
 
+  const setModalAccountSelect = (result: boolean): void => {
+    modalAccountSelect.value = result;
+  };
+
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
@@ -352,10 +356,14 @@ export const useConnectWallet = () => {
   watch([currentNetworkChain], handleCheckLedgerEnvironment);
 
   // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
-  window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  // window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
 
-  onUnmounted(() => {
-    window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  // onUnmounted(() => {
+  //   window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  // });
+
+  watchEffect(() => {
+    // console.log('modalName', modalName.value);
   });
 
   return {
@@ -380,5 +388,6 @@ export const useConnectWallet = () => {
     connectEthereumWallet,
     openPolkasafeModal,
     openAccountUnificationModal,
+    setModalAccountSelect,
   };
 };

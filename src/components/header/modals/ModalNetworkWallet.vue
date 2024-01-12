@@ -208,10 +208,23 @@
             <astar-button class="button--action" @click="setIsNetwork(false)">Next</astar-button>
           </div>
           <div v-if="!isNetwork">
-            <span>wallet</span>
-            <astar-button class="button--action" :disabled="isDisabled" @click="selectNetwork()">
+            <div v-if="modalAccountSelect">
+              <select-account
+                :selected-wallet="(selectedWallet as SupportWallet)"
+                :connect-ethereum-wallet="connectEthereumWallet"
+                :disconnect-account="disconnectAccount"
+                :current-account="currentAccount"
+                :set-modal-account-select="setModalAccountSelect"
+              />
+            </div>
+            <select-wallet
+              v-else
+              :selected-wallet="(selectedWallet as SupportWallet)"
+              :set-wallet-modal="setWalletModal"
+            />
+            <!-- <astar-button class="button--action" :disabled="isDisabled" @click="selectNetwork()">
               Confirm
-            </astar-button>
+            </astar-button> -->
           </div>
         </div>
         <div>
@@ -222,26 +235,24 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import {
   checkIsLightClient,
   checkIsSubstrateConnectInstalled,
 } from 'src/config/api/polkadot/connectApi';
-import {
-  ChainProvider,
-  endpointKey,
-  getNetworkName,
-  providerEndpoints,
-} from 'src/config/chainEndpoints';
+import { endpointKey, getNetworkName, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
-import { computed, defineComponent, ref, watch, onUnmounted, watchEffect } from 'vue';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import NetworkWalletTab from './NetworkWalletTab.vue';
+import SelectWallet from './SelectWallet.vue';
+import SelectAccount from './SelectAccount.vue';
+import { useConnectWallet } from 'src/hooks';
+import { SupportWallet } from 'src/config/wallets';
+import { WalletModalOption } from 'src/config/wallets';
 
 export default defineComponent({
-  components: { NetworkWalletTab },
+  components: { NetworkWalletTab, SelectWallet, SelectAccount },
   props: {
     isOpen: {
       type: Boolean,
@@ -479,7 +490,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const isNetwork = ref<boolean>(true);
+    const isNetwork = ref<boolean>(false);
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
     };
@@ -487,6 +498,25 @@ export default defineComponent({
     const isZkEvm = computed<boolean>(
       () => selNetwork.value === endpointKey.ASTAR_ZKEVM || selNetwork.value === endpointKey.ZKATANA
     );
+
+    const {
+      modalConnectWallet,
+      modalName,
+      currentAccount,
+      selectedWallet,
+      modalAccountSelect,
+      modalPolkasafeSelect,
+      modalAccountUnificationSelect,
+      setCloseModal,
+      setWalletModal,
+      openSelectModal,
+      changeAccount,
+      connectEthereumWallet,
+      disconnectAccount,
+      openPolkasafeModal,
+      openAccountUnificationModal,
+      setModalAccountSelect,
+    } = useConnectWallet();
 
     watchEffect(() => {});
 
@@ -510,6 +540,16 @@ export default defineComponent({
       getNetworkName,
       isZkEvm,
       isDisabled,
+      selectedWallet,
+      SupportWallet,
+      modalName,
+      WalletModalOption,
+      modalAccountSelect,
+      setWalletModal,
+      connectEthereumWallet,
+      disconnectAccount,
+      currentAccount,
+      setModalAccountSelect,
     };
   },
 });
