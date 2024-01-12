@@ -445,7 +445,7 @@ export default {
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
       invalidBalance: 'Insufficient transferable balance to complete the transaction',
       warningLeaveMinAmount:
-        'Account must hold greater than {amount}{symbol} in transferable when you stake.',
+        'Account must hold amount greater than {amount}{symbol} in transferable after you stake.',
     },
     maintenance: {
       switching: 'Switching to',
@@ -704,7 +704,8 @@ export default {
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
-      PeriodEndsNextEra: 'Period ends in the next era.',
+      PeriodEndsNextEra:
+        'Period ends in the next era. It is not possible to stake in the last era of a period.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
       TooManyUnlockingChunks:
@@ -717,6 +718,7 @@ export default {
       UnstakeFromPastPeriod:
         'Unstaking is rejected since the period in which past stake was active has passed.',
       ZeroAmount: 'Amount must be greater than 0.',
+      LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
@@ -828,6 +830,8 @@ export default {
     burn: 'Burn',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     registerNow: 'Register now',
+    willUnstakeAll:
+      'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
   },
   bridge: {
     bridge: 'Bridge',
