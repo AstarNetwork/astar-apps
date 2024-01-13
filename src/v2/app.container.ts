@@ -79,6 +79,10 @@ import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import {
+  DappStakingServiceV2V3,
+  IDappStakingServiceV2V3,
+} from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
 import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
@@ -219,6 +223,11 @@ export default function buildDependencyContainer(network: endpointKey): void {
             : Symbols.DappStakingServiceEvmV3
         );
     });
+
+  container.addSingleton<IDappStakingServiceV2V3>(
+    DappStakingServiceV2V3,
+    Symbols.DappStakingServiceV2V3
+  );
 
   // Start block change subscription. Needed for remaining unlocking blocks calculation.
   container.get<ISystemRepository>(Symbols.SystemRepository).startBlockSubscription();

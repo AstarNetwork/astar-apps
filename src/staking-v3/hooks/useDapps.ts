@@ -1,6 +1,12 @@
 import { computed } from 'vue';
 import { container } from 'src/v2/common';
-import { CombinedDappInfo, IDappStakingRepository, IDappStakingService } from '../logic';
+import {
+  CombinedDappInfo,
+  DappInfo,
+  DappState,
+  IDappStakingRepository,
+  IDappStakingService,
+} from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
 import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
@@ -13,8 +19,8 @@ export function useDapps() {
   const registeredDapps = computed<CombinedDappInfo[]>(
     () => store.getters['stakingV3/getRegisteredDapps']
   );
-
   const allDapps = computed<CombinedDappInfo[]>(() => store.getters['stakingV3/getDapps']);
+  const newDapps = computed<DappInfo[]>(() => store.getters['stakingV3/getNewDapps']);
 
   const fetchDappsToStore = async (): Promise<void> => {
     // Don't fetch if we already have dApps.
@@ -29,7 +35,8 @@ export function useDapps() {
     try {
       aggregator.publish(new BusyMessage(true));
       const dApps = await service.getDapps(currentNetworkName.value.toLowerCase());
-      store.commit('stakingV3/addDapps', dApps);
+      store.commit('stakingV3/addDapps', dApps.fullInfo);
+      store.commit('stakingV3/addNewDapps', dApps.chainInfo);
       // Memo: this can a heavy operations since we are querying all dapps stakes for a chain.
       await fetchStakeAmountsToStore();
     } finally {
@@ -77,6 +84,11 @@ export function useDapps() {
   const getDapp = (dappAddress: string): CombinedDappInfo | undefined =>
     allDapps.value.find((d) => d.chain.address.toLowerCase() === dappAddress?.toLowerCase());
 
+  const getDappByOwner = (ownerAddress: string): DappInfo | undefined => {
+    const dapps = [...allDapps.value.map((x) => x.chain), ...newDapps.value];
+    return dapps.find((d) => d.owner === ownerAddress && d.state === DappState.Registered);
+  };
+
   return {
     registeredDapps,
     allDapps,
@@ -84,5 +96,6 @@ export function useDapps() {
     fetchDappToStore,
     fetchStakeAmountsToStore,
     getDapp,
+    getDappByOwner,
   };
 }

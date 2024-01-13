@@ -445,7 +445,7 @@ export default {
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
       invalidBalance: 'You do not have enough tokens to pay the transaction fee',
       warningLeaveMinAmount:
-        'Account must hold amount greater than {amount}{symbol} in transferrable after you stake.',
+        'Account must hold amount greater than {amount}{symbol} in transferable after you stake.',
     },
     maintenance: {
       switching: 'Switching to',
@@ -728,7 +728,7 @@ export default {
     stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
-      'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
+      'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
     availableToVote: 'Available to vote',
@@ -828,6 +828,8 @@ export default {
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
     burn: 'Burn',
+    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
   },

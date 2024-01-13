@@ -18,6 +18,7 @@ import {
 
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;
+  addNewDapps(state: DappStakingState, dapps: DappInfo[]): void;
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   updateDappChain(state: DappStakingState, dapp: DappInfo): void;
@@ -55,6 +56,9 @@ const updateDapp = <T>(
 const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   addDapps(state, dapps) {
     state.dapps = dapps;
+  },
+  addNewDapps(state, dapps) {
+    state.newDapps = dapps;
   },
   addDapp(state, dapp) {
     state.dapps.push(dapp);

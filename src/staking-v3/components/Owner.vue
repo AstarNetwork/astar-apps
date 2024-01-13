@@ -15,7 +15,9 @@
         <kpi-card :title="$t('stakingV3.currentTier')">{{
           getDappTier(dapp.chain.id) ?? '--'
         }}</kpi-card>
-        <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
+        <kpi-card :title="$t('stakingV3.numberOfStakers')">
+          {{ dapp.dappDetails?.stakersCount ?? '--' }}
+        </kpi-card>
         <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
       </div>
       <your-rewards

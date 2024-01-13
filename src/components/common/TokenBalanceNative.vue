@@ -3,7 +3,7 @@
     :balance="ethers.utils.formatEther(balance)"
     :text="text"
     :decimals="decimals"
-    :symbol="nativeTokenSymbol"
+    :symbol="showTokenSymbol ? nativeTokenSymbol : ''"
   />
 </template>
 
@@ -31,6 +31,11 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 3,
+    },
+    showTokenSymbol: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   setup() {

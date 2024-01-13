@@ -27,6 +27,8 @@
   justify-self: center;
   padding-left: 24px;
   padding-right: 24px;
+  z-index: 1;
+  position: relative;
   @media (min-width: $lg) {
     margin-top: 60px;
     padding-left: 0px;
