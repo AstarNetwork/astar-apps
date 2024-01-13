@@ -28,6 +28,7 @@ import { ethers } from 'ethers';
 import { initialDappTiersConfiguration, initialTiersConfiguration } from '../store/state';
 import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { ApiPromise } from '@polkadot/api';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 
 export interface RewardsPerPeriod {
   period: number;
@@ -424,7 +425,7 @@ export function useDappStaking() {
 
   const canUnStake = (dappAddress: string, amount: number): [boolean, string] => {
     const unstakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
-    const dappInfo = stakerInfo.value.get(dappAddress);
+    const dappInfo = getStakerInfo(dappAddress);
     const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
 
     if (amount <= 0) {
@@ -452,6 +453,12 @@ export function useDappStaking() {
     }
 
     return [true, ''];
+  };
+
+  const getStakerInfo = (dappAddress: string): SingularStakingInfo | undefined => {
+    const isEvmAddress = isValidEvmAddress(dappAddress);
+
+    return stakerInfo.value?.get(isEvmAddress ? dappAddress.toLowerCase() : dappAddress);
   };
 
   const getDappTiers = async (era: number): Promise<void> => {
@@ -509,7 +516,7 @@ export function useDappStaking() {
    */
   const updateStakersCount = (stakedContracts: string[], amount: number): void => {
     for (const contract of stakedContracts) {
-      const alreadyStaked = stakerInfo.value.get(contract);
+      const alreadyStaked = getStakerInfo(contract);
       if (!alreadyStaked) {
         const dapp = getDapp(contract);
         if (dapp && dapp.dappDetails) {
@@ -564,5 +571,6 @@ export function useDappStaking() {
     fetchEraLengthsToStore,
     getUnclaimedDappRewardsPerPeriod,
     rewardExpiresInNextPeriod,
+    getStakerInfo,
   };
 }

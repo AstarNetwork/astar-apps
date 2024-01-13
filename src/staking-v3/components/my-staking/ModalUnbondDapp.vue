@@ -112,7 +112,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { stakerInfo, constants, unstake, canUnStake } = useDappStaking();
+    const { stakerInfo, constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
     const store = useStore();
 
     const minStakingAmount = computed<number>(() => {
@@ -123,7 +123,7 @@ export default defineComponent({
       return minStakingAmount.value > Number(maxAmount.value) - Number(amount.value);
     });
     const maxAmount = computed<string>(() => {
-      const selectedDappStakes = stakerInfo.value?.get(props.dapp.chain.address);
+      const selectedDappStakes = getStakerInfo(props.dapp.chain.address);
 
       return selectedDappStakes
         ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
