@@ -53,7 +53,7 @@
       <div class="row">
         <div class="column">{{ $t('stakingV3.relock') }}</div>
         <!-- TODO: dynamic data -->
-        <div class="column column--amount">-- ASTR</div>
+        <div class="column column--amount">-- {{ nativeTokenSymbol }}</div>
         <div class="column column--actions">
           <div>
             <button type="button" class="btn btn--icon" :disabled="!canRelock" @click="relock">
