@@ -1,25 +1,70 @@
 <template>
-  <div>
-    <div class="table--wrapper">
-      <div class="chunk--row header--row">
-        <div>{{ $t('stakingV3.index') }}</div>
-        <div>{{ $t('stakingV3.unbondingAmount') }}</div>
-        <div class="right">{{ $t('stakingV3.remainingEras') }}</div>
-        <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
+  <div class="table--wrapper">
+    <div class="row--header">
+      <div class="column column--index">{{ $t('stakingV3.index') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.unbondingAmount') }}</div>
+      <div class="column column--remaining-days">{{ $t('stakingV3.remainingEras') }}</div>
+    </div>
+    <div v-for="(chunk, index) in chunks" :key="index" class="row">
+      <div class="column column--index">{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
+      <div class="column column--amount">
+        <token-balance-native :balance="chunk.amount.toString()" />
       </div>
-      <div v-for="(chunk, index) in chunks" :key="index" class="chunk--row">
-        <div>{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
-        <div class="right"><token-balance-native :balance="chunk.amount.toString()" /></div>
-        <div class="right">
+      <div class="column column--remaining-days">
+        <span v-if="chunk.remainingBlocks > 0" class="text--remaining-days">
           {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
+        </span>
+        <span v-else class="icon--check">
+          <!-- TODO: move to AstarUI -->
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.54988 15.5154L18.1884 6.87692C18.3371 6.72821 18.5137 6.65224 18.7182 6.64902C18.9226 6.64582 19.1024 6.72179 19.2576 6.87692C19.4127 7.03204 19.4903 7.21024 19.4903 7.41152C19.4903 7.61279 19.4127 7.79099 19.2576 7.94612L10.1826 17.0211C10.0018 17.2019 9.7909 17.2922 9.54988 17.2922C9.30887 17.2922 9.09798 17.2019 8.91721 17.0211L4.74221 12.8461C4.59349 12.6974 4.52009 12.5208 4.52201 12.3163C4.52394 12.1118 4.60247 11.932 4.75758 11.7769C4.91272 11.6218 5.09092 11.5442 5.29218 11.5442C5.49347 11.5442 5.67167 11.6218 5.82678 11.7769L9.54988 15.5154Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="row--actions">
+      <div class="row">
+        <div class="column">{{ $t('stakingV3.availableToWithdraw') }}</div>
+        <!-- TODO: dynamic data -->
+        <div class="column column--amount">-- {{ nativeTokenSymbol }}</div>
+        <div class="column column--actions">
+          <div>
+            <button type="button" class="btn btn--icon" :disabled="!canWithdraw" @click="withdraw">
+              <astar-icon-arrow-right />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.withdraw') }}
+              </span>
+            </q-tooltip>
+          </div>
         </div>
-        <div class="buttons">
-          <astar-button :disabled="!canWithdraw" :width="97" :height="28" @click="withdraw">{{
-            $t('stakingV3.withdraw')
-          }}</astar-button>
-          <astar-button :disabled="!canRelock" :width="97" :height="28" @click="relock">{{
-            $t('stakingV3.relock')
-          }}</astar-button>
+      </div>
+      <div class="row">
+        <div class="column">{{ $t('stakingV3.relock') }}</div>
+        <!-- TODO: dynamic data -->
+        <div class="column column--amount">-- ASTR</div>
+        <div class="column column--actions">
+          <div>
+            <button type="button" class="btn btn--icon" :disabled="!canRelock" @click="relock">
+              <astar-icon-arrow-right />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.relock') }}
+              </span>
+            </q-tooltip>
+          </div>
         </div>
       </div>
     </div>
@@ -31,7 +76,7 @@ import { useDappStaking } from 'src/staking-v3/hooks';
 import { defineComponent, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useStore } from 'src/store';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -64,6 +109,8 @@ export default defineComponent({
 
     const { width, screenSize } = useBreakpoints();
 
+    const { nativeTokenSymbol } = useNetworkInfo();
+
     return {
       chunks,
       withdraw,
@@ -73,75 +120,16 @@ export default defineComponent({
       canRelock,
       width,
       screenSize,
+      nativeTokenSymbol,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-// TODO refactor to separate file since the style is shared between MyDapps and Unbonding components.
-@import 'src/css/quasar.variables.scss';
+@use './styles/staking-table.scss';
 
-.table--wrapper {
-  background-color: $gray-1;
-  padding: 20px 12px;
-  border-radius: 16px;
-  @media (min-width: $sm) {
-    padding: 40px 24px;
-  }
-}
-
-.chunk--row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: solid 1px $gray-2;
-  @media (min-width: $sm) {
-    flex-wrap: nowrap;
-  }
-  div {
-    flex-basis: 0;
-    flex-grow: 1;
-    padding: 16px;
-  }
-}
-
-.header--row {
-  background: rgba(0, 0, 0, 0.03);
-  color: $gray-4;
-  border: 0;
-}
-
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  column-gap: 16px;
-  width: 100%;
-  @media (min-width: $sm) {
-    width: auto;
-  }
-}
-
-.body--dark {
-  .table--wrapper {
-    background-color: $navy-3;
-  }
-  .header--row {
-    color: $gray-2;
-    background: rgba(0, 0, 0, 0.15);
-  }
-  .chunk--row {
-    border-color: lighten($navy-3, 10%);
-  }
+.row--action {
+  background-color: white;
 }
 </style>

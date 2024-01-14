@@ -1,40 +1,113 @@
 <template>
   <div class="table--wrapper">
-    <div class="chunk--row header--row">
-      <div>{{ $t('stakingV3.dApp') }}</div>
-      <div>{{ $t('stakingV3.stakedAmount') }}</div>
-      <div>{{ $t('stakingV3.bonusReward') }}</div>
-      <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
+    <div class="row--header">
+      <div class="column column--dapp">{{ $t('stakingV3.dApp') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.stakedAmount') }}</div>
+      <div class="column column--bonus">{{ $t('stakingV3.bonusRewards') }}</div>
+      <div v-if="width >= screenSize.sm" class="column column--manage">
+        {{ $t('stakingV3.manage') }}
+      </div>
     </div>
     <div v-for="[key, value] in stakedDapps" :key="key">
-      <div class="chunk--row">
-        <div>{{ getDappName(key) }}</div>
-        <div class="right">
+      <div class="row">
+        <div class="column column--dapp">{{ getDappName(key) }}</div>
+        <div class="column column--amount">
           <token-balance-native :balance="getStakedAmount(value).toString()" />
         </div>
-        <div class="right">{{ value.loyalStaker ? 'Yes' : 'No' }}</div>
-        <div v-if="isRegistered(key)" class="buttons">
-          <astar-button :width="50" :height="24" @click="navigateToMove(key)">{{
-            $t('stakingV3.move')
-          }}</astar-button>
-          <astar-button :width="50" :height="24" @click="navigateToVote(key)">{{
-            $t('stakingV3.add')
-          }}</astar-button>
-          <astar-button :width="90" :height="24" @click="handleUnbonding(key)">{{
-            $t('stakingV3.unbond')
-          }}</astar-button>
+        <div class="column column--bonus">
+          <span v-if="value.loyalStaker" class="icon--check">
+            <!-- TODO: move to AstarUI -->
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.54988 15.5154L18.1884 6.87692C18.3371 6.72821 18.5137 6.65224 18.7182 6.64902C18.9226 6.64582 19.1024 6.72179 19.2576 6.87692C19.4127 7.03204 19.4903 7.21024 19.4903 7.41152C19.4903 7.61279 19.4127 7.79099 19.2576 7.94612L10.1826 17.0211C10.0018 17.2019 9.7909 17.2922 9.54988 17.2922C9.30887 17.2922 9.09798 17.2019 8.91721 17.0211L4.74221 12.8461C4.59349 12.6974 4.52009 12.5208 4.52201 12.3163C4.52394 12.1118 4.60247 11.932 4.75758 11.7769C4.91272 11.6218 5.09092 11.5442 5.29218 11.5442C5.49347 11.5442 5.67167 11.6218 5.82678 11.7769L9.54988 15.5154Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+          <span v-else>-</span>
         </div>
-        <div v-else class="button--single">
-          <astar-button
-            :width="97"
-            :height="24"
-            @click="unstakeFromUnregistered(key, getDappName(key))"
-            >{{ $t('stakingV3.unbond') }}</astar-button
-          >
+        <div class="column column--actions">
+          <template v-if="isRegistered(key)">
+            <div>
+              <button type="button" class="btn btn--icon icon--move" @click="navigateToMove(key)">
+                <astar-icon-arrow-up-right />
+              </button>
+              <span class="text--mobile-menu">
+                {{ $t('stakingV3.move') }}
+              </span>
+              <q-tooltip>
+                <span class="text--tooltip">
+                  {{ $t('stakingV3.move') }}
+                </span>
+              </q-tooltip>
+            </div>
+
+            <div>
+              <button
+                type="button"
+                class="btn btn--icon icon--unbond"
+                @click="handleUnbonding(key)"
+              >
+                <astar-icon-arrow-up-right />
+              </button>
+              <span class="text--mobile-menu">
+                {{ $t('stakingV3.unbond') }}
+              </span>
+              <q-tooltip>
+                <span class="text--tooltip">
+                  {{ $t('stakingV3.unbond') }}
+                </span>
+              </q-tooltip>
+            </div>
+
+            <div>
+              <button type="button" class="btn btn--icon icon--add" @click="navigateToVote(key)">
+                <astar-icon-arrow-up-right />
+              </button>
+              <span class="text--mobile-menu">
+                {{ $t('stakingV3.add') }}
+              </span>
+              <q-tooltip>
+                <span class="text--tooltip">
+                  {{ $t('stakingV3.add') }}
+                </span>
+              </q-tooltip>
+            </div>
+          </template>
+          <div v-else>
+            <button
+              type="button"
+              class="btn btn--icon"
+              @click="unstakeFromUnregistered(key, getDappName(key))"
+            >
+              <astar-icon-bridge />
+            </button>
+            <span class="text--mobile-menu">
+              {{ $t('stakingV3.unbond') }}
+            </span>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.unbond') }}
+              </span>
+            </q-tooltip>
+          </div>
         </div>
       </div>
-      <div v-if="!isRegistered(key)" class="unregistered--dapp">
-        <astar-icon-warning size="20" />{{ $t('stakingV3.unregisteredDappInfo') }}
+      <div v-if="!isRegistered(key)" class="warning--unregistered-dapp">
+        <astar-icon-warning size="20" />
+        <span class="text--unregistered-dapp">
+          {{ $t('stakingV3.unregisteredDappInfo') }}
+        </span>
+        <!-- TODO: add logic -->
+        <astar-button class="btn--unregistered-dapp">
+          {{ $t('stakingV3.claim') }}
+        </astar-button>
       </div>
     </div>
     <modal-unbond-dapp
@@ -115,68 +188,27 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
+@use './styles/staking-table.scss';
 
-.table--wrapper {
-  background-color: $gray-1;
-  padding: 20px 12px;
-  border-radius: 16px;
-  @media (min-width: $sm) {
-    padding: 40px 24px;
-  }
-}
-
-.chunk--row {
+.warning--unregistered-dapp {
+  border-radius: 6px;
+  border: 1px solid $border-yellow;
+  background: rgba(240, 185, 11, 0.1);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: solid 1px $gray-2;
+  padding: 8px 16px;
+  gap: 8px;
+  align-items: flex-start;
+  align-items: center;
+  font-size: 12px;
   @media (min-width: $sm) {
-    flex-wrap: nowrap;
+    font-size: 14px;
   }
-  div {
-    flex-basis: 0;
-    flex-grow: 1;
-    padding: 16px;
+  .text--unregistered-dapp {
+    flex: 1;
   }
-}
-
-.header--row {
-  background: rgba(0, 0, 0, 0.03);
-  color: $gray-4;
-  border: 0;
-}
-
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  column-gap: 8px;
-  width: 100%;
-  @media (min-width: $sm) {
-    width: auto;
-  }
-}
-
-.body--dark {
-  .table--wrapper {
-    background-color: $navy-3;
-  }
-  .header--row {
-    color: $gray-2;
-    background: rgba(0, 0, 0, 0.15);
-  }
-  .chunk--row {
-    border-color: lighten($navy-3, 10%);
+  .btn--unregistered-dapp {
+    width: 64px;
+    padding: 4px;
   }
 }
 </style>

@@ -537,6 +537,7 @@
   justify-content: center;
   border-radius: 9999px;
   background-color: $astar-blue;
+  margin: auto;
   @media (min-width: $sm) {
     background-color: transparent;
     color: $astar-blue;
@@ -558,6 +559,10 @@
       height: 24px;
     }
   }
+}
+
+.row--locked-tokens {
+  margin-bottom: 16px;
 }
 
 .row--locked-tokens,

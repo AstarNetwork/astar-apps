@@ -12,7 +12,7 @@
     <img
       class="bg--rewards"
       :src="require('/src/staking-v3/assets/unclaimed_rewards_bg.webp')"
-      alt="wallet-icon"
+      alt=""
     />
   </div>
 </template>

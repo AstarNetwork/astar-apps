@@ -56,7 +56,7 @@
             v-if="rewardExpiresInNextPeriod(reward.period) && reward.rewards > BigInt(0)"
             class="row--attention"
           >
-            <span> {{ $t('stakingV3.claimNow') }}</span>
+            <span> {{ $t('stakingV3.claimRewardsNow') }}</span>
           </div>
         </div>
         <div>
