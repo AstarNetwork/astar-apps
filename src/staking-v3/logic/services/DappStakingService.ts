@@ -1,8 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { CombinedDappInfo, DappStakeInfo, SingularStakingInfo, StakeAmount } from '../models';
+import {
+  CombinedDappInfo,
+  DappInfo,
+  DappStakeInfo,
+  SingularStakingInfo,
+  StakeAmount,
+} from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
-import { IDappStakingRepository } from '../repositories';
+import { IDappStakingRepository, IDataProviderRepository } from '../repositories';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
@@ -13,33 +19,45 @@ export class DappStakingService implements IDappStakingService {
   constructor(
     @inject(Symbols.DappStakingRepositoryV3)
     protected dappStakingRepository: IDappStakingRepository,
+    @inject(Symbols.TokenApiProviderRepository)
+    protected tokenApiRepository: IDataProviderRepository,
     @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService
   ) {}
 
   // @inheritdoc
-  public async getDapps(network: string): Promise<CombinedDappInfo[]> {
+  public async getDapps(
+    network: string
+  ): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }> {
     Guard.ThrowIfUndefined(network, 'network');
 
-    const [storeDapps, chainDapps] = await Promise.all([
+    const [storeDapps, chainDapps, tokenApiDapps] = await Promise.all([
       this.dappStakingRepository.getDapps(network.toLowerCase()),
       this.dappStakingRepository.getChainDapps(),
+      this.tokenApiRepository.getDapps(network.toLowerCase()),
     ]);
 
     // Map on chain and in store dApps
     const dApps: CombinedDappInfo[] = [];
+    const onlyChain: DappInfo[] = [];
     chainDapps.forEach((chainDapp) => {
       const storeDapp = storeDapps.find(
         (x) => x.address.toLowerCase() === chainDapp.address.toLowerCase()
+      );
+      const dappDetails = tokenApiDapps.find(
+        (x) => x.contractAddress.toLowerCase() === chainDapp.address.toLowerCase()
       );
       if (storeDapp) {
         dApps.push({
           basic: storeDapp,
           chain: chainDapp,
+          dappDetails,
         });
+      } else {
+        onlyChain.push(chainDapp);
       }
     });
 
-    return dApps;
+    return { fullInfo: dApps, chainInfo: onlyChain };
   }
 
   // @inheritdoc

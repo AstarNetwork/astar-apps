@@ -1,7 +1,7 @@
 <template>
   <modal-wrapper
     :is-modal-open="show"
-    :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
+    :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.basic.name })"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
@@ -52,7 +52,7 @@
         :set-selected-gas="setSelectedTip"
       />
 
-      <rewards-panel />
+      <rewards-panel class="panel" />
 
       <div class="warning">
         <li>
@@ -61,23 +61,8 @@
           }}
         </li>
       </div>
-
-      <div
-        v-if="isBelowThanMinStaking"
-        class="row--box-error box--error"
-        data-testid="warning-unstake-all-balance"
-      >
-        <span class="color--white">
-          {{
-            $t('dappStaking.willUnstakeAll', {
-              minStakingAmount: $n(truncate(minStakingAmount)),
-              symbol: nativeTokenSymbol,
-            })
-          }}
-        </span>
-      </div>
-
-      <astar-button class="unbond-button" :disabled="!canUnbond" @click="unbound()"
+      <error-panel :error-message="errorMessage" class="panel" />
+      <astar-button class="unbond-button" :disabled="!canUnbond()" @click="unbound()"
         >{{ $t('dappStaking.modals.startUnbonding') }}
       </astar-button>
     </div>
@@ -98,12 +83,14 @@ import { useStore } from 'src/store';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { useDappStaking } from 'src/staking-v3/hooks';
 import RewardsPanel from '../RewardsPanel.vue';
+import ErrorPanel from '../ErrorPanel.vue';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
     ModalWrapper,
     RewardsPanel,
+    ErrorPanel,
   },
   props: {
     show: {
@@ -125,26 +112,25 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { stakerInfo, constants, unstake } = useDappStaking();
+    const { stakerInfo, constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
     const store = useStore();
 
     const minStakingAmount = computed<number>(() => {
       const amt = store.getters['dapps/getMinimumStakingAmount'];
       return Number(ethers.utils.formatEther(amt));
     });
-
     const isBelowThanMinStaking = computed<boolean>(() => {
       return minStakingAmount.value > Number(maxAmount.value) - Number(amount.value);
     });
-
     const maxAmount = computed<string>(() => {
-      const selectedDappStakes = stakerInfo.value?.get(props.dapp.chain.address);
+      const selectedDappStakes = getStakerInfo(props.dapp.chain.address);
 
       return selectedDappStakes
         ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
         : '0';
     });
     const amount = ref<string | null>(null);
+    const errorMessage = ref<string | undefined>();
 
     const toMaxAmount = (): void => {
       amount.value = truncate(maxAmount.value).toString();
@@ -162,14 +148,16 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const canUnbond = computed<boolean>(() => {
-      return Number(amount?.value ?? 0) > 0;
-    });
+    const canUnbond = () => {
+      const [result, message] = canUnStake(props.dapp.basic.address, Number(amount.value));
+      errorMessage.value = message;
+
+      return result;
+    };
 
     const unbound = async (): Promise<void> => {
       await closeModal();
       const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
-
       if (unstakeAmount) {
         await unstake(props.dapp, Number(unstakeAmount));
       } else {
@@ -184,7 +172,6 @@ export default defineComponent({
       amount,
       selectedTip,
       nativeTipPrice,
-      isBelowThanMinStaking,
       minStakingAmount,
       isClosingModal,
       setSelectedTip,
@@ -196,6 +183,7 @@ export default defineComponent({
       canUnbond,
       closeModal,
       constants,
+      errorMessage,
     };
   },
 });
@@ -209,6 +197,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   padding-bottom: 36px;
+  padding-left: 20px;
   @media (min-width: $md) {
     padding-bottom: 0px;
   }
@@ -256,11 +245,10 @@ export default defineComponent({
   border-radius: 6px;
   padding: 8px;
   margin-top: 20px;
-  margin-bottom: 40px;
   margin-bottom: 20px;
   width: 344px;
   @media (min-width: $md) {
-    width: 400px;
+    width: 410px;
   }
 }
 
@@ -279,6 +267,14 @@ export default defineComponent({
   margin-top: 20px;
   @media (min-width: $md) {
     width: 400px;
+  }
+}
+
+.panel {
+  border-radius: 6px;
+  width: 344px;
+  @media (min-width: $md) {
+    width: 410px;
   }
 }
 </style>

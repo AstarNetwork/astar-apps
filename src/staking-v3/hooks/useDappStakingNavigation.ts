@@ -20,9 +20,12 @@ export function useDappStakingNavigation() {
   };
 
   const navigateDappPage = (address: string): void => {
+    router.push(getDappPageUrl(address));
+  };
+
+  const getDappPageUrl = (address: string): string => {
     const base = networkParam + Path.DappStaking + Path.Dapp;
-    const url = `${base}?dapp=${address?.toLowerCase()}`;
-    router.push(url);
+    return `${base}?dapp=${address?.toLowerCase()}`;
   };
 
   const goBack = () => router.go(-1);
@@ -37,6 +40,7 @@ export function useDappStakingNavigation() {
     navigateToHome,
     navigateDappPage,
     navigateOwnerPage,
+    getDappPageUrl,
     goBack,
   };
 }

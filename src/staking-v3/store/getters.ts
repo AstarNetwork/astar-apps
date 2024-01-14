@@ -13,11 +13,13 @@ import {
   DAppTierRewards,
   TiersConfiguration,
   EraLengths,
+  DappInfo,
 } from '../logic';
 
 export interface DappStakingGetters {
   getVersion(state: DappStakingState): string;
   getDapps(state: DappStakingState): CombinedDappInfo[];
+  getNewDapps(state: DappStakingState): DappInfo[];
   getRegisteredDapps(state: DappStakingState): CombinedDappInfo[];
   getProtocolState(state: DappStakingState): ProtocolState | undefined;
   getLedger(state: DappStakingState): AccountLedger | undefined;
@@ -33,6 +35,7 @@ export interface DappStakingGetters {
 const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters = {
   getVersion: (state) => state.version,
   getDapps: (state) => state.dapps,
+  getNewDapps: (state) => state.newDapps,
   getRegisteredDapps: (state) => state.dapps.filter((x) => x.chain.state === DappState.Registered),
   getProtocolState: (state) => state.protocolState,
   getLedger: (state) => state.ledger,

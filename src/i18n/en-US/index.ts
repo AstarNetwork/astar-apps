@@ -443,9 +443,9 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
-      invalidBalance: 'Insufficient transferrable balance to complete the transaction',
+      invalidBalance: 'You do not have enough tokens to pay the transaction fee',
       warningLeaveMinAmount:
-        'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
+        'Account must hold amount greater than {amount}{symbol} in transferable after you stake.',
     },
     maintenance: {
       switching: 'Switching to',
@@ -704,7 +704,8 @@ export default {
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
-      PeriodEndsNextEra: 'Period ends in the next era.',
+      PeriodEndsNextEra:
+        'Period ends in the next era. It is not possible to stake in the last era of a period.',
       TooManyStakedContracts:
         'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
       TooManyUnlockingChunks:
@@ -717,6 +718,7 @@ export default {
       UnstakeFromPastPeriod:
         'Unstaking is rejected since the period in which past stake was active has passed.',
       ZeroAmount: 'Amount must be greater than 0.',
+      LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
     },
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
@@ -726,7 +728,7 @@ export default {
     stakeTitle: 'Stake!',
     minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
     minBalanceAfterStaking:
-      'Account must hold more than {amount} {symbol} transferrable tokens after you stake.',
+      'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
     availableToVote: 'Available to vote',
@@ -786,7 +788,7 @@ export default {
     withdraw: 'Withdraw',
     relock: 'Re-lock',
     currentTier: 'Current Tier',
-    numberOfStakers: 'Number of Stakers',
+    numberOfStakers: 'Number of stakers',
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',
@@ -836,6 +838,10 @@ export default {
     noEntry: 'No entry',
     burn: 'Burn',
     availableToWithdraw: 'Available to withdraw',
+    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    registerNow: 'Register now',
+    willUnstakeAll:
+      'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
   },
   bridge: {
     bridge: 'Bridge',

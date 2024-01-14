@@ -49,7 +49,7 @@ export function useLeaderboard() {
     });
   };
 
-  const getDailyReward = (tier: number): bigint => dAppTiers.value.rewards[tier - 1];
+  const getDailyReward = (tier: number): bigint => dAppTiers.value.rewards[tier - 1] ?? BigInt(0);
 
   watch(
     registeredDapps,
