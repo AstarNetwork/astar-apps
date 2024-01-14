@@ -91,7 +91,6 @@
           </div>
         </router-link>
       </div>
-
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
           <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">

@@ -144,6 +144,16 @@ export const xcmToken = {
       minBridgeAmount: '0.1',
     },
     {
+      symbol: 'vASTR',
+      isNativeToken: false,
+      assetId: '18446744073709551632',
+      originAssetId: 'vASTR',
+      logo: require('/src/assets/img/token/vastr.png'),
+      isXcmCompatible: true,
+      originChain: Chain.BIFROST_POLKADOT,
+      minBridgeAmount: '0.1',
+    },
+    {
       symbol: 'PINK',
       isNativeToken: false,
       assetId: '18446744073709551633',

@@ -40,7 +40,7 @@
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
 import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
@@ -61,6 +61,13 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAccount, useAppRouter } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import {
+  AccountLedgerChangedMessage,
+  IDappStakingService,
+  ProtocolStateChangedMessage,
+} from './staking-v3';
+import { useDappStaking, useDapps } from './staking-v3/hooks';
+import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 
 export default defineComponent({
   name: 'App',
@@ -75,7 +82,18 @@ export default defineComponent({
   setup() {
     useAppRouter();
     const store = useStore();
-    const { currentAccountName } = useAccount();
+    const { currentAccountName, currentAccount } = useAccount();
+    const {
+      protocolState,
+      getAllRewards,
+      getCurrentEraInfo,
+      getDappTiers,
+      fetchStakerInfoToStore,
+      fetchTiersConfigurationToStore,
+      fetchEraLengthsToStore,
+      isDappStakingV3,
+    } = useDappStaking();
+    const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -94,7 +112,7 @@ export default defineComponent({
       showDisclaimerModal.value = isOpen;
     };
 
-    // Handle busy and extrisnsic call status messages.
+    // Handle busy and extrinsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
       const message = m as ExtrinsicStatusMessage;
@@ -124,9 +142,65 @@ export default defineComponent({
       store.commit('dapps/setCurrentEra', message.era, { root: true });
     });
 
+    // **** dApp staking v3
+    // dApp staking v3 data changed subscriptions.
+    onMounted(() => {
+      if (isDappStakingV3.value) {
+        container
+          .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+          .startProtocolStateSubscription();
+      }
+    });
+
+    eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
+      const message = m as ProtocolStateChangedMessage;
+
+      if (message.state) {
+        console.log('protocol state', message.state);
+        store.commit('stakingV3/setProtocolState', message.state, { root: true });
+        await fetchDappsToStore();
+        await Promise.all([
+          getAllRewards(),
+          getCurrentEraInfo(),
+          getDappTiers(message.state.era - 1),
+          fetchStakeAmountsToStore(),
+          fetchStakerInfoToStore(),
+          fetchEraLengthsToStore(),
+        ]);
+      }
+    });
+
+    eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
+      const message = m as AccountLedgerChangedMessage;
+      if (message.ledger) {
+        store.commit('stakingV3/setLedger', message.ledger, { root: true });
+        console.log('ledger', message.ledger);
+      }
+    });
+    // **** end dApp staking v3
+
     // Handle wallet change so we can inject proper wallet
-    watch([isEthWallet, currentWallet, isH160, currentAccountName], () => {
+    let previousAddress: string | undefined = undefined;
+    watch([isEthWallet, currentWallet, isH160, currentAccountName], async () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
+
+      // Subscribe to an account specific dApp staking v3 data.
+      if (!isDappStakingV3.value) return;
+
+      // Memo: Can't use senderSs58Account here because unified account is not stored to vuex yet
+      // and senderSs58Account contains evm mapped address which is incorrect for unified account.
+      if (currentAccount.value && currentAccount.value !== previousAddress) {
+        const stakingService = container.get<() => IDappStakingService>(
+          Symbols.DappStakingServiceFactoryV3
+        )();
+        await stakingService.startAccountLedgerSubscription(currentAccount.value);
+        fetchStakerInfoToStore();
+        getAllRewards();
+        fetchTiersConfigurationToStore();
+        getDappTiers((protocolState.value?.era ?? 0) - 1);
+
+        previousAddress = currentAccount.value;
+      }
     });
 
     const removeSplashScreen = () => {

@@ -13,6 +13,7 @@ const BNC = { Native: 'BNC' };
 const vDOT = { VToken2: 0 };
 const vKSM = { VToken: 'KSM' };
 const ASTR = { Token2: 3 };
+const vASTR = { vToken2: 3 };
 const SDN = { Token2: 3 };
 
 /**
@@ -49,6 +50,8 @@ export class BifrostXcmRepository extends XcmRepository {
       tokenData = vKSM;
     } else if (token.originAssetId == 'ASTR') {
       tokenData = ASTR;
+    } else if (token.originAssetId == 'vASTR') {
+      tokenData = vASTR;
     } else if (token.originAssetId == 'SDN') {
       tokenData = SDN;
     } else {
@@ -112,6 +115,9 @@ export class BifrostXcmRepository extends XcmRepository {
         return bal.free.toString();
       } else if (token.originAssetId == 'ASTR') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, ASTR);
+        return bal.free.toString();
+      } else if (token.originAssetId == 'vASTR') {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, vASTR);
         return bal.free.toString();
       } else if (token.originAssetId == 'SDN') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, SDN);

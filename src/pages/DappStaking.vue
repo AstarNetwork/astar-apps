@@ -19,14 +19,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.wrapper--dapp-staking {
+  height: 100%;
+}
+
 .dapps-staking-bg {
   background-repeat: round;
   position: fixed;
   width: 100%;
   left: 0;
   top: 0;
-  z-index: -1;
+  z-index: 0;
   height: 100vh;
   opacity: 0.8;
+}
+
+.container--dapp-staking {
+  height: 100%;
 }
 </style>

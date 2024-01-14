@@ -47,5 +47,8 @@ zombienet-macos
 polkadot
 astar-collator
 
+# Temp folder
+*temp
+
 # Chopstick binaries
 db.sqlite*
