@@ -134,7 +134,6 @@
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
-import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import {
@@ -142,11 +141,10 @@ import {
   SupportWallet,
   Wallet,
   supportAllWalletsObj,
-  supportEvmWalletObj,
   supportEvmWallets,
   supportWallets,
 } from 'src/config/wallets';
-import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
@@ -160,18 +158,18 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    // connectEthereumWallet: {
-    //   type: Function,
-    //   required: true,
-    // },
-    // openPolkasafeModal: {
-    //   type: Function,
-    //   required: true,
-    // },
-    // isNoExtension: {
-    //   type: Boolean,
-    //   required: true,
-    // },
+    connectEthereumWallet: {
+      type: Function,
+      required: true,
+    },
+    openPolkasafeModal: {
+      type: Function,
+      required: true,
+    },
+    isNoExtension: {
+      type: Boolean,
+      required: true,
+    },
     selectedWallet: {
       type: String as PropType<SupportWallet>,
       required: true,
@@ -255,12 +253,12 @@ export default defineComponent({
     const setPolkasafeModal = async (): Promise<void> => {
       handleExtensions();
       // await closeModal();
-      // props.openPolkasafeModal();
+      props.openPolkasafeModal();
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {
       // await closeModal();
-      // props.connectEthereumWallet(source);
+      props.connectEthereumWallet(source);
     };
 
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);

@@ -13,7 +13,11 @@
                 :class="selNetwork === endpointKey.ASTAR && 'border--active'"
                 @click="setSelNetwork(endpointKey.ASTAR)"
               >
-                <img class="img--astar" :src="require('src/assets/img/chain/astar.png')" alt="" />
+                <img
+                  class="img--astar"
+                  :src="require('src/assets/img/chain/astar.png')"
+                  alt="logo-astar"
+                />
                 <span class="text--title">Astar (L1)</span>
               </button>
 
@@ -25,7 +29,7 @@
                 <img
                   class="img--astar"
                   :src="require('src/assets/img/chain/zkatana-logo.png')"
-                  alt="logo-astar"
+                  alt="logo-astar-zkevm"
                 />
                 <span class="text--title">Astar zkEVM(L2)</span>
               </button>
@@ -221,13 +225,19 @@
               v-else
               :selected-wallet="(selectedWallet as SupportWallet)"
               :set-wallet-modal="setWalletModal"
+              :connect-ethereum-wallet="connectEthereumWallet"
+              :disconnect-account="disconnectAccount"
+              :is-no-extension="
+                modalName === WalletModalOption.NoExtension ||
+                modalName === WalletModalOption.OutdatedWallet
+              "
             />
             <!-- <astar-button class="button--action" :disabled="isDisabled" @click="selectNetwork()">
               Confirm
             </astar-button> -->
           </div>
         </div>
-        <div>
+        <div class="wrapper--ads">
           <span>Welcome to Astar Network</span>
         </div>
       </div>

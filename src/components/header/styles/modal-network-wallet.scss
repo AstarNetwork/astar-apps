@@ -8,8 +8,8 @@
   padding-top: 24px;
   padding-bottom: 100px;
   @media (min-width: $lg) {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 
@@ -19,6 +19,13 @@
 }
 
 .box--networks {
+}
+
+.wrapper--ads {
+  margin-top: 32px;
+  @media (min-width: $lg) {
+    margin-top: 0px;
+  }
 }
 
 .button--action {
@@ -40,8 +47,8 @@
   flex-direction: column;
   @media (min-width: $lg) {
     display: grid;
-    grid-template-columns: 432px auto;
-    column-gap: 40px;
+    grid-template-columns: 440px auto;
+    column-gap: 92px;
   }
 }
 
