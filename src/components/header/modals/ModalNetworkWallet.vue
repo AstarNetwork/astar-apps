@@ -266,6 +266,10 @@ import { WalletModalOption } from 'src/config/wallets';
 export default defineComponent({
   components: { NetworkWalletTab, SelectWallet, SelectAccount },
   props: {
+    isSelectWallet: {
+      type: Boolean,
+      required: true,
+    },
     isOpen: {
       type: Boolean,
       required: true,
@@ -503,7 +507,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const isNetwork = ref<boolean>(true);
+    const isNetwork = ref<boolean>(!props.isSelectWallet);
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
     };

@@ -271,7 +271,12 @@ export const useConnectWallet = () => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
     const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
 
-    if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
+    if (
+      currentRouter.value === undefined ||
+      !address ||
+      !isConnectedNetwork.value ||
+      currentAccount.value
+    ) {
       return;
     }
 
@@ -361,10 +366,6 @@ export const useConnectWallet = () => {
   // onUnmounted(() => {
   //   window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
   // });
-
-  watchEffect(() => {
-    // console.log('modalName', modalName.value);
-  });
 
   return {
     WalletModalOption,

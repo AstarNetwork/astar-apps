@@ -28,9 +28,10 @@
 
     <!-- Modals -->
     <modal-network-wallet
-      v-if="modalNetwork"
-      v-model:isOpen="modalNetwork"
+      v-if="isModalNetworkWallet"
+      v-model:isOpen="isModalNetworkWallet"
       :network-idx="currentNetworkIdx"
+      :is-select-wallet="isSelectWallet"
     />
     <!-- <modal-network
       v-if="modalNetwork"
@@ -118,10 +119,6 @@ import { Symbols } from 'src/v2/symbols';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 import ClaimWarningBanner from './ClaimWarningBanner.vue';
 
-interface Modal {
-  modalNetwork: boolean;
-}
-
 export default defineComponent({
   components: {
     ConnectButton,
@@ -142,9 +139,12 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const { multisig } = useAccount();
 
-    const stateModal = reactive<Modal>({
-      modalNetwork: false,
-    });
+    // const stateModal = reactive<Modal>({
+    //   modalNetwork: false,
+    // });
+
+    const isModalNetworkWallet = ref<boolean>(false);
+    const isSelectWallet = ref<boolean>(false);
 
     const {
       modalConnectWallet,
@@ -168,24 +168,27 @@ export default defineComponent({
     const { isZkEvm } = useNetworkInfo();
 
     const clickAccountBtn = (): void => {
-      if (multisig.value) {
-        openPolkasafeModal();
-      } else {
-        if (modalName.value === WalletModalOption.SelectWallet) {
-          return;
-        }
+      // if (multisig.value) {
+      //   openPolkasafeModal();
+      // } else {
+      //   if (modalName.value === WalletModalOption.SelectWallet) {
+      //     return;
+      //   }
+      //   if (isH160.value) {
+      //     modalName.value = WalletModalOption.SelectWallet;
+      //   } else {
+      //     changeAccount();
+      //   }
+      // }
+      // stateModal.modalNetwork = false;
+      isModalNetworkWallet.value = true;
 
-        if (isH160.value) {
-          modalName.value = WalletModalOption.SelectWallet;
-        } else {
-          changeAccount();
-        }
-      }
-      stateModal.modalNetwork = false;
+      isSelectWallet.value = true;
     };
 
     const clickNetworkBtn = (): void => {
-      stateModal.modalNetwork = true;
+      isModalNetworkWallet.value = true;
+      isSelectWallet.value = false;
       modalName.value = '';
       modalAccountSelect.value = false;
       modalPolkasafeSelect.value = false;
@@ -237,7 +240,7 @@ export default defineComponent({
     );
 
     return {
-      ...toRefs(stateModal),
+      isModalNetworkWallet,
       headerName,
       currentNetworkIdx,
       WalletModalOption,
@@ -252,6 +255,7 @@ export default defineComponent({
       screenSize,
       isLoading,
       modalAccountUnificationSelect,
+      isSelectWallet,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
