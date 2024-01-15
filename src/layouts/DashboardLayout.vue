@@ -84,4 +84,10 @@ export default defineComponent({
     padding: 0 40px;
   }
 }
+
+.body--dark {
+  .wrapper--dashboard-layout__inner {
+    background: $body-bg-dark;
+  }
+}
 </style>

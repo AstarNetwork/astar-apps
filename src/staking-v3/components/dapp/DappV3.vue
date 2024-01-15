@@ -43,7 +43,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, watch, onBeforeMount, ref, onMounted } from 'vue';
+import { computed, defineComponent, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation } from '../../hooks';
 import { CombinedDappInfo, IDappStakingRepository } from 'src/staking-v3/logic';
@@ -100,17 +100,13 @@ export default defineComponent({
       }
     };
 
-    onBeforeMount(() => {
-      if (!dapp.value) {
-        navigateToHome();
-      }
-    });
-
     watch(
       [dapp, registeredDapps],
       () => {
-        if (dapp != undefined) {
+        if (dapp.value != undefined) {
           getDappFromApi();
+        } else if (registeredDapps.value.length > 0 && dapp.value === undefined) {
+          navigateToHome();
         }
       },
       { immediate: true }

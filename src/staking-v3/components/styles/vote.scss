@@ -218,3 +218,13 @@ li {
 .nomination--balance {
   margin-left: auto;
 }
+
+.error {
+  border-radius: 16px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  padding: 16px;
+  color: $white;
+  font-size: 14px;
+  font-weight: 500;
+}

@@ -13,13 +13,16 @@ import {
   DappInfo,
   TiersConfiguration,
   EraLengths,
+  ProviderDappData,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;
+  addNewDapps(state: DappStakingState, dapps: DappInfo[]): void;
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   updateDappChain(state: DappStakingState, dapp: DappInfo): void;
+  updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void;
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
   setLedger(state: DappStakingState, ledger: AccountLedger): void;
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
@@ -31,18 +34,22 @@ export interface DappStakingMutations<S = DappStakingState> {
   setEraLengths(state: DappStakingState, eraLengths: EraLengths): void;
 }
 
-const updateDapp = (
+const updateDapp = <T>(
   state: DappStakingState,
-  dapp: CombinedDappInfo,
-  propertyToUpdate: 'basic' | 'extended' | 'chain'
+  dappAddress: string,
+  data: T,
+  propertyToUpdate: 'basic' | 'extended' | 'chain' | 'dappDetails'
 ): void => {
-  const dappToUpdate = state.dapps.find((x) => x.basic.address === dapp.chain.address);
+  // TODO see how to figure out type of T, so we can remove propertyToUpdate parameter.
+  const dappToUpdate = state.dapps.find(
+    (x) => x.basic.address.toLowerCase() === dappAddress.toLowerCase()
+  );
 
   if (dappToUpdate) {
     const index = state.dapps.indexOf(dappToUpdate);
-    state.dapps.splice(index, 1, { ...dappToUpdate, [propertyToUpdate]: dapp[propertyToUpdate] });
+    state.dapps.splice(index, 1, { ...dappToUpdate, [propertyToUpdate]: data });
   } else {
-    console.warn(`Dapp with address ${dapp.chain.address} not found in the store.`);
+    console.warn(`Dapp with address ${dappAddress} not found in the store.`);
   }
 };
 
@@ -50,30 +57,20 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   addDapps(state, dapps) {
     state.dapps = dapps;
   },
+  addNewDapps(state, dapps) {
+    state.newDapps = dapps;
+  },
   addDapp(state, dapp) {
     state.dapps.push(dapp);
   },
   updateDappExtended(state, dapp) {
-    const dappToUpdate = state.dapps.find((x) => x.basic.address === dapp.address);
-
-    if (dappToUpdate) {
-      const index = state.dapps.indexOf(dappToUpdate);
-      state.dapps.splice(index, 1, { ...dappToUpdate, extended: dapp });
-    } else {
-      console.warn(`Dapp with address ${dapp.address} not found in the store.`);
-    }
+    updateDapp(state, dapp.address, dapp, 'extended');
   },
   updateDappChain(state: DappStakingState, dapp: DappInfo): void {
-    const dappToUpdate = state.dapps.find(
-      (x) => x.basic.address.toLowerCase() === dapp.address.toLowerCase()
-    );
-
-    if (dappToUpdate) {
-      const index = state.dapps.indexOf(dappToUpdate);
-      state.dapps.splice(index, 1, { ...dappToUpdate, chain: dapp });
-    } else {
-      console.warn(`Dapp with address ${dapp.address} not found in the store.`);
-    }
+    updateDapp(state, dapp.address, dapp, 'chain');
+  },
+  updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void {
+    updateDapp(state, dapp.contractAddress, dapp, 'dappDetails');
   },
   setProtocolState(state, protocolState) {
     state.protocolState = protocolState;

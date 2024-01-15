@@ -15,7 +15,9 @@
         <kpi-card :title="$t('stakingV3.currentTier')">{{
           getDappTier(dapp.chain.id) ?? '--'
         }}</kpi-card>
-        <kpi-card :title="$t('stakingV3.numberOfStakers')">--</kpi-card>
+        <kpi-card :title="$t('stakingV3.numberOfStakers')">
+          {{ dapp.dappDetails?.stakersCount ?? '--' }}
+        </kpi-card>
         <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
       </div>
       <your-rewards
@@ -32,7 +34,7 @@
 
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
-import { computed, defineComponent, watch, ref, onBeforeMount } from 'vue';
+import { computed, defineComponent, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } from '../hooks';
 import { CombinedDappInfo } from '../logic';
@@ -72,17 +74,13 @@ export default defineComponent({
       }
     };
 
-    onBeforeMount(() => {
-      if (!dapp.value) {
-        navigateToHome();
-      }
-    });
-
     watch(
       [dapp],
       () => {
         if (dapp.value) {
           fetchRewards();
+        } else {
+          navigateToHome();
         }
       },
       { immediate: true }

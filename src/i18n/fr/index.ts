@@ -443,7 +443,7 @@ export default {
         'Le montant de jeton à mettre en staking doit être supérieur à {amount} {symbol}',
       allFundsWillBeTransferred:
         'Tous les fonds seront transférés car le montant minimum est de {minStakingAmount} {symbol}',
-      invalidBalance: 'Solde transférable insuffisant pour finaliser la transaction',
+      invalidBalance: "Vous n'avez pas assez de jetons pour payer les frais de transaction",
       warningLeaveMinAmount:
         'Le compte doit contenir un montant supérieur à {amount}{symbol} transférable lorsque vous misez.',
     },

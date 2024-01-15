@@ -9,13 +9,11 @@
       <kpi-card v-if="!small" :title="$t('dappStaking.dappPage.totalStaked')">
         <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
       </kpi-card>
-
-      <!-- <kpi-card :title="$t('dappStaking.dappPage.totalStaker')">
-        <span>{{ $n(dapp.stakerInfo.stakersCount) }}</span>
-      </kpi-card> -->
-
       <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
         <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
+      </kpi-card>
+      <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')">
+        <span>{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
       </kpi-card>
 
       <!-- <kpi-card :title="$t('stakingV3.totalEarned')">

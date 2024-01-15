@@ -17,10 +17,6 @@ body {
   overflow: hidden;
 }
 
-main {
-  background: #fff;
-}
-
 .screen--phone {
   @media (min-width: $sm) {
     display: none !important;
@@ -75,10 +71,6 @@ main {
 }
 
 .body--dark {
-  main {
-    background: $body-bg-dark;
-  }
-
   .border--separator {
     border-top: 1px solid $border-separator-dark;
   }

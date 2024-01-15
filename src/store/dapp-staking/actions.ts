@@ -125,28 +125,6 @@ const actions: ActionTree<State, StateInterface> = {
   async registerDappApi({ commit, dispatch }, parameters: RegisterParameters): Promise<boolean> {
     if (parameters.api) {
       try {
-        if (!parameters.signature) {
-          // If no signature received, it means we are using the
-          // old dapp registration logic (to be removed after all networks are updated.)
-          const transaction = parameters.api.tx.dappsStaking.register(
-            getDappAddressEnum(parameters.dapp.address)
-          );
-
-          const signedTransaction = await sign({
-            transaction,
-            senderAddress: parameters.senderAddress,
-            substrateAccounts: parameters.substrateAccounts,
-            isCustomSignature: parameters.isCustomSignature,
-            dispatch,
-            tip: parameters.tip,
-            getCallFunc: parameters.getCallFunc,
-          });
-
-          if (signedTransaction) {
-            parameters.signature = signedTransaction.toJSON();
-          }
-        }
-
         const payload = {
           name: parameters.dapp.name,
           iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
