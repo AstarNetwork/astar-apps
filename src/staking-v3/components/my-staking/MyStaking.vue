@@ -515,4 +515,15 @@ export default defineComponent({
   mix-blend-mode: color-burn;
   z-index: 0;
 }
+
+.body--dark {
+  .row--unstaked,
+  .row--staked {
+    @media (min-width: $sm) {
+      &:hover {
+        background-color: $navy-3;
+      }
+    }
+  }
+}
 </style>

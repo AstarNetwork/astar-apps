@@ -178,9 +178,15 @@
   }
   .row--header {
     color: $gray-2;
-    background: rgba(0, 0, 0, 0.15);
-  }
-  .row--chunk {
+    background: $navy-4;
     border-color: lighten($navy-3, 10%);
+  }
+  .row {
+    border-color: lighten($navy-3, 10%);
+  }
+  .row--actions {
+    .row {
+      background-color: $navy-4;
+    }
   }
 }
