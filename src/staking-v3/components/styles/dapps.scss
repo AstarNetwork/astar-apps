@@ -2,11 +2,16 @@
 
 .container--dapps {
   flex: 1;
+  height: 368px;
   @media (min-width: $sm) {
-    width: calc(100% - 188px);
+    width: calc(100% - 228px);
   }
   @media (min-width: $xl) {
     width: calc(100% - 288px);
+  }
+  
+  .swiper--dapps{
+    height: 368px;
   }
 }
 
@@ -25,6 +30,7 @@
   flex-direction: column;
   transition: all 0.2s ease;
   overflow: hidden;
+  height: 180px;
 }
 
 .card__top {
@@ -52,6 +58,7 @@
   font-weight: 700;
   font-size: 16px;
   margin: 12px 0 4px 0;
+  line-height: 1.25;
 }
 
 .text--description {
@@ -73,6 +80,7 @@
     font-size: 12px;
     font-weight: 600;
     color: $gray-3;
+    white-space: nowrap;
   }
 }
 
@@ -91,8 +99,8 @@
   border-radius: 16px;
   font-size: 24px;
   font-weight: 700;
-  min-height: 180px;
-  min-width: 180px;
+  min-width: 220px;
+  min-height: 220px;
   overflow: hidden;
   display: flex;
   @media (min-width: $xl) {

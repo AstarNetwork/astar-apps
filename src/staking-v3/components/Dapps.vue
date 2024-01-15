@@ -9,8 +9,11 @@
         :slides-per-view="1.5"
         :slides-per-group="1"
         :space-between="8"
+        :grid="{
+          rows: 2,
+        }"
         :breakpoints="{
-          '640': {
+          '768': {
             slidesPerView: 2.5,
             slidesPerGroup: 2,
           },
@@ -19,6 +22,7 @@
             slidesPerGroup: 3,
           },
         }"
+        :modules="modules"
       >
         <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
           <a v-if="dapp" class="card--dapp" :href="getDappPageUrl(dapp.basic.address)">
@@ -50,9 +54,13 @@ import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
+import { Url } from 'url';
+
+// Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
-import { Url } from 'url';
+import 'swiper/css/grid';
+import { Grid } from 'swiper/modules';
 
 export default defineComponent({
   components: {
@@ -99,7 +107,7 @@ export default defineComponent({
       Others: require('/src/staking-v3/assets/category_green.webp'),
     };
 
-    return { filteredDapps, bg_img, getDappTier, getDappPageUrl };
+    return { modules: [Grid], filteredDapps, bg_img, getDappTier, getDappPageUrl };
   },
 });
 </script>
