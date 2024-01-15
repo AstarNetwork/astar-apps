@@ -1,6 +1,8 @@
 <template>
   <div v-if="filteredDapps.length > 0" class="wrapper--dapps">
-    <div class="title--category">{{ category }}</div>
+    <div class="container--category" :style="{ backgroundImage: `url(${bg_img[category]})` }">
+      <div class="title--category">{{ category }}</div>
+    </div>
     <div class="container--dapps">
       <swiper
         class="swiper--dapps"
@@ -50,6 +52,7 @@ import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
+import { Url } from 'url';
 
 export default defineComponent({
   components: {
@@ -88,7 +91,15 @@ export default defineComponent({
       return result;
     });
 
-    return { filteredDapps, getDappTier, getDappPageUrl };
+    const bg_img = {
+      DeFi: require('/src/staking-v3/assets/category_pink.webp'),
+      NFT: require('/src/staking-v3/assets/category_purple.webp'),
+      Tooling: require('/src/staking-v3/assets/category_blue.webp'),
+      Utility: require('/src/staking-v3/assets/category_sky.webp'),
+      Others: require('/src/staking-v3/assets/category_green.webp'),
+    };
+
+    return { filteredDapps, bg_img, getDappTier, getDappPageUrl };
   },
 });
 </script>

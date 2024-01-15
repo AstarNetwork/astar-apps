@@ -85,18 +85,27 @@
   }
 }
 
-.title--category {
+.container--category {
+  background-size: cover;
   background-color: $navy-1;
-  color: $gray-1;
   border-radius: 16px;
-  padding: 24px;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   min-height: 180px;
   min-width: 180px;
+  overflow: hidden;
+  display: flex;
   @media (min-width: $xl) {
     min-width: 280px;
   }
+}
+
+.title--category {
+  width: 60%;
+  backdrop-filter: blur(20px);
+  padding: 24px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
 .body--dark {
