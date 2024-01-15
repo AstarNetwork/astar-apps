@@ -7,7 +7,7 @@
       <div>
         <div class="title--account-type">
           <span>
-            {{ $t('wallet.evmAccount') }}
+            {{ $t('wallet.evmWallets') }}
           </span>
         </div>
         <div class="wrapper--wallets">
@@ -33,7 +33,7 @@
       <div>
         <div class="title--account-type">
           <span>
-            {{ $t('wallet.nativeAccount') }}
+            {{ $t('wallet.nativeWallets') }}
           </span>
         </div>
         <div class="wrapper--wallets">

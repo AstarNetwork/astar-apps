@@ -159,8 +159,8 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
-    nativeAccount: 'Native Accounts',
-    evmAccount: 'EVM Accounts',
+    nativeWallets: 'Native Wallets',
+    evmWallets: 'EVM Wallets',
     multisigAccount: 'Multisig Accounts',
     accountUnification: 'Account Unification',
     math: {

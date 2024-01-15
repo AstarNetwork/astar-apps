@@ -149,8 +149,8 @@ export default {
   wallet: {
     connectWallet: 'Conectar Carteira',
     select: 'Selecione uma carteira para se conectar ao portal',
-    nativeAccount: 'Contas Nativas',
-    evmAccount: 'Contas EVM',
+    nativeWallets: 'Contas Nativas',
+    evmWallets: 'Contas EVM',
     multisigAccount: 'Contas Multisig',
     accountUnification: 'Conta Unificada',
     math: {
