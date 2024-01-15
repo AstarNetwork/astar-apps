@@ -113,15 +113,22 @@
           <span class="column--left">
             <span class="text--rewards">{{ $t('stakingV3.rewards') }}</span>
             <span class="text--period">
-              <!-- TODO: dynamic data -->
-              {{ $t('stakingV3.period', { period: '--' }) }}
+              {{ $t('stakingV3.period', { period: formatPeriod(rewards?.staker.period ?? 0) }) }}
             </span>
           </span>
           <span>{{ $t('stakingV3.estimatedRewards') }}</span>
         </div>
         <hr class="separator" />
-        <my-staking-card :caption="$t('stakingV3.basicRewards')" :amount="rewards?.staker" />
-        <my-staking-card :caption="$t('stakingV3.bonusRewards')" :amount="rewards?.bonus" />
+        <my-staking-card
+          :caption="$t('stakingV3.basicRewards')"
+          :amount="rewards?.staker.amount"
+          :eras="rewards?.staker.eraCount"
+        />
+        <my-staking-card
+          :caption="$t('stakingV3.bonusRewards')"
+          :amount="rewards?.bonus"
+          :eras="bonusRewardEras"
+        />
         <button
           v-if="width <= screenSize.sm"
           class="btn--claim-mobile"
@@ -187,8 +194,10 @@ export default defineComponent({
       ledger,
       totalStake,
       protocolState,
+      eraLengths,
       claimStakerAndBonusRewards,
       unlock,
+      formatPeriod,
     } = useDappStaking();
 
     const { navigateToVote } = useDappStakingNavigation();
@@ -198,6 +207,9 @@ export default defineComponent({
     });
 
     const selectedTabIndex = ref<number>(0);
+    const bonusRewardEras = computed<number>(() => {
+      return rewards.value.bonus > 0 ? eraLengths.value.standardErasPerBuildAndEarnPeriod : 0;
+    });
 
     const handleTabSelected = (index: number) => {
       selectedTabIndex.value = index;
@@ -236,6 +248,7 @@ export default defineComponent({
       isBalloonClosing,
       width,
       screenSize,
+      bonusRewardEras,
       closeLockedBalloon,
       closeStakedBalloon,
       truncate,
@@ -243,6 +256,7 @@ export default defineComponent({
       navigateToVote,
       unlock,
       handleTabSelected,
+      formatPeriod,
       PeriodType,
     };
   },

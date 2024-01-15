@@ -161,11 +161,7 @@ export default defineComponent({
   },
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { rewardExpiresInNextPeriod } = useDappStaking();
-
-    const formatPeriod = (period: number): string => {
-      return period.toString().padStart(3, '0');
-    };
+    const { rewardExpiresInNextPeriod, formatPeriod } = useDappStaking();
 
     const unclaimedEras = computed<number>(() =>
       props.rewardsPerPeriod.reduce((acc, cur) => acc + cur.erasToReward, 0)

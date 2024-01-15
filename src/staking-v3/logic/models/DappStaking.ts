@@ -146,7 +146,7 @@ interface DAppTier {
 
 export interface Rewards {
   dApp: bigint;
-  staker: bigint;
+  staker: StakerRewards;
   bonus: bigint;
 }
 
@@ -197,4 +197,10 @@ export interface ProviderDappData {
   registrationBlockNumber: number;
   unregisteredAt?: number;
   unregistrationBlockNumber?: number;
+}
+
+export interface StakerRewards {
+  amount: bigint;
+  period: number;
+  eraCount: number;
 }

@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card--title">{{ caption }}</div>
     <!-- TODO: dynamic data -->
-    <div class="card--days">-- days</div>
+    <div class="card--days">{{ eras ? eras : '--' }} days</div>
     <div class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
@@ -27,6 +27,11 @@ export default defineComponent({
     amount: {
       type: BigInt as unknown as PropType<BigInt>,
       required: true,
+    },
+    eras: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   setup() {

@@ -35,8 +35,9 @@
     <div class="row--actions">
       <div class="row">
         <div class="column">{{ $t('stakingV3.availableToWithdraw') }}</div>
-        <!-- TODO: dynamic data -->
-        <div class="column column--amount">-- {{ nativeTokenSymbol }}</div>
+        <div class="column column--amount">
+          <token-balance-native :balance="totalToWithdraw.toString()" />
+        </div>
         <div class="column column--actions">
           <div>
             <button type="button" class="btn btn--icon" :disabled="!canWithdraw" @click="withdraw">
@@ -52,8 +53,9 @@
       </div>
       <div class="row">
         <div class="column">{{ $t('stakingV3.relock') }}</div>
-        <!-- TODO: dynamic data -->
-        <div class="column column--amount">-- {{ nativeTokenSymbol }}</div>
+        <div class="column column--amount">
+          <token-balance-native :balance="totalToRelock.toString()" />
+        </div>
         <div class="column column--actions">
           <div>
             <button type="button" class="btn btn--icon" :disabled="!canRelock" @click="relock">
@@ -101,6 +103,16 @@ export default defineComponent({
 
     const canRelock = computed(() => chunks.value.length > 0);
 
+    const totalToWithdraw = computed<bigint>(() =>
+      chunks.value
+        .filter((x) => x.remainingBlocks === 0)
+        .reduce((acc, chunk) => acc + chunk.amount, BigInt(0))
+    );
+
+    const totalToRelock = computed<bigint>(() =>
+      chunks.value.reduce((acc, chunk) => acc + chunk.amount, BigInt(0))
+    );
+
     const getRemainingEras = (remainingBlocks: number): number => {
       return eraLengths.value
         ? Math.ceil(remainingBlocks / eraLengths.value?.standardEraLength)
@@ -121,6 +133,8 @@ export default defineComponent({
       width,
       screenSize,
       nativeTokenSymbol,
+      totalToWithdraw,
+      totalToRelock,
     };
   },
 });

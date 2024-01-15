@@ -15,6 +15,7 @@ import {
   ProtocolState,
   Rewards,
   SingularStakingInfo,
+  StakerRewards,
   TiersConfiguration,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
@@ -75,7 +76,9 @@ export function useDappStaking() {
     );
   });
 
-  const totalStakerRewards = computed<BigInt>(() => rewards.value.staker + rewards.value.bonus);
+  const totalStakerRewards = computed<BigInt>(
+    () => rewards.value.staker.amount + rewards.value.bonus
+  );
 
   const constants = computed<Constants | undefined>(() => {
     const consts = store.getters['stakingV3/getConstants'];
@@ -306,7 +309,11 @@ export function useDappStaking() {
     )();
     const ownedContractAddress = getOwnedDappAddress();
 
-    let staker = BigInt(0);
+    let staker = <StakerRewards>{
+      amount: BigInt(0),
+      eraCount: 0,
+      period: 0,
+    };
     let dApp = BigInt(0);
     let bonus = BigInt(0);
 
@@ -528,6 +535,10 @@ export function useDappStaking() {
     }
   };
 
+  const formatPeriod = (period: number): string => {
+    return period.toString().padStart(3, '0');
+  };
+
   return {
     protocolState,
     ledger,
@@ -572,5 +583,6 @@ export function useDappStaking() {
     getUnclaimedDappRewardsPerPeriod,
     rewardExpiresInNextPeriod,
     getStakerInfo,
+    formatPeriod,
   };
 }

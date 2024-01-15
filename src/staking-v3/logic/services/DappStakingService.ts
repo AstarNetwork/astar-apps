@@ -5,6 +5,7 @@ import {
   DappStakeInfo,
   SingularStakingInfo,
   StakeAmount,
+  StakerRewards,
 } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
@@ -169,11 +170,10 @@ export class DappStakingService implements IDappStakingService {
   }
 
   // @inheritdoc
-  public async getStakerRewards(senderAddress: string): Promise<bigint> {
+  public async getStakerRewards(senderAddress: string): Promise<StakerRewards> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
-    let result = BigInt(0);
 
     // *** 1. Determine last claimable era.
     const {
@@ -183,7 +183,14 @@ export class DappStakingService implements IDappStakingService {
       lastSpanIndex,
       rewardsExpired,
       eraRewardSpanLength,
+      lastStakedPeriod,
     } = await this.getStakerEraRange(senderAddress);
+
+    let result = {
+      amount: BigInt(0),
+      period: lastStakedPeriod,
+      eraCount: 0,
+    };
 
     if (rewardsExpired) {
       return result;
@@ -203,6 +210,7 @@ export class DappStakingService implements IDappStakingService {
 
       claimableEras.set(era, stakedSum);
     }
+    result.eraCount = claimableEras.size;
 
     // *** 3. Calculate rewards.
     for (
@@ -219,7 +227,8 @@ export class DappStakingService implements IDappStakingService {
         const staked = claimableEras.get(era);
         if (staked) {
           const eraIndex = era - span.firstEra;
-          result += (staked * span.span[eraIndex].stakerRewardPool) / span.span[eraIndex].staked;
+          result.amount +=
+            (staked * span.span[eraIndex].stakerRewardPool) / span.span[eraIndex].staked;
         }
       }
     }
@@ -672,6 +681,7 @@ export class DappStakingService implements IDappStakingService {
       lastSpanIndex,
       rewardsExpired,
       eraRewardSpanLength: constants.eraRewardSpanLength,
+      lastStakedPeriod,
     };
   }
 
