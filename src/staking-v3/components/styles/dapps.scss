@@ -1,5 +1,14 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--dapps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
 .container--dapps {
   flex: 1;
   height: 368px;
@@ -9,9 +18,32 @@
   @media (min-width: $xl) {
     width: calc(100% - 288px);
   }
-  
-  .swiper--dapps{
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(
+      to right,
+      black,
+      black calc(100% - 40px),
+      transparent
+    );
+    margin-right: -40px;
+    padding-right: 40px;
+  }
+
+  .swiper--dapps {
     height: 368px;
+    overflow: visible;
   }
 }
 
@@ -84,15 +116,6 @@
   }
 }
 
-.wrapper--dapps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  @media (min-width: $sm) {
-    flex-direction: row;
-  }
-}
-
 .container--category {
   background-size: cover;
   background-color: $navy-1;
@@ -103,6 +126,8 @@
   min-height: 220px;
   overflow: hidden;
   display: flex;
+  position: relative;
+  z-index: 1;
   @media (min-width: $xl) {
     min-width: 280px;
   }
