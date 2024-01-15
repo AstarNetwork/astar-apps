@@ -1,37 +1,42 @@
 <template>
   <div v-if="!isLeaderboardEmpty" class="wrapper--leaderboard">
-    <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
+    <div class="wrapper--leaderboard__inner">
+      <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
 
-    <div class="container--boards">
-      <swiper
-        class="swiper--leaderboard"
-        :slides-per-view="1.25"
-        :slides-per-group="1"
-        :space-between="8"
-        :navigation="true"
-        :modules="modules"
-        :breakpoints="{
-          '768': {
-            slidesPerView: 2.5,
-            slidesPerGroup: 2,
-            spaceBetween: 8,
-          },
-          '1024': {
-            slidesPerView: 2.5,
-            slidesPerGroup: 2,
-            spaceBetween: 8,
-          },
-          '1280': {
-            slidesPerView: 3.5,
-            slidesPerGroup: 3,
-            spaceBetween: 8,
-          },
-        }"
-      >
-        <swiper-slide v-for="[tier, dapps] in leaderBoards" :key="tier">
-          <tier :tier="tier" :dapps="dapps" :daily-reward="getDailyReward(tier)" />
-        </swiper-slide>
-      </swiper>
+      <div class="container--boards">
+        <swiper
+          class="swiper--leaderboard"
+          :slides-per-view="1.25"
+          :slides-per-group="1"
+          :space-between="8"
+          :navigation="true"
+          :modules="modules"
+          :breakpoints="{
+            '768': {
+              slidesPerView: 2.5,
+              slidesPerGroup: 2,
+              spaceBetween: 8,
+            },
+            '1024': {
+              slidesPerView: 2.5,
+              slidesPerGroup: 2,
+              spaceBetween: 8,
+            },
+            '1280': {
+              slidesPerView: 3.5,
+              slidesPerGroup: 3,
+              spaceBetween: 8,
+            },
+          }"
+        >
+          <swiper-slide v-for="[tier, dapps] in leaderBoards" :key="tier">
+            <tier :tier="tier" :dapps="dapps" :daily-reward="getDailyReward(tier)" />
+          </swiper-slide>
+        </swiper>
+      </div>
+    </div>
+    <div class="bg--build-period">
+      <img :src="require('/src/staking-v3/assets/build_bg.webp')" alt="" />
     </div>
   </div>
 </template>

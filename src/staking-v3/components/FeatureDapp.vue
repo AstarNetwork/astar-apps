@@ -50,6 +50,9 @@
         </div>
       </div>
     </div>
+    <div v-if="isVotingPeriod" class="bg--voting-period">
+      <img :src="require('/src/staking-v3/assets/vote_hero_bg.webp')" alt="" />
+    </div>
   </div>
 </template>
 
@@ -78,6 +81,7 @@ export default defineComponent({
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
+    // const { constants, currentEraInfo } = useDappStaking();
     const { stakerApr, bonusApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
@@ -88,6 +92,8 @@ export default defineComponent({
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined
     );
+
+    // const isVotingPeriod = true;
 
     return {
       constants,
