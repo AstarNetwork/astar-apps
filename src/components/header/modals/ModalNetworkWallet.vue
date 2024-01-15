@@ -209,7 +209,9 @@
                 </div>
               </div>
             </div>
-            <astar-button class="button--action" @click="setIsNetwork(false)">Next</astar-button>
+            <astar-button class="button--action" :disabled="isDisabled" @click="setIsNetwork(false)"
+              >Next</astar-button
+            >
           </div>
           <div v-if="!isNetwork">
             <div v-if="modalAccountSelect">
@@ -219,22 +221,20 @@
                 :disconnect-account="disconnectAccount"
                 :current-account="currentAccount"
                 :set-modal-account-select="setModalAccountSelect"
+                :select-network="selectNetwork"
               />
             </div>
             <select-wallet
               v-else
-              :selected-wallet="(selectedWallet as SupportWallet)"
               :set-wallet-modal="setWalletModal"
               :connect-ethereum-wallet="connectEthereumWallet"
-              :disconnect-account="disconnectAccount"
+              :open-polkasafe-modal="openPolkasafeModal"
               :is-no-extension="
                 modalName === WalletModalOption.NoExtension ||
                 modalName === WalletModalOption.OutdatedWallet
               "
+              :selected-wallet="(selectedWallet as SupportWallet)"
             />
-            <!-- <astar-button class="button--action" :disabled="isDisabled" @click="selectNetwork()">
-              Confirm
-            </astar-button> -->
           </div>
         </div>
         <div class="wrapper--ads">
@@ -273,7 +273,7 @@ export default defineComponent({
       required: true,
     },
   },
-  // emits: ['update:select-network', 'update:is-open'],
+  emits: ['update:is-open'],
   setup(props, { emit }) {
     const isExpand = ref<boolean>(false);
 
@@ -343,8 +343,8 @@ export default defineComponent({
         const network = providerEndpoints[networkIdxRef].networkAlias;
         const url = buildNetworkUrl(network);
         window.open(url, '_self');
-        // emit('update:is-open', false);
-        // emit('update:select-network', networkIdx);
+      } else {
+        await closeModal();
       }
     };
 
@@ -500,7 +500,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const isNetwork = ref<boolean>(false);
+    const isNetwork = ref<boolean>(true);
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
     };
@@ -560,6 +560,7 @@ export default defineComponent({
       disconnectAccount,
       currentAccount,
       setModalAccountSelect,
+      openPolkasafeModal,
     };
   },
 });

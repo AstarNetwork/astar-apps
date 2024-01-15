@@ -147,6 +147,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    selectNetwork: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
@@ -222,6 +226,7 @@ export default defineComponent({
       localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
       emit('update:is-open', false);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
+      props.selectNetwork();
     };
 
     const selAccount = ref<string>('');
