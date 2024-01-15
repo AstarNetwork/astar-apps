@@ -222,6 +222,7 @@
                 :current-account="currentAccount"
                 :set-modal-account-select="setModalAccountSelect"
                 :select-network="selectNetwork"
+                :is-network-change="isNetworkChange"
               />
             </div>
             <select-wallet
@@ -234,6 +235,7 @@
                 modalName === WalletModalOption.OutdatedWallet
               "
               :selected-wallet="(selectedWallet as SupportWallet)"
+              :select-network="selectNetwork"
             />
           </div>
         </div>
@@ -326,10 +328,11 @@ export default defineComponent({
       }
     };
 
+    const isNetworkChange = computed<boolean>(() => selNetwork.value !== props.networkIdx);
+
     const selectNetwork = async (): Promise<void> => {
       const networkIdxRef = selNetwork.value;
-      const isNetworkChange = networkIdxRef !== props.networkIdx;
-      if (isNetworkChange) {
+      if (isNetworkChange.value) {
         localStorage.setItem(NETWORK_IDX, networkIdxRef.toString());
         localStorage.setItem(
           SELECTED_ENDPOINT,
@@ -561,6 +564,7 @@ export default defineComponent({
       currentAccount,
       setModalAccountSelect,
       openPolkasafeModal,
+      isNetworkChange,
     };
   },
 });

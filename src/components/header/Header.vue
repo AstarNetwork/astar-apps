@@ -30,7 +30,6 @@
     <modal-network-wallet
       v-if="modalNetwork"
       v-model:isOpen="modalNetwork"
-      v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
     <!-- <modal-network
@@ -40,7 +39,7 @@
       :network-idx="currentNetworkIdx"
     /> -->
 
-    <modal-connect-wallet
+    <!-- <modal-connect-wallet
       :is-modal-connect-wallet="
         modalName === WalletModalOption.SelectWallet ||
         modalName === WalletModalOption.NoExtension ||
@@ -66,7 +65,7 @@
       :connect-ethereum-wallet="connectEthereumWallet"
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
-    />
+    /> -->
     <modal-polkasafe
       v-if="modalPolkasafeSelect"
       v-model:isOpen="modalPolkasafeSelect"
@@ -128,8 +127,8 @@ export default defineComponent({
     ConnectButton,
     AccountButton,
     NetworkButton,
-    ModalAccount,
-    ModalConnectWallet,
+    // ModalAccount,
+    // ModalConnectWallet,
     ModalNetworkWallet,
     Logo,
     HeaderComp,

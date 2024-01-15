@@ -174,6 +174,10 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
+    selectNetwork: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -252,13 +256,13 @@ export default defineComponent({
 
     const setPolkasafeModal = async (): Promise<void> => {
       handleExtensions();
-      // await closeModal();
       props.openPolkasafeModal();
+      await props.selectNetwork();
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {
-      // await closeModal();
       props.connectEthereumWallet(source);
+      await props.selectNetwork();
     };
 
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);

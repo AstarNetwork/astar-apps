@@ -151,10 +151,12 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    isNetworkChange: {
+      type: Boolean,
+      required: true,
+    },
   },
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const isSelected = ref<boolean>(false);
+  setup(props) {
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
     const toggleIsLedger = ref<boolean>(false);
@@ -212,21 +214,17 @@ export default defineComponent({
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
-      // isClosing.value = true;
-      const animationDuration = 500;
-      await wait(animationDuration);
       if (substrateAccount) {
         store.commit('general/setCurrentAddress', substrateAccount);
         const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
         wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
       }
       store.commit('general/setCurrentWallet', props.selectedWallet);
-      isSelected.value = true;
-      // isClosing.value = false;
       localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
-      emit('update:is-open', false);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
-      props.selectNetwork();
+      // Memo: Wait for 1 second for the account change, otherwise local storage items such as 'selectedAddress' will be removed
+      props.isNetworkChange && (await wait(1000));
+      await props.selectNetwork();
     };
 
     const selAccount = ref<string>('');
@@ -390,7 +388,6 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
-      isSelected,
       toggleIsLedger,
       isShowBalance,
       currentNetworkChain,
