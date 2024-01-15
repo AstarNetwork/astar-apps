@@ -18,15 +18,15 @@
   font-size: 14px;
   font-weight: 600;
   border-bottom: solid 1px $gray-2;
+  padding: 4px;
   @media (min-width: $sm) {
     flex-wrap: nowrap;
+    padding: 0;
   }
   .column {
     padding: 16px;
-    @media (min-width: $sm) {
-      flex-basis: 0;
-      flex-grow: 1;
-    }
+    flex-basis: 0;
+    flex-grow: 1;
     &.column--amount {
       text-align: right;
     }
@@ -151,22 +151,21 @@
     margin: 0 -8px;
   }
   .row {
-    padding: 8px;
     border-radius: 16px;
     background-color: white;
     border: 0;
-    flex-basis: 0;
-    flex-grow: 1;
+    padding: 0;
+    line-height: 1.25;
+    @media (min-width: $sm) {
+      padding: 0 8px;
+    }
     .column {
-      padding: 4px;
+      padding: 16px;
       @media (min-width: $sm) {
         padding: 16px;
       }
       &.column--actions {
         width: auto;
-      }
-      &.column--amount{
-        flex: 1;
       }
     }
   }
