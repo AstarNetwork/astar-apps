@@ -34,6 +34,20 @@
     &.column--remaining-days {
       text-align: center;
     }
+    &.column--actions {
+      justify-content: center;
+      flex-wrap: nowrap;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      width: 100%;
+      flex-basis: auto;
+      @media (min-width: $sm) {
+        gap: 8px;
+        width: auto;
+        flex-basis: 0;
+      }
+    }
   }
 }
 
@@ -64,17 +78,6 @@
   }
 }
 
-.column--actions {
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  width: 100%;
-  @media (min-width: $sm) {
-    gap: 8px;
-  }
-}
-
 .btn--icon {
   display: flex;
   height: 40px;
@@ -82,19 +85,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: $astar-blue;
+  background-color: $gray-3;
   margin: auto;
   @media (min-width: $sm) {
     background-color: transparent;
-    color: $astar-blue;
+    color: $navy-4;
     margin: auto;
     svg {
       width: 24px;
       height: 24px;
-    }
-    &:hover {
-      color: white;
-      background-color: $astar-blue;
     }
   }
   &.icon--move svg {
@@ -105,6 +104,17 @@
   }
   &.icon--add svg {
     transform: rotate(135deg);
+  }
+  &:not(:disabled) {
+    background-color: $astar-blue;
+    @media (min-width: $sm) {
+      background-color: transparent;
+      color: $astar-blue;
+      &:hover {
+        color: white;
+        background-color: $astar-blue;
+      }
+    }
   }
 }
 
@@ -166,6 +176,7 @@
       }
       &.column--actions {
         width: auto;
+        flex-basis: 0;
       }
     }
   }

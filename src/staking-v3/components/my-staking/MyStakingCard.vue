@@ -1,8 +1,7 @@
 <template>
   <div class="card">
     <div class="card--title">{{ caption }}</div>
-    <!-- TODO: dynamic data -->
-    <div class="card--days">{{ eras ? eras : '--' }} days</div>
+    <div v-if="eras" class="card--days">{{ eras }} days</div>
     <div class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
