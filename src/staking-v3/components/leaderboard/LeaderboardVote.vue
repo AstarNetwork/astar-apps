@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useLeaderboard } from '../../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useDappStakingNavigation } from '../../hooks';
