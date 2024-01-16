@@ -35,8 +35,8 @@
         </swiper>
       </div>
     </div>
-    <div class="bg--build-period">
-      <img :src="require('/src/staking-v3/assets/build_bg.webp')" alt="" />
+    <div class="bg--leaderboard">
+      <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
     </div>
   </div>
 </template>

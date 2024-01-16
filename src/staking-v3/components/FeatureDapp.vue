@@ -81,7 +81,6 @@ export default defineComponent({
   },
   setup() {
     const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
-    // const { constants, currentEraInfo } = useDappStaking();
     const { stakerApr, bonusApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
@@ -92,8 +91,6 @@ export default defineComponent({
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined
     );
-
-    // const isVotingPeriod = true;
 
     return {
       constants,

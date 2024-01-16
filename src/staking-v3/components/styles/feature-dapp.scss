@@ -190,7 +190,7 @@
 
   .wrapper--promo__inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   .text--promo-title {
@@ -222,10 +222,11 @@
 
 .bg--voting-period {
   position: absolute;
-  top: 0;
+  top: -36px;
   left: 0;
   right: 0;
-  z-index: 0;
+  z-index: 1;
+  mix-blend-mode: multiply;
   img {
     height: 100vw;
     object-fit: cover;
