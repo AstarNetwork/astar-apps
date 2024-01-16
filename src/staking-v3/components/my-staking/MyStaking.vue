@@ -533,7 +533,9 @@ export default defineComponent({
 .body--dark {
   .row--unstaked,
   .row--staked {
+    background-color: $navy-3;
     @media (min-width: $sm) {
+      background-color: transparent;
       &:hover {
         background-color: $navy-3;
       }
