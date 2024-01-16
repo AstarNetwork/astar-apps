@@ -48,15 +48,6 @@
           <span class="text--value">{{ bonusApr ? $n(truncate(bonusApr, 2)) : '-' }}</span>
           <span class="text--value-small">%</span>
         </kpi-card>
-        <!-- <kpi-card
-          class="card--tvl"
-          :title="$t('dashboard.tvl')"
-          description="Vote period has 14days, tokens that voted during this period are eligible for bonus."
-        >
-          <span class="text--value">
-            <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
-          </span>
-        </kpi-card> -->
         <div v-if="!isVotingPeriod" class="row--start-staking">
           <button class="button--vote-stake" @click="navigateToVote()">
             <span>{{ $t('stakingV3.startStakingNow') }}</span>
