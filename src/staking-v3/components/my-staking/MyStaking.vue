@@ -295,8 +295,9 @@ export default defineComponent({
   transition: all 0.2s ease;
   padding: 24px 16px;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
   @media (min-width: $sm) {
+    gap: 16px;
     padding: 8px 16px;
     flex-direction: row;
     background-color: transparent;
