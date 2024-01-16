@@ -19,7 +19,7 @@
         }"
       >
         <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
-          <a v-if="dapp" class="card--dapp" :href="getDappPageUrl(dapp.basic.address)">
+          <router-link v-if="dapp" class="card--dapp" :to="getDappPageUrl(dapp.basic.address)">
             <div class="card__top">
               <div class="icon--dapp">
                 <img :src="dapp.basic.iconUrl" alt="icon" />
@@ -36,7 +36,7 @@
                 <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
               </div>
             </div>
-          </a>
+          </router-link>
         </swiper-slide>
       </swiper>
     </div>

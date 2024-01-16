@@ -102,10 +102,10 @@ export default defineComponent({
 
     watch(
       [dapp, registeredDapps],
-      () => {
-        if (dapp.value != undefined) {
+      (oldDapp, newDapp) => {
+        if (newDapp != undefined) {
           getDappFromApi();
-        } else if (registeredDapps.value.length > 0 && dapp.value === undefined) {
+        } else if (registeredDapps.value.length > 0 && !newDapp && !oldDapp) {
           navigateToHome();
         }
       },

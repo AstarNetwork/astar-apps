@@ -832,6 +832,10 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    loyalStakerWarningAmount:
+      'You will loose eligibility for loyal staker bonus reward at the end of current period if you unstake more than {amount} tokens.',
+    loyalStakerWarning:
+      'You will loose eligibility for loyal staker bonus reward at the end of current period if you unstake tokens now.',
   },
   bridge: {
     bridge: 'Bridge',
