@@ -99,13 +99,6 @@ export default defineComponent({
   border-bottom: 3px solid transparent;
 }
 
-.box--tab {
-  flex-grow: 1;
-  @media (min-width: $sm) {
-    flex-grow: initial;
-  }
-}
-
 .text--title-tab {
   font-size: 14px;
 }
