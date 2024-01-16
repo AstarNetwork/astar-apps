@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div id="staking" class="container">
     <div class="wrapper--staking">
       <div class="wrapper--header">
         <div class="row--title">
@@ -7,7 +7,7 @@
           <span class="text--title">{{ $t('common.staking') }}</span>
         </div>
         <div class="total--rewards">
-          <token-balance-native :balance="totalStake.toString() ?? '0'" />
+          <token-balance-native :balance="totalStake?.toString() ?? '0'" />
         </div>
       </div>
 

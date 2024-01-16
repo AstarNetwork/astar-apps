@@ -34,6 +34,11 @@ export function useDappStakingNavigation() {
     return networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
   };
 
+  const navigateToAssets = (): void => {
+    const base = networkParam + Path.Assets + '#staking';
+    router.push(base);
+  };
+
   return {
     navigateToVote,
     navigateToMove,
@@ -42,5 +47,6 @@ export function useDappStakingNavigation() {
     navigateOwnerPage,
     getDappPageUrl,
     goBack,
+    navigateToAssets,
   };
 }
