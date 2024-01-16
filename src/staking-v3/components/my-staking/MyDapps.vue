@@ -33,60 +33,33 @@
           <span v-else>-</span>
         </div>
         <div class="column column--actions">
-          <template v-if="isRegistered(key)">
-            <div>
-              <button type="button" class="btn btn--icon icon--move" @click="navigateToMove(key)">
-                <astar-icon-arrow-up-right />
-              </button>
-              <span class="text--mobile-menu">
-                {{ $t('stakingV3.move') }}
-              </span>
-              <q-tooltip>
-                <span class="text--tooltip">
-                  {{ $t('stakingV3.move') }}
-                </span>
-              </q-tooltip>
-            </div>
-
-            <div>
-              <button
-                type="button"
-                class="btn btn--icon icon--unbond"
-                @click="handleUnbonding(key)"
-              >
-                <astar-icon-arrow-up-right />
-              </button>
-              <span class="text--mobile-menu">
-                {{ $t('stakingV3.unbond') }}
-              </span>
-              <q-tooltip>
-                <span class="text--tooltip">
-                  {{ $t('stakingV3.unbond') }}
-                </span>
-              </q-tooltip>
-            </div>
-
-            <div>
-              <button type="button" class="btn btn--icon icon--add" @click="navigateToVote(key)">
-                <astar-icon-arrow-up-right />
-              </button>
-              <span class="text--mobile-menu">
-                {{ $t('stakingV3.add') }}
-              </span>
-              <q-tooltip>
-                <span class="text--tooltip">
-                  {{ $t('stakingV3.add') }}
-                </span>
-              </q-tooltip>
-            </div>
-          </template>
-          <div v-else>
+          <div>
             <button
               type="button"
-              class="btn btn--icon"
-              @click="unstakeFromUnregistered(key, getDappName(key))"
+              class="btn btn--icon icon--move"
+              :disabled="!isRegistered(key)"
+              @click="navigateToMove(key)"
             >
-              <astar-icon-bridge />
+              <astar-icon-arrow-up-right />
+            </button>
+            <span class="text--mobile-menu">
+              {{ $t('stakingV3.move') }}
+            </span>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.move') }}
+              </span>
+            </q-tooltip>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              class="btn btn--icon icon--unbond"
+              :disabled="!isRegistered(key)"
+              @click="handleUnbonding(key)"
+            >
+              <astar-icon-arrow-up-right />
             </button>
             <span class="text--mobile-menu">
               {{ $t('stakingV3.unbond') }}
@@ -97,6 +70,25 @@
               </span>
             </q-tooltip>
           </div>
+
+          <div>
+            <button
+              type="button"
+              class="btn btn--icon icon--add"
+              :disabled="!isRegistered(key)"
+              @click="navigateToVote(key)"
+            >
+              <astar-icon-arrow-up-right />
+            </button>
+            <span class="text--mobile-menu">
+              {{ $t('stakingV3.add') }}
+            </span>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.add') }}
+              </span>
+            </q-tooltip>
+          </div>
         </div>
       </div>
       <div v-if="!isRegistered(key)" class="warning--unregistered-dapp">
@@ -104,8 +96,10 @@
         <span class="text--unregistered-dapp">
           {{ $t('stakingV3.unregisteredDappInfo') }}
         </span>
-        <!-- TODO: add logic -->
-        <astar-button class="btn--unregistered-dapp">
+        <astar-button
+          class="btn--unregistered-dapp"
+          @click="unstakeFromUnregistered(key, getDappName(key))"
+        >
           {{ $t('stakingV3.claim') }}
         </astar-button>
       </div>
