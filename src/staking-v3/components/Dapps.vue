@@ -16,10 +16,16 @@
           '768': {
             slidesPerView: 2.5,
             slidesPerGroup: 2,
+            grid: {
+              rows: 2,
+            },
           },
           '1440': {
             slidesPerView: 3.5,
             slidesPerGroup: 3,
+            grid: {
+              rows: 2,
+            },
           },
         }"
         :modules="modules"
