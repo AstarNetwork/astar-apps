@@ -80,6 +80,10 @@ export const useConnectWallet = () => {
     return;
   };
 
+  const setModalPolkasafeSelect = (result: boolean): void => {
+    modalPolkasafeSelect.value = result;
+  };
+
   const openPolkasafeModal = (): void => {
     modalName.value = WalletModalOption.Polkasafe;
     modalPolkasafeSelect.value = true;
@@ -390,5 +394,6 @@ export const useConnectWallet = () => {
     openPolkasafeModal,
     openAccountUnificationModal,
     setModalAccountSelect,
+    setModalPolkasafeSelect,
   };
 };

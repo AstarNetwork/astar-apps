@@ -67,14 +67,14 @@
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
     /> -->
-    <modal-polkasafe
+    <!-- <modal-polkasafe
       v-if="modalPolkasafeSelect"
       v-model:isOpen="modalPolkasafeSelect"
       :open-select-modal="openSelectModal"
       :selected-wallet="selectedWallet"
       :disconnect-account="disconnectAccount"
       :current-account="currentAccount"
-    />
+    /> -->
     <modal-account-unification
       v-if="modalAccountUnificationSelect"
       v-model:isOpen="modalAccountUnificationSelect"
@@ -130,14 +130,14 @@ export default defineComponent({
     Logo,
     HeaderComp,
     TroubleHelp,
-    ModalPolkasafe,
+    // ModalPolkasafe,
     ModalAccountUnification,
     MobileNav,
     ClaimWarningBanner,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
-    const { multisig } = useAccount();
+    // const { multisig } = useAccount();
 
     // const stateModal = reactive<Modal>({
     //   modalNetwork: false,

@@ -257,7 +257,6 @@ export default defineComponent({
     const setPolkasafeModal = async (): Promise<void> => {
       handleExtensions();
       props.openPolkasafeModal();
-      await props.selectNetwork();
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {

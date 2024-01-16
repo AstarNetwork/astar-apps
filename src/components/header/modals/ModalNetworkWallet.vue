@@ -225,6 +225,17 @@
                 :is-network-change="isNetworkChange"
               />
             </div>
+            <div v-else-if="modalPolkasafeSelect">
+              <select-multisig-account
+                :selected-wallet="(selectedWallet as SupportWallet)"
+                :disconnect-account="disconnectAccount"
+                :current-account="currentAccount"
+                :set-modal-account-select="setModalAccountSelect"
+                :select-network="selectNetwork"
+                :is-network-change="isNetworkChange"
+                :set-modal-polkasafe-select="setModalPolkasafeSelect"
+              />
+            </div>
             <select-wallet
               v-else
               :set-wallet-modal="setWalletModal"
@@ -259,12 +270,18 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import NetworkWalletTab from './NetworkWalletTab.vue';
 import SelectWallet from './SelectWallet.vue';
 import SelectAccount from './SelectAccount.vue';
+import SelectMultisigAccount from './SelectMultisigAccount.vue';
 import { useConnectWallet } from 'src/hooks';
 import { SupportWallet } from 'src/config/wallets';
 import { WalletModalOption } from 'src/config/wallets';
 
 export default defineComponent({
-  components: { NetworkWalletTab, SelectWallet, SelectAccount },
+  components: {
+    NetworkWalletTab,
+    SelectWallet,
+    SelectAccount,
+    SelectMultisigAccount,
+  },
   props: {
     isSelectWallet: {
       type: Boolean,
@@ -533,6 +550,7 @@ export default defineComponent({
       openPolkasafeModal,
       openAccountUnificationModal,
       setModalAccountSelect,
+      setModalPolkasafeSelect,
     } = useConnectWallet();
 
     watchEffect(() => {});
@@ -568,7 +586,9 @@ export default defineComponent({
       currentAccount,
       setModalAccountSelect,
       openPolkasafeModal,
+      setModalPolkasafeSelect,
       isNetworkChange,
+      modalPolkasafeSelect,
     };
   },
 });
