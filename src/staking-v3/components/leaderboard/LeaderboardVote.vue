@@ -68,7 +68,6 @@ export default defineComponent({
 
     return {
       modules: [Navigation],
-      sortedDapps,
       isLeaderboardEmpty,
       paginatedDapps,
       navigateDappPage,
