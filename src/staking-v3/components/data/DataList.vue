@@ -1,23 +1,30 @@
 <template>
   <div class="wrapper--data--list">
-    <data-card :title="`${$t('stakingV3.vote')}/${$t('stakingV3.build')}`">{{
-      periodName
-    }}</data-card>
-    <data-card :title="`${$t('stakingV3.era')} /${periodDuration}`">{{
-      periodCurrentDay
-    }}</data-card>
-    <data-card :title="$t('stakingV3.era')">{{ protocolState?.era }}</data-card>
-    <data-card :title="$t('stakingV3.tvl')">
+    <data-card
+      :title="`${$t('stakingV3.vote')} / ${$t('stakingV3.build')}`"
+      description="description"
+    >
+      {{ periodName }}
+    </data-card>
+    <data-card :title="`${$t('stakingV3.era')} / ${periodDuration}`" description="description">
+      {{ periodCurrentDay }}
+    </data-card>
+    <data-card :title="$t('stakingV3.era')" description="description">
+      {{ protocolState?.era }}
+    </data-card>
+    <data-card :title="$t('stakingV3.tvl')" description="description">
       <token-balance-native :balance="tvl" />
     </data-card>
-    <data-card :title="$t('stakingV3.unbonding')">
+    <data-card :title="$t('stakingV3.unbonding')" description="description">
       <token-balance-native :balance="unlocking" />
     </data-card>
-    <data-card :title="$t('stakingV3.numberOfDapps')">{{ totalDapps }}</data-card>
-    <data-card :title="$t('stakingV3.filledSlot')">
+    <data-card :title="$t('stakingV3.numberOfDapps')" description="description">
+      {{ totalDapps }}
+    </data-card>
+    <data-card :title="$t('stakingV3.filledSlot')" description="description">
       {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
     </data-card>
-    <data-card :title="$t('stakingV3.unfilledSlot')">
+    <data-card :title="$t('stakingV3.unfilledSlot')" description="description">
       {{ unfilledSlots }} / {{ tiersConfiguration.numberOfSlots }}
     </data-card>
   </div>
