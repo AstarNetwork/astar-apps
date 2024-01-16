@@ -24,8 +24,6 @@
       <mobile-nav v-if="width <= screenSize.lg" />
     </header-comp>
 
-    <claim-warning-banner :network="currentNetworkIdx" />
-
     <!-- Modals -->
     <modal-network
       v-if="modalNetwork"
@@ -130,7 +128,6 @@ export default defineComponent({
     ModalPolkasafe,
     ModalAccountUnification,
     MobileNav,
-    ClaimWarningBanner,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();

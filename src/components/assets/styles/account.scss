@@ -4,10 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  margin-top: -36px;
-  @media (min-width: $lg) {
-    margin-top: 0;
-  }
 }
 
 .row--details-signatory {
