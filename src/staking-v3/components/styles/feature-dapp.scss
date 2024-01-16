@@ -222,11 +222,14 @@
 
 .bg--voting-period {
   position: absolute;
-  top: -36px;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 1;
   mix-blend-mode: multiply;
+  @media (min-width: $lg) {
+    top: -36px;
+  }
   img {
     height: 100vw;
     object-fit: cover;
