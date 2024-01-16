@@ -39,9 +39,15 @@
     padding-right: 48px;
   }
 }
+
 .swiper {
   overflow: visible;
 }
+
+.wrapper--tier .swiper {
+  overflow: hidden;
+}
+
 .swiper-slide {
   height: auto;
 }
