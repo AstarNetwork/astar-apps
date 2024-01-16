@@ -28,12 +28,14 @@
           {{ getDappSelectionNumber(dapp) }}
         </div>
       </div>
-      <astar-button
-        :disabled="selectedDapps.length === 0"
-        class="button--primary"
-        @click="handleDone()"
-        >{{ $t('stakingV3.done') }}</astar-button
-      >
+      <div class="container--btn">
+        <astar-button
+          :disabled="selectedDapps.length === 0"
+          class="button--primary"
+          @click="handleDone()"
+          >{{ $t('stakingV3.done') }}</astar-button
+        >
+      </div>
     </div>
   </modal-wrapper>
 </template>
@@ -139,9 +141,11 @@ export default defineComponent({
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  padding: 0 35px 35px 35px;
+  margin: 0 35px 35px 35px;
+  max-height: 70vh;
+  overflow-y: auto;
   @media (min-width: $sm) {
-    padding: 0;
+    margin: 0;
   }
 }
 
@@ -182,14 +186,28 @@ export default defineComponent({
   display: flex;
 }
 
+.container--btn {
+  margin-top: 24px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+}
+
+.body--dark {
+  .container--btn {
+    background-color: $navy-1;
+  }
+}
+
 .button--primary {
   width: 100%;
   height: 52px;
-  margin-top: 24px;
 }
 
 .search {
   margin-bottom: 24px;
+  position: sticky;
+  top: 0;
   input {
     outline: none;
     width: 100%;
