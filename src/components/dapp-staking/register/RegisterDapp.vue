@@ -332,7 +332,6 @@ export default defineComponent({
 
           if (result) {
             await router.push(Path.DappStaking);
-            router.go(0);
           }
         }
       });
@@ -352,7 +351,11 @@ export default defineComponent({
     const handleModalAddIntroduction = ({ isOpen }: { isOpen: boolean }): void => {
       dappForm?.value?.validate().then(async (success: boolean) => {
         if (success && validateCustomComponents()) {
-          isModalAddIntroduction.value = isOpen;
+          if (isNewDapp.value) {
+            isModalAddIntroduction.value = isOpen;
+          } else {
+            handleSubmit();
+          }
         }
       });
     };
