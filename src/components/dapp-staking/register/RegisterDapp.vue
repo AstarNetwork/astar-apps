@@ -426,7 +426,7 @@ export default defineComponent({
 
 <style lang="scss">
 .q-field__native {
-  color: $gray-1 !important;
+  color: $gray-5 !important;
 }
 .body--dark {
   .q-field__native {
