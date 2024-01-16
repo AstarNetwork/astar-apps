@@ -13,10 +13,10 @@
       {{ protocolState?.era }}
     </data-card>
     <data-card :title="$t('stakingV3.tvl')" description="description">
-      <token-balance-native :balance="tvl" />
+      <format-balance :balance="tvl.toString() ?? ''" />
     </data-card>
     <data-card :title="$t('stakingV3.unbonding')" description="description">
-      <token-balance-native :balance="unlocking" />
+      <format-balance :balance="unlocking.toString() ?? ''" />
     </data-card>
     <data-card :title="$t('stakingV3.numberOfDapps')" description="description">
       {{ totalDapps }}
@@ -34,12 +34,12 @@
 import { defineComponent, computed } from 'vue';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
 
 export default defineComponent({
   components: {
     DataCard,
-    TokenBalanceNative,
+    FormatBalance,
   },
   setup() {
     const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
