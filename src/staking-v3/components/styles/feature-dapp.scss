@@ -60,7 +60,6 @@
   position: relative;
   width: 100%;
   height: 100%;
-  text-align: center;
   transition: transform 0.3s;
   transform-style: preserve-3d;
 }
@@ -84,6 +83,7 @@
 }
 
 .card--front {
+  text-align: center;
   background-color: $navy-1;
   display: flex;
   flex-direction: column;
@@ -99,7 +99,7 @@
 }
 
 .card--back {
-  background-color: $astar-pink;
+  background-color: $navy-1;
   color: white;
   transform: rotateY(180deg);
   font-weight: 600;

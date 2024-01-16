@@ -747,7 +747,7 @@ export default {
     dAppRewards: 'dApp rewards',
     done: 'Done',
     search: 'Search',
-    build: 'Build',
+    build: 'Build&Earn',
     newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
@@ -784,6 +784,10 @@ export default {
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',
+    buildPeriodDescription:
+      'Stakers earn basic rewads, projects earn tier rewards during the period.',
+    basicRewardsDescription: 'All stakers receive basic rewads during the B&E period.',
+    bonusRewardsDescription: 'Vote in time to be entitled to bonus, check and learn more.',
     editProjectPage: {
       title: 'Edit Project Page',
       text: 'You can change the images, description at any time.',

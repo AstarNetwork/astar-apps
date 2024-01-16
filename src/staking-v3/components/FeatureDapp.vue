@@ -30,28 +30,25 @@
           <span>{{ $t('stakingV3.voteStakeToday') }}</span>
           <vote-stake-button-bg />
         </button>
-        <kpi-card
-          :title="periodName.toUpperCase()"
-          description="Vote period has 14days, tokens that voted during this period are eligible for bonus."
-        >
+        <kpi-card :title="periodName" :description="$t('stakingV3.buildPeriodDescription')">
           <span class="text--value">{{ periodCurrentDay }}</span>
           <span class="text--value-small">/{{ periodDuration }}</span>
         </kpi-card>
         <kpi-card
           :title="$t('stakingV3.basicRewards')"
-          description="Vote period has 14days, tokens that voted during this period are eligible for bonus."
+          :description="$t('stakingV3.basicRewardsDescription')"
         >
           <span class="text--value">{{ stakerApr ? $n(truncate(stakerApr, 2)) : '-' }}</span>
           <span class="text--value-small">%</span>
         </kpi-card>
         <kpi-card
           :title="$t('stakingV3.bonusRewards')"
-          description="Vote period has 14days, tokens that voted during this period are eligible for bonus."
+          :description="$t('stakingV3.bonusRewardsDescription')"
         >
           <span class="text--value">{{ bonusApr ? $n(truncate(bonusApr, 2)) : '-' }}</span>
           <span class="text--value-small">%</span>
         </kpi-card>
-        <kpi-card
+        <!-- <kpi-card
           class="card--tvl"
           :title="$t('dashboard.tvl')"
           description="Vote period has 14days, tokens that voted during this period are eligible for bonus."
@@ -59,7 +56,7 @@
           <span class="text--value">
             <format-balance :balance="currentEraInfo?.totalLocked?.toString() ?? ''" />
           </span>
-        </kpi-card>
+        </kpi-card> -->
         <div v-if="!isVotingPeriod" class="row--start-staking">
           <button class="button--vote-stake" @click="navigateToVote()">
             <span>{{ $t('stakingV3.startStakingNow') }}</span>
@@ -73,7 +70,6 @@
 
 <script lang="ts">
 import { truncate } from '@astar-network/astar-sdk-core';
-import FormatBalance from 'src/components/common/FormatBalance.vue';
 import { Campaign } from 'src/v2/models';
 import { computed, defineComponent } from 'vue';
 import {
@@ -90,12 +86,11 @@ import VoteStakeButtonBg from './VoteStakeButtonBg.vue';
 
 export default defineComponent({
   components: {
-    FormatBalance,
     KpiCard,
     VoteStakeButtonBg,
   },
   setup() {
-    const { constants, currentEraInfo, isVotingPeriod } = useDappStaking();
+    const { constants, isVotingPeriod } = useDappStaking();
     const { stakerApr, bonusApr } = useAprV3();
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
@@ -111,7 +106,6 @@ export default defineComponent({
       constants,
       registeredDapps,
       promotedDapp,
-      currentEraInfo,
       isVotingPeriod,
       periodCurrentDay,
       periodDuration,
