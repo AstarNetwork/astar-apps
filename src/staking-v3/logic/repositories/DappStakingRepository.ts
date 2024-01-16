@@ -4,6 +4,7 @@ import {
   AccountLedgerChangedMessage,
   Constants,
   ContractStakeAmount,
+  DAppTier,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -320,12 +321,16 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
 
     const tiers = tiersWrapped.unwrap();
+    const dapps: DAppTier[] = [];
+    tiers.dapps.forEach((value, key) =>
+      dapps.push({
+        dappId: key.toNumber(),
+        tierId: value.toNumber(),
+      })
+    );
     return {
       period: tiers.period.toNumber(),
-      dapps: tiers.dapps.map((dapp) => ({
-        dappId: dapp.dappId.toNumber(),
-        tierId: dapp.tierId.unwrapOr(undefined)?.toNumber(),
-      })),
+      dapps,
       rewards: tiers.rewards.map((reward) => reward.toBigInt()),
     };
   }
@@ -517,7 +522,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       owner: dapp.owner.toString(),
       id: dapp.id.toNumber(),
       state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
-      rewardDestination: dapp.rewardDestination.unwrapOr(undefined)?.toString(),
+      rewardDestination: dapp.rewardBeneficiary.unwrapOr(undefined)?.toString(),
     };
   }
 
