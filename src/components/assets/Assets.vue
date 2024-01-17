@@ -10,12 +10,8 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <template v-if="isDappStakingV3">
-          <your-project />
-        </template>
-        <template v-if="isDappStakingV3">
-          <staking />
-        </template>
+        <staking v-if="isDappStakingV3" />
+        <your-project v-if="isDappStakingV3" />
 
         <div v-if="!isLoading">
           <div v-if="isH160">
