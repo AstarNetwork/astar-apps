@@ -491,6 +491,7 @@
   .column--balance {
     gap: 4px;
     width: 50%;
+    position: relative;
     @media (min-width: $sm) {
       gap: 8px;
     }
@@ -572,6 +573,14 @@
   .row--evm-deposit {
     background-color: $navy-3;
   }
+}
+
+.row--vesting-info {
+  white-space: nowrap;
+  position: absolute;
+  top: 30px;
+  width: 50%;
+  color: $gray-3;
 }
 
 .row--locked-tokens,

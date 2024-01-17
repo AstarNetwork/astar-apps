@@ -504,6 +504,7 @@ export default {
     reward: 'Reward',
     lockedTokens: 'Locked tokens',
     vesting: 'Vesting',
+    vestingInStake: '({amount} {token} in staking)',
     reserved: 'Reserved',
     favorite: 'Favorite',
     addToFavorite: 'Add to favorite',
