@@ -25,6 +25,7 @@ export interface DappStakingState {
   dAppTiers: DAppTierRewards;
   tiersConfiguration: TiersConfiguration;
   eraLengths: EraLengths;
+  leaderboard: Map<number, number>;
 }
 
 function state(): DappStakingState {
@@ -41,6 +42,7 @@ function state(): DappStakingState {
     dAppTiers: initialDappTiersConfiguration,
     tiersConfiguration: initialTiersConfiguration,
     eraLengths: initialEraLengths,
+    leaderboard: new Map<number, number>(),
   };
 }
 

@@ -30,6 +30,7 @@ export interface DappStakingGetters {
   getDappTiers(state: DappStakingState): DAppTierRewards;
   getTiersConfiguration(state: DappStakingState): TiersConfiguration;
   getEraLengths(state: DappStakingState): EraLengths;
+  getLeaderboard(state: DappStakingState): Map<number, number>;
 }
 
 const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters = {
@@ -46,6 +47,7 @@ const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters
   getDappTiers: (state) => state.dAppTiers,
   getTiersConfiguration: (state) => state.tiersConfiguration,
   getEraLengths: (state) => state.eraLengths,
+  getLeaderboard: (state) => state.leaderboard,
 };
 
 export default getters;

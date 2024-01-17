@@ -337,6 +337,21 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  //* @inheritdoc
+  public async getLeaderboard(): Promise<Map<number, number>> {
+    const api = await this.api.getApi();
+    const tierAssignmentsBytes = await api.rpc.state.call(
+      'DappStakingApi_get_dapp_tier_assignment',
+      ''
+    );
+    const tierAssignment = api.createType('BTreeMap<u16, u8>', tierAssignmentsBytes);
+
+    const result = new Map<number, number>();
+    tierAssignment.forEach((value, key) => result.set(key.toNumber(), value.toNumber()));
+
+    return result;
+  }
+
   public async getStakerInfo(
     address: string,
     includePreviousPeriods = false
