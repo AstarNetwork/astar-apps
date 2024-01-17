@@ -124,7 +124,7 @@ export default defineComponent({
 
 .container--main {
   width: 100%;
-  padding: 0px 0px 24px 0px;
+  padding: 48px 0 24px 0px;
   margin: 0 auto;
 
   @media (min-width: $md) {
@@ -133,9 +133,6 @@ export default defineComponent({
 
   @media (min-width: $widthCardLineUp) {
     max-width: 100%;
-  }
-  @media (min-width: $lg) {
-    margin-top: 50px;
   }
 }
 
