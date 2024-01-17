@@ -205,18 +205,18 @@ export default {
       selectWallet: 'Select a wallet',
       notHaveAstarNative: '🥲 I DON’T HAVE an Astar Native account',
       withoutUnifying:
-        'You can receive full benefit while you are connecting with EVM account without unifying. So nothing to worry if you don’t own a Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
+        'You can receive full benefits while you are connecting with an EVM account without unifying. So nothing to worry about if you don’t own an Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
       howToCreate: 'How to create a Astar Native account',
       findSubstrateWallets:
         'You could also find Substrate based wallets which might be friendlier. ',
       checkNativeWallets: 'Check our Native wallets.',
       haveStakingBalance:
-        'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
+        'You have some Staking balance. Those staked tokens will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
       accountIcon: 'Account icon',
-      balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
+      balanceTransferred: 'Your balance in the EVM account is going to be transferred.',
       readyToUnify:
-        'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
+        'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirming.',
       congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
       onlyShibuya: 'This feature is only available for Shibuya testnet.',
       userTutorials: 'Documentation and tutorials',
@@ -260,7 +260,7 @@ export default {
     add: 'Add',
     unbond: 'Unbond',
     rebondGuide:
-      'Once re-bond your funds goes back to staking. You will need 10era to unstake again.',
+      'Once re-bond your funds go back to staking. You will need 10era to unstake again.',
     rebondTitle: 'The amount you wish to rebond',
     withdrawGuide: 'Your funds are available to withdraw.',
     withdrawTitle: 'Ready to withdraw',
@@ -301,7 +301,7 @@ export default {
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
-      'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
+      'Congratulations 🎉 Please fill in your dApp information to give users a better overview of your application. Updated data will appear on the dApp page shortly.',
     desktopOnlyBanner: 'dApp registration is only available on desktop',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
@@ -330,7 +330,7 @@ export default {
     transactions: 'Transactions',
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
-      'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
+      'You cannot claim with automatic re-stake because it has been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     migrationSupport: {
       actionRequired: 'Action Required',
       yourTokensAreLocked:
@@ -595,7 +595,7 @@ export default {
         fee: 'Fee is deducted from the amount entered',
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
-          'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
+          'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
     },
   },
