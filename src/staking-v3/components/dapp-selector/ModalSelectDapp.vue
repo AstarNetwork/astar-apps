@@ -164,10 +164,14 @@ export default defineComponent({
   margin: 8px 0;
   cursor: pointer;
   border: 1px solid transparent;
+  transition: all 0.2s ease;
+  &:hover {
+    border-color: $astar-blue;
+  }
 }
 
 .selected--dapp {
-  border: 1px solid $astar-blue;
+  border-color: $astar-blue;
 }
 
 .selection--order {
