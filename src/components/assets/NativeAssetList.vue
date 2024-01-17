@@ -166,6 +166,21 @@
                     <div class="column--symbol text--symbol">
                       {{ nativeTokenSymbol }}
                     </div>
+                    <div v-if="vestingTtl > 0" class="row--vesting-note">
+                      <span>
+                        {{
+                          $t('assets.vestingInStake', {
+                            amount: $n(
+                              truncate(
+                                vestingTtl > lockInDappStaking ? lockInDappStaking : vestingTtl,
+                                3
+                              )
+                            ),
+                            token: nativeTokenSymbol,
+                          })
+                        }}
+                      </span>
+                    </div>
                   </template>
                   <template v-else>
                     <div class="skeleton--right">
