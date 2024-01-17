@@ -33,6 +33,8 @@
       :set-is-open="setShowDisclaimerModal"
       :show="showDisclaimerModal"
     />
+
+    <modal-onboarding :set-is-open="setShowDisclaimerModal" :show="true" />
   </div>
 </template>
 <script lang="ts">
@@ -47,6 +49,7 @@ import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
 import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
+import ModalOnboarding from 'src/staking-v3/components/ModalOnboarding.vue';
 import NotificationStack from './components/common/Notification/NotificationStack.vue';
 import 'animate.css';
 import {
@@ -78,6 +81,7 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
+    ModalOnboarding,
   },
   setup() {
     useAppRouter();
