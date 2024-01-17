@@ -46,7 +46,7 @@ export default defineComponent({
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.3s;
+  transition: transform 0.5s;
   transform-style: preserve-3d;
 }
 
