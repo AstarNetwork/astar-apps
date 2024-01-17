@@ -131,3 +131,9 @@
   right: 0;
   bottom: 0;
 }
+
+.body--dark{
+  .title--onboarding {
+    color: $navy-1;
+  }
+}

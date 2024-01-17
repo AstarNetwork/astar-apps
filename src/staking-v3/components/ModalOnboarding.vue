@@ -4,75 +4,73 @@
     :show="show"
     :is-closing="isClosingModal"
     :width="580"
-    :class="'highest-z-index'"
+    :class="'highest-z-index wrapper--modal-onboarding'"
     @close="closeModal"
   >
-    <div class="wrapper--modal-onboarding">
-      <div class="modal__top">
-        <div class="title--onboarding">
-          {{ $t('stakingV3.onboarding.introducing') }}<br />
-          <span>{{ $t('stakingV3.title') }}</span>
-        </div>
+    <div class="modal__top">
+      <div class="title--onboarding">
+        {{ $t('stakingV3.onboarding.introducing') }}<br />
+        <span>{{ $t('stakingV3.title') }}</span>
       </div>
-      <div class="modal__bottom">
-        <div class="modal__bottom-inner">
-          <swiper
-            :pagination="true"
-            :navigation="true"
-            :modules="modules"
-            class="swiper--modal-onboarding"
-          >
-            <swiper-slide>
-              <div class="text--title">
-                {{ $t('stakingV3.onboarding.innovativeWayOfStaking') }}
-              </div>
-              <div class="text--description">
-                {{ $t('stakingV3.onboarding.receiveStakerRewards') }}
-              </div>
-            </swiper-slide>
-            <swiper-slide>
-              <div class="text--title">
-                {{ $t('stakingV3.onboarding.earnBonusByVoting') }}
-              </div>
-              <div class="text--description">
-                {{ $t('stakingV3.onboarding.receiveBonusRrewards') }}
-              </div>
-            </swiper-slide>
-            <swiper-slide>
-              <div class="text--title text--yellow">
-                {{ $t('stakingV3.onboarding.remember') }}
-              </div>
-              <div class="text--description">
-                {{ $t('stakingV3.onboarding.stakingResetsEveryPeriod') }}
-              </div>
-            </swiper-slide>
-            <swiper-slide>
-              <div class="text--title">
-                <router-link :to="RoutePath.DappStaking" @click="closeModal">
-                  <span>{{ $t('stakingV3.onboarding.goToDappStakingAndVoteToday') }}</span>
-                  <astar-icon-arrow-right />
-                </router-link>
-              </div>
-              <div class="text--links">
-                <router-link :to="RoutePath.DappStaking" @click="closeModal">
-                  <span>{{ $t('stakingV3.onboarding.goToDappStaking') }}</span>
-                  <astar-icon-arrow-right />
-                </router-link>
-                <a
-                  href="https://docs.astar.network/docs/build/dapp-staking/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>{{ $t('stakingV3.onboarding.usersGuides') }}</span>
-                  <astar-icon-arrow-right />
-                </a>
-              </div>
-            </swiper-slide>
-          </swiper>
-        </div>
-        <div class="bg--modal-onboarding">
-          <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
-        </div>
+    </div>
+    <div class="modal__bottom">
+      <div class="modal__bottom-inner">
+        <swiper
+          :pagination="true"
+          :navigation="true"
+          :modules="modules"
+          class="swiper--modal-onboarding"
+        >
+          <swiper-slide>
+            <div class="text--title">
+              {{ $t('stakingV3.onboarding.innovativeWayOfStaking') }}
+            </div>
+            <div class="text--description">
+              {{ $t('stakingV3.onboarding.receiveStakerRewards') }}
+            </div>
+          </swiper-slide>
+          <swiper-slide>
+            <div class="text--title">
+              {{ $t('stakingV3.onboarding.earnBonusByVoting') }}
+            </div>
+            <div class="text--description">
+              {{ $t('stakingV3.onboarding.receiveBonusRrewards') }}
+            </div>
+          </swiper-slide>
+          <swiper-slide>
+            <div class="text--title text--yellow">
+              {{ $t('stakingV3.onboarding.remember') }}
+            </div>
+            <div class="text--description">
+              {{ $t('stakingV3.onboarding.stakingResetsEveryPeriod') }}
+            </div>
+          </swiper-slide>
+          <swiper-slide>
+            <div class="text--title">
+              <router-link :to="RoutePath.DappStaking" @click="closeModal">
+                <span>{{ $t('stakingV3.onboarding.goToDappStakingAndVoteToday') }}</span>
+                <astar-icon-arrow-right />
+              </router-link>
+            </div>
+            <div class="text--links">
+              <router-link :to="RoutePath.DappStaking" @click="closeModal">
+                <span>{{ $t('stakingV3.onboarding.goToDappStaking') }}</span>
+                <astar-icon-arrow-right />
+              </router-link>
+              <a
+                href="https://docs.astar.network/docs/build/dapp-staking/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{{ $t('stakingV3.onboarding.usersGuides') }}</span>
+                <astar-icon-arrow-right />
+              </a>
+            </div>
+          </swiper-slide>
+        </swiper>
+      </div>
+      <div class="bg--modal-onboarding">
+        <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
       </div>
     </div>
   </astar-default-modal>
@@ -133,6 +131,13 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+.body--dark {
+  .wrapper--modal-onboarding {
+    .modal-content {
+      background-color: white !important;
+    }
+  }
+}
 .swiper--modal-onboarding {
   .swiper-button-prev,
   .swiper-button-next {
