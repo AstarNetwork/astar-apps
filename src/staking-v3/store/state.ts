@@ -61,6 +61,7 @@ export const initialEraLengths: EraLengths = {
   standardErasPerBuildAndEarnPeriod: 0,
   standardErasPerVotingPeriod: 0,
   standardEraLength: 0,
+  periodsPerCycle: 0,
 };
 
 export default state;

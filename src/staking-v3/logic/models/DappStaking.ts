@@ -131,6 +131,7 @@ export interface EraLengths {
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
   standardEraLength: number;
+  periodsPerCycle: number;
 }
 
 export interface DAppTierRewards {
