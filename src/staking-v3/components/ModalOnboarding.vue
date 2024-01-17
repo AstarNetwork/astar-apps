@@ -3,25 +3,89 @@
     v-if="show"
     :show="show"
     :is-closing="isClosingModal"
-    :width="590"
-    :class="'highest-z-index wrapper--modal-onboarding'"
-    @close="decline()"
+    :width="580"
+    :class="'highest-z-index'"
+    @close="closeModal"
   >
-    <div class="">test test</div>
-    <div class="bg--modal-onboarding">
-      <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
+    <div class="wrapper--modal-onboarding">
+      <div class="modal__top">
+        <div class="title--onboarding">
+          Introducing <br />
+          <span>dApp Staking V3</span>
+        </div>
+      </div>
+      <div class="modal__bottom">
+        <div class="modal__bottom-inner">
+          <swiper
+            :pagination="true"
+            :navigation="true"
+            :modules="modules"
+            class="swiper--modal-onboarding"
+          >
+            <swiper-slide>
+              <div class="text--title">Innovative way of staking</div>
+              <div class="text--description">
+                Receive Staker Rewards by voting your favourite projects
+              </div>
+            </swiper-slide>
+            <swiper-slide>
+              <div class="text--title">Earn bonus by Voting on time</div>
+              <div class="text--description">Receive bonus rewards being royal stakers</div>
+            </swiper-slide>
+            <swiper-slide>
+              <div class="text--title text--yellow">Remember</div>
+              <div class="text--description">
+                Staking resets every period - It is requires to make votes every period.
+              </div>
+            </swiper-slide>
+            <swiper-slide>
+              <div class="text--title">
+                <router-link :to="RoutePath.DappStaking" @click="closeModal">
+                  <span>Go to dApp Staking and Vote today</span>
+                  <astar-icon-arrow-right />
+                </router-link>
+              </div>
+              <div class="text--links">
+                <router-link :to="RoutePath.DappStaking" @click="closeModal">
+                  <span>Go to dApp Staking</span>
+                  <astar-icon-arrow-right />
+                </router-link>
+                <a
+                  href="https://docs.astar.network/docs/build/dapp-staking/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>Users Guides</span>
+                  <astar-icon-arrow-right />
+                </a>
+              </div>
+            </swiper-slide>
+          </swiper>
+        </div>
+        <div class="bg--modal-onboarding">
+          <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
+        </div>
+      </div>
     </div>
   </astar-default-modal>
 </template>
 
 <script lang="ts">
-import { truncate, wait } from '@astar-network/astar-sdk-core';
+import { wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { defineComponent, ref } from 'vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { Path as RoutePath } from 'src/router/routes';
+
+// Import Swiper
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
 
 export default defineComponent({
-  components: {},
+  components: { Swiper, SwiperSlide },
   props: {
     show: {
       type: Boolean,
@@ -39,28 +103,18 @@ export default defineComponent({
       await wait(fadeDuration);
       props.setIsOpen(false);
       isClosingModal.value = false;
+      localStorage.setItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING, 'true');
     };
 
-    if (localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
+    if (localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING)) {
       closeModal();
     }
 
-    const accept = (): void => {
-      localStorage.setItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY, 'true');
-      closeModal();
-    };
-
-    const decline = (): void => {
-      window.open('https://astar.network/', '_self');
-    };
-
     return {
-      close,
-      truncate,
-      closeModal,
       isClosingModal,
-      accept,
-      decline,
+      modules: [Navigation, Pagination],
+      RoutePath,
+      closeModal,
     };
   },
 });
@@ -68,4 +122,55 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use './styles/modal-onboarding.scss';
+</style>
+
+<style lang="scss">
+.swiper--modal-onboarding {
+  .swiper-button-prev,
+  .swiper-button-next {
+    margin: 0;
+    width: 40px;
+    height: 40px;
+    top: inherit;
+    bottom: 0;
+    display: block;
+    text-align: center;
+    background-color: $astar-blue;
+    border-radius: 9999px;
+    z-index: 9999;
+    transition: all 0.2s ease;
+    &:hover {
+      background-color: lighten($astar-blue, 10%);
+    }
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 40px;
+      color: white;
+    }
+  }
+  .swiper-button-prev {
+    left: 0;
+  }
+  .swiper-button-next {
+    right: 0;
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+  .swiper-pagination {
+    height: 40px;
+    margin-top: 40px;
+    position: relative;
+    top: inherit;
+    bottom: inherit;
+    line-height: 40px;
+    .swiper-pagination-bullet {
+      background-color: $gray-2;
+      &.swiper-pagination-bullet-active {
+        background-color: $astar-blue;
+      }
+    }
+  }
+}
 </style>

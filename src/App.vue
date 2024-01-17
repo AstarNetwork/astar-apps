@@ -28,13 +28,17 @@
     </transition>
     <notification-stack />
 
+    <modal-onboarding
+      v-if="showOnboardingModal"
+      :set-is-open="setShowOnboardingModal"
+      :show="showOnboardingModal"
+    />
+
     <modal-disclaimer
       v-if="showDisclaimerModal"
       :set-is-open="setShowDisclaimerModal"
       :show="showDisclaimerModal"
     />
-
-    <modal-onboarding :set-is-open="setShowDisclaimerModal" :show="true" />
   </div>
 </template>
 <script lang="ts">
@@ -114,6 +118,18 @@ export default defineComponent({
 
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
+    };
+
+    // dApp staking onboarding modal
+    const showOnboardingModal = ref<boolean>(false);
+    if (!localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING)) {
+      setTimeout(() => {
+        showOnboardingModal.value = true;
+      }, 2000);
+    }
+
+    const setShowOnboardingModal = (isOpen: boolean): void => {
+      showOnboardingModal.value = isOpen;
     };
 
     // Handle busy and extrinsic call status messages.
@@ -219,6 +235,8 @@ export default defineComponent({
       showAlert,
       showDisclaimerModal,
       setShowDisclaimerModal,
+      showOnboardingModal,
+      setShowOnboardingModal,
     };
   },
 });
