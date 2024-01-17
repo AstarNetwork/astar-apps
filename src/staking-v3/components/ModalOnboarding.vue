@@ -10,8 +10,8 @@
     <div class="wrapper--modal-onboarding">
       <div class="modal__top">
         <div class="title--onboarding">
-          Introducing <br />
-          <span>dApp Staking V3</span>
+          {{ $t('stakingV3.onboarding.introducing') }}<br />
+          <span>{{ $t('stakingV3.title') }}</span>
         </div>
       </div>
       <div class="modal__bottom">
@@ -23,31 +23,39 @@
             class="swiper--modal-onboarding"
           >
             <swiper-slide>
-              <div class="text--title">Innovative way of staking</div>
+              <div class="text--title">
+                {{ $t('stakingV3.onboarding.innovativeWayOfStaking') }}
+              </div>
               <div class="text--description">
-                Receive Staker Rewards by voting your favourite projects
+                {{ $t('stakingV3.onboarding.receiveStakerRewards') }}
               </div>
             </swiper-slide>
             <swiper-slide>
-              <div class="text--title">Earn bonus by Voting on time</div>
-              <div class="text--description">Receive bonus rewards being royal stakers</div>
+              <div class="text--title">
+                {{ $t('stakingV3.onboarding.earnBonusByVoting') }}
+              </div>
+              <div class="text--description">
+                {{ $t('stakingV3.onboarding.receiveBonusRrewards') }}
+              </div>
             </swiper-slide>
             <swiper-slide>
-              <div class="text--title text--yellow">Remember</div>
+              <div class="text--title text--yellow">
+                {{ $t('stakingV3.onboarding.remember') }}
+              </div>
               <div class="text--description">
-                Staking resets every period - It is requires to make votes every period.
+                {{ $t('stakingV3.onboarding.stakingResetsEveryPeriod') }}
               </div>
             </swiper-slide>
             <swiper-slide>
               <div class="text--title">
                 <router-link :to="RoutePath.DappStaking" @click="closeModal">
-                  <span>Go to dApp Staking and Vote today</span>
+                  <span>{{ $t('stakingV3.onboarding.goToDappStakingAndVoteToday') }}</span>
                   <astar-icon-arrow-right />
                 </router-link>
               </div>
               <div class="text--links">
                 <router-link :to="RoutePath.DappStaking" @click="closeModal">
-                  <span>Go to dApp Staking</span>
+                  <span>{{ $t('stakingV3.onboarding.goToDappStaking') }}</span>
                   <astar-icon-arrow-right />
                 </router-link>
                 <a
@@ -55,7 +63,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span>Users Guides</span>
+                  <span>{{ $t('stakingV3.onboarding.usersGuides') }}</span>
                   <astar-icon-arrow-right />
                 </a>
               </div>

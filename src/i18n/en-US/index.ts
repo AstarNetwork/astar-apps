@@ -832,6 +832,19 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    onboarding: {
+      introducing: 'Introducing',
+      innovativeWayOfStaking: 'Innovative way of staking',
+      receiveStakerRewards: 'Receive Staker Rewards by voting your favourite projects',
+      earnBonusByVoting: 'Earn bonus by Voting on time',
+      receiveBonusRrewards: 'Receive bonus rewards being royal stakers',
+      remember: 'Remember',
+      stakingResetsEveryPeriod:
+        'Staking resets every period - It is requires to make votes every period.',
+      goToDappStakingAndVoteToday: 'Go to dApp Staking and Vote today',
+      goToDappStaking: 'Go to dApp Staking',
+      usersGuides: 'Users Guides',
+    },
   },
   bridge: {
     bridge: 'Bridge',
