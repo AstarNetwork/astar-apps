@@ -166,7 +166,7 @@
                     <div class="column--symbol text--symbol">
                       {{ nativeTokenSymbol }}
                     </div>
-                    <div class="row--vesting-info">
+                    <div v-if="vestingTtl > 0" class="row--vesting-note">
                       <span>
                         {{
                           $t('assets.vestingInStake', {
