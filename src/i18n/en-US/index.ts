@@ -747,7 +747,7 @@ export default {
     dAppRewards: 'dApp rewards',
     done: 'Done',
     search: 'Search',
-    build: 'Build&Earn',
+    buildAndEarn: 'Build&Earn',
     newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',

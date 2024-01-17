@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--data--list">
     <data-card
-      :title="`${$t('stakingV3.vote')} / ${$t('stakingV3.build')}`"
+      :title="`${$t('stakingV3.vote')} / ${$t('stakingV3.buildAndEarn')}`"
       description="description"
     >
       {{ periodName }}

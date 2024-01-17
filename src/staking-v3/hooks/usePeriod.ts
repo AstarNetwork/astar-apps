@@ -10,7 +10,7 @@ export function usePeriod() {
   const periodName = computed<string>(() =>
     protocolState.value?.periodInfo.subperiod === PeriodType.Voting
       ? t('stakingV3.vote')
-      : t('stakingV3.build')
+      : t('stakingV3.buildAndEarn')
   );
 
   const periodDuration = computed<number | undefined>(() =>
