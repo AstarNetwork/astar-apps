@@ -1,6 +1,9 @@
 <template>
   <div v-if="filteredDapps.length > 0" class="wrapper--dapps">
-    <div class="container--category" :style="{ backgroundImage: `url(${bg_img[category]})` }">
+    <div
+      class="container--category"
+      :style="{ backgroundImage: `url(${categoryBackgroundImages[category]})` }"
+    >
       <div class="title--category">{{ category }}</div>
     </div>
     <div class="container--dapps">
@@ -105,7 +108,7 @@ export default defineComponent({
       return result;
     });
 
-    const bg_img = {
+    const categoryBackgroundImages = {
       DeFi: require('/src/staking-v3/assets/category_pink.webp'),
       NFT: require('/src/staking-v3/assets/category_purple.webp'),
       Tooling: require('/src/staking-v3/assets/category_blue.webp'),
@@ -113,7 +116,13 @@ export default defineComponent({
       Others: require('/src/staking-v3/assets/category_green.webp'),
     };
 
-    return { modules: [Grid], filteredDapps, bg_img, getDappTier, getDappPageUrl };
+    return {
+      modules: [Grid],
+      filteredDapps,
+      categoryBackgroundImages,
+      getDappTier,
+      getDappPageUrl,
+    };
   },
 });
 </script>
