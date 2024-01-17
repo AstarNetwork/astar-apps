@@ -120,12 +120,12 @@
         </div>
         <hr class="separator" />
         <my-staking-card
-          :caption="$t('stakingV3.basicRewards')"
+          :caption="$t('stakingV3.availableToClaim')"
           :amount="rewards?.staker.amount"
           :eras="rewards?.staker.eraCount"
         />
         <my-staking-card
-          :caption="$t('stakingV3.bonusRewards')"
+          :caption="$t('stakingV3.bonus')"
           :amount="rewards?.bonus"
           :eras="bonusRewardEras"
         />
@@ -149,7 +149,7 @@
         :disabled="!hasStakerRewards && !hasBonusRewards"
         @click="claimStakerAndBonusRewards()"
       >
-        <span class="text--label">{{ $t('stakingV3.totalEstimatedRewards') }}</span>
+        <span class="text--label">{{ $t('stakingV3.claimEstimatedRewards') }}</span>
         <span class="text--balance">
           <span class="text--amount">
             {{ $n(truncate(ethers.utils.formatEther(totalStakerRewards.toString()) ?? '0', 2)) }}
