@@ -29,6 +29,8 @@ export default defineComponent({
   padding: 4px 16px 8px 16px;
   line-height: 1.25;
   font-size: 12px;
+  position: relative;
+  z-index: 1;
   @media (min-width: $sm) {
     font-size: 14px;
   }

@@ -35,6 +35,11 @@ export function useDappStakingNavigation() {
 
   const getRegisterPageUrl = (): string => networkParam + Path.DappStaking + Path.Register;
 
+  const navigateToAssets = (): void => {
+    const base = networkParam + Path.Assets + '#staking';
+    router.push(base);
+  };
+
   return {
     navigateToVote,
     navigateToMove,
@@ -44,5 +49,6 @@ export function useDappStakingNavigation() {
     getDappPageUrl,
     goBack,
     getRegisterPageUrl,
+    navigateToAssets,
   };
 }

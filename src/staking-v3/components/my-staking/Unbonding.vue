@@ -1,25 +1,60 @@
 <template>
-  <div>
-    <div class="table--wrapper">
-      <div class="chunk--row header--row">
-        <div>{{ $t('stakingV3.index') }}</div>
-        <div>{{ $t('stakingV3.unbondingAmount') }}</div>
-        <div class="right">{{ $t('stakingV3.remainingEras') }}</div>
-        <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
+  <div class="table--wrapper">
+    <div class="row--header">
+      <div class="column column--index">{{ $t('stakingV3.index') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.unbondingAmount') }}</div>
+      <div class="column column--remaining-days">{{ $t('stakingV3.remainingEras') }}</div>
+    </div>
+    <div v-for="(chunk, index) in chunks" :key="index" class="row">
+      <div class="column column--index">{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
+      <div class="column column--amount">
+        <token-balance-native :balance="chunk.amount.toString()" />
       </div>
-      <div v-for="(chunk, index) in chunks" :key="index" class="chunk--row">
-        <div>{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
-        <div class="right"><token-balance-native :balance="chunk.amount.toString()" /></div>
-        <div class="right">
+      <div class="column column--remaining-days">
+        <span v-if="chunk.remainingBlocks > 0" class="text--remaining-days">
           {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
+        </span>
+        <span v-else class="icon--check">
+          <astar-icon-check />
+        </span>
+      </div>
+    </div>
+
+    <div class="row--actions">
+      <div class="row">
+        <div class="column">{{ $t('stakingV3.availableToWithdraw') }}</div>
+        <div class="column column--amount">
+          <token-balance-native :balance="totalToWithdraw.toString()" />
         </div>
-        <div class="buttons">
-          <astar-button :disabled="!canWithdraw" :width="97" :height="28" @click="withdraw">{{
-            $t('stakingV3.withdraw')
-          }}</astar-button>
-          <astar-button :disabled="!canRelock" :width="97" :height="28" @click="relock">{{
-            $t('stakingV3.relock')
-          }}</astar-button>
+        <div class="column column--actions">
+          <div>
+            <button type="button" class="btn btn--icon" :disabled="!canWithdraw" @click="withdraw">
+              <astar-icon-arrow-right />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.withdraw') }}
+              </span>
+            </q-tooltip>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">{{ $t('stakingV3.relock') }}</div>
+        <div class="column column--amount">
+          <token-balance-native :balance="totalToRelock.toString()" />
+        </div>
+        <div class="column column--actions">
+          <div>
+            <button type="button" class="btn btn--icon" :disabled="!canRelock" @click="relock">
+              <astar-icon-arrow-right />
+            </button>
+            <q-tooltip>
+              <span class="text--tooltip">
+                {{ $t('stakingV3.relock') }}
+              </span>
+            </q-tooltip>
+          </div>
         </div>
       </div>
     </div>
@@ -31,7 +66,7 @@ import { useDappStaking } from 'src/staking-v3/hooks';
 import { defineComponent, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useStore } from 'src/store';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -56,6 +91,16 @@ export default defineComponent({
 
     const canRelock = computed(() => chunks.value.length > 0);
 
+    const totalToWithdraw = computed<bigint>(() =>
+      chunks.value
+        .filter((x) => x.remainingBlocks === 0)
+        .reduce((acc, chunk) => acc + chunk.amount, BigInt(0))
+    );
+
+    const totalToRelock = computed<bigint>(() =>
+      chunks.value.reduce((acc, chunk) => acc + chunk.amount, BigInt(0))
+    );
+
     const getRemainingEras = (remainingBlocks: number): number => {
       return eraLengths.value
         ? Math.ceil(remainingBlocks / eraLengths.value?.standardEraLength)
@@ -63,6 +108,8 @@ export default defineComponent({
     };
 
     const { width, screenSize } = useBreakpoints();
+
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     return {
       chunks,
@@ -73,75 +120,18 @@ export default defineComponent({
       canRelock,
       width,
       screenSize,
+      nativeTokenSymbol,
+      totalToWithdraw,
+      totalToRelock,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-// TODO refactor to separate file since the style is shared between MyDapps and Unbonding components.
-@import 'src/css/quasar.variables.scss';
+@use './styles/staking-table.scss';
 
-.table--wrapper {
-  background-color: $gray-1;
-  padding: 20px 12px;
-  border-radius: 16px;
-  @media (min-width: $sm) {
-    padding: 40px 24px;
-  }
-}
-
-.chunk--row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: solid 1px $gray-2;
-  @media (min-width: $sm) {
-    flex-wrap: nowrap;
-  }
-  div {
-    flex-basis: 0;
-    flex-grow: 1;
-    padding: 16px;
-  }
-}
-
-.header--row {
-  background: rgba(0, 0, 0, 0.03);
-  color: $gray-4;
-  border: 0;
-}
-
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  column-gap: 16px;
-  width: 100%;
-  @media (min-width: $sm) {
-    width: auto;
-  }
-}
-
-.body--dark {
-  .table--wrapper {
-    background-color: $navy-3;
-  }
-  .header--row {
-    color: $gray-2;
-    background: rgba(0, 0, 0, 0.15);
-  }
-  .chunk--row {
-    border-color: lighten($navy-3, 10%);
-  }
+.row--action {
+  background-color: white;
 }
 </style>

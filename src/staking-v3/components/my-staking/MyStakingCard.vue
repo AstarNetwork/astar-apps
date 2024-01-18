@@ -1,6 +1,7 @@
 <template>
   <div class="card">
     <div class="card--title">{{ caption }}</div>
+    <div v-if="eras" class="card--days">{{ eras }} days</div>
     <div class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
@@ -26,11 +27,20 @@ export default defineComponent({
       type: BigInt as unknown as PropType<BigInt>,
       required: true,
     },
+    eras: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    return { nativeTokenSymbol, ethers, truncate };
+    return {
+      nativeTokenSymbol,
+      ethers,
+      truncate,
+    };
   },
 });
 </script>
@@ -40,11 +50,16 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
+  z-index: 1;
+  position: relative;
 }
 
 .card--title {
   font-size: 14px;
   font-weight: 700;
+  flex: 1;
+  position: relative;
 }
 
 .card--balance {

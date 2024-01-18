@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { IDappStakingService } from './IDappStakingService';
 import { DappStakingService } from './DappStakingService';
-import { DappStakeInfo, SingularStakingInfo } from '../models';
+import { DappStakeInfo, SingularStakingInfo, StakerRewards } from '../models';
 import { IWalletService } from '../../../v2/services/IWalletService';
 import { IDappStakingRepository, IDataProviderRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
@@ -221,7 +221,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     return await super.getStakerInfo(ss58Address, includePreviousPeriods);
   }
 
-  public async getStakerRewards(senderAddress: string): Promise<bigint> {
+  public async getStakerRewards(senderAddress: string): Promise<StakerRewards> {
     const ss58Address = await this.getSS58Address(senderAddress);
 
     return await super.getStakerRewards(ss58Address);
