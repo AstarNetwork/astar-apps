@@ -54,20 +54,46 @@
   }
 }
 
-.promo__data {
-  background-color: $navy-1;
-  height: 110px;
-  border-radius: 16px;
-  padding: 16px 8px;
+.wrapper--kpi-card {
   flex: 1;
+  background-color: transparent;
+  height: 110px;
+  perspective: 1000px;
   @media (min-width: $sm) {
-    padding: 24px 16px 16px 16px;
-    min-width: 134px;
+    min-width: 150px;
     flex: none;
   }
 }
 
-.card--data {
+.card--inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+.wrapper--kpi-card:hover .card--inner {
+  transform: rotateY(180deg);
+}
+
+.card--front,
+.card--back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 16px 8px;
+  @media (min-width: $sm) {
+    padding: 16px;
+  }
+}
+
+.card--front {
+  text-align: center;
+  background-color: $navy-1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,6 +101,21 @@
   text-align: center;
   line-height: 1.25;
   height: 100%;
+}
+
+.card__top {
+  padding-top: 8px;
+}
+
+.card--back {
+  background-color: $navy-1;
+  color: white;
+  transform: rotateY(180deg);
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
 }
 
 .button--link {
@@ -118,6 +159,7 @@
   font-weight: 800;
   font-size: 20px;
   color: white;
+  white-space: nowrap;
   @media (min-width: $sm) {
     font-size: 24px;
   }
@@ -127,6 +169,7 @@
   font-weight: 500;
   font-size: 14px;
   color: white;
+  padding-left: 4px;
 }
 
 .text--card-title {

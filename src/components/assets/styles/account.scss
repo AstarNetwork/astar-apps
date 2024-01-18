@@ -4,10 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  margin-top: -36px;
-  @media (min-width: $lg) {
-    margin-top: 0;
-  }
 }
 
 .row--details-signatory {
@@ -220,7 +216,7 @@
   background-color: white;
   padding: 16px;
   min-height: 180px;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     border-radius: 16px;
     margin: 0;
   }

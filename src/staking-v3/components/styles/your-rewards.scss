@@ -1,18 +1,46 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--your-rewards {
-  margin-bottom: 80px;
-}
-
 .row--title {
   font-weight: 800;
   font-size: 32px;
   color: $navy-1;
   margin-bottom: 24px;
   @media (min-width: $xl) {
-    margin-bottom: 44px;
+    margin-bottom: 40px;
   }
 }
+
+.container--rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border: solid 1px $navy-1;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: white;
+  @media (min-width: $sm) {
+    padding: 32px 24px;
+  }
+}
+
+.rows--rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.box--rewards {
+  border-radius: 16px;
+  background-color: $gray-1;
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+
+
+
 
 .button--claim {
   width: 100%;
@@ -63,17 +91,6 @@
   color: $astar-pink-01;
   font-weight: 600;
   font-size: 16px;
-}
-
-.container--rewards {
-  display: flex;
-  flex-direction: column;
-  row-gap: 12px;
-  @media (min-width: $md) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-  }
 }
 
 .box--rewards {
