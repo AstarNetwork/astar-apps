@@ -824,6 +824,8 @@ export default {
     era: 'Era',
     numberOfDapps: 'Number of dApps',
     tvl: 'TVL',
+    tvv: 'TVV',
+    bonusEligibleTokens: 'Bonus eligible tokens',
     filledSlot: 'Filled slots',
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',

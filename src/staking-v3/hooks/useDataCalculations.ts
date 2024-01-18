@@ -24,11 +24,25 @@ export function useDataCalculations() {
 
     const totalLocked = Number(ethers.utils.formatEther(currentEraInfo.value.totalLocked));
     const totalStake = Number(
-      ethers.utils.formatEther(currentEraInfo.value.currentStakeAmount.totalStake)
+      ethers.utils.formatEther(
+        currentEraInfo.value.nextStakeAmount
+          ? currentEraInfo.value.nextStakeAmount?.totalStake
+          : currentEraInfo.value.currentStakeAmount.totalStake
+      )
     );
 
     return (totalStake / totalLocked) * 100;
   });
 
-  return { tvlPercentage, totalVolumeOfVotesPercentage };
+  const bonusEligibleTokens = computed<bigint>(() => {
+    if (!currentEraInfo.value) {
+      return BigInt(0);
+    }
+
+    return currentEraInfo.value.nextStakeAmount
+      ? currentEraInfo.value.nextStakeAmount.voting
+      : currentEraInfo.value.currentStakeAmount.voting;
+  });
+
+  return { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens };
 }
