@@ -63,7 +63,6 @@ import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
-import { Url } from 'url';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -103,7 +102,7 @@ export default defineComponent({
       const result = dapps.filter(
         (dapp) =>
           dapp.basic.name.toLowerCase().includes(value) ||
-          dapp.basic.shortDescription.toLowerCase().includes(value)
+          dapp.basic.shortDescription?.toLowerCase().includes(value)
       );
       return result;
     });
