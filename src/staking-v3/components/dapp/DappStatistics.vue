@@ -6,14 +6,20 @@
         <vote-stake-button-bg />
       </button>
 
-      <kpi-card v-if="!small" :title="$t('dappStaking.dappPage.totalStaked')">
-        <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
+      <kpi-card
+        v-if="!small"
+        :title="$t('dappStaking.dappPage.totalStaked')"
+        description="description"
+      >
+        <span class="text--value">
+          <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
+        </span>
       </kpi-card>
-      <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
-        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
+      <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')" description="description">
+        <span class="text--value">{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
       </kpi-card>
-      <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')">
-        <span>{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
+      <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')" description="description">
+        <span class="text--value">{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
       </kpi-card>
 
       <!-- <kpi-card :title="$t('stakingV3.totalEarned')">

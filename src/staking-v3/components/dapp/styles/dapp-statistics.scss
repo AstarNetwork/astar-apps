@@ -68,3 +68,13 @@
     }
   }
 }
+
+.text--value {
+  font-weight: 800;
+  font-size: 20px;
+  color: white;
+  white-space: nowrap;
+  @media (min-width: $sm) {
+    font-size: 24px;
+  }
+}
