@@ -1,12 +1,49 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--dapps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
 .container--dapps {
   flex: 1;
+  height: 368px;
   @media (min-width: $sm) {
-    width: calc(100% - 188px);
+    width: calc(100% - 228px);
   }
   @media (min-width: $xl) {
     width: calc(100% - 288px);
+  }
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(
+      to right,
+      black,
+      black calc(100% - 40px),
+      transparent
+    );
+    margin-right: -40px;
+    padding-right: 40px;
+  }
+
+  .swiper--dapps {
+    height: 368px;
+    overflow: visible;
   }
 }
 
@@ -25,6 +62,7 @@
   flex-direction: column;
   transition: all 0.2s ease;
   overflow: hidden;
+  height: 180px;
 }
 
 .card__top {
@@ -52,6 +90,7 @@
   font-weight: 700;
   font-size: 16px;
   margin: 12px 0 4px 0;
+  line-height: 1.25;
 }
 
 .text--description {
@@ -73,30 +112,33 @@
     font-size: 12px;
     font-weight: 600;
     color: $gray-3;
+    white-space: nowrap;
   }
 }
 
-.wrapper--dapps {
+.container--category {
+  background-size: cover;
+  background-color: $navy-1;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 220px;
+  min-height: 220px;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  @media (min-width: $sm) {
-    flex-direction: row;
+  position: relative;
+  z-index: 1;
+  @media (min-width: $xl) {
+    min-width: 280px;
   }
 }
 
 .title--category {
-  background-color: $navy-1;
-  color: $gray-1;
-  border-radius: 16px;
+  width: 60%;
+  backdrop-filter: blur(20px);
   padding: 24px;
-  font-size: 20px;
-  font-weight: 700;
-  min-height: 180px;
-  min-width: 180px;
-  @media (min-width: $xl) {
-    min-width: 280px;
-  }
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
 .body--dark {
