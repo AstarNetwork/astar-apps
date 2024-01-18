@@ -26,6 +26,7 @@ export const possibleCategories = [
   { label: 'Tooling', value: 'tooling' },
   { label: 'Utility', value: 'utility' },
   { label: 'Others', value: 'others' },
+  { label: 'Unstoppable Grants', value: 'unstoppable-grants' },
 ];
 
 export default defineComponent({
