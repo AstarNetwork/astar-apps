@@ -146,10 +146,6 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    isNetworkChange: {
-      type: Boolean,
-      required: true,
-    },
   },
   setup(props) {
     const isShowBalance = ref<boolean>(false);
@@ -217,8 +213,6 @@ export default defineComponent({
       store.commit('general/setCurrentWallet', props.selectedWallet);
       localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
-      // Memo: Wait for 1 second for the account change, otherwise local storage items such as 'selectedAddress' will be removed
-      props.isNetworkChange && (await wait(1000));
       await props.selectNetwork();
     };
 
@@ -249,7 +243,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      const adjustment = width.value > screenSize.sm ? 520 : 390;
+      const adjustment = width.value > screenSize.sm ? 450 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 

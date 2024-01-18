@@ -143,9 +143,8 @@ import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
-import SelectedWallet from 'src/components/header/modals/SelectedWallet.vue';
 import { astarChain } from 'src/config/chain';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig, SupportWallet } from 'src/config/wallets';
 import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
@@ -154,7 +153,6 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PropType, computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import UnifiedAccount from './UnifiedAccount.vue';
 
 import { hasProperty, isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 import { web3Enable } from '@polkadot/extension-dapp';
@@ -162,17 +160,14 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { Polkasafe } from 'polkasafe';
 import { useExtensions } from 'src/hooks/useExtensions';
+import { polkasafeUrl } from 'src/links';
 import { Multisig, addProxyAccounts } from 'src/modules/multisig';
 import { container } from 'src/v2/common';
 import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
 import { Symbols } from 'src/v2/symbols';
-import { polkasafeUrl } from 'src/links';
 
 export default defineComponent({
   components: {
-    // SelectedWallet,
-    // UnifiedAccount,
-    // Account,
     SelectSignatory,
   },
   props: {
@@ -180,10 +175,6 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
-    // connectEthereumWallet: {
-    //   type: Function,
-    //   required: true,
-    // },
     disconnectAccount: {
       type: Function,
       required: true,
@@ -202,10 +193,6 @@ export default defineComponent({
     },
     setModalPolkasafeSelect: {
       type: Function,
-      required: true,
-    },
-    isNetworkChange: {
-      type: Boolean,
       required: true,
     },
   },
@@ -261,8 +248,6 @@ export default defineComponent({
       } as Multisig;
       localStorage.setItem(LOCAL_STORAGE.MULTISIG, JSON.stringify(multisigObj));
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
-      // Memo: Wait for 1 second for the account change, otherwise local storage items such as 'selectedAddress' will be removed
-      props.isNetworkChange && (await wait(1000));
       await props.selectNetwork();
     };
 
@@ -289,7 +274,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = (): void => {
-      const adjustment = width.value > screenSize.sm ? 570 : 390;
+      const adjustment = width.value > screenSize.sm ? 480 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 

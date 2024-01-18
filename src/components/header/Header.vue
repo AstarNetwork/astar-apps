@@ -5,7 +5,7 @@
         <div class="icon"><logo /></div>
       </template>
       <div v-if="!currentAccount">
-        <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
+        <connect-button :class="isLoading && 'cursor--disabled'" @click="clickAccountBtn">
           <astar-icon-wallet />
         </connect-button>
         <q-tooltip>
@@ -168,21 +168,7 @@ export default defineComponent({
     const { isZkEvm } = useNetworkInfo();
 
     const clickAccountBtn = (): void => {
-      // if (multisig.value) {
-      //   openPolkasafeModal();
-      // } else {
-      //   if (modalName.value === WalletModalOption.SelectWallet) {
-      //     return;
-      //   }
-      //   if (isH160.value) {
-      //     modalName.value = WalletModalOption.SelectWallet;
-      //   } else {
-      //     changeAccount();
-      //   }
-      // }
-      // stateModal.modalNetwork = false;
       isModalNetworkWallet.value = true;
-
       isSelectWallet.value = true;
     };
 

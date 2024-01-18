@@ -54,6 +54,22 @@
               </span>
             </div>
           </button>
+          <button
+            v-if="selNetworkId === endpointKey.ASTAR"
+            class="box__row--wallet box--hover--active"
+            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
+            @click="setPolkasafeModal()"
+          >
+            <div class="box--img">
+              <img
+                :src="require('src/assets/img/logo-polkasafe-black.svg')"
+                class="img--polkasafe"
+              />
+            </div>
+            <div>
+              <span> PolkaSafe </span>
+            </div>
+          </button>
         </div>
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
@@ -100,34 +116,10 @@
           </div>
         </div>
       </div>
-      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
-        <div class="title--account-type">
-          <span>
-            {{ $t('wallet.multisigAccount') }}
-          </span>
-        </div>
-        <div class="wrapper--wallets">
-          <button
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
-            @click="setPolkasafeModal()"
-          >
-            <div class="box--img">
-              <img
-                :src="require('src/assets/img/logo-polkasafe-black.svg')"
-                class="img--polkasafe"
-              />
-            </div>
-            <div>
-              <span> PolkaSafe </span>
-            </div>
-          </button>
-        </div>
-      </div>
 
-      <!-- <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
+      <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
-      </button> -->
+      </button>
     </div>
   </div>
 </template>
@@ -176,6 +168,10 @@ export default defineComponent({
     },
     selectNetwork: {
       type: Function,
+      required: true,
+    },
+    selNetworkId: {
+      type: Number,
       required: true,
     },
   },
