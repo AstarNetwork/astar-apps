@@ -9,7 +9,7 @@
         <div
           v-if="tab.visible"
           class="tab"
-          :class="selectedTabIndex === index ? 'selected-tab text--selected' : 'unselected-tab'"
+          :class="currentTabIndex === index ? 'selected-tab text--selected' : 'unselected-tab'"
           @click="handleTabSelected(index)"
         >
           <span class="text--title-tab">{{ tab.title }}</span>
@@ -37,6 +37,10 @@ export default defineComponent({
       type: Function as PropType<(index: number) => void> | undefined,
       required: false,
       default: undefined,
+    },
+    currentTabIndex:{
+      type:Number,
+      required: true,
     }
   },
   setup(props) {
@@ -69,20 +73,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .row--tab {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 32px;
-  @media (min-width: $md) {
-    justify-content: flex-start;
-  }
+  margin-bottom: 16px;
 }
 
 .row--mode-tab {
   display: flex;
+  gap: 8px;
 }
 
 .tab {
-  padding: 10px;
+  padding: 8px 8px 12px 8px;
+  text-transform: uppercase;
 }
 
 .selected-tab {
@@ -103,7 +104,7 @@ export default defineComponent({
 }
 
 .text--selected {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .body--dark {
