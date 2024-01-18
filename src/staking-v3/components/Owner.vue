@@ -1,14 +1,24 @@
 <template>
   <div>
     <div v-if="dappAddress && dapp" class="wrapper--owner">
-      <div class="row--owner-header">
-        <div class="row--your-dashboard">
+      <div class="row--your-dashboard">
+        <span>{{ $t('stakingV3.yourDashboard') }}</span>
+      </div>
+      <div class="container--dapp-hero">
+        <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
+        <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+        <div class="row--your-dashboard-mobile">
           <span>{{ $t('stakingV3.yourDashboard') }}</span>
         </div>
-        <div class="container--dapp-hero">
-          <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-          <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
-        </div>
+      </div>
+      <div class="row--statistics">
+        <kpi-card :title="$t('stakingV3.currentTier')">{{
+          getDappTier(dapp.chain.id) ?? '--'
+        }}</kpi-card>
+        <kpi-card :title="$t('stakingV3.numberOfStakers')">
+          {{ dapp.dappDetails?.stakersCount ?? '--' }}
+        </kpi-card>
+        <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
       </div>
       <your-rewards
         :total-rewards="totalRewards"
@@ -29,15 +39,18 @@ import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } from '../hooks';
 import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
+import KpiCard from './KpiCard.vue';
 import YourRewards from './YourRewards.vue';
 import DappBackground from './dapp/DappBackground.vue';
 
 export default defineComponent({
-  components: { YourRewards, Edit, DappBackground },
+  components: { KpiCard, YourRewards, Edit, DappBackground },
   setup() {
     const route = useRoute();
+    const { nativeTokenSymbol } = useNetworkInfo();
     const { getDapp } = useDapps();
-    const { getDappRewards, getUnclaimedDappRewardsPerPeriod, claimDappRewards } = useDappStaking();
+    const { getDappTier, getDappRewards, getUnclaimedDappRewardsPerPeriod, claimDappRewards } =
+      useDappStaking();
     const { navigateToHome } = useDappStakingNavigation();
     const dappAddress = computed<string>(() => route.query.dapp as string);
 
@@ -76,8 +89,10 @@ export default defineComponent({
     return {
       dappAddress,
       dapp,
+      nativeTokenSymbol,
       totalRewards,
       rewardsPerPeriod,
+      getDappTier,
       claimRewards,
     };
   },
