@@ -5,17 +5,8 @@
   >
     <div class="row--back">
       <button class="button--back" @click="backModal()">
-        <span class="icon--back"> &#60; </span>
-        <span> Back to wallet selection </span>
+        <astar-icon-back-with-color />
       </button>
-    </div>
-    <div>
-      <div class="row--separator--account">
-        <div class="border--separator--account" />
-      </div>
-      <div>
-        <selected-wallet :selected-wallet="selectedWallet" />
-      </div>
       <div class="row--balance-option">
         <div class="column--balance-option">
           <span class="text--option-label">
@@ -26,6 +17,11 @@
             <q-toggle v-model="isShowBalance" color="#0085ff" />
           </div>
         </div>
+      </div>
+    </div>
+    <div>
+      <div class="row--separator--account">
+        <div class="border--separator--account" />
       </div>
       <fieldset>
         <div v-if="isMathWallet" class="column--remarks">
@@ -57,6 +53,7 @@
                 :native-token-symbol="nativeTokenSymbol"
                 :show-balance-value="isShowBalance && !isLoadingBalance"
                 :get-balance="displayBalance"
+                :is-unified-account="false"
               />
               <unified-account
                 v-else
@@ -95,34 +92,32 @@
   </div>
 </template>
 <script lang="ts">
-import { ApiPromise } from '@polkadot/api';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
-import { $api } from 'src/boot/api';
-import SelectedWallet from 'src/components/header/modals/SelectedWallet.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallet } from 'src/config/wallets';
 import {
+  fetchNativeBalance,
   getShortenAddress,
   truncate,
   wait,
-  fetchNativeBalance,
 } from '@astar-network/astar-sdk-core';
+import { ApiPromise } from '@polkadot/api';
+import { Ledger } from '@polkadot/hw-ledger';
+import copy from 'copy-to-clipboard';
+import { ethers } from 'ethers';
+import { $api } from 'src/boot/api';
+import { astarChain } from 'src/config/chain';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallet } from 'src/config/wallets';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { PropType, computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useBreakpoints, useNetworkInfo, useAccount } from 'src/hooks';
-import { Ledger } from '@polkadot/hw-ledger';
-import { astarChain } from 'src/config/chain';
-import UnifiedAccount from './UnifiedAccount.vue';
 import Account from './Account.vue';
+import UnifiedAccount from './UnifiedAccount.vue';
 
 export default defineComponent({
   components: {
-    SelectedWallet,
     UnifiedAccount,
     Account,
   },
@@ -404,7 +399,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/select-account.scss';
-@use 'src/components/common/styles/back-to-page.scss';
 
 .animate__animated.animate__fadeInRight {
   --animate-delay: 1s;

@@ -3,10 +3,15 @@
     <div class="box--account">
       <div v-if="accountName" class="row--account">
         <div class="account-name">
-          {{ accountName }}
+          <span>
+            {{ accountName }}
+          </span>
+        </div>
+        <div v-if="!isUnifiedAccount" class="address">
+          {{ getShortenAddress(accountAddress) }}
         </div>
       </div>
-      <div class="row--account">
+      <div v-if="isUnifiedAccount" class="row--account">
         <div class="address">
           {{ getShortenAddress(accountAddress) }}
         </div>
@@ -82,6 +87,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    isUnifiedAccount: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup() {
     const store = useStore();
@@ -100,5 +109,5 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@use 'src/components/header/styles/modal-account.scss';
+@use 'src/components/header/styles/select-account.scss';
 </style>

@@ -5,31 +5,30 @@
   >
     <div class="row--back">
       <button class="button--back" @click="backModal()">
-        <span class="icon--back"> &#60; </span>
-        <span> Back to wallet selection </span>
+        <astar-icon-back-with-color />
       </button>
+      <div class="row--balance-option">
+        <div class="column--balance-option">
+          <span class="text--option-label">
+            {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
+          </span>
+          <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
+          <div class="toggle--custom">
+            <q-toggle v-model="isShowBalance" color="#0085ff" />
+          </div>
+        </div>
+      </div>
     </div>
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
           <div class="border--separator--account" />
         </div>
-        <div>
+        <div class="wrapper--select-signatory">
           <select-signatory
             :selected-signatory="selectedSignatory"
             :set-selected-signatory="setSelectedSignatory"
           />
-        </div>
-        <div class="row--balance-option">
-          <div class="column--balance-option">
-            <span class="text--option-label">
-              {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
-            </span>
-            <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
-            <div class="toggle--custom">
-              <q-toggle v-model="isShowBalance" color="#0085ff" />
-            </div>
-          </div>
         </div>
         <div v-if="isLoadingPolkasafe && selectedSignatory" class="row--zero-accounts">
           <span>{{ $t('wallet.multisig.initPolkasafe') }}</span>
@@ -290,7 +289,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = (): void => {
-      const adjustment = width.value > screenSize.sm ? 520 : 390;
+      const adjustment = width.value > screenSize.sm ? 570 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 
@@ -428,7 +427,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/select-account.scss';
-@use 'src/components/common/styles/back-to-page.scss';
 
 .animate__animated.animate__fadeInRight {
   --animate-delay: 1s;
