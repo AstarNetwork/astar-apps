@@ -51,7 +51,7 @@
                 <b>{{ $t('stakingV3.availableToVote') }}</b>
               </div>
               <div>
-                <b><token-balance-native :balance="availableToVote.toString()" /></b>
+                <b><token-balance-native :balance="availableToVoteDisplay.toString()" /></b>
               </div>
             </div>
 
@@ -70,7 +70,7 @@
                 </div>
                 <div><token-balance-native :balance="totalStake.toString()" /></div>
               </div>
-              <div class="balance--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+              <div class="balance--row" :class="remainLockedToken > BigInt(0) && 'warning--text'">
                 <div>
                   <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
                 </div>
@@ -182,7 +182,7 @@ export default defineComponent({
       claimLockAndStake,
     } = useDappStaking();
     const { registeredDapps, getDapp } = useDapps();
-    const { goBack } = useDappStakingNavigation();
+    const { navigateToAssets } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
@@ -223,6 +223,13 @@ export default defineComponent({
 
     const availableToVote = computed<bigint>(
       () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
+    );
+
+    const availableToVoteDisplay = computed<bigint>(
+      () =>
+        BigInt(useableBalance.value) +
+        max(remainLockedToken.value, BigInt(0)) -
+        totalStakeAmountBigInt.value
     );
 
     const amountToUnstake = computed<bigint>(() =>
@@ -284,7 +291,7 @@ export default defineComponent({
         amountToUnstake.value
       );
 
-      goBack();
+      navigateToAssets();
     };
 
     watch(
@@ -330,6 +337,7 @@ export default defineComponent({
       dapps,
       locked,
       availableToVote,
+      availableToVoteDisplay,
       totalStake,
       totalStakeAmountBigInt,
       remainLockedToken,

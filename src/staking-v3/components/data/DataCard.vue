@@ -1,10 +1,17 @@
 <template>
-  <div class="wrapper--data">
-    <div class="card--top">
-      {{ title }}
-    </div>
-    <div class="card--bottom">
-      <slot></slot>
+  <div class="wrapper--data-card">
+    <div class="card--inner">
+      <div class="card--front">
+        <div class="card--top">
+          {{ title }}
+        </div>
+        <div class="card--bottom">
+          <slot></slot>
+        </div>
+      </div>
+      <div class="card--back">
+        <div>{{ description }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +25,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: true,
+    },
   },
   setup() {
     return {};
@@ -27,7 +38,37 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--data {
+.wrapper--data-card {
+  height: 150px;
+}
+
+.card--inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+.wrapper--data-card:hover .card--inner {
+  transform: rotateY(180deg);
+}
+
+.card--front,
+.card--back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 16px 8px;
+  @media (min-width: $sm) {
+    padding: 16px;
+  }
+}
+
+.card--front {
   border: 1px solid $navy-1;
   border-radius: 16px;
   padding: 24px;
@@ -36,7 +77,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   gap: 8px;
-  min-height: 150px;
 }
 
 .card--top {
@@ -46,15 +86,19 @@ export default defineComponent({
   align-items: flex-end;
 }
 
+.card--back {
+  background-color: $navy-1;
+  color: white;
+  transform: rotateY(180deg);
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
 .card--bottom {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
-}
-
-.body--dark {
-  .wrapper--data {
-    border-color: $gray-4;
-  }
 }
 </style>

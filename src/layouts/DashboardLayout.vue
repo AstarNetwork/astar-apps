@@ -5,6 +5,7 @@
     </template>
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
+      <claim-warning-banner :network="currentNetworkIdx" />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <slot />
@@ -15,18 +16,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watchEffect } from 'vue';
+import { defineComponent, watchEffect, computed } from 'vue';
 import { useBreakpoints, useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import { useQuasar } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
+import ClaimWarningBanner from 'src/components/header/ClaimWarningBanner.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
+    ClaimWarningBanner,
   },
   setup() {
     const store = useStore();
@@ -46,9 +49,12 @@ export default defineComponent({
     const isFetchGas = true;
     useGasPrice(isFetchGas);
 
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
+
     return {
       width,
       screenSize,
+      currentNetworkIdx,
     };
   },
 });

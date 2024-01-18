@@ -37,7 +37,7 @@
             v-if="rewardExpiresInNextPeriod(reward.period) && reward.rewards > BigInt(0)"
             class="row--attention"
           >
-            <span> {{ $t('stakingV3.claimNow') }}</span>
+            <span> {{ $t('stakingV3.claimRewardsNow') }}</span>
           </div>
         </div>
         <div>
@@ -80,11 +80,7 @@ export default defineComponent({
   },
   setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { rewardExpiresInNextPeriod } = useDappStaking();
-
-    const formatPeriod = (period: number): string => {
-      return period.toString().padStart(3, '0');
-    };
+    const { rewardExpiresInNextPeriod, formatPeriod } = useDappStaking();
 
     const unclaimedEras = computed<number>(() =>
       props.rewardsPerPeriod.reduce((acc, cur) => acc + cur.erasToReward, 0)
