@@ -1,5 +1,6 @@
+import { Balance } from '@astar-network/metamask-astar-types';
 import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32, u8 } from '@polkadot/types';
-import { AccountId32, Permill } from '@polkadot/types/interfaces';
+import { AccountId32, Permill, Perquintill } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 
 interface PalletDappStakingV3PeriodType extends Enum {
@@ -40,17 +41,6 @@ export interface PalletDappStakingV3ProtocolState extends Struct {
   readonly nextEraStart: Compact<u32>;
   readonly periodInfo: PalletDappStakingV3PeriodInfo;
   readonly maintenance: bool;
-}
-
-export interface PalletDappStakingV3InflationParams extends Struct {
-  readonly maxInflationRate: String;
-  readonly adjustableStakersPart: String;
-  readonly baseStakersPart: String;
-  readonly idealStakingRate: String;
-}
-
-export interface PalletDappStakingV3ActiveInflationConfig extends Struct {
-  readonly bonusRewardPoolPerPeriod: String;
 }
 
 export interface PalletDappStakingV3DAppInfo extends Struct {

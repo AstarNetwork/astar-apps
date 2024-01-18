@@ -12,3 +12,4 @@ export * from './IZkBridgeRepository';
 export * from './IIdentityRepository';
 export * from './INftRepository';
 export * from './IAccountUnificationRepository';
+export * from './IInflationRepository';

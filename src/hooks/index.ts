@@ -51,3 +51,4 @@ export * from './bridge/useImportToken';
 export * from './dapps-staking/useCompoundRewards';
 export * from './useTokenDistribution';
 export * from './useTokenCirculation';
+export * from './useInflation';

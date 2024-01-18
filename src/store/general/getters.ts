@@ -11,6 +11,7 @@ import {
 } from './state';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
+import { InflationConfiguration } from 'src/v2/models';
 
 export interface GeneralGetters {
   initialized(state: State): boolean;
@@ -34,6 +35,7 @@ export interface GeneralGetters {
   getGas(state: State): GasTip | undefined;
   getCurrentBlock(state: State): number;
   getUnifiedAccount(state: State): UnifiedAccount | undefined;
+  getActiveInflationConfiguration(state: State): InflationConfiguration | undefined;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -60,6 +62,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   getGas: (state: State) => state.gas,
   getCurrentBlock: (state: State) => state.currentBlock,
   getUnifiedAccount: (state: State) => state.unifiedAccount,
+  getActiveInflationConfiguration: (state: State) => state.activeInflationConfiguration,
 };
 
 export default getters;

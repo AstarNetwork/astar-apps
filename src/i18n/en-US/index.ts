@@ -826,6 +826,7 @@ export default {
     tvl: 'TVL',
     tvv: 'TVV',
     bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusPool: 'Bonus pool',
     filledSlot: 'Filled slots',
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
