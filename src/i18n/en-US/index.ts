@@ -815,10 +815,11 @@ export default {
     availableToClaim: 'Available to claim',
     alreadyClaimed: 'Already claimed',
     eras: '{era} eras',
+    days: '{day} days',
+    claimYourRewards: 'Claim your rewards',
     claimed: 'Claimed',
     period: 'Period {period}',
-    claimRewardsNow:
-      'Claim these rewards now, as they will expire at the end of the current period.',
+    claimRewardsNow: 'Claim now - this rewards will expire at the end of current period.',
     remainingEras: 'Remaining days',
     back: 'Back',
     era: 'Era',
