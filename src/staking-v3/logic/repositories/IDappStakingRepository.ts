@@ -219,4 +219,9 @@ export interface IDappStakingRepository {
   getEraLengths(): Promise<EraLengths>;
 
   getCleanupExpiredEntriesCall(): Promise<ExtrinsicPayload>;
+
+  /**
+   * Gets dApps tier assignment map.
+   */
+  getLeaderboard(): Promise<Map<number, number>>;
 }
