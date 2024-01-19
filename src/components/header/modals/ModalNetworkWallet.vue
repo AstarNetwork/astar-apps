@@ -54,6 +54,7 @@
               :select-network="selectNetwork"
               :sel-network-id="selNetworkId"
               :is-zk-evm="isZkEvm"
+              :is-animated-in="isAnimatedIn"
             />
           </div>
         </div>
@@ -148,8 +149,15 @@ export default defineComponent({
 
     const selNetworkId = ref<number>(props.networkIdx);
     const isNetwork = ref<boolean>(!props.isSelectWallet);
+    const isAnimatedIn = ref<boolean>(false);
+
+    const setIsAnimatedIn = (result: boolean): void => {
+      isAnimatedIn.value = result;
+    };
+
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
+      setIsAnimatedIn(true);
     };
 
     const store = useStore();
@@ -183,6 +191,7 @@ export default defineComponent({
       isClosing.value = false;
       emit('update:is-open', false);
       props.setModalAccountSelect(false);
+      setIsAnimatedIn(false);
     };
 
     const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
@@ -429,6 +438,7 @@ export default defineComponent({
       WalletModalOption,
       disconnectAccount,
       currentAccount,
+      isAnimatedIn,
     };
   },
 });

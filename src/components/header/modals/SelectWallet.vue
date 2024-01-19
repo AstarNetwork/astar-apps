@@ -1,7 +1,9 @@
 <template>
   <div
-    class="animate__animated animate__fadeInRight"
-    :class="isClosing && 'animate__animated animate__fadeOutLeft'"
+    :class="[
+      isAnimatedIn && 'animate__animated animate__fadeInRight',
+      isClosing && 'animate__animated animate__fadeOutLeft',
+    ]"
   >
     <div class="wrapper--modal--wallet">
       <div>
@@ -177,6 +179,10 @@ export default defineComponent({
     },
     selNetworkId: {
       type: Number,
+      required: true,
+    },
+    isAnimatedIn: {
+      type: Boolean,
       required: true,
     },
   },
