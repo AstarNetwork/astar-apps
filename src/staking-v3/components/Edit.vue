@@ -22,8 +22,17 @@
         <div class="box__bottom">
           <span>{{ $t('stakingV3.editYourInfo.text') }}</span>
         </div>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('common.comingSoon') }}</span>
+        </q-tooltip>
       </div>
-      <div class="box--link">
+
+      <a
+        href="https://docs.astar.network/docs/build/dapp-staking/for-devs/create-promotion/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="box--link"
+      >
         <div class="box__top" />
         <div class="box__middle">
           <span>{{ $t('stakingV3.addPromotion.title') }}</span>
@@ -31,7 +40,7 @@
         <div class="box__bottom">
           <span>{{ $t('stakingV3.addPromotion.text') }}</span>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </template>
