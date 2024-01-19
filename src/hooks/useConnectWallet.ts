@@ -39,7 +39,6 @@ import {
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
 
-  const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const modalPolkasafeSelect = ref<boolean>(false);
   const modalAccountUnificationSelect = ref<boolean>(false);
@@ -71,10 +70,6 @@ export const useConnectWallet = () => {
     }
   });
 
-  const setCloseModal = (): void => {
-    modalName.value = '';
-  };
-
   const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
     return;
@@ -87,12 +82,6 @@ export const useConnectWallet = () => {
   const openPolkasafeModal = (): void => {
     modalName.value = WalletModalOption.Polkasafe;
     modalPolkasafeSelect.value = true;
-    return;
-  };
-
-  const openAccountUnificationModal = (): void => {
-    modalName.value = WalletModalOption.AccountUnification;
-    modalAccountUnificationSelect.value = true;
     return;
   };
 
@@ -304,10 +293,6 @@ export const useConnectWallet = () => {
     }
   };
 
-  const changeAccount = async (): Promise<void> => {
-    modalAccountSelect.value = true;
-  };
-
   watchEffect(() => {
     initializeWalletAccount();
   });
@@ -377,7 +362,6 @@ export const useConnectWallet = () => {
   return {
     WalletModalOption,
     currentNetworkStatus,
-    modalConnectWallet,
     currentAccount,
     currentAccountName,
     modalName,
@@ -389,13 +373,10 @@ export const useConnectWallet = () => {
     isEthWallet,
     modalAccountUnificationSelect,
     openSelectModal,
-    setCloseModal,
     setWalletModal,
     disconnectAccount,
-    changeAccount,
     connectEthereumWallet,
     openPolkasafeModal,
-    openAccountUnificationModal,
     setModalAccountSelect,
     setModalPolkasafeSelect,
   };

@@ -79,9 +79,10 @@ import SelectWallet from './SelectWallet.vue';
 import SelectAccount from './SelectAccount.vue';
 import SelectMultisigAccount from './SelectMultisigAccount.vue';
 import SelectNetwork from './SelectNetwork.vue';
-import { useConnectWallet } from 'src/hooks';
+import { useAccount, useConnectWallet } from 'src/hooks';
 import { SupportWallet } from 'src/config/wallets';
 import { WalletModalOption } from 'src/config/wallets';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -104,35 +105,55 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    modalName: {
+      type: String,
+      required: true,
+    },
+    selectedWallet: {
+      type: String,
+      required: true,
+    },
+    modalAccountSelect: {
+      type: Boolean,
+      required: true,
+    },
+    modalPolkasafeSelect: {
+      type: Boolean,
+      required: true,
+    },
+    setWalletModal: {
+      type: Function,
+      required: true,
+    },
+    connectEthereumWallet: {
+      type: Function,
+      required: true,
+    },
+    openPolkasafeModal: {
+      type: Function,
+      required: true,
+    },
+    setModalAccountSelect: {
+      type: Function,
+      required: true,
+    },
+    setModalPolkasafeSelect: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
-    const {
-      // modalConnectWallet,
-      // modalAccountUnificationSelect,
-      // setCloseModal,
-      // openSelectModal,
-      // changeAccount,
-      // openAccountUnificationModal,
-      modalName,
-      currentAccount,
-      selectedWallet,
-      modalAccountSelect,
-      modalPolkasafeSelect,
-      isH160,
-      setWalletModal,
-      connectEthereumWallet,
-      disconnectAccount,
-      openPolkasafeModal,
-      setModalAccountSelect,
-      setModalPolkasafeSelect,
-    } = useConnectWallet();
+    const { currentAccount, disconnectAccount } = useAccount();
 
     const selNetworkId = ref<number>(props.networkIdx);
     const isNetwork = ref<boolean>(!props.isSelectWallet);
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
     };
+
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const isZkEvm = computed<boolean>(
       () =>
@@ -161,6 +182,7 @@ export default defineComponent({
       await wait(animationDuration);
       isClosing.value = false;
       emit('update:is-open', false);
+      props.setModalAccountSelect(false);
     };
 
     const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
@@ -403,19 +425,10 @@ export default defineComponent({
       getNetworkName,
       isZkEvm,
       isDisabled,
-      selectedWallet,
       SupportWallet,
-      modalName,
       WalletModalOption,
-      modalAccountSelect,
-      setWalletModal,
-      connectEthereumWallet,
       disconnectAccount,
       currentAccount,
-      setModalAccountSelect,
-      openPolkasafeModal,
-      setModalPolkasafeSelect,
-      modalPolkasafeSelect,
     };
   },
 });

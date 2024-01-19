@@ -28,49 +28,17 @@
       v-model:isOpen="isModalNetworkWallet"
       :network-idx="currentNetworkIdx"
       :is-select-wallet="isSelectWallet"
-    />
-    <!-- <modal-network
-      v-if="modalNetwork"
-      v-model:isOpen="modalNetwork"
-      v-model:selectNetwork="currentNetworkIdx"
-      :network-idx="currentNetworkIdx"
-    /> -->
-
-    <!-- <modal-connect-wallet
-      :is-modal-connect-wallet="
-        modalName === WalletModalOption.SelectWallet ||
-        modalName === WalletModalOption.NoExtension ||
-        modalName === WalletModalOption.OutdatedWallet
-      "
-      :is-no-extension="
-        modalName === WalletModalOption.NoExtension ||
-        modalName === WalletModalOption.OutdatedWallet
-      "
+      :modal-name="modalName"
+      :selected-wallet="selectedWallet"
+      :modal-account-select="modalAccountSelect"
+      :modal-polkasafe-select="modalPolkasafeSelect"
       :set-wallet-modal="setWalletModal"
-      :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
-      :selected-wallet="selectedWallet"
       :open-polkasafe-modal="openPolkasafeModal"
-      :open-account-unification-modal="openAccountUnificationModal"
+      :set-modal-account-select="setModalAccountSelect"
+      :set-modal-polkasafe-select="setModalPolkasafeSelect"
     />
 
-    <modal-account
-      v-if="modalAccountSelect"
-      v-model:isOpen="modalAccountSelect"
-      :open-select-modal="openSelectModal"
-      :selected-wallet="selectedWallet"
-      :connect-ethereum-wallet="connectEthereumWallet"
-      :disconnect-account="disconnectAccount"
-      :current-account="currentAccount"
-    /> -->
-    <!-- <modal-polkasafe
-      v-if="modalPolkasafeSelect"
-      v-model:isOpen="modalPolkasafeSelect"
-      :open-select-modal="openSelectModal"
-      :selected-wallet="selectedWallet"
-      :disconnect-account="disconnectAccount"
-      :current-account="currentAccount"
-    /> -->
     <modal-account-unification
       v-if="modalAccountUnificationSelect"
       v-model:isOpen="modalAccountUnificationSelect"
@@ -80,16 +48,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  ref,
-  watch,
-  onMounted,
-  onUnmounted,
-} from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -100,11 +59,7 @@ import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import MobileNav from 'src/components/header/mobile/MobileNav.vue';
-import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
-import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
-import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
 import ModalAccountUnification from 'src/components/header/modals/ModalAccountUnification.vue';
-import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import ModalNetworkWallet from 'src/components/header/modals/ModalNetworkWallet.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
@@ -120,13 +75,10 @@ export default defineComponent({
     ConnectButton,
     AccountButton,
     NetworkButton,
-    // ModalAccount,
-    // ModalConnectWallet,
     ModalNetworkWallet,
     Logo,
     HeaderComp,
     TroubleHelp,
-    // ModalPolkasafe,
     ModalAccountUnification,
     MobileNav,
     ClaimWarningBanner,
@@ -137,23 +89,20 @@ export default defineComponent({
     const isModalNetworkWallet = ref<boolean>(false);
     const isSelectWallet = ref<boolean>(false);
 
+    const { currentAccount, disconnectAccount } = useAccount();
+
     const {
-      modalConnectWallet,
       modalName,
-      currentAccount,
-      currentAccountName,
-      selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
       modalAccountUnificationSelect,
-      setCloseModal,
-      setWalletModal,
       openSelectModal,
-      changeAccount,
+      selectedWallet,
+      setWalletModal,
       connectEthereumWallet,
-      disconnectAccount,
       openPolkasafeModal,
-      openAccountUnificationModal,
+      setModalAccountSelect,
+      setModalPolkasafeSelect,
     } = useConnectWallet();
 
     const { isZkEvm } = useNetworkInfo();
@@ -173,7 +122,6 @@ export default defineComponent({
 
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed<string>(() => route.path);
@@ -221,11 +169,7 @@ export default defineComponent({
       headerName,
       currentNetworkIdx,
       WalletModalOption,
-      modalConnectWallet,
       currentAccount,
-      modalName,
-      currentAccountName,
-      selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
       width,
@@ -233,16 +177,17 @@ export default defineComponent({
       isLoading,
       modalAccountUnificationSelect,
       isSelectWallet,
+      modalName,
+      selectedWallet,
       clickAccountBtn,
       clickNetworkBtn,
-      setCloseModal,
-      setWalletModal,
       openSelectModal,
-      changeAccount,
-      connectEthereumWallet,
       disconnectAccount,
+      setWalletModal,
+      connectEthereumWallet,
       openPolkasafeModal,
-      openAccountUnificationModal,
+      setModalAccountSelect,
+      setModalPolkasafeSelect,
     };
   },
 });
