@@ -1,6 +1,22 @@
 <template>
-  <div class="banner" :class="`banner--${network}`">
-    {{ network !== 2 ? $t('warning.claimRewards') : $t('warning.underDevelopmentShibuyaWarning') }}
+  <div>
+    <a
+      v-if="network !== 2"
+      href="https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="banner"
+      :class="`banner--${network}`"
+    >
+      <span>
+        <span class="text--ledger-users">{{ $t('warning.ledgerUsers') }}</span>
+        {{ $t('warning.ledgerUsersImportantInformation') }}
+      </span>
+      <astar-icon-arrow-right />
+    </a>
+    <div v-else class="banner" :class="`banner--${network}`">
+      {{ $t('warning.underDevelopmentShibuyaWarning') }}
+    </div>
   </div>
 </template>
 
@@ -26,13 +42,15 @@ export default defineComponent({
 .banner {
   color: $gray-2;
   font-weight: 600;
-  padding: 4px 16px 8px 16px;
-  line-height: 1.25;
+  padding: 4px 8px 8px 8px;
   font-size: 12px;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
   @media (min-width: $sm) {
     font-size: 14px;
+    padding: 4px 16px 8px 16px;
   }
 
   // shibuya, zKatana, local
@@ -51,6 +69,24 @@ export default defineComponent({
   // zkEVM
   &.banner--3 {
     background: linear-gradient(90deg, #703ac2 25%, #226dff 100%);
+  }
+}
+
+a.banner {
+  transition: all 0.2s ease;
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+.text--ledger-users {
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid $gray-2;
+  margin-right: 4px;
+  @media (min-width: $sm) {
+    margin-right: 8px;
   }
 }
 </style>
