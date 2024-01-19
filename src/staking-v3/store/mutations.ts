@@ -32,6 +32,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setDappTiers(state: DappStakingState, dAppTiers: DAppTierRewards): void;
   setTiersConfiguration(state: DappStakingState, tiersConfiguration: TiersConfiguration): void;
   setEraLengths(state: DappStakingState, eraLengths: EraLengths): void;
+  setLeaderboard(state: DappStakingState, leaderboard: Map<number, number>): void;
 }
 
 const updateDapp = <T>(
@@ -98,6 +99,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setEraLengths(state, eraLengths) {
     state.eraLengths = eraLengths;
+  },
+  setLeaderboard(state, leaderboard) {
+    state.leaderboard = leaderboard;
   },
 };
 
