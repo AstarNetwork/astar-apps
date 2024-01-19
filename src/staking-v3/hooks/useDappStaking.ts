@@ -486,9 +486,13 @@ export function useDappStaking() {
 
   const getDappTiers = async (era: number): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const tiers = await stakingRepo.getDappTiers(era);
+    const [tiers, leaderboard] = await Promise.all([
+      stakingRepo.getDappTiers(era),
+      stakingRepo.getLeaderboard(),
+    ]);
 
     store.commit('stakingV3/setDappTiers', tiers);
+    store.commit('stakingV3/setLeaderboard', leaderboard);
   };
 
   const getDappTier = (dappId: number): number | undefined => {
