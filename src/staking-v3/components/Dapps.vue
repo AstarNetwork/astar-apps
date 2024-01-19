@@ -4,7 +4,7 @@
       class="container--category"
       :style="{ backgroundImage: `url(${categoryBackgroundImages[category]})` }"
     >
-      <div class="title--category">{{ category }}</div>
+      <div class="title--category">{{ categoryTitle }}</div>
     </div>
     <div class="container--dapps">
       <swiper
@@ -63,6 +63,7 @@ import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
+import { possibleCategories } from 'src/components/dapp-staking/register/components/MainCategory.vue';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -91,6 +92,14 @@ export default defineComponent({
     const { getDappTier } = useDappStaking();
     const { getDappPageUrl } = useDappStakingNavigation();
 
+    const categoryTitle = computed<string>(() => {
+      const category = possibleCategories.find(
+        (x: { label: string; value: string }) =>
+          x.value.toLowerCase() === props.category.toLowerCase()
+      );
+      return category?.label ?? '';
+    });
+
     const filteredDapps = computed<CombinedDappInfo[]>(() => {
       const dapps = registeredDapps.value.filter(
         (x) =>
@@ -108,17 +117,18 @@ export default defineComponent({
     });
 
     const categoryBackgroundImages = {
-      DeFi: require('/src/staking-v3/assets/category_pink.webp'),
-      NFT: require('/src/staking-v3/assets/category_purple.webp'),
-      Tooling: require('/src/staking-v3/assets/category_blue.webp'),
-      Utility: require('/src/staking-v3/assets/category_sky.webp'),
-      Others: require('/src/staking-v3/assets/category_green.webp'),
+      defi: require('/src/staking-v3/assets/category_pink.webp'),
+      nft: require('/src/staking-v3/assets/category_purple.webp'),
+      tooling: require('/src/staking-v3/assets/category_blue.webp'),
+      utility: require('/src/staking-v3/assets/category_sky.webp'),
+      others: require('/src/staking-v3/assets/category_green.webp'),
     };
 
     return {
       modules: [Grid],
       filteredDapps,
       categoryBackgroundImages,
+      categoryTitle,
       getDappTier,
       getDappPageUrl,
     };
