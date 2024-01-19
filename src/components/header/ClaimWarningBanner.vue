@@ -1,7 +1,7 @@
 <template>
   <div>
     <a
-      v-if="network !== 2"
+      v-if="network !== endpointKey.SHIBUYA"
       href="https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do"
       target="_blank"
       rel="noopener noreferrer"
@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   props: {
@@ -31,7 +32,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    return { endpointKey };
   },
 });
 </script>
