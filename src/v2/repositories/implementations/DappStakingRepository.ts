@@ -252,7 +252,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     if (!DappStakingRepository.isEraSubscribed) {
       DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
-      if (!api.query.hasOwnProperty('dappsStaking')) {
+      if (checkIsDappStakingV3(api)) {
         return;
       }
 
