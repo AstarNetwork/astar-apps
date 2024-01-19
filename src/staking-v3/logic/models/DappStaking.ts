@@ -131,6 +131,7 @@ export interface EraLengths {
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
   standardEraLength: number;
+  periodsPerCycle: number;
 }
 
 export interface DAppTierRewards {
@@ -139,7 +140,7 @@ export interface DAppTierRewards {
   readonly period: number;
 }
 
-interface DAppTier {
+export interface DAppTier {
   readonly dappId: number;
   readonly tierId: number | undefined;
 }

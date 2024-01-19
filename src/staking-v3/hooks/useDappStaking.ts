@@ -496,9 +496,13 @@ export function useDappStaking() {
 
   const fetchTiersConfigurationToStore = async (): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const tiersConfiguration = await stakingRepo.getTiersConfiguration();
+    const [tiersConfiguration, leaderboard] = await Promise.all([
+      stakingRepo.getTiersConfiguration(),
+      stakingRepo.getLeaderboard(),
+    ]);
 
     store.commit('stakingV3/setTiersConfiguration', tiersConfiguration);
+    store.commit('stakingV3/setLeaderboard', leaderboard);
   };
 
   const fetchEraLengthsToStore = async (): Promise<void> => {
