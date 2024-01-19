@@ -4,6 +4,7 @@ import {
   AccountLedgerChangedMessage,
   Constants,
   ContractStakeAmount,
+  DAppTier,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -277,16 +278,18 @@ export class DappStakingRepository implements IDappStakingRepository {
     const getNumber = (bytes: Bytes): number => u8aToNumber(bytes.toU8a().slice(1, 4));
     const api = await this.api.getApi();
 
-    const [erasPerBuildAndEarn, erasPerVoting, eraLength] = await Promise.all([
+    const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
       api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
       api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
       api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
+      api.rpc.state.call('DappStakingApi_periods_per_cycle', ''),
     ]);
 
     return {
       standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
       standardErasPerVotingPeriod: getNumber(erasPerVoting),
       standardEraLength: getNumber(eraLength),
+      periodsPerCycle: getNumber(periodsPerCycle),
     };
   }
 
@@ -320,14 +323,33 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
 
     const tiers = tiersWrapped.unwrap();
+    const dapps: DAppTier[] = [];
+    tiers.dapps.forEach((value, key) =>
+      dapps.push({
+        dappId: key.toNumber(),
+        tierId: value.toNumber(),
+      })
+    );
     return {
       period: tiers.period.toNumber(),
-      dapps: tiers.dapps.map((dapp) => ({
-        dappId: dapp.dappId.toNumber(),
-        tierId: dapp.tierId.unwrapOr(undefined)?.toNumber(),
-      })),
+      dapps,
       rewards: tiers.rewards.map((reward) => reward.toBigInt()),
     };
+  }
+
+  //* @inheritdoc
+  public async getLeaderboard(): Promise<Map<number, number>> {
+    const api = await this.api.getApi();
+    const tierAssignmentsBytes = await api.rpc.state.call(
+      'DappStakingApi_get_dapp_tier_assignment',
+      ''
+    );
+    const tierAssignment = api.createType('BTreeMap<u16, u8>', tierAssignmentsBytes);
+
+    const result = new Map<number, number>();
+    tierAssignment.forEach((value, key) => result.set(key.toNumber(), value.toNumber()));
+
+    return result;
   }
 
   public async getStakerInfo(
@@ -517,7 +539,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       owner: dapp.owner.toString(),
       id: dapp.id.toNumber(),
       state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
-      rewardDestination: dapp.rewardDestination.unwrapOr(undefined)?.toString(),
+      rewardDestination: dapp.rewardBeneficiary.unwrapOr(undefined)?.toString(),
     };
   }
 
