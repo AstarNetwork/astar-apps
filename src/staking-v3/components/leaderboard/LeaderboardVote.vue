@@ -15,7 +15,7 @@
               <div class="container--dapps">
                 <div v-for="(dapp, index) in dapps" :key="dapp.chain.id">
                   <div class="dapp">
-                    <div>{{ (index + 1) * (page + 1) }}</div>
+                    <div>{{ index + 1 + page * dappsPerPage }}</div>
                     <div class="dapp--button" @click="navigateDappPage(dapp.basic.address)">
                       <div class="dapp--image">
                         <img :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
@@ -75,6 +75,7 @@ export default defineComponent({
       modules: [Navigation],
       isLeaderboardEmpty,
       paginatedDapps,
+      dappsPerPage,
       navigateDappPage,
     };
   },
