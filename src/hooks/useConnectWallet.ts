@@ -110,9 +110,11 @@ export const useConnectWallet = () => {
   const loadEvmWallet = async ({
     ss58,
     currentWallet,
+    isSetupNetwork,
   }: {
     ss58?: string;
     currentWallet: SupportWallet;
+    isSetupNetwork: boolean;
   }): Promise<boolean> => {
     const setCurrentEcdsaAccount = (address: string) => {
       const ethereumAddr = checkSumEvmAddress(address);
@@ -144,7 +146,7 @@ export const useConnectWallet = () => {
 
       // Memo: Do not change the network for the Bridge page
       if (currentRouter.value.name !== 'Bridge') {
-        await setupNetwork({ network: chainId, provider });
+        isSetupNetwork && (await setupNetwork({ network: chainId, provider }));
       }
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
@@ -162,7 +164,7 @@ export const useConnectWallet = () => {
     }
   };
 
-  const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
+  const setEvmWallet = async (wallet: SupportWallet, isSetupNetwork = true): Promise<void> => {
     selectedWallet.value = wallet;
     let isEvmWalletAvailable = false;
 
@@ -185,7 +187,7 @@ export const useConnectWallet = () => {
     }
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-    await loadEvmWallet({ ss58, currentWallet: wallet });
+    await loadEvmWallet({ ss58, currentWallet: wallet, isSetupNetwork });
   };
 
   const setWallet = (wallet: SupportWallet): void => {
@@ -233,7 +235,8 @@ export const useConnectWallet = () => {
       return;
     }
     if (hasProperty(supportEvmWalletObj, wallet)) {
-      setEvmWallet(wallet);
+      // Memo: no need to switch network before the page is refreshed
+      setEvmWallet(wallet, false);
       return;
     }
   };

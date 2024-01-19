@@ -10,10 +10,10 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <template v-if="isDappStakingV3">
+        <template v-if="isDappStakingV3 && !isZkEvm">
           <your-project />
         </template>
-        <template v-if="isDappStakingV3">
+        <template v-if="isDappStakingV3 && !isZkEvm">
           <staking />
         </template>
 
@@ -203,6 +203,7 @@ export default defineComponent({
       isLoading,
       bg,
       isDappStakingV3,
+      isZkEvm,
     };
   },
 });

@@ -13,11 +13,7 @@
         </q-tooltip>
       </div>
       <template v-else>
-        <account-button
-          :account="currentAccount"
-          :class="isLoading && 'cursor--disabled'"
-          @click="clickAccountBtn"
-        />
+        <account-button :account="currentAccount" @click="clickAccountBtn" />
       </template>
       <network-button @show-network="clickNetworkBtn" />
       <trouble-help />
@@ -137,11 +133,6 @@ export default defineComponent({
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
-    // const { multisig } = useAccount();
-
-    // const stateModal = reactive<Modal>({
-    //   modalNetwork: false,
-    // });
 
     const isModalNetworkWallet = ref<boolean>(false);
     const isSelectWallet = ref<boolean>(false);

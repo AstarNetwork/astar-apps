@@ -126,10 +126,6 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
-    connectEthereumWallet: {
-      type: Function,
-      required: true,
-    },
     disconnectAccount: {
       type: Function,
       required: true,
@@ -187,7 +183,6 @@ export default defineComponent({
       () => store.getters['general/substrateAccounts']
     );
 
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
     const nativeTokenSymbol = computed<string>(() => {
@@ -202,9 +197,6 @@ export default defineComponent({
 
     const selectAccount = async (substrateAccount: string): Promise<void> => {
       await props.disconnectAccount();
-      if (checkIsEthereumWallet(props.selectedWallet)) {
-        props.connectEthereumWallet(props.selectedWallet);
-      }
       if (substrateAccount) {
         store.commit('general/setCurrentAddress', substrateAccount);
         const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
@@ -283,9 +275,9 @@ export default defineComponent({
     };
 
     watch(
-      [isLoading, isShowBalance, substrateAccountsAll],
+      [isShowBalance, substrateAccountsAll],
       async () => {
-        if (!substrateAccountsAll.value.length || isLoading.value) return;
+        if (!substrateAccountsAll.value.length) return;
         try {
           await updateAccountMap();
         } catch (error) {

@@ -25,7 +25,6 @@
             <div v-if="modalAccountSelect">
               <select-account
                 :selected-wallet="(selectedWallet as SupportWallet)"
-                :connect-ethereum-wallet="connectEthereumWallet"
                 :disconnect-account="disconnectAccount"
                 :current-account="currentAccount"
                 :set-modal-account-select="setModalAccountSelect"
@@ -54,6 +53,7 @@
               :selected-wallet="(selectedWallet as SupportWallet)"
               :select-network="selectNetwork"
               :sel-network-id="selNetworkId"
+              :is-zk-evm="isZkEvm"
             />
           </div>
         </div>
@@ -380,7 +380,9 @@ export default defineComponent({
       { immediate: true }
     );
 
-    watchEffect(() => {});
+    watchEffect(() => {
+      // console.log('modalName', modalName.value);
+    });
 
     return {
       isClosing,

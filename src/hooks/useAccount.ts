@@ -10,7 +10,7 @@ import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
@@ -220,6 +220,10 @@ export const useAccount = () => {
     if (unifiedAccount.value) {
       currentAccountName.value = unifiedAccount.value.name;
     }
+  });
+
+  watchEffect(() => {
+    console.log('currentAccount', currentAccount.value);
   });
 
   return {

@@ -57,6 +57,7 @@
           <button
             v-if="selNetworkId === endpointKey.ASTAR"
             class="box__row--wallet box--hover--active"
+            :disabled="isZkEvm"
             :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
             @click="setPolkasafeModal()"
           >
@@ -162,6 +163,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isZkEvm: {
+      type: Boolean,
+      required: true,
+    },
     selectedWallet: {
       type: String as PropType<SupportWallet>,
       required: true,
@@ -178,7 +183,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { currentNetworkIdx } = useNetworkInfo();
     const isClosing = ref<boolean>(false);
     const closeUi = async (): Promise<void> => {
       isClosing.value = true;
@@ -256,7 +261,7 @@ export default defineComponent({
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {
-      props.connectEthereumWallet(source);
+      await props.connectEthereumWallet(source);
       await props.selectNetwork();
     };
 
@@ -276,7 +281,6 @@ export default defineComponent({
       setPolkasafeModal,
       currentNetworkIdx,
       endpointKey,
-      isZkEvm,
       isAccountUnification,
       isClosing,
     };
