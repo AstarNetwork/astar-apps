@@ -7,24 +7,13 @@
   justify-content: center;
   padding-top: 24px;
   @media (min-width: $lg) {
-    padding-left: 10px;
-    padding-right: 10px;
+    // padding-left: 10px;
   }
 }
 
 .row--tab {
   margin-top: -30px;
   margin-bottom: 24px;
-}
-
-.box--networks {
-}
-
-.wrapper--ads {
-  margin-top: 32px;
-  @media (min-width: $lg) {
-    margin-top: 0px;
-  }
 }
 
 .button--action {

@@ -5,7 +5,7 @@
         <network-wallet-tab :is-network="isNetwork" :set-is-network="setIsNetwork" />
       </div>
       <div class="container--network-ads">
-        <div class="box--networks">
+        <div>
           <div v-if="isNetwork">
             <select-network
               :sel-network-id="selNetworkId"
@@ -58,9 +58,7 @@
             />
           </div>
         </div>
-        <div class="wrapper--ads">
-          <span>Welcome to Astar Network</span>
-        </div>
+        <ads />
       </div>
     </div>
   </astar-modal-drawer>
@@ -73,17 +71,17 @@ import {
 } from 'src/config/api/polkadot/connectApi';
 import { endpointKey, getNetworkName, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallet, WalletModalOption } from 'src/config/wallets';
+import { useAccount } from 'src/hooks';
 import { buildNetworkUrl } from 'src/router/utils';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch } from 'vue';
 import NetworkWalletTab from './NetworkWalletTab.vue';
-import SelectWallet from './SelectWallet.vue';
 import SelectAccount from './SelectAccount.vue';
 import SelectMultisigAccount from './SelectMultisigAccount.vue';
 import SelectNetwork from './SelectNetwork.vue';
-import { useAccount, useConnectWallet } from 'src/hooks';
-import { SupportWallet } from 'src/config/wallets';
-import { WalletModalOption } from 'src/config/wallets';
-import { useStore } from 'src/store';
+import SelectWallet from './SelectWallet.vue';
+import Ads from './Ads.vue';
 
 export default defineComponent({
   components: {
@@ -92,6 +90,7 @@ export default defineComponent({
     SelectAccount,
     SelectMultisigAccount,
     SelectNetwork,
+    Ads,
   },
   props: {
     isSelectWallet: {
@@ -145,11 +144,20 @@ export default defineComponent({
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
+    const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+    const store = useStore();
     const { currentAccount, disconnectAccount } = useAccount();
+    const isClosing = ref<boolean>(false);
+    const isAnimatedIn = ref<boolean>(false);
 
     const selNetworkId = ref<number>(props.networkIdx);
     const isNetwork = ref<boolean>(!props.isSelectWallet);
-    const isAnimatedIn = ref<boolean>(false);
+
+    const selEndpointAstar = ref<string>('');
+    const selEndpointShiden = ref<string>('');
+    const selEndpointShibuya = ref<string>('');
+    const selEndpointAstarZkevm = ref<string>('');
+    const selEndpointZkatana = ref<string>('');
 
     const setIsAnimatedIn = (result: boolean): void => {
       isAnimatedIn.value = result;
@@ -160,17 +168,15 @@ export default defineComponent({
       setIsAnimatedIn(true);
     };
 
-    const store = useStore();
+    const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-
     const isZkEvm = computed<boolean>(
       () =>
         selNetworkId.value === endpointKey.ASTAR_ZKEVM || selNetworkId.value === endpointKey.ZKATANA
     );
 
-    const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     const setInitialCustomEndpoint = (): string => {
-      const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+      const selectedEndpointStored = String(localStorage.getItem(SELECTED_ENDPOINT));
       const selectedEndpoint = JSON.parse(selectedEndpointStored);
       const networkId = Object.keys(selectedEndpoint)[0];
       const connectedCustomEndpoint = Object.values(selectedEndpoint)[0] as string;
@@ -178,7 +184,6 @@ export default defineComponent({
     };
 
     const customEndpoint = ref<string>(setInitialCustomEndpoint());
-    const isClosing = ref<boolean>(false);
 
     const setCustomEndpoint = (event: any): void => {
       customEndpoint.value = event.target.value;
@@ -193,8 +198,6 @@ export default defineComponent({
       props.setModalAccountSelect(false);
       setIsAnimatedIn(false);
     };
-
-    const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
     const getSelectedNetwork = (networkIdx: number): string => {
       switch (networkIdx) {
@@ -214,9 +217,12 @@ export default defineComponent({
       }
     };
 
-    const getNewEndpoint = () => {
+    const getNewEndpoint = (): {
+      isEndpointChange: boolean;
+      newEndpoint: string;
+    } => {
       const networkIdxRef = selNetworkId.value;
-      const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
+      const selectedEndpointStored = String(localStorage.getItem(SELECTED_ENDPOINT));
       const selectedEndpoint = JSON.parse(selectedEndpointStored);
       const currentEndpoint = Object.values(selectedEndpoint)[0];
 
@@ -253,12 +259,6 @@ export default defineComponent({
     const setInitialSelEndpoint = (): string => {
       return JSON.parse(localStorage.getItem(SELECTED_ENDPOINT) || '{}')[props.networkIdx] || '';
     };
-
-    const selEndpointAstar = ref<string>('');
-    const selEndpointShiden = ref<string>('');
-    const selEndpointShibuya = ref<string>('');
-    const selEndpointAstarZkevm = ref<string>('');
-    const selEndpointZkatana = ref<string>('');
 
     const isDisabled = computed<boolean>(() => {
       const { isEndpointChange } = getNewEndpoint();
@@ -309,7 +309,7 @@ export default defineComponent({
         : selEndpointZkatana.value === endpoint;
     };
 
-    const setSelNetwork = (networkId: number) => {
+    const setSelNetwork = (networkId: number): void => {
       selNetworkId.value = networkId;
     };
 
@@ -358,7 +358,7 @@ export default defineComponent({
       }
     };
 
-    const setupInitialEndpointOption = (networkIdx: number) => {
+    const setupInitialEndpointOption = (networkIdx: number): void => {
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.SHIDEN);
@@ -411,34 +411,30 @@ export default defineComponent({
       { immediate: true }
     );
 
-    watchEffect(() => {
-      // console.log('modalName', modalName.value);
-    });
-
     return {
       isClosing,
-      closeModal,
       isNetwork,
-      setIsNetwork,
-      setCustomEndpoint,
       selNetworkId,
-      setSelNetwork,
-      checkIsCheckedEndpoint,
       customEndpoint,
-      selectNetwork,
-      setSelEndpoint,
       providerEndpoints,
       endpointKey,
       isSelectLightClient,
       isLightClientExtension,
-      getNetworkName,
       isZkEvm,
       isDisabled,
       SupportWallet,
       WalletModalOption,
-      disconnectAccount,
       currentAccount,
       isAnimatedIn,
+      closeModal,
+      setIsNetwork,
+      setCustomEndpoint,
+      setSelNetwork,
+      checkIsCheckedEndpoint,
+      selectNetwork,
+      setSelEndpoint,
+      disconnectAccount,
+      getNetworkName,
     };
   },
 });

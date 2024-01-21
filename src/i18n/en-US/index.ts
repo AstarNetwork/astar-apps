@@ -166,6 +166,10 @@ export default {
     otherNetworks: 'Other networks',
     selectWallet: 'Select Wallet',
     changeNetwork: 'Change Network',
+    welcomeCard: {
+      title: 'Welcome to {network} Network',
+      text: 'Select a Network and Connect Your Wallet!',
+    },
   },
   wallet: {
     connectWallet: 'Connect Wallet',
