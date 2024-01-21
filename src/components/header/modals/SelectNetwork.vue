@@ -69,7 +69,7 @@
           <span class="text--network">{{ $t('drawer.zkTestnet') }}</span>
         </button>
       </div>
-      <div class="container--advanced">
+      <div v-if="!isZkEvm" class="container--advanced">
         <div class="row--title-advanced">
           <span class="text--network">{{ $t('drawer.advanced') }}</span>
           <button
