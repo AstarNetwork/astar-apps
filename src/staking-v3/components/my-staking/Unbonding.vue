@@ -94,7 +94,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { ledger, eraLengths, withdraw, relock } = useDappStaking();
-
     const chunks = computed(
       () =>
         ledger.value?.unlocking.map((chunk) => {
@@ -105,7 +104,6 @@ export default defineComponent({
           };
         }) ?? []
     );
-
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
     const canWithdraw = computed(() => chunks.value.some((chunk) => chunk.remainingBlocks === 0));
