@@ -8,7 +8,6 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';
 import { RewardDestination } from 'src/v2/models';
-import { useDappStaking } from 'src/staking-v3';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -44,11 +43,6 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {
   const api = await getApi();
-  const { isDappStakingV3 } = useDappStaking();
-  if (isDappStakingV3.value) {
-    return BigInt(0);
-  }
-
   const era = await api.query.dappsStaking.currentEra();
   const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
     getAddress(address),
