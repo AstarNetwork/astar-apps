@@ -28,7 +28,7 @@
       </div>
 
       <a
-        href="https://docs.astar.network/docs/build/dapp-staking/for-devs/create-promotion/"
+        href="https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/"
         target="_blank"
         rel="noopener noreferrer"
         class="box--link"
