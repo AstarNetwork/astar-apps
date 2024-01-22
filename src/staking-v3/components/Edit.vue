@@ -4,7 +4,6 @@
       <span> {{ $t('stakingV3.edit') }} </span>
     </div>
     <div class="box--links">
-      <!-- Todo: add links -->
       <router-link :to="getRegisterPageUrl()" class="box--link">
         <div class="box__top" />
         <div class="box__middle">
@@ -26,7 +25,6 @@
           <span class="text--tooltip">{{ $t('common.comingSoon') }}</span>
         </q-tooltip>
       </div>
-
       <a
         href="https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/"
         target="_blank"
