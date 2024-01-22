@@ -434,6 +434,7 @@ export function useDappStaking() {
     const unstakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
     const dappInfo = getStakerInfo(dappAddress);
     const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
+    const stakeInfo = getStakerInfo(dappAddress);
 
     if (amount <= 0) {
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
@@ -451,12 +452,27 @@ export function useDappStaking() {
     ) {
       return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
     } else if (constants.value && constants.value.minStakeAmount > stakedAmount - unstakeAmount) {
+      // Handle unstaking all tokens.
       return [
         true,
         t('stakingV3.willUnstakeAll', {
           amount: constants.value.minStakeAmountToken,
         }),
       ];
+    } else if (
+      stakeInfo?.loyalStaker &&
+      protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
+      stakeInfo.staked.totalStake - unstakeAmount < stakeInfo.staked.voting
+    ) {
+      // Handle possibility to lose bonus rewards.
+      const message =
+        stakeInfo.staked.buildAndEarn > BigInt(0)
+          ? t('stakingV3.loyalStakerWarningAmount', {
+              amount: ethers.utils.formatEther(stakeInfo.staked.buildAndEarn),
+            })
+          : t('stakingV3.loyalStakerWarning');
+
+      return [true, message];
     }
 
     return [true, ''];
@@ -470,9 +486,13 @@ export function useDappStaking() {
 
   const getDappTiers = async (era: number): Promise<void> => {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const tiers = await stakingRepo.getDappTiers(era);
+    const [tiers, leaderboard] = await Promise.all([
+      stakingRepo.getDappTiers(era),
+      stakingRepo.getLeaderboard(),
+    ]);
 
     store.commit('stakingV3/setDappTiers', tiers);
+    store.commit('stakingV3/setLeaderboard', leaderboard);
   };
 
   const getDappTier = (dappId: number): number | undefined => {
