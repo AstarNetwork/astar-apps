@@ -13,6 +13,7 @@ import { Symbols } from 'src/v2/symbols';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from '../useAccount';
+import { useDappStaking } from 'src/staking-v3';
 
 const eventWithdrawal = 'SentWithdrawalTransaction';
 
@@ -28,6 +29,7 @@ export function useUnbonding() {
   const canWithdraw = ref<boolean>(false);
   const totalToWithdraw = ref<BN>(new BN(0));
   const { canUnbondWithdraw } = useUnbondWithdraw($api);
+  const { isDappStakingV3 } = useDappStaking();
 
   const withdraw = async (): Promise<void> => {
     try {
@@ -61,6 +63,10 @@ export function useUnbonding() {
   };
 
   const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
+    if (isDappStakingV3.value) {
+      return undefined;
+    }
+
     const unsub = (await $api?.query.dappsStaking.currentEra(async (era: u32) => {
       await getChunks(era);
     })) as VoidFn | undefined;
