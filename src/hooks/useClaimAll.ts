@@ -60,9 +60,9 @@ export function useClaimAll() {
   });
 
   const updateClaimEras = async (): Promise<void> => {
-    // if (isDappStakingV3.value) {
-    //   return;
-    // }
+    if (isDappStakingV3.value) {
+      return;
+    }
 
     try {
       isLoading.value = true;
