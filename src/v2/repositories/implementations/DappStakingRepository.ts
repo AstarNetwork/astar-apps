@@ -350,7 +350,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async getCurrentEra(): Promise<u32> {
     const api = await this.api.getApi();
 
-    return await api.query.dappsStaking.currentEra<u32>();
+    return (await api.query.dappsStaking?.currentEra<u32>()) ?? 0;
   }
 
   public async getNextEraEta(network: string): Promise<number> {
