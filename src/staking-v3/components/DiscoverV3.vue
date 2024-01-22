@@ -23,11 +23,12 @@
             />
           </div>
           <div v-if="displayIndex === 0" class="dapps">
-            <dapps category="DeFi" :search="searchText" />
-            <dapps category="NFT" :search="searchText" />
-            <dapps category="Tooling" :search="searchText" />
-            <dapps category="Utility" :search="searchText" />
-            <dapps category="Others" :search="searchText" />
+            <dapps category="defi" :search="searchText" />
+            <dapps category="nft" :search="searchText" />
+            <dapps category="tooling" :search="searchText" />
+            <dapps category="utility" :search="searchText" />
+            <dapps category="others" :search="searchText" />
+            <dapps category="unstoppable-grants" :search="searchText" />
           </div>
           <data-list v-if="displayIndex === 1" />
         </div>

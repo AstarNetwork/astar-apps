@@ -7,6 +7,7 @@ import { EraInfo, EraLengths, IDappStakingRepository, InflationParam } from '../
 import { useDappStaking } from './useDappStaking';
 import { u128 } from '@polkadot/types';
 import { useNetworkInfo } from 'src/hooks';
+import { IInflationRepository } from 'src/v2/repositories';
 
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
@@ -117,12 +118,14 @@ export const useAprV3 = () => {
         return { stakerApr: 0, bonusApr: 0 };
       }
 
-      const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-      const [inflationParams, bonusRewardsPoolPerPeriod, totalIssuanceRaw] = await Promise.all([
-        stakingRepo.getInflationParams(),
-        stakingRepo.getBonusRewardPoolPerPeriod(),
+      const inflationRepo = container.get<IInflationRepository>(Symbols.InflationRepository);
+      const [inflationParams, inflationConfiguration, totalIssuanceRaw] = await Promise.all([
+        inflationRepo.getInflationParams(),
+        inflationRepo.getInflationConfiguration(),
         apiRef.query.balances.totalIssuance(),
       ]);
+
+      const bonusRewardsPoolPerPeriod = inflationConfiguration.bonusRewardPoolPerPeriod.toString();
 
       const stakerApr = getStakerApr({
         totalIssuance: totalIssuanceRaw,
