@@ -108,7 +108,7 @@ export function useUnbonding() {
     () => [unlockingChunksCount.value, senderSs58Account.value],
     async (chunks) => {
       // console.log('chunks count changed');
-      const era = await $api?.query.dappsStaking.currentEra<u32>();
+      const era = await $api?.query.dappsStaking?.currentEra<u32>();
       if (era) {
         await getChunks(era);
       }
