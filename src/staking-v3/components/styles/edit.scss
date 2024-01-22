@@ -35,9 +35,10 @@
   }
 }
 
-a.box--link{
+a.box--link {
+  transition: all 0.2s ease;
   &:hover {
-    background-color: $gray-1;
+    border-color: $astar-blue;
   }
 }
 
