@@ -819,7 +819,11 @@ export default {
     period: 'Period {period}',
     claimRewardsNow:
       'Claim these rewards now, as they will expire at the end of the current period.',
-    remainingEras: 'Remaining days',
+    remainingDays: 'Remaining days',
+    whatIsRemainingDays: 'What is remaining Days?',
+    yourTokensAreBeingUnbonded: 'Your tokens are being unbonded. Withdrawal can be made in about.',
+    blocks: 'blocks',
+    days: 'days',
     back: 'Back',
     era: 'Era',
     numberOfDapps: 'Number of dApps',

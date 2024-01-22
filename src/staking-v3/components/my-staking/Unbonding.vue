@@ -3,7 +3,7 @@
     <div class="row--header">
       <div class="column column--index">{{ $t('stakingV3.index') }}</div>
       <div class="column column--amount">{{ $t('stakingV3.unbondingAmount') }}</div>
-      <div class="column column--remaining-days">{{ $t('stakingV3.remainingEras') }}</div>
+      <div class="column column--remaining-days">{{ $t('stakingV3.remainingDays') }}</div>
     </div>
     <div v-for="(chunk, index) in chunks" :key="index" class="row">
       <div class="column column--index">{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
@@ -12,7 +12,24 @@
       </div>
       <div class="column column--remaining-days">
         <span v-if="chunk.remainingBlocks > 0" class="text--remaining-days">
-          {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
+          <!-- TODO: add logic -->
+          <span @click="console.log('show balloon')">
+            {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
+          </span>
+          <balloon
+            class="balloon--unbondng"
+            direction="right"
+            :is-balloon="true"
+            :is-balloon-closing="false"
+            :handle-close-balloon="closeBalloon"
+            :title="$t('stakingV3.whatIsRemainingDays')"
+            :text="$t('stakingV3.yourTokensAreBeingUnbonded')"
+          >
+            <span class="balloon--unbondng__info">
+              {{ getRemainingEras(chunk.remainingBlocks) }} {{ $t('stakingV3.days') }},
+              {{ chunk.remainingBlocks }} {{ $t('stakingV3.blocks') }}
+            </span>
+          </balloon>
         </span>
         <span v-else class="icon--check">
           <astar-icon-check />
@@ -67,14 +84,17 @@ import { defineComponent, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useStore } from 'src/store';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import Balloon from 'src/components/common/Balloon.vue';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    Balloon,
   },
   setup() {
     const store = useStore();
     const { ledger, eraLengths, withdraw, relock } = useDappStaking();
+
     const chunks = computed(
       () =>
         ledger.value?.unlocking.map((chunk) => {
@@ -85,6 +105,7 @@ export default defineComponent({
           };
         }) ?? []
     );
+
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
     const canWithdraw = computed(() => chunks.value.some((chunk) => chunk.remainingBlocks === 0));
@@ -111,6 +132,10 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
+    const closeBalloon = () => {
+      // isLockedBalloon.value = false;
+    };
+
     return {
       chunks,
       withdraw,
@@ -123,6 +148,7 @@ export default defineComponent({
       nativeTokenSymbol,
       totalToWithdraw,
       totalToRelock,
+      closeBalloon,
     };
   },
 });
@@ -133,5 +159,34 @@ export default defineComponent({
 
 .row--action {
   background-color: white;
+}
+
+.column--remaining-days {
+  display: flex;
+  align-items: center;
+}
+.text--remaining-days {
+  position: relative;
+}
+.balloon--unbondng {
+  text-align: left;
+  width: 250px;
+  top: -81px;
+  right: auto;
+  left: -270px;
+  @media (min-width: $sm) {
+    width: 280px;
+    top: -58px;
+    right: auto;
+    left: -300px;
+  }
+}
+
+.balloon--unbondng__info {
+  display: block;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
 }
 </style>
