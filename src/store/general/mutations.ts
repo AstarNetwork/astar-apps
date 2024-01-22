@@ -11,6 +11,7 @@ import {
   SubstrateAccount,
   UnifiedAccount,
 } from './state';
+import { InflationConfiguration } from 'src/v2/models';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
@@ -31,6 +32,7 @@ export interface GeneralMutations<S = State> {
   setGas(state: S, gas: GasTip): void;
   setCurrentBlock(state: S, blockNumber: number): void;
   setUnifiedAccount(state: S, unifiedAccount: UnifiedAccount): void;
+  setActiveInflationConfiguration(state: S, inflationConfiguration: InflationConfiguration): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -110,6 +112,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setUnifiedAccount(state, unifiedAccount) {
     state.unifiedAccount = unifiedAccount;
+  },
+  setActiveInflationConfiguration(state, inflationConfiguration) {
+    state.activeInflationConfiguration = inflationConfiguration;
   },
 };
 

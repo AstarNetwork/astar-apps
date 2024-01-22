@@ -7,3 +7,4 @@ export * from './XcmModels';
 export * from './DappsStaking';
 export * from './Identity';
 export * from './Nft';
+export * from './Inflation';

@@ -1,11 +1,16 @@
 import { watch, ref, computed } from 'vue';
 import { CombinedDappInfo, PeriodType, useDappStaking, useDapps } from '..';
+import { useStore } from 'src/store';
 
 export function useLeaderboard() {
+  const store = useStore();
   const { registeredDapps } = useDapps();
   const { dAppTiers, protocolState, eraLengths } = useDappStaking();
   // Map key is a dApp tier.
   const leaderBoards = ref<Map<number, CombinedDappInfo[]>>(new Map());
+  const leaderboard = computed<Map<number, number>>(
+    () => store.getters['stakingV3/getLeaderboard']
+  );
 
   // Leaderboard is empty if we are in the voting period or if we are in the first era of the build and earn period.
   const isLeaderboardEmpty = computed<boolean>(
@@ -44,7 +49,7 @@ export function useLeaderboard() {
     ]);
 
     sortedDapps.value.forEach((dapp) => {
-      const tier = dAppTiers.value.dapps.find((x) => x.dappId === dapp.chain.id)?.tierId;
+      const tier = leaderboard.value.get(dapp.chain.id);
       tier !== undefined && leaderBoards.value.get(tier + 1)?.push(dapp);
     });
   };

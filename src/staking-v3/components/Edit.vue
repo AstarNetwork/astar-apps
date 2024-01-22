@@ -5,7 +5,7 @@
     </div>
     <div class="box--links">
       <!-- Todo: add links -->
-      <div class="box--link">
+      <router-link :to="getRegisterPageUrl()" class="box--link">
         <div class="box__top" />
         <div class="box__middle">
           <span>{{ $t('stakingV3.editProjectPage.title') }}</span>
@@ -13,7 +13,7 @@
         <div class="box__bottom">
           <span>{{ $t('stakingV3.editProjectPage.text') }}</span>
         </div>
-      </div>
+      </router-link>
       <div class="box--link">
         <div class="box__top" />
         <div class="box__middle">
@@ -47,11 +47,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useDappStakingNavigation } from '../hooks';
 
 export default defineComponent({
   components: {},
   setup() {
-    return {};
+    const { getRegisterPageUrl } = useDappStakingNavigation();
+
+    return { getRegisterPageUrl };
   },
 });
 </script>

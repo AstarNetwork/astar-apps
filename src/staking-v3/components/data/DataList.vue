@@ -15,6 +15,20 @@
     <data-card :title="$t('stakingV3.tvl')" description="description">
       <format-balance :balance="tvl.toString() ?? ''" />
     </data-card>
+    <data-card :title="`${$t('stakingV3.tvl')} %`" description="description">
+      {{ $n(tvlPercentage) }} %
+    </data-card>
+    <data-card :title="`${$t('stakingV3.tvv')} %`" description="description">
+      {{ $n(totalVolumeOfVotesPercentage) }} %
+    </data-card>
+    <data-card :title="$t('stakingV3.bonusEligibleTokens')" description="description">
+      <format-balance :balance="bonusEligibleTokens.toString() ?? ''" />
+    </data-card>
+    <data-card :title="$t('stakingV3.bonusPool')" description="description">
+      <format-balance
+        :balance="activeInflationConfiguration.bonusRewardPoolPerPeriod.toString() ?? ''"
+      />
+    </data-card>
     <data-card :title="$t('stakingV3.unbonding')" description="description">
       <format-balance :balance="unlocking.toString() ?? ''" />
     </data-card>
@@ -32,8 +46,10 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { useDataCalculations } from 'src/staking-v3/hooks';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
+import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 
 export default defineComponent({
@@ -45,6 +61,9 @@ export default defineComponent({
     const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
+    const { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens } =
+      useDataCalculations();
+    const { activeInflationConfiguration } = useInflation();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
     const tvl = computed<string>(() => (currentEraInfo.value?.totalLocked ?? BigInt(0)).toString());
@@ -66,6 +85,10 @@ export default defineComponent({
       dAppTiers,
       unfilledSlots,
       tiersConfiguration,
+      tvlPercentage,
+      totalVolumeOfVotesPercentage,
+      bonusEligibleTokens,
+      activeInflationConfiguration,
     };
   },
 });
