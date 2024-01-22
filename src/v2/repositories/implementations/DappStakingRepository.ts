@@ -252,6 +252,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     if (!DappStakingRepository.isEraSubscribed) {
       DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
+      if (checkIsDappStakingV3(api)) {
+        return;
+      }
+
       await api.query.dappsStaking.currentEra((era: u32) => {
         // For some reason subscription is triggered for every produced block,
         // so that's why logic below.

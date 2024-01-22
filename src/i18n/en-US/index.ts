@@ -824,6 +824,9 @@ export default {
     era: 'Era',
     numberOfDapps: 'Number of dApps',
     tvl: 'TVL',
+    tvv: 'TVV',
+    bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusPool: 'Bonus pool',
     filledSlot: 'Filled slots',
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
@@ -849,6 +852,10 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    loyalStakerWarningAmount:
+      'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
+    loyalStakerWarning:
+      'You will loose eligibility for bonus reward at the end of current period if you unstake tokens now.',
   },
   bridge: {
     bridge: 'Bridge',

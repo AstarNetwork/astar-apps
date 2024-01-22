@@ -7,7 +7,8 @@
           <span class="text--title">{{ $t('common.staking') }}</span>
         </div>
         <div class="total--rewards">
-          <token-balance-native :balance="totalStake?.toString() ?? '0'" />
+          <span class="locked">{{ $t('stakingV3.lockedBalance') }}:</span>
+          <token-balance-native :balance="ledger?.locked.toString() ?? '0'" />
         </div>
       </div>
 
@@ -53,7 +54,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { ledger, totalStakerRewards, stakerInfo, totalStake } = useDappStaking();
+    const { ledger, totalStakerRewards, stakerInfo } = useDappStaking();
     const currentTabIndex = ref<number>(0);
 
     const tabs = computed<TabDefinition[]>(() => [
@@ -62,7 +63,7 @@ export default defineComponent({
       { title: t('stakingV3.unbonding'), visible: !!ledger.value?.unlocking.length },
     ]);
 
-    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalStake };
+    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, ledger };
   },
 });
 </script>
@@ -124,6 +125,11 @@ export default defineComponent({
   @media (min-width: $lg) {
     font-size: 14px;
   }
+}
+
+.locked {
+  font-weight: 400;
+  margin-right: 8px;
 }
 
 .body--dark {

@@ -68,6 +68,7 @@ import {
 } from './staking-v3';
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
+import { useInflation } from 'src/hooks/useInflation';
 
 export default defineComponent({
   name: 'App',
@@ -94,6 +95,7 @@ export default defineComponent({
       isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
+    const { fetchActiveConfigurationToStore } = useInflation();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -166,6 +168,7 @@ export default defineComponent({
           fetchStakeAmountsToStore(),
           fetchStakerInfoToStore(),
           fetchEraLengthsToStore(),
+          fetchActiveConfigurationToStore(),
         ]);
       }
     });

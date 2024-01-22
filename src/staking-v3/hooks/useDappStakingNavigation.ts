@@ -30,9 +30,10 @@ export function useDappStakingNavigation() {
 
   const goBack = () => router.go(-1);
 
-  const navigateOwnerPage = (address: string): string => {
-    return networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
-  };
+  const navigateOwnerPage = (address: string): string =>
+    networkParam + Path.DappStaking + Path.Owner + `?dapp=${address}`;
+
+  const getRegisterPageUrl = (): string => networkParam + Path.DappStaking + Path.Register;
 
   const navigateToAssets = (): void => {
     const base = networkParam + Path.Assets + '#staking';
@@ -47,6 +48,7 @@ export function useDappStakingNavigation() {
     navigateOwnerPage,
     getDappPageUrl,
     goBack,
+    getRegisterPageUrl,
     navigateToAssets,
   };
 }
