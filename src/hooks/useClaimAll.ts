@@ -13,6 +13,7 @@ import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useDappStaking } from 'src/staking-v3';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
 const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000'); //Memo: 6 eras
@@ -34,6 +35,7 @@ export function useClaimAll() {
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderSs58Account);
   const { isLedgerNanoS } = useLedger();
+  const { isDappStakingV3 } = useDappStaking();
 
   const maxBatchWeight = computed<BN>(() => {
     if (isLedger.value) {
@@ -58,6 +60,10 @@ export function useClaimAll() {
   });
 
   const updateClaimEras = async (): Promise<void> => {
+    // if (isDappStakingV3.value) {
+    //   return;
+    // }
+
     try {
       isLoading.value = true;
       const api = $api;
