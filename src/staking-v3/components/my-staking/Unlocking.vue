@@ -2,7 +2,7 @@
   <div class="table--wrapper">
     <div class="row--header">
       <div class="column column--index">{{ $t('stakingV3.index') }}</div>
-      <div class="column column--amount">{{ $t('stakingV3.unbondingAmount') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.unlockingAmount') }}</div>
       <div class="column column--remaining-days">{{ $t('stakingV3.remainingDays') }}</div>
     </div>
     <div v-for="(chunk, index) in chunks" :key="index" class="row">
@@ -11,12 +11,11 @@
         <token-balance-native :balance="chunk.amount.toString()" />
       </div>
       <div class="column column--remaining-days">
-        <span v-if="chunk.remainingBlocks > 0">
-          <remaining-days
-            :remaining-blocks="chunk.remainingBlocks"
-            :remaining-eras="getRemainingEras(chunk.remainingBlocks)"
-          />
-        </span>
+        <remaining-days
+          v-if="chunk.remainingBlocks > 0"
+          :remaining-blocks="chunk.remainingBlocks"
+          :remaining-eras="getRemainingEras(chunk.remainingBlocks)"
+        />
         <span v-else class="icon--check">
           <astar-icon-check />
         </span>
