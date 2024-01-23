@@ -7,27 +7,26 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
-import { Null } from '@polkadot/types';
 
 export default defineComponent({
   components: {},
   props: {
     nativeSection: {
-      type: HTMLElement || Null,
+      type: HTMLElement,
       required: true,
     },
     stakingSection: {
-      type: HTMLElement || Null,
+      type: HTMLElement,
       required: true,
     },
     projectSection: {
-      type: HTMLElement || Null,
+      type: HTMLElement,
       required: true,
     },
     assetsSection: {
-      type: HTMLElement || Null,
+      type: HTMLElement,
       required: true,
     },
   },
