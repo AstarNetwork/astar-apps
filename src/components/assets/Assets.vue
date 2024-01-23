@@ -11,6 +11,7 @@
         />
 
         <anchor-links
+          v-if="isDappStakingV3"
           :native-section="nativeSection"
           :staking-section="stakingSection"
           :project-section="projectSection"
