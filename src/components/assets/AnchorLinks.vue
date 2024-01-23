@@ -2,13 +2,16 @@
   <div class="wrapper--anchor-links">
     <div class="item" @click="scrollTo(nativeSection)">{{ nativeTokenSymbol }}</div>
     <div class="item" @click="scrollTo(stakingSection)">{{ $t('common.staking') }}</div>
-    <div class="item" @click="scrollTo(projectSection)">{{ $t('assets.project') }}</div>
+    <div v-if="ownDapps.length > 0" class="item" @click="scrollTo(projectSection)">
+      {{ $t('assets.project') }}
+    </div>
     <div class="item" @click="scrollTo(assetsSection)">{{ $t('assets.assets') }}</div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
+import { defineComponent, computed } from 'vue';
+import { useNetworkInfo, useAccount } from 'src/hooks';
+import { CombinedDappInfo, useDapps } from 'src/staking-v3';
 
 export default defineComponent({
   components: {},
@@ -37,7 +40,14 @@ export default defineComponent({
       section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    return { nativeTokenSymbol, scrollTo };
+    const { currentAccount } = useAccount();
+    const { allDapps } = useDapps();
+    const ownDapps = computed<CombinedDappInfo[]>(() => {
+      if (!allDapps.value) return [];
+      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
+    });
+
+    return { nativeTokenSymbol, ownDapps, scrollTo };
   },
 });
 </script>
