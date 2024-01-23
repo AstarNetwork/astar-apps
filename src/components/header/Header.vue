@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted, watchEffect } from 'vue';
 import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -66,6 +66,7 @@ import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { Symbols } from 'src/v2/symbols';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   components: {
@@ -82,10 +83,10 @@ export default defineComponent({
   setup() {
     const { width, screenSize } = useBreakpoints();
 
+    const { currentAccount, disconnectAccount } = useAccount();
+    const { currentNetworkName } = useNetworkInfo();
     const isModalNetworkWallet = ref<boolean>(false);
     const isSelectWallet = ref<boolean>(false);
-
-    const { currentAccount, disconnectAccount } = useAccount();
 
     const {
       modalName,
@@ -114,6 +115,13 @@ export default defineComponent({
       modalName.value = '';
       modalAccountSelect.value = false;
       modalPolkasafeSelect.value = false;
+    };
+
+    // Memo: open the network modal if there is no wallet address stored in the browser
+    const initIsModalNetworkWallet = () => {
+      const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
+      if (!currentNetworkName.value || selectedAddress !== 'null') return;
+      isModalNetworkWallet.value = true;
     };
 
     const store = useStore();
@@ -159,6 +167,8 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    watch([currentNetworkName], initIsModalNetworkWallet, { immediate: true });
 
     return {
       isModalNetworkWallet,
