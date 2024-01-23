@@ -487,6 +487,7 @@
   .column--balance {
     gap: 4px;
     width: 50%;
+    position: relative;
     @media (min-width: $sm) {
       gap: 8px;
     }
@@ -533,6 +534,7 @@
   justify-content: center;
   border-radius: 9999px;
   background-color: $astar-blue;
+  margin: auto;
   @media (min-width: $sm) {
     background-color: transparent;
     color: $astar-blue;
@@ -556,6 +558,10 @@
   }
 }
 
+.row--locked-tokens {
+  margin-bottom: 16px;
+}
+
 .row--locked-tokens,
 .row--evm-deposit {
   background-color: $gray-1;
@@ -568,6 +574,14 @@
   .row--evm-deposit {
     background-color: $navy-3;
   }
+}
+
+.row--vesting-note {
+  white-space: nowrap;
+  position: absolute;
+  top: 30px;
+  width: 50%;
+  color: $gray-3;
 }
 
 .row--locked-tokens,

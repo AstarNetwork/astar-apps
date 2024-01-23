@@ -1,5 +1,6 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useDappStaking } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { computed, watch } from 'vue';
 
@@ -8,6 +9,7 @@ export function useDispatchGetDapps() {
   const { isZkEvm, networkNameSubstrate } = useNetworkInfo();
   const { senderSs58Account } = useAccount();
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const { isDappStakingV3 } = useDappStaking();
 
   // Memo: invoke this function whenever the users haven't connect to wallets
   const getDappsForBrowser = async (): Promise<void> => {
@@ -30,6 +32,10 @@ export function useDispatchGetDapps() {
   };
 
   const getDapps = async (): Promise<void> => {
+    if (isDappStakingV3.value) {
+      return;
+    }
+
     const isConnectedWallet = networkNameSubstrate.value && senderSs58Account.value;
     if (isConnectedWallet && !isZkEvm.value) {
       const address = !senderSs58Account.value ? '' : senderSs58Account.value;

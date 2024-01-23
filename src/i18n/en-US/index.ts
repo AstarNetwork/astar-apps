@@ -71,6 +71,9 @@ export default {
       'DApp Staking V3 is coming early 2024! Make sure to claim your rewards and stay tuned for the release date.',
     underDevelopmentShibuyaWarning:
       'dApp Staking V3 is in beta. We are adding fixes and improves everyday to get ready for the launch.',
+    ledgerUsers: 'Ledger Users',
+    ledgerUsersImportantInformation:
+      'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -222,18 +225,18 @@ export default {
       selectWallet: 'Select a wallet',
       notHaveAstarNative: '🥲 I DON’T HAVE an Astar Native account',
       withoutUnifying:
-        'You can receive full benefit while you are connecting with EVM account without unifying. So nothing to worry if you don’t own a Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
+        'You can receive full benefits while you are connecting with an EVM account without unifying. So nothing to worry about if you don’t own an Astar Native account. However there might be a feature that the unified account can benefit and you could always create an account anytime.',
       howToCreate: 'How to create a Astar Native account',
       findSubstrateWallets:
         'You could also find Substrate based wallets which might be friendlier. ',
       checkNativeWallets: 'Check our Native wallets.',
       haveStakingBalance:
-        'You have some Staking balance. Those staked token will not be merged to the unified account. Please unstake first.',
+        'You have some Staking balance. Those staked tokens will not be merged to the unified account. Please unstake first.',
       unifiedAccountName: 'Unified Account Name',
       accountIcon: 'Account icon',
-      balanceTransferred: 'Your balance in the EVM account are going to be transferred.',
+      balanceTransferred: 'Your balance in the EVM account is going to be transferred.',
       readyToUnify:
-        'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirm.',
+        'Now xcTokens are sent and you are ready to unify both accounts! Please check below before confirming.',
       congrats: 'Congrats!!\nYour account is unified!\n\nNo need EVM deposit anymore!',
       onlyShibuya: 'This feature is only available for Shibuya testnet.',
       userTutorials: 'Documentation and tutorials',
@@ -278,7 +281,7 @@ export default {
     add: 'Add',
     unbond: 'Unbond',
     rebondGuide:
-      'Once re-bond your funds goes back to staking. You will need 10era to unstake again.',
+      'Once re-bond your funds go back to staking. You will need 10era to unstake again.',
     rebondTitle: 'The amount you wish to rebond',
     withdrawGuide: 'Your funds are available to withdraw.',
     withdrawTitle: 'Ready to withdraw',
@@ -319,7 +322,7 @@ export default {
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
-      'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
+      'Congratulations 🎉 Please fill in your dApp information to give users a better overview of your application. Updated data will appear on the dApp page shortly.',
     desktopOnlyBanner: 'dApp registration is only available on desktop',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
@@ -348,7 +351,7 @@ export default {
     transactions: 'Transactions',
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
-      'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
+      'You cannot claim with automatic re-stake because it has been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     migrationSupport: {
       actionRequired: 'Action Required',
       yourTokensAreLocked:
@@ -522,6 +525,7 @@ export default {
     reward: 'Reward',
     lockedTokens: 'Locked tokens',
     vesting: 'Vesting',
+    vestingInStake: '({amount} {token} in staking)',
     reserved: 'Reserved',
     favorite: 'Favorite',
     addToFavorite: 'Add to favorite',
@@ -613,7 +617,7 @@ export default {
         fee: 'Fee is deducted from the amount entered',
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
-          'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
+          'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
     },
   },
@@ -762,10 +766,11 @@ export default {
     rewardsWillBeClaimed: 'Your unclaimed rewards will be claimed.',
     basicRewards: 'Basic rewards',
     bonusRewards: 'Bonus rewards',
+    bonus: 'Bonus',
     dAppRewards: 'dApp rewards',
     done: 'Done',
     search: 'Search',
-    build: 'Build',
+    buildAndEarn: 'Build&Earn',
     newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
@@ -781,12 +786,21 @@ export default {
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
+    claimEstimatedRewards: 'Claim estimated Rewards',
+    claimNow: 'Claim now',
     claim: 'Claim',
     dApp: 'dApp',
     stakedAmount: 'Staked amount',
-    unstakedAmount: 'Locked but unstaked amount',
-    bonusReward: 'Bonus reward',
+    stakedAmountTooltip:
+      'Staked amount means the tokens are locked and staked. Staking rewards are distributed every day.',
+    lockedAmount: 'Locked amount',
+    lockedAmountTooltip:
+      'Locked amount means the tokens are locked however they are not staked. We encourage users to stake all locked tokens at least to maximise your staking rewards.',
+    rewards: 'Rewards',
+    estimatedRewards: 'Estimated rewards',
     manage: 'Manage',
+    check: 'Check',
+    checkYourStaking: 'Check your staking',
     add: 'Add',
     unbond: 'Unbond',
     unlock: 'Unlock',
@@ -802,6 +816,10 @@ export default {
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',
+    buildPeriodDescription:
+      'Stakers earn basic rewads, projects earn tier rewards during the period.',
+    basicRewardsDescription: 'All stakers receive basic rewads during the B&E period.',
+    bonusRewardsDescription: 'Vote in time to be entitled to bonus, check and learn more.',
     editProjectPage: {
       title: 'Edit Project Page',
       text: 'You can change the images, description at any time.',
@@ -820,12 +838,16 @@ export default {
     eras: '{era} eras',
     claimed: 'Claimed',
     period: 'Period {period}',
-    claimNow: 'Claim these rewards now, as they will expire at the end of the current period.',
-    remainingEras: 'Remaining eras / blocks',
+    claimRewardsNow:
+      'Claim these rewards now, as they will expire at the end of the current period.',
+    remainingEras: 'Remaining days',
     back: 'Back',
     era: 'Era',
     numberOfDapps: 'Number of dApps',
     tvl: 'TVL',
+    tvv: 'TVV',
+    bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusPool: 'Bonus pool',
     filledSlot: 'Filled slots',
     unfilledSlot: 'Unfilled slots',
     ourDapps: 'Our dApps',
@@ -835,7 +857,7 @@ export default {
       overview: 'Overview',
     },
     unregisteredDappInfo:
-      "This project has been unregistered. You don't have to do anything - If you do not move funds within this period, you will continue to earn basic rewards and be entitled to receive bonus.",
+      'This project has been unregistered. Claim action is required and your funds will be returned.',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
@@ -846,10 +868,15 @@ export default {
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
     burn: 'Burn',
+    availableToWithdraw: 'Available to withdraw',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    loyalStakerWarningAmount:
+      'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
+    loyalStakerWarning:
+      'You will loose eligibility for bonus reward at the end of current period if you unstake tokens now.',
   },
   bridge: {
     bridge: 'Bridge',

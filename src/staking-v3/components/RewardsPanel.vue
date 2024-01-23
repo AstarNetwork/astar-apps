@@ -3,7 +3,7 @@
     <div class="rewards--row title--rewards">{{ $t('stakingV3.rewardsWillBeClaimed') }}</div>
     <div class="rewards--row">
       <div class="text--rewards">{{ $t('stakingV3.basicRewards') }}</div>
-      <div><token-balance-native :balance="rewards?.staker.toString() ?? ''" /></div>
+      <div><token-balance-native :balance="rewards?.staker.amount.toString() ?? ''" /></div>
     </div>
     <div class="rewards--row">
       <div class="text--rewards">{{ $t('stakingV3.bonusRewards') }}</div>
@@ -12,7 +12,7 @@
     <img
       class="bg--rewards"
       :src="require('/src/staking-v3/assets/unclaimed_rewards_bg.webp')"
-      alt="wallet-icon"
+      alt=""
     />
   </div>
 </template>

@@ -1,13 +1,14 @@
 <template>
-  <div class="container">
+  <div id="staking" class="container">
     <div class="wrapper--staking">
       <div class="wrapper--header">
         <div class="row--title">
-          <astar-icon-dapp-staking />
+          <span class="icon--title"><astar-icon-dapp-staking /></span>
           <span class="text--title">{{ $t('common.staking') }}</span>
         </div>
         <div class="total--rewards">
-          <token-balance-native :balance="totalStake.toString() ?? '0'" />
+          <span class="locked">{{ $t('stakingV3.lockedBalance') }}:</span>
+          <token-balance-native :balance="ledger?.locked.toString() ?? '0'" />
         </div>
       </div>
 
@@ -16,8 +17,15 @@
       <!-- TODO: add logic and show the component -->
       <migration-support v-if="false" />
 
-      <tab-component :tabs="tabs" :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)" />
-      <my-staking v-if="currentTabIndex === 0" />
+      <tab-component
+        :tabs="tabs"
+        :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
+        :current-tab-index="currentTabIndex"
+      />
+      <my-staking
+        v-if="currentTabIndex === 0"
+        :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
+      />
       <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
       <unbonding v-if="currentTabIndex === 2" />
     </div>
@@ -46,7 +54,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const { ledger, totalStakerRewards, stakerInfo, totalStake } = useDappStaking();
+    const { ledger, totalStakerRewards, stakerInfo } = useDappStaking();
     const currentTabIndex = ref<number>(0);
 
     const tabs = computed<TabDefinition[]>(() => [
@@ -55,7 +63,7 @@ export default defineComponent({
       { title: t('stakingV3.unbonding'), visible: !!ledger.value?.unlocking.length },
     ]);
 
-    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalStake };
+    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, ledger };
   },
 });
 </script>
@@ -87,9 +95,20 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 16px;
+  text-transform: uppercase;
+}
+
+.icon--title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: solid 1px $navy-4;
   svg {
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
     color: $navy-4;
   }
 }
@@ -106,6 +125,11 @@ export default defineComponent({
   @media (min-width: $lg) {
     font-size: 14px;
   }
+}
+
+.locked {
+  font-weight: 400;
+  margin-right: 8px;
 }
 
 .body--dark {

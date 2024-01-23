@@ -93,8 +93,6 @@
           </div>
         </div>
       </div>
-
-      <rewards v-if="!isZkEvm" />
     </div>
 
     <template v-if="isH160">
@@ -142,7 +140,6 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Rewards from 'src/components/assets/Rewards.vue';
 
 export default defineComponent({
   components: {
@@ -150,7 +147,6 @@ export default defineComponent({
     EvmNativeToken,
     ZkAstr,
     AuIcon,
-    Rewards,
   },
   props: {
     ttlErc20Amount: {

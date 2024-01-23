@@ -1,5 +1,18 @@
-import { Compact, Enum, Option, Struct, Vec, bool, u128, u16, u32, u8 } from '@polkadot/types';
+import { Balance } from '@astar-network/metamask-astar-types';
 import { AccountId32, Permill } from '@polkadot/types/interfaces';
+import {
+  BTreeMap,
+  Compact,
+  Enum,
+  Option,
+  Struct,
+  Vec,
+  bool,
+  u128,
+  u16,
+  u32,
+  u8,
+} from '@polkadot/types';
 import { Codec } from '@polkadot/types/types';
 
 interface PalletDappStakingV3PeriodType extends Enum {
@@ -42,22 +55,11 @@ export interface PalletDappStakingV3ProtocolState extends Struct {
   readonly maintenance: bool;
 }
 
-export interface PalletDappStakingV3InflationParams extends Struct {
-  readonly maxInflationRate: String;
-  readonly adjustableStakersPart: String;
-  readonly baseStakersPart: String;
-  readonly idealStakingRate: String;
-}
-
-export interface PalletDappStakingV3ActiveInflationConfig extends Struct {
-  readonly bonusRewardPoolPerPeriod: String;
-}
-
 export interface PalletDappStakingV3DAppInfo extends Struct {
   readonly owner: AccountId32;
   readonly id: Compact<u16>;
   readonly state: PalletDappStakingV3DAppState;
-  readonly rewardDestination: Option<AccountId32>;
+  readonly rewardBeneficiary: Option<AccountId32>;
 }
 
 export interface SmartContractAddress extends Struct {
@@ -106,14 +108,9 @@ interface PalletDappStakingV3EraReward extends Struct {
 }
 
 export interface PalletDappStakingV3DAppTierRewards extends Struct {
-  readonly dapps: Vec<PalletDappStakingV3DAppTier>;
+  readonly dapps: BTreeMap<Compact<u16>, Compact<u8>>;
   readonly rewards: Vec<u128>;
   readonly period: Compact<u32>;
-}
-
-interface PalletDappStakingV3DAppTier extends Struct {
-  readonly dappId: Compact<u16>;
-  readonly tierId: Option<u8>;
 }
 
 export interface PalletDappStakingV3EraInfo extends Struct {

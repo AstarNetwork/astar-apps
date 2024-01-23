@@ -76,10 +76,10 @@ export default defineComponent({
 
     watch(
       [dapp],
-      () => {
-        if (dapp.value) {
+      (oldDapp, newDapp) => {
+        if (newDapp) {
           fetchRewards();
-        } else {
+        } else if (!newDapp && !oldDapp) {
           navigateToHome();
         }
       },

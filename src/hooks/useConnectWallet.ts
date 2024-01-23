@@ -352,13 +352,6 @@ export const useConnectWallet = () => {
 
   watch([currentNetworkChain], handleCheckLedgerEnvironment);
 
-  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
-  // window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
-
-  // onUnmounted(() => {
-  //   window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
-  // });
-
   return {
     WalletModalOption,
     currentNetworkStatus,

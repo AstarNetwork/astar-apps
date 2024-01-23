@@ -252,6 +252,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     if (!DappStakingRepository.isEraSubscribed) {
       DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
+      if (checkIsDappStakingV3(api)) {
+        return;
+      }
+
       await api.query.dappsStaking.currentEra((era: u32) => {
         // For some reason subscription is triggered for every produced block,
         // so that's why logic below.
@@ -346,7 +350,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async getCurrentEra(): Promise<u32> {
     const api = await this.api.getApi();
 
-    return await api.query.dappsStaking.currentEra<u32>();
+    return (await api.query.dappsStaking?.currentEra<u32>()) ?? 0;
   }
 
   public async getNextEraEta(network: string): Promise<number> {

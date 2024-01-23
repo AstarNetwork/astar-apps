@@ -166,6 +166,21 @@
                     <div class="column--symbol text--symbol">
                       {{ nativeTokenSymbol }}
                     </div>
+                    <div v-if="vestingTtl > 0" class="row--vesting-note">
+                      <span>
+                        {{
+                          $t('assets.vestingInStake', {
+                            amount: $n(
+                              truncate(
+                                vestingTtl > lockInDappStaking ? lockInDappStaking : vestingTtl,
+                                3
+                              )
+                            ),
+                            token: nativeTokenSymbol,
+                          })
+                        }}
+                      </span>
+                    </div>
                   </template>
                   <template v-else>
                     <div class="skeleton--right">
@@ -270,6 +285,7 @@ import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue'
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
+import { useDappStaking } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
@@ -302,6 +318,7 @@ export default defineComponent({
     const { nativeTokenUsd } = usePrice();
     const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
     const { faucetBalRequirement } = useFaucet();
+    const { isDappStakingV3, ledger } = useDappStaking();
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
     const nativeTokenImg = computed(() =>
@@ -364,6 +381,8 @@ export default defineComponent({
       if (dappStake) {
         const amount = String(dappStake.amount);
         lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
+      } else if (isDappStakingV3.value && ledger.value) {
+        lockInDappStaking.value = Number(ethers.utils.formatEther(ledger.value.locked));
       }
 
       if (reserved) {

@@ -1,11 +1,16 @@
 <template>
-  <div class="promo__data">
-    <div class="card--data">
-      <div class="card__top">
-        <span class="text--card-title">{{ title }}</span>
+  <div class="wrapper--kpi-card">
+    <div class="card--inner">
+      <div class="card--front">
+        <div class="card__top">
+          <span class="text--card-title">{{ title }}</span>
+        </div>
+        <div class="card__bottom">
+          <slot />
+        </div>
       </div>
-      <div class="card__bottom">
-        <span class="text--value"><slot></slot></span>
+      <div class="card--back">
+        <div>{{ description }}</div>
       </div>
     </div>
   </div>
@@ -17,6 +22,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     title: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },

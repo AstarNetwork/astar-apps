@@ -4,6 +4,7 @@ import {
   DappStakeInfo,
   SingularStakingInfo,
   StakeAmount,
+  StakerRewards,
 } from '../models';
 
 /**
@@ -55,7 +56,7 @@ export interface IDappStakingService {
    * @param senderAddress Staker address.
    * @returns Staker rewards amount.
    */
-  getStakerRewards(senderAddress: string): Promise<bigint>;
+  getStakerRewards(senderAddress: string): Promise<StakerRewards>;
 
   /**
    * Calculates a dApp rewards
