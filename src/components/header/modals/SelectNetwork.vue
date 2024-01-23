@@ -8,7 +8,7 @@
       >
         <img class="img--astar" :src="require('src/assets/img/chain/astar.png')" alt="logo-astar" />
         <span class="text--title">{{ $t('drawer.astarL1') }}</span>
-        <div class="line--bottom-color-l1" />
+        <div class="line--bottom-bg bottom--l1" />
       </button>
 
       <button
@@ -23,7 +23,7 @@
           alt="logo-astar-zkevm"
         />
         <span class="text--title">{{ $t('drawer.astarZkL2') }}</span>
-        <div class="line--bottom-color-zkevm" />
+        <div class="line--bottom-bg bottom--zkevm" />
       </button>
     </div>
 

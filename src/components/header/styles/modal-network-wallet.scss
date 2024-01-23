@@ -55,9 +55,8 @@
   }
 }
 
-.line--bottom-color-l1 {
+.line--bottom-bg {
   position: absolute;
-  background: linear-gradient(270deg, #ff94cd 26.04%, #e6007a 100%);
   width: 95%;
   height: 5px;
   bottom: 2px;
@@ -65,14 +64,12 @@
   border-bottom-right-radius: 16px;
 }
 
-.line--bottom-color-zkevm {
-  position: absolute;
+.bottom--l1 {
+  background: linear-gradient(270deg, #ff94cd 26.04%, #e6007a 100%);
+}
+
+.bottom--zkevm {
   background: linear-gradient(270deg, #703ac2 26.04%, #226dff 100%);
-  width: 95%;
-  height: 5px;
-  bottom: 2px;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
 }
 
 .container--other-networks {
