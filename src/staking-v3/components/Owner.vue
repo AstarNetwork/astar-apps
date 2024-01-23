@@ -17,7 +17,10 @@
       />
       <edit />
     </div>
-    <div class="bg--owner" />
+    <div
+      class="bg--owner"
+      :style="{ backgroundImage: `url(${require('/src/staking-v3/assets/grid_bg.svg')})` }"
+    />
     <dapp-background :dapp="dapp" />
   </div>
 </template>

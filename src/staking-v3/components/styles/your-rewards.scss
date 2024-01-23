@@ -112,3 +112,9 @@ flex-wrap: nowrap;
 .button--claim__symbol{
   font-size: 16px;
 }
+
+.body--dark{
+  .text--title{
+    color: $navy-1;
+  }
+}
