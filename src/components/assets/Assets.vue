@@ -2,7 +2,7 @@
   <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
     <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
-      <div class="column--main">
+      <div ref="nativeSection" class="column--main">
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
@@ -10,10 +10,22 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <staking v-if="isDappStakingV3" />
-        <your-project v-if="isDappStakingV3" />
+        <anchor-links
+          :native-section="nativeSection"
+          :staking-section="stakingSection"
+          :project-section="projectSection"
+          :assets-section="assetsSection"
+        />
 
-        <div v-if="!isLoading">
+        <div v-if="isDappStakingV3" ref="stakingSection">
+          <staking />
+        </div>
+
+        <div v-if="isDappStakingV3" ref="projectSection">
+          <your-project />
+        </div>
+
+        <div v-if="!isLoading" ref="assetsSection">
           <div v-if="isH160">
             <evm-asset-list :tokens="evmAssets.assets" class="container" />
           </div>
@@ -53,6 +65,7 @@ import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
+import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 
 export default defineComponent({
   components: {
@@ -63,6 +76,7 @@ export default defineComponent({
     XcmNativeAssetList,
     YourProject,
     Staking,
+    AnchorLinks,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -74,7 +88,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm, nativeTokenSymbol } =
+      useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -184,6 +199,11 @@ export default defineComponent({
       return bg_img.light;
     });
 
+    const nativeSection = ref<HTMLElement | null>(null);
+    const stakingSection = ref<HTMLElement | null>(null);
+    const projectSection = ref<HTMLElement | null>(null);
+    const assetsSection = ref<HTMLElement | null>(null);
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
@@ -199,6 +219,11 @@ export default defineComponent({
       isLoading,
       bg,
       isDappStakingV3,
+      nativeTokenSymbol,
+      nativeSection,
+      stakingSection,
+      projectSection,
+      assetsSection,
     };
   },
 });
