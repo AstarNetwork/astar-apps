@@ -43,68 +43,6 @@
           <span class="button--claim__symbol">{{ nativeTokenSymbol }}</span>
         </span>
       </astar-button>
-
-      <!-- Memo: mocked UI - waiting for indexer -->
-      <div v-if="false">
-        <div class="box--rewards">
-          <div class="box__row">
-            <div class="row--claim-info">
-              <div class="box__column">
-                <div>
-                  <span class="text--title">
-                    {{ $t('stakingV3.period', { period: '004' }) }}
-                  </span>
-                </div>
-                <div>
-                  <span class="text--info">
-                    {{ $t('stakingV3.eras', { era: 123 }) }}
-                  </span>
-                </div>
-              </div>
-              <div class="box__column">
-                <div class="column--status-claimed">
-                  <span>
-                    {{ $t('stakingV3.claimed') }}
-                  </span>
-                </div>
-                <div>
-                  <span class="text--info-bond">
-                    <token-balance-native :balance="'1000'" />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="box__row">
-            <div class="row--claim-info">
-              <div class="box__column">
-                <div>
-                  <span class="text--title">
-                    {{ $t('stakingV3.period', { period: '003' }) }}
-                  </span>
-                </div>
-                <div>
-                  <span class="text--info">
-                    {{ $t('stakingV3.eras', { era: 123 }) }}
-                  </span>
-                </div>
-              </div>
-              <div class="box__column">
-                <div class="column--status-claimed">
-                  <span>
-                    {{ $t('stakingV3.claimed') }}
-                  </span>
-                </div>
-                <div>
-                  <span class="text--info-bond">
-                    <token-balance-native :balance="'1000'" />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
