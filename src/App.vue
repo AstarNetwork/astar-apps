@@ -59,7 +59,7 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAccount, useAppRouter } from 'src/hooks';
+import { useAccount, useAppRouter, useDecommission } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
@@ -96,6 +96,7 @@ export default defineComponent({
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore } = useInflation();
+    const { fetchDecommissionStatusToStore } = useDecommission();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -152,6 +153,8 @@ export default defineComponent({
           .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
           .startProtocolStateSubscription();
       }
+
+      fetchDecommissionStatusToStore();
     });
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
