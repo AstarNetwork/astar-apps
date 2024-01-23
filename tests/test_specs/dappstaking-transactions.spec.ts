@@ -54,8 +54,10 @@ test.beforeEach(async ({ page, context }) => {
   // Close disclaimer popup
   await clickDisclaimerButton(page);
 
-  const closeButton = page.getByText('Polkadot.js');
-  await closeButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);

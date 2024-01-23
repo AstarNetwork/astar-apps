@@ -14,6 +14,7 @@
         <div
           :class="[!isNetwork ? 'selected-tab' : 'unselected-tab']"
           class="box--tab"
+          data-testid="select-wallet-tab"
           @click="setIsNetwork(false)"
         >
           <span :class="!isNetwork ? 'text--title-tab-selected' : 'text--title-tab'">

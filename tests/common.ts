@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from '@playwright/test';
 import { getWindow } from './fixtures';
 import { NODE_ENDPOINT } from './common-api';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export const ALICE_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice';
@@ -26,14 +27,18 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
 };
 
 export const connectToNetwork = async (page: Page): Promise<void> => {
-  await page.locator('.btn--network').click();
+  await page.locator('.icon--expand').click();
   await page.getByText('Custom Network').click();
-  await page.getByPlaceholder('IP Address / Domain').click();
-  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT);
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
+  await page.locator('.ip-input').click();
+  await page.locator('.ip-input').fill(NODE_ENDPOINT);
+  await page.getByRole('button', { name: 'Change Network', exact: true }).click();
+  // Memo: wait for the page to be reloaded
+  await wait(1000);
 };
 
 export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
   await page.getByText('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();

@@ -57,7 +57,7 @@
             </div>
           </button>
           <button
-            v-if="selNetworkId === endpointKey.ASTAR"
+            v-if="isEnablePolkasafe"
             class="box__row--wallet box--hover--active"
             :disabled="isZkEvm"
             :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
@@ -273,6 +273,13 @@ export default defineComponent({
 
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
 
+    const isEnablePolkasafe = computed<boolean>(() => {
+      const networkIdx = store.getters['general/networkIdx'];
+      const isChopstickAstar =
+        networkIdx === endpointKey.CUSTOM && currentNetworkIdx.value === endpointKey.ASTAR;
+      return props.selNetworkId === endpointKey.ASTAR || isChopstickAstar;
+    });
+
     return {
       nativeWallets,
       evmWallets,
@@ -289,6 +296,7 @@ export default defineComponent({
       endpointKey,
       isAccountUnification,
       isClosing,
+      isEnablePolkasafe,
     };
   },
 });
