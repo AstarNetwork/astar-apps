@@ -26,7 +26,7 @@
         </q-tooltip>
       </div>
       <a
-        href="https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/"
+        :href="docsUrl.createPromotion"
         target="_blank"
         rel="noopener noreferrer"
         class="box--link"
@@ -46,13 +46,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useDappStakingNavigation } from '../hooks';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {},
   setup() {
     const { getRegisterPageUrl } = useDappStakingNavigation();
 
-    return { getRegisterPageUrl };
+    return { docsUrl, getRegisterPageUrl };
   },
 });
 </script>
