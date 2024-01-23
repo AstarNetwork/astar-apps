@@ -52,16 +52,16 @@
           <div>
             <button
               type="button"
-              class="btn btn--icon icon--unbond"
+              class="btn btn--icon icon--unlock"
               @click="unlock(lockedButUnstaked)"
             >
               <astar-icon-arrow-up-right />
             </button>
             <span class="text--mobile-menu">
-              {{ $t('stakingV3.unbond') }}
+              {{ $t('stakingV3.unlock') }}
             </span>
             <q-tooltip>
-              <span class="text--tooltip">{{ $t('stakingV3.unbond') }}</span>
+              <span class="text--tooltip">{{ $t('stakingV3.unlock') }}</span>
             </q-tooltip>
           </div>
         </div>
@@ -381,7 +381,7 @@ export default defineComponent({
   &.icon--stake-vote svg {
     transform: rotate(-45deg);
   }
-  &.icon--unbond svg {
+  &.icon--unlock svg {
     transform: rotate(135deg);
   }
 }

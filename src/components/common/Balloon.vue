@@ -21,6 +21,7 @@
         {{ text }}
       </span>
     </div>
+    <slot />
   </div>
 </template>
 <script lang="ts">
