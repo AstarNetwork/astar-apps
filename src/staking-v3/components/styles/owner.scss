@@ -3,9 +3,8 @@
 .wrapper--owner {
   display: flex;
   flex-direction: column;
-  gap: 80px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 64px 16px 0 16px;
   max-width: 1140px;
   position: relative;
   z-index: 1;
@@ -14,37 +13,14 @@
   }
 }
 
-.row--owner-header {
-  padding-top: 52px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  @media (min-width: $sm) {
-    padding-top: 36px;
-  }
-}
-
-.row--your-dashboard {
-  text-align: center;
-  font-weight: 800;
-  color: $navy-1;
-  font-size: 16px;
-  order: 2;
-  @media (min-width: $lg) {
-    text-align: left;
-    order: 1;
-  }
-}
-
 .container--dapp-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  order: 1;
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 16px;
-    order: 2;
+    margin-bottom: 100px;
   }
 }
 
@@ -63,8 +39,37 @@
   font-weight: 800;
   font-size: 32px;
   color: $navy-1;
-  @media (min-width: $sm) {
-    font-size: 48px;
+}
+
+.row--your-dashboard {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+    font-weight: 800;
+    color: $navy-1;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.row--your-dashboard-mobile {
+  font-weight: 800;
+  font-size: 16px;
+  color: $navy-1;
+  margin-top: 16px;
+  margin-bottom: 84px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
+.row--statistics {
+  display: flex;
+  justify-content: center;
+  column-gap: 4px;
+  margin-bottom: 80px;
+  @media (min-width: $lg) {
+    margin-bottom: 160px;
   }
 }
 
