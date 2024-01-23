@@ -29,7 +29,7 @@
         :balance="activeInflationConfiguration.bonusRewardPoolPerPeriod.toString() ?? ''"
       />
     </data-card>
-    <data-card :title="$t('stakingV3.unbonding')" description="description">
+    <data-card :title="$t('stakingV3.unlocking')" description="description">
       <format-balance :balance="unlocking.toString() ?? ''" />
     </data-card>
     <data-card :title="$t('stakingV3.numberOfDapps')" description="description">
