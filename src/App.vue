@@ -33,6 +33,12 @@
       :set-is-open="setShowDisclaimerModal"
       :show="showDisclaimerModal"
     />
+
+    <modal-decommission
+      v-if="showDecommissionModal"
+      :show="showDecommissionModal"
+      :set-is-open="setShowDecommissionModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -69,6 +75,7 @@ import {
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 import { useInflation } from 'src/hooks/useInflation';
+import ModalDecommission from './components/dapp-staking/ModalDecommission.vue';
 
 export default defineComponent({
   name: 'App',
@@ -79,6 +86,7 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
+    ModalDecommission,
   },
   setup() {
     useAppRouter();
@@ -96,13 +104,14 @@ export default defineComponent({
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore } = useInflation();
-    const { fetchDecommissionStatusToStore } = useDecommission();
+    const { decommissionStarted, fetchDecommissionStatusToStore } = useDecommission();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const showDecommissionModal = ref<boolean>(false);
 
     const showDisclaimerModal = ref<boolean>(false);
     if (!localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
@@ -113,6 +122,10 @@ export default defineComponent({
 
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
+    };
+
+    const setShowDecommissionModal = (isOpen: boolean): void => {
+      showDecommissionModal.value = isOpen;
     };
 
     // Handle busy and extrinsic call status messages.
@@ -209,6 +222,19 @@ export default defineComponent({
       }
     });
 
+    watch(
+      [decommissionStarted],
+      () => {
+        if (decommissionStarted.value && !isDappStakingV3.value) {
+          setTimeout(() => {
+            showDecommissionModal.value = true;
+            console.log('decommissionStarted', decommissionStarted.value);
+          }, 2000);
+        }
+      },
+      { immediate: true }
+    );
+
     const removeSplashScreen = () => {
       var elem = document.getElementById('splash');
       elem?.remove();
@@ -220,7 +246,9 @@ export default defineComponent({
       isLoading,
       showAlert,
       showDisclaimerModal,
+      showDecommissionModal,
       setShowDisclaimerModal,
+      setShowDecommissionModal,
     };
   },
 });
