@@ -44,7 +44,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 .wrapper--anchor-links {
-  background-color: white;
+  background-color: $gray-1;
   top: 80px;
   position: sticky;
   display: flex;
@@ -77,6 +77,17 @@ export default defineComponent({
   &:hover {
     background-color: $astar-blue;
     color: white;
+  }
+}
+
+.body--dark {
+  .wrapper--anchor-links {
+    background-color: $navy-3;
+    border-color: $navy-3;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+  }
+  .item {
+    color: $gray-2;
   }
 }
 </style>

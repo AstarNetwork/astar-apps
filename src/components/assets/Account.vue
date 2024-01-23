@@ -95,22 +95,32 @@
       </div>
     </div>
 
-    <template v-if="isH160">
-      <evm-native-token class="container" />
-      <zk-astr v-if="isZkEvm" class="container" />
-    </template>
+    <anchor-links
+      v-if="isDappStakingV3"
+      :native-section="nativeSection"
+      :staking-section="stakingSection"
+      :project-section="projectSection"
+      :assets-section="assetsSection"
+    />
 
-    <div v-if="multisig" class="row--details-signatory">
-      <div class="column-account-name">
-        <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-        <span class="text--accent">{{
-          $t('assets.theSignatory', { account: multisig.signatory.name })
-        }}</span>
+    <div ref="nativeSection">
+      <template v-if="isH160">
+        <evm-native-token class="container" />
+        <zk-astr v-if="isZkEvm" class="container" />
+      </template>
+
+      <div v-if="multisig" class="row--details-signatory">
+        <div class="column-account-name">
+          <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
+          <span class="text--accent">{{
+            $t('assets.theSignatory', { account: multisig.signatory.name })
+          }}</span>
+        </div>
       </div>
-    </div>
 
-    <div v-if="!isH160" class="container">
-      <native-asset-list />
+      <div v-if="!isH160" class="container">
+        <native-asset-list />
+      </div>
     </div>
   </div>
 </template>
@@ -140,6 +150,8 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useDappStaking } from 'src/staking-v3';
+import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 
 export default defineComponent({
   components: {
@@ -147,6 +159,7 @@ export default defineComponent({
     EvmNativeToken,
     ZkAstr,
     AuIcon,
+    AnchorLinks,
   },
   props: {
     ttlErc20Amount: {
@@ -155,6 +168,18 @@ export default defineComponent({
     },
     ttlNativeXcmUsdAmount: {
       type: Number,
+      required: true,
+    },
+    stakingSection: {
+      type: HTMLElement,
+      required: true,
+    },
+    projectSection: {
+      type: HTMLElement,
+      required: true,
+    },
+    assetsSection: {
+      type: HTMLElement,
       required: true,
     },
   },
@@ -290,6 +315,10 @@ export default defineComponent({
 
     const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
 
+    const { isDappStakingV3 } = useDappStaking();
+
+    const nativeSection = ref<HTMLElement | null>(null);
+
     return {
       iconWallet,
       currentAccountName,
@@ -313,6 +342,8 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isDappStakingV3,
+      nativeSection,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

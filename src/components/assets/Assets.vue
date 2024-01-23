@@ -2,17 +2,12 @@
   <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
     <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
-      <div ref="nativeSection" class="column--main">
+      <div class="column--main">
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-        />
-
-        <anchor-links
-          v-if="isDappStakingV3"
-          :native-section="nativeSection"
           :staking-section="stakingSection"
           :project-section="projectSection"
           :assets-section="assetsSection"
@@ -66,7 +61,6 @@ import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
-import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 
 export default defineComponent({
   components: {
@@ -77,7 +71,6 @@ export default defineComponent({
     XcmNativeAssetList,
     YourProject,
     Staking,
-    AnchorLinks,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -200,7 +193,6 @@ export default defineComponent({
       return bg_img.light;
     });
 
-    const nativeSection = ref<HTMLElement | null>(null);
     const stakingSection = ref<HTMLElement | null>(null);
     const projectSection = ref<HTMLElement | null>(null);
     const assetsSection = ref<HTMLElement | null>(null);
@@ -221,7 +213,6 @@ export default defineComponent({
       bg,
       isDappStakingV3,
       nativeTokenSymbol,
-      nativeSection,
       stakingSection,
       projectSection,
       assetsSection,
