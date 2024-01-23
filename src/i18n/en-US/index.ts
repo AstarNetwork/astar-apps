@@ -791,7 +791,7 @@ export default {
     move: 'Move',
     index: 'Index',
     chunk: 'Chunk',
-    unlockingAmount: 'unlocking amount',
+    unlockingAmount: 'Unlocking amount',
     withdraw: 'Withdraw',
     relock: 'Re-lock',
     currentTier: 'Current Tier',
