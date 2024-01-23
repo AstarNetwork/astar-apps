@@ -2,11 +2,14 @@
   <astar-modal-drawer :show="isOpen" :is-closing="isClosing" @close="closeModal">
     <div class="wrapper--modal-network-tab">
       <div class="row--tab">
-        <network-wallet-tab :is-network="isNetwork" :set-is-network="setIsNetwork" />
+        <network-wallet-tab
+          :is-network="isNetwork && !isSelectWallet"
+          :set-is-network="setIsNetwork"
+        />
       </div>
       <div class="container--network-ads">
         <div>
-          <div v-if="isNetwork">
+          <div v-if="isNetwork && !isSelectWallet">
             <select-network
               :sel-network-id="selNetworkId"
               :select-network="selectNetwork"

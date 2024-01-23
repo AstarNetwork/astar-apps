@@ -222,10 +222,6 @@ export const useAccount = () => {
     }
   });
 
-  watchEffect(() => {
-    console.log('currentAccount', currentAccount.value);
-  });
-
   return {
     substrateAccounts,
     currentAccount,
