@@ -724,6 +724,8 @@ export default {
       ZeroAmount: 'Amount must be greater than 0.',
       LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
     },
+    innovativeWayOfStaking:
+      'Innovative way of staking, only at Astar. Where ecosystem grow together',
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
     voteText: 'I would like to vote my tokens with',
@@ -753,7 +755,6 @@ export default {
     done: 'Done',
     search: 'Search',
     buildAndEarn: 'Build&Earn',
-    newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
