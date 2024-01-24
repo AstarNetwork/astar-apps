@@ -20,7 +20,7 @@
   }
 }
 
-.bg--leaderboard{
+.bg--leaderboard {
   position: absolute;
   top: 0;
   left: 0;
@@ -39,6 +39,9 @@
   z-index: 1;
   color: white;
   font-style: italic;
+  @media (min-width: $xxxl) {
+    padding-top: 80px;
+  }
 }
 
 .container--boards {
