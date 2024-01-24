@@ -12,6 +12,7 @@
         :slides-per-view="1.5"
         :slides-per-group="1"
         :space-between="8"
+        :navigation="true"
         :grid="{
           rows: 2,
         }"
@@ -69,7 +70,8 @@ import { possibleCategories } from 'src/components/dapp-staking/register/compone
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/grid';
-import { Grid } from 'swiper/modules';
+import 'swiper/css/navigation';
+import { Grid, Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
@@ -125,7 +127,7 @@ export default defineComponent({
     };
 
     return {
-      modules: [Grid],
+      modules: [Grid, Navigation],
       filteredDapps,
       categoryBackgroundImages,
       categoryTitle,
@@ -138,4 +140,30 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use './styles/dapps.scss';
+</style>
+
+<style lang="scss">
+.swiper--dapps {
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $navy-1;
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .swiper-button-prev {
+    padding-right: 2px;
+  }
+  .swiper-button-next {
+    padding-left: 2px;
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+}
 </style>
