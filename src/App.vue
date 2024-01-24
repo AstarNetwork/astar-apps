@@ -228,7 +228,6 @@ export default defineComponent({
         if (decommissionStarted.value && !isDappStakingV3.value) {
           setTimeout(() => {
             showDecommissionModal.value = true;
-            console.log('decommissionStarted', decommissionStarted.value);
           }, 2000);
         }
       },
