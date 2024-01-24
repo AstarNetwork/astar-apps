@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--kpi-card">
+  <div :class="`wrapper--kpi-card ${description !== '' ? 'flip' : ''}`">
     <div class="card--inner">
       <div class="card--front">
         <div class="card__top">
@@ -27,7 +27,8 @@ export default defineComponent({
     },
     description: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   setup() {
@@ -56,7 +57,7 @@ export default defineComponent({
   transform-style: preserve-3d;
 }
 
-.wrapper--kpi-card:hover .card--inner {
+.wrapper--kpi-card.flip:hover .card--inner {
   transform: rotateY(180deg);
 }
 
