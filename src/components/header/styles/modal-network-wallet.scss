@@ -59,9 +59,8 @@
   position: absolute;
   width: 95%;
   height: 5px;
-  bottom: 2px;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-radius: 0 0 16px 16px / 0 0 6px 6px;
+  bottom: 0;
 }
 
 .bottom--l1 {

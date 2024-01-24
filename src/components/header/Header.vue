@@ -35,6 +35,7 @@
       :open-polkasafe-modal="openPolkasafeModal"
       :set-modal-account-select="setModalAccountSelect"
       :set-modal-polkasafe-select="setModalPolkasafeSelect"
+      :set-is-select-wallet="setIsSelectWallet"
     />
 
     <modal-account-unification
@@ -88,13 +89,17 @@ export default defineComponent({
     const isModalNetworkWallet = ref<boolean>(false);
     const isSelectWallet = ref<boolean>(false);
 
+    const setIsSelectWallet = (result: boolean): void => {
+      isSelectWallet.value = result;
+    };
+
     const {
       modalName,
       modalAccountSelect,
       modalPolkasafeSelect,
       modalAccountUnificationSelect,
-      openSelectModal,
       selectedWallet,
+      openSelectModal,
       setWalletModal,
       connectEthereumWallet,
       openPolkasafeModal,
@@ -194,6 +199,7 @@ export default defineComponent({
       openPolkasafeModal,
       setModalAccountSelect,
       setModalPolkasafeSelect,
+      setIsSelectWallet,
     };
   },
 });

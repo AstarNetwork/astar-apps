@@ -9,7 +9,10 @@
       </div>
       <div class="container--network-ads">
         <div>
-          <div v-if="isNetwork && !isSelectWallet">
+          <div
+            v-if="isNetwork && !isSelectWallet"
+            :class="isAnimatedIn && 'animate__animated animate__fadeInRight'"
+          >
             <select-network
               :sel-network-id="selNetworkId"
               :select-network="selectNetwork"
@@ -144,6 +147,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    setIsSelectWallet: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
@@ -168,6 +175,7 @@ export default defineComponent({
 
     const setIsNetwork = (result: boolean): void => {
       isNetwork.value = result;
+      props.setIsSelectWallet(!result);
       setIsAnimatedIn(true);
     };
 
