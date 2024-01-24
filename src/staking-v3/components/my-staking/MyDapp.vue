@@ -33,18 +33,18 @@
       <div>
         <button
           type="button"
-          class="btn btn--icon icon--unbond"
+          class="btn btn--icon icon--unlock"
           :disabled="!actionsEnabled"
           @click="handleUnbonding(address)"
         >
           <astar-icon-arrow-up-right />
         </button>
         <span class="text--mobile-menu">
-          {{ $t('stakingV3.unbond') }}
+          {{ $t('stakingV3.unlock') }}
         </span>
         <q-tooltip>
           <span class="text--tooltip">
-            {{ $t('stakingV3.unbond') }}
+            {{ $t('stakingV3.unlock') }}
           </span>
         </q-tooltip>
       </div>
