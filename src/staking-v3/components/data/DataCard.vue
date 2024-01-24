@@ -78,6 +78,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   gap: 8px;
+  background-color: white;
 }
 
 .card--top {
