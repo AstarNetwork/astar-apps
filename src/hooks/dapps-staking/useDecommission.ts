@@ -15,7 +15,6 @@ export function useDecommission() {
         ? (await $api?.query?.dappsStaking?.decommissionStarted<Bool>()).isTrue
         : false;
 
-    // store.commit('dapps/setDecommission', true);
     store.commit('dapps/setDecommission', decommissionStarted);
   };
 
