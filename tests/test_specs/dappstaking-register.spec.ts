@@ -11,6 +11,7 @@ import {
 } from '../common';
 import { ApiPromise } from '@polkadot/api';
 import { getApi } from '../common-api';
+import { wait } from '@astar-network/astar-sdk-core';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -26,9 +27,10 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
 
   // Close disclaimer popup
   await clickDisclaimerButton(page);
-
-  const polkadotButton = page.getByText('Polkadot.js');
-  await polkadotButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
@@ -36,6 +38,8 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await connectToNetwork(page);
   await page.waitForSelector('.four', { state: 'hidden' }); // Wait for the page to load
   await selectAccount(page, BOB_ACCOUNT_NAME);
+  // Memo: wait for the page to be reloaded
+  await wait(1000);
 });
 
 test.describe('register dApp page', () => {

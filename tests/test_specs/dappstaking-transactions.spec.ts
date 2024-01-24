@@ -22,6 +22,7 @@ import {
   setRewardDestination,
 } from '../common-api';
 import { ethers } from 'ethers';
+import { wait } from '@astar-network/astar-sdk-core';
 
 // Memo: Astar Core Contributors
 const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';
@@ -63,6 +64,8 @@ test.beforeEach(async ({ page, context }) => {
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
   await page.goto('/astar/dapp-staking/discover');
   await connectToNetwork(page);
+  // Memo: wait for the page to be reloaded
+  await wait(1000);
 });
 
 test.describe('dApp staking transactions', () => {

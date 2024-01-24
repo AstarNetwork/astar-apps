@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('init screen', () => {
   test('click the dapp staking page', async ({ page }) => {
-    const dappStakingButton = page.locator('a:has-text("dApp Staking")');
+    const dappStakingButton = page.getByTestId('dapp-staking');
     await dappStakingButton.click();
     await expect(page).toHaveURL('astar/dapp-staking/discover');
   });

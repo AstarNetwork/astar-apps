@@ -15,6 +15,8 @@ test.describe('init screen', () => {
   });
   test('has wallet installation UI', async ({ page }) => {
     await clickDisclaimerButton(page);
+    const walletTab = page.getByTestId('select-wallet-tab');
+    await walletTab.click();
     const clover = page.locator('text=Clover');
     await clover.click();
     const boxNoExtension = page.locator('.box--no-extension');

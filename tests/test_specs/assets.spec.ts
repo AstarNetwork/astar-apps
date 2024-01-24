@@ -14,6 +14,7 @@ import {
 } from '../common';
 import { getApi } from '../common-api';
 import { test } from '../fixtures';
+import { wait } from '@astar-network/astar-sdk-core';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -39,6 +40,8 @@ test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
   await connectToNetwork(page);
   await selectAccount(page, ALICE_ACCOUNT_NAME);
+  // Memo: wait for the page to be reloaded
+  await wait(1000);
 });
 
 test.describe('account panel', () => {
