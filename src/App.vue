@@ -104,7 +104,12 @@ export default defineComponent({
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore } = useInflation();
-    const { decommissionStarted, fetchDecommissionStatusToStore } = useDecommission();
+    const {
+      decommissionStarted,
+      isInLocalStorage,
+      fetchDecommissionStatusToStore,
+      setToLocalStorage,
+    } = useDecommission();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
@@ -225,9 +230,10 @@ export default defineComponent({
     watch(
       [decommissionStarted],
       () => {
-        if (decommissionStarted.value && !isDappStakingV3.value) {
+        if (decommissionStarted.value && !isDappStakingV3.value && !isInLocalStorage.value) {
           setTimeout(() => {
             showDecommissionModal.value = true;
+            setToLocalStorage(true);
           }, 2000);
         }
       },
