@@ -50,18 +50,14 @@
             </q-tooltip>
           </div>
           <div>
-            <button
-              type="button"
-              class="btn btn--icon icon--unbond"
-              @click="unlock(lockedButUnstaked)"
-            >
+            <button type="button" class="btn btn--icon icon--unbond" @click="handleUnlock()">
               <astar-icon-arrow-up-right />
             </button>
             <span class="text--mobile-menu">
               {{ $t('stakingV3.unbond') }}
             </span>
             <q-tooltip>
-              <span class="text--tooltip">{{ $t('stakingV3.unbond') }}</span>
+              <span class="text--tooltip">{{ $t('stakingV3.unlock') }}</span>
             </q-tooltip>
           </div>
         </div>
@@ -158,6 +154,12 @@
         </span>
       </button>
     </div>
+    <modal-unlock-tokens
+      v-if="lockedButUnstaked > BigInt(0)"
+      :show="showUnlockModal"
+      :set-is-open="setShowUnlockModal"
+      :max-unlock-amount="lockedButUnstaked"
+    />
   </div>
 </template>
 
@@ -171,12 +173,14 @@ import { ethers } from 'ethers';
 import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
 import Balloon from 'src/components/common/Balloon.vue';
+import ModalUnlockTokens from './ModalUnlockTokens.vue';
 
 export default defineComponent({
   components: {
     MyStakingCard,
     TokenBalanceNative,
     Balloon,
+    ModalUnlockTokens,
   },
   props: {
     tabSelected: {
@@ -196,7 +200,6 @@ export default defineComponent({
       protocolState,
       eraLengths,
       claimStakerAndBonusRewards,
-      unlock,
       formatPeriod,
     } = useDappStaking();
 
@@ -233,6 +236,16 @@ export default defineComponent({
 
     const { width, screenSize } = useBreakpoints();
 
+    const showUnlockModal = ref<boolean>(false);
+
+    const setShowUnlockModal = (isOpen: boolean): void => {
+      showUnlockModal.value = isOpen;
+    };
+
+    const handleUnlock = (): void => {
+      setShowUnlockModal(true);
+    };
+
     return {
       rewards,
       totalStakerRewards,
@@ -249,14 +262,16 @@ export default defineComponent({
       width,
       screenSize,
       bonusRewardEras,
+      showUnlockModal,
       closeLockedBalloon,
       closeStakedBalloon,
       truncate,
       claimStakerAndBonusRewards,
       navigateToVote,
-      unlock,
       handleTabSelected,
       formatPeriod,
+      setShowUnlockModal,
+      handleUnlock,
       PeriodType,
     };
   },

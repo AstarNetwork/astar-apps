@@ -299,7 +299,7 @@ export function useDappStaking() {
     await stakingService.unlockTokens(
       currentAccount.value,
       Number(ethers.utils.formatEther(amount)),
-      t('stakingV3.relockSuccess')
+      t('stakingV3.unlockSuccess')
     );
   };
 
