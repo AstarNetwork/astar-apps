@@ -862,7 +862,9 @@ export default {
     noEntry: 'No entry',
     burn: 'Burn',
     availableToWithdraw: 'Available to withdraw',
-    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    congrats: 'Congrats!!',
+    dappRegistered:
+      'Your contract is whitelisted on dApp Staking. Please submit details and you will be listed.',
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',

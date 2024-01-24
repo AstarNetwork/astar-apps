@@ -3,13 +3,13 @@
     <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
       <div class="column--main">
+        <register-banner v-if="isDappStakingV3" />
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
-
         <staking v-if="isDappStakingV3" />
         <your-project v-if="isDappStakingV3" />
 
@@ -53,6 +53,7 @@ import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
+import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -63,6 +64,7 @@ export default defineComponent({
     XcmNativeAssetList,
     YourProject,
     Staking,
+    RegisterBanner,
   },
   setup() {
     const token = ref<Asset | null>(null);

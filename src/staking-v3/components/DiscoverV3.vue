@@ -2,7 +2,6 @@
   <div>
     <div class="wrapper--discover">
       <feature-dapp />
-      <register-banner />
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
@@ -50,7 +49,6 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
-import RegisterBanner from './RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -61,7 +59,6 @@ export default defineComponent({
     DataList,
     DynamicAdsArea,
     ToggleButtons,
-    RegisterBanner,
   },
   setup() {
     const displayIndex = ref<number>(0);

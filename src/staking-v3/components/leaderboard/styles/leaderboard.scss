@@ -5,6 +5,7 @@
   padding: 100px 0 20px 0;
   position: relative;
   background-color: $navy-1;
+  overflow: hidden;
   @media (min-width: $lg) {
     padding-right: 40px;
     padding-left: 40px;
