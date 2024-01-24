@@ -50,7 +50,7 @@
             </q-tooltip>
           </div>
           <div>
-            <button type="button" class="btn btn--icon icon--unbond" @click="handleUnlock()">
+            <button type="button" class="btn btn--icon icon--unlock" @click="handleUnlock()">
               <astar-icon-arrow-up-right />
             </button>
             <span class="text--mobile-menu">
@@ -394,10 +394,10 @@ export default defineComponent({
     }
   }
   &.icon--stake-vote svg {
-    transform: rotate(-45deg);
+    transform: rotate(135deg);
   }
   &.icon--unlock svg {
-    transform: rotate(135deg);
+    transform: rotate(-45deg);
   }
 }
 
