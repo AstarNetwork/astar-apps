@@ -64,13 +64,6 @@ export const selectMultisigAccount = async (
   // Memo: wallet name is defined in PolkaSafe portal
   const walletName = 'Test multisig';
   await page.locator('.btn--account').click();
-  // Todo: update Astar-UI to add a class name at the back button on the modal
-  // await page
-  //   .locator(
-  //     '.wrapper--modal-drawer > .animate__animated > .modal-content > .row-title-close > .column-right-buttons > div > svg'
-  //   )
-  //   .first()
-  //   .click();
   await page.getByText('PolkaSafe').click();
   await page.locator('.row--input').click();
   await page.getByText('Bob').click();
