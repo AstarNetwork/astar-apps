@@ -51,9 +51,12 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 84px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   @media (min-width: $sm) {
     flex-wrap: nowrap;
+    margin-top: 80px;
+    margin-bottom: 0;
   }
 }
 
