@@ -27,7 +27,7 @@
         :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
       />
       <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
-      <unbonding v-if="currentTabIndex === 2" />
+      <unlocking v-if="currentTabIndex === 2" />
     </div>
   </div>
 </template>
@@ -40,7 +40,7 @@ import TabComponent, { TabDefinition } from './TabComponent.vue';
 import MyStaking from './MyStaking.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import MyDapps from './MyDapps.vue';
-import Unbonding from './Unbonding.vue';
+import Unlocking from './Unlocking.vue';
 import MigrationSupport from './MigrationSupport.vue';
 
 export default defineComponent({
@@ -49,7 +49,7 @@ export default defineComponent({
     TabComponent,
     MyStaking,
     MyDapps,
-    Unbonding,
+    Unlocking,
     MigrationSupport,
   },
   setup() {
@@ -60,7 +60,7 @@ export default defineComponent({
     const tabs = computed<TabDefinition[]>(() => [
       { title: t('stakingV3.myStaking'), visible: true },
       { title: t('stakingV3.myDapps'), visible: stakerInfo.value?.size > 0 },
-      { title: t('stakingV3.unbonding'), visible: !!ledger.value?.unlocking.length },
+      { title: t('stakingV3.unlocking'), visible: !!ledger.value?.unlocking.length },
     ]);
 
     return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, ledger };
