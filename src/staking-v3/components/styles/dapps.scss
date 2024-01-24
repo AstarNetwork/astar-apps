@@ -103,21 +103,39 @@
   align-items: center;
   padding: 20px 24px;
   gap: 4px;
-  div {
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: solid 1px $gray-2;
-    font-size: 12px;
-    font-weight: 600;
-    color: $gray-3;
-    white-space: nowrap;
+}
+
+.box--dapp-card {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: solid 1px $gray-2;
+  font-size: 12px;
+  font-weight: 600;
+  color: $gray-3;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 28px;
+  span{
+    display: flex;
+    align-items: center;
+    .icon--stakers{
+      width: 24px;
+      height: 24px;
+      margin-bottom: -10px;
+    }
+    .icon--astar-logo{
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
   }
 }
 
 .card--dapp:hover {
   .card__bottom {
     background: linear-gradient(90deg, #081029 0%, rgba(31, 47, 95, 0.79) 50%, #081029 100%);
-    div {
+    .box--dapp-card {
       border-color: white;
       color: white;
     }
