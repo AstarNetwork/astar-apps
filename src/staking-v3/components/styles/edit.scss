@@ -13,36 +13,32 @@
 .box--links {
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
-  align-items: center;
+  gap: 8px;
+  align-items: stretch;
+  max-width: 712px;
   @media (min-width: $md) {
-    column-gap: 24px;
     flex-direction: row;
   }
 }
 
-.container--links {
-  display: flex;
-  row-gap: 24px;
-  @media (min-width: $lg) {
-    column-gap: 24px;
-  }
-}
-
 .box--link {
-  width: 100%;
+  flex-grow: 1;
+  flex-basis: 0;
   display: grid;
   flex-direction: column;
   padding: 16px;
   border: solid 1px $navy-1;
   border-radius: 12px;
-  cursor: pointer;
+  gap: 12px;
   @media (min-width: $md) {
-    width: 234px;
     min-height: 234px;
   }
+}
+
+a.box--link {
+  transition: all 0.2s ease;
   &:hover {
-    background-color: $gray-1;
+    border-color: $astar-blue;
   }
 }
 

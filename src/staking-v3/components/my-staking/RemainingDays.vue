@@ -13,7 +13,7 @@
       :text="$t('stakingV3.yourTokensAreBeingUnbonded')"
     >
       <span class="balloon--unbondng__info">
-        {{ remainingEras }} {{ $t('stakingV3.days') }}, {{ remainingBlocks }}
+        {{ $t('stakingV3.days', { day: remainingEras }) }}, {{ remainingBlocks }}
         {{ $t('stakingV3.blocks') }}
       </span>
     </balloon>
