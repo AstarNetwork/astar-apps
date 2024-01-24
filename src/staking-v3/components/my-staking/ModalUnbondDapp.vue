@@ -110,7 +110,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { stakerInfo, constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
+    const { constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
     const store = useStore();
 
     const minStakingAmount = computed<number>(() => {

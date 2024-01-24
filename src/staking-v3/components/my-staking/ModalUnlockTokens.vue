@@ -51,7 +51,8 @@
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
       />
-      <astar-button class="unbond-button" :disabled="!canUnlock()" @click="unlockTokens()"
+      <error-panel :error-message="errorMessage" class="panel" />
+      <astar-button class="unbond-button" :disabled="!canUnlockTokens()" @click="unlockTokens()"
         >{{ $t('stakingV3.unlock') }}
       </astar-button>
     </div>
@@ -69,11 +70,13 @@ import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useDappStaking } from 'src/staking-v3/hooks';
+import ErrorPanel from '../ErrorPanel.vue';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
     ModalWrapper,
+    ErrorPanel,
   },
   props: {
     show: {
@@ -95,7 +98,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { unlock } = useDappStaking();
+    const { unlock, canUnlock } = useDappStaking();
     const maxAmount = computed<string>(() =>
       ethers.utils.formatEther(props.maxUnlockAmount.toString())
     );
@@ -117,9 +120,13 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const canUnlock = () => {
+    const errorMessage = ref<string | undefined>();
+    const canUnlockTokens = () => {
       const unlockAmount = Number(amount.value ?? 0);
-      return unlockAmount <= Number(maxAmount.value) && unlockAmount > 0;
+      const [result, message] = canUnlock(unlockAmount);
+      errorMessage.value = message;
+
+      return unlockAmount <= Number(maxAmount.value) && result;
     };
 
     const unlockTokens = async (): Promise<void> => {
@@ -135,12 +142,13 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       isClosingModal,
+      errorMessage,
       setSelectedTip,
       close,
       toMaxAmount,
       truncate,
       inputHandler,
-      canUnlock,
+      canUnlockTokens,
       closeModal,
       unlockTokens,
     };
