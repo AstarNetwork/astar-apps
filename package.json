@@ -49,6 +49,8 @@
     "@quasar/app-webpack": "^3.11.2",
     "@quasar/extras": "^1.16.7",
     "@vue/apollo-composable": "^4.0.0-beta.4",
+    "@web3-onboard/injected-wallets": "^2.10.11",
+    "@web3-onboard/vue": "^2.7.12",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",
     "axios": "^0.24.0",
