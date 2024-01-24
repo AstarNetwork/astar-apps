@@ -19,7 +19,6 @@
   </div>
 </template>
 <script lang="ts">
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useDappStaking, useDappStakingNavigation } from 'src/staking-v3/hooks';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType } from 'vue';

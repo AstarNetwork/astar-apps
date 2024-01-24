@@ -1,29 +1,40 @@
 <template>
   <div>
-    <div v-if="dapp && dapp.extended" class="container--dapp-staking">
-      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
+    <div v-if="dapp && dapp.extended" class="wrapper--dapp">
+      <div class="container--dapp-top">
+        <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
 
-      <Transition>
-        <div v-if="!isVisible" class="wrapper--small-header">
-          <dapp-avatar :dapp="dapp" small />
-          <dapp-statistics :dapp="dapp" small />
+        <Transition>
+          <div v-if="!isVisible" class="wrapper--small-header">
+            <dapp-avatar :dapp="dapp" small />
+            <dapp-statistics :dapp="dapp" small />
+          </div>
+        </Transition>
+
+        <div v-intersection="onIntersection" class="row--dapp-header">
+          <dapp-avatar :dapp="dapp" />
+          <dapp-statistics :dapp="dapp" />
         </div>
-      </Transition>
 
-      <div v-intersection="onIntersection">
-        <dapp-avatar :dapp="dapp" />
-        <dapp-statistics :dapp="dapp" />
+        <dapp-images :dapp="dapp" />
       </div>
 
-      <dapp-images :dapp="dapp" />
-      <builders :dapp="dapp" />
-
-      <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
-      <div class="row--project-overview">
-        <project-overview :dapp="dapp" />
-        <project-details :dapp="dapp" class="project--details" />
+      <div
+        class="container--dapp-bottom"
+        :style="{ backgroundImage: `url(${require('src/staking-v3/assets/grid_bg.svg')})` }"
+      >
+        <div class="container--dapp-bottom__inner">
+          <builders :dapp="dapp" />
+          <div>
+            <div class="text--title">{{ $t('stakingV3.dapp.overview') }}</div>
+            <div class="row--project-overview">
+              <project-overview :dapp="dapp" />
+              <project-details :dapp="dapp" class="project--details" />
+            </div>
+          </div>
+          <!-- <dapp-stats-charts :dapp="dapp" /> -->
+        </div>
       </div>
-      <!-- <dapp-stats-charts :dapp="dapp" /> -->
     </div>
     <div class="bg--dapp" />
     <dapp-icon-background :dapp="dapp" />

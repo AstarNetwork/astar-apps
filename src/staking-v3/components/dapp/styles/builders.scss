@@ -1,10 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--builders {
-  padding-bottom: 80px;
-  margin-bottom: 24px;
-}
-
 .row--builders-title {
   margin-bottom: 24px;
   font-size: 24px;
@@ -99,6 +94,7 @@
   padding: 24px;
   border-radius: 16px;
   border: solid 1px $navy-1;
+  background-color: white;
   @media (min-width: $lg) {
     width: 182px;
     padding: 32px;

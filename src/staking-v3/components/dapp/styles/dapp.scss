@@ -1,10 +1,60 @@
 @import 'src/css/quasar.variables.scss';
 
-.container--dapp-staking {
-  max-width: $container-max-width;
+.wrapper--dapp {
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  @media (min-width: $lg) {
+    margin: 0 -40px;
+  }
+}
+
+.container--dapp-top {
+  max-width: $container-max-width;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  padding-bottom: 40px;
+  @media (min-width: $sm) {
+    padding-bottom: 80px;
+  }
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.row--dapp-header{
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  @media (min-width: $sm) {
+    gap: 60px;
+  }
+}
+
+.container--dapp-bottom {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-repeat: repeat;
+  @media (min-width: $sm) {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+.container--dapp-bottom__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  max-width: $container-max-width;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
 }
 
 .row--project-overview {
@@ -53,7 +103,7 @@
 }
 
 .body--dark {
-  .container--dapp-staking,
+  .wrapper--dapp,
   .text--title {
     color: $navy-1;
   }
