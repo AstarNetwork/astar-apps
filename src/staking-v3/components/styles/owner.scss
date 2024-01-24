@@ -3,25 +3,58 @@
 .wrapper--owner {
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  align-items: flex-start;
   margin: 0 auto;
-  padding: 0 16px;
-  max-width: 1140px;
   position: relative;
   z-index: 1;
   @media (min-width: $lg) {
-    padding: 0;
+    margin: 0 -40px;
   }
 }
 
-.row--owner-header {
+.container--owner-header,
+.container--owner-main {
+  width: 100%;
+}
+
+.container--owner-header {
   padding-top: 52px;
+  padding-bottom: 40px;
+  @media (min-width: $sm) {
+    padding-bottom: 80px;
+  }
+}
+
+.container--owner-main {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-repeat: repeat;
+  @media (min-width: $sm) {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+.container--owner-header__inner,
+.container--owner-main__inner {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  @media (min-width: $sm) {
-    padding-top: 36px;
+  max-width: 1140px;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
   }
+}
+
+.container--owner-header__inner {
+  gap: 16px;
+}
+
+.container--owner-main__inner {
+  gap: 80px;
 }
 
 .row--your-dashboard {
@@ -36,7 +69,7 @@
   }
 }
 
-.container--dapp-hero {
+.row--dapp-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,6 +97,9 @@
   font-size: 32px;
   color: $navy-1;
   @media (min-width: $sm) {
+    font-size: 40px;
+  }
+  @media (min-width: $lg) {
     font-size: 48px;
   }
 }

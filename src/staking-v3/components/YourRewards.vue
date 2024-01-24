@@ -39,7 +39,7 @@
       >
         <span class="button--claim__label">{{ $t('stakingV3.claimYourRewards') }}</span>
         <span class="button--claim__amount">
-          {{ $n(truncate(ethers.utils.formatEther(totalRewards.toString()), 3)) }}
+          <token-balance-native :balance="totalRewards.toString()" :show-token-symbol="false" />
           <span class="button--claim__symbol">{{ nativeTokenSymbol }}</span>
         </span>
       </astar-button>
@@ -50,10 +50,8 @@
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
 import { RewardsPerPeriod, useDappStaking } from '../hooks';
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import { ethers } from 'ethers';
-import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: { TokenBalanceNative },
@@ -71,11 +69,11 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
     const { rewardExpiresInNextPeriod, formatPeriod } = useDappStaking();
 
-    return { nativeTokenSymbol, ethers, formatPeriod, rewardExpiresInNextPeriod, truncate };
+    return { nativeTokenSymbol, formatPeriod, rewardExpiresInNextPeriod };
   },
 });
 </script>
