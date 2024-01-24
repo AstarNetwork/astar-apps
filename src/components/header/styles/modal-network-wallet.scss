@@ -33,8 +33,14 @@
   @media (min-width: $lg) {
     display: grid;
     grid-template-columns: 440px auto;
-    column-gap: 92px;
+    column-gap: 40px;
   }
+}
+
+.row--action-buttons {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 16px;
 }
 
 .card--astar {

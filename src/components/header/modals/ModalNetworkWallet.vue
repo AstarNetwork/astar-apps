@@ -64,7 +64,7 @@
             />
           </div>
         </div>
-        <ads />
+        <!-- <ads /> -->
       </div>
     </div>
   </astar-modal-drawer>
@@ -96,7 +96,7 @@ export default defineComponent({
     SelectAccount,
     SelectMultisigAccount,
     SelectNetwork,
-    Ads,
+    // Ads,
   },
   props: {
     isSelectWallet: {

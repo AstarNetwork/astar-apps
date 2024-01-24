@@ -201,12 +201,14 @@
         </div>
       </div>
     </div>
-    <astar-button class="button--action" @click="setIsNetwork(false)">
-      {{ $t('drawer.selectWallet') }}
-    </astar-button>
-    <astar-button class="button--action" :disabled="isDisabled" @click="() => selectNetwork()">
-      {{ $t('drawer.changeNetwork') }}
-    </astar-button>
+    <div class="row--action-buttons">
+      <astar-button class="button--action" @click="setIsNetwork(false)">
+        {{ $t('drawer.selectWallet') }}
+      </astar-button>
+      <astar-button class="button--action" :disabled="isDisabled" @click="() => selectNetwork()">
+        {{ $t('drawer.changeNetwork') }}
+      </astar-button>
+    </div>
   </div>
 </template>
 <script lang="ts">

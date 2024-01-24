@@ -12,6 +12,7 @@
   border-bottom: 3px solid $blue;
   transition: all 0.3s ease 0s;
   width: 100px;
+  font-weight: 700;
 }
 
 .unselected-tab {
@@ -44,7 +45,7 @@
 
 .row--mode-tab {
   display: flex;
-  column-gap: 48px;
+  column-gap: 16px;
 }
 
 .body--dark {
