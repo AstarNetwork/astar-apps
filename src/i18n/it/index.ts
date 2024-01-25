@@ -113,8 +113,8 @@ export default {
   wallet: {
     connectWallet: 'Connetti wallet',
     select: 'Seleziona un wallet per connetterti al portale',
-    nativeAccount: 'Account Nativi',
-    evmAccount: 'Account EVM',
+    nativeWallets: 'Account Nativi',
+    evmWallets: 'Account EVM',
     math: {
       supportsNetwork: 'Math Wallet supporta solo la rete Shiden',
       switchNetwork:

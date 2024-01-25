@@ -1,151 +1,129 @@
 <template>
-  <astar-modal-drawer
-    :show="isOpen && !isSelected"
-    title="Wallet"
-    :is-closing="isClosing"
-    :is-back="true"
-    :handle-back="backModal"
-    @close="closeModal"
+  <div
+    class="wrapper--modal-account animate__animated animate__fadeInRight"
+    :class="isClosing && 'animate__animated animate__fadeOutLeft'"
   >
-    <div class="wrapper--modal-account">
-      <div class="wrapper--select-network">
-        <div class="row--separator--account">
-          <div class="border--separator--account" />
-        </div>
-        <div>
-          <selected-wallet :selected-wallet="selectedWallet" />
-        </div>
-        <div class="row--balance-option">
-          <div class="column--balance-option">
-            <span class="text--option-label">
-              {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
-            </span>
-            <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
-            <div class="toggle--custom">
-              <q-toggle v-model="isShowBalance" color="#0085ff" />
-            </div>
-          </div>
-        </div>
-        <fieldset>
-          <div v-if="isMathWallet" class="column--remarks">
-            <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
-              {{ $t('wallet.math.supportsNetwork') }}
-            </li>
-            <li v-if="!substrateAccounts.length">
-              {{ $t('wallet.math.switchNetwork') }}
-            </li>
-          </div>
-          <ul
-            v-else
-            role="radiogroup"
-            class="list--account"
-            :style="`max-height: ${windowHeight}px`"
-          >
-            <li v-for="(account, index) in substrateAccounts" :key="index">
-              <label
-                :class="[
-                  'class-radio',
-                  selAccount === account.address ? 'class-radio-on' : 'class-radio-off',
-                ]"
-              >
-                <astar-radio-btn
-                  :checked="selAccount === account.address"
-                  class="radio-btn"
-                  @change="selAccount = account.address"
-                />
-                <account
-                  v-if="!account.evmAddress"
-                  :account-name="account.name"
-                  :account-address="account.address"
-                  :explorer-url="subScan"
-                  :native-token-symbol="nativeTokenSymbol"
-                  :show-balance-value="isShowBalance && !isLoadingBalance"
-                  :get-balance="displayBalance"
-                />
-                <unified-account
-                  v-else
-                  :native-address="account.address"
-                  :evm-address="account.evmAddress ?? ''"
-                  :account-name="account.name"
-                  :show-balance="isShowBalance && !isLoadingBalance"
-                  :native-token-symbol="nativeTokenSymbol"
-                  :explorer-url="subScan"
-                  :avatar-url="account.avatarUrl ?? ''"
-                  :get-balance="displayBalance"
-                />
-                <div v-if="index === previousSelIdx" class="dot" />
-              </label>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
-      <div class="wrapper__row--button">
-        <div v-if="currentNetworkChain === astarChain.ASTAR" class="row--ledger-check">
-          <span class="text--is-ledger">
-            {{ $t('wallet.isLedgerAccount') }}
+    <div class="row--back">
+      <button class="button--back" @click="backModal()">
+        <astar-icon-back-with-color />
+      </button>
+      <div class="row--balance-option">
+        <div class="column--balance-option">
+          <span class="text--option-label">
+            {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
           </span>
+          <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
           <div class="toggle--custom">
-            <q-toggle v-model="toggleIsLedger" color="#0085ff" />
+            <q-toggle v-model="isShowBalance" color="#0085ff" />
           </div>
         </div>
-        <astar-button
-          :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
-          class="btn--connect"
-          @click="selectAccount(selAccount)"
-        >
-          {{ $t('connect') }}
-        </astar-button>
       </div>
     </div>
-  </astar-modal-drawer>
+    <div>
+      <div class="row--separator--account">
+        <div class="border--separator--account" />
+      </div>
+      <fieldset>
+        <div v-if="isMathWallet" class="column--remarks">
+          <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
+            {{ $t('wallet.math.supportsNetwork') }}
+          </li>
+          <li v-if="!substrateAccounts.length">
+            {{ $t('wallet.math.switchNetwork') }}
+          </li>
+        </div>
+        <ul v-else role="radiogroup" class="list--account" :style="`max-height: ${windowHeight}px`">
+          <li v-for="(account, index) in substrateAccounts" :key="index">
+            <label
+              :class="[
+                'class-radio',
+                selAccount === account.address ? 'class-radio-on' : 'class-radio-off',
+              ]"
+            >
+              <astar-radio-btn
+                :checked="selAccount === account.address"
+                class="radio-btn"
+                @change="selAccount = account.address"
+              />
+              <account
+                v-if="!account.evmAddress"
+                :account-name="account.name"
+                :account-address="account.address"
+                :explorer-url="subScan"
+                :native-token-symbol="nativeTokenSymbol"
+                :show-balance-value="isShowBalance && !isLoadingBalance"
+                :get-balance="displayBalance"
+                :is-unified-account="false"
+              />
+              <unified-account
+                v-else
+                :native-address="account.address"
+                :evm-address="account.evmAddress ?? ''"
+                :account-name="account.name"
+                :show-balance="isShowBalance && !isLoadingBalance"
+                :native-token-symbol="nativeTokenSymbol"
+                :explorer-url="subScan"
+                :avatar-url="account.avatarUrl ?? ''"
+                :get-balance="displayBalance"
+              />
+              <div v-if="index === previousSelIdx" class="dot" />
+            </label>
+          </li>
+        </ul>
+      </fieldset>
+    </div>
+    <div class="wrapper__row--button">
+      <div v-if="currentNetworkChain === astarChain.ASTAR" class="row--ledger-check">
+        <span class="text--is-ledger">
+          {{ $t('wallet.isLedgerAccount') }}
+        </span>
+        <div class="toggle--custom">
+          <q-toggle v-model="toggleIsLedger" color="#0085ff" />
+        </div>
+      </div>
+      <astar-button
+        :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
+        class="btn--connect"
+        @click="selectAccount(selAccount)"
+      >
+        {{ $t('connect') }}
+      </astar-button>
+    </div>
+  </div>
 </template>
 <script lang="ts">
-import { ApiPromise } from '@polkadot/api';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
-import { $api } from 'src/boot/api';
-import SelectedWallet from 'src/components/header/modals/SelectedWallet.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallet } from 'src/config/wallets';
 import {
+  fetchNativeBalance,
   getShortenAddress,
   truncate,
   wait,
-  fetchNativeBalance,
 } from '@astar-network/astar-sdk-core';
+import { ApiPromise } from '@polkadot/api';
+import { Ledger } from '@polkadot/hw-ledger';
+import copy from 'copy-to-clipboard';
+import { ethers } from 'ethers';
+import { $api } from 'src/boot/api';
+import { astarChain } from 'src/config/chain';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallet } from 'src/config/wallets';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { PropType, computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useBreakpoints, useNetworkInfo, useAccount } from 'src/hooks';
-import { Ledger } from '@polkadot/hw-ledger';
-import { astarChain } from 'src/config/chain';
-import UnifiedAccount from './UnifiedAccount.vue';
 import Account from './Account.vue';
+import UnifiedAccount from './UnifiedAccount.vue';
 
 export default defineComponent({
   components: {
-    SelectedWallet,
     UnifiedAccount,
     Account,
   },
   props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
     selectedWallet: {
       type: String as PropType<SupportWallet>,
-      required: true,
-    },
-    openSelectModal: {
-      type: Function,
-      required: true,
-    },
-    connectEthereumWallet: {
-      type: Function,
       required: true,
     },
     disconnectAccount: {
@@ -156,28 +134,33 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    setModalAccountSelect: {
+      type: Function,
+      required: true,
+    },
+    selectNetwork: {
+      type: Function,
+      required: true,
+    },
   },
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const isSelected = ref<boolean>(false);
-    const isClosing = ref<boolean>(false);
+  setup(props) {
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
     const toggleIsLedger = ref<boolean>(false);
     const isLedgerReady = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
-    const closeModal = async (): Promise<void> => {
+    const isClosing = ref<boolean>(false);
+    const closeUi = async (): Promise<void> => {
       isClosing.value = true;
       const animationDuration = 500;
       await wait(animationDuration);
       isClosing.value = false;
-      emit('update:is-open', false);
     };
 
     const backModal = async (): Promise<void> => {
-      await closeModal();
-      props.openSelectModal();
+      await closeUi();
+      props.setModalAccountSelect(false);
     };
 
     const store = useStore();
@@ -200,7 +183,6 @@ export default defineComponent({
       () => store.getters['general/substrateAccounts']
     );
 
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
     const nativeTokenSymbol = computed<string>(() => {
@@ -215,23 +197,15 @@ export default defineComponent({
 
     const selectAccount = async (substrateAccount: string): Promise<void> => {
       await props.disconnectAccount();
-      if (checkIsEthereumWallet(props.selectedWallet)) {
-        props.connectEthereumWallet(props.selectedWallet);
-      }
-      isClosing.value = true;
-      const animationDuration = 500;
-      await wait(animationDuration);
       if (substrateAccount) {
         store.commit('general/setCurrentAddress', substrateAccount);
         const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
         wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
       }
       store.commit('general/setCurrentWallet', props.selectedWallet);
-      isSelected.value = true;
-      isClosing.value = false;
       localStorage.removeItem(LOCAL_STORAGE.MULTISIG);
-      emit('update:is-open', false);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
+      await props.selectNetwork();
     };
 
     const selAccount = ref<string>('');
@@ -261,7 +235,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      const adjustment = width.value > screenSize.sm ? 520 : 390;
+      const adjustment = width.value > screenSize.sm ? 450 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 
@@ -301,9 +275,9 @@ export default defineComponent({
     };
 
     watch(
-      [isLoading, isShowBalance, substrateAccountsAll],
+      [isShowBalance, substrateAccountsAll],
       async () => {
-        if (!substrateAccountsAll.value.length || isLoading.value) return;
+        if (!substrateAccountsAll.value.length) return;
         try {
           await updateAccountMap();
         } catch (error) {
@@ -380,7 +354,6 @@ export default defineComponent({
 
     return {
       selAccount,
-      closeModal,
       selectAccount,
       previousSelIdx,
       currentNetworkStatus,
@@ -396,8 +369,6 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
-      isSelected,
-      isClosing,
       toggleIsLedger,
       isShowBalance,
       currentNetworkChain,
@@ -406,11 +377,20 @@ export default defineComponent({
       isLedger,
       displayBalance,
       backModal,
+      isClosing,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/header/styles/modal-account.scss';
+@use 'src/components/header/styles/select-account.scss';
+
+.animate__animated.animate__fadeInRight {
+  --animate-delay: 1s;
+  --animate-duration: 0.8s;
+}
+.animate__animated.animate__fadeOutLeft {
+  --animate-duration: 0.8s;
+}
 </style>

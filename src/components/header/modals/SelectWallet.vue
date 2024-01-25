@@ -1,15 +1,15 @@
 <template>
-  <astar-modal-drawer
-    :show="isModalConnectWallet"
-    :is-closing="isClosing"
-    title="Select a Wallet"
-    @close="closeModal()"
+  <div
+    :class="[
+      isAnimatedIn && 'animate__animated animate__fadeInRight',
+      isClosing && 'animate__animated animate__fadeOutLeft',
+    ]"
   >
     <div class="wrapper--modal--wallet">
       <div>
         <div class="title--account-type">
           <span>
-            {{ $t('wallet.evmAccount') }}
+            {{ $t('wallet.evmWallets') }}
           </span>
         </div>
         <div class="wrapper--wallets">
@@ -35,13 +35,14 @@
       <div>
         <div class="title--account-type">
           <span>
-            {{ $t('wallet.nativeAccount') }}
+            {{ $t('wallet.nativeWallets') }}
           </span>
         </div>
         <div class="wrapper--wallets">
           <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
+            :data-testid="wallet.name"
             :disabled="isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
@@ -54,6 +55,23 @@
               <span>
                 {{ castWalletName(wallet.name) }}
               </span>
+            </div>
+          </button>
+          <button
+            v-if="isEnablePolkasafe"
+            class="box__row--wallet box--hover--active"
+            :disabled="isZkEvm"
+            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
+            @click="setPolkasafeModal()"
+          >
+            <div class="box--img">
+              <img
+                :src="require('src/assets/img/logo-polkasafe-black.svg')"
+                class="img--polkasafe"
+              />
+            </div>
+            <div>
+              <span> PolkaSafe </span>
             </div>
           </button>
         </div>
@@ -102,58 +120,16 @@
           </div>
         </div>
       </div>
-      <div v-if="currentNetworkIdx === endpointKey.ASTAR">
-        <div class="title--account-type">
-          <span>
-            {{ $t('wallet.multisigAccount') }}
-          </span>
-        </div>
-        <div class="wrapper--wallets">
-          <button
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
-            @click="setPolkasafeModal()"
-          >
-            <div class="box--img">
-              <img
-                :src="require('src/assets/img/logo-polkasafe-black.svg')"
-                class="img--polkasafe"
-              />
-            </div>
-            <div>
-              <span> PolkaSafe </span>
-            </div>
-          </button>
-        </div>
-      </div>
-      <!-- temporarily disable until we implement account selection UI -->
-      <!-- <div v-if="isAccountUnification">
-        <div class="title--account-type">
-          <span>
-            {{ $t('wallet.accountUnification') }}
-          </span>
-        </div>
-        <div class="wrapper--wallets">
-          <div class="box__row--wallet box--hover--active" @click="setAccountUnificationModal()">
-            <div class="box--img astar-account">
-              <img :src="require('src/assets/img/token/astr.png')" />
-            </div>
-            <div>
-              <span> Astar Account </span>
-            </div>
-          </div>
-        </div>
-      </div> -->
+
       <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
     </div>
-  </astar-modal-drawer>
+  </div>
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
-import { get } from 'lodash-es';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import {
@@ -161,7 +137,6 @@ import {
   SupportWallet,
   Wallet,
   supportAllWalletsObj,
-  supportEvmWalletObj,
   supportEvmWallets,
   supportWallets,
 } from 'src/config/wallets';
@@ -175,14 +150,6 @@ import { PropType, computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   props: {
-    isModalConnectWallet: {
-      type: Boolean,
-      required: true,
-    },
-    setCloseModal: {
-      type: Function,
-      required: true,
-    },
     setWalletModal: {
       type: Function,
       required: true,
@@ -195,11 +162,11 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    openAccountUnificationModal: {
-      type: Function,
+    isNoExtension: {
+      type: Boolean,
       required: true,
     },
-    isNoExtension: {
+    isZkEvm: {
       type: Boolean,
       required: true,
     },
@@ -207,19 +174,29 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
+    selectNetwork: {
+      type: Function,
+      required: true,
+    },
+    selNetworkId: {
+      type: Number,
+      required: true,
+    },
+    isAnimatedIn: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
     const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
     const isClosing = ref<boolean>(false);
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
-
-    const closeModal = async (): Promise<void> => {
+    const closeUi = async (): Promise<void> => {
       isClosing.value = true;
       const animationDuration = 500;
       await wait(animationDuration);
       isClosing.value = false;
-      props.setCloseModal();
     };
 
     const nativeWallets = computed(() => {
@@ -248,7 +225,10 @@ export default defineComponent({
         .filter((it) => it !== undefined) as Wallet[];
     });
 
-    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
+    const selWallet = computed<Wallet>(
+      () => supportAllWalletsObj[props.selectedWallet as SupportWallet]
+    );
+
     const substrateAccounts = computed<SubstrateAccount[]>(
       () => store.getters['general/substrateAccounts']
     );
@@ -278,50 +258,57 @@ export default defineComponent({
       if (source === SupportWallet.Snap) {
         await handleMetaMaskSnap();
       }
-      await closeModal();
+      await closeUi();
       props.setWalletModal(source);
     };
 
     const setPolkasafeModal = async (): Promise<void> => {
       handleExtensions();
-      await closeModal();
       props.openPolkasafeModal();
     };
 
-    const setAccountUnificationModal = async (): Promise<void> => {
-      props.openAccountUnificationModal();
+    const setEvmWalletModal = async (source: string): Promise<void> => {
+      await props.connectEthereumWallet(source);
+      await props.selectNetwork();
     };
 
-    const setEvmWalletModal = async (source: string): Promise<void> => {
-      await closeModal();
-      props.connectEthereumWallet(source);
-    };
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
+
+    const isEnablePolkasafe = computed<boolean>(() => {
+      const networkIdx = store.getters['general/networkIdx'];
+      const isChopstickAstar =
+        networkIdx === endpointKey.CUSTOM && currentNetworkIdx.value === endpointKey.ASTAR;
+      return props.selNetworkId === endpointKey.ASTAR || isChopstickAstar;
+    });
 
     return {
       nativeWallets,
       evmWallets,
-      isClosing,
       currentWallet,
       currentAccountName,
       selWallet,
       SupportMultisig,
       castWalletName,
-      closeModal,
       setSubstrateWalletModal,
       setEvmWalletModal,
       disconnectAccount,
       setPolkasafeModal,
-      setAccountUnificationModal,
       currentNetworkIdx,
       endpointKey,
-      isZkEvm,
       isAccountUnification,
+      isClosing,
+      isEnablePolkasafe,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/header/styles/modal-connect-wallet.scss';
+@use 'src/components/header/styles/select-wallet.scss';
+.animate__animated.animate__fadeInRight {
+  --animate-duration: 0.8s;
+}
+.animate__animated.animate__fadeOutLeft {
+  --animate-duration: 0.8s;
+}
 </style>

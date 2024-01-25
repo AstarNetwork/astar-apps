@@ -7,8 +7,10 @@ import { clickDisclaimerButton } from 'src/modules/playwright';
 test.beforeEach(async ({ page }) => {
   await page.goto('/astar/dashboard');
   await clickDisclaimerButton(page);
-  const closeButton = page.getByText('Polkadot.js');
-  await closeButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
 });
 
 test.describe('on dashboard screen', () => {
