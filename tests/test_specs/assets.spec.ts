@@ -41,8 +41,6 @@ test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
   await connectToNetwork(page);
   await selectAccount(page, ALICE_ACCOUNT_NAME);
-  // Memo: wait for the page to be reloaded
-  // await wait(1000);
 });
 
 test.describe('account panel', () => {

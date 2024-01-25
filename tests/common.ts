@@ -32,16 +32,14 @@ export const connectToNetwork = async (page: Page): Promise<void> => {
   await page.locator('.ip-input').click();
   await page.locator('.ip-input').fill(NODE_ENDPOINT);
   await page.getByRole('button', { name: 'Change Network', exact: true }).click();
-  await page.waitForSelector('.button--icon-help', { state: 'visible' });
-  // Memo: wait for the page to be reloaded
-  // await wait(1000);
+  // Memo: to wait for page reloading
+  await page.waitForNavigation();
 };
 
 export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
   await page.getByTestId('Polkadot.js').click();
-  // await page.getByText('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };
@@ -65,7 +63,9 @@ export const selectMultisigAccount = async (
 ): Promise<void> => {
   // Memo: wallet name is defined in PolkaSafe portal
   const walletName = 'Test multisig';
-  await page.locator('.btn--account').click();
+  await page.getByTestId('btn-account').click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
   await page.getByText('PolkaSafe').click();
   await page.locator('.row--input').click();
   await page.getByText('Bob').click();
