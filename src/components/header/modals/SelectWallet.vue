@@ -42,6 +42,7 @@
           <button
             v-for="(wallet, index) in nativeWallets"
             :key="index"
+            :data-testid="wallet.name"
             :disabled="isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"

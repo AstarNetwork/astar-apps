@@ -32,14 +32,16 @@ export const connectToNetwork = async (page: Page): Promise<void> => {
   await page.locator('.ip-input').click();
   await page.locator('.ip-input').fill(NODE_ENDPOINT);
   await page.getByRole('button', { name: 'Change Network', exact: true }).click();
+  await page.waitForSelector('.button--icon-help', { state: 'visible' });
   // Memo: wait for the page to be reloaded
-  await wait(1000);
+  // await wait(1000);
 };
 
 export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
-  await page.getByText('Polkadot.js').click();
+  await page.getByTestId('Polkadot.js').click();
+  // await page.getByText('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };

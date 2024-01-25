@@ -65,7 +65,7 @@ test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/dapp-staking/discover');
   await connectToNetwork(page);
   // Memo: wait for the page to be reloaded
-  await wait(1000);
+  // await wait(1000);
 });
 
 test.describe('dApp staking transactions', () => {

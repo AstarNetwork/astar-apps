@@ -31,7 +31,8 @@ test.beforeEach(async ({ page, context }) => {
   await clickDisclaimerButton(page);
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
-  const polkadotJsButton = page.getByText('Polkadot.js');
+
+  const polkadotJsButton = page.getByTestId('Polkadot.js');
   await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
@@ -41,7 +42,7 @@ test.beforeEach(async ({ page, context }) => {
   await connectToNetwork(page);
   await selectAccount(page, ALICE_ACCOUNT_NAME);
   // Memo: wait for the page to be reloaded
-  await wait(1000);
+  // await wait(1000);
 });
 
 test.describe('account panel', () => {

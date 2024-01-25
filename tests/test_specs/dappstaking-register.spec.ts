@@ -39,7 +39,7 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await page.waitForSelector('.four', { state: 'hidden' }); // Wait for the page to load
   await selectAccount(page, BOB_ACCOUNT_NAME);
   // Memo: wait for the page to be reloaded
-  await wait(1000);
+  // await wait(1000);
 });
 
 test.describe('register dApp page', () => {
