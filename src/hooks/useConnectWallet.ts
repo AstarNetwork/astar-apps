@@ -13,7 +13,7 @@ import {
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { getEvmProvider, initWalletConnectProvider } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { deepLinkPath } from 'src/links';
@@ -127,13 +127,11 @@ export const useConnectWallet = () => {
 
     try {
       const accounts = await requestAccounts();
-
       accounts?.length && setCurrentEcdsaAccount(accounts[0]);
 
       const chainId = getChainId(currentNetworkIdx.value);
 
       const provider = getEvmProvider(currentWallet);
-
       if (!provider) {
         return false;
       }
@@ -161,6 +159,12 @@ export const useConnectWallet = () => {
   const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
     selectedWallet.value = wallet;
     let isEvmWalletAvailable = false;
+
+    if (wallet === SupportWallet.WalletConnect) {
+      await initWalletConnectProvider();
+      await loadEvmWallet({ currentWallet: wallet });
+      return;
+    }
 
     const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
     if (wallet === evmWallet.source) {

@@ -2,6 +2,8 @@ import { ref, watch, WatchCallback, computed } from 'vue';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { useRouter } from 'vue-router';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 export function useEvmAccount() {
   const { ethProvider } = useEthProvider();
@@ -10,11 +12,17 @@ export function useEvmAccount() {
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
 
   const requestAccounts = async () => {
-    let provider = ethProvider.value;
+    const wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
+    console.log('requestAccounts', wcProvider);
+    // let provider = ethProvider.value;
+    let provider = wcProvider;
 
     if (!provider) {
       throw new Error('Cannot detect any EVM Account');
     }
+
+    // @ts-ignore
+    await provider.enable();
 
     const accounts = (await provider.request({
       method: 'eth_requestAccounts',

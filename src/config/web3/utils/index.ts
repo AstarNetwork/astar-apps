@@ -68,18 +68,22 @@ export const setupNetwork = async ({
         } catch (error: any) {
           const codeUserRejected = 4001;
           if (error.code !== codeUserRejected) {
-            await provider.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId,
-                  chainName,
-                  nativeCurrency,
-                  rpcUrls,
-                  blockExplorerUrls,
-                },
-              ],
-            });
+            try {
+              await provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId,
+                    chainName,
+                    nativeCurrency,
+                    rpcUrls,
+                    blockExplorerUrls,
+                  },
+                ],
+              });
+            } catch (error) {
+              console.error(error);
+            }
           }
         }
       }

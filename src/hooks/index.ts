@@ -37,6 +37,7 @@ export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
 export * from './wallet/useLedger';
 export * from './wallet/useAccountUnification';
+export * from './wallet/useWalletConnect';
 export * from './xcm/useXcmBridge';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useTransferRouter';
