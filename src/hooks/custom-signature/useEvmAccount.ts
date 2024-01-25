@@ -12,8 +12,9 @@ export function useEvmAccount() {
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
 
   const requestAccounts = async () => {
+    console.log('requestAccounts');
     const wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
-    console.log('requestAccounts', wcProvider);
+    // console.log('requestAccounts', wcProvider);
     // let provider = ethProvider.value;
     let provider = wcProvider;
 

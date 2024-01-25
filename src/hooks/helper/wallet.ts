@@ -327,6 +327,7 @@ export const initWalletConnectProvider = async () => {
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   if (walletName === SupportWallet.WalletConnect) {
+    console.log('getEvmProvider');
     const provider = container.get<EthereumProvider>(Symbols.WcProvider);
     console.log('get', provider);
     return provider ? provider : null;
