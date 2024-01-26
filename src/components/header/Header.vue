@@ -5,7 +5,7 @@
         <div class="icon"><logo /></div>
       </template>
       <div v-if="!currentAccount">
-        <connect-button :class="isLoading && 'cursor--disabled'" @click="clickAccountBtn">
+        <connect-button @click="clickAccountBtn">
           <astar-icon-wallet />
         </connect-button>
         <q-tooltip>
