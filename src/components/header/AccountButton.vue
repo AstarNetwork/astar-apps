@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="btn--account">
+    <button type="button" class="btn--account" data-testid="btn-account">
       <img
         v-if="width >= screenSize.sm"
         class="icon"

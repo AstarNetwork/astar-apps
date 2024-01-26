@@ -3,7 +3,11 @@
     <div class="container--selection">
       <div class="column--selection">
         <button :disabled="!isEnableEthBridge">
-          <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
+          <component
+            :is="isEnableEthBridge ? 'router-link' : 'div'"
+            :to="buildEthereumBridgePageLink()"
+            class="button--bridge"
+          >
             <div class="row--title">
               <img class="img--logo" :src="require('src/assets/img/ethereum.png')" alt="ethereum" />
               <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
@@ -13,7 +17,7 @@
                 {{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
               </span>
             </div>
-          </router-link>
+          </component>
         </button>
         <p class="text--bridge">
           {{ $t('bridge.ethereumBridge.text2') }}
@@ -29,7 +33,11 @@
 
       <div class="column--selection">
         <button :disabled="!isEnableAstrBridge">
-          <router-link :to="buildEthereumBridgePageLink()" class="button--bridge">
+          <component
+            :is="isEnableAstrBridge ? 'router-link' : 'div'"
+            :to="buildEthereumBridgePageLink()"
+            class="button--bridge"
+          >
             <div class="row--title">
               <img
                 class="img--logo"
@@ -45,7 +53,7 @@
                 }}
               </span>
             </div>
-          </router-link>
+          </component>
         </button>
         <p class="text--bridge">{{ $t('bridge.astarBridge.text2') }}</p>
       </div>

@@ -6,5 +6,5 @@
     "experimentalDecorators": true,
     "jsx": "preserve"
   },
-  "exclude": ["**/node_modules/**", "**/tests/polkadot_wallet/**", "**/tests/metamask_wallet/**", "**/src-pwa/**", "**/src-ssr/**", "**/rpc-tests/**", "**/playwright-report/**", "**/dist/**", "**/.quasar/**", "**/.github/**"]
+  "exclude": ["**/node_modules/**", "**/.quasar/**", "**/dist/**", "**/playwright-report/**", "**/rpc-tests/**", "**/src-pwa/**", "**/src-ssr/**", "**/test-results/**", "**/tests/polkadot_wallet/**", "**/tests/metamask_wallet/**"]
 }

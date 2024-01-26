@@ -69,7 +69,7 @@ export default defineComponent({
 
 .body--dark {
   .box__row--wallet {
-    border: 1px solid $gray-3;
+    border: 1px solid $navy-1;
     color: $gray-1;
   }
 }
