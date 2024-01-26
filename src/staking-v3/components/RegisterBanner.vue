@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { networkParam, Path } from 'src/router/routes';
 import { useRegisterDapp } from '../hooks';
 
