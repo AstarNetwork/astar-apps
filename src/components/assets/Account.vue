@@ -95,11 +95,6 @@
       </div>
     </div>
 
-    <template v-if="isH160">
-      <evm-native-token class="container" />
-      <zk-astr v-if="isZkEvm" class="container" />
-    </template>
-
     <div v-if="multisig" class="row--details-signatory">
       <div class="column-account-name">
         <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
@@ -107,10 +102,6 @@
           $t('assets.theSignatory', { account: multisig.signatory.name })
         }}</span>
       </div>
-    </div>
-
-    <div v-if="!isH160" class="container">
-      <native-asset-list />
     </div>
   </div>
 </template>
@@ -120,9 +111,6 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { supportWalletObj } from 'src/config/wallets';
@@ -140,12 +128,10 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useDappStaking } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
-    NativeAssetList,
-    EvmNativeToken,
-    ZkAstr,
     AuIcon,
   },
   props: {
@@ -290,6 +276,8 @@ export default defineComponent({
 
     const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
 
+    const { isDappStakingV3 } = useDappStaking();
+
     return {
       iconWallet,
       currentAccountName,
@@ -313,6 +301,7 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isDappStakingV3,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
