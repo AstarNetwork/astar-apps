@@ -264,28 +264,27 @@
   </div>
 </template>
 <script lang="ts">
+import { checkIsNullOrUndefined, truncate } from '@astar-network/astar-sdk-core';
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
-import {
-  useBalance,
-  useBalloons,
-  useEvmDeposit,
-  useNetworkInfo,
-  usePrice,
-  useBreakpoints,
-  useFaucet,
-} from 'src/hooks';
-import { checkIsNullOrUndefined, truncate } from '@astar-network/astar-sdk-core';
-import { getTokenImage } from 'src/modules/token';
-import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
-import { buildTransferPageLink } from 'src/router/routes';
 import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
+import {
+  useBalance,
+  useBreakpoints,
+  useEvmDeposit,
+  useFaucet,
+  useNetworkInfo,
+  usePrice,
+} from 'src/hooks';
+import { getTokenImage } from 'src/modules/token';
+import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { Path } from 'src/router';
+import { buildTransferPageLink } from 'src/router/routes';
 import { useDappStaking } from 'src/staking-v3';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -307,8 +306,6 @@ export default defineComponent({
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
     const isExpand = ref<boolean>(false);
-    const { isBalloonNativeToken, isBalloonNativeTokenClosing, handleCloseNativeTokenBalloon } =
-      useBalloons();
 
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -393,9 +390,6 @@ export default defineComponent({
 
     // Ref: https://stackoverflow.com/questions/48143381/css-expand-contract-animation-to-show-hide-content
     const expandAsset = async (isOpen: boolean): Promise<void> => {
-      if (isBalloonNativeToken.value) {
-        await handleCloseNativeTokenBalloon();
-      }
       isExpand.value = !isOpen;
       const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
       el && el.classList.toggle('asset-expanded');
@@ -427,8 +421,6 @@ export default defineComponent({
       isSkeleton,
       isSupportAuTransfer,
       isExpand,
-      isBalloonNativeToken,
-      isBalloonNativeTokenClosing,
       width,
       screenSize,
       reservedTtl,
@@ -438,7 +430,6 @@ export default defineComponent({
       handleModalFaucet,
       handleModalEvmWithdraw,
       expandAsset,
-      handleCloseNativeTokenBalloon,
     };
   },
 });

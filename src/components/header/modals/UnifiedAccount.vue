@@ -27,6 +27,7 @@
           :show-balance-value="false"
           :show-balance="false"
           :get-balance="getBalance"
+          :is-unified-account="true"
         />
       </div>
       <div class="container--address container--address--eth">
@@ -38,13 +39,14 @@
           :show-balance-value="false"
           :show-balance="false"
           :get-balance="getBalance"
+          :is-unified-account="true"
         />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from './Account.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
@@ -106,13 +108,13 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@use 'src/components/header/styles/modal-account.scss';
+@use 'src/components/header/styles/select-account.scss';
 @import 'src/css/quasar.variables.scss';
 
 .container--addresses {
   width: 100%;
   padding: 12px 16px;
-  background-color: $gray-1;
+  background-color: $gray-0;
   border-radius: 6px;
   font-size: 12px;
   font-style: normal;
@@ -160,7 +162,7 @@ export default defineComponent({
 
 .body--dark {
   .container--addresses {
-    background-color: $navy-2;
+    background-color: $navy-3;
   }
 }
 </style>

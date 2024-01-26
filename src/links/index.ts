@@ -7,6 +7,7 @@ export const docsUrl = {
   evmDeposit:
     'https://docs.astar.network/tutorial/how-to-send-astr-sdn-from-metamask-to-polkadot.js',
   troubleShooting: 'https://docs.astar.network/docs/use/user-guides/troubleshooting',
+  createPromotion: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/',
 };
 
 export const socialUrl = {

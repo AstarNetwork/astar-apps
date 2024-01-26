@@ -13,11 +13,11 @@
           :assets-section="assetsSection"
         />
 
-        <div v-if="isDappStakingV3" ref="stakingSection">
+        <div v-if="isDappStakingV3 && !isZkEvm" ref="stakingSection">
           <staking />
         </div>
 
-        <div v-if="isDappStakingV3" ref="projectSection">
+        <div v-if="isDappStakingV3 && !isZkEvm" ref="projectSection">
           <your-project />
         </div>
 
@@ -213,6 +213,7 @@ export default defineComponent({
       bg,
       isDappStakingV3,
       nativeTokenSymbol,
+      isZkEvm,
       stakingSection,
       projectSection,
       assetsSection,

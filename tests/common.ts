@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from '@playwright/test';
 import { getWindow } from './fixtures';
 import { NODE_ENDPOINT } from './common-api';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export const ALICE_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice';
@@ -26,15 +27,19 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
 };
 
 export const connectToNetwork = async (page: Page): Promise<void> => {
-  await page.locator('.btn--network').click();
+  await page.locator('.icon--expand').click();
   await page.getByText('Custom Network').click();
-  await page.getByPlaceholder('IP Address / Domain').click();
-  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT);
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
+  await page.locator('.ip-input').click();
+  await page.locator('.ip-input').fill(NODE_ENDPOINT);
+  await page.getByRole('button', { name: 'Change Network', exact: true }).click();
+  // Memo: to wait for page reloading
+  await page.waitForNavigation();
 };
 
 export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
-  await page.getByText('Polkadot.js').click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  await page.getByTestId('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };
@@ -58,14 +63,9 @@ export const selectMultisigAccount = async (
 ): Promise<void> => {
   // Memo: wallet name is defined in PolkaSafe portal
   const walletName = 'Test multisig';
-  await page.locator('.btn--account').click();
-  // Todo: update Astar-UI to add a class name at the back button on the modal
-  await page
-    .locator(
-      '.wrapper--modal-drawer > .animate__animated > .modal-content > .row-title-close > .column-right-buttons > div > svg'
-    )
-    .first()
-    .click();
+  await page.getByTestId('btn-account').click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
   await page.getByText('PolkaSafe').click();
   await page.locator('.row--input').click();
   await page.getByText('Bob').click();

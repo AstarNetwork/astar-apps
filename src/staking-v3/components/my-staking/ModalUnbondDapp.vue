@@ -1,7 +1,7 @@
 <template>
   <modal-wrapper
     :is-modal-open="show"
-    :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.basic.name })"
+    :title="$t('stakingV3.unbondFrom', { name: dapp?.basic.name })"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
@@ -56,14 +56,12 @@
 
       <div class="warning">
         <li>
-          {{
-            $t('dappStaking.unbondingEra', { unbondingPeriod: constants?.unlockingPeriod ?? '0' })
-          }}
+          {{ $t('stakingV3.unbondingEra', { unbondingPeriod: constants?.unlockingPeriod ?? '0' }) }}
         </li>
       </div>
       <error-panel :error-message="errorMessage" class="panel" />
       <astar-button class="unbond-button" :disabled="!canUnbond()" @click="unbound()"
-        >{{ $t('dappStaking.modals.startUnbonding') }}
+        >{{ $t('stakingV3.startUnbonding') }}
       </astar-button>
     </div>
   </modal-wrapper>
@@ -112,7 +110,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { stakerInfo, constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
+    const { constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
     const store = useStore();
 
     const minStakingAmount = computed<number>(() => {
@@ -190,7 +188,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/stake-manage/styles/stake-form.scss';
+@use 'styles/modal-unbond.scss';
 
 .wrapper {
   display: flex;

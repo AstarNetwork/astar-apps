@@ -20,6 +20,7 @@ export enum LOCAL_STORAGE {
   THEME_COLOR = 'themeColor',
   IS_LEDGER = 'isLedger',
   MULTISIG = 'multisig',
+  DECOMMISSION = 'decommission',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser

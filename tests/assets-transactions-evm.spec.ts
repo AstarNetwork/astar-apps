@@ -34,8 +34,8 @@ test.afterAll(async () => {
 test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext }) => {
   await page.goto('/astar/assets');
   await clickDisclaimerButton(page);
-  const closeButton = page.getByText('Polkadot.js');
-  await closeButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);

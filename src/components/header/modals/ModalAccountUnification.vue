@@ -316,5 +316,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/header/styles/modal-account.scss';
+@use 'src/components/header/styles/select-account.scss';
 </style>

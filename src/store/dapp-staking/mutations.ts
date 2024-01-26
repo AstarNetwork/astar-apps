@@ -11,6 +11,7 @@ export interface ContractsMutations<S = State> {
   setMinimumStakingAmount(state: S, payload: string): void;
   setMaxNumberOfStakersPerContract(state: S, payload: number): void;
   setClaimedRewardsAmount(state: S, payload: number): void;
+  setDecommission(state: S, payload: boolean): void;
 }
 
 const mutation: MutationTree<State> & ContractsMutations = {
@@ -73,6 +74,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
 
   setCurrentEra(state: State, currentEra: number) {
     state.currentEra = currentEra;
+  },
+
+  setDecommission(state: State, payload: boolean) {
+    state.decommission = payload;
   },
 };
 

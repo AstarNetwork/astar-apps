@@ -2,8 +2,8 @@
   <div class="table--wrapper">
     <div class="row--header">
       <div class="column column--index">{{ $t('stakingV3.index') }}</div>
-      <div class="column column--amount">{{ $t('stakingV3.unbondingAmount') }}</div>
-      <div class="column column--remaining-days">{{ $t('stakingV3.remainingEras') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.unlockingAmount') }}</div>
+      <div class="column column--remaining-days">{{ $t('stakingV3.remainingDays') }}</div>
     </div>
     <div v-for="(chunk, index) in chunks" :key="index" class="row">
       <div class="column column--index">{{ $t('stakingV3.chunk') }} {{ index + 1 }}</div>
@@ -11,9 +11,11 @@
         <token-balance-native :balance="chunk.amount.toString()" />
       </div>
       <div class="column column--remaining-days">
-        <span v-if="chunk.remainingBlocks > 0" class="text--remaining-days">
-          {{ getRemainingEras(chunk.remainingBlocks) }} / {{ chunk.remainingBlocks }}
-        </span>
+        <remaining-days
+          v-if="chunk.remainingBlocks > 0"
+          :remaining-blocks="chunk.remainingBlocks"
+          :remaining-eras="getRemainingEras(chunk.remainingBlocks)"
+        />
         <span v-else class="icon--check">
           <astar-icon-check />
         </span>
@@ -67,10 +69,12 @@ import { defineComponent, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useStore } from 'src/store';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import RemainingDays from 'src/staking-v3/components/my-staking/RemainingDays.vue';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    RemainingDays,
   },
   setup() {
     const store = useStore();
@@ -107,10 +111,6 @@ export default defineComponent({
         : 0;
     };
 
-    const { width, screenSize } = useBreakpoints();
-
-    const { nativeTokenSymbol } = useNetworkInfo();
-
     return {
       chunks,
       withdraw,
@@ -118,9 +118,6 @@ export default defineComponent({
       getRemainingEras,
       canWithdraw,
       canRelock,
-      width,
-      screenSize,
-      nativeTokenSymbol,
       totalToWithdraw,
       totalToRelock,
     };
@@ -133,5 +130,10 @@ export default defineComponent({
 
 .row--action {
   background-color: white;
+}
+
+.column--remaining-days {
+  display: flex;
+  align-items: center;
 }
 </style>

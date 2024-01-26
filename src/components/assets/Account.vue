@@ -96,7 +96,7 @@
     </div>
 
     <anchor-links
-      v-if="isDappStakingV3"
+      v-if="isDappStakingV3 && !isZkEvm"
       :native-section="nativeSection"
       :staking-section="stakingSection"
       :project-section="projectSection"
