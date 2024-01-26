@@ -201,6 +201,7 @@ export interface ProviderDappData {
   owner: string;
   beneficiary?: string;
   state: DappState;
+  dappId: number;
 }
 
 export interface StakerRewards {

@@ -72,7 +72,7 @@ export class DappStakingService implements IDappStakingService {
             dappDetails: dapp,
             chain: {
               address: dapp.contractAddress,
-              id: -1, // TODO update
+              id: dapp.dappId,
               owner: dapp.owner,
               state: DappState.Unregistered,
             },
