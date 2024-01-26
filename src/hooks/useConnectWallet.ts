@@ -18,6 +18,7 @@ import {
   getDeepLinkUrl,
   getEvmProvider,
   getSelectedAccount,
+  getWcProvider,
   initWalletConnectProvider,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
@@ -140,7 +141,6 @@ export const useConnectWallet = () => {
 
         reCheckAccounts?.length && setCurrentEcdsaAccount(reCheckAccounts[0]);
       }
-
       return true;
     } catch (err: any) {
       console.error(err);
@@ -153,6 +153,8 @@ export const useConnectWallet = () => {
     let isEvmWalletAvailable = false;
 
     if (wallet === SupportWallet.WalletConnect) {
+      const wcProvider = getWcProvider();
+      if (wcProvider) return;
       await initWalletConnectProvider();
       await loadEvmWallet({ currentWallet: wallet });
       return;

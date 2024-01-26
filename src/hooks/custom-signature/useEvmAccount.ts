@@ -14,14 +14,7 @@ export function useEvmAccount() {
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
 
   const requestAccounts = async () => {
-    console.log('requestAccounts');
-    let wcProvider;
-    try {
-      wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
-    } catch (error) {}
     let provider = ethProvider.value;
-    console.log('provider', provider);
-    // let provider = wcProvider;
     if (!provider) {
       throw new Error('Cannot detect any EVM Account');
     }
@@ -30,7 +23,6 @@ export function useEvmAccount() {
       method: 'eth_requestAccounts',
     })) as string[];
     loadedAccounts.value = accounts;
-    console.log('accounts', accounts);
     return accounts;
   };
 

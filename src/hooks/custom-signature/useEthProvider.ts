@@ -1,11 +1,12 @@
 import { SupportWallet } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { ref, computed, watch, WatchCallback, onUnmounted } from 'vue';
-import { getEvmProvider } from '../helper/wallet';
+import { getEvmProvider, getWcProvider } from '../helper/wallet';
 import { EthereumProvider } from '../types/CustomSignature';
 import Web3 from 'web3';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export function useEthProvider() {
   const ethProvider = ref<EthereumProvider>();
@@ -16,15 +17,15 @@ export function useEthProvider() {
   );
 
   const setEthProvider = (): void => {
-    console.log('setEthProvider');
-    let wcProvider;
-    try {
-      wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
-      console.log('wcProvider', wcProvider);
-    } catch (error) {}
+    let provider;
+    const wallet = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET));
 
-    const provider = wcProvider ? wcProvider : getEvmProvider(currentWallet.value);
-    console.log('setEthProvider', provider);
+    if (wallet === SupportWallet.WalletConnect) {
+      provider = getWcProvider();
+    } else {
+      provider = getEvmProvider(currentWallet.value);
+    }
+
     if (provider) {
       ethProvider.value = provider;
     }

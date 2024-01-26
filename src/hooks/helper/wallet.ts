@@ -17,6 +17,7 @@ import { hasProperty } from '@astar-network/astar-sdk-core';
 import { EthereumProvider as WcEthereumProvider } from '@walletconnect/ethereum-provider';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { EVM, rpcUrls } from 'src/config/web3';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -268,74 +269,45 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return hasProperty(supportWalletObj, selectedWallet);
 };
 
-export const initWalletConnectProvider = async () => {
+// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
+export const initWalletConnectProvider = async (): Promise<void> => {
+  console.log('rpcUrls[EVM.ASTAR_MAINNET][0]', rpcUrls[EVM.ASTAR_MAINNET][0]);
   const rpcUrl = 'https://evm.astar.network';
-  const projectId = '';
-  const explorerUrl = 'https://blockscout.com/astar';
-
+  // Memo: this can be committed as it can be expose on the browser anyway
+  const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
   const provider = (await WcEthereumProvider.init({
-    projectId, // REQUIRED your projectId
-    showQrModal: true, // REQUIRED set to "true" to use @walletconnect/modal
-
-    /* Optional Namespaces - RECOMMENDED FOR MULTI-CHAIN APPS */
-    optionalChains: [592], // chains - required for optional namespaces
-    optionalMethods: ['wallet_switchEthereumChain', 'wallet_addEthereumChain'], // ethereum methods - all ethereum methods are already set by default so this is not required
-    // optionalEvents, // ethereum events - all ethereum events are already set by default so this is not required
-
-    /* Required Namespaces - NOT RECOMMENDED FOR MULTI-CHAIN APPS*/
-    chains: [1], //  chain ids
-    methods: [
-      'eth_sign',
-      'eth_signTypedData',
-      'personal_sign',
-      'eth_sendTransaction',
-      'eth_signTransaction',
-      'eth_signTypedData_v4',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v2',
-      'eth_signTypedData',
-      'wallet_switchEthereumChain',
-      'wallet_addEthereumChain',
-    ], // ethereum methods
-    // events, // ethereum events
-
+    projectId,
+    showQrModal: true,
+    optionalChains: [
+      EVM.ASTAR_MAINNET,
+      EVM.SHIDEN_MAINNET,
+      EVM.SHIBUYA_TESTNET,
+      EVM.SEPOLIA_TESTNET,
+      EVM.ASTAR_ZKEVM_MAINNET,
+    ],
+    chains: [1],
     rpcMap: {
-      '592': rpcUrl,
-    }, // OPTIONAL rpc urls for each chain
-    // metadata, // OPTIONAL metadata of your app
+      [String(EVM.ASTAR_MAINNET)]: rpcUrls[EVM.ASTAR_MAINNET][0] as string,
+    },
     // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/web3modal/options
   })) as any;
   await provider.connect();
-  // await provider.enable();
-  // container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
+  container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
   window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+};
 
-  // return provider;
-  // try {
-  //   const result = await provider.request({ method: 'eth_requestAccounts' });
-  //   const senderAddress = result[0];
-  //   // await setupNetwork({ provider, network: 592 });
-  //   // const web3 = new Web3(provider);
-  //   // const tx = {
-  //   //   from: senderAddress,
-  //   //   to: senderAddress,
-  //   //   value: web3.utils.toWei(String(1), 'ether'),
-  //   // };
-  //   // const hash = await web3.eth.sendTransaction(tx);
-  // } catch (error) {
-  //   console.error('Error switching network:', error);
-  // }
+export const getWcProvider = (): EthereumProvider | null => {
+  let wcProvider;
+  // Memo: ignore the error if it's not founded (before binding the provider)
+  try {
+    wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
+  } catch (error) {}
+  return wcProvider ? wcProvider : null;
 };
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   if (walletName === SupportWallet.WalletConnect) {
-    // const provider = container.get<EthereumProvider>(Symbols.WcProvider);
-    let wcProvider;
-    try {
-      wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
-      console.log('getEvmProvider', wcProvider);
-    } catch (error) {}
-    return wcProvider ? wcProvider : null;
+    return getWcProvider();
   }
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
   const provider = wallet ? (get(window, wallet.ethExtension) as EthereumProvider) : undefined;
