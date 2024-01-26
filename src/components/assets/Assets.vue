@@ -8,24 +8,46 @@
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
+
+        <anchor-links
+          v-if="isDappStakingV3 && !isZkEvm"
+          :native-section="nativeSection"
           :staking-section="stakingSection"
           :project-section="projectSection"
           :assets-section="assetsSection"
+          :is-dapp-owner="isDappOwner"
         />
 
-        <div v-if="isDappStakingV3 && !isZkEvm" ref="stakingSection">
-          <staking />
-        </div>
+        <template v-if="isH160">
+          <div ref="nativeSection">
+            <evm-native-token class="container" />
+          </div>
+          <zk-astr v-if="isZkEvm" class="container" />
+        </template>
+        <template v-else>
+          <div ref="nativeSection">
+            <native-asset-list class="container" />
+          </div>
+        </template>
 
-        <div v-if="isDappStakingV3 && !isZkEvm" ref="projectSection">
-          <your-project />
-        </div>
+        <template v-if="isDappStakingV3 && !isZkEvm">
+          <div ref="stakingSection">
+            <staking />
+          </div>
+        </template>
+
+        <template v-if="isDappStakingV3 && !isZkEvm && isDappOwner">
+          <div ref="projectSection">
+            <your-project :own-dapps="ownDapps" />
+          </div>
+        </template>
 
         <div v-if="!isLoading" ref="assetsSection">
-          <div v-if="isH160">
+          <template v-if="isH160">
             <evm-asset-list :tokens="evmAssets.assets" class="container" />
-          </div>
-          <div v-else>
+          </template>
+          <template v-else>
             <!-- Memo: hide xvm panel because AA might replace it -->
             <!-- <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" /> -->
             <xcm-native-asset-list
@@ -33,7 +55,7 @@
               :xcm-assets="xcmAssets.assets"
               class="container"
             />
-          </div>
+          </template>
         </div>
       </div>
 
@@ -55,12 +77,16 @@ import YourProject from 'src/components/assets/YourProject.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
-import { useDappStaking } from 'src/staking-v3';
+import { useDappStaking, CombinedDappInfo, useDapps } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import ZkAstr from 'src/components/assets/ZkAstr.vue';
+import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 
 export default defineComponent({
   components: {
@@ -71,6 +97,10 @@ export default defineComponent({
     XcmNativeAssetList,
     YourProject,
     Staking,
+    EvmNativeToken,
+    NativeAssetList,
+    ZkAstr,
+    AnchorLinks,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -193,6 +223,18 @@ export default defineComponent({
       return bg_img.light;
     });
 
+    const { allDapps } = useDapps();
+    const ownDapps = computed<CombinedDappInfo[]>(() => {
+      if (!allDapps.value) return [];
+      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
+    });
+
+    const isDappOwner = computed<Boolean>(() => {
+      if (ownDapps.value.length > 0) return true;
+      return false;
+    });
+
+    const nativeSection = ref<HTMLElement | null>(null);
     const stakingSection = ref<HTMLElement | null>(null);
     const projectSection = ref<HTMLElement | null>(null);
     const assetsSection = ref<HTMLElement | null>(null);
@@ -214,6 +256,9 @@ export default defineComponent({
       isDappStakingV3,
       nativeTokenSymbol,
       isZkEvm,
+      ownDapps,
+      isDappOwner,
+      nativeSection,
       stakingSection,
       projectSection,
       assetsSection,
