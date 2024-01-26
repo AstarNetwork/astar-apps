@@ -869,6 +869,7 @@ export default {
     claimRewardSuccess: 'You successfully claimed your rewards.',
     withdrawSuccess: 'You successfully withdrew your locked tokens.',
     relockSuccess: 'You successfully re-locked your tokens.',
+    unlockSuccess: 'You successfully unlocked your tokens.',
     searchDapps: 'Search dapps',
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
@@ -882,6 +883,9 @@ export default {
       'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
     loyalStakerWarning:
       'You will loose eligibility for bonus reward at the end of current period if you unstake tokens now.',
+    unbondFrom: 'Unbond from {name}',
+    startUnbonding: 'Start unbonding',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
   },
   bridge: {
     bridge: 'Bridge',

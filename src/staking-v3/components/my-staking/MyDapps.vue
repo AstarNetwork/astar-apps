@@ -9,76 +9,28 @@
       </div>
     </div>
     <div v-for="[key, value] in stakedDapps" :key="key">
-      <div class="row">
-        <div class="column column--dapp">{{ getDappName(key) }}</div>
-        <div class="column column--amount">
-          <token-balance-native :balance="getStakedAmount(value).toString()" />
-        </div>
-        <div class="column column--bonus">
-          <span v-if="value.loyalStaker" class="icon--check">
-            <astar-icon-check />
-          </span>
-          <span v-else>-</span>
-        </div>
-        <div class="column column--actions">
-          <div>
-            <button
-              type="button"
-              class="btn btn--icon icon--move"
-              :disabled="!isRegistered(key)"
-              @click="navigateToMove(key)"
-            >
-              <astar-icon-arrow-up-right />
-            </button>
-            <span class="text--mobile-menu">
-              {{ $t('stakingV3.move') }}
-            </span>
-            <q-tooltip>
-              <span class="text--tooltip">
-                {{ $t('stakingV3.move') }}
-              </span>
-            </q-tooltip>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              class="btn btn--icon icon--unlock"
-              :disabled="!isRegistered(key)"
-              @click="handleUnbonding(key)"
-            >
-              <astar-icon-arrow-up-right />
-            </button>
-            <span class="text--mobile-menu">
-              {{ $t('stakingV3.unlock') }}
-            </span>
-            <q-tooltip>
-              <span class="text--tooltip">
-                {{ $t('stakingV3.unlock') }}
-              </span>
-            </q-tooltip>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              class="btn btn--icon icon--add"
-              :disabled="!isRegistered(key)"
-              @click="navigateToVote(key)"
-            >
-              <astar-icon-arrow-up-right />
-            </button>
-            <span class="text--mobile-menu">
-              {{ $t('stakingV3.add') }}
-            </span>
-            <q-tooltip>
-              <span class="text--tooltip">
-                {{ $t('stakingV3.add') }}
-              </span>
-            </q-tooltip>
-          </div>
-        </div>
-      </div>
+      <my-dapp
+        v-if="getStakedAmountInVoting(value) > BigInt(0)"
+        :name="getDappName(key)"
+        :address="key"
+        :amount="getStakedAmountInVoting(value)"
+        :loyal-staker="value.loyalStaker"
+        :actions-enabled="isRegistered(key)"
+        :navigate-to-move="navigateToMove"
+        :navigate-to-vote="navigateToVote"
+        :handle-unbonding="handleUnbonding"
+      />
+      <my-dapp
+        v-if="getStakedAmountInBuild(value) > BigInt(0)"
+        :name="getDappName(key)"
+        :address="key"
+        :amount="getStakedAmountInBuild(value)"
+        :loyal-staker="false"
+        :actions-enabled="isRegistered(key)"
+        :navigate-to-move="navigateToMove"
+        :navigate-to-vote="navigateToVote"
+        :handle-unbonding="handleUnbonding"
+      />
       <div v-if="!isRegistered(key)" class="warning--unregistered-dapp">
         <astar-icon-warning size="20" />
         <span class="text--unregistered-dapp">
@@ -105,14 +57,14 @@
 import { CombinedDappInfo, DappState, SingularStakingInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalUnbondDapp from './ModalUnbondDapp.vue';
+import MyDapp from './MyDapp.vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
     ModalUnbondDapp,
+    MyDapp,
   },
   props: {
     stakedDapps: {
@@ -137,6 +89,14 @@ export default defineComponent({
 
     const getStakedAmount = (stakingInfo: SingularStakingInfo): bigint => {
       return stakingInfo.staked.totalStake;
+    };
+
+    const getStakedAmountInVoting = (stakingInfo: SingularStakingInfo): bigint => {
+      return stakingInfo.staked.voting;
+    };
+
+    const getStakedAmountInBuild = (stakingInfo: SingularStakingInfo): bigint => {
+      return stakingInfo.staked.buildAndEarn;
     };
 
     const isRegistered = (dappAddress: string): boolean => {
@@ -164,6 +124,8 @@ export default defineComponent({
       handleUnbonding,
       isRegistered,
       unstakeFromUnregistered,
+      getStakedAmountInBuild,
+      getStakedAmountInVoting,
     };
   },
 });

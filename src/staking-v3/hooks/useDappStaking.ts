@@ -299,7 +299,7 @@ export function useDappStaking() {
     await stakingService.unlockTokens(
       currentAccount.value,
       Number(ethers.utils.formatEther(amount)),
-      t('stakingV3.relockSuccess')
+      t('stakingV3.unlockSuccess')
     );
   };
 
@@ -478,6 +478,19 @@ export function useDappStaking() {
     return [true, ''];
   };
 
+  const canUnlock = (amount: number): [boolean, string] => {
+    if (amount <= 0) {
+      return [false, ''];
+    } else if (
+      constants.value &&
+      (ledger.value?.unlocking?.length ?? 0) >= constants.value.maxUnlockingChunks
+    ) {
+      return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
+    }
+
+    return [true, ''];
+  };
+
   const getStakerInfo = (dappAddress: string): SingularStakingInfo | undefined => {
     const isEvmAddress = isValidEvmAddress(dappAddress);
 
@@ -587,6 +600,7 @@ export function useDappStaking() {
     claimStakerRewards,
     canStake,
     canUnStake,
+    canUnlock,
     claimDappRewards,
     claimBonusRewards,
     claimStakerAndBonusRewards,
