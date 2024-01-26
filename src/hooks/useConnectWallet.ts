@@ -1,40 +1,32 @@
-import { get } from 'lodash-es';
-import { wait, checkSumEvmAddress, astarChain, hasProperty } from '@astar-network/astar-sdk-core';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
+import { astarChain, checkSumEvmAddress, hasProperty, wait } from '@astar-network/astar-sdk-core';
 import { $api } from 'boot/api';
+import { get } from 'lodash-es';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
-  supportEvmWalletObj,
   SupportWallet,
-  supportWalletObj,
   WalletModalOption,
+  supportEvmWalletObj,
+  supportWalletObj,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { getEvmProvider, initWalletConnectProvider } from 'src/hooks/helper/wallet';
-import { useExtensions } from 'src/hooks/useExtensions';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { deepLinkPath } from 'src/links';
-import { useStore } from 'src/store';
-import {
-  computed,
-  ref,
-  watch,
-  WatchCallback,
-  watchEffect,
-  watchPostEffect,
-  onUnmounted,
-} from 'vue';
-import { useRouter } from 'vue-router';
+import { ETHEREUM_EXTENSION, useAccount, useNetworkInfo } from 'src/hooks';
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
   castMobileSource,
   checkIsWalletExtension,
   getDeepLinkUrl,
+  getEvmProvider,
   getSelectedAccount,
+  initWalletConnectProvider,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
+import { useExtensions } from 'src/hooks/useExtensions';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { deepLinkPath } from 'src/links';
+import { useStore } from 'src/store';
+import { WatchCallback, computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
@@ -354,13 +346,6 @@ export const useConnectWallet = () => {
   );
 
   watch([currentNetworkChain], handleCheckLedgerEnvironment);
-
-  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
-  window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
-
-  onUnmounted(() => {
-    window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
-  });
 
   return {
     WalletModalOption,

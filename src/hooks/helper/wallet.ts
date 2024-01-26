@@ -306,8 +306,10 @@ export const initWalletConnectProvider = async () => {
     // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/web3modal/options
   })) as any;
   await provider.connect();
-  await provider.enable();
-  container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
+  // await provider.enable();
+  // container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
+  window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+
   // return provider;
   // try {
   //   const result = await provider.request({ method: 'eth_requestAccounts' });
@@ -327,10 +329,13 @@ export const initWalletConnectProvider = async () => {
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   if (walletName === SupportWallet.WalletConnect) {
-    console.log('getEvmProvider');
-    const provider = container.get<EthereumProvider>(Symbols.WcProvider);
-    console.log('get', provider);
-    return provider ? provider : null;
+    // const provider = container.get<EthereumProvider>(Symbols.WcProvider);
+    let wcProvider;
+    try {
+      wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
+      console.log('getEvmProvider', wcProvider);
+    } catch (error) {}
+    return wcProvider ? wcProvider : null;
   }
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
   const provider = wallet ? (get(window, wallet.ethExtension) as EthereumProvider) : undefined;

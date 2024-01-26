@@ -86,6 +86,9 @@ import {
   IDappStakingServiceV2V3,
 } from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
 import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
+// import EthereumProvider from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
+// import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';

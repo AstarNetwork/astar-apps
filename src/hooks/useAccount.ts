@@ -66,9 +66,14 @@ export const useAccount = () => {
         ss58: '',
         h160: '',
       });
+      const wallet = String(localStorage.getItem(SELECTED_WALLET));
+      if (wallet === SupportWallet.WalletConnect) {
+        container.unbind(Symbols.WcProvider);
+      }
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
       localStorage.removeItem(MULTISIG);
+
       currentAccount.value = '';
       currentAccountName.value = '';
       resolve(true);
