@@ -15,6 +15,7 @@ import { useNetworkInfo } from './useNetworkInfo';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
+import { getWcProvider } from './helper/wallet';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -68,7 +69,8 @@ export const useAccount = () => {
       });
       const wallet = String(localStorage.getItem(SELECTED_WALLET));
       if (wallet === SupportWallet.WalletConnect) {
-        container.unbind(Symbols.WcProvider);
+        const wcProvider = getWcProvider();
+        wcProvider && container.unbind(Symbols.WcProvider);
       }
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
