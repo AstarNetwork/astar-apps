@@ -71,7 +71,6 @@ export const useAccount = () => {
       if (wallet === SupportWallet.WalletConnect) {
         const wcProvider = getWcProvider();
         if (wcProvider) {
-          // await wcProvider.;
           container.unbind(Symbols.WcProvider);
         }
       }
