@@ -17,6 +17,8 @@ import { hasProperty } from '@astar-network/astar-sdk-core';
 import { EthereumProvider as WcEthereumProvider } from '@walletconnect/ethereum-provider';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { EVM, rpcUrls } from 'src/config/web3';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -270,42 +272,42 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
 
 // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
 export const initWalletConnectProvider = async (): Promise<void> => {
-  const rpcUrl = 'https://evm.astar.network';
-  // Memo: this can be committed as it can be expose on the browser anyway
+  let provider;
+  const astar = providerEndpoints[endpointKey.ASTAR];
+  const shiden = providerEndpoints[endpointKey.SHIDEN];
+  const shibuya = providerEndpoints[endpointKey.SHIBUYA];
+  const zKatana = providerEndpoints[endpointKey.ZKATANA];
+  const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
 
-  const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
-  const explorerUrl = 'https://blockscout.com/astar';
-
-  const provider = (await WcEthereumProvider.init({
-    projectId, // REQUIRED your projectId
-    showQrModal: true, // REQUIRED set to "true" to use @walletconnect/modal
-    optionalChains: [592], // chains - required for optional namespaces
-    optionalMethods: ['wallet_switchEthereumChain', 'wallet_addEthereumChain'], // ethereum methods - all ethereum methods are already set by default so this is not required
-    // optionalEvents, // ethereum events - all ethereum events are already set by default so this is not required
-
-    chains: [1],
-    methods: [
-      'eth_sign',
-      'eth_signTypedData',
-      'personal_sign',
-      'eth_sendTransaction',
-      'eth_signTransaction',
-      'eth_signTypedData_v4',
-      'eth_signTypedData_v3',
-      'eth_signTypedData_v2',
-      'eth_signTypedData',
-      'wallet_switchEthereumChain',
-      'wallet_addEthereumChain',
-    ],
-
-    rpcMap: {
-      '592': rpcUrl,
-    },
-    // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/web3modal/options
-  })) as any;
-  await provider.connect();
-  container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
-  window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+  try {
+    indexedDB.deleteDatabase('WALLET_CONNECT_V2_INDEXED_DB');
+    const provider = (await WcEthereumProvider.init({
+      // Memo: this can be committed as it can be exposed on the browser anyway
+      projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
+      showQrModal: true,
+      optionalChains: [
+        Number(astar.evmChainId),
+        Number(shiden.evmChainId),
+        Number(shibuya.evmChainId),
+        // Number(astarZkEvm.evmChainId),
+        Number(zKatana.evmChainId),
+        // EVM.SEPOLIA_TESTNET,
+      ],
+      chains: [EVM.ETHEREUM_MAINNET],
+      rpcMap: {
+        [astar.evmChainId]: astar.evmEndpoints[0],
+        [shiden.evmChainId]: shiden.evmEndpoints[0],
+        [shibuya.evmChainId]: shibuya.evmEndpoints[0],
+        // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
+        [zKatana.evmChainId]: zKatana.evmEndpoints[0],
+        // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
+      },
+    })) as any;
+    await provider.connect();
+    container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
+    // Memo: update the ethProvider in useEthProvider.ts
+    window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+  } catch (error) {}
 };
 
 export const getWcProvider = (): EthereumProvider | null => {
@@ -323,7 +325,6 @@ export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | nu
   }
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
   const provider = wallet ? (get(window, wallet.ethExtension) as EthereumProvider) : undefined;
-
   const isExtension =
     wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
