@@ -277,96 +277,87 @@ const deleteWalletConnectDb = async (): Promise<void> => {
   await wait(2000);
 };
 
-// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
-export const initWalletConnectProvider = async (): Promise<{
+interface IWcEthereumProvider {
   provider: typeof WcEthereumProvider | undefined;
   chainId: number;
-}> => {
-  try {
-    // await deleteWalletConnectDb();
-    const astar = providerEndpoints[endpointKey.ASTAR];
-    const shiden = providerEndpoints[endpointKey.SHIDEN];
-    const shibuya = providerEndpoints[endpointKey.SHIBUYA];
-    const zKatana = providerEndpoints[endpointKey.ZKATANA];
-    const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
+}
 
-    const getProvider = async () => {
-      const provider = (await WcEthereumProvider.init({
-        // Memo: this can be committed as it can be exposed on the browser anyway
-        projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
-        showQrModal: true,
-        optionalChains: [
-          Number(astar.evmChainId),
-          Number(shiden.evmChainId),
-          Number(shibuya.evmChainId),
-          // Number(astarZkEvm.evmChainId),
-          Number(zKatana.evmChainId),
-          // EVM.SEPOLIA_TESTNET,
-        ],
-        chains: [EVM.ETHEREUM_MAINNET],
-        rpcMap: {
-          [astar.evmChainId]: astar.evmEndpoints[0],
-          [shiden.evmChainId]: shiden.evmEndpoints[0],
-          [shibuya.evmChainId]: shibuya.evmEndpoints[0],
-          // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
-          [zKatana.evmChainId]: zKatana.evmEndpoints[0],
-          // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
-        },
-      })) as any;
-      return provider;
-    };
-    const provider = await getProvider();
-    console.log('provider.connected', provider.connected);
-    console.log('await provider.connected', await provider.connected);
+// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
+const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
+  const astar = providerEndpoints[endpointKey.ASTAR];
+  const shiden = providerEndpoints[endpointKey.SHIDEN];
+  const shibuya = providerEndpoints[endpointKey.SHIBUYA];
+  const zKatana = providerEndpoints[endpointKey.ZKATANA];
+  const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
+
+  const provider = (await WcEthereumProvider.init({
+    // Memo: this can be committed as it can be exposed on the browser anyway
+    projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
+    showQrModal: true,
+    optionalChains: [
+      Number(astar.evmChainId),
+      Number(shiden.evmChainId),
+      Number(shibuya.evmChainId),
+      // Number(astarZkEvm.evmChainId),
+      Number(zKatana.evmChainId),
+      // EVM.SEPOLIA_TESTNET,
+    ],
+    chains: [EVM.ETHEREUM_MAINNET],
+    rpcMap: {
+      [astar.evmChainId]: astar.evmEndpoints[0],
+      [shiden.evmChainId]: shiden.evmEndpoints[0],
+      [shibuya.evmChainId]: shibuya.evmEndpoints[0],
+      // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
+      [zKatana.evmChainId]: zKatana.evmEndpoints[0],
+      // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
+    },
+  })) as any;
+  return provider;
+};
+
+export const initWalletConnectProvider = async (): Promise<IWcEthereumProvider> => {
+  const getProvider = async (): Promise<IWcEthereumProvider> => {
+    const provider = (await initWcProvider()) as any;
+    // Memo: remove the previous session in the wallet
+    // Ref: https://github.com/MyEtherWallet/MyEtherWallet/blob/52ea653a20f37becec7aa01f2564370f4366c8b1/src/modules/access-wallet/hybrid/handlers/WalletConnect/index.js#L135
     const isConnected = await provider.connected;
     if (isConnected) {
       try {
-        const result = await provider.disconnect();
-        console.log('deleted', result);
+        await provider.disconnect();
       } catch (error) {
         console.error(error);
       }
     }
 
     await provider.connect();
-    await wait(2000);
-    // await provider.enable();
-    console.log('connected');
-    console.log('provider', provider);
-    // await provider.enable();
-    const web3 = new Web3(provider as any);
-    const accounts = await web3.eth.getAccounts();
-    console.log('accounts', accounts);
-    const balWei = await web3.eth.getBalance('0xD181Fd5a9D3178F497668e0cb2aD57B53D7EaeA7');
-
-    console.log('balWei', balWei);
-    // const web3 = new Web3(provider);
-    // const tx = {
-    //   from: accounts[0],
-    //   to: accounts[0],
-    //   value: '1000000000000000000',
-    // };
-    // const hash = await web3.eth.sendTransaction(tx);
     // Memo: to wait for syncing the correct chainId in provider
     await wait(2000);
     container.addConstant<typeof WcEthereumProvider>(Symbols.WcProvider, provider);
     // Memo: update the ethProvider in useEthProvider.ts
     window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
 
-    provider.on('connect', () => {
-      // localStorage.setItem('walletconnect', JSON.stringify(provider.session));
-      console.log('hello');
-    });
     provider.on('disconnect', async () => {
-      console.log('disconnecting');
       await provider.disconnect();
-      // localStorage.removeItem('walletconnect');
     });
 
     return { provider, chainId: provider.chainId };
-  } catch (error: any) {
+  };
+
+  try {
+    const { provider, chainId } = await getProvider();
+    return { provider, chainId };
+  } catch (error) {
     console.error(error);
-    throw Error(error.message);
+    // Recursive: run this code when "url.match is not a function" displays on the browser
+    // Reconnect after deleting wallet 'WALLET_CONNECT_V2_INDEXED_DB'
+    try {
+      await deleteWalletConnectDb();
+      const { provider, chainId } = await getProvider();
+      return { provider, chainId };
+    } catch (error: any) {
+      console.error(error);
+      throw Error(error.message);
+    }
   }
 };
 
