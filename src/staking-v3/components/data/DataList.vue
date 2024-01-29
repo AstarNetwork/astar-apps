@@ -54,8 +54,7 @@ import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
-import { getNumberOfParticipants } from 'src/staking-v3/logic/services/DappStakingService';
-import { networkParam } from 'src/router/routes';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -78,8 +77,9 @@ export default defineComponent({
     const unfilledSlots = computed<number>(
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
     );
-    const numberOfParticipants = computed<number>(() =>
-      getNumberOfParticipants(networkParam.valueOf())
+    const store = useStore();
+    const numberOfParticipants = computed<number>(
+      () => store.getters['stakingV3/numberOfParticipants']
     );
 
     return {
@@ -97,6 +97,7 @@ export default defineComponent({
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,
+      numberOfParticipants,
     };
   },
 });

@@ -200,6 +200,11 @@ export interface ProviderDappData {
   unregistrationBlockNumber?: number;
 }
 
+export interface NumberOfParticipantsData {
+  timestamp: string;
+  participants: number;
+}
+
 export interface StakerRewards {
   amount: bigint;
   period: number;
