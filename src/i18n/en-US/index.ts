@@ -478,6 +478,7 @@ export default {
     astarNativeAccount: 'Astar Native Account',
     astarEvmAccount: 'Astar EVM Account',
     assets: 'Assets',
+    project: 'Project',
     xcmAssetsShort: 'XCM Assets',
     xcmAssets: 'XCM (Cross Chain Message) Assets',
     xvmAssetsShort: 'XVM ERC-20 Assets',
