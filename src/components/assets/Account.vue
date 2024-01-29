@@ -128,7 +128,6 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useDappStaking } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
@@ -276,8 +275,6 @@ export default defineComponent({
 
     const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
 
-    const { isDappStakingV3 } = useDappStaking();
-
     return {
       iconWallet,
       currentAccountName,
@@ -301,7 +298,6 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
-      isDappStakingV3,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
