@@ -10,12 +10,13 @@ import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
 import { getWcProvider } from './helper/wallet';
+import { useEthProvider } from './custom-signature/useEthProvider';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -26,6 +27,7 @@ export const useAccount = () => {
   const store = useStore();
   const { getProxiedUrl } = useNft();
   const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
+  // const { web3Provider } = useEthProvider();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -71,6 +73,8 @@ export const useAccount = () => {
       if (wallet === SupportWallet.WalletConnect) {
         const wcProvider = getWcProvider();
         if (wcProvider) {
+          // web3Provider.value!.eth.currentProvider!.disconnect();
+          localStorage.removeItem('WCM_VERSION');
           container.unbind(Symbols.WcProvider);
         }
       }

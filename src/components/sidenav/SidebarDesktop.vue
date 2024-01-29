@@ -60,6 +60,7 @@
         <router-link
           v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
+          data-testid="dapp-staking"
           :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
           <astar-icon-base

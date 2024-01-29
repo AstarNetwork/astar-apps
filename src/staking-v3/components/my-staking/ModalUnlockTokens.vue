@@ -1,7 +1,7 @@
 <template>
   <modal-wrapper
     :is-modal-open="show"
-    :title="$t('stakingV3.unbondFrom', { name: dapp?.basic.name })"
+    :title="$t('stakingV3.unlock')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
@@ -51,24 +51,16 @@
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
       />
-
-      <rewards-panel class="panel" />
-
-      <div class="warning">
-        <li>
-          {{ $t('stakingV3.unbondingEra', { unbondingPeriod: constants?.unlockingPeriod ?? '0' }) }}
-        </li>
-      </div>
       <error-panel :error-message="errorMessage" class="panel" />
-      <astar-button class="unbond-button" :disabled="!canUnbond()" @click="unbound()"
-        >{{ $t('stakingV3.startUnbonding') }}
+      <astar-button class="unbond-button" :disabled="!canUnlockTokens()" @click="unlockTokens()"
+        >{{ $t('stakingV3.unlock') }}
       </astar-button>
     </div>
   </modal-wrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, ref, PropType } from 'vue';
 import { useNetworkInfo, useGasPrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { truncate } from '@astar-network/astar-sdk-core';
@@ -77,17 +69,13 @@ import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
-import { useStore } from 'src/store';
-import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { useDappStaking } from 'src/staking-v3/hooks';
-import RewardsPanel from '../RewardsPanel.vue';
 import ErrorPanel from '../ErrorPanel.vue';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
     ModalWrapper,
-    RewardsPanel,
     ErrorPanel,
   },
   props: {
@@ -95,12 +83,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    dapp: {
-      type: Object as PropType<CombinedDappInfo>,
-      required: true,
-    },
     setIsOpen: {
       type: Function,
+      required: true,
+    },
+    maxUnlockAmount: {
+      type: BigInt as unknown as PropType<bigint>,
       required: true,
     },
   },
@@ -110,25 +98,11 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const { constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
-    const store = useStore();
-
-    const minStakingAmount = computed<number>(() => {
-      const amt = store.getters['dapps/getMinimumStakingAmount'];
-      return Number(ethers.utils.formatEther(amt));
-    });
-    const isBelowThanMinStaking = computed<boolean>(() => {
-      return minStakingAmount.value > Number(maxAmount.value) - Number(amount.value);
-    });
-    const maxAmount = computed<string>(() => {
-      const selectedDappStakes = getStakerInfo(props.dapp.chain.address);
-
-      return selectedDappStakes
-        ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
-        : '0';
-    });
+    const { unlock, canUnlock } = useDappStaking();
+    const maxAmount = computed<string>(() =>
+      ethers.utils.formatEther(props.maxUnlockAmount.toString())
+    );
     const amount = ref<string | null>(null);
-    const errorMessage = ref<string | undefined>();
 
     const toMaxAmount = (): void => {
       amount.value = truncate(maxAmount.value).toString();
@@ -146,21 +120,18 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const canUnbond = () => {
-      const [result, message] = canUnStake(props.dapp.basic.address, Number(amount.value));
+    const errorMessage = ref<string | undefined>();
+    const canUnlockTokens = () => {
+      const unlockAmount = Number(amount.value ?? 0);
+      const [result, message] = canUnlock(unlockAmount);
       errorMessage.value = message;
 
-      return result;
+      return unlockAmount <= Number(maxAmount.value) && result;
     };
 
-    const unbound = async (): Promise<void> => {
+    const unlockTokens = async (): Promise<void> => {
       await closeModal();
-      const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
-      if (unstakeAmount) {
-        await unstake(props.dapp, Number(unstakeAmount));
-      } else {
-        throw 'Invalid un-bonding amount';
-      }
+      await unlock(ethers.utils.parseEther(amount.value ?? '0').toBigInt());
     };
 
     return {
@@ -170,18 +141,16 @@ export default defineComponent({
       amount,
       selectedTip,
       nativeTipPrice,
-      minStakingAmount,
       isClosingModal,
+      errorMessage,
       setSelectedTip,
       close,
       toMaxAmount,
       truncate,
       inputHandler,
-      unbound,
-      canUnbond,
+      canUnlockTokens,
       closeModal,
-      constants,
-      errorMessage,
+      unlockTokens,
     };
   },
 });

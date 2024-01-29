@@ -10,8 +10,8 @@
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
         />
 
-        <staking v-if="isDappStakingV3" />
-        <your-project v-if="isDappStakingV3" />
+        <staking v-if="isDappStakingV3 && !isZkEvm" />
+        <your-project v-if="isDappStakingV3 && !isZkEvm" />
 
         <div v-if="!isLoading">
           <div v-if="isH160">
@@ -199,6 +199,7 @@ export default defineComponent({
       isLoading,
       bg,
       isDappStakingV3,
+      isZkEvm,
     };
   },
 });

@@ -51,10 +51,11 @@ import {
   useDispatchGetDapps,
   useStake,
   useStakingList,
+  useDecommission,
 } from 'src/hooks';
+import { useDappStakingNavigation } from 'src/staking-v3';
 import { wait } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
-import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -79,9 +80,9 @@ export default defineComponent({
     useDispatchGetDapps();
     const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
       useStake();
-
-    const store = useStore();
     const { dapps, stakingList } = useStakingList();
+    const { decommissionStarted } = useDecommission();
+    const { navigateToHome } = useDappStakingNavigation();
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const dappAddress = computed<string>(() => route.query.dapp as string);
 
@@ -128,6 +129,16 @@ export default defineComponent({
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
 
+    watch(
+      [decommissionStarted],
+      () => {
+        if (decommissionStarted.value) {
+          navigateToHome();
+        }
+      },
+      { immediate: true }
+    );
+
     return {
       isHighlightRightUi,
       rightUi,
@@ -138,6 +149,7 @@ export default defineComponent({
       stakingList,
       isModalSelectFunds,
       dappAddress,
+      decommissionStarted,
       handleSetAddressTransferFrom,
       setRightUi,
       cancelHighlight,

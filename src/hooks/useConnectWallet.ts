@@ -28,11 +28,11 @@ import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
 import { WatchCallback, computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import Web3 from 'web3';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
 
-  const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const modalPolkasafeSelect = ref<boolean>(false);
   const modalAccountUnificationSelect = ref<boolean>(false);
@@ -43,6 +43,7 @@ export const useConnectWallet = () => {
   const { requestAccounts } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
+  const { evmNetworkIdx } = useNetworkInfo();
 
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
@@ -64,24 +65,18 @@ export const useConnectWallet = () => {
     }
   });
 
-  const setCloseModal = (): void => {
-    modalName.value = '';
-  };
-
   const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
     return;
   };
 
+  const setModalPolkasafeSelect = (result: boolean): void => {
+    modalPolkasafeSelect.value = result;
+  };
+
   const openPolkasafeModal = (): void => {
     modalName.value = WalletModalOption.Polkasafe;
     modalPolkasafeSelect.value = true;
-    return;
-  };
-
-  const openAccountUnificationModal = (): void => {
-    modalName.value = WalletModalOption.AccountUnification;
-    modalAccountUnificationSelect.value = true;
     return;
   };
 
@@ -99,9 +94,11 @@ export const useConnectWallet = () => {
   const loadEvmWallet = async ({
     ss58,
     currentWallet,
+    isSetupNetwork,
   }: {
     ss58?: string;
     currentWallet: SupportWallet;
+    isSetupNetwork: boolean;
   }): Promise<boolean> => {
     const setCurrentEcdsaAccount = (address: string) => {
       const ethereumAddr = checkSumEvmAddress(address);
@@ -131,7 +128,7 @@ export const useConnectWallet = () => {
 
       // Memo: Do not change the network for the Bridge page
       if (currentRouter.value.name !== 'Bridge') {
-        await setupNetwork({ network: chainId, provider });
+        isSetupNetwork && (await setupNetwork({ network: chainId, provider }));
       }
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
@@ -148,16 +145,29 @@ export const useConnectWallet = () => {
     }
   };
 
-  const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
+  const setEvmWallet = async (wallet: SupportWallet, isSetupNetwork = true): Promise<void> => {
     selectedWallet.value = wallet;
     let isEvmWalletAvailable = false;
 
     if (wallet === SupportWallet.WalletConnect) {
       const wcProvider = getWcProvider();
       if (wcProvider) return;
-      await initWalletConnectProvider();
-      await loadEvmWallet({ currentWallet: wallet });
-      return;
+      try {
+        const { provider, chainId } = await initWalletConnectProvider();
+        if (provider && evmNetworkIdx.value !== Number(chainId)) {
+          store.dispatch('general/showAlertMsg', {
+            msg: 'Please switch to the correct network',
+            alertType: 'error',
+          });
+        }
+        await loadEvmWallet({ currentWallet: wallet, isSetupNetwork });
+        return;
+      } catch (error: any) {
+        store.dispatch('general/showAlertMsg', {
+          msg: error.message,
+          alertType: 'error',
+        });
+      }
     }
 
     const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
@@ -179,7 +189,7 @@ export const useConnectWallet = () => {
     }
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-    await loadEvmWallet({ ss58, currentWallet: wallet });
+    await loadEvmWallet({ ss58, currentWallet: wallet, isSetupNetwork });
   };
 
   const setWallet = (wallet: SupportWallet): void => {
@@ -227,9 +237,14 @@ export const useConnectWallet = () => {
       return;
     }
     if (hasProperty(supportEvmWalletObj, wallet)) {
-      setEvmWallet(wallet);
+      // Memo: no need to switch network before the page is refreshed
+      setEvmWallet(wallet, false);
       return;
     }
+  };
+
+  const setModalAccountSelect = (result: boolean): void => {
+    modalAccountSelect.value = result;
   };
 
   const selectLoginWallet = async (): Promise<void> => {
@@ -265,7 +280,12 @@ export const useConnectWallet = () => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
     const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
 
-    if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
+    if (
+      currentRouter.value === undefined ||
+      !address ||
+      !isConnectedNetwork.value ||
+      currentAccount.value
+    ) {
       return;
     }
 
@@ -284,10 +304,6 @@ export const useConnectWallet = () => {
     } else {
       store.commit('general/setCurrentAddress', address);
     }
-  };
-
-  const changeAccount = async (): Promise<void> => {
-    modalAccountSelect.value = true;
   };
 
   watchEffect(() => {
@@ -352,7 +368,6 @@ export const useConnectWallet = () => {
   return {
     WalletModalOption,
     currentNetworkStatus,
-    modalConnectWallet,
     currentAccount,
     currentAccountName,
     modalName,
@@ -364,12 +379,11 @@ export const useConnectWallet = () => {
     isEthWallet,
     modalAccountUnificationSelect,
     openSelectModal,
-    setCloseModal,
     setWalletModal,
     disconnectAccount,
-    changeAccount,
     connectEthereumWallet,
     openPolkasafeModal,
-    openAccountUnificationModal,
+    setModalAccountSelect,
+    setModalPolkasafeSelect,
   };
 };

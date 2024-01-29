@@ -1,9 +1,26 @@
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
-.wrapper--select-network {
-  position: relative;
-  flex-grow: 1;
+.row--back {
+  text-align: left;
+  color: $gray-4;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  @media (min-width: $lg) {
+    margin-top: -10px;
+  }
+}
+.button--back {
+  border: 1px solid $gray-4;
+  border-radius: 100%;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    color: $astar-blue;
+    border: 1px solid $astar-blue;
+  }
 }
 
 .list--account {
@@ -20,6 +37,7 @@
 
 .text--is-ledger {
   font-weight: 600;
+  font-size: 13px;
   color: $gray-5;
 }
 
@@ -60,7 +78,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 24px;
 }
 
 .class-radio {
@@ -72,7 +89,7 @@
   line-height: 18px;
   color: $gray-5;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px;
   cursor: pointer;
 }
 
@@ -95,8 +112,8 @@
 }
 
 .radio-btn {
-  width: 18px !important;
-  margin-right: 18px !important;
+  width: 16px !important;
+  margin-right: 16px !important;
 }
 
 .icons {
@@ -110,7 +127,7 @@
   column-gap: 24px;
   @media (min-width: $sm) {
     display: grid;
-    grid-template-columns: 220px auto;
+    grid-template-columns: 170px auto;
   }
 }
 
@@ -247,12 +264,21 @@
   margin-top: 24px;
 }
 
+.wrapper--select-signatory {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
 .body--dark {
   .class-radio {
     color: #fff;
   }
   .class-radio-off {
-    border: 1px solid $gray-3;
+    border: 1px solid $navy-3;
+  }
+
+  .row--back {
+    color: $gray-3;
   }
 
   .text--is-ledger {

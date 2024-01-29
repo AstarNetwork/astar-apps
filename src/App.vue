@@ -33,6 +33,12 @@
       :set-is-open="setShowDisclaimerModal"
       :show="showDisclaimerModal"
     />
+
+    <modal-decommission
+      v-if="showDecommissionModal"
+      :show="showDecommissionModal"
+      :set-is-open="setShowDecommissionModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -59,7 +65,7 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAccount, useAppRouter } from 'src/hooks';
+import { useAccount, useAppRouter, useDecommission } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
@@ -69,6 +75,7 @@ import {
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 import { useInflation } from 'src/hooks/useInflation';
+import ModalDecommission from './components/dapp-staking/ModalDecommission.vue';
 
 export default defineComponent({
   name: 'App',
@@ -79,6 +86,7 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
+    ModalDecommission,
   },
   setup() {
     useAppRouter();
@@ -96,12 +104,19 @@ export default defineComponent({
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore } = useInflation();
+    const {
+      decommissionStarted,
+      isInLocalStorage,
+      fetchDecommissionStatusToStore,
+      setToLocalStorage,
+    } = useDecommission();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const showDecommissionModal = ref<boolean>(false);
 
     const showDisclaimerModal = ref<boolean>(false);
     if (!localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
@@ -112,6 +127,10 @@ export default defineComponent({
 
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
+    };
+
+    const setShowDecommissionModal = (isOpen: boolean): void => {
+      showDecommissionModal.value = isOpen;
     };
 
     // Handle busy and extrinsic call status messages.
@@ -152,6 +171,8 @@ export default defineComponent({
           .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
           .startProtocolStateSubscription();
       }
+
+      fetchDecommissionStatusToStore();
     });
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
@@ -206,6 +227,19 @@ export default defineComponent({
       }
     });
 
+    watch(
+      [decommissionStarted],
+      () => {
+        if (decommissionStarted.value && !isDappStakingV3.value && !isInLocalStorage.value) {
+          setTimeout(() => {
+            showDecommissionModal.value = true;
+            setToLocalStorage(true);
+          }, 2000);
+        }
+      },
+      { immediate: true }
+    );
+
     const removeSplashScreen = () => {
       var elem = document.getElementById('splash');
       elem?.remove();
@@ -217,7 +251,9 @@ export default defineComponent({
       isLoading,
       showAlert,
       showDisclaimerModal,
+      showDecommissionModal,
       setShowDisclaimerModal,
+      setShowDecommissionModal,
     };
   },
 });

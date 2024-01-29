@@ -1,24 +1,24 @@
-import { get } from 'lodash-es';
+import { hasProperty, wait } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { EthereumProvider as WcEthereumProvider } from '@walletconnect/ethereum-provider';
 import { ethers } from 'ethers';
+import { get } from 'lodash-es';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { EVM } from 'src/config/web3';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { deepLink } from 'src/links';
 import { addTxHistories } from 'src/modules/account';
-import { showError } from 'src/modules/extrinsic';
-import { Dispatch } from 'vuex';
 import { HistoryTxType } from 'src/modules/account/index';
+import { showError } from 'src/modules/extrinsic';
 import { SubstrateAccount } from 'src/store/general/state';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { hasProperty } from '@astar-network/astar-sdk-core';
-import { EthereumProvider as WcEthereumProvider } from '@walletconnect/ethereum-provider';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { EVM, rpcUrls } from 'src/config/web3';
+import { Dispatch } from 'vuex';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -270,17 +270,25 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return hasProperty(supportWalletObj, selectedWallet);
 };
 
-// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
-export const initWalletConnectProvider = async (): Promise<void> => {
-  let provider;
-  const astar = providerEndpoints[endpointKey.ASTAR];
-  const shiden = providerEndpoints[endpointKey.SHIDEN];
-  const shibuya = providerEndpoints[endpointKey.SHIBUYA];
-  const zKatana = providerEndpoints[endpointKey.ZKATANA];
-  const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
+const deleteWalletConnectDb = async (): Promise<void> => {
+  indexedDB.deleteDatabase('WALLET_CONNECT_V2_INDEXED_DB');
+  // Memo: wait for the DB to be deleted (above method doesn't return a promise)
+  await wait(2000);
+};
 
+// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
+export const initWalletConnectProvider = async (): Promise<{
+  provider: EthereumProvider | undefined;
+  chainId: number;
+}> => {
   try {
-    indexedDB.deleteDatabase('WALLET_CONNECT_V2_INDEXED_DB');
+    // await deleteWalletConnectDb();
+    const astar = providerEndpoints[endpointKey.ASTAR];
+    const shiden = providerEndpoints[endpointKey.SHIDEN];
+    const shibuya = providerEndpoints[endpointKey.SHIBUYA];
+    const zKatana = providerEndpoints[endpointKey.ZKATANA];
+    const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
+
     const provider = (await WcEthereumProvider.init({
       // Memo: this can be committed as it can be exposed on the browser anyway
       projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
@@ -303,11 +311,22 @@ export const initWalletConnectProvider = async (): Promise<void> => {
         // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
       },
     })) as any;
+    console.log('provider', provider);
+    // const provider = await getProvider();
     await provider.connect();
+    // await provider.enable();
+
+    // Memo: to wait for syncing the correct chainId in provider
+    await wait(2000);
     container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
     // Memo: update the ethProvider in useEthProvider.ts
     window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
-  } catch (error) {}
+
+    return { provider, chainId: provider.chainId };
+  } catch (error: any) {
+    console.error(error);
+    throw Error(error.message);
+  }
 };
 
 export const getWcProvider = (): EthereumProvider | null => {

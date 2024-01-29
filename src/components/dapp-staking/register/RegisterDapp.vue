@@ -288,6 +288,7 @@ export default defineComponent({
             data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
               registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
+            data.license = '';
             data.tags = registeredDapp.tags;
           }
         } else {

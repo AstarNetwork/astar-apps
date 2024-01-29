@@ -50,7 +50,11 @@ export const setupNetwork = async ({
   network: number;
   provider: EthereumProvider;
 }): Promise<boolean> => {
+  console.log('setupNetwork');
+  if (network === Number(provider.chainId)) return true;
+  console.log(1);
   if (provider) {
+    console.log(2);
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
 
@@ -61,10 +65,12 @@ export const setupNetwork = async ({
         // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
         // 2a. Avoid duplicating changing network request if users reject the request
         try {
+          console.log(3);
           await provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId }],
           });
+          console.log(4);
         } catch (error: any) {
           const codeUserRejected = 4001;
           if (error.code !== codeUserRejected) {
@@ -81,6 +87,7 @@ export const setupNetwork = async ({
                   },
                 ],
               });
+              console.log(5);
             } catch (error) {
               console.error(error);
             }
@@ -88,6 +95,7 @@ export const setupNetwork = async ({
         }
       }
 
+      console.log('setupNetwork finish');
       return true;
     } catch (error) {
       console.error('Failed to setup the network in EVM extension:', error);

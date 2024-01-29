@@ -112,8 +112,8 @@ export default {
   wallet: {
     connectWallet: '지갑 연결',
     select: '포털 연결을 위한 지갑을 선택해 주십시오',
-    nativeAccount: '네이티브 계정',
-    evmAccount: 'EVM 계정',
+    nativeWallets: '네이티브 계정',
+    evmWallets: 'EVM 계정',
     math: {
       supportsNetwork: '매쓰 월렛은 샤이든 네트워크만 지원합니다',
       switchNetwork:
