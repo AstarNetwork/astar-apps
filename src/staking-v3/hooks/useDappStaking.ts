@@ -11,6 +11,7 @@ import {
   EraLengths,
   IDappStakingRepository,
   IDappStakingService,
+  IDappStakingServiceV2Ledger,
   PeriodType,
   ProtocolState,
   Rewards,
@@ -21,7 +22,7 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import { useAccount, useChainMetadata, useNetworkInfo } from 'src/hooks';
+import { useAccount, useChainMetadata, useNetworkInfo, useLedger } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
@@ -44,6 +45,7 @@ export function useDappStaking() {
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { nativeTokenSymbol } = useNetworkInfo();
+  const { isLedger } = useLedger();
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
@@ -278,10 +280,20 @@ export function useDappStaking() {
   };
 
   const withdraw = async (): Promise<void> => {
-    const stakingService = container.get<() => IDappStakingService>(
-      Symbols.DappStakingServiceFactoryV3
-    )();
-    await stakingService.claimUnlockedTokens(currentAccount.value, t('stakingV3.withdrawSuccess'));
+    if (isLedger.value) {
+      const stakingService = container.get<IDappStakingServiceV2Ledger>(
+        Symbols.DappStakingServiceV2Ledger
+      );
+      await stakingService.withdraw(currentAccount.value, t('stakingV3.withdrawSuccess'));
+    } else {
+      const stakingService = container.get<() => IDappStakingService>(
+        Symbols.DappStakingServiceFactoryV3
+      )();
+      await stakingService.claimUnlockedTokens(
+        currentAccount.value,
+        t('stakingV3.withdrawSuccess')
+      );
+    }
     getCurrentEraInfo();
   };
 
@@ -293,14 +305,21 @@ export function useDappStaking() {
   };
 
   const unlock = async (amount: bigint): Promise<void> => {
-    const stakingService = container.get<() => IDappStakingService>(
-      Symbols.DappStakingServiceFactoryV3
-    )();
-    await stakingService.unlockTokens(
-      currentAccount.value,
-      Number(ethers.utils.formatEther(amount)),
-      t('stakingV3.unlockSuccess')
-    );
+    if (isLedger.value) {
+      const stakingService = container.get<IDappStakingServiceV2Ledger>(
+        Symbols.DappStakingServiceV2Ledger
+      );
+      await stakingService.unlock(currentAccount.value, amount, t('stakingV3.unlockSuccess'));
+    } else {
+      const stakingService = container.get<() => IDappStakingService>(
+        Symbols.DappStakingServiceFactoryV3
+      )();
+      await stakingService.unlockTokens(
+        currentAccount.value,
+        Number(ethers.utils.formatEther(amount)),
+        t('stakingV3.unlockSuccess')
+      );
+    }
   };
 
   const getAllRewards = async (): Promise<void> => {

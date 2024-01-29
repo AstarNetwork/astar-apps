@@ -352,13 +352,6 @@ export default {
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it has been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. The UI team is working to fix this issue.',
-    migrationSupport: {
-      actionRequired: 'Action Required',
-      yourTokensAreLocked:
-        'Your tokens are locked in dAppStaking V2. Please migrate your funds to V3 today and start participating.',
-      balanceFromV2: 'Balance from V2 (locked)',
-      migrateNow: 'Migrate Now',
-    },
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring your funds from?',
@@ -886,6 +879,12 @@ export default {
     unbondFrom: 'Unbond from {name}',
     startUnbonding: 'Start unbonding',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
+    migrationSupport: {
+      actionRequired: 'Action Required',
+      yourTokensAreLocked:
+        'Your tokens are locked in dAppStaking V2. Please unlock and withdraw your tokens. Since Ledger is not supported yet for dApp staking v3 move your funds to a soft wallet to be able to participate in dApp staking.',
+      migrateNow: 'Migrate Now',
+    },
   },
   bridge: {
     bridge: 'Bridge',

@@ -14,16 +14,19 @@ import { Guard } from 'src/v2/common';
 import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
+import { SignerService } from './SignerService';
 
 @injectable()
-export class DappStakingService implements IDappStakingService {
+export class DappStakingService extends SignerService implements IDappStakingService {
   constructor(
     @inject(Symbols.DappStakingRepositoryV3)
     protected dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.TokenApiProviderRepository)
     protected tokenApiRepository: IDataProviderRepository,
-    @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService
-  ) {}
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+  ) {
+    super(walletFactory);
+  }
 
   // @inheritdoc
   public async getDapps(
@@ -691,18 +694,5 @@ export class DappStakingService implements IDappStakingService {
     rewardRetentionInPeriods: number
   ): boolean {
     return stakedPeriod < currentPeriod - rewardRetentionInPeriods;
-  }
-
-  private async signCall(
-    call: ExtrinsicPayload,
-    senderAddress: string,
-    successMessage: string
-  ): Promise<void> {
-    const wallet = this.walletFactory();
-    await wallet.signAndSend({
-      extrinsic: call,
-      senderAddress: senderAddress,
-      successMessage,
-    });
   }
 }
