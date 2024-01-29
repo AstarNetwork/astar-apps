@@ -61,6 +61,12 @@ export class DappStakingService implements IDappStakingService {
     return { fullInfo: dApps, chainInfo: onlyChain };
   }
 
+  public async getNumberOfParticipants(network: string): Promise<number> {
+    Guard.ThrowIfUndefined(network, 'network');
+
+    return await this.tokenApiRepository.getNumberOfParticipants(network.toLowerCase());
+  }
+
   // @inheritdoc
   public async claimUnstakeAndUnlock(
     contractAddress: string,

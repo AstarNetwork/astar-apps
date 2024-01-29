@@ -849,6 +849,7 @@ export default {
     back: 'Back',
     era: 'Era',
     numberOfDapps: 'Number of dApps',
+    numberOfParticipants: 'Number of particpants',
     tvl: 'TVL',
     tvv: 'TVV',
     bonusEligibleTokens: 'Bonus eligible tokens',

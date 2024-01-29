@@ -41,6 +41,9 @@
     <data-card :title="$t('stakingV3.unfilledSlot')" description="description">
       {{ unfilledSlots }} / {{ tiersConfiguration.numberOfSlots }}
     </data-card>
+    <data-card :title="$t('stakingV3.numberOfParticipants')" description="description">
+      {{ numberOfParticipants }}
+    </data-card>
   </div>
 </template>
 
@@ -51,6 +54,8 @@ import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
+import { getNumberOfParticipants } from 'src/staking-v3/logic/services/DappStakingService';
+import { networkParam } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -72,6 +77,9 @@ export default defineComponent({
     );
     const unfilledSlots = computed<number>(
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
+    );
+    const numberOfParticipants = computed<number>(() =>
+      getNumberOfParticipants(networkParam.valueOf())
     );
 
     return {

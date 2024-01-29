@@ -25,4 +25,19 @@ export class TokenApiProviderRepository implements IDataProviderRepository {
 
     return [];
   }
+
+  async getNumberOfParticipants(network: string): Promise<number> {
+    Guard.ThrowIfUndefined(network, 'network');
+
+    const numberOfParticipantsUrl = `${TOKEN_API_URL}/v3/${network.toLowerCase()}/dapps-staking/stakerscount-total/1 day`;
+    try {
+      const numberOfParticipants = await axios.get<number>(numberOfParticipantsUrl);
+      console.log('numberOfParticipants.data', numberOfParticipants.data);
+      return numberOfParticipants.data;
+    } catch (error) {
+      console.error(error);
+    }
+
+    return 0;
+  }
 }
