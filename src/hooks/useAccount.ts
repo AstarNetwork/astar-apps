@@ -6,7 +6,7 @@ import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
-import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
+import { ExtrinsicStatusMessage, IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -139,7 +139,12 @@ export const useAccount = () => {
 
   const showAccountUnificationModal = (): void => {
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-    eventAggregator.publish(new UnifyAccountMessage());
+    eventAggregator.publish(
+      new ExtrinsicStatusMessage({
+        success: false,
+        message: 'Ledger is not supported on this network.',
+      })
+    );
   };
 
   const currentAccount = ref<string>('');

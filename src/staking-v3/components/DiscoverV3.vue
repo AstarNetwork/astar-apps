@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import Dapps from './Dapps.vue';
 import FeatureDapp from './FeatureDapp.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
@@ -48,6 +48,7 @@ import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
 import RegisterBanner from './RegisterBanner.vue';
+import { useDappStaking } from '../hooks';
 
 export default defineComponent({
   components: {
@@ -62,12 +63,17 @@ export default defineComponent({
   },
   setup() {
     const displayIndex = ref<number>(0);
+    const { warnIfLedger } = useDappStaking();
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;
     };
 
     const searchText = ref<string>('');
+
+    onMounted(() => {
+      warnIfLedger();
+    });
 
     return { displayIndex, searchText, toggleDapps };
   },

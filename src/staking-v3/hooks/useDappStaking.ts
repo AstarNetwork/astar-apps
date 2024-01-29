@@ -595,6 +595,21 @@ export function useDappStaking() {
     return period.toString().padStart(3, '0');
   };
 
+  const warnIfLedger = (): void => {
+    // Show warning to ledger users.
+    const { isLedger } = useLedger();
+    const { isDappStakingV3 } = useDappStaking();
+    if (isLedger.value && isDappStakingV3.value) {
+      const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+      eventAggregator.publish(
+        new ExtrinsicStatusMessage({
+          success: false,
+          message: t('stakingV3.ledgerNotSupported'),
+        })
+      );
+    }
+  };
+
   return {
     protocolState,
     ledger,
@@ -641,5 +656,6 @@ export function useDappStaking() {
     rewardExpiresInNextPeriod,
     getStakerInfo,
     formatPeriod,
+    warnIfLedger,
   };
 }
