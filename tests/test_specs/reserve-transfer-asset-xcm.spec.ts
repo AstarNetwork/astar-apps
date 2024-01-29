@@ -39,7 +39,7 @@ test.beforeEach(async ({ page, context }) => {
   await connectToNetwork(page);
   await selectAccount(page, ALICE_ACCOUNT_NAME);
   // Memo: wait for the page to be reloaded
-  await page.waitForNavigation();
+  // await page.waitForNavigation();
 });
 
 test.describe('Test case: XCM006', () => {

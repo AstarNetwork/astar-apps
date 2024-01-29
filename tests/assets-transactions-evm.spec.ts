@@ -36,6 +36,9 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await clickDisclaimerButton(page);
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
+
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
@@ -72,7 +75,7 @@ test.describe('account panel', () => {
 
     //metamask setup
     await page.locator('.btn--account').click();
-    await page.locator('.wrapper--modal-drawer .modal-close').first().click();
+    //await page.locator('.wrapper--modal-drawer .modal-close').first().click();
     await page.getByText('MetaMask').click();
     await signInMetamask(page, context);
 

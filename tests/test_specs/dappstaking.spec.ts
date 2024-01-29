@@ -7,8 +7,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('init screen', () => {
   test('should wallet is opened', async ({ page }) => {
-    const walletWrapper = page.getByText('Select a Wallet');
-    await expect(walletWrapper).toBeVisible();
+    await clickDisclaimerButton(page);
+    await page.getByRole('button', { name: 'Select Wallet' }).click();
+    await expect(page.getByTestId('Polkadot.js')).toBeVisible();
   });
   test('should wallet is closed', async ({ page }) => {
     const walletWrapper = page.getByText('Select a Wallet');
@@ -18,34 +19,26 @@ test.describe('init screen', () => {
   });
 
   test('should display the connect button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
+    await clickDisclaimerButton(page);
+    await expect(page.getByRole('button', { name: 'Select Wallet' })).toBeEnabled();
   });
 
-  test('should display the Astar button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Astar' })).toBeVisible();
-  });
-
-  test('should display install extension popup when click Talisman button', async ({ page }) => {
-    await checkInjectedWeb3(page);
-    const button = page.locator('div').filter({ hasText: 'Talisman' }).first();
-    await expect(button).toBeVisible();
-    await button.click();
+  test('should display install extension message when click Talisman button', async ({ page }) => {
+    await clickDisclaimerButton(page);
+    await page.getByRole('button', { name: 'Select Wallet' }).click();
+    await page.getByTestId('Talisman (Native)').click();
+    await expect(
+      page.getByText(
+        "Haven’t got Talisman (Native) yet?You'll need to install Talisman (Native) to"
+      )
+    ).toBeVisible();
   });
 });
 
 test.describe('on dapp staking screen', () => {
   test('has title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Discover dApps/);
-  });
-
-  test('should clickable the banner after loading is complete', async ({ page }) => {
     await clickDisclaimerButton(page);
-    const closeButton = page.locator('.modal-close');
-    await closeButton.click();
-    const bannerCard = page.locator('.wrapper--banners .card:first-child');
-    await expect(bannerCard).toBeVisible();
-    await page.waitForSelector('.loader', { state: 'hidden' });
-    await bannerCard.click();
+    await expect(page).toHaveTitle(/Discover dApps/);
   });
 
   test('should redirect to dapp page when click the dapp card', async ({ page }) => {

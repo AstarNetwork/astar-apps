@@ -146,10 +146,10 @@ export const connectWithEVM = async (page: Page, context: BrowserContext): Promi
   await extensionWindow.waitForLoadState('load');
   await extensionWindow.waitForSelector('.permissions-connect-header__title', { state: 'visible' });
 
-  await extensionWindow
-    .locator('.permissions-connect-choose-account__bottom-buttons')
-    .getByRole('button', { name: 'Next' })
-    .click();
+  // await extensionWindow
+  //   .locator('.permissions-connect-choose-account__bottom-buttons')
+  //   .getByRole('button', { name: 'Next' })
+  //   .click();
 
   await extensionWindow.locator('data-testid=page-container-footer-next').click();
 
@@ -166,15 +166,16 @@ export const changeNetworkOnEVM = async (
   }
 
   await extensionWindow.waitForLoadState('load');
-  await extensionWindow.waitForSelector('.confirmation-page__content', { state: 'visible' });
-  await extensionWindow
-    .locator('.confirmation-footer__actions')
-    .getByRole('button', { name: 'Approve' })
-    .click();
-  await extensionWindow
-    .locator('.confirmation-footer__actions')
-    .getByRole('button', { name: 'Switch network' })
-    .click();
+  // await extensionWindow.waitForSelector('.confirmation-page__content', { state: 'visible' });
+  await extensionWindow.locator('data-testid=page-container-footer-next').click();
+  // await extensionWindow
+  //   .locator('.confirmation-footer__actions')
+  //   .getByRole('button', { name: 'Approve' })
+  //   .click();
+  // await extensionWindow
+  //   .locator('.confirmation-footer__actions')
+  //   .getByRole('button', { name: 'Switch network' })
+  //   .click();
 };
 
 // Memo: importing this function from 'connectApi.ts' makes error in the test.

@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { ApiPromise } from '@polkadot/api';
 import { clickDisclaimerButton } from 'src/modules/playwright';
 import {
@@ -8,7 +8,7 @@ import {
   signInMetamask,
 } from '../common';
 import { getApi } from '../common-api';
-import { getWindow, test } from '../fixtures';
+import { test } from '../fixtures';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -47,6 +47,7 @@ test.describe('account panel', () => {
     const ui = page.getByTestId('evm-native-token');
     await expect(ui).toBeVisible();
   });
+  
   test('Search XC20 and ERC20 tokens by the same search input', async ({ page, context }) => {
     await page.getByPlaceholder('Search').click();
     await page.getByPlaceholder('Search').fill('USD');
