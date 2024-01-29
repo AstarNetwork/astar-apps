@@ -100,6 +100,7 @@ export const useConnectWallet = () => {
     currentWallet: SupportWallet;
     isSetupNetwork: boolean;
   }): Promise<boolean> => {
+    console.log('loadEvmWallet');
     const setCurrentEcdsaAccount = (address: string) => {
       const ethereumAddr = checkSumEvmAddress(address);
       const data = ss58
@@ -128,6 +129,7 @@ export const useConnectWallet = () => {
 
       // Memo: Do not change the network for the Bridge page
       if (currentRouter.value.name !== 'Bridge') {
+        console.log('start setupNetwork?');
         isSetupNetwork && (await setupNetwork({ network: chainId, provider }));
       }
 
@@ -151,7 +153,11 @@ export const useConnectWallet = () => {
 
     if (wallet === SupportWallet.WalletConnect) {
       const wcProvider = getWcProvider();
-      if (wcProvider) return;
+      if (wcProvider) {
+        console.log('wcProvider', wcProvider);
+        console.log('here?');
+        return;
+      }
       try {
         const { provider, chainId } = await initWalletConnectProvider();
         if (provider && evmNetworkIdx.value !== Number(chainId)) {
@@ -160,6 +166,7 @@ export const useConnectWallet = () => {
             alertType: 'error',
           });
         }
+        console.log('chainId', chainId);
         await loadEvmWallet({ currentWallet: wallet, isSetupNetwork });
         return;
       } catch (error: any) {
@@ -224,7 +231,7 @@ export const useConnectWallet = () => {
   };
 
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
-    requestExtensionsIfFirstAccess(wallet);
+    // requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
@@ -242,6 +249,18 @@ export const useConnectWallet = () => {
       return;
     }
   };
+
+  watch(
+    [currentNetworkIdx],
+    () => {
+      const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      const isWalletConnect = storedWallet === SupportWallet.WalletConnect;
+      if (isWalletConnect) {
+        // connectEthereumWallet(SupportWallet.WalletConnect);
+      }
+    },
+    { immediate: true }
+  );
 
   const setModalAccountSelect = (result: boolean): void => {
     modalAccountSelect.value = result;

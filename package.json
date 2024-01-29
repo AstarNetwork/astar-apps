@@ -94,7 +94,7 @@
     "vue3-jazzicon": "^0.1.2",
     "vue3-recaptcha2": "^1.7.0",
     "vuex": "^4.0.1",
-    "web3": "^1.7.3"
+    "web3": "^1.10.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",

@@ -255,6 +255,7 @@ export default defineComponent({
       }
     };
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      await disconnectAccount();
       if (source === SupportWallet.Snap) {
         await handleMetaMaskSnap();
       }
@@ -268,6 +269,7 @@ export default defineComponent({
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {
+      await disconnectAccount();
       await props.connectEthereumWallet(source);
       await props.selectNetwork();
     };

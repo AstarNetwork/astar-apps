@@ -93,7 +93,7 @@ import { computed, defineComponent } from 'vue';
 export default defineComponent({
   components: {},
   setup() {
-    // useWalletConnect();
+    useWalletConnect();
     const { currentAccount } = useAccount();
     const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
 

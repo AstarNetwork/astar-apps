@@ -242,7 +242,8 @@ export default defineComponent({
           ? customEndpoint.value
           : getSelectedNetwork(networkIdxRef);
 
-      const isEndpointChange = currentEndpoint !== newEndpoint;
+      // Memo: there is no new endpoint for zkEVM network
+      const isEndpointChange = newEndpoint ? currentEndpoint !== newEndpoint : false;
       return { isEndpointChange, newEndpoint };
     };
 

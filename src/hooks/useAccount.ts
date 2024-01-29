@@ -1,4 +1,4 @@
-import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
+import { hasProperty, isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig, SupportWallet } from 'src/config/wallets';
@@ -27,7 +27,7 @@ export const useAccount = () => {
   const store = useStore();
   const { getProxiedUrl } = useNft();
   const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
-  // const { web3Provider } = useEthProvider();
+  const { ethProvider } = useEthProvider();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -57,6 +57,7 @@ export const useAccount = () => {
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
+    console.log('disconnectAccount');
     return await new Promise(async (resolve) => {
       await wait(DELAY);
       store.commit('general/setCurrentAddress', null);
@@ -73,7 +74,11 @@ export const useAccount = () => {
       if (wallet === SupportWallet.WalletConnect) {
         const wcProvider = getWcProvider();
         if (wcProvider) {
-          // web3Provider.value!.eth.currentProvider!.disconnect();
+          try {
+            await wcProvider.disconnect();
+          } catch (error) {
+            console.error(error);
+          }
           localStorage.removeItem('WCM_VERSION');
           container.unbind(Symbols.WcProvider);
         }

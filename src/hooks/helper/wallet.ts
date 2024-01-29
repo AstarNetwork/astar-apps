@@ -19,6 +19,7 @@ import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { Dispatch } from 'vuex';
+import Web3 from 'web3';
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -278,7 +279,7 @@ const deleteWalletConnectDb = async (): Promise<void> => {
 
 // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
 export const initWalletConnectProvider = async (): Promise<{
-  provider: EthereumProvider | undefined;
+  provider: typeof WcEthereumProvider | undefined;
   chainId: number;
 }> => {
   try {
@@ -289,38 +290,78 @@ export const initWalletConnectProvider = async (): Promise<{
     const zKatana = providerEndpoints[endpointKey.ZKATANA];
     const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
 
-    const provider = (await WcEthereumProvider.init({
-      // Memo: this can be committed as it can be exposed on the browser anyway
-      projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
-      showQrModal: true,
-      optionalChains: [
-        Number(astar.evmChainId),
-        Number(shiden.evmChainId),
-        Number(shibuya.evmChainId),
-        // Number(astarZkEvm.evmChainId),
-        Number(zKatana.evmChainId),
-        // EVM.SEPOLIA_TESTNET,
-      ],
-      chains: [EVM.ETHEREUM_MAINNET],
-      rpcMap: {
-        [astar.evmChainId]: astar.evmEndpoints[0],
-        [shiden.evmChainId]: shiden.evmEndpoints[0],
-        [shibuya.evmChainId]: shibuya.evmEndpoints[0],
-        // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
-        [zKatana.evmChainId]: zKatana.evmEndpoints[0],
-        // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
-      },
-    })) as any;
-    console.log('provider', provider);
-    // const provider = await getProvider();
-    await provider.connect();
-    // await provider.enable();
+    const getProvider = async () => {
+      const provider = (await WcEthereumProvider.init({
+        // Memo: this can be committed as it can be exposed on the browser anyway
+        projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
+        showQrModal: true,
+        optionalChains: [
+          Number(astar.evmChainId),
+          Number(shiden.evmChainId),
+          Number(shibuya.evmChainId),
+          // Number(astarZkEvm.evmChainId),
+          Number(zKatana.evmChainId),
+          // EVM.SEPOLIA_TESTNET,
+        ],
+        chains: [EVM.ETHEREUM_MAINNET],
+        rpcMap: {
+          [astar.evmChainId]: astar.evmEndpoints[0],
+          [shiden.evmChainId]: shiden.evmEndpoints[0],
+          [shibuya.evmChainId]: shibuya.evmEndpoints[0],
+          // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
+          [zKatana.evmChainId]: zKatana.evmEndpoints[0],
+          // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
+        },
+      })) as any;
+      return provider;
+    };
+    const provider = await getProvider();
+    console.log('provider.connected', provider.connected);
+    console.log('await provider.connected', await provider.connected);
+    const isConnected = await provider.connected;
+    if (isConnected) {
+      try {
+        const result = await provider.disconnect();
+        console.log('deleted', result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
+    await provider.connect();
+    await wait(2000);
+    // await provider.enable();
+    console.log('connected');
+    console.log('provider', provider);
+    // await provider.enable();
+    const web3 = new Web3(provider as any);
+    const accounts = await web3.eth.getAccounts();
+    console.log('accounts', accounts);
+    const balWei = await web3.eth.getBalance('0xD181Fd5a9D3178F497668e0cb2aD57B53D7EaeA7');
+
+    console.log('balWei', balWei);
+    // const web3 = new Web3(provider);
+    // const tx = {
+    //   from: accounts[0],
+    //   to: accounts[0],
+    //   value: '1000000000000000000',
+    // };
+    // const hash = await web3.eth.sendTransaction(tx);
     // Memo: to wait for syncing the correct chainId in provider
     await wait(2000);
-    container.addConstant<EthereumProvider>(Symbols.WcProvider, provider);
+    container.addConstant<typeof WcEthereumProvider>(Symbols.WcProvider, provider);
     // Memo: update the ethProvider in useEthProvider.ts
     window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+
+    provider.on('connect', () => {
+      // localStorage.setItem('walletconnect', JSON.stringify(provider.session));
+      console.log('hello');
+    });
+    provider.on('disconnect', async () => {
+      console.log('disconnecting');
+      await provider.disconnect();
+      // localStorage.removeItem('walletconnect');
+    });
 
     return { provider, chainId: provider.chainId };
   } catch (error: any) {
