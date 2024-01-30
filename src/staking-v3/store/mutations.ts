@@ -19,11 +19,11 @@ import {
 export interface DappStakingMutations<S = DappStakingState> {
   addDapps(state: DappStakingState, dapps: CombinedDappInfo[]): void;
   addNewDapps(state: DappStakingState, dapps: DappInfo[]): void;
-  setNumberOfParticipants(state: DappStakingState, numberOfParticipants: number): void;
   addDapp(state: DappStakingState, dapp: CombinedDappInfo): void;
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   updateDappChain(state: DappStakingState, dapp: DappInfo): void;
   updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void;
+  setNumberOfParticipants(state: DappStakingState, numberOfParticipants: number): void;
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
   setLedger(state: DappStakingState, ledger: AccountLedger): void;
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
@@ -62,9 +62,6 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   addNewDapps(state, dapps) {
     state.newDapps = dapps;
   },
-  setNumberOfParticipants(state, numberOfParticipants) {
-    state.numberOfParticipants = numberOfParticipants;
-  },
   addDapp(state, dapp) {
     state.dapps.push(dapp);
   },
@@ -76,6 +73,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void {
     updateDapp(state, dapp.contractAddress, dapp, 'dappDetails');
+  },
+  setNumberOfParticipants(state, numberOfParticipants) {
+    state.numberOfParticipants = numberOfParticipants;
   },
   setProtocolState(state, protocolState) {
     state.protocolState = protocolState;
