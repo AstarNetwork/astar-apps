@@ -885,7 +885,7 @@ export default {
         'Your tokens are locked in dAppStaking V2. Please unlock and withdraw your tokens. Since Ledger is not supported yet for dApp staking v3 move your funds to a soft wallet to be able to participate in dApp staking.',
       migrateNow: 'Migrate Now',
     },
-    ledgerNotSupported: 'Ledger native accounts is not supported yet for dApp staking v3 yet.',
+    ledgerNotSupported: 'Ledger native accounts are not supported for dApp staking V3 yet.',
   },
   bridge: {
     bridge: 'Bridge',
