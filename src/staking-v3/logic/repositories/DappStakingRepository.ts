@@ -48,6 +48,7 @@ import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
 import { u8aToNumber } from '@polkadot/util';
+import { DappAggregatedMetrics } from 'src/v2/repositories';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -460,6 +461,36 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async getCleanupExpiredEntriesCall(): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     return api.tx.dappStaking.cleanupExpiredEntries();
+  }
+
+  /** @inheritdoc */
+  public async getUnbondAndUnstakeCall(amount: bigint): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    // Memo: address is ignored by runtime, but we need to pass something
+    // because runtime needs to keep the method signature.
+    return api.tx.dappStaking.unbondAndUnstake(
+      getDappAddressEnum('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8'),
+      amount
+    );
+  }
+
+  /** @inheritdoc */
+  public async getWithdrawUnbondedCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.withdrawUnbonded();
+  }
+
+  public async getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/aggregated?period=30d`;
+
+    try {
+      const response = await axios.get<DappAggregatedMetrics[]>(url);
+      return response.data;
+    } catch {
+      return [];
+    }
   }
 
   // ------------------ MAPPERS ------------------

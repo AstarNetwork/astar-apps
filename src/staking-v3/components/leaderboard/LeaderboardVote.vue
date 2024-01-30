@@ -1,36 +1,55 @@
 <template>
-  <div v-if="isLeaderboardEmpty" class="wrapper--leaderboard">
+  <div class="wrapper--leaderboard">
     <div class="wrapper--leaderboard__inner">
       <div class="title">{{ $t('stakingV3.projectLeaderboards') }}</div>
-
       <div class="container--boards">
-        <div class="wrapper--tier">
-          <swiper
-            v-if="paginatedDapps.length > 0"
-            class="swiper--tier"
-            :navigation="true"
-            :modules="modules"
-          >
-            <swiper-slide v-for="(dapps, page) in paginatedDapps" :key="page">
-              <div class="container--dapps">
-                <div v-for="(dapp, index) in dapps" :key="dapp.chain.id">
-                  <div class="dapp">
-                    <div>{{ index + 1 + page * dappsPerPage }}</div>
-                    <div class="dapp--button" @click="navigateDappPage(dapp.basic.address)">
-                      <div class="dapp--image">
-                        <img :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
-                      </div>
-                      <div>{{ dapp.basic.name }}</div>
-                    </div>
-                    <div class="amount">
-                      <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </swiper-slide>
-          </swiper>
-        </div>
+        <swiper
+          class="swiper--leaderboard"
+          :slides-per-view="1.25"
+          :slides-per-group="1"
+          :space-between="8"
+          :navigation="true"
+          :modules="modules"
+          :breakpoints="{
+            '768': {
+              slidesPerView: 2.5,
+              slidesPerGroup: 2,
+              spaceBetween: 8,
+            },
+            '1024': {
+              slidesPerView: 2.5,
+              slidesPerGroup: 2,
+              spaceBetween: 8,
+            },
+            '1280': {
+              slidesPerView: 3.5,
+              slidesPerGroup: 3,
+              spaceBetween: 8,
+            },
+          }"
+        >
+          <swiper-slide>
+            <leaderboard-vote-panel
+              title="Stake Ranking"
+              :paginated-dapps="paginatedStakeRanking"
+              :contains-balance="true"
+            />
+          </swiper-slide>
+          <swiper-slide>
+            <leaderboard-vote-panel
+              title="Stake Ranking"
+              :paginated-dapps="paginatedStakeRanking"
+              :contains-balance="true"
+            />
+          </swiper-slide>
+          <swiper-slide>
+            <leaderboard-vote-panel
+              title="Stake Ranking"
+              :paginated-dapps="paginatedStakeRanking"
+              :contains-balance="true"
+            />
+          </swiper-slide>
+        </swiper>
       </div>
     </div>
     <div class="bg--leaderboard">
@@ -40,9 +59,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useLeaderboard } from '../../hooks';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { defineComponent, computed, onMounted, ref, watch } from 'vue';
+import { useLeaderboard, useDapps } from '../../hooks';
+import LeaderboardVotePanel, { LeaderboardPanelData } from './LeaderboardVotePanel.vue';
 import { useDappStakingNavigation } from '../../hooks';
 
 // Import Swiper
@@ -53,28 +72,46 @@ import { Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
     Swiper,
     SwiperSlide,
+    LeaderboardVotePanel,
   },
   setup() {
     const { sortedDapps, isLeaderboardEmpty } = useLeaderboard();
-
     const { navigateDappPage } = useDappStakingNavigation();
+    const { fetchDappStats, dappsStats } = useDapps();
 
     const dappsPerPage = 5;
-    const paginatedDapps = computed(() => {
-      const result = [];
+    const paginatedStakeRanking = computed<LeaderboardPanelData[][]>(() => {
+      const result: LeaderboardPanelData[][] = [];
       for (let i = 0; i < sortedDapps.value.length; i += dappsPerPage) {
-        result.push(sortedDapps.value.slice(i, i + dappsPerPage));
+        result.push(
+          sortedDapps.value.slice(i, i + dappsPerPage).map((dapp, index) => ({
+            rank: index + 1 + i * dappsPerPage,
+            address: dapp.basic.address,
+            name: dapp.basic.name,
+            iconUrl: dapp.basic.iconUrl,
+            value: dapp.chain.totalStake ?? BigInt(0),
+          }))
+        );
       }
       return result;
+    });
+
+    const paginatedTransactionsRanking = ref<LeaderboardPanelData[][]>([]);
+
+    onMounted(() => {
+      fetchDappStats();
+    });
+
+    watch([dappsStats], () => {
+      console.log(dappsStats.value);
     });
 
     return {
       modules: [Navigation],
       isLeaderboardEmpty,
-      paginatedDapps,
+      paginatedStakeRanking,
       dappsPerPage,
       navigateDappPage,
     };
