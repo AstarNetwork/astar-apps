@@ -1,15 +1,15 @@
 <template>
   <div :class="`wrapper--promo ${isVotingPeriod && 'voting-period'}`">
     <div class="wrapper--promo__inner">
-      <div class="row--title animate__animated animate__zoomInRight">
+      <div class="row--title">
         <span class="text--promo-title">{{
           isVotingPeriod ? $t('stakingV3.votingNow') : $t('stakingV3.buildAndEarn')
         }}</span>
       </div>
-      <div v-if="isVotingPeriod" class="row--countdown animate__animated animate__zoomInRight">
+      <div v-if="isVotingPeriod" class="row--countdown">
         <span>{{ timeLeftFormatted }}</span>
       </div>
-      <div class="text--promo-description animate__animated animate__zoomInRight">
+      <div class="text--promo-description">
         <span>{{
           isVotingPeriod ? $t('stakingV3.voteToday') : $t('stakingV3.innovativeWayOfStaking')
         }}</span>
@@ -27,7 +27,7 @@
         </astar-button>
       </div>
 
-      <div class="row--data animate__animated animate__zoomInDown">
+      <div class="row--data">
         <button v-if="isVotingPeriod" class="button--vote-stake" @click="navigateToVote()">
           <span>{{ $t('stakingV3.voteStakeToday') }}</span>
           <vote-stake-button-bg />
