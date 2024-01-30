@@ -2,6 +2,8 @@
 
 .wrapper--promo {
   width: 100%;
+  z-index: 1;
+  position: relative;
   @media (min-width: $lg) {
     padding-right: 40px;
     padding-left: 40px;
@@ -41,7 +43,6 @@
 .text--promo-description {
   font-size: 14px;
   font-weight: 600;
-  max-width: 380px;
   font-style: italic;
 }
 
