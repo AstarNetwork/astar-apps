@@ -31,21 +31,21 @@
           <swiper-slide>
             <leaderboard-vote-panel
               title="Stake Ranking"
-              :paginated-dapps="paginatedStakeRanking"
+              :paginated-dapps="paginatedStakeRankingVoting"
               :contains-balance="true"
             />
           </swiper-slide>
           <swiper-slide>
             <leaderboard-vote-panel
               title="Stake Ranking"
-              :paginated-dapps="paginatedStakeRanking"
+              :paginated-dapps="paginatedStakeRankingVoting"
               :contains-balance="true"
             />
           </swiper-slide>
           <swiper-slide>
             <leaderboard-vote-panel
               title="Stake Ranking"
-              :paginated-dapps="paginatedStakeRanking"
+              :paginated-dapps="paginatedStakeRankingVoting"
               :contains-balance="true"
             />
           </swiper-slide>
@@ -59,9 +59,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch } from 'vue';
-import { useLeaderboard, useDapps } from '../../hooks';
-import LeaderboardVotePanel, { LeaderboardPanelData } from './LeaderboardVotePanel.vue';
+import { defineComponent, onMounted, ref, watch } from 'vue';
+import { useLeaderboard, useDapps, LeaderboardData } from '../../hooks';
+import LeaderboardVotePanel from './LeaderboardVotePanel.vue';
 import { useDappStakingNavigation } from '../../hooks';
 
 // Import Swiper
@@ -77,41 +77,15 @@ export default defineComponent({
     LeaderboardVotePanel,
   },
   setup() {
-    const { sortedDapps, isLeaderboardEmpty } = useLeaderboard();
+    const { sortedDapps, isLeaderboardEmpty, paginatedStakeRankingVoting, dappsPerPage } =
+      useLeaderboard();
     const { navigateDappPage } = useDappStakingNavigation();
-    const { fetchDappStats, dappsStats } = useDapps();
-
-    const dappsPerPage = 5;
-    const paginatedStakeRanking = computed<LeaderboardPanelData[][]>(() => {
-      const result: LeaderboardPanelData[][] = [];
-      for (let i = 0; i < sortedDapps.value.length; i += dappsPerPage) {
-        result.push(
-          sortedDapps.value.slice(i, i + dappsPerPage).map((dapp, index) => ({
-            rank: index + 1 + i * dappsPerPage,
-            address: dapp.basic.address,
-            name: dapp.basic.name,
-            iconUrl: dapp.basic.iconUrl,
-            value: dapp.chain.totalStake ?? BigInt(0),
-          }))
-        );
-      }
-      return result;
-    });
-
-    const paginatedTransactionsRanking = ref<LeaderboardPanelData[][]>([]);
-
-    onMounted(() => {
-      fetchDappStats();
-    });
-
-    watch([dappsStats], () => {
-      console.log(dappsStats.value);
-    });
+    const { dappsStats } = useDapps();
 
     return {
       modules: [Navigation],
       isLeaderboardEmpty,
-      paginatedStakeRanking,
+      paginatedStakeRankingVoting,
       dappsPerPage,
       navigateDappPage,
     };

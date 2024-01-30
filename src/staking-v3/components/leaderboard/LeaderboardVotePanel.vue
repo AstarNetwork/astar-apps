@@ -38,14 +38,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-
-export interface LeaderboardPanelData {
-  address: string;
-  rank: number;
-  name: string;
-  iconUrl: string;
-  value: bigint;
-}
+import { LeaderboardData } from 'src/staking-v3/hooks';
 
 export default defineComponent({
   components: {
@@ -59,7 +52,7 @@ export default defineComponent({
       required: true,
     },
     paginatedDapps: {
-      type: Array as PropType<LeaderboardPanelData[][]>,
+      type: Array as PropType<LeaderboardData[][]>,
       required: true,
     },
     containsBalance: {
