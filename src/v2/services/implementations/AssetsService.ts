@@ -49,28 +49,16 @@ export class AssetsService implements IAssetsService {
 
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
     const provider = getEvmProvider(this.currentWallet as any);
-    console.log('provider', provider);
-    //@ts-ignore
-    // await provider.enable();
     const web3 = new Web3(provider as any);
-    const accounts = await web3.eth.getAccounts();
-    console.log('accounts', accounts);
-    const networkId = await web3.eth.net.getId();
-    console.log(networkId);
 
-    console.log('web3', web3);
-    console.log('param.senderAddress', param.senderAddress);
     const balWei = await web3.eth.getBalance(param.senderAddress);
-    console.log('balWei', balWei);
     const useableBalance = Number(ethers.utils.formatEther(balWei));
     const isBalanceEnough = useableBalance - Number(param.amount) > REQUIRED_MINIMUM_BALANCE;
     if (isBalanceEnough) {
-      console.log('start');
       const rawTx = await this.AssetsRepository.getEvmTransferData({
         param,
         web3,
       });
-      console.log('rawTx', rawTx);
 
       const isErc20 = !!rawTx.data;
 

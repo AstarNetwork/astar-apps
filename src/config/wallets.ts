@@ -305,17 +305,6 @@ export const supportEvmWalletObj = {
   },
 };
 
-export const WalletConnect = {
-  img: require('/src/assets/img/wallet-connect.png'),
-  name: 'WalletConnect',
-  source: SupportWallet.MetaMask,
-  walletUrl: 'https://walletconnect.com/',
-  guideUrl: 'https://walletconnect.com/',
-  isSupportBrowserExtension: true,
-  isSupportMobileApp: false,
-  ethExtension: '',
-};
-
 export const supportAllWalletsObj = {
   ...supportEvmWalletObj,
   ...supportWalletObj,
