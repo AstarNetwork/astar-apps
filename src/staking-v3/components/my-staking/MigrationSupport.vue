@@ -7,6 +7,12 @@
       <div class="row--body">
         <div class="text">
           {{ $t('stakingV3.migrationSupport.yourTokensAreLocked') }}
+          (<a
+            href="https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do"
+            target="_blank"
+          >
+            {{ $t('stakingV3.moreInfo') }}</a
+          >)
         </div>
         <div class="row--locked-tokens">
           <div>{{ $t('stakingV3.lockedAmount') }}</div>
