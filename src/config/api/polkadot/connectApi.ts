@@ -8,6 +8,10 @@ import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
 import jsonParachainSpecTokyo from './chain-specs/tokyo.json';
 import { WellKnownChain } from '@substrate/connect';
+import { storedEvmAddressMapping } from 'src/hooks/helper/addressUtils';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -123,6 +127,7 @@ export async function connectApi(
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   store.commit('general/setLoading', true);
+  const startTime = performance.now();
 
   api.on('error', (error: Error) => console.error(error.message));
   try {
@@ -168,6 +173,60 @@ export async function connectApi(
 
   try {
     await api.isReady;
+
+    interface FirebaseConfig {
+      apiKey: string;
+      authDomain: string;
+      databaseURL: string;
+      projectId: string;
+      storageBucket: string;
+      messagingSenderId: string;
+      appId: string;
+    }
+
+    const secret_name = 'gcp-sa';
+    const client = new SecretsManagerClient({
+      region: 'ap-northeast-1',
+    });
+
+    let secrets;
+    try {
+      secrets = await client.send(
+        new GetSecretValueCommand({
+          SecretId: secret_name,
+          VersionStage: 'AWSCURRENT',
+        })
+      );
+    } catch (error) {
+      console.info('SecretsManagerClient.GetSecretValueCommand', error);
+    }
+
+    let firebaseConfig: FirebaseConfig;
+    if (secrets) {
+      firebaseConfig = JSON.parse(secrets?.SecretString || '{}');
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const db = getFirestore(firebaseApp);
+
+      const endTime = performance.now();
+      const responseTime = parseFloat(((endTime - startTime) / 1000).toFixed(3));
+      const timestamp = Timestamp.now();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const address =
+        localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS) === 'Ethereum Extension'
+          ? storedEvmAddressMapping()[0]?.evm
+          : localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+
+      const colRef = collection(db, 'response_times');
+      const response = await addDoc(colRef, {
+        endpoint,
+        responseTime,
+        timestamp,
+        timezone,
+        address,
+      });
+      console.log('response.id', response.id);
+    }
 
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
