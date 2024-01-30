@@ -19,14 +19,6 @@ export interface IDappStakingService {
   getDapps(network: string): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }>;
 
   /**
-   * Gets the number of participants for the given network.
-   * @param network Name of the network to get the number of participants for.
-   * @returns Number of participants.
-   * @throws Error if the network is undefined.
-   */
-  getNumberOfParticipants(network: string): Promise<number>;
-
-  /**
    * Invokes claim staker rewards, unstake and unlock calls.
    * @param contractAddress Address of the contract to be staked to.
    * @param amount Staking amount.

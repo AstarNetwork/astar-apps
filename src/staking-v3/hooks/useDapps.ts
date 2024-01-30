@@ -6,6 +6,7 @@ import {
   DappState,
   IDappStakingRepository,
   IDappStakingService,
+  TokenApiProviderRepository,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
@@ -15,6 +16,9 @@ import { useStore } from 'src/store';
 export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
+  const tokenApiProviderRepository = container.get<TokenApiProviderRepository>(
+    Symbols.TokenApiProviderRepository
+  );
 
   const registeredDapps = computed<CombinedDappInfo[]>(
     () => store.getters['stakingV3/getRegisteredDapps']
@@ -35,14 +39,15 @@ export function useDapps() {
     try {
       aggregator.publish(new BusyMessage(true));
       const dApps = await service.getDapps(currentNetworkName.value.toLowerCase());
-      const numberOfParticipants = await service.getNumberOfParticipants(
-        currentNetworkName.value.toLowerCase()
-      );
-      store.commit('stakingV3/numberOfParticipants', numberOfParticipants);
       store.commit('stakingV3/addDapps', dApps.fullInfo);
       store.commit('stakingV3/addNewDapps', dApps.chainInfo);
       // Memo: this can a heavy operations since we are querying all dapps stakes for a chain.
       await fetchStakeAmountsToStore();
+
+      const numberOfParticipants = await tokenApiProviderRepository.getNumberOfParticipants(
+        currentNetworkName.value.toLowerCase()
+      );
+      store.commit('stakingV3/setNumberOfParticipants', numberOfParticipants);
     } finally {
       aggregator.publish(new BusyMessage(false));
     }

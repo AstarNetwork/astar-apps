@@ -54,7 +54,6 @@ import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
-import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -65,8 +64,12 @@ export default defineComponent({
     const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
-    const { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens } =
-      useDataCalculations();
+    const {
+      tvlPercentage,
+      totalVolumeOfVotesPercentage,
+      bonusEligibleTokens,
+      numberOfParticipants,
+    } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
@@ -76,10 +79,6 @@ export default defineComponent({
     );
     const unfilledSlots = computed<number>(
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
-    );
-    const store = useStore();
-    const numberOfParticipants = computed<number>(
-      () => store.getters['stakingV3/numberOfParticipants']
     );
 
     return {
