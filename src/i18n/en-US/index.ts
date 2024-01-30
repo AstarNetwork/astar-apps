@@ -892,9 +892,9 @@ export default {
       'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
     loyalStakerWarning:
       'You will loose eligibility for bonus reward at the end of current period if you unstake tokens now.',
-    unbondFrom: 'Unbond from {name}',
-    startUnbonding: 'Start unbonding',
-    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
+    unlockFrom: 'Unlock from {name}',
+    startUnlocking: 'Start unlocking',
+    unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',
   },
   bridge: {
     bridge: 'Bridge',
