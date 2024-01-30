@@ -5,6 +5,7 @@
   padding: 100px 0 20px 0;
   position: relative;
   background-color: $navy-1;
+  overflow: hidden;
   @media (min-width: $lg) {
     padding-right: 40px;
     padding-left: 40px;
@@ -20,7 +21,7 @@
   }
 }
 
-.bg--leaderboard{
+.bg--leaderboard {
   position: absolute;
   top: 0;
   left: 0;
@@ -33,11 +34,15 @@
 
 .title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.25;
   position: relative;
   z-index: 1;
   color: white;
+  font-style: italic;
+  @media (min-width: $xxxl) {
+    padding-top: 80px;
+  }
 }
 
 .container--boards {
@@ -71,7 +76,7 @@
   }
 }
 
-.swiper {
+.swiper--leaderboard {
   overflow: visible;
 }
 
