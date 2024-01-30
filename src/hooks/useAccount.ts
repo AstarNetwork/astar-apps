@@ -57,7 +57,6 @@ export const useAccount = () => {
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
-    console.log('disconnectAccount');
     return await new Promise(async (resolve) => {
       await wait(DELAY);
       store.commit('general/setCurrentAddress', null);

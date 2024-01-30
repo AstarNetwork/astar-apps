@@ -27,8 +27,8 @@ import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
 import { WatchCallback, computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import Web3 from 'web3';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
@@ -39,11 +39,13 @@ export const useConnectWallet = () => {
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
 
+  const { t } = useI18n();
   const store = useStore();
   const { requestAccounts } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
-  const { evmNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, currentNetworkChain, evmNetworkIdx, currentNetworkName } =
+    useNetworkInfo();
 
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
@@ -53,7 +55,6 @@ export const useConnectWallet = () => {
   const isConnectedNetwork = computed<boolean>(
     () => store.getters['general/networkStatus'] === 'connected'
   );
-  const { currentNetworkIdx, currentNetworkChain } = useNetworkInfo();
 
   const selectedWalletSource = computed(() => {
     try {
@@ -100,7 +101,6 @@ export const useConnectWallet = () => {
     currentWallet: SupportWallet;
     isSetupNetwork: boolean;
   }): Promise<boolean> => {
-    console.log('loadEvmWallet');
     const setCurrentEcdsaAccount = (address: string) => {
       const ethereumAddr = checkSumEvmAddress(address);
       const data = ss58
@@ -129,7 +129,6 @@ export const useConnectWallet = () => {
 
       // Memo: Do not change the network for the Bridge page
       if (currentRouter.value.name !== 'Bridge') {
-        console.log('start setupNetwork?');
         isSetupNetwork && (await setupNetwork({ network: chainId, provider }));
       }
 
@@ -153,20 +152,15 @@ export const useConnectWallet = () => {
 
     if (wallet === SupportWallet.WalletConnect) {
       const wcProvider = getWcProvider();
-      if (wcProvider) {
-        console.log('wcProvider', wcProvider);
-        console.log('here?');
-        return;
-      }
+      if (wcProvider) return;
       try {
         const { provider, chainId } = await initWalletConnectProvider();
         if (provider && evmNetworkIdx.value !== Number(chainId)) {
           store.dispatch('general/showAlertMsg', {
-            msg: 'Please switch to the correct network',
+            msg: t('wallet.switchWalletConnectNetwork', { network: currentNetworkName.value }),
             alertType: 'error',
           });
         }
-        console.log('chainId', chainId);
         await loadEvmWallet({ currentWallet: wallet, isSetupNetwork });
         return;
       } catch (error: any) {
@@ -231,7 +225,7 @@ export const useConnectWallet = () => {
   };
 
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
-    // requestExtensionsIfFirstAccess(wallet);
+    requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
@@ -249,18 +243,6 @@ export const useConnectWallet = () => {
       return;
     }
   };
-
-  watch(
-    [currentNetworkIdx],
-    () => {
-      const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-      const isWalletConnect = storedWallet === SupportWallet.WalletConnect;
-      if (isWalletConnect) {
-        // connectEthereumWallet(SupportWallet.WalletConnect);
-      }
-    },
-    { immediate: true }
-  );
 
   const setModalAccountSelect = (result: boolean): void => {
     modalAccountSelect.value = result;
@@ -298,10 +280,13 @@ export const useConnectWallet = () => {
   const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
     const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+    const isWalletConnect = wallet === SupportWallet.WalletConnect;
+    // Memo: WalletConnect does not have an address before scanning the QR code (when the user switch the network with selecting WalletConnect)
+    const isNoAddress = !address && !isWalletConnect;
 
     if (
       currentRouter.value === undefined ||
-      !address ||
+      isNoAddress ||
       !isConnectedNetwork.value ||
       currentAccount.value
     ) {
@@ -313,8 +298,7 @@ export const useConnectWallet = () => {
     // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
     const delay = 3000;
     await wait(delay);
-
-    if (address === ETHEREUM_EXTENSION) {
+    if (address === ETHEREUM_EXTENSION || isWalletConnect) {
       if (!wallet) {
         return;
       }

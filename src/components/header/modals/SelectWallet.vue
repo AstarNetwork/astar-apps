@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
+      <button :disabled="!currentWallet" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
     </div>

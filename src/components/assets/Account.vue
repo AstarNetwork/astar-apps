@@ -92,6 +92,15 @@
             </a>
           </div>
         </div>
+        <div v-if="isWalletConnect" class="row--wc-warning">
+          <span class="text--warning">
+            {{
+              $t('assets.verifyWalletCompatibility', {
+                network: currentNetworkName.replace('Network', ''),
+              })
+            }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -125,7 +134,7 @@ import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { supportWalletObj } from 'src/config/wallets';
+import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import {
   ETHEREUM_EXTENSION,
   useAccount,
@@ -183,6 +192,12 @@ export default defineComponent({
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
     const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+
+    const isWalletConnect = computed<boolean>(() => {
+      const currentWallet = store.getters['general/currentWallet'];
+      return currentWallet === SupportWallet.WalletConnect;
+    });
+
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -313,6 +328,7 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isWalletConnect,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,

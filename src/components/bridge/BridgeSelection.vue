@@ -85,7 +85,7 @@
 </template>
 <script lang="ts">
 import { cbridgeAppLink } from 'src/c-bridge';
-import { useAccount, useNetworkInfo, useWalletConnect } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
@@ -93,7 +93,6 @@ import { computed, defineComponent } from 'vue';
 export default defineComponent({
   components: {},
   setup() {
-    useWalletConnect();
     const { currentAccount } = useAccount();
     const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
 

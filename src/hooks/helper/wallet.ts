@@ -318,16 +318,19 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
 export const initWalletConnectProvider = async (): Promise<IWcEthereumProvider> => {
   const getProvider = async (): Promise<IWcEthereumProvider> => {
     const provider = (await initWcProvider()) as any;
+
+    // Todo: delete later
+    console.log('provider', provider);
     // Memo: remove the previous session in the wallet
     // Ref: https://github.com/MyEtherWallet/MyEtherWallet/blob/52ea653a20f37becec7aa01f2564370f4366c8b1/src/modules/access-wallet/hybrid/handlers/WalletConnect/index.js#L135
-    const isConnected = await provider.connected;
-    if (isConnected) {
-      try {
-        await provider.disconnect();
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    // const isConnected = await provider.connected;
+    // if (isConnected) {
+    //   try {
+    //     await provider.disconnect();
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
 
     await provider.connect();
     // Memo: to wait for syncing the correct chainId in provider
