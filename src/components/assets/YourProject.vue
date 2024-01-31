@@ -24,22 +24,22 @@
 </template>
 
 <script lang="ts">
-import { useAccount, useClaimAll } from 'src/hooks';
-import { CombinedDappInfo, useDappStakingNavigation, useDapps } from 'src/staking-v3';
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
+import { useClaimAll } from 'src/hooks';
+import { CombinedDappInfo, useDappStakingNavigation } from 'src/staking-v3';
 
 export default defineComponent({
+  props: {
+    ownDapps: {
+      type: Array<CombinedDappInfo>,
+      required: true,
+    },
+  },
   setup() {
-    const { currentAccount } = useAccount();
     useClaimAll();
-    const { allDapps } = useDapps();
     const { navigateOwnerPage } = useDappStakingNavigation();
-    const ownDapps = computed<CombinedDappInfo[]>(() => {
-      if (!allDapps.value) return [];
-      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
-    });
 
-    return { ownDapps, navigateOwnerPage };
+    return { navigateOwnerPage };
   },
 });
 </script>

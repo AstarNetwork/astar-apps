@@ -1,7 +1,7 @@
 <template>
-  <div v-if="isReady" class="dapp-top">
+  <div v-if="isReady">
     <dapp-v3 v-if="isDappStakingV3" />
-    <dapp v-else />
+    <div v-else class="dapp-top"><dapp /></div>
   </div>
   <div v-else />
 </template>

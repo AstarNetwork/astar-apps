@@ -1,7 +1,7 @@
 <template>
   <modal-wrapper
     :is-modal-open="show"
-    :title="$t('stakingV3.unbondFrom', { name: dapp?.basic.name })"
+    :title="$t('stakingV3.unlockFrom', { name: dapp?.basic.name })"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
@@ -56,12 +56,12 @@
 
       <div class="warning">
         <li>
-          {{ $t('stakingV3.unbondingEra', { unbondingPeriod: constants?.unlockingPeriod ?? '0' }) }}
+          {{ $t('stakingV3.unlockingDay', { unbondingPeriod: constants?.unlockingPeriod ?? '0' }) }}
         </li>
       </div>
       <error-panel :error-message="errorMessage" class="panel" />
       <astar-button class="unbond-button" :disabled="!canUnbond()" @click="unbound()"
-        >{{ $t('stakingV3.startUnbonding') }}
+        >{{ $t('stakingV3.startUnlocking') }}
       </astar-button>
     </div>
   </modal-wrapper>
