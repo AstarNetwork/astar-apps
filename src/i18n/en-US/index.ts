@@ -774,6 +774,8 @@ export default {
     done: 'Done',
     search: 'Search',
     buildAndEarn: 'Build&Earn',
+    buildAndEarnDescription:
+      'During each period stakers earn basic rewards, and projects earn tier rewards.',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
