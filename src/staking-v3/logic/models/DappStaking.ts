@@ -1,4 +1,4 @@
-import { DappInfo, ProtocolState } from './Node';
+import { DappInfo, DappState, ProtocolState } from './Node';
 import { Community } from '@astar-network/astar-sdk-core';
 
 /**
@@ -198,6 +198,10 @@ export interface ProviderDappData {
   registrationBlockNumber: number;
   unregisteredAt?: number;
   unregistrationBlockNumber?: number;
+  owner: string;
+  beneficiary?: string;
+  state: DappState;
+  dappId: number;
 }
 
 export interface NumberOfParticipantsData {
