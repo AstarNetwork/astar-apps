@@ -40,6 +40,7 @@ export default defineComponent({
 
 .wrapper--data-card {
   height: 150px;
+  flex-grow: 1;
 }
 
 .card--inner {
@@ -77,6 +78,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   gap: 8px;
+  background-color: white;
 }
 
 .card--top {

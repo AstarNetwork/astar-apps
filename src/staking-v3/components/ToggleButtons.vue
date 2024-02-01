@@ -47,6 +47,7 @@ export default defineComponent({
   gap: 4px;
   font-size: 16px;
   font-weight: 700;
+  background-color: white;
 }
 
 .button {
