@@ -34,7 +34,7 @@
         </button>
         <kpi-card :title="periodName" :description="$t('stakingV3.periodDescription')">
           <span class="text--value">{{ periodCurrentDay }}</span>
-          <span class="text--value-small">/{{ periodDuration }}</span>
+          <span class="text--value-small">/ {{ periodDuration }}</span>
         </kpi-card>
         <kpi-card
           :title="$t('stakingV3.basicRewards')"

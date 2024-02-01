@@ -29,7 +29,16 @@
       >
         <format-balance :balance="tvl.toString() ?? ''" />
       </data-card>
-      <data-card :title="`${$t('stakingV3.tvl')}`" :description="$t('stakingV3.tvlDescription')">
+      <data-card
+        :title="`${$t('stakingV3.tvl')}`"
+        :description="
+          $t('stakingV3.tvlDescription', {
+            token: nativeTokenSymbol,
+            tvlAmount: tvl.toString() ?? '',
+            tvlPercentage: $n(tvlPercentage),
+          })
+        "
+      >
         {{ $n(tvlPercentage) }} %
       </data-card>
       <data-card :title="`${$t('stakingV3.tvv')}`" :description="$t('stakingV3.tvvDescription')">
@@ -131,7 +140,6 @@ export default defineComponent({
       protocolState,
       periodName,
       periodDuration,
-      periodCurrentDay,
       totalDapps,
       tvl,
       unlocking,

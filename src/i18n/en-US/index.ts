@@ -863,7 +863,7 @@ export default {
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
-    tvlDescription: 'dApp Staking TVL is X.XXB ASTR. XX % of total supply.',
+    tvlDescription: 'dApp Staking TVL is {tvlAmount} {token}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
     tvv: 'TVV',
@@ -873,7 +873,7 @@ export default {
     bonusEligibleTokensDescription:
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
-    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our tokenomics (link).',
+    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our tokenomics.',
     dAppsSlots: 'dApps slots',
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',
