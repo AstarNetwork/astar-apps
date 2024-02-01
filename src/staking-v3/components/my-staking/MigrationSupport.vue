@@ -7,11 +7,7 @@
       <div class="row--body">
         <div class="text">
           {{ $t('stakingV3.migrationSupport.yourTokensAreLocked') }}
-          (<a
-            href="https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do"
-            target="_blank"
-          >
-            {{ $t('stakingV3.moreInfo') }}</a
+          (<a :href="docsUrl.faqLedger" target="_blank"> {{ $t('stakingV3.moreInfo') }}</a
           >)
         </div>
         <div class="row--locked-tokens">
@@ -33,6 +29,7 @@ import { defineComponent, computed } from 'vue';
 import { useLedger } from 'src/hooks';
 import { useDappStaking } from 'src/staking-v3/hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -48,7 +45,7 @@ export default defineComponent({
       () => (ledger.value?.locked ?? BigInt(0)) - totalStake.value
     );
 
-    return { isLedger, hasLockedTokens, availableToUnlock, unlock };
+    return { isLedger, hasLockedTokens, availableToUnlock, docsUrl, unlock };
   },
 });
 </script>
