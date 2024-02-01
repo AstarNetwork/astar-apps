@@ -39,8 +39,7 @@
         :title="`${$t('stakingV3.tvl')}`"
         :description="
           $t('stakingV3.tvlDescription', {
-            token: nativeTokenSymbol,
-            tvlAmount: tvl.toString() ?? '',
+            tvlAmount: formattedTvlBalance,
             tvlPercentage: $n(tvlPercentage),
           })
         "
@@ -112,6 +111,7 @@ import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { docsUrl } from 'src/links';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -149,6 +149,10 @@ export default defineComponent({
       return 0;
     });
 
+    const formattedTvlBalance = computed<string>(() =>
+      balanceFormatter(tvl.value.toString() ?? '')
+    );
+
     return {
       protocolState,
       periodName,
@@ -168,6 +172,7 @@ export default defineComponent({
       periodRemainingDays,
       isVotingPeriod,
       docsUrl,
+      formattedTvlBalance,
     };
   },
 });

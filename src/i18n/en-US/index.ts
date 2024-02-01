@@ -866,7 +866,7 @@ export default {
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
-    tvlDescription: 'dApp Staking TVL is {tvlAmount} {token}. {tvlPercentage} % of total supply.',
+    tvlDescription: 'dApp Staking TVL is {tvlAmount}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
     tvv: 'TVV',
