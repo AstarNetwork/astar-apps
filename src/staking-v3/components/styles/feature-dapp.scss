@@ -2,13 +2,15 @@
 
 .wrapper--promo {
   width: 100%;
+  z-index: 1;
+  position: relative;
   @media (min-width: $lg) {
     padding-right: 40px;
     padding-left: 40px;
   }
 }
 
-.wrapper--promo__inner{
+.wrapper--promo__inner {
   margin: auto;
   max-width: $container-max-width;
   padding: 0 16px;
@@ -29,9 +31,10 @@
 
 .text--promo-title {
   font-size: 40px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.5px;
   line-height: 1.25;
+  font-style: italic;
   @media (min-width: $sm) {
     font-size: 48px;
   }
@@ -40,7 +43,7 @@
 .text--promo-description {
   font-size: 14px;
   font-weight: 600;
-  max-width: 420px;
+  font-style: italic;
 }
 
 .row--data {
@@ -49,73 +52,13 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 40px;
+  margin-bottom: 40px;
   @media (min-width: $sm) {
     flex-wrap: nowrap;
+    margin-top: 80px;
+    margin-bottom: 0;
   }
-}
-
-.wrapper--kpi-card {
-  flex: 1;
-  background-color: transparent;
-  height: 110px;
-  perspective: 1000px;
-  @media (min-width: $sm) {
-    min-width: 150px;
-    flex: none;
-  }
-}
-
-.card--inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.5s;
-  transform-style: preserve-3d;
-}
-
-.wrapper--kpi-card:hover .card--inner {
-  transform: rotateY(180deg);
-}
-
-.card--front,
-.card--back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden; /* Safari */
-  backface-visibility: hidden;
-  border-radius: 16px;
-  padding: 16px 8px;
-  @media (min-width: $sm) {
-    padding: 16px;
-  }
-}
-
-.card--front {
-  text-align: center;
-  background-color: $navy-1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  line-height: 1.25;
-  height: 100%;
-}
-
-.card__top {
-  padding-top: 8px;
-}
-
-.card--back {
-  background-color: $navy-1;
-  color: white;
-  transform: rotateY(180deg);
-  font-weight: 600;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  text-align: left;
 }
 
 .button--link {
@@ -158,7 +101,6 @@
 .text--value {
   font-weight: 800;
   font-size: 20px;
-  color: white;
   white-space: nowrap;
   @media (min-width: $sm) {
     font-size: 24px;
@@ -168,14 +110,12 @@
 .text--value-small {
   font-weight: 500;
   font-size: 14px;
-  color: white;
   padding-left: 4px;
 }
 
 .text--card-title {
   font-weight: 600;
   font-size: 14px;
-  color: white;
 }
 
 .row--start-staking {
@@ -192,7 +132,8 @@
   border-radius: 16px;
   padding: 16px;
   font-size: 16px;
-  font-weight: 700;
+  font-style: italic;
+  font-weight: 900;
   box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
   color: white;
   line-height: 1.25;
@@ -261,7 +202,6 @@
     max-width: inherit;
   }
 }
-
 
 .bg--voting-period {
   position: absolute;

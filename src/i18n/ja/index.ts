@@ -157,8 +157,8 @@ export default {
   wallet: {
     connectWallet: 'ウォレットを接続',
     select: 'このポータルに接続するウォレットを選択してください。',
-    nativeAccount: 'Native アカウント',
-    evmAccount: 'EVM アカウント',
+    nativeWallets: 'Native アカウント',
+    evmWallets: 'EVM アカウント',
     multisigAccount: 'マルチシグ アカウント',
     accountUnification: 'Account Unification',
     math: {

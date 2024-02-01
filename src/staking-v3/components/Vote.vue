@@ -153,7 +153,7 @@ import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
-import { max } from 'src/v2/common';
+import { abs, max } from 'src/v2/common';
 import { useRoute } from 'vue-router';
 import { CombinedDappInfo, DappStakeInfo } from '../logic';
 import BackToPage from 'src/components/common/BackToPage.vue';
@@ -225,11 +225,10 @@ export default defineComponent({
       () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
     );
 
-    const availableToVoteDisplay = computed<bigint>(
-      () =>
-        BigInt(useableBalance.value) +
-        max(remainLockedToken.value, BigInt(0)) -
-        totalStakeAmountBigInt.value
+    const availableToVoteDisplay = computed<bigint>(() =>
+      remainLockedToken.value >= BigInt(0)
+        ? BigInt(useableBalance.value) + remainLockedToken.value
+        : BigInt(useableBalance.value) - abs(remainLockedToken.value)
     );
 
     const amountToUnstake = computed<bigint>(() =>

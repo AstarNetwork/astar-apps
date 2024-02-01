@@ -1,3 +1,5 @@
+@import 'src/css/quasar.variables.scss';
+
 .markdown {
   h1 {
     font-size: 2rem!important;
@@ -45,5 +47,6 @@
 
   a {
     text-decoration: underline;
+    color: $astar-blue;
   }
 }

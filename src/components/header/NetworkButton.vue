@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isNotSelectedEndpoint">
-      <connect-button @click="showNetworkModal">
+      <connect-button data-testid="btn-network" @click="showNetworkModal">
         <astar-icon-network />
       </connect-button>
       <q-tooltip>

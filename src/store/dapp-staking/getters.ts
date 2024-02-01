@@ -18,6 +18,7 @@ export interface ContractsGetters {
   getClaimedRewards(state: State): number;
   getTvl(state: State): TvlModel;
   getCurrentEra(state: State): number;
+  getDecommission(state: State): boolean;
 }
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
@@ -47,6 +48,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getClaimedRewards: (state) => state.claimedRewards,
   getTvl: (state) => state.tvl,
   getCurrentEra: (state) => state.currentEra,
+  getDecommission: (state) => state.decommission,
 };
 
 export default getters;

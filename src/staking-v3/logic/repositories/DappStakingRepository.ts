@@ -29,13 +29,11 @@ import { Symbols } from 'src/v2/symbols';
 import { IApi } from 'src/v2/integration';
 import {
   PalletDappStakingV3AccountLedger,
-  PalletDappStakingV3ActiveInflationConfig,
   PalletDappStakingV3ContractStakeAmount,
   PalletDappStakingV3DAppInfo,
   PalletDappStakingV3DAppTierRewards,
   PalletDappStakingV3EraInfo,
   PalletDappStakingV3EraRewardSpan,
-  PalletDappStakingV3InflationParams,
   PalletDappStakingV3PeriodEndInfo,
   PalletDappStakingV3ProtocolState,
   PalletDappStakingV3SingularStakingInfo,
@@ -415,25 +413,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getInflationParams(): Promise<InflationParam> {
-    const api = await this.api.getApi();
-    const data = await api.query.inflation.inflationParams<PalletDappStakingV3InflationParams>();
-
-    return {
-      maxInflationRate: String(data.maxInflationRate),
-      adjustableStakersPart: String(data.adjustableStakersPart),
-      baseStakersPart: String(data.baseStakersPart),
-      idealStakingRate: String(data.idealStakingRate),
-    };
-  }
-
-  public async getBonusRewardPoolPerPeriod(): Promise<string> {
-    const api = await this.api.getApi();
-    const data =
-      await api.query.inflation.activeInflationConfig<PalletDappStakingV3ActiveInflationConfig>();
-    return String(data.bonusRewardPoolPerPeriod);
-  }
-
   public async getContractStake(dappId: number): Promise<ContractStakeAmount> {
     const api = await this.api.getApi();
     const contractStake =
@@ -538,7 +517,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       address,
       owner: dapp.owner.toString(),
       id: dapp.id.toNumber(),
-      state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
+      state: DappState.Registered, // All dApss from integratedDApps are registered.
       rewardDestination: dapp.rewardBeneficiary.unwrapOr(undefined)?.toString(),
     };
   }

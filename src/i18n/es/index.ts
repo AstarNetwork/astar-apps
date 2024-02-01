@@ -157,8 +157,8 @@ export default {
   wallet: {
     connectWallet: 'Conectar billetera',
     select: 'Por favor, selecciona una billetera para conectarse a este Portal',
-    nativeAccount: 'Cuentas nativas',
-    evmAccount: 'Cuentas EVM',
+    nativeWallets: 'Cuentas nativas',
+    evmWallets: 'Cuentas EVM',
     multisigAccount: 'Cuentas multisig',
     accountUnification: 'Unificación de cuentas',
     math: {

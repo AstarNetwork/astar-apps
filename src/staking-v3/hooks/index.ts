@@ -7,3 +7,4 @@ export * from './usePeriod';
 export * from './useAprV3';
 export * from './useVotingCountdown';
 export * from './useRegisterDapp';
+export * from './useDataCalculations';

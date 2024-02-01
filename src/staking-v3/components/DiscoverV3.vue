@@ -2,12 +2,14 @@
   <div>
     <div class="wrapper--discover">
       <feature-dapp />
-      <register-banner />
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
 
-      <div class="container--dapps-data">
+      <div
+        class="container--dapps-data"
+        :style="{ backgroundImage: `url(${require('src/staking-v3/assets/grid_bg.svg')})` }"
+      >
         <div class="container--dapps-data__inner">
           <div class="row--dapps-data-header">
             <toggle-buttons
@@ -23,11 +25,12 @@
             />
           </div>
           <div v-if="displayIndex === 0" class="dapps">
-            <dapps category="DeFi" :search="searchText" />
-            <dapps category="NFT" :search="searchText" />
-            <dapps category="Tooling" :search="searchText" />
-            <dapps category="Utility" :search="searchText" />
-            <dapps category="Others" :search="searchText" />
+            <dapps category="defi" :search="searchText" />
+            <dapps category="nft" :search="searchText" />
+            <dapps category="tooling" :search="searchText" />
+            <dapps category="utility" :search="searchText" />
+            <dapps category="others" :search="searchText" />
+            <dapps category="unstoppable-grants" :search="searchText" />
           </div>
           <data-list v-if="displayIndex === 1" />
         </div>
@@ -46,7 +49,6 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
-import RegisterBanner from './RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -57,7 +59,6 @@ export default defineComponent({
     DataList,
     DynamicAdsArea,
     ToggleButtons,
-    RegisterBanner,
   },
   setup() {
     const displayIndex = ref<number>(0);

@@ -7,7 +7,7 @@
       </button>
 
       <kpi-card v-if="!small" :title="$t('dappStaking.dappPage.totalStaked')">
-        <token-balance-native :balance="dapp.chain.totalStake?.toString() || '0'" />
+        <format-balance :balance="dapp.chain.totalStake?.toString() || '0'" />
       </kpi-card>
       <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
         <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
@@ -15,26 +15,22 @@
       <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')">
         <span>{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
       </kpi-card>
-
-      <!-- <kpi-card :title="$t('stakingV3.totalEarned')">
-        <span>{{ $t('amountToken', { amount: 10, token: nativeTokenSymbol }) }}</span>
-      </kpi-card> -->
     </div>
   </div>
 </template>
 <script lang="ts">
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { useDappStaking, useDappStakingNavigation } from 'src/staking-v3/hooks';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType } from 'vue';
 import KpiCard from '../KpiCard.vue';
 import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
     KpiCard,
     VoteStakeButtonBg,
+    FormatBalance,
   },
   props: {
     dapp: {

@@ -8,11 +8,6 @@
             {{ selectedSignatory ? selectedSignatory.name : 'Select Multisig Signatory' }}
           </div>
         </div>
-        <!-- <div class="txt--change">
-          <span v-if="!openOption">
-            {{ $t('change') }}
-          </span>
-        </div> -->
       </div>
       <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
         <ul class="container--wallet">
@@ -173,6 +168,9 @@ export default defineComponent({
 }
 
 .body--dark {
+  .box__row--wallet {
+    border: 1px solid $navy-3;
+  }
   .box--wallet-option {
     background: $gray-6;
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);

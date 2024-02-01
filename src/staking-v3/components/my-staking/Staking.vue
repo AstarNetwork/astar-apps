@@ -7,7 +7,8 @@
           <span class="text--title">{{ $t('common.staking') }}</span>
         </div>
         <div class="total--rewards">
-          <token-balance-native :balance="totalStake?.toString() ?? '0'" />
+          <span class="locked">{{ $t('stakingV3.lockedBalance') }}:</span>
+          <token-balance-native :balance="ledger?.locked.toString() ?? '0'" />
         </div>
       </div>
 
@@ -26,7 +27,7 @@
         :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
       />
       <my-dapps v-if="currentTabIndex === 1" :staked-dapps="stakerInfo" />
-      <unbonding v-if="currentTabIndex === 2" />
+      <unlocking v-if="currentTabIndex === 2" />
     </div>
   </div>
 </template>
@@ -39,7 +40,7 @@ import TabComponent, { TabDefinition } from './TabComponent.vue';
 import MyStaking from './MyStaking.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import MyDapps from './MyDapps.vue';
-import Unbonding from './Unbonding.vue';
+import Unlocking from './Unlocking.vue';
 import MigrationSupport from './MigrationSupport.vue';
 
 export default defineComponent({
@@ -48,21 +49,21 @@ export default defineComponent({
     TabComponent,
     MyStaking,
     MyDapps,
-    Unbonding,
+    Unlocking,
     MigrationSupport,
   },
   setup() {
     const { t } = useI18n();
-    const { ledger, totalStakerRewards, stakerInfo, totalStake } = useDappStaking();
+    const { ledger, totalStakerRewards, stakerInfo } = useDappStaking();
     const currentTabIndex = ref<number>(0);
 
     const tabs = computed<TabDefinition[]>(() => [
       { title: t('stakingV3.myStaking'), visible: true },
       { title: t('stakingV3.myDapps'), visible: stakerInfo.value?.size > 0 },
-      { title: t('stakingV3.unbonding'), visible: !!ledger.value?.unlocking.length },
+      { title: t('stakingV3.unlocking'), visible: !!ledger.value?.unlocking.length },
     ]);
 
-    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, totalStake };
+    return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, ledger };
   },
 });
 </script>
@@ -124,6 +125,11 @@ export default defineComponent({
   @media (min-width: $lg) {
     font-size: 14px;
   }
+}
+
+.locked {
+  font-weight: 400;
+  margin-right: 8px;
 }
 
 .body--dark {

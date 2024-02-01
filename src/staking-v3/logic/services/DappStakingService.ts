@@ -3,6 +3,7 @@ import {
   CombinedDappInfo,
   DappInfo,
   DappStakeInfo,
+  DappState,
   SingularStakingInfo,
   StakeAmount,
   StakerRewards,
@@ -37,7 +38,7 @@ export class DappStakingService implements IDappStakingService {
       this.tokenApiRepository.getDapps(network.toLowerCase()),
     ]);
 
-    // Map on chain and in store dApps
+    // Map on chain and in store dApps (registered only)
     const dApps: CombinedDappInfo[] = [];
     const onlyChain: DappInfo[] = [];
     chainDapps.forEach((chainDapp) => {
@@ -57,6 +58,27 @@ export class DappStakingService implements IDappStakingService {
         onlyChain.push(chainDapp);
       }
     });
+
+    // Map unregistered dApps
+    tokenApiDapps
+      .filter((x) => x.state === 'Unregistered')
+      .forEach((dapp) => {
+        const storeDapp = storeDapps.find(
+          (x) => x.address.toLowerCase() === dapp.contractAddress.toLowerCase()
+        );
+        if (storeDapp) {
+          dApps.push({
+            basic: storeDapp,
+            dappDetails: dapp,
+            chain: {
+              address: dapp.contractAddress,
+              id: dapp.dappId,
+              owner: dapp.owner,
+              state: DappState.Unregistered,
+            },
+          });
+        }
+      });
 
     return { fullInfo: dApps, chainInfo: onlyChain };
   }
