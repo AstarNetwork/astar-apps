@@ -2,10 +2,12 @@ import { computed } from 'vue';
 import { useDappStaking } from './useDappStaking';
 import { useTokenCirculation } from 'src/hooks/useTokenCirculation';
 import { ethers } from 'ethers';
+import { useStore } from 'src/store';
 
 export function useDataCalculations() {
   const { totalSupply } = useTokenCirculation();
   const { currentEraInfo } = useDappStaking();
+  const store = useStore();
 
   const tvlPercentage = computed<number>(() => {
     if (!currentEraInfo.value || !totalSupply.value) {
@@ -44,5 +46,9 @@ export function useDataCalculations() {
       : currentEraInfo.value.currentStakeAmount.voting;
   });
 
-  return { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens };
+  const numberOfParticipants = computed<number>(
+    () => store.getters['stakingV3/getNumberOfParticipants']
+  );
+
+  return { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens, numberOfParticipants };
 }
