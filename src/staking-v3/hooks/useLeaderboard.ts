@@ -24,7 +24,7 @@ export function useLeaderboard() {
   );
 
   const sortedDapps = computed<CombinedDappInfo[]>(() =>
-    registeredDapps.value.sort((a, b) => {
+    [...registeredDapps.value].sort((a, b) => {
       const valueA = a.chain?.totalStake ?? BigInt(0);
       const valueB = b.chain?.totalStake ?? BigInt(0);
 

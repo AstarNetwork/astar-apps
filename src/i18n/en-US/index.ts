@@ -860,6 +860,7 @@ export default {
     numberOfDapps: 'Number of dApps',
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
+    numberOfParticipants: 'Number of participants',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
