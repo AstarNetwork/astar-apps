@@ -774,12 +774,13 @@ export default {
     done: 'Done',
     search: 'Search',
     buildAndEarn: 'Build&Earn',
-    buildAndEarnDescription:
-      'During each period stakers earn basic rewards, and projects earn tier rewards.',
+    buildAndEarnDescription: 'Stakers and dApps start earning basic rewards.',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
+    VoteDescription:
+      'Stakes are reset to 0, and users become eligible for bonus rewards by re-staking.',
     voteToday: 'Be entitled to bonus pool today',
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
@@ -796,10 +797,10 @@ export default {
     dApp: 'dApp',
     stakedAmount: 'Staked amount',
     stakedAmountTooltip:
-      'Staked amount means the tokens are locked and staked. Staking rewards are distributed every day.',
+      'Staked amount means that the tokens are locked and staked. Rewards are distributed every era (day) during Build&Earn Subperiod.',
     lockedAmount: 'Locked amount',
     lockedAmountTooltip:
-      'Locked amount means the tokens are locked however they are not staked. We encourage users to stake all locked tokens at least to maximise your staking rewards.',
+      'Locked amount means that the tokens are locked, but not staked. Locked tokens do not bring any rewards. We encourage users to stake these tokens to maximize their rewards.',
     rewards: 'Rewards',
     estimatedRewards: 'Estimated rewards',
     manage: 'Manage',
@@ -821,10 +822,10 @@ export default {
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',
-    buildPeriodDescription:
-      'Stakers earn basic rewads, projects earn tier rewards during the period.',
-    basicRewardsDescription: 'All stakers receive basic rewads during the B&E period.',
-    bonusRewardsDescription: 'Vote in time to be entitled to bonus, check and learn more.',
+    periodDescription:
+      'During each period stakers earn basic rewards, and projects earn tier rewards.',
+    basicRewardsDescription: 'Rewards that stakers and dApps earn in B&E Subperiod.',
+    bonusRewardsDescription: 'Rewards that stakers can earn by staking in Voting Subperiod.',
     editProjectPage: {
       title: 'Edit Project Page',
       text: 'You can change the images, description at any time.',
@@ -852,18 +853,33 @@ export default {
     blocks: 'blocks',
     back: 'Back',
     era: 'Era',
-    day: 'Day',
+    eraDescription:
+      '1 era is a session of 7200 blocks on Astar, equal to approx. 24 hours. Check the progress.',
+    duration: 'Duration',
+    durationDescription: 'Remaining days of the current period.',
     numberOfDapps: 'Number of dApps',
+    numberOfDappsDescription:
+      'The total number of dApps that are currently listed on dApp Staking.',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
+    tvlDescription: 'dApp Staking TVL is X.XXB ASTR. XX % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
     tvv: 'TVV',
+    tvvDescription:
+      'Total Volume of Vote is the rate that shows how much is staked within dApp Staking TVL.',
     bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusEligibleTokensDescription:
+      'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
-    filledSlot: 'Filled slots',
-    unfilledSlot: 'Unfilled slots',
+    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our tokenomics (link).',
+    dAppsSlots: 'dApps slots',
+    dAppsSlotsDescription:
+      'Number of project rewards for the slots filled by projects in the current era.',
+    unfilledSlot: 'Unfilled slot tokens',
+    unfilledSlotDescription:
+      'Total amount of tokens for slots that are not filled by the projects in the current era.',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
     dapp: {
