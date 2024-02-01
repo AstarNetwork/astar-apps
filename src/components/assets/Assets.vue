@@ -3,6 +3,7 @@
     <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
       <div class="column--main">
+        <register-banner v-if="isDappStakingV3" />
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
@@ -87,6 +88,7 @@ import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
+import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -101,6 +103,7 @@ export default defineComponent({
     NativeAssetList,
     ZkAstr,
     AnchorLinks,
+    RegisterBanner,
   },
   setup() {
     const token = ref<Asset | null>(null);

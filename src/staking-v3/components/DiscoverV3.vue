@@ -2,12 +2,14 @@
   <div>
     <div class="wrapper--discover">
       <feature-dapp />
-      <register-banner />
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
 
-      <div class="container--dapps-data">
+      <div
+        class="container--dapps-data"
+        :style="{ backgroundImage: `url(${require('src/staking-v3/assets/grid_bg.svg')})` }"
+      >
         <div class="container--dapps-data__inner">
           <div class="row--dapps-data-header">
             <toggle-buttons
@@ -47,7 +49,6 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
-import RegisterBanner from './RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -58,7 +59,6 @@ export default defineComponent({
     DataList,
     DynamicAdsArea,
     ToggleButtons,
-    RegisterBanner,
   },
   setup() {
     const displayIndex = ref<number>(0);
