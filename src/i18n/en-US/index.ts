@@ -861,6 +861,8 @@ export default {
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
     numberOfParticipants: 'Number of participants',
+    numberOfParticipantsDescription: 'The total number of dApp Staking users.',
+    tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
@@ -874,7 +876,7 @@ export default {
     bonusEligibleTokensDescription:
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
-    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our tokenomics.',
+    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our ',
     dAppsSlots: 'dApps slots',
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',

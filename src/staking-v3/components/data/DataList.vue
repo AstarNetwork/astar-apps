@@ -19,7 +19,10 @@
       <data-card :title="$t('stakingV3.era')" :description="$t('stakingV3.eraDescription')">
         {{ $t('stakingV3.days', { day: protocolState?.era }) }}
       </data-card>
-      <data-card :title="$t('stakingV3.numberOfParticipants')" description="description">
+      <data-card
+        :title="$t('stakingV3.numberOfParticipants')"
+        :description="$t('stakingV3.numberOfParticipantsDescription')"
+      >
         {{ numberOfParticipants }}
       </data-card>
     </div>
@@ -76,6 +79,8 @@
       <data-card
         :title="$t('stakingV3.bonusPool')"
         :description="$t('stakingV3.bonusPoolDescription')"
+        :link-url="docsUrl.tokenomics2"
+        :link-label="$t('stakingV3.tokenomics')"
       >
         <format-balance
           :balance="activeInflationConfiguration.bonusRewardPoolPerPeriod.toString() ?? ''"
@@ -106,6 +111,7 @@ import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import { useNetworkInfo } from 'src/hooks';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -161,6 +167,7 @@ export default defineComponent({
       nativeTokenSymbol,
       periodRemainingDays,
       isVotingPeriod,
+      docsUrl,
     };
   },
 });
