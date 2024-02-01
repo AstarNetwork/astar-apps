@@ -852,6 +852,7 @@ export default {
     era: 'Era',
     day: 'Day',
     numberOfDapps: 'Number of dApps',
+    numberOfParticipants: 'Number of participants',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',

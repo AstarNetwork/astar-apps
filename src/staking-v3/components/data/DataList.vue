@@ -14,6 +14,9 @@
       <data-card :title="$t('stakingV3.era')" description="description">
         {{ protocolState?.era }}
       </data-card>
+      <data-card :title="$t('stakingV3.numberOfParticipants')" description="description">
+        {{ numberOfParticipants }}
+      </data-card>
     </div>
 
     <div class="row--title">{{ $t('stakingV3.tvl') }}</div>
@@ -80,8 +83,12 @@ export default defineComponent({
     const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
-    const { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens } =
-      useDataCalculations();
+    const {
+      tvlPercentage,
+      totalVolumeOfVotesPercentage,
+      bonusEligibleTokens,
+      numberOfParticipants,
+    } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
@@ -110,6 +117,7 @@ export default defineComponent({
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,
+      numberOfParticipants,
       nativeTokenSymbol,
     };
   },
