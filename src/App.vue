@@ -147,6 +147,7 @@ export default defineComponent({
 
     const setShowOnboardingModal = (isOpen: boolean): void => {
       showOnboardingModal.value = isOpen;
+    };
 
     const setShowDecommissionModal = (isOpen: boolean): void => {
       showDecommissionModal.value = isOpen;
