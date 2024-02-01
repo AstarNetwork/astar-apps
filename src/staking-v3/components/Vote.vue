@@ -222,13 +222,16 @@ export default defineComponent({
     });
 
     const availableToVote = computed<bigint>(
-      () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
+      () =>
+        BigInt(useableBalance.value) +
+        max(remainLockedTokenInitial, BigInt(0)) +
+        availableToMove.value
     );
 
     const availableToVoteDisplay = computed<bigint>(() =>
       remainLockedToken.value >= BigInt(0)
-        ? BigInt(useableBalance.value) + remainLockedToken.value
-        : BigInt(useableBalance.value) - abs(remainLockedToken.value)
+        ? BigInt(useableBalance.value) + remainLockedToken.value + availableToMove.value
+        : BigInt(useableBalance.value) - abs(remainLockedToken.value) + availableToMove.value
     );
 
     const amountToUnstake = computed<bigint>(() =>

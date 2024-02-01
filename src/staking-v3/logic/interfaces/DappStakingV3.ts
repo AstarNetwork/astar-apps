@@ -58,7 +58,6 @@ export interface PalletDappStakingV3ProtocolState extends Struct {
 export interface PalletDappStakingV3DAppInfo extends Struct {
   readonly owner: AccountId32;
   readonly id: Compact<u16>;
-  readonly state: PalletDappStakingV3DAppState;
   readonly rewardBeneficiary: Option<AccountId32>;
 }
 
