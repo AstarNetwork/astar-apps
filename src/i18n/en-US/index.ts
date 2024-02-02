@@ -854,7 +854,7 @@ export default {
     back: 'Back',
     era: 'Era',
     eraDescription:
-      '1 era is a session of 7200 blocks on Astar, equal to approx. 24 hours. Check the progress.',
+      '1 era is a session of 7,200 blocks on Astar, equal to approx. 24 hours. Check the progress.',
     duration: 'Duration',
     durationDescription: 'Remaining days of the current period.',
     numberOfDapps: 'Number of dApps',
