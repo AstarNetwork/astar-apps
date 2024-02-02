@@ -46,7 +46,7 @@ export default defineComponent({
   padding: 4px 8px 8px 8px;
   font-size: 12px;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: center;
   @media (min-width: $sm) {
