@@ -1,19 +1,21 @@
 <template>
-  <div class="wrapper--migration-support">
+  <div v-if="isLedger && hasLockedTokens" class="wrapper--migration-support">
     <div class="wrapper--migration-support__inter">
       <div class="row--header">
-        {{ $t('dappStaking.migrationSupport.actionRequired') }}
+        {{ $t('stakingV3.migrationSupport.actionRequired') }}
       </div>
       <div class="row--body">
         <div class="text">
-          {{ $t('dappStaking.migrationSupport.yourTokensAreLocked') }}
+          {{ $t('stakingV3.migrationSupport.yourTokensAreLocked') }}
+          (<a :href="docsUrl.faqLedger" target="_blank"> {{ $t('stakingV3.moreInfo') }}</a
+          >)
         </div>
         <div class="row--locked-tokens">
-          <div>{{ $t('dappStaking.migrationSupport.balanceFromV2') }}</div>
-          <div>-- ASTR</div>
+          <div>{{ $t('stakingV3.lockedAmount') }}</div>
+          <token-balance-native :balance="availableToUnlock.toString()" />
           <div class="column--migrate">
-            <button type="button" class="button--migrate">
-              {{ $t('dappStaking.migrationSupport.migrateNow') }}
+            <button type="button" class="button--migrate" @click="unlock(availableToUnlock)">
+              {{ $t('stakingV3.unlock') }}
             </button>
           </div>
         </div>
@@ -23,12 +25,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useLedger } from 'src/hooks';
+import { useDappStaking } from 'src/staking-v3/hooks';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
-  props: {},
+  components: {
+    TokenBalanceNative,
+  },
   setup() {
-    return {};
+    const { isLedger } = useLedger();
+    const { ledger, totalStake, unlock } = useDappStaking();
+    const hasLockedTokens = computed<Boolean>(
+      () => (ledger.value?.locked ?? BigInt(0)) > BigInt(0)
+    );
+    const availableToUnlock = computed<bigint>(
+      () => (ledger.value?.locked ?? BigInt(0)) - totalStake.value
+    );
+
+    return { isLedger, hasLockedTokens, availableToUnlock, docsUrl, unlock };
   },
 });
 </script>
