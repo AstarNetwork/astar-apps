@@ -13,8 +13,21 @@
   margin: auto;
   max-width: $container-max-width;
   padding: 0 16px;
+  position: relative;
+  z-index: 1;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll();
   @media (min-width: $lg) {
     padding: 0;
+  }
+}
+
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(200px);
   }
 }
 
