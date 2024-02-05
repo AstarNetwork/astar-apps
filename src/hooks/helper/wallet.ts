@@ -294,9 +294,11 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
   const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
 
   // Ref: https://docs.walletconnect.com/advanced/walletconnectmodal/options#explorerrecommendedwalletids-optional
+  // Memo: disabled 'desktop wallet' section as it doesn't work for our zkEVM wallet. We might want to filter the wallet by ids in the future
   new WalletConnectModal({
     projectId,
     explorerRecommendedWalletIds: 'NONE',
+    // explorerExcludedWalletIds: 'ALL',
   });
 
   // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
