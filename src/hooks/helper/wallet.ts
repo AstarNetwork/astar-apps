@@ -8,7 +8,7 @@ import { get } from 'lodash-es';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
-import { EVM } from 'src/config/web3';
+import { EVM, rpcUrls } from 'src/config/web3';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { deepLink } from 'src/links';
@@ -19,7 +19,8 @@ import { SubstrateAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { Dispatch } from 'vuex';
-import Web3 from 'web3';
+import { WalletConnectModal } from '@walletconnect/modal';
+
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -282,7 +283,6 @@ interface IWcEthereumProvider {
   chainId: number;
 }
 
-// Ref: https://docs.walletconnect.com/advanced/providers/ethereum
 const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
   const astar = providerEndpoints[endpointKey.ASTAR];
   const shiden = providerEndpoints[endpointKey.SHIDEN];
@@ -290,9 +290,18 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
   const zKatana = providerEndpoints[endpointKey.ZKATANA];
   const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
 
+  // Memo: this can be committed as it can be exposed on the browser anyway
+  const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
+
+  // Ref: https://docs.walletconnect.com/advanced/walletconnectmodal/options#explorerrecommendedwalletids-optional
+  new WalletConnectModal({
+    projectId,
+    explorerRecommendedWalletIds: 'NONE',
+  });
+
+  // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
   const provider = (await WcEthereumProvider.init({
-    // Memo: this can be committed as it can be exposed on the browser anyway
-    projectId: 'c236cca5c68248680dd7d0bf30fefbb5',
+    projectId,
     showQrModal: true,
     optionalChains: [
       Number(astar.evmChainId),
@@ -300,7 +309,7 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
       Number(shibuya.evmChainId),
       // Number(astarZkEvm.evmChainId),
       Number(zKatana.evmChainId),
-      // EVM.SEPOLIA_TESTNET,
+      EVM.SEPOLIA_TESTNET,
     ],
     chains: [EVM.ETHEREUM_MAINNET],
     rpcMap: {
@@ -309,9 +318,10 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
       [shibuya.evmChainId]: shibuya.evmEndpoints[0],
       // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
       [zKatana.evmChainId]: zKatana.evmEndpoints[0],
-      // [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
+      [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
     },
   })) as any;
+
   return provider;
 };
 
@@ -319,8 +329,6 @@ export const initWalletConnectProvider = async (): Promise<IWcEthereumProvider> 
   const getProvider = async (): Promise<IWcEthereumProvider> => {
     const provider = (await initWcProvider()) as any;
 
-    // Todo: delete later
-    console.log('provider', provider);
     // Memo: remove the previous session in the wallet
     // Ref: https://github.com/MyEtherWallet/MyEtherWallet/blob/52ea653a20f37becec7aa01f2564370f4366c8b1/src/modules/access-wallet/hybrid/handlers/WalletConnect/index.js#L135
     const isConnected = await provider.connected;
