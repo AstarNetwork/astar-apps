@@ -858,6 +858,7 @@ export default {
     tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
+    totalValueLockedDescription: 'Total amount locked in dApp Staking.',
     tvl: 'TVL',
     tvlDescription: 'dApp Staking TVL is {tvlAmount}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',

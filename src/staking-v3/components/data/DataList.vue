@@ -31,7 +31,7 @@
     <div class="row--data-list">
       <data-card
         :title="$t('stakingV3.totalValueLocked', { token: nativeTokenSymbol })"
-        description="description"
+        :description="$t('stakingV3.totalValueLockedDescription')"
       >
         <format-balance :balance="tvl.toString() ?? ''" />
       </data-card>
