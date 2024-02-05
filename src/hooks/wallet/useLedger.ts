@@ -78,5 +78,5 @@ export const useLedger = () => {
 
   watch([currentAccount], handleLedgerData, { immediate: true });
 
-  return { isLedgerNanoS };
+  return { isLedgerNanoS, isLedger };
 };

@@ -353,13 +353,6 @@ export default {
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it has been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. The UI team is working to fix this issue.',
-    migrationSupport: {
-      actionRequired: 'Action Required',
-      yourTokensAreLocked:
-        'Your tokens are locked in dAppStaking V2. Please migrate your funds to V3 today and start participating.',
-      balanceFromV2: 'Balance from V2 (locked)',
-      migrateNow: 'Migrate Now',
-    },
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring your funds from?',
@@ -479,6 +472,7 @@ export default {
     astarNativeAccount: 'Astar Native Account',
     astarEvmAccount: 'Astar EVM Account',
     assets: 'Assets',
+    project: 'Project',
     xcmAssetsShort: 'XCM Assets',
     xcmAssets: 'XCM (Cross Chain Message) Assets',
     xvmAssetsShort: 'XVM ERC-20 Assets',
@@ -745,6 +739,8 @@ export default {
       ZeroAmount: 'Amount must be greater than 0.',
       LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
     },
+    innovativeWayOfStaking:
+      'Innovative way of staking, only at Astar. Where ecosystem grow together',
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
     voteText: 'I would like to vote my tokens with',
@@ -774,7 +770,6 @@ export default {
     done: 'Done',
     search: 'Search',
     buildAndEarn: 'Build&Earn',
-    newDappPromotion: 'New dApp promotion',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
@@ -851,8 +846,14 @@ export default {
     blocks: 'blocks',
     back: 'Back',
     era: 'Era',
+    day: 'Day',
     numberOfDapps: 'Number of dApps',
+    numberOfParticipants: 'Number of participants',
+    general: 'General',
+    totalValueLocked: 'Total Value Locked ({token})',
     tvl: 'TVL',
+    builderRewards: 'Builder Rewards',
+    stakerRewards: 'Staker Rewards',
     tvv: 'TVV',
     bonusEligibleTokens: 'Bonus eligible tokens',
     bonusPool: 'Bonus pool',
@@ -865,7 +866,7 @@ export default {
       overview: 'Overview',
     },
     unregisteredDappInfo:
-      'This project has been unregistered. Claim action is required and your funds will be returned.',
+      'This project has been unregistered but If you are currently entitled to Bonus you will be entitled to it as well as basic rewards as long as you do not move/unstake the fund during this Period. Unstake if you still want to (it has {days} days unlocking period).',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
@@ -878,7 +879,9 @@ export default {
     noEntry: 'No entry',
     burn: 'Burn',
     availableToWithdraw: 'Available to withdraw',
-    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    congrats: 'Congrats!!',
+    dappRegistered:
+      'Your contract is whitelisted on dApp Staking. Please submit details and you will be listed.',
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
@@ -889,6 +892,17 @@ export default {
     unbondFrom: 'Unbond from {name}',
     startUnbonding: 'Start unbonding',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
+    migrationSupport: {
+      actionRequired: 'Action Required',
+      yourTokensAreLocked:
+        'Your tokens are locked in dAppStaking V2. Please unbond and withdraw your tokens. dApp Staking V3 is temporally unavailable for those Ledger Astar Native App users, please move your funds to a soft wallet or a Ledger EVM account to be able to participate in dApp staking.',
+      migrateNow: 'Migrate Now',
+    },
+    ledgerNotSupported: 'Ledger native accounts are not supported for dApp staking V3 yet.',
+    moreInfo: 'More info',
+    unlockFrom: 'Unlock from {name}',
+    startUnlocking: 'Start unlocking',
+    unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',
   },
   bridge: {
     bridge: 'Bridge',

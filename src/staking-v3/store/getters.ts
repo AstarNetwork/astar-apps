@@ -37,6 +37,7 @@ const getters: GetterTree<DappStakingState, StateInterface> & DappStakingGetters
   getVersion: (state) => state.version,
   getDapps: (state) => state.dapps,
   getNewDapps: (state) => state.newDapps,
+  getNumberOfParticipants: (state) => state.numberOfParticipants,
   getRegisteredDapps: (state) => state.dapps.filter((x) => x.chain.state === DappState.Registered),
   getProtocolState: (state) => state.protocolState,
   getLedger: (state) => state.ledger,

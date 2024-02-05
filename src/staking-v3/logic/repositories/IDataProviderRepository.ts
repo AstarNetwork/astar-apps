@@ -5,4 +5,5 @@ import { ProviderDappData } from '../models';
  */
 export interface IDataProviderRepository {
   getDapps(network: string): Promise<ProviderDappData[]>;
+  getNumberOfParticipants(network: string): Promise<number>;
 }

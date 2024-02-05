@@ -14,8 +14,7 @@
 
       <div class="separator" />
 
-      <!-- TODO: add logic and show the component -->
-      <migration-support v-if="false" />
+      <migration-support />
 
       <tab-component
         :tabs="tabs"

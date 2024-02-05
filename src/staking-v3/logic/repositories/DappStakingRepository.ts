@@ -462,6 +462,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.cleanupExpiredEntries();
   }
 
+  /** @inheritdoc */
+  public async getUnbondAndUnstakeCall(amount: bigint): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    // Memo: address is ignored by runtime, but we need to pass something
+    // because runtime needs to keep the method signature.
+    return api.tx.dappStaking.unbondAndUnstake(
+      getDappAddressEnum('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8'),
+      amount
+    );
+  }
+
+  /** @inheritdoc */
+  public async getWithdrawUnbondedCall(): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    return api.tx.dappStaking.withdrawUnbonded();
+  }
+
   // ------------------ MAPPERS ------------------
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {
@@ -517,7 +534,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       address,
       owner: dapp.owner.toString(),
       id: dapp.id.toNumber(),
-      state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
+      state: DappState.Registered, // All dApss from integratedDApps are registered.
       rewardDestination: dapp.rewardBeneficiary.unwrapOr(undefined)?.toString(),
     };
   }

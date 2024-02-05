@@ -1,24 +1,34 @@
 <template>
   <div>
     <div v-if="dappAddress && dapp" class="wrapper--owner">
-      <div class="row--owner-header">
-        <div class="row--your-dashboard">
-          <span>{{ $t('stakingV3.yourDashboard') }}</span>
-        </div>
-        <div class="container--dapp-hero">
-          <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-          <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+      <div class="container--owner-header">
+        <div class="container--owner-header__inner">
+          <div class="row--your-dashboard">
+            <span>{{ $t('stakingV3.yourDashboard') }}</span>
+          </div>
+          <div class="row--dapp-hero">
+            <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
+            <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+          </div>
         </div>
       </div>
-      <your-rewards
-        :total-rewards="totalRewards"
-        :rewards-per-period="rewardsPerPeriod"
-        :claim-rewards="claimRewards"
-      />
-      <edit />
+
+      <div
+        class="container--owner-main"
+        :style="{ backgroundImage: `url(${require('src/staking-v3/assets/grid_bg.svg')})` }"
+      >
+        <div class="container--owner-main__inner">
+          <your-rewards
+            :total-rewards="totalRewards"
+            :rewards-per-period="rewardsPerPeriod"
+            :claim-rewards="claimRewards"
+          />
+          <edit />
+        </div>
+      </div>
     </div>
     <div class="bg--owner" />
-    <dapp-background :dapp="dapp" />
+    <dapp-icon-background :dapp="dapp" />
   </div>
 </template>
 
@@ -30,10 +40,10 @@ import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } 
 import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
 import YourRewards from './YourRewards.vue';
-import DappBackground from './dapp/DappBackground.vue';
+import DappIconBackground from './dapp/DappIconBackground.vue';
 
 export default defineComponent({
-  components: { YourRewards, Edit, DappBackground },
+  components: { YourRewards, Edit, DappIconBackground },
   setup() {
     const route = useRoute();
     const { getDapp } = useDapps();

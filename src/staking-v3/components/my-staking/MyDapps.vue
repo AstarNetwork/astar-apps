@@ -34,7 +34,7 @@
       <div v-if="!isRegistered(key)" class="warning--unregistered-dapp">
         <astar-icon-warning size="20" />
         <span class="text--unregistered-dapp">
-          {{ $t('stakingV3.unregisteredDappInfo') }}
+          {{ $t('stakingV3.unregisteredDappInfo', { days: constants?.unlockingPeriod ?? '--' }) }}
         </span>
         <astar-button
           class="btn--unregistered-dapp"
@@ -75,7 +75,7 @@ export default defineComponent({
   setup() {
     const { getDapp } = useDapps();
     const { navigateToVote, navigateToMove } = useDappStakingNavigation();
-    const { unstake, unstakeFromUnregistered } = useDappStaking();
+    const { unstake, unstakeFromUnregistered, constants } = useDappStaking();
 
     const dappToUnbond = ref<CombinedDappInfo | undefined>();
     const showModalUnbond = ref<boolean>(false);
@@ -115,6 +115,7 @@ export default defineComponent({
       dappToUnbond,
       width,
       screenSize,
+      constants,
       setShowModalUnbond,
       getDappName,
       getStakedAmount,
