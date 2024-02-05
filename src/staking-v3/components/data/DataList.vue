@@ -93,8 +93,8 @@
       </data-card>
     </div>
 
-    <div class="row--title">Others</div>
-    <div class="row--data-list">
+    <!-- Memo: hide for this moment. we should have Stake Unlock together. -->
+    <div v-if="false" class="row--data-list">
       <data-card :title="$t('stakingV3.unlocking')" description="description">
         <format-balance :balance="unlocking.toString() ?? ''" />
       </data-card>
