@@ -85,7 +85,12 @@ import {
   DappStakingServiceV2V3,
   IDappStakingServiceV2V3,
 } from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
-import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
+import {
+  DappStakingServiceV2Ledger,
+  IDappStakingServiceV2Ledger,
+  IDataProviderRepository,
+  TokenApiProviderRepository,
+} from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -230,6 +235,11 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addSingleton<IDappStakingServiceV2V3>(
     DappStakingServiceV2V3,
     Symbols.DappStakingServiceV2V3
+  );
+
+  container.addSingleton<IDappStakingServiceV2Ledger>(
+    DappStakingServiceV2Ledger,
+    Symbols.DappStakingServiceV2Ledger
   );
 
   // Start block change subscription. Needed for remaining unlocking blocks calculation.
