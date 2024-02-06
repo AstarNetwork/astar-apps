@@ -119,7 +119,7 @@
             <ul>
               <li>
                 {{
-                  $t('stakingV3.minimumStakingAmount', {
+                  $t('stakingV3.voting.minimumStakingAmount', {
                     amount: constants?.minStakeAmountToken,
                     symbol: nativeTokenSymbol,
                   })
@@ -127,7 +127,7 @@
               </li>
               <li>
                 {{
-                  $t('stakingV3.minBalanceAfterStaking', {
+                  $t('stakingV3.voting.minBalanceAfterStaking', {
                     amount: constants?.minBalanceAfterStaking,
                     symbol: nativeTokenSymbol,
                   })
