@@ -10,7 +10,18 @@
         </div>
       </div>
       <div class="card--back">
-        <div>{{ description }}</div>
+        <div>
+          {{ description }}
+          <a
+            v-if="linkUrl !== '' && linkLabel !== ''"
+            :href="linkUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text--link"
+          >
+            {{ linkLabel }}
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +39,16 @@ export default defineComponent({
     description: {
       type: String,
       required: true,
+    },
+    linkUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    linkLabel: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   setup() {
@@ -102,5 +123,12 @@ export default defineComponent({
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
+}
+
+.text--link {
+  color: $astar-blue-dark;
+  &:hover {
+    color: lighten($astar-blue-dark, 15%);
+  }
 }
 </style>

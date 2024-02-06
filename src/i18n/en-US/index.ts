@@ -352,13 +352,6 @@ export default {
     uaw: 'Unique Active Wallets',
     cantClaimWihtoutError:
       'You cannot claim with automatic re-stake because it has been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. The UI team is working to fix this issue.',
-    migrationSupport: {
-      actionRequired: 'Action Required',
-      yourTokensAreLocked:
-        'Your tokens are locked in dAppStaking V2. Please migrate your funds to V3 today and start participating.',
-      balanceFromV2: 'Balance from V2 (locked)',
-      migrateNow: 'Migrate Now',
-    },
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring your funds from?',
@@ -774,10 +767,13 @@ export default {
     done: 'Done',
     search: 'Search',
     buildAndEarn: 'Build&Earn',
+    buildAndEarnDescription: 'Stakers and dApps start earning basic rewards.',
     votingNow: 'Voting Now',
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
+    VoteDescription:
+      'Stakes are reset to 0, and users become eligible for bonus rewards by re-staking.',
     voteToday: 'Be entitled to bonus pool today',
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
@@ -794,10 +790,10 @@ export default {
     dApp: 'dApp',
     stakedAmount: 'Staked amount',
     stakedAmountTooltip:
-      'Staked amount means the tokens are locked and staked. Staking rewards are distributed every day.',
+      'Staked amount means that the tokens are locked and staked. Rewards are distributed every era (day) during Build&Earn Subperiod.',
     lockedAmount: 'Locked amount',
     lockedAmountTooltip:
-      'Locked amount means the tokens are locked however they are not staked. We encourage users to stake all locked tokens at least to maximise your staking rewards.',
+      'Locked amount means that the tokens are locked, but not staked. Locked tokens do not bring any rewards. We encourage users to stake these tokens to maximize their rewards.',
     rewards: 'Rewards',
     estimatedRewards: 'Estimated rewards',
     manage: 'Manage',
@@ -819,10 +815,10 @@ export default {
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
     edit: 'Edit',
-    buildPeriodDescription:
-      'Stakers earn basic rewads, projects earn tier rewards during the period.',
-    basicRewardsDescription: 'All stakers receive basic rewads during the B&E period.',
-    bonusRewardsDescription: 'Vote in time to be entitled to bonus, check and learn more.',
+    periodDescription:
+      'During each period stakers earn basic rewards, and projects earn tier rewards.',
+    basicRewardsDescription: 'Rewards that stakers and dApps earn in B&E Subperiod.',
+    bonusRewardsDescription: 'Rewards that stakers can earn by staking in Voting Subperiod.',
     editProjectPage: {
       title: 'Edit Project Page',
       text: 'You can change the images, description at any time.',
@@ -850,19 +846,37 @@ export default {
     blocks: 'blocks',
     back: 'Back',
     era: 'Era',
-    day: 'Day',
+    eraDescription:
+      '1 era is a session of 7,200 blocks on Astar, equal to approx. 24 hours. Check the progress.',
+    duration: 'Duration',
+    durationDescription: 'Remaining days of the current period.',
     numberOfDapps: 'Number of dApps',
+    numberOfDappsDescription:
+      'The total number of dApps that are currently listed on dApp Staking.',
     numberOfParticipants: 'Number of participants',
+    numberOfParticipantsDescription: 'The total number of dApp Staking users.',
+    tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
+    totalValueLockedDescription: 'Total amount locked in dApp Staking.',
     tvl: 'TVL',
+    tvlDescription: 'dApp Staking TVL is {tvlAmount}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
     tvv: 'TVV',
+    tvvDescription:
+      'Total Volume of Vote is the rate that shows how much is staked within dApp Staking TVL.',
     bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusEligibleTokensDescription:
+      'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
-    filledSlot: 'Filled slots',
-    unfilledSlot: 'Unfilled slots',
+    bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our ',
+    dAppsSlots: 'dApps slots',
+    dAppsSlotsDescription:
+      'Number of project rewards for the slots filled by projects in the current era.',
+    unfilledSlot: 'Unfilled slot tokens',
+    unfilledSlotDescription:
+      'Total amount of tokens for slots that are not filled by the projects in the current era.',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
     dapp: {
@@ -870,7 +884,7 @@ export default {
       overview: 'Overview',
     },
     unregisteredDappInfo:
-      'This project has been unregistered. Claim action is required and your funds will be returned.',
+      'This project has been unregistered but If you are currently entitled to Bonus you will be entitled to it as well as basic rewards as long as you do not move/unstake the fund during this Period. Unstake if you still want to (it has {days} days unlocking period).',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
@@ -906,6 +920,17 @@ export default {
       'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
     loyalStakerWarning:
       'You will loose eligibility for bonus reward at the end of current period if you unstake tokens now.',
+    unbondFrom: 'Unbond from {name}',
+    startUnbonding: 'Start unbonding',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
+    migrationSupport: {
+      actionRequired: 'Action Required',
+      yourTokensAreLocked:
+        'Your tokens are locked in dAppStaking V2. Please unbond and withdraw your tokens. dApp Staking V3 is temporally unavailable for those Ledger Astar Native App users, please move your funds to a soft wallet or a Ledger EVM account to be able to participate in dApp staking.',
+      migrateNow: 'Migrate Now',
+    },
+    ledgerNotSupported: 'Ledger native accounts are not supported for dApp staking V3 yet.',
+    moreInfo: 'More info',
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
     unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',

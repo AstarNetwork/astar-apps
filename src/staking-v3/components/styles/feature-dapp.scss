@@ -2,7 +2,6 @@
 
 .wrapper--promo {
   width: 100%;
-  z-index: 1;
   position: relative;
   @media (min-width: $lg) {
     padding-right: 40px;
@@ -14,8 +13,21 @@
   margin: auto;
   max-width: $container-max-width;
   padding: 0 16px;
+  position: relative;
+  z-index: 1;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll();
   @media (min-width: $lg) {
     padding: 0;
+  }
+}
+
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(200px);
   }
 }
 
@@ -208,19 +220,15 @@
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   z-index: 1;
   mix-blend-mode: multiply;
-  @media (min-width: $lg) {
-    top: -36px;
-  }
   img {
-    height: 100vw;
-    object-fit: cover;
+    max-width: 1340px;
+    width: 100%;
+    height: 100%;
     margin: auto;
-    @media (min-width: $sm) {
-      max-width: 1100px;
-      width: 100%;
-      height: auto;
-    }
+    object-fit: cover;
+    overflow: visible;
   }
 }

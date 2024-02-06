@@ -3,18 +3,26 @@
     <div class="row--title">{{ $t('stakingV3.general') }}</div>
     <div class="row--data-list">
       <data-card
-        :title="`${$t('stakingV3.vote')} / ${$t('stakingV3.buildAndEarn')}`"
-        description="description"
+        :title="`${$t('stakingV3.period')}`"
+        :description="
+          isVotingPeriod ? $t('stakingV3.voteDescription') : $t('stakingV3.buildAndEarnDescription')
+        "
       >
         {{ periodName }}
       </data-card>
-      <data-card :title="`${$t('stakingV3.day')} / ${periodDuration}`" description="description">
-        {{ periodCurrentDay }}
+      <data-card
+        :title="`${$t('stakingV3.duration')}`"
+        :description="$t('stakingV3.durationDescription')"
+      >
+        {{ periodRemainingDays }} / {{ periodDuration }}
       </data-card>
-      <data-card :title="$t('stakingV3.era')" description="description">
-        {{ protocolState?.era }}
+      <data-card :title="$t('stakingV3.era')" :description="$t('stakingV3.eraDescription')">
+        {{ $t('stakingV3.days', { day: protocolState?.era }) }}
       </data-card>
-      <data-card :title="$t('stakingV3.numberOfParticipants')" description="description">
+      <data-card
+        :title="$t('stakingV3.numberOfParticipants')"
+        :description="$t('stakingV3.numberOfParticipantsDescription')"
+      >
         {{ numberOfParticipants }}
       </data-card>
     </div>
@@ -23,43 +31,72 @@
     <div class="row--data-list">
       <data-card
         :title="$t('stakingV3.totalValueLocked', { token: nativeTokenSymbol })"
-        description="description"
+        :description="$t('stakingV3.totalValueLockedDescription')"
       >
         <format-balance :balance="tvl.toString() ?? ''" />
       </data-card>
-      <data-card :title="`${$t('stakingV3.tvl')}`" description="description">
+      <data-card
+        :title="`${$t('stakingV3.tvl')}`"
+        :description="
+          $t('stakingV3.tvlDescription', {
+            tvlAmount: formattedTvlBalance,
+            tvlPercentage: $n(tvlPercentage),
+          })
+        "
+      >
         {{ $n(tvlPercentage) }} %
       </data-card>
-      <data-card :title="`${$t('stakingV3.tvv')}`" description="description">
+      <data-card :title="`${$t('stakingV3.tvv')}`" :description="$t('stakingV3.tvvDescription')">
         {{ $n(totalVolumeOfVotesPercentage) }} %
-      </data-card>
-      <data-card :title="$t('stakingV3.unlocking')" description="description">
-        <format-balance :balance="unlocking.toString() ?? ''" />
       </data-card>
     </div>
 
     <div class="row--title">{{ $t('stakingV3.builderRewards') }}</div>
     <div class="row--data-list">
-      <data-card :title="$t('stakingV3.numberOfDapps')" description="description">
+      <data-card
+        :title="$t('stakingV3.numberOfDapps')"
+        :description="$t('stakingV3.numberOfDappsDescription')"
+      >
         {{ totalDapps }}
       </data-card>
-      <data-card :title="$t('stakingV3.unfilledSlot')" description="description">
+      <data-card
+        :title="$t('stakingV3.unfilledSlot')"
+        :description="$t('stakingV3.unfilledSlotDescription')"
+      >
         {{ unfilledSlots }} / {{ tiersConfiguration.numberOfSlots }}
       </data-card>
-      <data-card :title="$t('stakingV3.filledSlot')" description="description">
+      <data-card
+        :title="$t('stakingV3.dAppsSlots')"
+        :description="$t('stakingV3.dAppsSlotsDescription')"
+      >
         {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
       </data-card>
     </div>
 
     <div class="row--title">{{ $t('stakingV3.stakerRewards') }}</div>
     <div class="row--data-list">
-      <data-card :title="$t('stakingV3.bonusPool')" description="description">
+      <data-card
+        :title="$t('stakingV3.bonusPool')"
+        :description="$t('stakingV3.bonusPoolDescription')"
+        :link-url="docsUrl.tokenomics2"
+        :link-label="$t('stakingV3.tokenomics')"
+      >
         <format-balance
           :balance="activeInflationConfiguration.bonusRewardPoolPerPeriod.toString() ?? ''"
         />
       </data-card>
-      <data-card :title="$t('stakingV3.bonusEligibleTokens')" description="description">
+      <data-card
+        :title="$t('stakingV3.bonusEligibleTokens')"
+        :description="$t('stakingV3.bonusEligibleTokensDescription')"
+      >
         <format-balance :balance="bonusEligibleTokens.toString() ?? ''" />
+      </data-card>
+    </div>
+
+    <!-- Memo: hide for this moment. we should have Stake Unlock together. -->
+    <div v-if="false" class="row--data-list">
+      <data-card :title="$t('stakingV3.unlocking')" description="description">
+        <format-balance :balance="unlocking.toString() ?? ''" />
       </data-card>
     </div>
   </div>
@@ -73,6 +110,8 @@ import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 import { useNetworkInfo } from 'src/hooks';
+import { docsUrl } from 'src/links';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -80,7 +119,8 @@ export default defineComponent({
     FormatBalance,
   },
   setup() {
-    const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration } = useDappStaking();
+    const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration, isVotingPeriod } =
+      useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
     const {
@@ -102,11 +142,21 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
+    const periodRemainingDays = computed<number>(() => {
+      if (periodDuration.value && periodCurrentDay.value) {
+        return periodDuration.value - periodCurrentDay.value;
+      }
+      return 0;
+    });
+
+    const formattedTvlBalance = computed<string>(() =>
+      balanceFormatter(tvl.value.toString() ?? '')
+    );
+
     return {
       protocolState,
       periodName,
       periodDuration,
-      periodCurrentDay,
       totalDapps,
       tvl,
       unlocking,
@@ -119,6 +169,10 @@ export default defineComponent({
       activeInflationConfiguration,
       numberOfParticipants,
       nativeTokenSymbol,
+      periodRemainingDays,
+      isVotingPeriod,
+      docsUrl,
+      formattedTvlBalance,
     };
   },
 });
