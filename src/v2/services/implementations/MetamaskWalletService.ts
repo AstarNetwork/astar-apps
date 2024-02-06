@@ -18,6 +18,7 @@ import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { getRawEvmTransaction } from 'src/modules/evm';
+import * as utils from 'src/hooks/custom-signature/utils';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -41,6 +42,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     }
   }
 
+  // Todo: update the logic to use dispatch_lockdrop_call function
   public async signAndSend({
     extrinsic,
     senderAddress,
@@ -50,14 +52,27 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
+    console.log('extrinsic', extrinsic);
+    console.log('extrinsic', extrinsic.toHuman());
+
     try {
       return new Promise<string>(async (resolve) => {
         const account = await this.systemRepository.getAccountInfo(senderAddress);
-        const payload = await this.ethCallRepository.getPayload(extrinsic, account.nonce);
+        // const payload = await this.ethCallRepository.getPayload(extrinsic, account.nonce);
+        const payload = undefined;
 
         const web3 = new Web3(this.provider as any);
         const accounts = await web3.eth.getAccounts();
 
+        const msg = 'Some message for sending transaction';
+        const signature = (await this.provider.request({
+          method: 'personal_sign',
+          params: [account, msg],
+        })) as string;
+        const pubKey = utils.recoverPublicKeyFromSig(accounts[0], msg, signature);
+        console.log('pubKey', pubKey);
+
+        // Todo: we have to change the logic from here to use dispatch_lockdrop_call
         const signedPayload = await this.provider.request({
           method: 'personal_sign',
           params: [accounts[0], payload],

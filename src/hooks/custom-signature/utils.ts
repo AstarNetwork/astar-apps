@@ -20,9 +20,9 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
     throw new Error('Public key is not 0x-prefixed');
   }
 
-  if (hexToU8a(publicKey).length !== 33) {
-    throw new Error(`Expected a 33 byte compressed public key, instead got ${publicKey}`);
-  }
+  // if (hexToU8a(publicKey).length !== 33) {
+  //   throw new Error(`Expected a 33 byte compressed public key, instead got ${publicKey}`);
+  // }
 
   const ss58PubKey = blake2AsU8a(hexToU8a(publicKey), 256);
 
@@ -74,10 +74,14 @@ export const recoverPublicKeyFromSig = (
     prefixedPubKey = '04' + prefixedPubKey;
   }
 
+  console.log('prefixedPubKey', prefixedPubKey);
+
   // compress the public key
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
+  // const key = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), false);
 
   return u8aToHex(compressedKey);
+  // return u8aToHex(key);
 };
 
 export const getSs58FromEvmPublicKey = async ({

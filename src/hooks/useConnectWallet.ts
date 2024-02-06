@@ -185,6 +185,7 @@ export const useConnectWallet = () => {
     const loginMsg = `Sign this message to login with address ${loadingAddr}`;
     const signature = await requestSignature(loginMsg, loadingAddr);
     const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+    console.log('pubKey', pubKey);
     const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 
     if (isH160.value) {
