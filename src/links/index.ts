@@ -11,6 +11,8 @@ export const docsUrl = {
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
   faqLedger:
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do',
+  learnDappStaking: 'https://docs.astar.network/docs/learn/dapp-staking/',
+  dappStakingForStakers: 'https://docs.astar.network/docs/use/dapp-staking/for-stakers/',
 };
 
 export const socialUrl = {

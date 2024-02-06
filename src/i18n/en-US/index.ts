@@ -744,9 +744,6 @@ export default {
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
     stakeTitle: 'Stake!',
-    minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
-    minBalanceAfterStaking:
-      'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
     availableToVote: 'Available to vote',
@@ -921,6 +918,15 @@ export default {
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
     unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',
+    voting: {
+      note: 'Note',
+      minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
+      minBalanceAfterStaking:
+        'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
+      learn: 'Learn',
+      whatIsDappStaking: 'What is dApp staking?',
+      howToParticipate: 'How to participate dApp staking?',
+    },
   },
   bridge: {
     bridge: 'Bridge',
