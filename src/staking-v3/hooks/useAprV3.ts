@@ -1,19 +1,17 @@
+import { u128 } from '@polkadot/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { container } from 'src/v2/common';
-import { Symbols } from 'src/v2/symbols';
-import { ref, watch, computed } from 'vue';
-import { EraInfo, EraLengths, IDappStakingRepository, InflationParam } from '../logic';
-import { useDappStaking } from './useDappStaking';
-import { u128 } from '@polkadot/types';
-import { useNetworkInfo } from 'src/hooks';
 import { IInflationRepository } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
+import { computed, ref, watch } from 'vue';
+import { EraInfo, EraLengths, InflationParam } from '../logic';
+import { useDappStaking } from './useDappStaking';
 
 export const useAprV3 = () => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo } = useDappStaking();
-  const { currentNetworkName } = useNetworkInfo();
 
   const percentageToNumber = (percent: string): number => {
     // e.g.: percent 1%: 10000000000000000
@@ -24,10 +22,7 @@ export const useAprV3 = () => {
     return Number(ethers.utils.formatEther(String(wei)));
   };
 
-  // Todo: fetch it via API
-  const periodsPerCycle = computed<number>(() => {
-    return currentNetworkName.value === 'Shibuya' ? 2 : 4;
-  });
+  const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
     const secBlockProductionRate = 12;
