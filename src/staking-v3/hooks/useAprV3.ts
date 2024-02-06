@@ -22,9 +22,7 @@ export const useAprV3 = () => {
     return Number(ethers.utils.formatEther(String(wei)));
   };
 
-  const periodsPerCycle = computed<number>(() => {
-    return eraLengths.value.periodsPerCycle;
-  });
+  const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
     const secBlockProductionRate = 12;
