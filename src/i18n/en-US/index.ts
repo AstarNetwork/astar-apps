@@ -921,6 +921,12 @@ export default {
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
     unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',
+    voting: {
+      note: 'Note',
+      learn: 'Learn',
+      whatIsDappStaking: 'What is dApp staking?',
+      howToParticipate: 'How to participate dApp staking?',
+    },
   },
   bridge: {
     bridge: 'Bridge',

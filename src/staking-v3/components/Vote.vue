@@ -115,7 +115,7 @@
 
         <div class="column--help">
           <div class="note">
-            <b>{{ $t('toast.note') }}</b>
+            <b>{{ $t('stakingV3.voting.note') }}</b>
             <ul>
               <li>
                 {{
@@ -132,6 +132,32 @@
                     symbol: nativeTokenSymbol,
                   })
                 }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="note">
+            <b>{{ $t('stakingV3.voting.learn') }}</b>
+            <ul>
+              <li>
+                <a
+                  :href="docsUrl.learnDappStaking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.whatIsDappStaking') }}
+                </a>
+              </li>
+              <li>
+                <a
+                  :href="docsUrl.dappStakingForStakers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.howToParticipate') }}
+                </a>
               </li>
             </ul>
           </div>
@@ -160,6 +186,7 @@ import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
 import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -358,6 +385,7 @@ export default defineComponent({
       dAppToMoveTokensFrom,
       availableToMove,
       errorMessage,
+      docsUrl,
     };
   },
 });
