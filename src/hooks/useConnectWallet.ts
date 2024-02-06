@@ -1,5 +1,11 @@
 import { get } from 'lodash-es';
-import { wait, checkSumEvmAddress, astarChain, hasProperty } from '@astar-network/astar-sdk-core';
+import {
+  wait,
+  checkSumEvmAddress,
+  astarChain,
+  hasProperty,
+  ASTAR_SS58_FORMAT,
+} from '@astar-network/astar-sdk-core';
 import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
@@ -18,15 +24,7 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import {
-  computed,
-  ref,
-  watch,
-  WatchCallback,
-  watchEffect,
-  watchPostEffect,
-  onUnmounted,
-} from 'vue';
+import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   castMobileSource,
@@ -35,6 +33,8 @@ import {
   getSelectedAccount,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
+
+import * as utils from 'src/hooks/custom-signature/utils';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
@@ -46,7 +46,7 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const store = useStore();
-  const { requestAccounts } = useEvmAccount();
+  const { requestAccounts, requestSignature } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
 
@@ -177,6 +177,28 @@ export const useConnectWallet = () => {
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
     await loadEvmWallet({ ss58, currentWallet: wallet, isSetupNetwork });
+  };
+
+  const toggleEvmWalletSchema = async () => {
+    const accounts = await requestAccounts();
+    const loadingAddr = checkSumEvmAddress(accounts[0]);
+    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+    const signature = await requestSignature(loginMsg, loadingAddr);
+    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+
+    if (isH160.value) {
+      store.commit('general/setIsH160Formatted', false);
+      store.commit('general/setCurrentEcdsaAccount', {
+        ethereum: loadingAddr,
+        ss58: ss58Address,
+      });
+    } else {
+      await loadEvmWallet({
+        currentWallet: selectedWallet.value as SupportWallet,
+        isSetupNetwork: true,
+      });
+    }
   };
 
   const setWallet = (wallet: SupportWallet): void => {
@@ -372,5 +394,6 @@ export const useConnectWallet = () => {
     openPolkasafeModal,
     setModalAccountSelect,
     setModalPolkasafeSelect,
+    toggleEvmWalletSchema,
   };
 };

@@ -94,14 +94,20 @@ import {
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
+let isLockdropAccount = false;
 
-export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+export function setCurrentWallet(
+  isEthWallet: boolean,
+  currentWallet: string,
+  isLockdrop: boolean
+): void {
   if (!currentWallet) {
     return;
   }
 
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
+  isLockdropAccount = isLockdrop;
 
   // Memo: Trying to fix 'Invalid binding type: Symbol(CurrentWallet)' error here
   // Try to get the current wallet
@@ -139,7 +145,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );

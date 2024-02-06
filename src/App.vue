@@ -65,7 +65,7 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAccount, useAppRouter, useDecommission } from 'src/hooks';
+import { ETHEREUM_EXTENSION, useAccount, useAppRouter, useDecommission } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
@@ -206,7 +206,8 @@ export default defineComponent({
     // Handle wallet change so we can inject proper wallet
     let previousAddress: string | undefined = undefined;
     watch([isEthWallet, currentWallet, isH160, currentAccountName], async () => {
-      setCurrentWallet(isEthWallet.value, currentWallet.value);
+      const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
+      setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
 
       // Subscribe to an account specific dApp staking v3 data.
       if (!isDappStakingV3.value) return;

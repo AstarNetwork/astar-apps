@@ -5,6 +5,13 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
+          <div v-if="isLockdropAccount" class="row--lockdrop">
+            <span>{{ $t('assets.lockdropAccount') }}</span>
+            <span class="text--switch-account" @click="toggleEvmWalletSchema">
+              {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
+            </span>
+          </div>
+          <div v-else />
           <div class="wallet-tab__bg">
             <!-- EVM -->
             <template v-if="isH160">
@@ -122,6 +129,7 @@ import {
   usePrice,
   useWalletIcon,
   useAccountUnification,
+  useConnectWallet,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
@@ -146,6 +154,8 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
+    const isLockdropAccount = ref<boolean>(false);
+
     const {
       currentAccount,
       currentAccountName,
@@ -154,6 +164,7 @@ export default defineComponent({
       isAccountUnification,
     } = useAccount();
 
+    const { toggleEvmWalletSchema } = useConnectWallet();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -233,6 +244,8 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
+          isLockdropAccount.value = false;
+
           return;
         }
         if (
@@ -247,8 +260,14 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
+          if (Number(data.free.toString()) > 0) {
+            isLockdropAccount.value = true;
+          } else {
+            isLockdropAccount.value = false;
+          }
         } catch (error: any) {
           console.error(error.message);
+          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -298,9 +317,11 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isLockdropAccount,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
+      toggleEvmWalletSchema,
     };
   },
 });
