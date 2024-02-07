@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmExplorerUrl } from 'src/links';
-import { AlertMsg } from 'src/modules/toast';
+import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
@@ -57,18 +57,27 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
     try {
       return new Promise<string>(async (resolve) => {
-        // const account = await this.systemRepository.getAccountInfo(senderAddress);
-        // console.log('account', account);
         const web3 = new Web3(this.provider as any);
         const accounts = await web3.eth.getAccounts();
         const h160Address = accounts[0];
-        console.log('accounts', accounts);
+
+        const balWei = await web3.eth.getBalance(h160Address);
+        const useableBalance = Number(ethers.utils.formatEther(balWei));
+        const isBalanceEnough = useableBalance > REQUIRED_MINIMUM_BALANCE;
+        if (!isBalanceEnough) {
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
+          );
+          throw new Error(AlertMsg.MINIMUM_BALANCE);
+        }
+
         const msg = 'Some message for sending transaction';
         const signature = (await this.provider.request({
           method: 'personal_sign',
           params: [h160Address, msg],
         })) as string;
-        const { fullPubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
+        const { fullPubKey, pubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
+        console.log('extrinsic.method.toHex()', extrinsic.method.toHex());
         console.log('fullPubKey', fullPubKey);
 
         const contract = new web3.eth.Contract(
@@ -76,18 +85,20 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           evmPrecompiledContract.lockdropDispatch
         );
 
-        const data = contract.methods
-          // .dispatch_lockdrop_call(extrinsic.method.toHex(), `0x${fullPubKey}`)
+        await contract.methods
           .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
-          .encodeABI();
+          .send({ from: h160Address });
+        // const data = contract.methods
+        //   .dispatch_lockdrop_call(extrinsic.method.toHex(), pierreExamplePub)
+        //   .encodeABI();
 
-        await this.sendEvmTransaction({
-          from: h160Address,
-          to: evmPrecompiledContract.lockdropDispatch,
-          data,
-          successMessage,
-          // failureMessage,
-        });
+        // await this.sendEvmTransaction({
+        //   from: h160Address,
+        //   to: evmPrecompiledContract.lockdropDispatch,
+        //   data,
+        //   successMessage,
+        //   // failureMessage,
+        // });
       });
     } catch (e) {
       const error = e as unknown as Error;
