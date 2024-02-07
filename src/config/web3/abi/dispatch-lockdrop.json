@@ -1,0 +1,26 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "call",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "pubkey",
+				"type": "bytes"
+			}
+		],
+		"name": "dispatch_lockdrop_call",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

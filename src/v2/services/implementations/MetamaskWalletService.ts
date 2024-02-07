@@ -3,7 +3,7 @@ import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer'
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { getEvmExplorerUrl, getSubscanExtrinsic } from 'src/links';
+import { getEvmExplorerUrl } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -19,6 +19,9 @@ import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { getRawEvmTransaction } from 'src/modules/evm';
 import * as utils from 'src/hooks/custom-signature/utils';
+import lockdropDispatchAbi from 'src/config/web3/abi/dispatch-lockdrop.json';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
+import { AbiItem } from 'web3-utils';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -52,67 +55,38 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    console.log('extrinsic', extrinsic);
-    console.log('extrinsic', extrinsic.toHuman());
-
     try {
       return new Promise<string>(async (resolve) => {
-        const account = await this.systemRepository.getAccountInfo(senderAddress);
-        // const payload = await this.ethCallRepository.getPayload(extrinsic, account.nonce);
-        const payload = undefined;
-
+        // const account = await this.systemRepository.getAccountInfo(senderAddress);
+        // console.log('account', account);
         const web3 = new Web3(this.provider as any);
         const accounts = await web3.eth.getAccounts();
-
+        const h160Address = accounts[0];
+        console.log('accounts', accounts);
         const msg = 'Some message for sending transaction';
         const signature = (await this.provider.request({
           method: 'personal_sign',
-          params: [account, msg],
+          params: [h160Address, msg],
         })) as string;
-        const pubKey = utils.recoverPublicKeyFromSig(accounts[0], msg, signature);
-        console.log('pubKey', pubKey);
+        const { fullPubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
+        console.log('fullPubKey', fullPubKey);
 
-        // Todo: we have to change the logic from here to use dispatch_lockdrop_call
-        const signedPayload = await this.provider.request({
-          method: 'personal_sign',
-          params: [accounts[0], payload],
-        });
-
-        const call = await this.ethCallRepository.getCall(
-          extrinsic,
-          senderAddress,
-          signedPayload as string,
-          account.nonce
+        const contract = new web3.eth.Contract(
+          lockdropDispatchAbi as AbiItem[],
+          evmPrecompiledContract.lockdropDispatch
         );
 
-        const unsub = await call.send((result) => {
-          try {
-            if (result.isCompleted) {
-              if (!this.isExtrinsicFailed(result.events)) {
-                const explorerUrl = getSubscanExtrinsic({ hash: result.txHash.toHex() });
-                this.eventAggregator.publish(
-                  new ExtrinsicStatusMessage({
-                    success: true,
-                    message: successMessage ?? AlertMsg.SUCCESS,
-                    method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                    explorerUrl,
-                  })
-                );
-              }
+        const data = contract.methods
+          // .dispatch_lockdrop_call(extrinsic.method.toHex(), `0x${fullPubKey}`)
+          .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
+          .encodeABI();
 
-              this.eventAggregator.publish(new BusyMessage(false));
-              if (finalizedCallback) {
-                finalizedCallback(result);
-              }
-              resolve(result.txHash.toHex());
-              unsub();
-            } else {
-              this.eventAggregator.publish(new BusyMessage(true));
-            }
-          } catch (error) {
-            this.eventAggregator.publish(new BusyMessage(false));
-            unsub();
-          }
+        await this.sendEvmTransaction({
+          from: h160Address,
+          to: evmPrecompiledContract.lockdropDispatch,
+          data,
+          successMessage,
+          // failureMessage,
         });
       });
     } catch (e) {

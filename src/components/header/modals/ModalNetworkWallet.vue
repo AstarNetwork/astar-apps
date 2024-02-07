@@ -249,7 +249,7 @@ export default defineComponent({
     const selectNetwork = async (): Promise<void> => {
       const networkIdxRef = selNetworkId.value;
       const { isEndpointChange, newEndpoint } = getNewEndpoint();
-      if (isEndpointChange) {
+      if (isEndpointChange || networkIdxRef === endpointKey.LOCAL) {
         localStorage.setItem(NETWORK_IDX, networkIdxRef.toString());
         localStorage.setItem(
           SELECTED_ENDPOINT,
@@ -273,7 +273,7 @@ export default defineComponent({
 
     const isDisabled = computed<boolean>(() => {
       const { isEndpointChange } = getNewEndpoint();
-      if (!isEndpointChange) {
+      if (!isEndpointChange && selNetworkId.value !== endpointKey.LOCAL) {
         return true;
       }
       if (isSelectLightClient.value) {
