@@ -85,20 +85,21 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           evmPrecompiledContract.lockdropDispatch
         );
 
-        await contract.methods
-          .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
-          .send({ from: h160Address });
-        // const data = contract.methods
-        //   .dispatch_lockdrop_call(extrinsic.method.toHex(), pierreExamplePub)
-        //   .encodeABI();
+        // await contract.methods
+        //   .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
+        //   .send({ from: h160Address });
 
-        // await this.sendEvmTransaction({
-        //   from: h160Address,
-        //   to: evmPrecompiledContract.lockdropDispatch,
-        //   data,
-        //   successMessage,
-        //   // failureMessage,
-        // });
+        const data = contract.methods
+          .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
+          .encodeABI();
+
+        await this.sendEvmTransaction({
+          from: h160Address,
+          to: evmPrecompiledContract.lockdropDispatch,
+          data,
+          successMessage,
+          // failureMessage,
+        });
       });
     } catch (e) {
       const error = e as unknown as Error;
