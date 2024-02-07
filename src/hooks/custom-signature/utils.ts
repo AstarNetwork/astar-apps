@@ -82,10 +82,10 @@ export const recoverPublicKeyFromSig = (
 
   // compress the public key
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
-  const fullKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), false);
+  // const fullKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), false);
   // console.log('fullKey', u8aToHex(fullKey));
   // return { pubKey: u8aToHex(compressedKey), fullPubKey: prefixedPubKey };
-  return { pubKey: u8aToHex(compressedKey), fullPubKey: u8aToHex(fullKey) };
+  return { pubKey: u8aToHex(compressedKey), fullPubKey: '0x' + publicKey.toString('hex') };
 };
 
 export const getSs58FromEvmPublicKey = async ({
