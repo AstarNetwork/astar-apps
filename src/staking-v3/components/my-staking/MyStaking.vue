@@ -108,7 +108,7 @@
         <div class="row--my-rewards-header">
           <span class="column--left">
             <span class="text--rewards">{{ $t('stakingV3.rewards') }}</span>
-            <span class="text--period">
+            <span v-if="rewards?.staker.period" class="text--period">
               {{ $t('stakingV3.period', { period: formatPeriod(rewards?.staker.period ?? 0) }) }}
             </span>
           </span>
