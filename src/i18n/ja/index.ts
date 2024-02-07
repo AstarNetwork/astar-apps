@@ -288,6 +288,7 @@ export default {
       ledgerX: 'Ledger Nano X: 6 eras',
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
+      dcentWallet: "D'CENT Wallet: ≒28 eras",
     },
     dappsOwners:
       'dAppsオーナー！私たちはあなたのキャンペーンを促進するお手伝いをします。ご確認ください。',

@@ -14,10 +14,12 @@ import { ethers } from 'ethers';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useDappStaking } from 'src/staking-v3';
+import { SupportWallet } from 'src/config/wallets';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
 const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000'); //Memo: 6 eras
 const MAX_BATCH_WEIGHT_LEDGER_S = new BN('2000000000'); //Memo: 2 eras
+const MAX_BATCH_WEIGHT_DCENT = new BN('25000000000'); // Memo: ≒28 eras
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
@@ -38,8 +40,11 @@ export function useClaimAll() {
   const { isDappStakingV3 } = useDappStaking();
 
   const maxBatchWeight = computed<BN>(() => {
+    const selectedWallet = store.getters['general/currentWallet'];
     if (isLedger.value) {
       return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;
+    } else if (selectedWallet === SupportWallet.Dcent) {
+      return MAX_BATCH_WEIGHT_DCENT;
     } else {
       return MAX_BATCH_WEIGHT;
     }
