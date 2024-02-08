@@ -913,7 +913,7 @@ export default {
       stakingResetsEveryPeriod:
         'Staking resets every period - It is requires to make votes every period.',
       goToDappStakingAndVoteToday: 'Go to dApp Staking and Vote today',
-      goToDappStaking: 'Go to dApp Staking',
+      whatIsDappStaking: 'What is dApp Staking',
       usersGuides: 'Users Guides',
     },
     loyalStakerWarningAmount:

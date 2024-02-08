@@ -53,15 +53,11 @@
               </router-link>
             </div>
             <div class="text--links">
-              <router-link :to="RoutePath.DappStaking" @click="closeModal">
-                <span>{{ $t('stakingV3.onboarding.goToDappStaking') }}</span>
+              <a :href="docsUrl.learnDappStaking" target="_blank" rel="noopener noreferrer">
+                <span>{{ $t('stakingV3.onboarding.whatIsDappStaking') }}</span>
                 <astar-icon-arrow-right />
-              </router-link>
-              <a
-                href="https://docs.astar.network/docs/build/dapp-staking/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              </a>
+              <a :href="docsUrl.dappStakingForStakers" target="_blank" rel="noopener noreferrer">
                 <span>{{ $t('stakingV3.onboarding.usersGuides') }}</span>
                 <astar-icon-arrow-right />
               </a>
@@ -89,6 +85,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: { Swiper, SwiperSlide },
@@ -120,6 +117,7 @@ export default defineComponent({
       isClosingModal,
       modules: [Navigation, Pagination],
       RoutePath,
+      docsUrl,
       closeModal,
     };
   },
