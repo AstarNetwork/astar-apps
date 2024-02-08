@@ -139,7 +139,10 @@ export default defineComponent({
 
     // dApp staking onboarding modal
     const showOnboardingModal = ref<boolean>(false);
-    if (!localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING)) {
+    if (
+      !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
+      isDappStakingV3.value
+    ) {
       setTimeout(() => {
         showOnboardingModal.value = true;
       }, 2000);
