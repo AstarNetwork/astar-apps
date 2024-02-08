@@ -183,7 +183,7 @@ export default defineComponent({
     }
 
     .badge--tag {
-      width: 54px;
+      width: 64px;
       height: 18px;
       padding: 2px 8px;
       background: $navy-3;
@@ -196,6 +196,8 @@ export default defineComponent({
       color: #fff;
       margin-top: 16px;
       margin-bottom: 16px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .divider {
