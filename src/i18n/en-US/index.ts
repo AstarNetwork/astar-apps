@@ -188,6 +188,7 @@ export default {
     },
     showBalance: 'Show {token} balance',
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
+    switchWalletConnectNetwork: 'Please switch to {network} network in your wallet',
     multisig: {
       initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
       noAccounts: 'There are no multisig accounts found',
@@ -527,6 +528,8 @@ export default {
     unifyAccounts: 'Unify accounts',
     yourEstimatedRewards: 'Claim your estimated rewards',
     yourProject: 'Your Project',
+    verifyWalletCompatibility:
+      'Please verify wallet compatibility with {network} network before transactions to prevent fund loss',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',

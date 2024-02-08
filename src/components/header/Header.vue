@@ -62,7 +62,7 @@ import ModalAccountUnification from 'src/components/header/modals/ModalAccountUn
 import ModalNetworkWallet from 'src/components/header/modals/ModalNetworkWallet.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
-import { WalletModalOption } from 'src/config/wallets';
+import { SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { Symbols } from 'src/v2/symbols';
@@ -125,7 +125,11 @@ export default defineComponent({
     // Memo: open the network modal if there is no wallet address stored in the browser
     const initIsModalNetworkWallet = () => {
       const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
-      if (!currentNetworkName.value || selectedAddress !== 'null') return;
+      const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      const isWalletConnect = wallet === SupportWallet.WalletConnect;
+      if (!currentNetworkName.value || selectedAddress !== 'null' || isWalletConnect) {
+        return;
+      }
       isModalNetworkWallet.value = true;
     };
 
