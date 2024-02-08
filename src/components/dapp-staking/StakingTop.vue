@@ -23,6 +23,7 @@
       <dapp-list category="Tooling" />
       <dapp-list category="Utility" />
       <dapp-list category="Others" />
+      <dapp-list category="unstoppable-grants" />
     </div>
 
     <Teleport to="#staking-top-bg">
