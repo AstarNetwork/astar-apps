@@ -4,7 +4,7 @@
     <div class="wrapper--header">
       <div class="txt--header">{{ categoryName }}</div>
     </div>
-    <card-list :category="category" :dapps="dapps" />
+    <card-list :category="categoryName" :dapps="dapps" />
   </div>
 </template>
 <script lang="ts">
