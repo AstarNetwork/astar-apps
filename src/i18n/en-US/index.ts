@@ -188,6 +188,7 @@ export default {
     },
     showBalance: 'Show {token} balance',
     isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
+    switchWalletConnectNetwork: 'Please switch to {network} network in your wallet',
     multisig: {
       initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
       noAccounts: 'There are no multisig accounts found',
@@ -527,6 +528,8 @@ export default {
     unifyAccounts: 'Unify accounts',
     yourEstimatedRewards: 'Claim your estimated rewards',
     yourProject: 'Your Project',
+    verifyWalletCompatibility:
+      'Please verify wallet compatibility with {network} network before transactions to prevent fund loss',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
@@ -744,9 +747,6 @@ export default {
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
     stakeTitle: 'Stake!',
-    minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
-    minBalanceAfterStaking:
-      'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
     availableToVote: 'Available to vote',
@@ -934,6 +934,15 @@ export default {
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
     unlockingDay: 'Unlocking takes {unbondingPeriod} days before you can withdraw',
+    voting: {
+      note: 'Note',
+      minimumStakingAmount: 'Minimum staking amount is {amount} {symbol}',
+      minBalanceAfterStaking:
+        'Account must hold more than {amount} {symbol} transferable tokens after you stake.',
+      learn: 'Learn',
+      whatIsDappStaking: 'What is dApp staking?',
+      howToParticipate: 'How to participate dApp staking?',
+    },
   },
   bridge: {
     bridge: 'Bridge',

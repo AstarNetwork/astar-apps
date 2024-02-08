@@ -50,6 +50,7 @@ export const setupNetwork = async ({
   network: number;
   provider: EthereumProvider;
 }): Promise<boolean> => {
+  if (network === Number(provider.chainId)) return true;
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
@@ -68,18 +69,22 @@ export const setupNetwork = async ({
         } catch (error: any) {
           const codeUserRejected = 4001;
           if (error.code !== codeUserRejected) {
-            await provider.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId,
-                  chainName,
-                  nativeCurrency,
-                  rpcUrls,
-                  blockExplorerUrls,
-                },
-              ],
-            });
+            try {
+              await provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId,
+                    chainName,
+                    nativeCurrency,
+                    rpcUrls,
+                    blockExplorerUrls,
+                  },
+                ],
+              });
+            } catch (error) {
+              console.error(error);
+            }
           }
         }
       }

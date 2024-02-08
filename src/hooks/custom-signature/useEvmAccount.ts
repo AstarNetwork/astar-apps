@@ -1,7 +1,11 @@
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { ref, watch, WatchCallback, computed } from 'vue';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { useRouter } from 'vue-router';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { SupportWallet } from 'src/config/wallets';
 
 export function useEvmAccount() {
   const { ethProvider } = useEthProvider();
@@ -11,7 +15,6 @@ export function useEvmAccount() {
 
   const requestAccounts = async () => {
     let provider = ethProvider.value;
-
     if (!provider) {
       throw new Error('Cannot detect any EVM Account');
     }
@@ -52,8 +55,10 @@ export function useEvmAccount() {
         // Memo: Do not reload for the Bridge page
         if (currentRouter.value.name === 'Bridge') return;
 
+        const wallet = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET));
+
         // refresh the page if the user changes the network
-        window.location.reload();
+        wallet !== SupportWallet.WalletConnect && window.location.reload();
       };
 
       // subscribe to changes
