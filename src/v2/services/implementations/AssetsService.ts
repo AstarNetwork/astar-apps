@@ -28,6 +28,7 @@ export class AssetsService implements IAssetsService {
   }
 
   public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
+    console.log('transferNativeAsset');
     const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
     const isBalanceEnough =
       Number(ethers.utils.formatEther(useableBalance)) -
@@ -35,13 +36,17 @@ export class AssetsService implements IAssetsService {
       REQUIRED_MINIMUM_BALANCE;
 
     if (isBalanceEnough) {
+      console.log(1);
       const transaction = await this.AssetsRepository.getNativeTransferCall(param);
+      console.log(2);
       const hash = await this.wallet.signAndSend({
         extrinsic: transaction,
         senderAddress: param.senderAddress,
         successMessage: param.successMessage,
       });
+      console.log('hash????', hash);
       param.finalizedCallback(String(hash));
+      console.log('finish??');
     } else {
       throw new Error(AlertMsg.MINIMUM_BALANCE);
     }

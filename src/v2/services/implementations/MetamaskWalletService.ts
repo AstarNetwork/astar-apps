@@ -45,7 +45,14 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     }
   }
 
-  // Todo: update the logic to use dispatch_lockdrop_call function
+  // Memo: This is called from mapped SS58 account (Lockdrop account)
+  // Not all  `call` can be dispatched only the one allowed in filter:
+  // - `pallet_utility::Call::**batch**` & `pallet_utility::Call::**batch_all**`  (used to batch dapp staking call for ex)
+  // - `pallet_dapp_staking_v3::Call::**unbond_and_unstake**`  (the legacy unbond)
+  // - `pallet_dapp_staking_v3::Call::**withdraw_unbonded**` (the legacy withdraw)
+  // - `pallet_balances::Call::**transfer**` (to transfer native ASTR)
+  // - `pallet_balances::Call::**transferKeepAlive**` (to transfer native ASTR)
+  // - `pallet_assets::Call::**transfer**` (to transfer assets of pallet assets (eg DOT))
   public async signAndSend({
     extrinsic,
     senderAddress,
@@ -54,7 +61,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
-
+    console.log('signAndSend');
     try {
       return new Promise<string>(async (resolve) => {
         const web3 = new Web3(this.provider as any);
@@ -71,35 +78,30 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           throw new Error(AlertMsg.MINIMUM_BALANCE);
         }
 
-        const msg = 'Some message for sending transaction';
+        const hexEncodedCall = extrinsic.method.toHex();
+        const msg = 'Signing transaction for hex-encoded call: ' + hexEncodedCall;
         const signature = (await this.provider.request({
           method: 'personal_sign',
           params: [h160Address, msg],
         })) as string;
-        const { fullPubKey, pubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
-        console.log('extrinsic.method.toHex()', extrinsic.method.toHex());
-        console.log('fullPubKey', fullPubKey);
+        const { uncompressedPubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
 
         const contract = new web3.eth.Contract(
           lockdropDispatchAbi as AbiItem[],
           evmPrecompiledContract.lockdropDispatch
         );
 
-        // await contract.methods
-        //   .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
-        //   .send({ from: h160Address });
-
         const data = contract.methods
-          .dispatch_lockdrop_call(extrinsic.method.toHex(), fullPubKey)
+          .dispatch_lockdrop_call(hexEncodedCall, uncompressedPubKey)
           .encodeABI();
 
-        await this.sendEvmTransaction({
+        const hash = await this.sendEvmTransaction({
           from: h160Address,
           to: evmPrecompiledContract.lockdropDispatch,
           data,
           successMessage,
-          // failureMessage,
         });
+        resolve(hash);
       });
     } catch (e) {
       const error = e as unknown as Error;

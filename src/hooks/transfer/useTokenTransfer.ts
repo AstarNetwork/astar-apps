@@ -157,12 +157,15 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   };
 
   const finalizedCallback = (hash: string): void => {
+    console.log('finalizedCallback', hash);
     addTxHistories({
       hash: String(hash),
       type: HistoryTxType.Transfer,
       address: currentAccount.value,
     });
+    console.log(1);
     router.push(Path.Assets);
+    console.log(2);
   };
 
   const transferAsset = async ({

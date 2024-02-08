@@ -39,13 +39,13 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
  *
  * return:
  * pubKey: a 33-byte compressed ECDSA public key in hex string
- * fullPubKey: a 65-byte uncompressed ECDSA public key (not hex string)
+ * uncompressedPubKey: a 65-byte uncompressed ECDSA public key in hex string
  */
 export const recoverPublicKeyFromSig = (
   address: string,
   msgString: string,
   rpcSig: string
-): { pubKey: string; fullPubKey: string } => {
+): { pubKey: string; uncompressedPubKey: string } => {
   // check if the message is hex encoded or not
   const encodingType = isHex(msgString) ? 'hex' : 'utf8';
   // message hashing is done here, which includes the message prefix
@@ -78,14 +78,11 @@ export const recoverPublicKeyFromSig = (
     prefixedPubKey = '04' + prefixedPubKey;
   }
 
-  // console.log('prefixedPubKey', prefixedPubKey);
-
   // compress the public key
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
-  // const fullKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), false);
-  // console.log('fullKey', u8aToHex(fullKey));
-  // return { pubKey: u8aToHex(compressedKey), fullPubKey: prefixedPubKey };
-  return { pubKey: u8aToHex(compressedKey), fullPubKey: '0x' + publicKey.toString('hex') };
+  const uncompressedPubKey = '0x' + publicKey.toString('hex');
+
+  return { pubKey: u8aToHex(compressedKey), uncompressedPubKey };
 };
 
 export const getSs58FromEvmPublicKey = async ({
