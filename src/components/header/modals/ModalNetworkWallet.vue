@@ -412,6 +412,14 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         return;
       }
+      if (networkIdx === endpointKey.LOCAL || networkIdx === endpointKey.CUSTOM) {
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
+        return;
+      }
     };
 
     watch(

@@ -61,7 +61,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
-    console.log('signAndSend');
     try {
       return new Promise<string>(async (resolve) => {
         const web3 = new Web3(this.provider as any);
