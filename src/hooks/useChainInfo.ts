@@ -18,12 +18,7 @@ const registry = new TypeRegistry();
 export const DEFAULT_DECIMALS = registry.createType('u32', 12);
 export const DEFAULT_SS58 = registry.createType('u32', addressDefaults.prefix);
 
-function createInfo(
-  api: ApiPromise,
-  systemChain: string,
-  systemName: string,
-  specName: string
-): ChainInfo {
+function createInfo(api: ApiPromise, systemChain: string, specName: string): ChainInfo {
   // console.log('chainInfo', `${systemChain} | ${systemName} | ${specName}`);
   return {
     chain: systemChain,
@@ -48,11 +43,11 @@ function createInfo(
 export function useChainInfo(api: ApiPromise) {
   useChainMetadata();
   const chainInfo = ref<ChainInfo>();
+
   api.isReady.then(async () => {
     const specName: string = api.runtimeVersion.specName.toString();
     const systemChain: string = ((await api.rpc.system.chain()) || '<unknown>').toString();
-    const systemName: string = (await api.rpc.system.name()).toString();
-    chainInfo.value = createInfo(api, systemChain, systemName, specName);
+    chainInfo.value = createInfo(api, systemChain, specName);
   });
 
   return {
