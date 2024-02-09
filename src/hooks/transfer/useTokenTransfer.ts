@@ -35,7 +35,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const store = useStore();
   const { t } = useI18n();
-  const { currentAccount } = useAccount();
+  const { currentAccount, isLockdropAccount } = useAccount();
   const { accountData } = useBalance(currentAccount);
 
   const transferableBalance = computed<number>(() => {
@@ -70,7 +70,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       !isTransferNativeToken.value ||
       isNativeTokenEvmToSs58 ||
       isNativeTokenSs58ToEvm ||
-      isZkEvm.value
+      isZkEvm.value ||
+      isLockdropAccount.value
     );
   });
 

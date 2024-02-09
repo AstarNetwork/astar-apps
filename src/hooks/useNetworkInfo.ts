@@ -51,6 +51,14 @@ export function useNetworkInfo() {
     return getProviderIndex(chain);
   });
 
+  // Todo: Delete this code when all the networks allow to use Lockdrop Dispatch
+  const isAllowLockdropDispatch = computed<boolean>(() => {
+    return (
+      currentNetworkIdx.value === endpointKey.LOCAL ||
+      currentNetworkIdx.value === endpointKey.SHIBUYA
+    );
+  });
+
   const evmNetworkIdx = computed<ASTAR_EVM_NETWORK_IDX>(() => {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId) as ASTAR_EVM_NETWORK_IDX;
   });
@@ -107,5 +115,6 @@ export function useNetworkInfo() {
     isZkEvm,
     networkNameSubstrate,
     isZkatana,
+    isAllowLockdropDispatch,
   };
 }

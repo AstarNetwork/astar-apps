@@ -45,12 +45,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     }
   }
 
-  // Memo: This is called from mapped SS58 account (Lockdrop account)
+  // Memo: This method allows the Lockdrop account to send transactions via dispatch_lockdrop_call precompile function
   // Not all  `call` can be dispatched only the one allowed in filter:
   // - `pallet_utility::Call::**batch**` & `pallet_utility::Call::**batch_all**`  (used to batch dapp staking call for ex)
   // - `pallet_dapp_staking_v3::Call::**unbond_and_unstake**`  (the legacy unbond)
   // - `pallet_dapp_staking_v3::Call::**withdraw_unbonded**` (the legacy withdraw)
   // - `pallet_balances::Call::**transfer**` (to transfer native ASTR)
+  // - `pallet_balances::Call::**transferAll**` (to transfer native ASTR)
   // - `pallet_balances::Call::**transferKeepAlive**` (to transfer native ASTR)
   // - `pallet_assets::Call::**transfer**` (to transfer assets of pallet assets (eg DOT))
   public async signAndSend({
@@ -61,6 +62,18 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    // Memo: No need to add claim as rewards are claimed while migration to dApp staking V3
+    const allowCalls = [
+      'batch',
+      'batchAll',
+      'transferKeepAlive',
+      'transferAll',
+      'transfer',
+      'unbondAndUnstake',
+      'withdrawUnbonded',
+    ];
+
     try {
       return new Promise<string>(async (resolve) => {
         const web3 = new Web3(this.provider as any);
@@ -75,6 +88,33 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
             new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
           );
           throw new Error(AlertMsg.MINIMUM_BALANCE);
+        }
+
+        const methodObj = (extrinsic.toHuman() as any).method;
+        const methodName = methodObj.method as string;
+
+        const throwError = (method: string): void => {
+          const errorMsg = method + ' method is not allowed to send from the Lockdrop Account';
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({ success: false, message: errorMsg })
+          );
+          throw new Error(errorMsg);
+        };
+
+        // Memo: check if there is a call that is not allowed
+        if (methodName === 'batch' || methodName === 'batchAll') {
+          // Memo: check if all the calls in the batch array are allowed
+          methodObj.args.calls.forEach(({ method }: { method: string }) => {
+            const findMethod = allowCalls.find((it: string) => it === method);
+            if (!findMethod) {
+              throwError(method);
+            }
+          });
+        } else {
+          const findMethod = allowCalls.find((it: string) => it === methodName);
+          if (!findMethod) {
+            throwError(methodName);
+          }
         }
 
         const hexEncodedCall = extrinsic.method.toHex();

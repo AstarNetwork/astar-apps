@@ -615,6 +615,17 @@ export default {
         tooltip:
           'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
+      lockdropWarning: {
+        warning:
+          'Account closed; This access is temporary. You are required to transfer your funds immediately to avoid any loss of funds.',
+        note: 'Please note',
+        list1:
+          'This account is temporarily only allowed to send tokens, unbond, and withdraw from dApp staking.',
+        list2: 'Do not send tokens to Exchanges.',
+        list3: 'Do not send tokens to another Lockdrop account.',
+        list4: 'Send all tokens while you have access.',
+        moveFundsNow: 'Move Funds Now',
+      },
     },
   },
   dashboard: {

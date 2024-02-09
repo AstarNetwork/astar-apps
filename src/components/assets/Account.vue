@@ -5,7 +5,7 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
-          <div v-if="isLockdropAccount" class="row--lockdrop">
+          <div v-if="isLockdropAccount && isAllowLockdropDispatch" class="row--lockdrop">
             <span>{{ $t('assets.lockdropAccount') }}</span>
             <span class="text--switch-account" @click="toggleEvmWalletSchema">
               {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
@@ -110,6 +110,11 @@
         }}</span>
       </div>
     </div>
+    <modal-lockdrop-warning
+      v-if="isLockdropAccount && !isH160"
+      :is-modal="isModalLockdropWarning"
+      :handle-modal="handleModalLockdropWarning"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -136,10 +141,12 @@ import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/add
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 
 export default defineComponent({
   components: {
     AuIcon,
+    ModalLockdropWarning,
   },
   props: {
     ttlErc20Amount: {
@@ -155,6 +162,7 @@ export default defineComponent({
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
+    const isModalLockdropWarning = ref<boolean>(true);
 
     const {
       currentAccount,
@@ -178,7 +186,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm, isAllowLockdropDispatch } = useNetworkInfo();
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -208,6 +216,10 @@ export default defineComponent({
       if (!nativeTokenUsd.value) return false;
       return isLoadingBalance.value;
     });
+
+    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
+      isModalLockdropWarning.value = isOpen;
+    };
 
     watch(
       [balance, nativeTokenUsd, currentAccount, isH160],
@@ -318,6 +330,9 @@ export default defineComponent({
       currentNetworkIdx,
       currentNetworkName,
       isLockdropAccount,
+      isModalLockdropWarning,
+      isAllowLockdropDispatch,
+      handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
