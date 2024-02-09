@@ -51,7 +51,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   // - `pallet_dapp_staking_v3::Call::**unbond_and_unstake**`  (the legacy unbond)
   // - `pallet_dapp_staking_v3::Call::**withdraw_unbonded**` (the legacy withdraw)
   // - `pallet_balances::Call::**transfer**` (to transfer native ASTR)
-  // - `pallet_balances::Call::**transferAll**` (to transfer native ASTR)
+  // - `pallet_balances::Call::**transferAllowDeath**` (to transfer all the balance of native ASTR and kill the account)
   // - `pallet_balances::Call::**transferKeepAlive**` (to transfer native ASTR)
   // - `pallet_assets::Call::**transfer**` (to transfer assets of pallet assets (eg DOT))
   public async signAndSend({
@@ -68,7 +68,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       'batch',
       'batchAll',
       'transferKeepAlive',
-      'transferAll',
+      'transferAllowDeath',
       'transfer',
       'unbondAndUnstake',
       'withdrawUnbonded',
