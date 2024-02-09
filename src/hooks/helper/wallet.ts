@@ -1,19 +1,26 @@
-import { get } from 'lodash-es';
+import { hasProperty, wait } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { EthereumProvider as WcEthereumProvider } from '@walletconnect/ethereum-provider';
 import { ethers } from 'ethers';
+import { get } from 'lodash-es';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { EVM, rpcUrls } from 'src/config/web3';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { deepLink } from 'src/links';
 import { addTxHistories } from 'src/modules/account';
-import { showError } from 'src/modules/extrinsic';
-import { Dispatch } from 'vuex';
 import { HistoryTxType } from 'src/modules/account/index';
+import { showError } from 'src/modules/extrinsic';
 import { SubstrateAccount } from 'src/store/general/state';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { hasProperty } from '@astar-network/astar-sdk-core';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { Dispatch } from 'vuex';
+import { WalletConnectModal } from '@walletconnect/modal';
+
 declare global {
   interface Window {
     [key: string]: EthereumProvider;
@@ -265,10 +272,123 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return hasProperty(supportWalletObj, selectedWallet);
 };
 
+const deleteWalletConnectDb = async (): Promise<void> => {
+  indexedDB.deleteDatabase('WALLET_CONNECT_V2_INDEXED_DB');
+  // Memo: wait for the DB to be deleted (above method doesn't return a promise)
+  await wait(2000);
+};
+
+interface IWcEthereumProvider {
+  provider: typeof WcEthereumProvider | undefined;
+  chainId: number;
+}
+
+const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
+  const astar = providerEndpoints[endpointKey.ASTAR];
+  const shiden = providerEndpoints[endpointKey.SHIDEN];
+  const shibuya = providerEndpoints[endpointKey.SHIBUYA];
+  const zKatana = providerEndpoints[endpointKey.ZKATANA];
+  const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
+
+  // Memo: this can be committed as it can be exposed on the browser anyway
+  const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
+
+  // Ref: https://docs.walletconnect.com/advanced/walletconnectmodal/options#explorerrecommendedwalletids-optional
+  // Memo: disabled 'desktop wallet' section as it doesn't work for our zkEVM wallet. We might want to filter the wallet by ids in the future
+  new WalletConnectModal({
+    projectId,
+    explorerRecommendedWalletIds: 'NONE',
+    // explorerExcludedWalletIds: 'ALL',
+  });
+
+  // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
+  const provider = (await WcEthereumProvider.init({
+    projectId,
+    showQrModal: true,
+    optionalChains: [
+      Number(astar.evmChainId),
+      Number(shiden.evmChainId),
+      Number(shibuya.evmChainId),
+      // Number(astarZkEvm.evmChainId),
+      Number(zKatana.evmChainId),
+      EVM.SEPOLIA_TESTNET,
+    ],
+    chains: [EVM.ETHEREUM_MAINNET],
+    rpcMap: {
+      [astar.evmChainId]: astar.evmEndpoints[0],
+      [shiden.evmChainId]: shiden.evmEndpoints[0],
+      [shibuya.evmChainId]: shibuya.evmEndpoints[0],
+      // [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
+      [zKatana.evmChainId]: zKatana.evmEndpoints[0],
+      [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
+    },
+  })) as any;
+
+  return provider;
+};
+
+export const initWalletConnectProvider = async (): Promise<IWcEthereumProvider> => {
+  const getProvider = async (): Promise<IWcEthereumProvider> => {
+    const provider = (await initWcProvider()) as any;
+
+    // Memo: remove the previous session in the wallet
+    // Ref: https://github.com/MyEtherWallet/MyEtherWallet/blob/52ea653a20f37becec7aa01f2564370f4366c8b1/src/modules/access-wallet/hybrid/handlers/WalletConnect/index.js#L135
+    const isConnected = await provider.connected;
+    if (isConnected) {
+      try {
+        await provider.disconnect();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    await provider.connect();
+    // Memo: to wait for syncing the correct chainId in provider
+    await wait(2000);
+    container.addConstant<typeof WcEthereumProvider>(Symbols.WcProvider, provider);
+    // Memo: update the ethProvider in useEthProvider.ts
+    window.dispatchEvent(new CustomEvent(SupportWallet.WalletConnect));
+
+    provider.on('disconnect', async () => {
+      await provider.disconnect();
+    });
+
+    return { provider, chainId: provider.chainId };
+  };
+
+  try {
+    const { provider, chainId } = await getProvider();
+    return { provider, chainId };
+  } catch (error) {
+    console.error(error);
+    // Recursive: run this code when "url.match is not a function" displays on the browser
+    // Reconnect after deleting wallet 'WALLET_CONNECT_V2_INDEXED_DB'
+    try {
+      await deleteWalletConnectDb();
+      const { provider, chainId } = await getProvider();
+      return { provider, chainId };
+    } catch (error: any) {
+      console.error(error);
+      throw Error(error.message);
+    }
+  }
+};
+
+export const getWcProvider = (): EthereumProvider | null => {
+  let wcProvider;
+  // Memo: ignore the error if it's not founded (before binding the provider)
+  try {
+    wcProvider = container.get<EthereumProvider>(Symbols.WcProvider);
+  } catch (error) {}
+  return wcProvider ? wcProvider : null;
+};
+
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
+  if (walletName === SupportWallet.WalletConnect) {
+    return getWcProvider();
+  }
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
   const provider = wallet ? (get(window, wallet.ethExtension) as EthereumProvider) : undefined;
-
   const isExtension =
     wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 

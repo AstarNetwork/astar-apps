@@ -50,10 +50,25 @@
   position: relative;
   z-index: 1;
 }
+
 .body--dark {
   .row--account-info {
     color: white;
   }
+}
+
+.row--wc-warning {
+  font-size: 12px;
+  bottom: 14px;
+  position: absolute;
+  @media (min-width: $sm) {
+    font-size: 14px;
+  }
+}
+
+.text--warning {
+  color: $warning-red;
+  font-weight: 700;
 }
 
 .column--account-icon {

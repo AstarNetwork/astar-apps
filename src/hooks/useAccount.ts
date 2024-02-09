@@ -1,7 +1,7 @@
-import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
+import { hasProperty, isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportMultisig } from 'src/config/wallets';
+import { SupportMultisig, SupportWallet } from 'src/config/wallets';
 import { Multisig } from 'src/modules/multisig';
 import { useStore } from 'src/store';
 import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
@@ -15,6 +15,8 @@ import { useNetworkInfo } from './useNetworkInfo';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
+import { getWcProvider } from './helper/wallet';
+import { useEthProvider } from './custom-signature/useEthProvider';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -25,6 +27,7 @@ export const useAccount = () => {
   const store = useStore();
   const { getProxiedUrl } = useNft();
   const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
+  const { ethProvider } = useEthProvider();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -69,9 +72,23 @@ export const useAccount = () => {
         ss58: '',
         h160: '',
       });
+      const wallet = String(localStorage.getItem(SELECTED_WALLET));
+      if (wallet === SupportWallet.WalletConnect) {
+        const wcProvider = getWcProvider();
+        if (wcProvider) {
+          try {
+            await wcProvider.disconnect();
+          } catch (error) {
+            console.error(error);
+          }
+          localStorage.removeItem('WCM_VERSION');
+          container.unbind(Symbols.WcProvider);
+        }
+      }
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
       localStorage.removeItem(MULTISIG);
+
       currentAccount.value = '';
       currentAccountName.value = '';
       resolve(true);
