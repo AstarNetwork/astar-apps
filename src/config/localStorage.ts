@@ -20,6 +20,7 @@ export enum LOCAL_STORAGE {
   THEME_COLOR = 'themeColor',
   IS_LEDGER = 'isLedger',
   MULTISIG = 'multisig',
+  CLOSE_DAPP_STAKING_V3_ONBOARDING = 'closeDappStakingV3Onboarding',
   DECOMMISSION = 'decommission',
 }
 
