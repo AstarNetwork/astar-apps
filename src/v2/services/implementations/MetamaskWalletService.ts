@@ -90,9 +90,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           throw new Error(AlertMsg.MINIMUM_BALANCE);
         }
 
-        const methodObj = (extrinsic.toHuman() as any).method;
-        const methodName = methodObj.method as string;
-
         const throwError = (method: string): void => {
           const errorMsg = method + ' method is not allowed to send from the Lockdrop Account';
           this.eventAggregator.publish(
@@ -100,6 +97,9 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           );
           throw new Error(errorMsg);
         };
+
+        const methodObj = (extrinsic.toHuman() as any).method;
+        const methodName = methodObj.method as string;
 
         // Memo: check if there is a call that is not allowed
         if (methodName === 'batch' || methodName === 'batchAll') {
