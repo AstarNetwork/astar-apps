@@ -17,7 +17,7 @@
         {{ periodRemainingDays }} / {{ periodDuration }}
       </data-card>
       <data-card :title="$t('stakingV3.era')" :description="$t('stakingV3.eraDescription')">
-        {{ $t('stakingV3.days', { day: protocolState?.era }) }}
+        {{ protocolState?.era ?? '--' }}
       </data-card>
       <data-card
         :title="$t('stakingV3.numberOfParticipants')"

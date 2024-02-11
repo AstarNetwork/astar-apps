@@ -2,15 +2,16 @@
 // service implementation (v2 or v3) is needed, depending on dApp staking version deployed on a node.
 // TODO remove after Astar release.
 
-import { container } from 'src/v2/common';
-import { useDappStaking } from '../../hooks';
 import { IDappStakingService } from 'src/v2/services';
-import { IDappStakingService as IDappStakingServiceV3 } from '.';
 import { Symbols } from 'src/v2/symbols';
 import { inject, injectable } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from '../repositories';
 import { EditDappItem } from 'src/store/dapp-staking/state';
+import { TvlModel } from 'src/v2/models';
+import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
+import { ethers } from 'ethers';
+import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 
 export interface IDappStakingServiceV2V3 {
   getRegisteredContract(developerAddress: string): Promise<string | undefined>;
@@ -26,6 +27,8 @@ export interface IDappStakingServiceV2V3 {
     network: string,
     forEdit?: boolean
   ): Promise<EditDappItem | undefined>;
+
+  getTvl(): Promise<TvlModel>;
 }
 
 @injectable()
@@ -33,7 +36,10 @@ export class DappStakingServiceV2V3 implements IDappStakingServiceV2V3 {
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
     @inject(Symbols.DappStakingService) private stakingV2: IDappStakingService,
-    @inject(Symbols.DappStakingRepositoryV3) private repositoryV3: IDappStakingRepositoryV3
+    @inject(Symbols.DappStakingRepositoryV3) private repositoryV3: IDappStakingRepositoryV3,
+    @inject(Symbols.DappStakingRepository) private repositoryV2: IDappStakingRepository,
+    @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
+    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository
   ) {}
 
   public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
@@ -53,6 +59,26 @@ export class DappStakingServiceV2V3 implements IDappStakingServiceV2V3 {
     forEdit?: boolean
   ): Promise<EditDappItem | undefined> {
     return await this.stakingV2.getDapp(contractAddress, network, forEdit);
+  }
+
+  public async getTvl(): Promise<TvlModel> {
+    const metadata = await this.metadataRepository.getChainMetadata();
+    const v3 = await this.isV3();
+    const [tvl, priceUsd] = await Promise.all([
+      v3
+        ? (await this.repositoryV3.getCurrentEraInfo()).totalLocked.toString()
+        : this.repositoryV2.getTvl(),
+      this.priceRepository.getUsdPrice(metadata.token),
+    ]);
+
+    const tvlDefaultUnit = Number(
+      ethers.utils.formatUnits(BigInt(tvl.toString()), metadata.decimals)
+    );
+    const tvlUsd = astarMainnetNativeToken.includes(metadata.token as ASTAR_NATIVE_TOKEN)
+      ? tvlDefaultUnit * priceUsd
+      : 0;
+
+    return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
   }
 
   private async isV3() {

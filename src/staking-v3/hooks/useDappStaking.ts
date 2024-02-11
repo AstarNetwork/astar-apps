@@ -431,7 +431,7 @@ export function useDappStaking() {
       ) {
         return [
           false,
-          t('stakingV3.minBalanceAfterStaking', {
+          t('stakingV3.voting.minBalanceAfterStaking', {
             amount: constants.value.minBalanceAfterStaking,
             symbol: nativeTokenSymbol.value,
           }),
