@@ -853,7 +853,7 @@ export default {
     numberOfDapps: 'Number of dApps',
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
-    numberOfParticipants: 'Number of participants',
+    numberOfParticipants: 'Lock accounts',
     numberOfParticipantsDescription: 'The total number of dApp Staking users.',
     tokenomics: 'tokenomics',
     general: 'General',
@@ -863,10 +863,10 @@ export default {
     tvlDescription: 'dApp Staking TVL is {tvlAmount}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
-    tvv: 'TVV',
+    tvv: 'Staked To Locked Ratio',
     tvvDescription:
       'Total Volume of Vote is the rate that shows how much is staked within dApp Staking TVL.',
-    bonusEligibleTokens: 'Bonus eligible tokens',
+    bonusEligibleTokens: 'Loyalty Stake',
     bonusEligibleTokensDescription:
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
