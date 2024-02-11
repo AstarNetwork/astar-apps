@@ -1,5 +1,5 @@
 import { $api } from 'boot/api';
-import { useDappStaking } from 'src/staking-v3';
+import { PeriodType, useDappStaking } from 'src/staking-v3';
 import { onUnmounted, ref, watch } from 'vue';
 
 export function useCurrentEra() {
@@ -24,7 +24,10 @@ export function useCurrentEra() {
     if (isDappStakingV3.value) {
       if (!protocolState.value || !eraLengths.value) return;
       era = Number(protocolState.value.era);
-      blockAmtPerEra = eraLengths.value.standardEraLength;
+      blockAmtPerEra =
+        protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn
+          ? eraLengths.value.standardEraLength
+          : eraLengths.value.standardEraLength * eraLengths.value.standardErasPerVotingPeriod;
       blockHeight = apiRef.derive.chain.bestNumber;
       nextEraStartingBlock.value = Number(protocolState.value?.nextEraStart);
     } else {
@@ -64,7 +67,7 @@ export function useCurrentEra() {
   }, 30000);
 
   watch(
-    [interval],
+    [interval, protocolState, eraLengths],
     () => {
       const apiRef = $api;
       if (!apiRef) return;
