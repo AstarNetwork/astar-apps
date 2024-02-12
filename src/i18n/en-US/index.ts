@@ -907,14 +907,14 @@ export default {
       introducing: 'Introducing',
       innovativeWayOfStaking: 'Innovative way of staking',
       receiveStakerRewards: 'Receive Staker Rewards by voting your favourite projects',
-      earnBonusByVoting: 'Earn bonus by Voting on time',
-      receiveBonusRrewards: 'Receive bonus rewards being royal stakers',
+      earnBonusByVoting: 'Earn bonuses by Voting on time',
+      receiveBonusRrewards: 'Receive bonus rewards by being a loyal staker',
       remember: 'Remember',
       stakingResetsEveryPeriod:
-        'Staking resets every period - It is requires to make votes every period.',
+        'Staking resets after each Period, so voting recommences at the start of each new one.',
       goToDappStakingAndVoteToday: 'Go to dApp Staking and Vote today',
       whatIsDappStaking: 'What is dApp Staking?',
-      usersGuides: 'Users Guides',
+      usersGuides: 'User guides',
     },
     loyalStakerWarningAmount:
       'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
