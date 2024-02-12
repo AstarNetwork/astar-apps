@@ -853,7 +853,7 @@ export default {
     numberOfDapps: 'Number of dApps',
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
-      lockAccounts: 'Lock accounts',
+    lockAccounts: 'Lock accounts',
     numberOfParticipantsDescription: 'The total number of dApp Staking users.',
     tokenomics: 'tokenomics',
     general: 'General',
