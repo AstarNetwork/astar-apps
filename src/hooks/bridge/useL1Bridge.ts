@@ -1,25 +1,24 @@
+import { ethers, constants as ethersConstants } from 'ethers';
+import { debounce } from 'lodash-es'; // If using lodash
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkAllowance, getTokenBal } from 'src/config/web3';
+import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
+import { useAccount } from 'src/hooks';
+import { Erc20Token } from 'src/modules/token';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
   EthBridgeChainId,
   EthBridgeContract,
   EthBridgeNetworkName,
   ZkToken,
 } from 'src/modules/zk-evm-bridge';
-import { setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
+import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
-import { astarNativeTokenErcAddr } from 'src/modules/xcm';
-import { ethers, constants as ethersConstants } from 'ethers';
-import { Erc20Token } from 'src/modules/token';
-import { debounce } from 'lodash-es'; // If using lodash
 
 const eth = {
   symbol: 'ETH',
@@ -118,10 +117,6 @@ export const useL1Bridge = () => {
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
       console.info('allowance: ', formattedAllowance, selectedToken.value.symbol);
       isApproved.value = Number(formattedAllowance) >= Number(amount);
-      console.log(
-        'fn isApproved.value Number(formattedAllowance) >= Number(amount)',
-        Number(formattedAllowance) >= Number(amount)
-      );
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -325,10 +320,6 @@ export const useL1Bridge = () => {
 
   onUnmounted(() => {
     clearInterval(autoFetchAllowanceHandler);
-  });
-
-  watchEffect(() => {
-    console.log('isApproved.value', isApproved.value);
   });
 
   return {
