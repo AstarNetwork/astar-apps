@@ -397,7 +397,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async batchAllCalls(calls: ExtrinsicPayload[]): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
 
-    return calls.length == 1 ? calls[0] : api.tx.utility.batchAll(calls);
+    return calls.length === 1 ? calls[0] : api.tx.utility.batchAll(calls);
   }
 
   public async getCurrentEraInfo(): Promise<EraInfo> {
