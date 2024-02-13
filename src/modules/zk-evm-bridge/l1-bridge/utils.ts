@@ -42,7 +42,7 @@ export const getContractFromNetId = (zkNetwork: ZkNetworkId): string => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeContract[EthBridgeNetworkName.Sepolia]
-      : EthBridgeContract[EthBridgeNetworkName.Zkatana];
+      : EthBridgeContract[EthBridgeNetworkName.Zkyoto];
   }
 };
 
@@ -55,7 +55,7 @@ export const getChainIdFromNetId = (zkNetwork: ZkNetworkId): ZkChainId => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeChainId[EthBridgeNetworkName.Sepolia]
-      : EthBridgeChainId[EthBridgeNetworkName.Zkatana];
+      : EthBridgeChainId[EthBridgeNetworkName.Zkyoto];
   }
 };
 

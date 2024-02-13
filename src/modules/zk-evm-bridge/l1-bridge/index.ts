@@ -5,13 +5,13 @@ export const ZK_EVM_BRIDGE_ABI = ABI_ZK_EVM_BRIDGE;
 
 // Todo: update to https
 export const zkEvmApi = {
-  testnet: 'https://bridge-api.zkatana.gelato.digital',
+  testnet: 'https://bridge-api.zkyoto.gelato.digital',
   mainnet: 'https://akiba-bridge-api.astar.network',
 };
 
 export enum EthBridgeNetworkName {
   'Sepolia' = 'Sepolia Testnet',
-  'Zkatana' = 'zKatana Testnet',
+  'Zkyoto' = 'zKyoto Testnet',
   'Ethereum' = 'Ethereum',
   'AstarZk' = 'Astar zkEVM',
 }
@@ -19,37 +19,37 @@ export enum EthBridgeNetworkName {
 // Memo: do not import from src/config/web3 due to reference conflicts
 export enum ZkChainId {
   'Sepolia' = 11155111,
-  'Zkatana' = 1261120,
+  'Zkyoto' = 6038361,
   'Ethereum' = 1,
   'AstarZk' = 9999999, // Todo: update
 }
 
 // Todo: check mainnet contract
 export const EthBridgeContract = {
-  [EthBridgeNetworkName.Sepolia]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
-  [EthBridgeNetworkName.Ethereum]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
-  [EthBridgeNetworkName.Zkatana]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
-  [EthBridgeNetworkName.AstarZk]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.Sepolia]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
+  [EthBridgeNetworkName.Ethereum]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
+  [EthBridgeNetworkName.Zkyoto]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
+  [EthBridgeNetworkName.AstarZk]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
 };
 
 export const EthBridgeChainId = {
   [EthBridgeNetworkName.Sepolia]: ZkChainId.Sepolia,
   [EthBridgeNetworkName.Ethereum]: ZkChainId.Ethereum,
-  [EthBridgeNetworkName.Zkatana]: ZkChainId.Zkatana,
+  [EthBridgeNetworkName.Zkyoto]: ZkChainId.Zkyoto,
   [EthBridgeNetworkName.AstarZk]: ZkChainId.AstarZk,
 };
 
 export const EthBridgeChainIdToName = {
   [ZkChainId.Sepolia]: EthBridgeNetworkName.Sepolia,
   [ZkChainId.Ethereum]: EthBridgeNetworkName.Ethereum,
-  [ZkChainId.Zkatana]: EthBridgeNetworkName.Zkatana,
+  [ZkChainId.Zkyoto]: EthBridgeNetworkName.Zkyoto,
   [ZkChainId.AstarZk]: EthBridgeNetworkName.AstarZk, // Todo: update
 };
 
 export const zkBridgeIcon = {
   [EthBridgeNetworkName.Sepolia]: require('/src/assets/img/ethereum.png'),
   [EthBridgeNetworkName.Ethereum]: require('/src/assets/img/ethereum.png'),
-  [EthBridgeNetworkName.Zkatana]: require('src/assets/img/chain/zkatana-logo.png'),
+  [EthBridgeNetworkName.Zkyoto]: require('src/assets/img/chain/zkatana-logo.png'),
   [EthBridgeNetworkName.AstarZk]: require('src/assets/img/chain/zkatana-logo.png'),
 } as any;
 

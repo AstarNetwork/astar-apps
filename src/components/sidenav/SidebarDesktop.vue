@@ -23,7 +23,7 @@
       </div>
       <div>
         <button
-          v-if="isZkatana"
+          v-if="isZkyoto"
           :disabled="true"
           class="link--disabled"
           :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
@@ -143,7 +143,7 @@ export default defineComponent({
   },
   setup() {
     const { isOpen } = useSidebar();
-    const { isZkEvm, isZkatana } = useNetworkInfo();
+    const { isZkEvm, isZkyoto } = useNetworkInfo();
 
     const store = useStore();
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
@@ -179,7 +179,7 @@ export default defineComponent({
       path,
       RoutePath,
       socialUrl,
-      isZkatana,
+      isZkyoto,
     };
   },
 });

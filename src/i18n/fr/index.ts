@@ -707,7 +707,7 @@ export default {
       title: 'Bridge Ethereum',
       text: 'Bridger les actifs entre {l1} et {l2}',
       text2:
-        "Disponible sur le testnet! - Pour en faire l'expérience, connectez votre portefeuille à Astar zKatana (zkEVM testnet) et obtenez des ETH sur le testnet",
+        "Disponible sur le testnet! - Pour en faire l'expérience, connectez votre portefeuille à Astar zKyoto (zkEVM testnet) et obtenez des ETH sur le testnet",
       lean: '(En apprendre plus)',
     },
     astarBridge: {
