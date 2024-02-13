@@ -91,18 +91,21 @@
   margin: 0 0 4px 0;
   line-height: 1.25;
   overflow: hidden;
+  display: -webkit-box;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .text--description {
   color: $navy-4;
   font-size: 12px;
   font-weight: 500;
+  overflow: hidden;
   display: -webkit-box;
+  text-overflow: ellipsis;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  overflow: hidden;
 }
 
 .card__bottom {
@@ -124,15 +127,15 @@
   gap: 8px;
   align-items: center;
   height: 28px;
-  span {
+  span{
     display: flex;
     align-items: center;
-    .icon--stakers {
+    .icon--stakers{
       width: 24px;
       height: 24px;
       margin-bottom: -10px;
     }
-    .icon--astar-logo {
+    .icon--astar-logo{
       width: 18px;
       height: 18px;
       margin-right: 4px;
