@@ -21,6 +21,7 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 type MerkleProof = {
   main_exit_root: string;
   merkle_proof: string[];
+  rollup_merkle_proof: string[];
   rollup_exit_root: string;
 };
 

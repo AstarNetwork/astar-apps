@@ -90,12 +90,19 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     param: ParamClaim;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    const { deposit_cnt, orig_net, orig_addr, dest_net, dest_addr, amount, metadata, network_id } =
-      param.withdrawal;
-    const { main_exit_root, merkle_proof, rollup_exit_root } = await fetchMerkleProof(
+    const {
       deposit_cnt,
-      Number(network_id)
-    );
+      orig_net,
+      orig_addr,
+      dest_net,
+      dest_addr,
+      amount,
+      metadata,
+      network_id,
+      global_index,
+    } = param.withdrawal;
+    const { main_exit_root, merkle_proof, rollup_exit_root, rollup_merkle_proof } =
+      await fetchMerkleProof(deposit_cnt, Number(network_id));
 
     const contractAddress = getContractFromNetId(network_id);
     const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
@@ -103,7 +110,8 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const data = contract.methods
       .claimAsset(
         merkle_proof,
-        Number(deposit_cnt),
+        rollup_merkle_proof,
+        Number(global_index),
         main_exit_root,
         rollup_exit_root,
         orig_net,
