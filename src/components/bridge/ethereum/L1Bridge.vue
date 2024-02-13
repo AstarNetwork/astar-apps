@@ -280,9 +280,12 @@ export default defineComponent({
     watch(
       () => props.isApproved,
       async (newVal, oldVal) => {
+        console.log('watch props.isApproved', props.isApproved);
+        console.log('newVal', newVal);
         if (newVal === true) {
           props.setIsApproving(false);
           store.commit('general/setLoading', false, { root: true });
+          console.log('done');
         }
       }
     );

@@ -118,6 +118,10 @@ export const useL1Bridge = () => {
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
       console.info('allowance: ', formattedAllowance, selectedToken.value.symbol);
       isApproved.value = Number(formattedAllowance) >= Number(amount);
+      console.log(
+        'fn isApproved.value Number(formattedAllowance) >= Number(amount)',
+        Number(formattedAllowance) >= Number(amount)
+      );
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -321,6 +325,10 @@ export const useL1Bridge = () => {
 
   onUnmounted(() => {
     clearInterval(autoFetchAllowanceHandler);
+  });
+
+  watchEffect(() => {
+    console.log('isApproved.value', isApproved.value);
   });
 
   return {
