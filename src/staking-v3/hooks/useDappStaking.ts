@@ -412,7 +412,8 @@ export function useDappStaking() {
         return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
       } else if (
         constants.value?.minStakeAmountToken &&
-        stake.amount < constants.value.minStakeAmountToken
+        stake.amount < constants.value.minStakeAmountToken &&
+        stakerInfo.value?.get(stake.address.toLowerCase()) === undefined
       ) {
         return [
           false,
