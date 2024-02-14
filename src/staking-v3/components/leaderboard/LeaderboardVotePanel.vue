@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper--tier">
+    <div class="panel--title">{{ title }}</div>
     <swiper
       v-if="paginatedDapps.length > 0"
       class="swiper--tier"
       :navigation="true"
       :modules="modules"
     >
-      {{ title }}
       <swiper-slide v-for="(dapps, page) in paginatedDapps" :key="page">
         <div class="container--dapps">
           <div v-for="(dapp, index) in dapps" :key="dapp.address">
@@ -19,7 +19,8 @@
                 <div>{{ dapp.name }}</div>
               </div>
               <div class="amount">
-                <token-balance-native :balance="dapp.value.toString()" />
+                <token-balance-native v-if="containsBalance" :balance="dapp.value.toString()" />
+                <span v-else>{{ dapp.value }}</span>
               </div>
             </div>
           </div>
@@ -38,7 +39,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { LeaderboardData } from 'src/staking-v3/hooks';
+import { LeaderboardData, useDappStakingNavigation } from 'src/staking-v3/hooks';
 
 export default defineComponent({
   components: {
@@ -62,9 +63,10 @@ export default defineComponent({
     },
   },
   setup() {
+    const { navigateDappPage } = useDappStakingNavigation();
     const dappsPerPage = 5;
 
-    return { modules: [Navigation], dappsPerPage };
+    return { modules: [Navigation], dappsPerPage, navigateDappPage };
   },
 });
 </script>
@@ -72,4 +74,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './styles/leaderboard.scss';
 @import './styles/tier.scss';
+
+.panel--title {
+  font-size: 20px;
+  font-weight: 800;
+  font-style: italic;
+}
 </style>

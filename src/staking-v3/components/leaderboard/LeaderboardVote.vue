@@ -30,23 +30,23 @@
         >
           <swiper-slide>
             <leaderboard-vote-panel
-              title="Stake Ranking"
+              :title="$t('stakingV3.stakes')"
               :paginated-dapps="paginatedStakeRankingVoting"
               :contains-balance="true"
             />
           </swiper-slide>
           <swiper-slide>
             <leaderboard-vote-panel
-              title="Stake Ranking"
-              :paginated-dapps="paginatedStakeRankingVoting"
-              :contains-balance="true"
+              :title="$t('stakingV3.transactions')"
+              :paginated-dapps="paginatedTransactionsRanking"
+              :contains-balance="false"
             />
           </swiper-slide>
           <swiper-slide>
             <leaderboard-vote-panel
-              title="Stake Ranking"
-              :paginated-dapps="paginatedStakeRankingVoting"
-              :contains-balance="true"
+              :title="$t('stakingV3.users')"
+              :paginated-dapps="paginatedUsersRanking"
+              :contains-balance="false"
             />
           </swiper-slide>
         </swiper>
@@ -59,10 +59,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue';
-import { useLeaderboard, useDapps, LeaderboardData } from '../../hooks';
+import { defineComponent } from 'vue';
+import { useLeaderboard, useDapps } from '../../hooks';
 import LeaderboardVotePanel from './LeaderboardVotePanel.vue';
-import { useDappStakingNavigation } from '../../hooks';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -77,17 +76,21 @@ export default defineComponent({
     LeaderboardVotePanel,
   },
   setup() {
-    const { sortedDapps, isLeaderboardEmpty, paginatedStakeRankingVoting, dappsPerPage } =
-      useLeaderboard();
-    const { navigateDappPage } = useDappStakingNavigation();
-    const { dappsStats } = useDapps();
+    const {
+      isLeaderboardEmpty,
+      paginatedStakeRankingVoting,
+      paginatedTransactionsRanking,
+      paginatedUsersRanking,
+      dappsPerPage,
+    } = useLeaderboard();
 
     return {
       modules: [Navigation],
       isLeaderboardEmpty,
       paginatedStakeRankingVoting,
+      paginatedTransactionsRanking,
+      paginatedUsersRanking,
       dappsPerPage,
-      navigateDappPage,
     };
   },
 });

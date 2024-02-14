@@ -92,43 +92,66 @@ export function useLeaderboard() {
   const paginatedUsersRanking = ref<LeaderboardData[][]>([]);
 
   const calculatePaginatedTransactionsAndUsersRanking = (): void => {
+    if (paginatedTransactionsRanking.value.length > 0 || paginatedUsersRanking.value.length > 0) {
+      return;
+    }
+
     paginatedTransactionsRanking.value = [];
     paginatedUsersRanking.value = [];
 
-    for (let i = 0; i < sortedDapps.value.length; i += dappsPerPage) {
-      const [transactions, users] = sortedDapps.value
-        .slice(i, i + dappsPerPage)
-        .map((dapp, index) => {
-          const stats = dappsStats.value.find(
-            (x) =>
-              x.name.toLowerCase() === dapp.basic.name.toLowerCase() ||
-              getDomain(x.url.toLowerCase()) === getDomain(dapp.basic.url.toLowerCase())
-          );
+    let transactions: LeaderboardData[] = [];
+    let users: LeaderboardData[] = [];
 
-          if (stats) {
-            return [
-              getLeaderboardData(
-                index + 1 + i * dappsPerPage,
-                dapp.basic.address,
-                dapp.basic.name,
-                dapp.basic.iconUrl,
-                dapp.basic.url,
-                BigInt(stats.metrics.transactions)
-              ),
-              getLeaderboardData(
-                index + 1 + i * dappsPerPage,
-                dapp.basic.address,
-                dapp.basic.name,
-                dapp.basic.iconUrl,
-                dapp.basic.url,
-                BigInt(stats.metrics.uaw)
-              ),
-            ];
-          }
-        });
+    // Find stats for each dapp.
+    sortedDapps.value.forEach((dapp, index) => {
+      const stats = dappsStats.value.find(
+        (x) =>
+          x.name.toLowerCase() === dapp.basic.name.toLowerCase() ||
+          getDomain(x.url.toLowerCase()) === getDomain(dapp.basic.url?.toLowerCase())
+      );
 
-      transactions && paginatedTransactionsRanking.value.push(transactions);
-      users && paginatedUsersRanking.value.push(users);
+      if (stats) {
+        transactions.push(
+          getLeaderboardData(
+            index + 1,
+            dapp.basic.address,
+            dapp.basic.name,
+            dapp.basic.iconUrl,
+            dapp.basic.url,
+            BigInt(stats.metrics.transactions)
+          )
+        );
+        users.push(
+          getLeaderboardData(
+            index + 1,
+            dapp.basic.address,
+            dapp.basic.name,
+            dapp.basic.iconUrl,
+            dapp.basic.url,
+            BigInt(stats.metrics.uaw)
+          )
+        );
+      }
+    });
+
+    // Sort by value descending.
+    transactions = transactions
+      .sort((a, b) => Number(b.value - a.value))
+      .map((x, index) => {
+        return { ...x, rank: index + 1 };
+      });
+    users = users
+      .sort((a, b) => Number(b.value - a.value))
+      .map((x, index) => {
+        return { ...x, rank: index + 1 };
+      });
+
+    for (let i = 0; i < transactions.length; i += dappsPerPage) {
+      paginatedTransactionsRanking.value.push(transactions.slice(i, i + dappsPerPage));
+    }
+
+    for (let i = 0; i < users.length; i += dappsPerPage) {
+      paginatedUsersRanking.value.push(users.slice(i, i + dappsPerPage));
     }
   };
 
