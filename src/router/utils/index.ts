@@ -51,5 +51,10 @@ export const buildNetworkUrl = (network: string) => {
     .map((it: string, index: number) => (index === networkIndex ? network : it))
     .join('/');
 
+  // Memo: `window.open(url, '_self')` won't work with `#`
+  if (url.includes('#staking')) {
+    return url.replace('#staking', '');
+  }
+
   return url;
 };

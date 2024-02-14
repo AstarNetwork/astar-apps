@@ -21,6 +21,7 @@ import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 import { useStore } from 'src/store';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from './useAccount';
+import { SupportWallet } from 'src/config/wallets';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -53,7 +54,10 @@ export function useAppRouter() {
   const handleInvalidStorage = (): void => {
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const storedWallet = localStorage.getItem(SELECTED_WALLET);
-    const invalidCondition = (storedAddress && !storedWallet) || (storedWallet && !storedAddress);
+    const isWalletConnect = storedWallet === SupportWallet.WalletConnect;
+    const invalidCondition =
+      (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
+
     if (invalidCondition) {
       handleResetAccount();
     }

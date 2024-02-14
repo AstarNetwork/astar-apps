@@ -17,10 +17,10 @@
         {{ periodRemainingDays }} / {{ periodDuration }}
       </data-card>
       <data-card :title="$t('stakingV3.era')" :description="$t('stakingV3.eraDescription')">
-        {{ $t('stakingV3.days', { day: protocolState?.era }) }}
+        {{ protocolState?.era ?? '--' }}
       </data-card>
       <data-card
-        :title="$t('stakingV3.numberOfParticipants')"
+        :title="$t('stakingV3.lockAccounts')"
         :description="$t('stakingV3.numberOfParticipantsDescription')"
       >
         {{ numberOfParticipants }}
@@ -46,7 +46,10 @@
       >
         {{ $n(tvlPercentage) }} %
       </data-card>
-      <data-card :title="`${$t('stakingV3.tvv')}`" :description="$t('stakingV3.tvvDescription')">
+      <data-card
+        :title="`${$t('stakingV3.stakedToLockedRatio')}`"
+        :description="$t('stakingV3.tvvDescription')"
+      >
         {{ $n(totalVolumeOfVotesPercentage) }} %
       </data-card>
     </div>
@@ -86,7 +89,7 @@
         />
       </data-card>
       <data-card
-        :title="$t('stakingV3.bonusEligibleTokens')"
+        :title="$t('stakingV3.loyaltyStake')"
         :description="$t('stakingV3.bonusEligibleTokensDescription')"
       >
         <format-balance :balance="bonusEligibleTokens.toString() ?? ''" />

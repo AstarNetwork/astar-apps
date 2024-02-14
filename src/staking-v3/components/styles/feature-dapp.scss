@@ -16,7 +16,7 @@
   position: relative;
   z-index: 1;
   animation: parallax-small-anim linear;
-  animation-timeline: scroll();
+  animation-timeline: scroll() !important;
   @media (min-width: $lg) {
     padding: 0;
   }

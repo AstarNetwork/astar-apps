@@ -7,11 +7,6 @@ import axios from 'axios';
 
 @injectable()
 export class TokenApiProviderRepository implements IDataProviderRepository {
-  private readonly _baseUrl: string;
-
-  constructor() {
-    this._baseUrl = 'https://api.astar.network/api/v3/shibuya/dapps-staking/';
-  }
   async getDapps(network: string): Promise<ProviderDappData[]> {
     Guard.ThrowIfUndefined(network, 'network');
 

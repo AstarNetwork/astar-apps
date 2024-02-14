@@ -36,7 +36,7 @@
   right: 0;
   z-index: 0;
   animation: parallax-small-anim linear;
-  animation-timeline: scroll();
+  animation-timeline: scroll() !important;
   img {
     width: 100%;
   }
