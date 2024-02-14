@@ -115,11 +115,11 @@
 
         <div class="column--help">
           <div class="note">
-            <b>{{ $t('toast.note') }}</b>
+            <b>{{ $t('stakingV3.voting.note') }}</b>
             <ul>
               <li>
                 {{
-                  $t('stakingV3.minimumStakingAmount', {
+                  $t('stakingV3.voting.minimumStakingAmount', {
                     amount: constants?.minStakeAmountToken,
                     symbol: nativeTokenSymbol,
                   })
@@ -127,11 +127,37 @@
               </li>
               <li>
                 {{
-                  $t('stakingV3.minBalanceAfterStaking', {
+                  $t('stakingV3.voting.minBalanceAfterStaking', {
                     amount: constants?.minBalanceAfterStaking,
                     symbol: nativeTokenSymbol,
                   })
                 }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="note">
+            <b>{{ $t('stakingV3.voting.learn') }}</b>
+            <ul>
+              <li>
+                <a
+                  :href="docsUrl.learnDappStaking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.whatIsDappStaking') }}
+                </a>
+              </li>
+              <li>
+                <a
+                  :href="docsUrl.dappStakingForStakers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.howToParticipate') }}
+                </a>
               </li>
             </ul>
           </div>
@@ -160,6 +186,7 @@ import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
 import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -222,13 +249,16 @@ export default defineComponent({
     });
 
     const availableToVote = computed<bigint>(
-      () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
+      () =>
+        BigInt(useableBalance.value) +
+        max(remainLockedTokenInitial, BigInt(0)) +
+        availableToMove.value
     );
 
     const availableToVoteDisplay = computed<bigint>(() =>
       remainLockedToken.value >= BigInt(0)
-        ? BigInt(useableBalance.value) + remainLockedToken.value
-        : BigInt(useableBalance.value) - abs(remainLockedToken.value)
+        ? BigInt(useableBalance.value) + remainLockedToken.value + availableToMove.value
+        : BigInt(useableBalance.value) - abs(remainLockedToken.value) + availableToMove.value
     );
 
     const amountToUnstake = computed<bigint>(() =>
@@ -355,6 +385,7 @@ export default defineComponent({
       dAppToMoveTokensFrom,
       availableToMove,
       errorMessage,
+      docsUrl,
     };
   },
 });

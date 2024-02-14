@@ -42,7 +42,7 @@
   flex-wrap: wrap;
   @media (min-width: $sm) {
     gap: 32px;
-flex-wrap: nowrap;
+    flex-wrap: nowrap;
   }
   .column {
     @media (min-width: $sm) {
@@ -89,7 +89,7 @@ flex-wrap: nowrap;
   padding: 32px 16px;
   border-radius: 16px;
   width: 100%;
-  gap:24px;
+  gap: 24px;
   @media (min-width: $sm) {
     flex-direction: row;
     align-items: center;
@@ -109,6 +109,13 @@ flex-wrap: nowrap;
   text-align: right;
 }
 
-.button--claim__symbol{
+.button--claim__symbol {
   font-size: 16px;
+  font-weight: 600;
+}
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
+  }
 }

@@ -10,7 +10,18 @@
         </div>
       </div>
       <div class="card--back">
-        <div>{{ description }}</div>
+        <div>
+          {{ description }}
+          <a
+            v-if="linkUrl !== '' && linkLabel !== ''"
+            :href="linkUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text--link"
+          >
+            {{ linkLabel }}
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -29,6 +40,16 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    linkUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    linkLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   setup() {
     return {};
@@ -40,6 +61,7 @@ export default defineComponent({
 
 .wrapper--data-card {
   height: 150px;
+  flex-grow: 1;
 }
 
 .card--inner {
@@ -77,6 +99,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   gap: 8px;
+  background-color: white;
 }
 
 .card--top {
@@ -100,5 +123,12 @@ export default defineComponent({
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
+}
+
+.text--link {
+  color: $astar-blue-dark;
+  &:hover {
+    color: lighten($astar-blue-dark, 15%);
+  }
 }
 </style>

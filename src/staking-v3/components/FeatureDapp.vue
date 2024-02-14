@@ -3,7 +3,7 @@
     <div class="wrapper--promo__inner">
       <div class="row--title">
         <span class="text--promo-title">{{
-          isVotingPeriod ? $t('stakingV3.votingNow') : $t('stakingV3.newDappPromotion')
+          isVotingPeriod ? $t('stakingV3.votingNow') : $t('stakingV3.buildAndEarn')
         }}</span>
       </div>
       <div v-if="isVotingPeriod" class="row--countdown">
@@ -11,10 +11,12 @@
       </div>
       <div class="text--promo-description">
         <span>{{
-          isVotingPeriod ? $t('stakingV3.voteToday') : promotedDapp?.shortDescription
+          isVotingPeriod ? $t('stakingV3.voteToday') : $t('stakingV3.innovativeWayOfStaking')
         }}</span>
       </div>
-      <div class="row--button">
+
+      <!-- MEMO: temporary show the general hero -->
+      <div v-if="false" class="row--button">
         <astar-button
           v-if="!isVotingPeriod"
           class="button--link outlined--button"
@@ -30,9 +32,9 @@
           <span>{{ $t('stakingV3.voteStakeToday') }}</span>
           <vote-stake-button-bg />
         </button>
-        <kpi-card :title="periodName" :description="$t('stakingV3.buildPeriodDescription')">
+        <kpi-card :title="periodName" :description="$t('stakingV3.periodDescription')">
           <span class="text--value">{{ periodCurrentDay }}</span>
-          <span class="text--value-small">/{{ periodDuration }}</span>
+          <span class="text--value-small">/ {{ periodDuration }}</span>
         </kpi-card>
         <kpi-card
           :title="$t('stakingV3.basicRewards')"

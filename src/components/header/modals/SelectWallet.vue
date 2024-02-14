@@ -13,23 +13,23 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <button
-            v-for="(wallet, index) in evmWallets"
-            :key="index"
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === wallet.source && 'border--active'"
-            :wallet="wallet"
-            @click="setEvmWalletModal(wallet.source)"
-          >
-            <div class="box--img">
-              <img :src="wallet.img" />
-            </div>
-            <div>
-              <span>
-                {{ castWalletName(wallet.name) }}
-              </span>
-            </div>
-          </button>
+          <div v-for="(wallet, index) in evmWallets" :key="index">
+            <button
+              v-if="wallet.source !== SupportWallet.WalletConnect"
+              class="box__row--wallet box--hover--active"
+              :class="currentWallet === wallet.source && 'border--active'"
+              @click="setEvmWalletModal(wallet.source)"
+            >
+              <div class="box--img">
+                <img :src="wallet.img" />
+              </div>
+              <div>
+                <span>
+                  {{ castWalletName(wallet.name) }}
+                </span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
       <div>
@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
+      <button :disabled="!currentWallet" class="btn--disconnect" @click="disconnectAccount()">
         {{ $t('disconnect') }}
       </button>
     </div>
@@ -255,6 +255,7 @@ export default defineComponent({
       }
     };
     const setSubstrateWalletModal = async (source: string): Promise<void> => {
+      await disconnectAccount();
       if (source === SupportWallet.Snap) {
         await handleMetaMaskSnap();
       }
@@ -268,6 +269,7 @@ export default defineComponent({
     };
 
     const setEvmWalletModal = async (source: string): Promise<void> => {
+      await disconnectAccount();
       await props.connectEthereumWallet(source);
       await props.selectNetwork();
     };
@@ -298,6 +300,7 @@ export default defineComponent({
       isAccountUnification,
       isClosing,
       isEnablePolkasafe,
+      SupportWallet,
     };
   },
 });

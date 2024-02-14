@@ -16,6 +16,7 @@ export interface DappStakingState {
   version: string;
   dapps: CombinedDappInfo[];
   newDapps: DappInfo[];
+  numberOfParticipants: number;
   protocolState: ProtocolState | undefined;
   ledger: AccountLedger | undefined;
   stakerInfo: Map<string, SingularStakingInfo> | undefined;
@@ -33,6 +34,7 @@ function state(): DappStakingState {
     version: '3.0.0',
     dapps: [],
     newDapps: [],
+    numberOfParticipants: 0,
     protocolState: undefined,
     ledger: undefined,
     stakerInfo: undefined,

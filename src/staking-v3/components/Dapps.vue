@@ -12,6 +12,7 @@
         :slides-per-view="1.5"
         :slides-per-group="1"
         :space-between="8"
+        :navigation="true"
         :grid="{
           rows: 2,
         }"
@@ -45,10 +46,18 @@
               </div>
             </div>
             <div class="card__bottom">
-              <div>T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
-              <div>{{ dapp.dappDetails?.stakersCount ?? '--' }}</div>
-              <div>
-                <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+              <div class="box--dapp-card">T{{ getDappTier(dapp.chain.id) ?? '-' }}</div>
+              <div class="box--dapp-card">
+                <span>
+                  <astar-icon-base class="icon--stakers">
+                    <astar-icon-community />
+                  </astar-icon-base>
+                  {{ dapp.dappDetails?.stakersCount ?? '--' }}
+                </span>
+                <span>
+                  <logo :flat="true" :symbol="true" class="icon--astar-logo" />
+                  <format-balance :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+                </span>
               </div>
             </div>
           </router-link>
@@ -61,21 +70,24 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useDappStaking, useDappStakingNavigation, useDapps } from '../hooks';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { CombinedDappInfo } from '../logic';
 import { possibleCategories } from 'src/components/dapp-staking/register/components/MainCategory.vue';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
+import Logo from 'src/components/common/Logo.vue';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/grid';
-import { Grid } from 'swiper/modules';
+import 'swiper/css/navigation';
+import { Grid, Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
     Swiper,
     SwiperSlide,
+    FormatBalance,
+    Logo,
   },
   props: {
     search: {
@@ -122,10 +134,11 @@ export default defineComponent({
       tooling: require('/src/staking-v3/assets/category_blue.webp'),
       utility: require('/src/staking-v3/assets/category_sky.webp'),
       others: require('/src/staking-v3/assets/category_green.webp'),
+      'unstoppable-grants': require('/src/staking-v3/assets/category_unstoppable.webp'),
     };
 
     return {
-      modules: [Grid],
+      modules: [Grid, Navigation],
       filteredDapps,
       categoryBackgroundImages,
       categoryTitle,
@@ -138,4 +151,30 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use './styles/dapps.scss';
+</style>
+
+<style lang="scss">
+.swiper--dapps {
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $navy-1;
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .swiper-button-prev {
+    padding-right: 2px;
+  }
+  .swiper-button-next {
+    padding-left: 2px;
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+}
 </style>

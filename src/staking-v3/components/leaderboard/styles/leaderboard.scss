@@ -20,12 +20,23 @@
   }
 }
 
-.bg--leaderboard{
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-3000px);
+  }
+}
+
+.bg--leaderboard {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 0;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll() !important;
   img {
     width: 100%;
   }
@@ -33,11 +44,15 @@
 
 .title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.25;
   position: relative;
   z-index: 1;
   color: white;
+  font-style: italic;
+  @media (min-width: $xxxl) {
+    padding-top: 80px;
+  }
 }
 
 .container--boards {
@@ -71,7 +86,7 @@
   }
 }
 
-.swiper {
+.swiper--leaderboard {
   overflow: visible;
 }
 

@@ -398,7 +398,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async batchAllCalls(calls: ExtrinsicPayload[]): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
 
-    return api.tx.utility.batchAll(calls);
+    return calls.length === 1 ? calls[0] : api.tx.utility.batchAll(calls);
   }
 
   public async getCurrentEraInfo(): Promise<EraInfo> {
@@ -548,7 +548,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       address,
       owner: dapp.owner.toString(),
       id: dapp.id.toNumber(),
-      state: dapp.state.isUnregistered ? DappState.Unregistered : DappState.Registered,
+      state: DappState.Registered, // All dApss from integratedDApps are registered.
       rewardDestination: dapp.rewardBeneficiary.unwrapOr(undefined)?.toString(),
     };
   }
