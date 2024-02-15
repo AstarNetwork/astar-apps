@@ -54,7 +54,7 @@ export default defineComponent({
     padding: 4px 16px 8px 16px;
   }
 
-  // shibuya, zKatana, local
+  // shibuya, zkyoto, local
   background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
 
   // astar native

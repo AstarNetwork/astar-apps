@@ -8,7 +8,7 @@ import {
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';
@@ -26,11 +26,11 @@ export function useNetworkInfo() {
 
   const isZkEvm = computed<boolean>(
     () =>
-      currentNetworkIdx.value === endpointKey.ZKATANA ||
+      currentNetworkIdx.value === endpointKey.ZKYOTO ||
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
-  const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
+  const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -43,7 +43,7 @@ export function useNetworkInfo() {
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
     const networkIdx = store.getters['general/networkIdx'];
-    if (networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM) {
+    if (networkIdx === endpointKey.ZKYOTO || networkIdx === endpointKey.ASTAR_ZKEVM) {
       return networkIdx;
     }
     const chainInfo = store.getters['general/chainInfo'];
@@ -106,6 +106,6 @@ export function useNetworkInfo() {
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,
-    isZkatana,
+    isZkyoto,
   };
 }

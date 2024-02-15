@@ -21,6 +21,7 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 type MerkleProof = {
   main_exit_root: string;
   merkle_proof: string[];
+  rollup_merkle_proof: string[];
   rollup_exit_root: string;
 };
 
@@ -42,7 +43,7 @@ export const getContractFromNetId = (zkNetwork: ZkNetworkId): string => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeContract[EthBridgeNetworkName.Sepolia]
-      : EthBridgeContract[EthBridgeNetworkName.Zkatana];
+      : EthBridgeContract[EthBridgeNetworkName.Zkyoto];
   }
 };
 
@@ -55,7 +56,7 @@ export const getChainIdFromNetId = (zkNetwork: ZkNetworkId): ZkChainId => {
   } else {
     return zkNetwork === ZkNetworkId.L1
       ? EthBridgeChainId[EthBridgeNetworkName.Sepolia]
-      : EthBridgeChainId[EthBridgeNetworkName.Zkatana];
+      : EthBridgeChainId[EthBridgeNetworkName.Zkyoto];
   }
 };
 
