@@ -413,7 +413,7 @@ export function useDappStaking() {
       } else if (
         constants.value?.minStakeAmountToken &&
         stake.amount < constants.value.minStakeAmountToken &&
-        stakerInfo.value?.get(stake.address.toLowerCase()) === undefined
+        getStakerInfo(stake.address) === undefined
       ) {
         return [
           false,
