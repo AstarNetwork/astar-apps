@@ -55,10 +55,7 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { useNetworkInfo } from 'src/hooks';
-import { buildTransferPageLink } from 'src/router';
 import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: { ModalWrapper },
@@ -73,16 +70,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const router = useRouter();
-    const { nativeTokenSymbol } = useNetworkInfo();
-
     const isClosingModal = ref<boolean>(false);
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       await wait(fadeDuration);
       props.handleModal({ isOpen: false });
       isClosingModal.value = false;
-      router.push(buildTransferPageLink(nativeTokenSymbol.value));
     };
 
     return {
