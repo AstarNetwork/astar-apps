@@ -227,10 +227,10 @@ export default defineComponent({
           return String(blockExplorerUrls[EVM.SEPOLIA_TESTNET][0]);
         case EthBridgeNetworkName.AstarZk:
           return String(blockExplorerUrls[EVM.ASTAR_ZKEVM_MAINNET][0]);
-        case EthBridgeNetworkName.Zkatana:
-          return String(blockExplorerUrls[EVM.ZKATANA_TESTNET][0]);
+        case EthBridgeNetworkName.Zkyoto:
+          return String(blockExplorerUrls[EVM.ZKYOTO_TESTNET][0]);
         default:
-          return String(blockExplorerUrls[EVM.ZKATANA_TESTNET][0]);
+          return String(blockExplorerUrls[EVM.ZKYOTO_TESTNET][0]);
       }
     };
 

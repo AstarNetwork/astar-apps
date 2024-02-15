@@ -866,7 +866,7 @@ export default {
     numberOfDapps: 'Number of dApps',
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
-    numberOfParticipants: 'Number of participants',
+    lockAccounts: 'Lock accounts',
     numberOfParticipantsDescription: 'The total number of dApp Staking users.',
     tokenomics: 'tokenomics',
     general: 'General',
@@ -876,10 +876,10 @@ export default {
     tvlDescription: 'dApp Staking TVL is {tvlAmount}. {tvlPercentage} % of total supply.',
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
-    tvv: 'TVV',
+    stakedToLockedRatio: 'Staked to Locked Ratio',
     tvvDescription:
       'Total Volume of Vote is the rate that shows how much is staked within dApp Staking TVL.',
-    bonusEligibleTokens: 'Bonus eligible tokens',
+    loyaltyStake: 'Loyalty Stake',
     bonusEligibleTokensDescription:
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
@@ -916,6 +916,19 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    onboarding: {
+      introducing: 'Introducing',
+      innovativeWayOfStaking: 'Innovative way of staking',
+      receiveStakerRewards: 'Receive Staker Rewards by voting your favourite projects',
+      earnBonusByVoting: 'Earn bonus by Voting on time',
+      receiveBonusRrewards: 'Receive bonus rewards being royal stakers',
+      remember: 'Remember',
+      stakingResetsEveryPeriod:
+        'Staking resets every period - It is requires to make votes every period.',
+      goToDappStakingAndVoteToday: 'Go to dApp Staking and Vote today',
+      whatIsDappStaking: 'What is dApp Staking?',
+      usersGuides: 'Users Guides',
+    },
     loyalStakerWarningAmount:
       'You will loose eligibility for bonus reward at the end of current period if you unstake more than {amount} tokens.',
     loyalStakerWarning:
@@ -957,7 +970,7 @@ export default {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
       text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
+        'Available on testnet! - To experience, connect your wallet to Astar zKyoto (zkEVM testnet) and get testnet ETH',
       lean: '(learn more)',
     },
     astarBridge: {

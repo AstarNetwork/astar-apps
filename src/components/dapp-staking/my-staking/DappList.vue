@@ -2,9 +2,9 @@
   <div v-if="dapps && dapps.length > 0" class="wrapper">
     <div class="divider" />
     <div class="wrapper--header">
-      <div class="txt--header">{{ category }}</div>
+      <div class="txt--header">{{ categoryName }}</div>
     </div>
-    <card-list :category="category" :dapps="dapps" />
+    <card-list :category="categoryName" :dapps="dapps" />
   </div>
 </template>
 <script lang="ts">
@@ -27,8 +27,14 @@ export default defineComponent({
       return dappsArray.filter((it: DappCombinedInfo) => it.dapp);
     });
 
+    const categoryName = computed<string>(() => {
+      const name = props.category.replace(/-/g, ' ');
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    });
+
     return {
       dapps,
+      categoryName,
     };
   },
 });

@@ -51,7 +51,7 @@ export default defineComponent({
     height: 6rem;
   }
 
-  // shibuya, zKatana, local
+  // shibuya, zkyoto, local
   border-image: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
   border-image-slice: 1;
 

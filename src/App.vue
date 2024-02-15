@@ -28,6 +28,12 @@
     </transition>
     <notification-stack />
 
+    <modal-onboarding
+      v-if="showOnboardingModal"
+      :set-is-open="setShowOnboardingModal"
+      :show="showOnboardingModal"
+    />
+
     <modal-disclaimer
       v-if="showDisclaimerModal"
       :set-is-open="setShowDisclaimerModal"
@@ -53,6 +59,7 @@ import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
 import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
+import ModalOnboarding from 'src/staking-v3/components/ModalOnboarding.vue';
 import NotificationStack from './components/common/Notification/NotificationStack.vue';
 import 'animate.css';
 import {
@@ -86,6 +93,7 @@ export default defineComponent({
     CookiePolicy,
     ModalDisclaimer,
     NotificationStack,
+    ModalOnboarding,
     ModalDecommission,
   },
   setup() {
@@ -127,6 +135,21 @@ export default defineComponent({
 
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
+    };
+
+    // dApp staking onboarding modal
+    const showOnboardingModal = ref<boolean>(false);
+    if (
+      !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
+      isDappStakingV3.value
+    ) {
+      setTimeout(() => {
+        showOnboardingModal.value = true;
+      }, 2000);
+    }
+
+    const setShowOnboardingModal = (isOpen: boolean): void => {
+      showOnboardingModal.value = isOpen;
     };
 
     const setShowDecommissionModal = (isOpen: boolean): void => {
@@ -254,6 +277,8 @@ export default defineComponent({
       showDisclaimerModal,
       showDecommissionModal,
       setShowDisclaimerModal,
+      showOnboardingModal,
+      setShowOnboardingModal,
       setShowDecommissionModal,
     };
   },

@@ -12,7 +12,6 @@ import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
-import { sign } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
 import { IAccountUnificationService, IDappStakingService } from 'src/v2/services';
@@ -20,12 +19,8 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import type { Transaction } from 'src/hooks/helper/wallet';
-import {
-  getDappAddressEnum,
-  TOKEN_API_URL,
-  DappItem,
-  isValidEvmAddress,
-} from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL, DappItem, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { IDappStakingServiceV2V3 } from 'src/staking-v3';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -218,7 +213,7 @@ const actions: ActionTree<State, StateInterface> = {
 
   async getTvl({ commit, dispatch }) {
     try {
-      const dappService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const dappService = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
       const tvl = await dappService.getTvl();
       commit('setTvl', tvl);
 

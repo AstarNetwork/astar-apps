@@ -13,23 +13,23 @@
           </span>
         </div>
         <div class="wrapper--wallets">
-          <button
-            v-for="(wallet, index) in evmWallets"
-            :key="index"
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === wallet.source && 'border--active'"
-            :wallet="wallet"
-            @click="setEvmWalletModal(wallet.source)"
-          >
-            <div class="box--img">
-              <img :src="wallet.img" />
-            </div>
-            <div>
-              <span>
-                {{ castWalletName(wallet.name) }}
-              </span>
-            </div>
-          </button>
+          <div v-for="(wallet, index) in evmWallets" :key="index">
+            <button
+              v-if="wallet.source !== SupportWallet.WalletConnect"
+              class="box__row--wallet box--hover--active"
+              :class="currentWallet === wallet.source && 'border--active'"
+              @click="setEvmWalletModal(wallet.source)"
+            >
+              <div class="box--img">
+                <img :src="wallet.img" />
+              </div>
+              <div>
+                <span>
+                  {{ castWalletName(wallet.name) }}
+                </span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
       <div>
@@ -300,6 +300,7 @@ export default defineComponent({
       isAccountUnification,
       isClosing,
       isEnablePolkasafe,
+      SupportWallet,
     };
   },
 });

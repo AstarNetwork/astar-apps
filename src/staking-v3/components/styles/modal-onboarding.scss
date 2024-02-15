@@ -1,0 +1,139 @@
+@import 'src/css/quasar.variables.scss';
+
+.modal__top {
+  margin: -60px 0 20px 0;
+}
+
+.title--onboarding {
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.25;
+  padding: 0 40px;
+  @media (min-width: $sm) {
+    font-size: 40px;
+    padding: 0;
+  }
+  span {
+    font-weight: 900;
+  }
+}
+
+.modal__bottom {
+  position: relative;
+  padding: 40px;
+  overflow: hidden;
+  background-color: $navy-1;
+  border-radius: 0 0 6px 6px;
+  @media (min-width: $sm) {
+    margin: 0 -40px -40px -40px;
+  }
+}
+
+.modal__bottom-inner {
+  position: relative;
+  z-index: 1;
+  color: $gray-2;
+  padding-top: 40px;
+  @media (min-width: $sm) {
+    padding-top: 60px;
+  }
+}
+
+.swiper--modal-onboarding {
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  @media (min-width: $sm) {
+    gap: 24px;
+  }
+}
+
+.text--title {
+  color: white;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 700;
+  max-width: 300px;
+  line-height: 1.15;
+  @media (min-width: $sm) {
+    font-size: 40px;
+    max-width: 420px;
+  }
+  a {
+    transition: all 0.2s ease;
+    color: #0ae2ff;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    &:hover {
+      color: lighten(#0ae2ff, 25%);
+    }
+    svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.text--yellow {
+  color: #f0cd5f;
+}
+
+.text--description {
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 200;
+  max-width: 300px;
+  @media (min-width: $sm) {
+    max-width: 420px;
+    font-size: 24px;
+  }
+}
+
+.text--links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  a {
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 500;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    @media (min-width: $sm) {
+      font-size: 16px;
+    }
+    &:hover {
+      color: #0ae2ff;
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.bg--modal-onboarding {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.body--dark{
+  .title--onboarding {
+    color: $navy-1;
+  }
+}

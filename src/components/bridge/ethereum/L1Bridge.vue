@@ -275,16 +275,15 @@ export default defineComponent({
       isHandling.value = false;
     };
 
-    // Watching the 'isApproved' prop
-    // When 'isApproved' changes and becomes true, stop loading animation
     watch(
-      () => props.isApproved,
-      async (newVal, oldVal) => {
-        if (newVal === true) {
+      [props],
+      () => {
+        if (props.isApproved) {
           props.setIsApproving(false);
           store.commit('general/setLoading', false, { root: true });
         }
-      }
+      },
+      { immediate: false }
     );
 
     return {
