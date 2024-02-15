@@ -15,7 +15,6 @@
         <div class="wrapper--wallets">
           <div v-for="(wallet, index) in evmWallets" :key="index">
             <button
-              v-if="wallet.source !== SupportWallet.WalletConnect"
               class="box__row--wallet box--hover--active"
               :class="currentWallet === wallet.source && 'border--active'"
               @click="setEvmWalletModal(wallet.source)"
