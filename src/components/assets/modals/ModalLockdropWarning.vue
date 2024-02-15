@@ -12,7 +12,7 @@
         </div>
         <span>{{ $t('warning.warning') }}</span>
       </div>
-      <div class="row--row--warning-box">
+      <div class="row--warning-box">
         <span>{{ $t('assets.modals.lockdropWarning.warning') }} </span>
       </div>
       <div class="row--message">

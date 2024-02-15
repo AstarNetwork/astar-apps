@@ -620,7 +620,7 @@ export default {
       },
       lockdropWarning: {
         warning:
-          'Account closed; This access is temporary. You are required to transfer your funds immediately to avoid any loss of funds.',
+          'Account closed; This access is temporary and will expire on 31-Aug 2024. You must transfer your funds immediately to avoid any loss of funds.',
         note: 'Please note',
         list1:
           'This account is temporarily only allowed to send tokens, unbond, and withdraw from dApp staking.',
