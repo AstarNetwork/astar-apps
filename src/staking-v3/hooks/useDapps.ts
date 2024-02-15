@@ -100,7 +100,7 @@ export function useDapps() {
     return dapps.find((d) => d.owner === ownerAddress && d.state === DappState.Registered);
   };
 
-  const fetchDappStats = async () => {
+  const fetchDappStats = async (): Promise<void> => {
     if (dappsStats.value.length === 0) {
       const repo = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
       dappsStats.value = await repo.getAggregatedMetrics(networkNameSubstrate.value.toLowerCase());
