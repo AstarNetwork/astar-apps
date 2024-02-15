@@ -943,6 +943,9 @@ export default {
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
     },
+    stakes: 'Stakes',
+    transactions: 'Transactions',
+    users: 'Users',
   },
   bridge: {
     bridge: 'Bridge',

@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { container } from 'src/v2/common';
 import {
   CombinedDappInfo,
@@ -12,10 +12,12 @@ import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
 import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
+import { DappAggregatedMetrics } from 'src/v2/repositories';
 
 export function useDapps() {
   const store = useStore();
-  const { currentNetworkName } = useNetworkInfo();
+  const { currentNetworkName, networkNameSubstrate } = useNetworkInfo();
+  const dappsStats = ref<DappAggregatedMetrics[]>([]);
   const tokenApiProviderRepository = container.get<TokenApiProviderRepository>(
     Symbols.TokenApiProviderRepository
   );
@@ -98,13 +100,22 @@ export function useDapps() {
     return dapps.find((d) => d.owner === ownerAddress && d.state === DappState.Registered);
   };
 
+  const fetchDappStats = async (): Promise<void> => {
+    if (dappsStats.value.length === 0) {
+      const repo = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
+      dappsStats.value = await repo.getAggregatedMetrics(networkNameSubstrate.value.toLowerCase());
+    }
+  };
+
   return {
     registeredDapps,
     allDapps,
+    dappsStats,
     fetchDappsToStore,
     fetchDappToStore,
     fetchStakeAmountsToStore,
     getDapp,
     getDappByOwner,
+    fetchDappStats,
   };
 }

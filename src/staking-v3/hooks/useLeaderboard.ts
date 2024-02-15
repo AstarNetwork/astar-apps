@@ -1,10 +1,20 @@
-import { watch, ref, computed } from 'vue';
+import { watch, ref, computed, onMounted } from 'vue';
 import { CombinedDappInfo, PeriodType, useDappStaking, useDapps } from '..';
 import { useStore } from 'src/store';
+import { getDomain } from 'src/v2/common';
+
+export interface LeaderboardData {
+  address: string;
+  rank: number;
+  name: string;
+  iconUrl: string;
+  url: string;
+  value: bigint;
+}
 
 export function useLeaderboard() {
   const store = useStore();
-  const { registeredDapps } = useDapps();
+  const { registeredDapps, dappsStats, fetchDappStats } = useDapps();
   const { dAppTiers, protocolState, eraLengths } = useDappStaking();
   // Map key is a dApp tier.
   const leaderBoards = ref<Map<number, CombinedDappInfo[]>>(new Map());
@@ -56,6 +66,115 @@ export function useLeaderboard() {
 
   const getDailyReward = (tier: number): bigint => dAppTiers.value.rewards[tier - 1] ?? BigInt(0);
 
+  const dappsPerPage = 5;
+  const paginatedStakeRankingVoting = computed<LeaderboardData[][]>(() => {
+    const result: LeaderboardData[][] = [];
+    for (let i = 0; i < sortedDapps.value.length; i += dappsPerPage) {
+      result.push(
+        sortedDapps.value
+          .slice(i, i + dappsPerPage)
+          .map((dapp, index) =>
+            getLeaderboardData(
+              index + 1 + i * dappsPerPage,
+              dapp.basic.address,
+              dapp.basic.name,
+              dapp.basic.iconUrl,
+              dapp.basic.url,
+              dapp.chain.totalStake ?? BigInt(0)
+            )
+          )
+      );
+    }
+    return result;
+  });
+
+  const paginatedTransactionsRanking = ref<LeaderboardData[][]>([]);
+  const paginatedUsersRanking = ref<LeaderboardData[][]>([]);
+
+  const calculatePaginatedTransactionsAndUsersRanking = (): void => {
+    if (paginatedTransactionsRanking.value.length > 0 || paginatedUsersRanking.value.length > 0) {
+      return;
+    }
+
+    paginatedTransactionsRanking.value = [];
+    paginatedUsersRanking.value = [];
+
+    let transactions: LeaderboardData[] = [];
+    let users: LeaderboardData[] = [];
+
+    // Find stats for each dapp.
+    sortedDapps.value.forEach((dapp, index) => {
+      const stats = dappsStats.value.find(
+        (x) =>
+          x.name.toLowerCase() === dapp.basic.name.toLowerCase() ||
+          getDomain(x.url.toLowerCase()) === getDomain(dapp.basic.url?.toLowerCase())
+      );
+
+      if (stats) {
+        transactions.push(
+          getLeaderboardData(
+            index + 1,
+            dapp.basic.address,
+            dapp.basic.name,
+            dapp.basic.iconUrl,
+            dapp.basic.url,
+            BigInt(stats.metrics.transactions)
+          )
+        );
+        users.push(
+          getLeaderboardData(
+            index + 1,
+            dapp.basic.address,
+            dapp.basic.name,
+            dapp.basic.iconUrl,
+            dapp.basic.url,
+            BigInt(stats.metrics.uaw)
+          )
+        );
+      }
+    });
+
+    // Sort by value descending.
+    transactions = transactions
+      .sort((a, b) => Number(b.value - a.value))
+      .map((x, index) => {
+        return { ...x, rank: index + 1 };
+      });
+    users = users
+      .sort((a, b) => Number(b.value - a.value))
+      .map((x, index) => {
+        return { ...x, rank: index + 1 };
+      });
+
+    for (let i = 0; i < transactions.length; i += dappsPerPage) {
+      paginatedTransactionsRanking.value.push(transactions.slice(i, i + dappsPerPage));
+    }
+
+    for (let i = 0; i < users.length; i += dappsPerPage) {
+      paginatedUsersRanking.value.push(users.slice(i, i + dappsPerPage));
+    }
+  };
+
+  const getLeaderboardData = (
+    rank: number,
+    address: string,
+    name: string,
+    iconUrl: string,
+    url: string,
+    value: bigint
+  ): LeaderboardData => ({
+    rank,
+    address,
+    name,
+    iconUrl,
+    url,
+    value,
+  });
+
+  onMounted(() => {
+    fetchDappStats();
+  });
+
   watch(
     registeredDapps,
     () => {
@@ -64,5 +183,22 @@ export function useLeaderboard() {
     { immediate: true }
   );
 
-  return { leaderBoards, isLeaderboardEmpty, sortedDapps, getDailyReward };
+  watch(
+    dappsStats,
+    () => {
+      calculatePaginatedTransactionsAndUsersRanking();
+    },
+    { immediate: true }
+  );
+
+  return {
+    leaderBoards,
+    isLeaderboardEmpty,
+    sortedDapps,
+    dappsPerPage,
+    paginatedStakeRankingVoting,
+    paginatedTransactionsRanking,
+    paginatedUsersRanking,
+    getDailyReward,
+  };
 }

@@ -16,6 +16,7 @@ import {
   SingularStakingInfo,
   TiersConfiguration,
 } from '../models';
+import { DappAggregatedMetrics } from 'src/v2/repositories';
 
 /**
  * Interface for repository that handles dapp staking data.
@@ -223,4 +224,6 @@ export interface IDappStakingRepository {
    * Gets a call to the legacy code to support v2 ledger stakers to withdraw their funds.
    */
   getWithdrawUnbondedCall(): Promise<ExtrinsicPayload>;
+
+  getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]>;
 }
