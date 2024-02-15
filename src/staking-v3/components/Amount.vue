@@ -4,7 +4,6 @@
       <img class="token--logo" alt="token-logo" :src="nativeTokenImg" />
       <span class="text--title">{{ nativeTokenSymbol }}</span>
       <input
-        :value="amount"
         inputmode="decimal"
         type="number"
         min="0"
