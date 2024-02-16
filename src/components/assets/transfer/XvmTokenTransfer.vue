@@ -83,7 +83,7 @@
               type="number"
               min="0"
               pattern="^[0-9]*(\.)?[0-9]*$"
-              placeholder="0.0"
+              placeholder="0"
               class="input--amount input--no-spin"
               @input="inputHandler"
             />
