@@ -51,7 +51,9 @@
                 <b>{{ $t('stakingV3.availableToVote') }}</b>
               </div>
               <div>
-                <b><token-balance-native :balance="availableToVoteDisplay.toString()" /></b>
+                <b v-if="!isLoading"
+                  ><token-balance-native :balance="availableToVoteDisplay.toString()"
+                /></b>
               </div>
             </div>
 
@@ -68,7 +70,9 @@
                     isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked')
                   }}
                 </div>
-                <div><token-balance-native :balance="totalStake.toString()" /></div>
+                <div>
+                  <token-balance-native :balance="totalStake.toString()" />
+                </div>
               </div>
               <div class="balance--row" :class="remainLockedToken > BigInt(0) && 'warning--text'">
                 <div>
@@ -187,6 +191,7 @@ import RewardsPanel from './RewardsPanel.vue';
 import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
 import { docsUrl } from 'src/links';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -214,6 +219,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
     const route = useRoute();
+    const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const dapps = ref<Dapp[]>([]);
     const selectedDapps = ref<Dapp[]>([]);
@@ -386,6 +393,7 @@ export default defineComponent({
       availableToMove,
       errorMessage,
       docsUrl,
+      isLoading,
     };
   },
 });
