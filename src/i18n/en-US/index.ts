@@ -749,6 +749,7 @@ export default {
     stakeTitle: 'Stake!',
     selectProjects: 'Select projects',
     chooseProject: 'Choose a project to vote',
+    chooseMoreProject: 'Choose another projects to vote (option)',
     availableToVote: 'Available to vote',
     totalVote: 'Total vote',
     totalStake: 'Total stake',

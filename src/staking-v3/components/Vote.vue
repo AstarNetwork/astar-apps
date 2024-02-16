@@ -41,7 +41,13 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="
+                $t(
+                  selectedDapps.length > 0
+                    ? 'stakingV3.chooseMoreProject'
+                    : 'stakingV3.chooseProject'
+                )
+              "
             />
           </div>
 
@@ -394,6 +400,7 @@ export default defineComponent({
       errorMessage,
       docsUrl,
       isLoading,
+      stakeInfo,
     };
   },
 });
