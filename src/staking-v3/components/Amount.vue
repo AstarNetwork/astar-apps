@@ -4,12 +4,11 @@
       <img class="token--logo" alt="token-logo" :src="nativeTokenImg" />
       <span class="text--title">{{ nativeTokenSymbol }}</span>
       <input
-        :value="amount"
         inputmode="decimal"
         type="number"
         min="0"
         pattern="^[0-9]*(\.)?[0-9]*$"
-        placeholder="0.0"
+        placeholder="0"
         class="input--amount input--no-spin"
         @input="handleInputAmount"
       />
