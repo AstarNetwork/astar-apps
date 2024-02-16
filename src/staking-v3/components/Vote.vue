@@ -26,7 +26,7 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="$t('stakingV3.voteProject')"
               :selected-dapp="dapp"
               :disable-selection="!canAddDapp"
             />
@@ -42,11 +42,7 @@
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
               :placeholder="
-                $t(
-                  selectedDapps.length > 0
-                    ? 'stakingV3.chooseMoreProject'
-                    : 'stakingV3.chooseProject'
-                )
+                $t(selectedDapps.length > 0 ? 'stakingV3.voteMoreProject' : 'stakingV3.voteProject')
               "
             />
           </div>
