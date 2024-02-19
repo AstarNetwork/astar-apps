@@ -101,7 +101,7 @@
             </div>
           </div>
           <rewards-panel />
-          <error-panel :error-message="errorMessage" />
+          <error-panel :error-message="errorMessage" :url="refUrl" />
           <div class="wrapper--button">
             <astar-button
               :disabled="!canConfirm()"
@@ -292,10 +292,12 @@ export default defineComponent({
     });
 
     const errorMessage = ref<string>('');
+    const refUrl = ref<string>('');
 
     const canConfirm = (): boolean => {
-      const [enabled, message] = canStake(stakeInfo.value, availableToVote.value);
+      const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value);
       errorMessage.value = message;
+      refUrl.value = url;
 
       return enabled && totalStakeAmount.value > 0;
     };
@@ -397,6 +399,7 @@ export default defineComponent({
       docsUrl,
       isLoading,
       stakeInfo,
+      refUrl,
     };
   },
 });

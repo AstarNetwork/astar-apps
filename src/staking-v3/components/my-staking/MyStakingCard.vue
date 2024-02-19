@@ -1,7 +1,11 @@
 <template>
   <div class="card">
     <div class="card--title">{{ caption }}</div>
-    <div v-if="eras" class="card--days">{{ eras }} days</div>
+    <div v-if="eras" class="card--days">
+      <span>
+        {{ $t(`stakingV3.${eras > 1 ? 'days' : 'day'}`, { day: eras }) }}
+      </span>
+    </div>
     <div class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}

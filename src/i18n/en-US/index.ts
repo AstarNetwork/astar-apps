@@ -116,6 +116,7 @@ export default {
     docs: 'Documentation',
     loading: 'Loading...',
     comingSoon: 'Coming soon',
+    checkHowToSolve: 'Check how to solve this problem',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -738,8 +739,7 @@ export default {
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
         'Period ends in the next era. It is not possible to stake in the last era of a period.',
-      TooManyStakedContracts:
-        'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+      TooManyStakedContracts: 'There are too many contract stake entries for the account.',
       TooManyUnlockingChunks:
         'Contract has too many unlocking chunks. Withdraw the existing chunks if possible or wait for current chunks to complete unlocking process to withdraw them.',
       UnavailableStakeFunds:
@@ -850,6 +850,7 @@ export default {
     alreadyClaimed: 'Already claimed',
     eras: '{era} eras',
     days: '{day} days',
+    day: '{day} day',
     claimYourRewards: 'Claim your rewards',
     claimed: 'Claimed',
     period: 'Period {period}',

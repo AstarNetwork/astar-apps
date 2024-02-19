@@ -31,6 +31,7 @@ import { initialDappTiersConfiguration, initialTiersConfiguration } from '../sto
 import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { ApiPromise } from '@polkadot/api';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { docsUrl } from 'src/links';
 
 export interface RewardsPerPeriod {
   period: number;
@@ -395,21 +396,29 @@ export function useDappStaking() {
     store.commit('stakingV3/setCurrentEraInfo', eraInfo);
   };
 
-  const canStake = (stakes: DappStakeInfo[], availableTokensBalance: bigint): [boolean, string] => {
+  const canStake = (
+    stakes: DappStakeInfo[],
+    availableTokensBalance: bigint
+    //Returns: [result, message, docsUrl]
+  ): [boolean, string, string] => {
     let stakeSum = BigInt(0);
 
     for (const stake of stakes) {
       const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
       stakeSum += stakeAmount;
       if (!stake.address) {
-        return [false, t('stakingV3.noDappSelected')];
+        return [false, t('stakingV3.noDappSelected'), ''];
       } else if (stake.amount <= 0) {
-        return [false, t('stakingV3.dappStaking.ZeroAmount')];
+        return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (
         constants.value &&
         (ledger.value?.contractStakeCount ?? 0) >= constants.value.maxNumberOfStakedContracts
       ) {
-        return [false, t('stakingV3.dappStaking.TooManyStakedContracts')];
+        return [
+          false,
+          t('stakingV3.dappStaking.TooManyStakedContracts'),
+          docsUrl.dappStakingStaked16Dapps,
+        ];
       } else if (
         constants.value?.minStakeAmountToken &&
         stake.amount < constants.value.minStakeAmountToken &&
@@ -420,11 +429,12 @@ export function useDappStaking() {
           t('stakingV3.dappStaking.LockedAmountBelowThreshold', {
             amount: constants.value.minStakeAmountToken,
           }),
+          '',
         ];
       } else if (protocolState.value?.maintenance) {
-        return [false, t('stakingV3.dappStaking.Disabled')];
+        return [false, t('stakingV3.dappStaking.Disabled'), ''];
       } else if (stakeSum > availableTokensBalance) {
-        return [false, t('stakingV3.dappStaking.UnavailableStakeFunds')];
+        return [false, t('stakingV3.dappStaking.UnavailableStakeFunds'), ''];
       } else if (
         constants.value &&
         ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
@@ -436,18 +446,19 @@ export function useDappStaking() {
             amount: constants.value.minBalanceAfterStaking,
             symbol: nativeTokenSymbol.value,
           }),
+          '',
         ];
       } else if (
         protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
         protocolState.value.periodInfo.nextSubperiodStartEra <= protocolState.value.era + 1
       ) {
-        return [false, t('stakingV3.dappStaking.PeriodEndsNextEra')];
+        return [false, t('stakingV3.dappStaking.PeriodEndsNextEra'), ''];
       } else if (getDapp(stake.address)?.chain?.state === 'Unregistered') {
-        return [false, t('stakingV3.dappStaking.NotOperatedDApp')];
+        return [false, t('stakingV3.dappStaking.NotOperatedDApp'), ''];
       }
     }
 
-    return [true, ''];
+    return [true, '', ''];
   };
 
   const canUnStake = (dappAddress: string, amount: number): [boolean, string] => {
