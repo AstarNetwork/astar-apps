@@ -25,7 +25,7 @@ import { useI18n } from 'vue-i18n';
 export const useL1History = () => {
   const { t } = useI18n();
   const store = useStore();
-  const isGelatoApiConnected = ref<boolean>(true);
+  const isGelatoApiConnected = ref<boolean>(false);
 
   const l1Network = computed<string>(() => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
@@ -74,6 +74,7 @@ export const useL1History = () => {
   };
 
   const fetchUserHistory = async (): Promise<void> => {
+    if (!currentAccount.value) return;
     try {
       isLoadingHistories.value = true;
       const data = await fetchAccountHistory(currentAccount.value);
@@ -130,17 +131,15 @@ export const useL1History = () => {
       histories.value = formattedResult.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
     } catch (error) {
       // Memo: disable sending bridge transactions from UI
-      if (isGelatoApiConnected.value) {
-        store.dispatch(
-          'general/showAlertMsg',
-          {
-            msg: t('bridge.gelatoApiError'),
-            alertType: 'error',
-          },
-          { root: true }
-        );
-        isGelatoApiConnected.value = false;
-      }
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: t('bridge.gelatoApiError'),
+          alertType: 'error',
+        },
+        { root: true }
+      );
+      isGelatoApiConnected.value = false;
       console.error(error);
       isFetchAutomatically.value = false;
     } finally {
