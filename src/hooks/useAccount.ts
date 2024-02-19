@@ -35,6 +35,9 @@ export const useAccount = () => {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
+  const isLockdropAccount = computed<boolean>(
+    () => !isH160Formatted.value && currentAccountName.value === ETHEREUM_EXTENSION
+  );
 
   const isAccountUnification = computed<boolean>(() => {
     return !!(
@@ -248,6 +251,7 @@ export const useAccount = () => {
     isMultisig,
     isAccountUnification,
     isH160Formatted,
+    isLockdropAccount,
     disconnectAccount,
     showAccountUnificationModal,
     checkIfUnified,

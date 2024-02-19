@@ -5,6 +5,13 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
+          <div v-if="isLockdropAccount && isAllowLockdropDispatch" class="row--lockdrop">
+            <span>{{ $t('assets.lockdropAccount') }}</span>
+            <span class="text--switch-account" @click="toggleEvmWalletSchema">
+              {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
+            </span>
+          </div>
+          <div v-else />
           <div class="wallet-tab__bg">
             <!-- EVM -->
             <template v-if="isH160">
@@ -112,6 +119,11 @@
         }}</span>
       </div>
     </div>
+    <modal-lockdrop-warning
+      v-if="isLockdropAccount && !isH160"
+      :is-modal="isModalLockdropWarning"
+      :handle-modal="handleModalLockdropWarning"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -131,16 +143,19 @@ import {
   usePrice,
   useWalletIcon,
   useAccountUnification,
+  useConnectWallet,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 
 export default defineComponent({
   components: {
     AuIcon,
+    ModalLockdropWarning,
   },
   props: {
     ttlErc20Amount: {
@@ -155,6 +170,9 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
+    const isLockdropAccount = ref<boolean>(false);
+    const isModalLockdropWarning = ref<boolean>(true);
+
     const {
       currentAccount,
       currentAccountName,
@@ -163,6 +181,7 @@ export default defineComponent({
       isAccountUnification,
     } = useAccount();
 
+    const { toggleEvmWalletSchema } = useConnectWallet();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -176,7 +195,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm, isAllowLockdropDispatch } = useNetworkInfo();
 
     const isWalletConnect = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -213,6 +232,10 @@ export default defineComponent({
       return isLoadingBalance.value;
     });
 
+    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
+      isModalLockdropWarning.value = isOpen;
+    };
+
     watch(
       [balance, nativeTokenUsd, currentAccount, isH160],
       () => {
@@ -248,6 +271,8 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
+          isLockdropAccount.value = false;
+
           return;
         }
         if (
@@ -262,8 +287,14 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
+          if (Number(data.free.toString()) > 0) {
+            isLockdropAccount.value = true;
+          } else {
+            isLockdropAccount.value = false;
+          }
         } catch (error: any) {
           console.error(error.message);
+          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -313,10 +344,15 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isLockdropAccount,
+      isModalLockdropWarning,
+      isAllowLockdropDispatch,
       isWalletConnect,
+      handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
+      toggleEvmWalletSchema,
     };
   },
 });

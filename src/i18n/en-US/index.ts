@@ -479,7 +479,9 @@ export default {
     xvmAssets: 'XVM (Cross Virtual Machine) ERC-20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
+    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
+    lockdropAccount: 'Lockdrop Account',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
     send: 'Send',
@@ -615,6 +617,17 @@ export default {
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
+      },
+      lockdropWarning: {
+        warning:
+          'Account closed; This access is temporary and will expire on 31-Aug 2024. You must transfer your funds immediately to avoid any loss of funds.',
+        note: 'Please note',
+        list1:
+          'This account is temporarily only allowed to send tokens, unbond, and withdraw from dApp staking.',
+        list2: 'Do not send tokens to Exchanges.',
+        list3: 'Do not send tokens to another Lockdrop account.',
+        list4: 'Send all tokens while you have access.',
+        moveFundsNow: 'Move Funds Now',
       },
     },
   },
