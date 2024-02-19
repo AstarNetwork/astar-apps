@@ -40,5 +40,10 @@
     "shortDescription": "#1 Cross-chain Social Fitness App on iOS & Android, Apple Watch",
     "link": "https://app.moonfit.xyz/astar-reward",
     "img": "images/dapp_promotions/moonfit.png"
-  }
+  },
+  {
+    "name": "Nova Wallet",
+    "shortDescription": "The Leading Mobile Wallet for the Astar Ecosystem",
+    "link": "https://novawallet.io/",
+    "img": "images/dapp_promotions/nova_wallet.png"
 ]
