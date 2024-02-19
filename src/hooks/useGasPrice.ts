@@ -79,7 +79,7 @@ export const useGasPrice = (isFetch = false) => {
         await dispatchGasPrice(network.value);
       }
     },
-    { immediate: false }
+    { immediate: true }
   );
 
   watchEffect(async () => {
