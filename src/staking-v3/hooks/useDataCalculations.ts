@@ -3,6 +3,7 @@ import { useDappStaking } from './useDappStaking';
 import { useTokenCirculation } from 'src/hooks/useTokenCirculation';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
+import { NumberOfStakersAndLockers } from '../logic';
 
 export function useDataCalculations() {
   const { totalSupply } = useTokenCirculation();
@@ -46,9 +47,14 @@ export function useDataCalculations() {
       : currentEraInfo.value.currentStakeAmount.voting;
   });
 
-  const numberOfParticipants = computed<number>(
-    () => store.getters['stakingV3/getNumberOfParticipants']
+  const numberOfStakersAndLockers = computed<NumberOfStakersAndLockers>(
+    () => store.getters['stakingV3/getNumberOfStakersAndLockers']
   );
 
-  return { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens, numberOfParticipants };
+  return {
+    tvlPercentage,
+    totalVolumeOfVotesPercentage,
+    bonusEligibleTokens,
+    numberOfStakersAndLockers,
+  };
 }

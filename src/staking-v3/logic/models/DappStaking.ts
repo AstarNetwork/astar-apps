@@ -204,9 +204,12 @@ export interface ProviderDappData {
   dappId: number;
 }
 
-export interface NumberOfParticipantsData {
-  timestamp: string;
-  participants: number;
+export interface NumberOfStakersAndLockers {
+  date: string;
+  tvl: string;
+  lockersCount: number;
+  tvs: string;
+  stakersCount: number;
 }
 
 export interface StakerRewards {
