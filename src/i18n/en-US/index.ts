@@ -533,6 +533,7 @@ export default {
     yourProject: 'Your Project',
     verifyWalletCompatibility:
       'Please verify wallet compatibility with {network} network before transactions to prevent fund loss',
+    rewardsAvailable: 'Rewards available',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',

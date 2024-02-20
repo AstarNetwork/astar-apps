@@ -327,8 +327,7 @@ export function useDappStaking() {
     const stakingV3service = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
-    const ownedContractAddress = getOwnedDappAddress();
-
+    const ownedContracts = getOwnedDappAddress();
     let staker = <StakerRewards>{
       amount: BigInt(0),
       eraCount: 0,
@@ -341,8 +340,13 @@ export function useDappStaking() {
       staker = await stakingV3service.getStakerRewards(currentAccount.value);
       bonus = await stakingV3service.getBonusRewards(currentAccount.value);
 
-      if (ownedContractAddress) {
-        dApp = await stakingV3service.getDappRewards(ownedContractAddress ?? '');
+      if (ownedContracts.length > 0) {
+        for await (const ownedContractAddress of ownedContracts) {
+          if (ownedContractAddress) {
+            const dAppRewards = await stakingV3service.getDappRewards(ownedContractAddress);
+            dApp += dAppRewards;
+          }
+        }
       }
     }
 
@@ -376,8 +380,10 @@ export function useDappStaking() {
     return result;
   };
 
-  const getOwnedDappAddress = (): string | undefined => {
-    return registeredDapps.value.find((x) => x.chain.owner === currentAccount.value)?.chain.address;
+  const getOwnedDappAddress = (): string[] => {
+    return registeredDapps.value
+      .filter((x) => x.chain.owner === currentAccount.value)
+      .map((x) => x.chain.address);
   };
 
   const fetchConstantsToStore = async (): Promise<void> => {
