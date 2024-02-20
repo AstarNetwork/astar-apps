@@ -136,7 +136,7 @@ export function useDappStaking() {
   const rewardExpiresInNextPeriod = (period: number): boolean =>
     period == protocolState.value!.periodInfo.number - constants.value!.rewardRetentionInPeriods;
 
-  const hasStakerRewards = computed<boolean>(() => !!rewards.value.staker);
+  const hasStakerRewards = computed<boolean>(() => !!rewards.value.staker.amount);
   const hasDappRewards = computed<boolean>(() => !!rewards.value.dApp);
   const hasBonusRewards = computed<boolean>(() => !!rewards.value.bonus);
   const hasRewards = computed<boolean>(

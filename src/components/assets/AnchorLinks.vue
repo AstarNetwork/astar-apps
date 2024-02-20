@@ -13,13 +13,13 @@
     <div
       v-if="isDappOwner"
       class="item"
-      :class="isDeveloperRewards && 'bg--notify'"
+      :class="hasDappRewards && 'bg--notify'"
       @click="scrollTo(projectSection)"
     >
       <span>
         {{ $t('assets.project') }}
       </span>
-      <div v-if="isDeveloperRewards">
+      <div v-if="hasDappRewards">
         <div class="dot--bg" />
         <div class="dot--active" />
       </div>
@@ -63,20 +63,13 @@ export default defineComponent({
       section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    const { rewards } = useDappStaking();
+    const { hasBonusRewards, hasStakerRewards, hasDappRewards } = useDappStaking();
 
     const isStakerRewards = computed<boolean>(() => {
-      return (
-        Number(rewards.value.bonus.toString()) > 0 ||
-        Number(rewards.value.staker.amount.toString()) > 0
-      );
+      return hasStakerRewards.value || hasBonusRewards.value;
     });
 
-    const isDeveloperRewards = computed<boolean>(() => {
-      return Number(rewards.value.dApp.toString()) > 0;
-    });
-
-    return { nativeTokenSymbol, scrollTo, isStakerRewards, isDeveloperRewards };
+    return { nativeTokenSymbol, scrollTo, isStakerRewards, hasDappRewards };
   },
 });
 </script>
