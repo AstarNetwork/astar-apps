@@ -67,11 +67,9 @@ export default defineComponent({
 
       for await (const dapp of props.ownDapps) {
         const ownedContractAddress = dapp.chain.address;
-        if (ownedContractAddress) {
-          const dAppRewards = await stakingV3service.getDappRewards(ownedContractAddress);
-          if (dAppRewards > 0) {
-            dAppRewardsArray.push({ dapp: ownedContractAddress, rewards: dAppRewards });
-          }
+        const dAppRewards = await stakingV3service.getDappRewards(ownedContractAddress);
+        if (dAppRewards > 0) {
+          dAppRewardsArray.push({ dapp: ownedContractAddress, rewards: dAppRewards });
         }
       }
       dAppRewardsMap.value = dAppRewardsArray;
