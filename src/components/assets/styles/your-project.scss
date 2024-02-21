@@ -8,17 +8,9 @@
 }
 
 .box--dapps {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-
-  @media (min-width: $md) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 32px;
-  }
-  @media (min-width: $xxl) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 .text--title {
@@ -51,7 +43,8 @@
   color: $navy-1;
   line-height: 1.25;
   transition: all 0.2s ease;
-  &:hover{
+  position: relative;
+  &:hover {
     background-color: $gray-2;
   }
 }
@@ -70,15 +63,59 @@
   margin-bottom: 24px;
 }
 
+.row--dapp-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.column--rewards {
+  border: 1px solid $astar-pink-1;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: $astar-pink-1;
+  font-size: 12px;
+}
+
+.dot--bg {
+  top: -6px;
+  right: -5px;
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background-color: white;
+  border-radius: 100%;
+}
+
+.dot--active {
+  top: 0;
+  right: 0;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: $astar-pink-1;
+  border-radius: 100%;
+}
+
 .body--dark {
   .card--dapp {
     background-color: $navy-3;
     color: $gray-1;
-    &:hover{
-      background-color: lighten($navy-3,5%);
+    &:hover {
+      background-color: lighten($navy-3, 5%);
     }
   }
+
   .separator {
     background-color: $navy-3;
+  }
+
+  .bg--notify {
+    background-color: $navy-3;
+  }
+
+  .dot--bg {
+    background-color: $navy-1;
   }
 }

@@ -28,11 +28,11 @@
     </transition>
     <notification-stack />
 
-    <modal-onboarding
+    <!-- <modal-onboarding
       v-if="showOnboardingModal"
       :set-is-open="setShowOnboardingModal"
       :show="showOnboardingModal"
-    />
+    /> -->
 
     <modal-disclaimer
       v-if="showDisclaimerModal"
@@ -138,19 +138,19 @@ export default defineComponent({
     };
 
     // dApp staking onboarding modal
-    const showOnboardingModal = ref<boolean>(false);
-    if (
-      !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
-      isDappStakingV3.value
-    ) {
-      setTimeout(() => {
-        showOnboardingModal.value = true;
-      }, 2000);
-    }
+    // const showOnboardingModal = ref<boolean>(false);
+    // if (
+    //   !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
+    //   isDappStakingV3.value
+    // ) {
+    //   setTimeout(() => {
+    //     showOnboardingModal.value = true;
+    //   }, 2000);
+    // }
 
-    const setShowOnboardingModal = (isOpen: boolean): void => {
-      showOnboardingModal.value = isOpen;
-    };
+    // const setShowOnboardingModal = (isOpen: boolean): void => {
+    //   showOnboardingModal.value = isOpen;
+    // };
 
     const setShowDecommissionModal = (isOpen: boolean): void => {
       showDecommissionModal.value = isOpen;
@@ -277,8 +277,6 @@ export default defineComponent({
       showDisclaimerModal,
       showDecommissionModal,
       setShowDisclaimerModal,
-      showOnboardingModal,
-      setShowOnboardingModal,
       setShowDecommissionModal,
     };
   },
