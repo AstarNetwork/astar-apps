@@ -3,6 +3,7 @@ import {
   CombinedDappInfo,
   ProtocolState,
   SingularStakingInfo,
+  NumberOfStakersAndLockers,
   Rewards,
   Constants,
   EraInfo,
@@ -16,7 +17,7 @@ export interface DappStakingState {
   version: string;
   dapps: CombinedDappInfo[];
   newDapps: DappInfo[];
-  numberOfParticipants: number;
+  numberOfStakersAndLockers: NumberOfStakersAndLockers;
   protocolState: ProtocolState | undefined;
   ledger: AccountLedger | undefined;
   stakerInfo: Map<string, SingularStakingInfo> | undefined;
@@ -34,7 +35,7 @@ function state(): DappStakingState {
     version: '3.0.0',
     dapps: [],
     newDapps: [],
-    numberOfParticipants: 0,
+    numberOfStakersAndLockers: initialNumberOfStakersAndLockers,
     protocolState: undefined,
     ledger: undefined,
     stakerInfo: undefined,
@@ -47,6 +48,14 @@ function state(): DappStakingState {
     leaderboard: new Map<number, number>(),
   };
 }
+
+export const initialNumberOfStakersAndLockers: NumberOfStakersAndLockers = {
+  date: '',
+  tvl: '',
+  lockersCount: 0,
+  tvs: '',
+  stakersCount: 0,
+};
 
 export const initialTiersConfiguration: TiersConfiguration = {
   numberOfSlots: 0,
