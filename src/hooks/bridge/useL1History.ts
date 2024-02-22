@@ -32,7 +32,7 @@ export const useL1History = () => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
     return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
       ? EthBridgeNetworkName.AstarZk
-      : EthBridgeNetworkName.Zkyoto;
+      : EthBridgeNetworkName.Zkatana;
   });
 
   const histories = ref<BridgeHistory[]>([]);
@@ -68,12 +68,12 @@ export const useL1History = () => {
   };
 
   const fetchUserHistory = async (): Promise<void> => {
+    if (!currentAccount.value) return;
     try {
       isLoadingHistories.value = true;
       const data = await fetchAccountHistory(currentAccount.value);
       const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Network.value as EthBridgeNetworkName]);
       const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Network.value as EthBridgeNetworkName]);
-
       let numberInProgress = 0;
       const formattedResult = await Promise.all(
         data.map(async (it) => {

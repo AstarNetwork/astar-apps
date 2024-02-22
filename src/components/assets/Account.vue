@@ -18,7 +18,7 @@
               <!-- zkEVM -->
               <template v-if="isZkEvm">
                 <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
-                <div v-if="isZkEvm" class="btn active">Astar zKyoto</div>
+                <div v-if="isZkEvm" class="btn active">Astar zKatana</div>
               </template>
 
               <!-- Astar EVM -->
@@ -27,8 +27,8 @@
                   {{ currentNetworkName.replace('Network', '') }}
                   EVM (L1)
                 </div>
-                <a v-if="currentNetworkIdx === 2" class="btn" href="/zkyoto-testnet/assets">
-                  Astar zKyoto
+                <a v-if="currentNetworkIdx === 2" class="btn" href="/zkatana-testnet/assets">
+                  Astar zKatana
                 </a>
                 <a v-else-if="currentNetworkIdx !== 1" class="btn" disabled>Astar zkEVM</a>
               </template>
@@ -313,7 +313,7 @@ export default defineComponent({
         return bg_img.native;
       } else if (currentNetworkIdx.value === endpointKey.SHIDEN) {
         return bg_img.shiden;
-      } else if (currentNetworkIdx.value === endpointKey.ZKYOTO) {
+      } else if (currentNetworkIdx.value === endpointKey.ZKATANA) {
         return bg_img.testnet_zk;
       }
       return bg_img.testnet;
