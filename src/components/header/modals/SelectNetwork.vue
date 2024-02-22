@@ -60,8 +60,8 @@
         </button>
         <button
           class="row--network box--hover--active"
-          :class="selNetworkId === endpointKey.ZKYOTO && 'border--active'"
-          @click="setSelNetwork(endpointKey.ZKYOTO)"
+          :class="selNetworkId === endpointKey.ZKATANA && 'border--active'"
+          @click="setSelNetwork(endpointKey.ZKATANA)"
         >
           <img
             class="img--network-logo"

@@ -107,8 +107,8 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.ASTAR_LOCAL_NODE;
   } else if (currentNetworkIdx === endpointKey.ASTAR_ZKEVM) {
     return EVM.ASTAR_ZKEVM_MAINNET;
-  } else if (currentNetworkIdx === endpointKey.ZKYOTO) {
-    return EVM.ZKYOTO_TESTNET;
+  } else if (currentNetworkIdx === endpointKey.ZKATANA) {
+    return EVM.ZKATANA_TESTNET;
   }
   return EVM.SHIBUYA_TESTNET;
 };
@@ -271,7 +271,7 @@ export const fetchErc20TokenInfo = async ({
       contract.methods.symbol().call(),
     ]);
 
-    const isZkEvm = srcChainId === ZkChainId.AstarZk || srcChainId === ZkChainId.Zkyoto;
+    const isZkEvm = srcChainId === ZkChainId.AstarZk || srcChainId === ZkChainId.Zkatana;
 
     let bridgedTokenAddress = '';
     let toChainId;
