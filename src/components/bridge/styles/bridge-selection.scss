@@ -8,6 +8,7 @@
   height: 100%;
   margin-top: 48px;
   margin-bottom: 48px;
+  position: relative;
   @media (min-width: $xl) {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -18,6 +19,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 24px;
+  background-color: red;
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 16px;
@@ -25,6 +27,12 @@
   @media (min-width: $xl) {
     flex-direction: row;
     column-gap: 56px;
+    position: absolute;
+    // padding-bottom: -120px;
+    right: -40px;
+    top: -36px;
+    // height: 100%;
+    height: calc(100vh - 136px);
   }
 }
 

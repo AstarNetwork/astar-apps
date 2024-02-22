@@ -30,8 +30,11 @@ export default defineComponent({
 }
 
 .page--bridge {
-  @media (min-width: $lg) {
-    height: calc(100vh - 96px - 36px - 120px);
+  /* @media (min-width: $lg) {
+    height: calc(100vh - 96px - 36px - 120px - 74px);
   }
+  @media (min-width: $xl) {
+    height: calc(100vh - 96px - 36px - 120px - 36px);
+  } */
 }
 </style>
