@@ -2,7 +2,7 @@
   <div class="wrapper--bridge-selection">
     <div class="container--box">
       <div class="container--title">
-        <span>Select a Bridge</span>
+        <span>{{ $t('bridge.selectBridge') }}</span>
       </div>
       <div class="container--selection">
         <div class="column--selection">
