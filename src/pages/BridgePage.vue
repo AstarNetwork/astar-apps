@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isReady" class="page--bridge">
+  <div v-if="isReady">
     <!-- Fixme: scroll to top when the app was routed from other page -->
     <router-view id="bridge-top" />
   </div>
@@ -27,14 +27,5 @@ export default defineComponent({
   @media (min-width: $lg) {
     padding: 0 16px;
   }
-}
-
-.page--bridge {
-  /* @media (min-width: $lg) {
-    height: calc(100vh - 96px - 36px - 120px - 74px);
-  }
-  @media (min-width: $xl) {
-    height: calc(100vh - 96px - 36px - 120px - 36px);
-  } */
 }
 </style>
