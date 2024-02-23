@@ -1,5 +1,11 @@
 [
   {
+    "name": "DeStore",
+    "shortDescription": "Web3 Shopify Powered by Astar",
+    "link": "https://twitter.com/DeStore_Network",
+    "img": "images/dapp_promotions/destore.jpg"
+  },
+  {
     "name": "Lucky - No-loss lottery",
     "shortDescription": "The more you stake, the more chance you have to win a raffle!",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=zsv1gvepvmwfdshmwgczs4zyvmmwesbjwqjn4wdpuefrrpy",
