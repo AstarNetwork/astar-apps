@@ -15,35 +15,48 @@
   }
 }
 
+.container--title {
+  margin-bottom: 50px;
+  font-weight: 800;
+  font-size: 24px;
+}
+
+.container--box {
+  @media (min-width: $xl) {
+    position: absolute;
+    right: -40px;
+    top: -36px;
+    height: calc(100vh - 136px);
+    padding-right: 168px;
+    padding-left: 48px;
+    padding-top: 58px;
+  }
+}
+
 .container--selection {
   display: flex;
   flex-direction: column;
   row-gap: 24px;
-  background-color: red;
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 16px;
   }
   @media (min-width: $xl) {
     flex-direction: row;
-    column-gap: 56px;
-    position: absolute;
-    // padding-bottom: -120px;
-    right: -40px;
-    top: -36px;
-    // height: 100%;
-    height: calc(100vh - 136px);
+    column-gap: 8px;
   }
 }
 
 .column--selection {
-  width: 260px;
-  @media (min-width: $lg) {
-    width: 254px;
-  }
-  @media (min-width: $xl) {
-    width: 300px;
-  }
+  width: 232px;
+  // background-color: blue;
+  // width: 260px;
+  // @media (min-width: $lg) {
+  //   width: 254px;
+  // }
+  // @media (min-width: $xl) {
+  //   width: 300px;
+  // }
 }
 
 .button--bridge {
@@ -52,19 +65,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.3s ease 0s;
   row-gap: 24px;
   padding: 16px;
-  height: 260px;
+  height: 232px;
   margin-bottom: 12px;
-  @media (min-width: $lg) {
-    height: 254px;
-  }
-  @media (min-width: $xl) {
-    height: 300px;
-  }
 }
 
 .column--selection button:not([disabled]) .button--bridge:hover {
@@ -121,12 +128,25 @@
   row-gap: 16px;
 }
 
+.text--bridge-details {
+  font-weight: 600;
+  font-size: 14px;
+  color: #596381;
+  // color: red;
+  a {
+    color: $astar-blue;
+    &:hover {
+      color: lighten($astar-blue-dark, 10%);
+    }
+  }
+}
+
 .body--dark {
   .text--bridge-title,
   .text--bridge {
     color: $gray-1;
   }
-  .text--bridge {
+  .text--bridge-details {
     a {
       color: $astar-blue-dark;
       &:hover {
@@ -135,8 +155,14 @@
     }
   }
   .button--bridge {
-    border: 1px solid $gray-4;
-    background-color: $navy-2;
+    border: 1px solid $navy-3;
+    background-color: $navy-1;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+  }
+
+  .container--box {
+    background-color: $navy-1;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
   }
 
   .column--selection button:not([disabled]) .button--bridge:hover {
