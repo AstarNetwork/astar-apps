@@ -961,6 +961,7 @@ export default {
     },
   },
   bridge: {
+    selectBridge: 'Select a Bridge',
     bridge: 'Bridge',
     history: 'Recent History',
     actionRequired: 'Action Required',
