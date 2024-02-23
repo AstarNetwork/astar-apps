@@ -94,6 +94,7 @@ export const useAprV3 = () => {
 
     const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
     const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
+    console.log('simulatedBonusPerPeriod', simulatedBonusPerPeriod);
     const periodsPerYear = periodsPerCycle.value * cyclesPerYear;
     const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
     const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;

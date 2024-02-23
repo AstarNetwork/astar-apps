@@ -6,7 +6,10 @@
         {{ $t(`stakingV3.${eras > 1 ? 'days' : 'day'}`, { day: eras }) }}
       </span>
     </div>
-    <div class="card--balance">
+    <div v-if="isBonusEligible && amount.toString() === '0'">
+      <span>Bonus Eligible</span>
+    </div>
+    <div v-else class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
       </div>
@@ -35,6 +38,11 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 0,
+    },
+    isBonusEligible: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup() {

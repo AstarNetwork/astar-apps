@@ -124,6 +124,7 @@
           :caption="$t('stakingV3.bonus')"
           :amount="rewards?.bonus"
           :eras="bonusRewardEras"
+          :is-bonus-eligible="false"
         />
         <button
           v-if="width <= screenSize.sm"
