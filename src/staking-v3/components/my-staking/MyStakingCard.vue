@@ -1,13 +1,37 @@
 <template>
   <div class="card">
-    <div class="card--title">{{ caption }}</div>
+    <div class="card--title">
+      <div>
+        <span>
+          {{ caption }}
+        </span>
+      </div>
+      <div
+        v-if="isToolTip"
+        v-click-away="setIsMobileDisplayTooltip"
+        @click="setIsMobileDisplayTooltip"
+      >
+        <astar-icon-help />
+        <q-tooltip
+          v-model="isDisplayTooltip"
+          anchor="top middle"
+          :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
+          class="box--tooltip"
+        >
+          <span class="text--tooltip">{{ textToolTip }}</span>
+        </q-tooltip>
+      </div>
+    </div>
+
     <div v-if="eras" class="card--days">
       <span>
         {{ $t(`stakingV3.${eras > 1 ? 'days' : 'day'}`, { day: eras }) }}
       </span>
     </div>
-    <div v-if="isBonusEligible && amount.toString() === '0'">
-      <span>Bonus Eligible</span>
+    <div v-if="isTextBonusEligible && amount.toString() > '0'" class="card--balance">
+      <div class="card--amount">
+        <span>{{ $t('stakingV3.bonusEligible') }}</span>
+      </div>
     </div>
     <div v-else class="card--balance">
       <div class="card--amount">
@@ -21,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { ethers } from 'ethers';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useTooltip } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
@@ -39,19 +63,32 @@ export default defineComponent({
       required: false,
       default: 0,
     },
-    isBonusEligible: {
+    isTextBonusEligible: {
       type: Boolean,
       required: false,
       default: false,
     },
+    isToolTip: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    textToolTip: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     return {
       nativeTokenSymbol,
       ethers,
       truncate,
+      isDisplayTooltip,
+      setIsMobileDisplayTooltip,
     };
   },
 });
@@ -72,6 +109,9 @@ export default defineComponent({
   font-weight: 700;
   flex: 1;
   position: relative;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
 }
 
 .card--balance {
