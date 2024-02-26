@@ -88,14 +88,24 @@
 .text--title {
   font-weight: 700;
   font-size: 16px;
-  margin: 12px 0 8px 0;
+  margin: 0 0 4px 0;
   line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .text--description {
   color: $navy-4;
   font-size: 12px;
   font-weight: 500;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .card__bottom {
@@ -161,7 +171,7 @@
 .title--category {
   width: 60%;
   backdrop-filter: blur(20px);
-  padding: 24px;
+  padding: 18px;
   background-color: rgba(255, 255, 255, 0.05);
   color: white;
   font-size: 24px;

@@ -116,6 +116,7 @@ export default {
     docs: 'Documentation',
     loading: 'Loading...',
     comingSoon: 'Coming soon',
+    checkHowToSolve: 'Check how to solve this problem',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',
@@ -479,7 +480,9 @@ export default {
     xvmAssets: 'XVM (Cross Virtual Machine) ERC-20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
+    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
+    lockdropAccount: 'Lockdrop Account',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
     send: 'Send',
@@ -530,6 +533,7 @@ export default {
     yourProject: 'Your Project',
     verifyWalletCompatibility:
       'Please verify wallet compatibility with {network} network before transactions to prevent fund loss',
+    rewardsAvailable: 'Rewards available',
     toast: {
       completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
       completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
@@ -615,6 +619,17 @@ export default {
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
+      },
+      lockdropWarning: {
+        warning:
+          'Account closed; This access is temporary and will expire on 31-Aug 2024. You must transfer your funds immediately to avoid any loss of funds.',
+        note: 'Please note',
+        list1:
+          'This account is temporarily only allowed to send tokens, unbond, and withdraw from dApp staking.',
+        list2: 'Do not send tokens to Exchanges.',
+        list3: 'Do not send tokens to another Lockdrop account.',
+        list4: 'Send all tokens while you have access.',
+        moveFundsNow: 'Move Funds Now',
       },
     },
   },
@@ -725,8 +740,7 @@ export default {
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
         'Period ends in the next era. It is not possible to stake in the last era of a period.',
-      TooManyStakedContracts:
-        'There are too many contract stake entries for the account. This can be cleaned up by either unstaking or cleaning expired entries.',
+      TooManyStakedContracts: 'There are too many contract stake entries for the account.',
       TooManyUnlockingChunks:
         'Contract has too many unlocking chunks. Withdraw the existing chunks if possible or wait for current chunks to complete unlocking process to withdraw them.',
       UnavailableStakeFunds:
@@ -748,7 +762,8 @@ export default {
     stakeVoteOn: 'And vote/stake on',
     stakeTitle: 'Stake!',
     selectProjects: 'Select projects',
-    chooseProject: 'Choose a project to vote',
+    voteProject: 'Vote for project',
+    voteMoreProject: 'Vote for more projects (option)',
     availableToVote: 'Available to vote',
     totalVote: 'Total vote',
     totalStake: 'Total stake',
@@ -836,6 +851,7 @@ export default {
     alreadyClaimed: 'Already claimed',
     eras: '{era} eras',
     days: '{day} days',
+    day: '{day} day',
     claimYourRewards: 'Claim your rewards',
     claimed: 'Claimed',
     period: 'Period {period}',
@@ -853,8 +869,8 @@ export default {
     numberOfDapps: 'Number of dApps',
     numberOfDappsDescription:
       'The total number of dApps that are currently listed on dApp Staking.',
-    lockAccounts: 'Lock accounts',
-    numberOfParticipantsDescription: 'The total number of dApp Staking users.',
+    stakingAndLockingAccounts: 'Staking & Locking accounts',
+    numberOfStakersAndLockersDescription: 'The total number of dApp Staking & Locking users.',
     tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',

@@ -26,7 +26,7 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="$t('stakingV3.voteProject')"
               :selected-dapp="dapp"
               :disable-selection="!canAddDapp"
             />
@@ -41,7 +41,9 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="
+                $t(selectedDapps.length > 0 ? 'stakingV3.voteMoreProject' : 'stakingV3.voteProject')
+              "
             />
           </div>
 
@@ -51,7 +53,9 @@
                 <b>{{ $t('stakingV3.availableToVote') }}</b>
               </div>
               <div>
-                <b><token-balance-native :balance="availableToVoteDisplay.toString()" /></b>
+                <b v-if="!isLoading"
+                  ><token-balance-native :balance="availableToVoteDisplay.toString()"
+                /></b>
               </div>
             </div>
 
@@ -68,7 +72,9 @@
                     isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked')
                   }}
                 </div>
-                <div><token-balance-native :balance="totalStake.toString()" /></div>
+                <div>
+                  <token-balance-native :balance="totalStake.toString()" />
+                </div>
               </div>
               <div class="balance--row" :class="remainLockedToken > BigInt(0) && 'warning--text'">
                 <div>
@@ -95,7 +101,7 @@
             </div>
           </div>
           <rewards-panel />
-          <error-panel :error-message="errorMessage" />
+          <error-panel :error-message="errorMessage" :url="refUrl" />
           <div class="wrapper--button">
             <astar-button
               :disabled="!canConfirm()"
@@ -187,6 +193,7 @@ import RewardsPanel from './RewardsPanel.vue';
 import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
 import { docsUrl } from 'src/links';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -214,6 +221,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
     const route = useRoute();
+    const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const dapps = ref<Dapp[]>([]);
     const selectedDapps = ref<Dapp[]>([]);
@@ -283,10 +292,12 @@ export default defineComponent({
     });
 
     const errorMessage = ref<string>('');
+    const refUrl = ref<string>('');
 
     const canConfirm = (): boolean => {
-      const [enabled, message] = canStake(stakeInfo.value, availableToVote.value);
+      const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value);
       errorMessage.value = message;
+      refUrl.value = url;
 
       return enabled && totalStakeAmount.value > 0;
     };
@@ -386,6 +397,9 @@ export default defineComponent({
       availableToMove,
       errorMessage,
       docsUrl,
+      isLoading,
+      stakeInfo,
+      refUrl,
     };
   },
 });

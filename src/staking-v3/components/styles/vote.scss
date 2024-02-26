@@ -120,7 +120,6 @@ li {
 }
 
 .dapp-amount {
-  margin-bottom: 16px;
   border: solid 1px $gray-3;
   border-radius: 16px;
   &:hover {
@@ -232,10 +231,10 @@ li {
   font-weight: 500;
 }
 
-.link--learn{
+.link--learn {
   color: $astar-blue;
   transition: all 0.2s ease;
-  &:hover{
+  &:hover {
     color: $astar-blue-dark;
   }
 }

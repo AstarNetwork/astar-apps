@@ -49,7 +49,6 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
-import RegisterBanner from './RegisterBanner.vue';
 import { useDappStaking } from '../hooks';
 
 export default defineComponent({

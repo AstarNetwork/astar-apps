@@ -22,12 +22,15 @@
 }
 
 .image--dapp-icon {
-  width: 120px;
-  height: 120px;
-  border-radius: 16px;
-  object-fit: contain;
-  overflow: hidden;
-  margin: auto;
+  flex-shrink: 0;
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    object-fit: contain;
+    overflow: hidden;
+    margin: auto;
+  }
 }
 
 .row--dapp-title {
@@ -129,11 +132,13 @@
     }
   }
   .image--dapp-icon {
-    width: 44px;
-    height: 44px;
-    @media (min-width: $sm) {
-      width: 60px;
-      height: 60px;
+    img {
+      width: 44px;
+      height: 44px;
+      @media (min-width: $sm) {
+        width: 60px;
+        height: 60px;
+      }
     }
   }
   .row--dapp-title {

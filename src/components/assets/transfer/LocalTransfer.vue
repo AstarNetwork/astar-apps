@@ -94,7 +94,7 @@
               type="number"
               min="0"
               pattern="^[0-9]*(\.)?[0-9]*$"
-              placeholder="0.0"
+              placeholder="0"
               class="input--amount input--no-spin"
               @input="inputHandler"
             />
@@ -227,7 +227,7 @@ export default defineComponent({
   },
   setup(props) {
     const { iconWallet } = useWalletIcon();
-    const { currentAccount, currentAccountName, multisig } = useAccount();
+    const { currentAccount, currentAccountName, multisig, isLockdropAccount } = useAccount();
     const { nativeTokenSymbol, currentNetworkName, isSupportAuTransfer, isZkEvm } =
       useNetworkInfo();
     const t = computed<Asset>(() => props.token);
@@ -286,6 +286,7 @@ export default defineComponent({
       isZkEvm,
       currentNetworkName,
       isSupportAuTransfer,
+      isLockdropAccount,
       isValidEvmAddress,
       setSelectedTip,
       transfer,

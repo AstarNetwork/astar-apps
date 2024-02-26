@@ -78,7 +78,7 @@ import {
 import { endpointKey, getNetworkName, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet, WalletModalOption } from 'src/config/wallets';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -157,6 +157,7 @@ export default defineComponent({
     const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
     const store = useStore();
     const { currentAccount, disconnectAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
     const isClosing = ref<boolean>(false);
     const isAnimatedIn = ref<boolean>(false);
 
@@ -250,7 +251,21 @@ export default defineComponent({
     const selectNetwork = async (): Promise<void> => {
       const networkIdxRef = selNetworkId.value;
       const { isEndpointChange, newEndpoint } = getNewEndpoint();
-      if (isEndpointChange) {
+
+      // Memo: zkEVM configuration is using substrate API to fetch the dApp staking information
+      // that's why `isEndpointChange` returns fails in `isChangeNetwork` variable
+      const isSwitchBetweenZkEvmTestnet =
+        networkIdxRef === endpointKey.SHIBUYA && currentNetworkIdx.value === endpointKey.ZKATANA;
+      const isSwitchBetweenZkEvmMainnet =
+        networkIdxRef === endpointKey.ASTAR && currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM;
+
+      const isChangeNetwork =
+        isEndpointChange ||
+        networkIdxRef === endpointKey.LOCAL ||
+        isSwitchBetweenZkEvmTestnet ||
+        isSwitchBetweenZkEvmMainnet;
+
+      if (isChangeNetwork) {
         localStorage.setItem(NETWORK_IDX, networkIdxRef.toString());
         localStorage.setItem(
           SELECTED_ENDPOINT,
@@ -274,7 +289,7 @@ export default defineComponent({
 
     const isDisabled = computed<boolean>(() => {
       const { isEndpointChange } = getNewEndpoint();
-      if (!isEndpointChange) {
+      if (!isEndpointChange && selNetworkId.value !== endpointKey.LOCAL) {
         return true;
       }
       if (isSelectLightClient.value) {
@@ -410,6 +425,14 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
+        return;
+      }
+      if (networkIdx === endpointKey.LOCAL || networkIdx === endpointKey.CUSTOM) {
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ZKATANA);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         return;
       }

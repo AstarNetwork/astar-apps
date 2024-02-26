@@ -20,10 +20,10 @@
         {{ protocolState?.era ?? '--' }}
       </data-card>
       <data-card
-        :title="$t('stakingV3.lockAccounts')"
-        :description="$t('stakingV3.numberOfParticipantsDescription')"
+        :title="$t('stakingV3.stakingAndLockingAccounts')"
+        :description="$t('stakingV3.numberOfStakersAndLockersDescription')"
       >
-        {{ numberOfParticipants }}
+        {{ numberOfStakersAndLockers.stakersCount }} / {{ numberOfStakersAndLockers.lockersCount }}
       </data-card>
     </div>
 
@@ -130,7 +130,7 @@ export default defineComponent({
       tvlPercentage,
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
-      numberOfParticipants,
+      numberOfStakersAndLockers,
     } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
@@ -170,7 +170,7 @@ export default defineComponent({
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,
-      numberOfParticipants,
+      numberOfStakersAndLockers,
       nativeTokenSymbol,
       periodRemainingDays,
       isVotingPeriod,

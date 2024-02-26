@@ -13,6 +13,8 @@ export const docsUrl = {
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do',
   learnDappStaking: 'https://docs.astar.network/docs/learn/dapp-staking/',
   dappStakingForStakers: 'https://docs.astar.network/docs/use/dapp-staking/for-stakers/',
+  dappStakingStaked16Dapps:
+    'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-ive-staked-16-dapps-and-now-i-cant-add-or-move-tokens-and-im-getting-an-error-what-should-i-do',
 };
 
 export const socialUrl = {
