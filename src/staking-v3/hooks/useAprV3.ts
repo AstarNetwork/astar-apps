@@ -73,7 +73,7 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
     currentEraInfo,
     eraLength,
     bonusRewardsPoolPerPeriod,
-    // Memo: Any amount can be simulated
+    // Memo: Any amount can be simulated for calculating APR
     simulatedVoteAmount = 1000,
   }: {
     currentEraInfo: EraInfo;
