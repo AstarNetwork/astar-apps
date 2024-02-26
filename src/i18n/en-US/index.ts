@@ -778,7 +778,7 @@ export default {
     basicRewards: 'Basic rewards',
     bonusRewards: 'Bonus rewards',
     bonus: 'Bonus',
-    bonusTip: 'Bonus will be claimed in the next voting period',
+    bonusTip: 'Bonus will be claimable in the next voting period',
     dAppRewards: 'dApp rewards',
     done: 'Done',
     search: 'Search',
