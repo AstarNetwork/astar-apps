@@ -42,7 +42,12 @@ export default defineComponent({
   },
   setup(props) {
     const oneE18 = BigInt('1000000000000000000'); // Equivalent to 10^18
-    const toBeBurned = (props.dailyreward / BigInt(props.slots) / oneE18) * oneE18;
+
+    let toBeBurned = BigInt(0);
+
+    if (props.slots && props.dailyreward) {
+      toBeBurned = (props.dailyreward / BigInt(props.slots) / oneE18) * oneE18;
+    }
 
     return {
       toBeBurned,
