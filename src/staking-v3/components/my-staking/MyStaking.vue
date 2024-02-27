@@ -119,11 +119,15 @@
           :caption="$t('stakingV3.availableToClaim')"
           :amount="rewards?.staker.amount"
           :eras="rewards?.staker.eraCount"
+          :is-tool-tip="false"
         />
         <my-staking-card
           :caption="$t('stakingV3.bonus')"
-          :amount="rewards?.bonus"
+          :amount="bonus"
           :eras="bonusRewardEras"
+          :is-text-bonus-eligible="isMainnet"
+          :is-tool-tip="!!bonus"
+          :text-tool-tip="$t('stakingV3.bonusTip')"
         />
         <button
           v-if="width <= screenSize.sm"
@@ -164,8 +168,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from 'vue';
-import { useDappStaking, useDappStakingNavigation } from '../../hooks';
+import { defineComponent, computed, PropType, ref, watch } from 'vue';
+import { useAprV3, useDappStaking, useDappStakingNavigation } from '../../hooks';
 import MyStakingCard from './MyStakingCard.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import { PeriodType } from 'src/staking-v3/logic';
@@ -203,6 +207,9 @@ export default defineComponent({
       formatPeriod,
     } = useDappStaking();
 
+    const bonus = ref<BigInt>(BigInt(0));
+    const { getEstimatedBonus } = useAprV3({ isWatch: false });
+
     const { navigateToVote } = useDappStakingNavigation();
 
     const lockedButUnstaked = computed<bigint>(() => {
@@ -221,7 +228,16 @@ export default defineComponent({
       }
     };
 
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isMainnet } = useNetworkInfo();
+
+    const setBonus = async (): Promise<void> => {
+      if (rewards.value?.bonus > 0) {
+        bonus.value = rewards.value?.bonus;
+      } else {
+        const amount = String(await getEstimatedBonus());
+        bonus.value = BigInt(String(ethers.utils.parseEther(amount)));
+      }
+    };
 
     const isLockedBalloon = ref<boolean>(false);
     const isStakedBalloon = ref<boolean>(false);
@@ -245,6 +261,8 @@ export default defineComponent({
     const handleUnlock = (): void => {
       setShowUnlockModal(true);
     };
+
+    watch([rewards], setBonus);
 
     return {
       rewards,
@@ -273,6 +291,8 @@ export default defineComponent({
       setShowUnlockModal,
       handleUnlock,
       PeriodType,
+      bonus,
+      isMainnet,
     };
   },
 });

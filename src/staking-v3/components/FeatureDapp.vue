@@ -87,7 +87,7 @@ export default defineComponent({
   },
   setup() {
     const { constants, isVotingPeriod } = useDappStaking();
-    const { stakerApr, bonusApr } = useAprV3();
+    const { stakerApr, bonusApr } = useAprV3({ isWatch: true });
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
