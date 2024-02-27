@@ -26,11 +26,11 @@ export function useNetworkInfo() {
 
   const isZkEvm = computed<boolean>(
     () =>
-      currentNetworkIdx.value === endpointKey.ZKYOTO ||
+      currentNetworkIdx.value === endpointKey.ZKATANA ||
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
-  const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
+  const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -43,7 +43,7 @@ export function useNetworkInfo() {
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
     const networkIdx = store.getters['general/networkIdx'];
-    if (networkIdx === endpointKey.ZKYOTO || networkIdx === endpointKey.ASTAR_ZKEVM) {
+    if (networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM) {
       return networkIdx;
     }
     const chainInfo = store.getters['general/chainInfo'];
@@ -115,6 +115,6 @@ export function useNetworkInfo() {
     isZkEvm,
     networkNameSubstrate,
     isAllowLockdropDispatch,
-    isZkyoto,
+    isZkatana,
   };
 }

@@ -38,7 +38,7 @@
           </router-link>
 
           <button
-            v-if="isZkyoto"
+            v-if="isZkatana"
             :disabled="true"
             :class="['link', path === 'dashboard' && 'active-link']"
           >
@@ -114,7 +114,7 @@ export default defineComponent({
     const showNav = ref<boolean>(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
-    const { isZkyoto } = useNetworkInfo();
+    const { isZkatana } = useNetworkInfo();
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -127,7 +127,7 @@ export default defineComponent({
       path,
       RoutePath,
       network,
-      isZkyoto,
+      isZkatana,
     };
   },
 });

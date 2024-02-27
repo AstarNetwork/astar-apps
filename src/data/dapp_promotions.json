@@ -1,5 +1,11 @@
 [
   {
+    "name": "DeStore",
+    "shortDescription": "Web3 Shopify Powered by Astar",
+    "link": "https://twitter.com/DeStore_Network",
+    "img": "images/dapp_promotions/destore.jpg"
+  },
+  {
     "name": "Lucky - No-loss lottery",
     "shortDescription": "The more you stake, the more chance you have to win a raffle!",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=zsv1gvepvmwfdshmwgczs4zyvmmwesbjwqjn4wdpuefrrpy",
@@ -19,7 +25,7 @@
   },
   {
     "name": "Age Of Chronos",
-    "shortDescription": "Web-based dungeon crawler by SFY Labs. Play and craft NFTs 2.0!",
+    "shortDescription": "Stake and earn FREE $Astr and nfts! Play and craft NFTs 2.0!",
     "link": "https://twitter.com/SFY_Labs",
     "img": "images/dapp_promotions/age_of_chronos.png"
   },
