@@ -17,7 +17,12 @@
             <dapp-item :index="index" :dapp="dapp" />
           </div>
           <div v-for="index in itemsPerPage - page1.length" :key="index">
-            <no-entry :index="index" :length="page1.length" />
+            <no-entry
+              :index="index"
+              :length="page1.length"
+              :dailyreward="dailyReward"
+              :slots="slots"
+            />
           </div>
         </div>
       </swiper-slide>
@@ -28,7 +33,12 @@
             <dapp-item :index="index + itemsPerPage" :dapp="dapp" />
           </div>
           <div v-for="index in itemsPerPage - page2.length" :key="index">
-            <no-entry :index="index + itemsPerPage" :length="page2.length" />
+            <no-entry
+              :index="index + itemsPerPage"
+              :length="page2.length"
+              :dailyreward="dailyReward"
+              :slots="slots"
+            />
           </div>
         </div>
       </swiper-slide>
@@ -59,6 +69,10 @@ export default defineComponent({
     noEntry,
   },
   props: {
+    slots: {
+      type: Number,
+      required: true,
+    },
     tier: {
       type: Number,
       required: true,

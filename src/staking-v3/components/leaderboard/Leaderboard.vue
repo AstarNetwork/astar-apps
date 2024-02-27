@@ -30,7 +30,12 @@
           }"
         >
           <swiper-slide v-for="[tier, dapps] in leaderBoards" :key="tier">
-            <tier :tier="tier" :dapps="dapps" :daily-reward="getDailyReward(tier)" />
+            <tier
+              :slots="tiersConfiguration.slotsPerTier[tier]"
+              :tier="tier"
+              :dapps="dapps"
+              :daily-reward="getDailyReward(tier)"
+            />
           </swiper-slide>
         </swiper>
       </div>
@@ -43,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useLeaderboard } from 'src/staking-v3/hooks';
+import { useLeaderboard, useDappStaking } from 'src/staking-v3/hooks';
 import Tier from './Tier.vue';
 
 // Import Swiper
@@ -60,8 +65,15 @@ export default defineComponent({
   },
   setup() {
     const { leaderBoards, isLeaderboardEmpty, getDailyReward } = useLeaderboard();
+    const { tiersConfiguration } = useDappStaking();
 
-    return { leaderBoards, isLeaderboardEmpty, getDailyReward, modules: [Navigation] };
+    return {
+      leaderBoards,
+      isLeaderboardEmpty,
+      tiersConfiguration,
+      getDailyReward,
+      modules: [Navigation],
+    };
   },
 });
 </script>

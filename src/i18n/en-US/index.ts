@@ -911,7 +911,7 @@ export default {
     searchDapps: 'Search dapps',
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
-    burn: 'Burn',
+    burn: 'To be Burned',
     availableToWithdraw: 'Available to withdraw',
     congrats: 'Congrats!!',
     dappRegistered:
