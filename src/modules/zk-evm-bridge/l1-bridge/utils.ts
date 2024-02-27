@@ -65,6 +65,13 @@ const getApiUrl = (): string => {
   return zkEvmApi[network];
 };
 
+export const fetchIsGelatoApiHealth = async (): Promise<boolean> => {
+  const base = getApiUrl();
+  const url = `${base}/healthz`;
+  const result = await axios.get<{ status: string }>(url);
+  return result && result.data.status === 'SERVING';
+};
+
 export const fetchAccountHistory = async (address: string): Promise<BridgeHistory[]> => {
   const base = getApiUrl();
   const limit = 15;

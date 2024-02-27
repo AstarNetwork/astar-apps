@@ -9,6 +9,7 @@ import {
   ZkChainId,
   checkIsL1,
   fetchAccountHistory,
+  fetchIsGelatoApiHealth,
   getChainIdFromNetId,
 } from 'src/modules/zk-evm-bridge';
 import { container } from 'src/v2/common';
@@ -78,6 +79,10 @@ export const useL1History = () => {
     try {
       isLoadingHistories.value = true;
       const data = await fetchAccountHistory(currentAccount.value);
+      const isHealth = await fetchIsGelatoApiHealth();
+      if (!isHealth) {
+        throw Error('The API is currently in maintenance mode.');
+      }
       isGelatoApiConnected.value = true;
 
       const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Network.value as EthBridgeNetworkName]);
