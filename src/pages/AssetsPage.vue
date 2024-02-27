@@ -53,11 +53,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 #assets-top {
   padding: 0 16px;
+  position: relative;
+  padding-bottom: 36px;
   @media (min-width: $sm) {
     padding-top: 16px;
   }
   @media (min-width: $lg) {
-    padding: 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 36px;
   }
 }
 </style>

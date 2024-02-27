@@ -963,11 +963,12 @@ export default {
     },
   },
   bridge: {
+    selectBridge: 'Select a Bridge',
     bridge: 'Bridge',
     history: 'Recent History',
     actionRequired: 'Action Required',
     claim: 'Claim',
-    noHistory: 'No histories found',
+    noTransactions: 'No transactions found',
     completed: 'Completed',
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',

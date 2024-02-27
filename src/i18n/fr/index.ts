@@ -699,7 +699,7 @@ export default {
     history: 'Historique récent',
     actionRequired: 'Action requise',
     claim: 'Réclamer',
-    noHistory: 'Aucun historique trouvé',
+    noTransactions: 'Aucune transaction trouvé',
     completed: 'Terminé',
     inProgress: 'En cours',
     approvalMaxAmount: 'Approuver le montant maximum (option)',

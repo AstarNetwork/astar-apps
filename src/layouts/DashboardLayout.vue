@@ -8,6 +8,8 @@
       <claim-warning-banner :network="currentNetworkIdx" />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
+          <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
+
           <slot />
         </div>
       </main>
@@ -50,11 +52,24 @@ export default defineComponent({
     useGasPrice(isFetchGas);
 
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
+    const bg_img = {
+      light: require('/src/assets/img/assets_bg_light.webp'),
+      dark: require('/src/assets/img/assets_bg_dark_A.webp'),
+    };
+
+    const bg = computed<string>(() => {
+      if (isDarkTheme.value) {
+        return bg_img.dark;
+      }
+      return bg_img.light;
+    });
     return {
       width,
       screenSize,
       currentNetworkIdx,
+      bg,
     };
   },
 });
@@ -76,19 +91,21 @@ export default defineComponent({
 .wrapper--main {
   flex: 1;
   position: relative;
-  padding: 0 0 120px 0;
+
   &:focus {
     outline: 0;
   }
-  @media (min-width: $lg) {
-    padding-top: 36px;
-  }
 }
 
-.wrapper--components {
-  @media (min-width: $lg) {
-    padding: 0 40px;
-  }
+.page-bg {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .body--dark {
