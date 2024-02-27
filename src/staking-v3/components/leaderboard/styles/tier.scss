@@ -1,0 +1,97 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--tier {
+  background: rgba(white, 0.05);
+  height: 100%;
+  transition: all 0.2s ease;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 16px;
+  color: white;
+  box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.16);
+}
+
+.row--tier-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 12px;
+}
+
+.text--title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+}
+
+.column--reward {
+  border-left: solid 1px $gray-2;
+  font-weight: 600;
+  margin-left: 12px;
+  padding-left: 12px;
+  line-height: 1.4;
+  .text--reward {
+    font-size: 12px;
+  }
+  .text--amount {
+    font-size: 14px;
+  }
+}
+
+.container--dapps {
+  display: flex;
+  flex-direction: column;
+}
+
+.dapp {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.dapp--image {
+  flex-shrink: none;
+  img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: 4.8px;
+    box-shadow: 0px 0px 2.4000000953674316px 0px #0000001a;
+  }
+}
+
+.name {
+  flex: 1;
+}
+
+.dapp--button {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  transition: all 0.2s ease;
+  &:hover {
+    background: rgba(white, 0.1);
+  }
+}
+
+.dapp--button__no-entry {
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.swiper--tier {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}

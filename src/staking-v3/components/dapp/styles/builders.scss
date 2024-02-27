@@ -1,0 +1,107 @@
+@import 'src/css/quasar.variables.scss';
+
+.row--builders-title {
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.image--builder-icon {
+  height: 40px;
+  width: 40px;
+  border-radius: 100%;
+}
+
+.text--name {
+  font-weight: 600;
+  font-size: 14px;
+  color: $navy-1;
+}
+
+.text--position {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-4;
+}
+
+.icon {
+  width: 20px;
+  height: 18px;
+  color: $astar-blue;
+}
+
+.box--share {
+  display: flex;
+  align-items: center;
+  color: $astar-blue;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.btn--primary {
+  transition: all 0.3s ease 0s;
+  border-radius: 16px;
+  .icon--social {
+    padding: 6px;
+    padding-left: 7px;
+    svg {
+      height: 20px;
+      width: 20px;
+    }
+  }
+  &:hover {
+    .btn--effect {
+      color: white;
+      stroke: white;
+      svg {
+        stroke: white;
+      }
+    }
+    background-color: $astar-blue;
+  }
+}
+
+.box--builders {
+  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (min-width: $sm) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.card--builders {
+  padding: 24px;
+  border-radius: 16px;
+  border: solid 1px $navy-1;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  @media (min-width: $lg) {
+    padding: 24px 32px;
+  }
+}
+
+.row--details {
+  display: flex;
+  column-gap: 12px;
+}
+
+.row--icons {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  border-top: solid 1px $navy-1;
+  padding-top: 8px;
+}

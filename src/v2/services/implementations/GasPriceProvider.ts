@@ -11,7 +11,9 @@ export class GasPriceProvider implements IGasPriceProvider {
   constructor(@inject(Symbols.EventAggregator) private readonly eventAggregator: IEventAggregator) {
     this.eventAggregator.subscribe(TipPriceChangedMessage.name, (m) => {
       const message = m as TipPriceChangedMessage;
-      this.selectedTip = message.price;
+      if (message.price) {
+        this.selectedTip = message.price;
+      }
     });
   }
 

@@ -149,8 +149,8 @@ export default {
   wallet: {
     connectWallet: 'Conectar Carteira',
     select: 'Selecione uma carteira para se conectar ao portal',
-    nativeAccount: 'Contas Nativas',
-    evmAccount: 'Contas EVM',
+    nativeWallets: 'Contas Nativas',
+    evmWallets: 'Contas EVM',
     multisigAccount: 'Contas Multisig',
     accountUnification: 'Conta Unificada',
     math: {
@@ -429,7 +429,7 @@ export default {
       notEnoughMinAmount: 'A quantidade de token em stake deve ser maior que {amount} {symbol}',
       allFundsWillBeTransferred:
         'Todos os fundos serão transferidos porque o valor min. do stake é {minStakingAmount} {symbol}',
-      invalidBalance: 'Saldo transferível insuficiente para concluir a transação',
+      invalidBalance: 'Você não tem tokens suficientes para pagar a taxa de transação',
       warningLeaveMinAmount:
         'A conta deve conter mais de {amount}{symbol} em valor transferível quando você faz stake.',
     },

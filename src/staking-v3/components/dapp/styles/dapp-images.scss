@@ -1,0 +1,63 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp-images {
+  margin-top: 60px;
+  @media (min-width: $sm) {
+    margin-top: 80px;
+  }
+}
+
+.container--dapp-images {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 40px,
+      black calc(100% - 40px),
+      transparent
+    );
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+.swiper--dapp-images {
+  overflow: visible;
+}
+
+.swiper-slide {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 16/9;
+  img {
+    transition: all 0.2s ease;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  &:hover {
+    img {
+      filter: brightness(1.1);
+    }
+  }
+}
+
+.q-carousel__slide {
+  background-size: contain;
+  background-repeat: no-repeat;
+}

@@ -8,7 +8,7 @@ import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { getSubscanExtrinsic, polkasafeUrl } from 'src/links';
-import { AlertMsg } from 'src/modules/toast/index';
+import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
@@ -46,7 +46,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
    * Signs given transaction.
    * @param extrinsic Transaction to sign.
    * @param senderAddress Sender address.
-   * @param successMessage Mesage to be displayed to user in case of successful tansaction.
+   * @param successMessage Mesage to be displayed to user in case of successful transaction.
    * If not defined, default message will be shown.
    * @param tip Transaction tip, If not provided it will be fetched from gas price provider,
    */
@@ -61,14 +61,22 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    const isSnap =
-      String(localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET)) === SupportWallet.Snap;
-    const isDetectExtensionsAction = !isMobileDevice || !isSnap;
+    const isDetectExtensionsAction = this.checkIsDetectableWallet();
 
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve, reject) => {
         isDetectExtensionsAction && this.detectExtensionsAction(true);
+
+        const useableBalance = await this.assetsRepository.getNativeBalance(senderAddress);
+        const isBalanceEnough =
+          Number(ethers.utils.formatEther(useableBalance)) > REQUIRED_MINIMUM_BALANCE;
+        if (!isBalanceEnough) {
+          this.eventAggregator.publish(
+            new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })
+          );
+          throw new Error(AlertMsg.MINIMUM_BALANCE);
+        }
 
         await this.checkExtension();
         let tip = transactionTip?.toString();
@@ -109,8 +117,10 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               },
               (result) => {
                 try {
-                  isDetectExtensionsAction && this.detectExtensionsAction(false);
-                  isSnap && this.eventAggregator.publish(new BusyMessage(true));
+                  isDetectExtensionsAction
+                    ? this.detectExtensionsAction(false)
+                    : this.eventAggregator.publish(new BusyMessage(true));
+
                   if (result.isCompleted) {
                     if (!this.isExtrinsicFailed(result.events)) {
                       if (result.isError) {
@@ -220,8 +230,24 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     }
   }
 
+  // Memo: this helper method is used to display the loading animation while sending transactions
+  private checkIsDetectableWallet(): boolean {
+    const selectedWallet = String(
+      localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET)
+    ) as SupportWallet;
+
+    // Memo: Wallets which are not be able to tell the sending transaction status via events
+    const notDetectableWallet = [
+      SupportWallet.EnkryptNative,
+      SupportWallet.Snap,
+      SupportWallet.Math,
+    ];
+
+    const isDetectable = !notDetectableWallet.includes(selectedWallet);
+    return !isMobileDevice && isDetectable;
+  }
+
   // Memo: detects status in the wallet extension
-  // Fixme: doesn't work on MathWallet Mobile
   // Ref: https://github.com/polkadot-js/extension/issues/674
   // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
   private detectExtensionsAction(isMonitorExtension: boolean): void {

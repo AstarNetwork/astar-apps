@@ -1,0 +1,120 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp {
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  @media (min-width: $lg) {
+    margin: 0 -40px;
+  }
+}
+
+.container--dapp-top {
+  max-width: $container-max-width;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  padding-bottom: 40px;
+  @media (min-width: $sm) {
+    padding-bottom: 80px;
+  }
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.row--dapp-header{
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  @media (min-width: $sm) {
+    gap: 60px;
+  }
+}
+
+.container--dapp-bottom {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-repeat: repeat;
+  @media (min-width: $sm) {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+.container--dapp-bottom__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  max-width: $container-max-width;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.row--project-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
+.bg--dapp {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.text--title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.wrapper--small-header {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  @media (min-width: $lg) {
+    top: 0;
+    left: 224px;
+    padding: 24px 24px 16px 24px;
+  }
+}
+
+.body--dark {
+  .wrapper--dapp,
+  .text--title {
+    color: $navy-1;
+  }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}

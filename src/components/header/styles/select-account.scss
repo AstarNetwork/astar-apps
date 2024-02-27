@@ -1,0 +1,303 @@
+@import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
+.row--back {
+  text-align: left;
+  color: $gray-4;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  @media (min-width: $lg) {
+    margin-top: -10px;
+  }
+}
+.button--back {
+  border: 1px solid $gray-4;
+  border-radius: 100%;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    color: $astar-blue;
+    border: 1px solid $astar-blue;
+  }
+}
+
+.list--account {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.row--balance-option {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.text--is-ledger {
+  font-weight: 600;
+  font-size: 13px;
+  color: $gray-5;
+}
+
+.row--ledger-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box--account {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.wrapper--account-detail {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column--balance-option {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.text--option-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-3;
+  padding-bottom: 2px;
+}
+
+.wrapper--modal-account {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.class-radio {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  color: $gray-5;
+  margin: 0 auto;
+  padding: 24px;
+  cursor: pointer;
+}
+
+.class-radio-off {
+  border: 1px solid $navy-1;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue !important;
+  }
+}
+
+.class-radio-on {
+  border: 1px solid $astar-blue;
+}
+
+.row--balance-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.radio-btn {
+  width: 16px !important;
+  margin-right: 16px !important;
+}
+
+.icons {
+  display: flex;
+  align-items: flex-start;
+  column-gap: 8px;
+}
+
+.row--account {
+  align-items: center;
+  column-gap: 24px;
+  @media (min-width: $sm) {
+    display: grid;
+    grid-template-columns: 170px auto;
+  }
+}
+
+.account-name {
+  color: $gray-5;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: left;
+}
+
+.address {
+  color: $gray-3;
+  font-weight: 510;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: left;
+  position: relative;
+  @media (min-width: $sm) {
+    margin-top: 0px;
+  }
+}
+
+.column--proxy {
+  position: absolute;
+  color: $gray-1;
+  background-color: $astar-blue;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+
+.wrapper--share {
+  display: flex;
+  column-gap: 16px;
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 10px;
+  .box--share {
+    display: flex;
+    align-items: center;
+    color: $astar-blue;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.btn--primary {
+  transition: all 0.4s ease 0s;
+  border-radius: 16px;
+  .icon--primary {
+    svg {
+      height: 24px;
+      width: 24px;
+    }
+  }
+  &:hover {
+    color: white;
+    stroke: white;
+    background-color: $astar-blue;
+    .icon--primary {
+      stroke: white;
+      background-color: transparent;
+    }
+  }
+}
+
+.wrapper__row--button {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 32px;
+  row-gap: 20px;
+}
+
+.btn--connect {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  height: 52px;
+}
+
+.column--remarks {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  row-gap: 8px;
+  padding-top: 24px;
+  padding-left: 28px;
+}
+
+.dot {
+  margin-top: 12px;
+  margin-left: 8px;
+  align-self: flex-start;
+  height: 7px;
+  width: 8px;
+  border-radius: 90%;
+  background-color: #00ff00;
+}
+
+.text--balance {
+  font-weight: 500;
+  font-size: 12px;
+  color: $gray-3;
+}
+
+.text--balance-hide {
+  font-weight: 500;
+  font-size: 12px;
+  color: $gray-3;
+}
+
+.row--zero-accounts {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link--polkasafe {
+  margin-top: 4px;
+  color: $astar-blue;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.row--skeleton {
+  margin-top: 24px;
+}
+
+.wrapper--select-signatory {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.body--dark {
+  .class-radio {
+    color: #fff;
+  }
+  .class-radio-off {
+    border: 1px solid $navy-3;
+  }
+
+  .row--back {
+    color: $gray-3;
+  }
+
+  .text--is-ledger {
+    color: $gray-1;
+  }
+
+  .wrapper--account-detail {
+    .account-name {
+      color: $gray-1;
+    }
+    .address {
+      color: $gray-3;
+    }
+  }
+  .text--balance {
+    color: white;
+  }
+
+  .account-name {
+    color: $gray-1;
+  }
+}

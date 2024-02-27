@@ -1,0 +1,12 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--project-overview {
+  background-color: white;
+  flex: 1;
+  padding: 16px;
+  border-radius: 16px;
+  border: solid 1px $navy-1;
+  @media (min-width: $sm) {
+    padding: 32px;
+  }
+}

@@ -1,0 +1,121 @@
+@import 'src/css/quasar.variables.scss';
+
+.row--title {
+  font-weight: 800;
+  font-size: 32px;
+  color: $navy-1;
+  margin-bottom: 24px;
+}
+
+.container--rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border: solid 1px $navy-1;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: white;
+  @media (min-width: $sm) {
+    padding: 32px 24px;
+  }
+}
+
+.rows--rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.box--rewards {
+  border-radius: 16px;
+  background-color: $gray-1;
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.row--claim-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  @media (min-width: $sm) {
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+  .column {
+    @media (min-width: $sm) {
+      flex-basis: 0;
+      flex-grow: 1;
+    }
+
+    &.column--label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &.column--days {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+      flex: 1;
+    }
+
+    &.column--amount {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: right;
+      width: 100%;
+    }
+  }
+}
+
+.row--attention {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $astar-pink;
+  background: rgba($astar-pink, 0.05);
+  color: $astar-pink;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.button--claim {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 32px 16px;
+  border-radius: 16px;
+  width: 100%;
+  gap: 24px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.button--claim__label {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.button--claim__amount {
+  font-size: 24px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.button--claim__symbol {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
+  }
+}

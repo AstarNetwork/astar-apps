@@ -17,6 +17,7 @@ import {
   IIdentityRepository,
   INftRepository,
   IAccountUnificationRepository,
+  IInflationRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -31,6 +32,7 @@ import {
   PolkasafeRepository,
   NftRepository,
   AccountUnificationRepository,
+  InflationRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -62,6 +64,13 @@ import {
   AccountUnificationService,
   IdentityService,
 } from './services/implementations';
+import {
+  IDappStakingRepository as IDappStakingRepositoryV3,
+  DappStakingRepository as DappStakingRepositoryV3,
+  IDappStakingService as IDappStakingServiceV3,
+  DappStakingService as DappStakingServiceV3,
+  DappStakingServiceEvm as DappStakingServiceEvmV3,
+} from 'src/staking-v3';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
@@ -72,17 +81,33 @@ import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import {
+  DappStakingServiceV2V3,
+  IDappStakingServiceV2V3,
+} from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
+import {
+  DappStakingServiceV2Ledger,
+  IDappStakingServiceV2Ledger,
+  IDataProviderRepository,
+  TokenApiProviderRepository,
+} from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
+let isLockdropAccount = false;
 
-export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+export function setCurrentWallet(
+  isEthWallet: boolean,
+  currentWallet: string,
+  isLockdrop: boolean
+): void {
   if (!currentWallet) {
     return;
   }
 
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
+  isLockdropAccount = isLockdrop;
 
   // Memo: Trying to fix 'Invalid binding type: Symbol(CurrentWallet)' error here
   // Try to get the current wallet
@@ -120,7 +145,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );
@@ -148,6 +173,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     AccountUnificationRepository,
     Symbols.AccountUnificationRepository
   );
+  container.addSingleton<IInflationRepository>(InflationRepository, Symbols.InflationRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
@@ -185,4 +211,43 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
+
+  //dApp staking v3
+  container.addSingleton<IDappStakingRepositoryV3>(
+    DappStakingRepositoryV3,
+    Symbols.DappStakingRepositoryV3
+  );
+  container.addSingleton<IDataProviderRepository>(
+    TokenApiProviderRepository,
+    Symbols.TokenApiProviderRepository
+  );
+  container.addSingleton<IDappStakingServiceV3>(DappStakingServiceV3, Symbols.DappStakingServiceV3);
+  container.addSingleton<IDappStakingServiceV3>(
+    DappStakingServiceEvmV3,
+    Symbols.DappStakingServiceEvmV3
+  );
+
+  container
+    .bind<interfaces.Factory<IDappStakingServiceV3>>(Symbols.DappStakingServiceFactoryV3)
+    .toFactory(() => {
+      return () =>
+        container.get<IDappStakingServiceV3>(
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
+            ? Symbols.DappStakingServiceV3
+            : Symbols.DappStakingServiceEvmV3
+        );
+    });
+
+  container.addSingleton<IDappStakingServiceV2V3>(
+    DappStakingServiceV2V3,
+    Symbols.DappStakingServiceV2V3
+  );
+
+  container.addSingleton<IDappStakingServiceV2Ledger>(
+    DappStakingServiceV2Ledger,
+    Symbols.DappStakingServiceV2Ledger
+  );
+
+  // Start block change subscription. Needed for remaining unlocking blocks calculation.
+  container.get<ISystemRepository>(Symbols.SystemRepository).startBlockSubscription();
 }

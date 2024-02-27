@@ -11,8 +11,8 @@ import {
   formatNumber,
 } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
-import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { IDappStakingServiceV2V3 } from 'src/staking-v3';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');
@@ -58,7 +58,7 @@ export function useTvlHistorical() {
   };
 
   const getTvl = async (): Promise<void> => {
-    const tvlService = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const tvlService = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
     const tvl = await tvlService.getTvl();
     const tvlDefaultUnit = formatNumber(tvl.tvlDefaultUnit, 2);
 

@@ -152,12 +152,18 @@ export default {
     zkNetworkTip: "Connettersi prima al wallet EVM"
   },
   wallet: {
-    connectWallet: "Connetti Wallet",
-    select: "Seleziona un wallet per connetterti al portale",
-    nativeAccount: "Account Nativi",
-    evmAccount: "Account EVM",
-    multisigAccount: "Account Multisig",
-    accountUnification: "Unificazione Account",
+  patch-1
+    connectWallet: 'Connetti Wallet',
+    select: 'Seleziona un wallet per connetterti al portale',
+    nativeAccount: 'Account Nativo',
+    evmAccount: 'Account EVM',
+    multisigAccount: 'Account Multisig',
+    accountUnification: 'Unificazione Account',
+    connectWallet: 'Connetti wallet',
+    select: 'Seleziona un wallet per connetterti al portale',
+    nativeWallets: 'Account Nativi',
+    evmWallets: 'Account EVM',
+ main
     math: {
       supportsNetwork: "Math Wallet supporta solo la rete di Shiden",
       switchNetwork: "Passa la tua rete a 'Shiden' nell'estensione Math Wallet e aggiorna questa pagina"

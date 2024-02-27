@@ -8,11 +8,13 @@ import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
-import StakingTop from 'components/dapp-staking/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
+import Vote from 'src/staking-v3/components/Vote.vue';
+import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
+import Owner from 'src/staking-v3/components/Owner.vue';
 import MaintenanceMode from 'src/staking-v3/components/MaintenanceMode.vue';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -41,6 +43,8 @@ export enum Path {
   Transfer = '/transfer',
   XvmTransfer = '/xvm-transfer',
   Register = '/register',
+  Vote = '/vote',
+  Owner = '/owner',
   Maintenance = '/maintenance',
 }
 
@@ -148,7 +152,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: StakingTop,
+        component: DiscoverV3,
+      },
+      {
+        path: 'owner',
+        component: Owner,
       },
       {
         path: 'stake',
@@ -163,12 +171,15 @@ const routes: RouteRecordRaw[] = [
         component: RegisterDapp,
       },
       {
+        path: 'vote',
+        component: Vote,
+      },
+      {
         path: 'maintenance',
         component: MaintenanceMode,
       },
     ],
   },
-
   // Always leave this as last one,
   // but you can also remove it
   {

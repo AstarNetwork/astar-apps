@@ -60,6 +60,7 @@
         <router-link
           v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
+          data-testid="dapp-staking"
           :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
           <astar-icon-base
@@ -91,7 +92,6 @@
           </div>
         </router-link>
       </div>
-
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
           <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">

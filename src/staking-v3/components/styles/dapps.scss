@@ -1,0 +1,186 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
+.container--dapps {
+  flex: 1;
+  height: 368px;
+  @media (min-width: $sm) {
+    width: calc(100% - 228px);
+  }
+  @media (min-width: $xl) {
+    width: calc(100% - 288px);
+  }
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(to right, black, black calc(100% - 40px), transparent);
+    margin-right: -40px;
+    padding-right: 40px;
+  }
+
+  .swiper--dapps {
+    height: 368px;
+    overflow: visible;
+  }
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 27px;
+  margin-bottom: 8px;
+}
+
+.card--dapp {
+  background-color: white;
+  border: 1px solid $navy-1;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  height: 180px;
+  &:hover {
+    box-shadow: 0px 4px 8px 0px rgba(8, 16, 41, 0.2);
+  }
+}
+
+.card__top {
+  display: flex;
+  column-gap: 16px;
+  padding: 16px 24px;
+}
+
+.icon--dapp {
+  flex-shrink: none;
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+}
+
+.text--dapp {
+  flex: 1;
+}
+
+.text--title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.text--description {
+  color: $navy-4;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.card__bottom {
+  background-color: $gray-1;
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  gap: 4px;
+}
+
+.box--dapp-card {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: solid 1px $gray-2;
+  font-size: 12px;
+  font-weight: 600;
+  color: $gray-3;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 28px;
+  span{
+    display: flex;
+    align-items: center;
+    .icon--stakers{
+      width: 24px;
+      height: 24px;
+      margin-bottom: -10px;
+    }
+    .icon--astar-logo{
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+  }
+}
+
+.card--dapp:hover {
+  .card__bottom {
+    background: linear-gradient(90deg, #081029 0%, rgba(31, 47, 95, 0.79) 50%, #081029 100%);
+    .box--dapp-card {
+      border-color: white;
+      color: white;
+    }
+  }
+}
+
+.container--category {
+  background-size: cover;
+  background-color: $navy-1;
+  border-radius: 16px;
+  min-width: 220px;
+  min-height: 220px;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  z-index: 1;
+  @media (min-width: $xl) {
+    min-width: 280px;
+  }
+}
+
+.title--category {
+  width: 60%;
+  backdrop-filter: blur(20px);
+  padding: 18px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.body--dark {
+  .text--title {
+    color: $navy-1;
+  }
+}

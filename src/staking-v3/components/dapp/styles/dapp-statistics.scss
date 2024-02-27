@@ -1,0 +1,67 @@
+@import 'src/css/quasar.variables.scss';
+
+.row--data {
+  column-gap: 4px;
+  row-gap: 16px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+  }
+}
+
+.button--vote-stake {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 900;
+  font-style: italic;
+  box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
+  color: white;
+  line-height: 1.25;
+  transition: all 0.2s ease;
+  background-color: #0048e6;
+  width: 100%;
+  height: 80px;
+  @media (min-width: $sm) {
+    max-width: 134px;
+    height: 110px;
+  }
+  &:hover {
+    filter: brightness(1.2);
+  }
+  span {
+    position: relative;
+    z-index: 1;
+  }
+  iframe {
+    position: absolute;
+    z-index: 0;
+    transform-origin: top left;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    @media (min-width: $sm) {
+      scale: 30%;
+    }
+  }
+}
+
+.wrapper--dapp-statistics.small{
+  margin: 0;
+  .button--vote-stake{
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 14px;
+    border-radius: 12px;
+    @media (min-width: $sm) {
+      height: 60px;
+      font-size: 16px;
+      border-radius: 16px;
+    }
+  }
+}

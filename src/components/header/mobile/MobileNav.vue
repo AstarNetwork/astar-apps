@@ -167,7 +167,6 @@ export default defineComponent({
   color: $gray-1;
   display: flex;
   flex-direction: column;
-  // gap: 40px;
   padding-top: 40px;
   height: calc(100vh - 64px);
   overflow-y: auto;

@@ -1,0 +1,99 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--leaderboard {
+  width: 100%;
+  padding: 100px 0 20px 0;
+  position: relative;
+  background-color: $navy-1;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.wrapper--leaderboard__inner {
+  margin: auto;
+  max-width: $container-max-width;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-3000px);
+  }
+}
+
+.bg--leaderboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll() !important;
+  img {
+    width: 100%;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.25;
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-style: italic;
+  @media (min-width: $xxxl) {
+    padding-top: 80px;
+  }
+}
+
+.container--boards {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 40px,
+      black calc(100% - 40px),
+      transparent
+    );
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+.swiper--leaderboard {
+  overflow: visible;
+}
+
+.wrapper--tier .swiper {
+  overflow: hidden;
+}
+
+.swiper-slide {
+  height: auto;
+}

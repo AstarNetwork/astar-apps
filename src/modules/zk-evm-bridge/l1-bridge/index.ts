@@ -67,6 +67,8 @@ export interface BridgeHistory {
   claim_tx_hash: string;
   metadata: string;
   ready_for_claim: boolean;
+  // Todo: remove '?'
+  global_index?: string;
   timestamp?: number;
   isActionRequired?: boolean;
   symbol?: string;

@@ -11,23 +11,6 @@
   }
 }
 
-.assets-page-bg {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  @media (orientation: landscape) {
-    height: 100vh;
-  }
-  @media (orientation: portrait) {
-    height: 100vh;
-  }
-}
-
 .container--assets {
   width: 100%;
   max-width: $container-max-width;
@@ -68,7 +51,7 @@
   background-color: white;
   box-shadow: none;
   border-radius: 16px;
-  padding: 16px 0 24px 0;
+  padding: 16px 0;
   @media (min-width: $sm) {
     padding-left: 24px;
     padding-right: 24px;

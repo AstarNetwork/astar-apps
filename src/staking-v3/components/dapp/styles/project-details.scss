@@ -1,0 +1,116 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--project-details {
+  padding: 16px;
+  border-radius: 16px;
+  border: solid 1px $navy-1;
+  gap: 16px;
+  background-color: white;
+  @media (min-width: $lg) {
+    width: 35%;
+  }
+}
+
+.row--item {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0;
+  @media (min-width: $lg) {
+    padding: 20px 16px;
+  }
+}
+
+.row--item-title {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  color: $navy-3;
+  font-weight: 600;
+}
+
+.separator--details {
+  border-bottom: solid 1px $navy-1;
+}
+
+.column--icon-arrows {
+  display: flex;
+}
+
+.icon--arrow-right {
+  margin: 0 -6px 0 -10px;
+}
+
+.row--address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.row--social-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.button--website {
+  font-size: 16px;
+  font-weight: 600;
+  color: $astar-blue;
+}
+
+.row--tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: solid 1px $navy-1;
+  background-color: $gray-1;
+  font-weight: 600;
+  line-height: 1.25;
+  display: inline-flex;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.box--share {
+  display: flex;
+  align-items: center;
+  color: $astar-blue;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.btn--social {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  background-color: $gray-1;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: none;
+  color: $astar-blue;
+  .icon--social {
+    svg {
+      height: 24px;
+      width: 24px;
+    }
+  }
+  &:hover {
+    background-color: $astar-blue;
+    .icon--social {
+      color: white;
+    }
+  }
+}

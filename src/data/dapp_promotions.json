@@ -1,21 +1,33 @@
 [
   {
+    "name": "DeStore",
+    "shortDescription": "Web3 Shopify Powered by Astar",
+    "link": "https://twitter.com/DeStore_Network",
+    "img": "images/dapp_promotions/destore.jpg"
+  },
+  {
+    "name": "Lucky - No-loss lottery",
+    "shortDescription": "The more you stake, the more chance you have to win a raffle!",
+    "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=zsv1gvepvmwfdshmwgczs4zyvmmwesbjwqjn4wdpuefrrpy",
+    "img": "images/dapp_promotions/lucky.png"
+  },
+  {
     "name": "Neurolanche - Stake & Earn",
     "shortDescription": "Join our staking and earn soulbound 'Rewarding' NFT.",
     "link": "https://twitter.com/neurolanche/status/1722222206204399642?s=52&t=ISh07fvjMqpmUg40w5HqBg/",
-    "img": "https://neurolanche.mypinata.cloud/ipfs/QmPMZxgCXDiEqrcXZ9eQ5Lm4C4BjLjyggy2xLUfsEe2ew1"
+    "img": "images/dapp_promotions/neurolanche.jpeg"
   },
   {
     "name": "apeXchimpz (AXC)",
     "shortDescription": "Stake for FREE #modularNFTs, guaranteed! We take NFTs further...",
     "link": "https://www.apexchimpz.com/dapp-on-astar",
-    "img": "https://storage.googleapis.com/astarnetwork-a4924.appspot.com/astar-dapps%2F0x6d47349ce5bae5394730125e55f086d0c863f01f_0.jpg"
+    "img": "images/dapp_promotions/apeXchimpz.jpg"
   },
   {
     "name": "Age Of Chronos",
-    "shortDescription": "Web-based dungeon crawler by SFY Labs. Play and craft NFTs 2.0!",
+    "shortDescription": "Stake and earn FREE $Astr and nfts! Play and craft NFTs 2.0!",
     "link": "https://twitter.com/SFY_Labs",
-    "img": "https://ipfs.filebase.io/ipfs/QmbPiKUgeU4kBwobo412E7kJbTN3e47SPiLi7VsH49ySUP"
+    "img": "images/dapp_promotions/age_of_chronos.png"
   },
   {
     "name": "Algem - Liquid Staking",
@@ -27,6 +39,12 @@
     "name": "ASTR token, value and utility",
     "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
     "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
-    "img": "https://ipfs.subsocial.network/ipfs/bafybeig2o6zjlnxnwgdv6xkcgu4w5tn7wdre26kimpc2w2ldrum66cotw4"
+    "img": "images/dapp_promotions/astr_token.png"
+  },
+  {
+    "name": "MoonFit",
+    "shortDescription": "#1 Cross-chain Social Fitness App on iOS & Android, Apple Watch",
+    "link": "https://app.moonfit.xyz/astar-reward",
+    "img": "images/dapp_promotions/moonfit.png"
   }
 ]

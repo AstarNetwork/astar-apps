@@ -1,0 +1,240 @@
+@import 'src/css/quasar.variables.scss';
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  list-style-type: disc;
+}
+
+.bg--vote {
+  background-color: white;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100vh;
+  z-index: 0;
+}
+
+.wrapper--vote {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  min-height: calc(100vh - 64px);
+  margin: auto;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
+  padding: 0 16px 120px 16px;
+  margin: 0 auto -120px auto;
+  overflow-y: auto;
+  @media (min-width: $sm) {
+    padding: 0 40px 40px 40px;
+  }
+  @media (min-width: $lg) {
+    margin-top: -36px;
+    padding-top: 36px;
+    min-height: calc(100vh - 96px);
+  }
+}
+
+.inner--vote {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    gap: 40px;
+  }
+}
+
+.column--main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  order: 2;
+  @media (min-width: $sm) {
+    order: 1;
+  }
+}
+
+.column--help {
+  order: 1;
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    width: 320px;
+    order: 2;
+  }
+}
+
+.title {
+  color: $navy-1;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  letter-spacing: -0.64px;
+  margin-bottom: 16px;
+}
+
+.text--title {
+  margin-bottom: 16px;
+}
+
+.note {
+  padding: 16px;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: $gray-1;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px $gray-2;
+}
+
+.warning {
+  background-color: rgba(230, 0, 122, 0.05);
+  border: 1px solid $astar-pink;
+  color: $astar-pink;
+  margin: 4px 16px;
+}
+
+.warning--text {
+  color: $astar-pink;
+}
+
+.note--row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amount {
+  padding: 24px 24px 24px 16px;
+}
+
+.dapp-amount {
+  border: solid 1px $gray-3;
+  border-radius: 16px;
+  &:hover {
+    border-color: $astar-blue;
+  }
+}
+
+.amount-full-border {
+  border-radius: 16px;
+  border-width: 1px;
+  &:hover {
+    border-color: $astar-blue;
+  }
+}
+
+.balance {
+  gap: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: $gray-1;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px $gray-2;
+  padding: 12px 0;
+}
+
+.balance--row,
+.rewards--row {
+  padding: 4px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.container--locked-balance {
+  background-color: rgba($astar-pink, 5%);
+  padding: 4px 0;
+}
+
+.rewards {
+  border-radius: 16px;
+  background: linear-gradient(0deg, #0ae2ff -1.31%, #0297fb 63.05%);
+  color: white;
+  padding: 16px;
+  padding: 12px 0;
+  font-weight: 600;
+  overflow: hidden;
+  position: relative;
+}
+
+.bg--rewards {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  mix-blend-mode: color-burn;
+  z-index: 0;
+}
+
+.title--rewards {
+  font-weight: 800;
+}
+
+.text--rewards {
+  font-weight: 700;
+}
+
+.body--dark {
+  .wrapper--vote,
+  .text--title {
+    color: $navy-1;
+  }
+}
+
+.move--from {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+  border-radius: 16px;
+  background-color: $gray-1;
+  border: solid 1px $gray-2;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+
+  img {
+    width: 24px;
+  }
+}
+
+.stake--on {
+  margin-top: 16px;
+  margin-bottom: 0px;
+}
+
+.nomination--balance {
+  margin-left: auto;
+}
+
+.error {
+  border-radius: 16px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  padding: 16px;
+  color: $white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.link--learn {
+  color: $astar-blue;
+  transition: all 0.2s ease;
+  &:hover {
+    color: $astar-blue-dark;
+  }
+}

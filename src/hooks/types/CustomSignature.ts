@@ -21,6 +21,8 @@ export interface EthereumProvider {
   on: (event: string, handler: (response: any) => void) => void;
   removeListener: (event: string, handler: (response: any) => void) => void;
   request: (args: RequestArguments) => Promise<unknown>;
+  // Memo: some wallets such as WalletConnect does have disconnect method
+  disconnect: () => Promise<void> | undefined;
 }
 
 export interface EcdsaAddressFormat {

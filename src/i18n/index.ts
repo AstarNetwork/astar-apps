@@ -6,6 +6,7 @@ import fr from './fr';
 import pt from './pt';
 import kr from './kr';
 import it from './it';
+import es from './es';
 
 export const languagesSelector = [
   {
@@ -41,6 +42,10 @@ export const languagesSelector = [
     text: 'Italiano',
     code: 'it',
   },
+  {
+    text: 'Español',
+    code: 'es',
+  },
 ];
 
 export default {
@@ -52,6 +57,7 @@ export default {
   pt,
   kr,
   it,
+  es,
 };
 
-export type CultureCode = 'it' | 'en-US' | 'ja' | 'fr' | 'pt' | 'kr' | 'zh' | 'zh-TW';
+export type CultureCode = 'it' | 'en-US' | 'ja' | 'fr' | 'pt' | 'kr' | 'zh' | 'zh-TW' | 'es';

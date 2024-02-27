@@ -1,0 +1,151 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp-avatar {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 24px;
+  align-items: center;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.column--avatar {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+  }
+}
+
+.image--dapp-icon {
+  flex-shrink: 0;
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    object-fit: contain;
+    overflow: hidden;
+    margin: auto;
+  }
+}
+
+.row--dapp-title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 4px;
+  text-align: center;
+  @media (min-width: $sm) {
+    text-align: left;
+  }
+}
+
+.row--dapp-description {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  @media (min-width: $sm) {
+    text-align: left;
+  }
+}
+
+.row--tags {
+  display: flex;
+  column-gap: 4px;
+  margin-top: 24px;
+  justify-content: center;
+  @media (min-width: $sm) {
+    justify-content: flex-start;
+  }
+}
+
+.tag {
+  background-color: $gray-1;
+  padding: 2px 8px;
+  border-radius: 6px;
+  line-height: 1.25;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.column--action {
+  display: none;
+  @media (min-width: $sm) {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+}
+
+.button--icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  border: solid 1px $astar-blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $astar-blue;
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: $astar-blue;
+    color: white;
+  }
+}
+
+.button--favorite {
+  svg {
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+  }
+}
+
+.button--share {
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.button--edit {
+  padding: 0 24px;
+  height: 48px;
+  font-size: 16px;
+}
+
+.wrapper--dapp-avatar.small {
+  padding: 0;
+  @media (min-width: $sm) {
+    flex: 1;
+  }
+  .column--avatar {
+    align-items: center;
+    gap: 12px;
+    flex-direction: row;
+    @media (min-width: $sm) {
+      gap: 16px;
+    }
+  }
+  .image--dapp-icon {
+    img {
+      width: 44px;
+      height: 44px;
+      @media (min-width: $sm) {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  }
+  .row--dapp-title {
+    font-size: 16px;
+    margin: 0;
+    @media (min-width: $sm) {
+      font-size: 24px;
+    }
+  }
+}

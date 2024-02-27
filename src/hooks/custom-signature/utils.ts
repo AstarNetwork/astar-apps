@@ -36,12 +36,16 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
  * @param address ethereum public address of the signer
  * @param msgString message string that was signed
  * @param rpcSig resulting signature in hex string
+ *
+ * return:
+ * pubKey: a 33-byte compressed ECDSA public key in hex string
+ * uncompressedPubKey: a 65-byte uncompressed ECDSA public key in hex string
  */
 export const recoverPublicKeyFromSig = (
   address: string,
   msgString: string,
   rpcSig: string
-): string => {
+): { pubKey: string; uncompressedPubKey: string } => {
   // check if the message is hex encoded or not
   const encodingType = isHex(msgString) ? 'hex' : 'utf8';
   // message hashing is done here, which includes the message prefix
@@ -76,8 +80,9 @@ export const recoverPublicKeyFromSig = (
 
   // compress the public key
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
+  const uncompressedPubKey = '0x' + publicKey.toString('hex');
 
-  return u8aToHex(compressedKey);
+  return { pubKey: u8aToHex(compressedKey), uncompressedPubKey };
 };
 
 export const getSs58FromEvmPublicKey = async ({
@@ -89,6 +94,6 @@ export const getSs58FromEvmPublicKey = async ({
 }) => {
   const loginMsg = `Sign this message to login with address ${evmAddress}`;
   const signature = await requestSignature(loginMsg, evmAddress);
-  const pubKey = recoverPublicKeyFromSig(evmAddress, loginMsg, signature);
+  const { pubKey } = recoverPublicKeyFromSig(evmAddress, loginMsg, signature);
   return ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 };

@@ -1,0 +1,109 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--ads-area {
+  background-color: $navy-1;
+  width: 100%;
+  padding: 40px 0 80px 0;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.wrapper--ads-area__inner {
+  margin: auto;
+  max-width: $container-max-width;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.container--mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 16px,
+    black calc(100% - 16px),
+    transparent
+  );
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media (min-width: $md) {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 40px,
+      black calc(100% - 40px),
+      transparent
+    );
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+.swiper {
+  overflow: visible;
+}
+
+.swiper-slide {
+  height: auto;
+}
+
+.card--swiper {
+  height: 100%;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: rgba(white, 0.1);
+  &:hover {
+    background-color: rgba(white, 0.2);
+    .card__img{
+      filter: brightness(1.1);
+    }
+  }
+}
+
+.card__img {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  width: 100%;
+}
+
+.card__bottom {
+  padding: 16px;
+  @media (min-width: $lg) {
+    padding: 16px 24px;
+  }
+}
+
+.text--accent {
+  font-size: 12px;
+  font-weight: 700;
+  &.featured {
+    color: $astar-blue-dark;
+  }
+  &.new-listing {
+    color: $astar-pink;
+  }
+}
+
+.text--name {
+  margin: 4px 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: $gray-2;
+}
+
+.text--description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: $gray-2;
+}

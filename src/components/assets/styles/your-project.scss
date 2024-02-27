@@ -1,0 +1,121 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--your-project {
+  padding: 8px 16px;
+  @media (min-width: $lg) {
+    padding: 16px;
+  }
+}
+
+.box--dapps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.text--title {
+  font-weight: 600;
+  @media (min-width: $lg) {
+    font-size: 14px;
+  }
+}
+
+.row--title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.card--dapp {
+  cursor: pointer;
+  background-color: $gray-1;
+  border-radius: 16px;
+  column-gap: 10px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: $navy-1;
+  line-height: 1.25;
+  transition: all 0.2s ease;
+  position: relative;
+  &:hover {
+    background-color: $gray-2;
+  }
+}
+
+.icon--dapp-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.separator {
+  background-color: $gray-2;
+  height: 1px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.row--dapp-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.column--rewards {
+  border: 1px solid $astar-pink-1;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: $astar-pink-1;
+  font-size: 12px;
+}
+
+.dot--bg {
+  top: -6px;
+  right: -5px;
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background-color: white;
+  border-radius: 100%;
+}
+
+.dot--active {
+  top: 0;
+  right: 0;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: $astar-pink-1;
+  border-radius: 100%;
+}
+
+.body--dark {
+  .card--dapp {
+    background-color: $navy-3;
+    color: $gray-1;
+    &:hover {
+      background-color: lighten($navy-3, 5%);
+    }
+  }
+
+  .separator {
+    background-color: $navy-3;
+  }
+
+  .bg--notify {
+    background-color: $navy-3;
+  }
+
+  .dot--bg {
+    background-color: $navy-1;
+  }
+}
