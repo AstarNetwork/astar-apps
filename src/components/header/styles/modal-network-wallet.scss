@@ -181,7 +181,7 @@
 }
 
 .box--endpoints {
-  background: $gray-0;
+  background: $gray-1;
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -244,7 +244,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px white;
+  box-shadow: 0 0 0 2px $navy-1;
   -webkit-appearance: none;
   cursor: pointer;
   display: flex;

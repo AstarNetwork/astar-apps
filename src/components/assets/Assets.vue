@@ -1,6 +1,5 @@
 <template>
   <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
-    <div class="assets-page-bg" :style="{ backgroundImage: `url(${bg})` }" />
     <div class="container--assets">
       <div class="column--main">
         <register-banner v-if="isDappStakingV3" />
@@ -70,25 +69,25 @@
 <script lang="ts">
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from 'src/components/assets/Account.vue';
-import SideAds from 'src/components/assets/SideAds.vue';
-import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
+import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
+import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
+import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import SideAds from 'src/components/assets/SideAds.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import YourProject from 'src/components/assets/YourProject.vue';
+import ZkAstr from 'src/components/assets/ZkAstr.vue';
+import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
-import { useDappStaking, CombinedDappInfo, useDapps } from 'src/staking-v3';
+import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
+import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
+import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
-import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import ZkAstr from 'src/components/assets/ZkAstr.vue';
-import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
-import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 
 export default defineComponent({
   components: {
@@ -212,27 +211,13 @@ export default defineComponent({
       window.removeEventListener(event, handler);
     });
 
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
-
-    const bg_img = {
-      light: require('/src/assets/img/assets_bg_light.webp'),
-      dark: require('/src/assets/img/assets_bg_dark_A.webp'),
-    };
-
-    const bg = computed<String>(() => {
-      if (isDarkTheme.value) {
-        return bg_img.dark;
-      }
-      return bg_img.light;
-    });
-
     const { allDapps } = useDapps();
     const ownDapps = computed<CombinedDappInfo[]>(() => {
       if (!allDapps.value) return [];
       return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
     });
 
-    const isDappOwner = computed<Boolean>(() => {
+    const isDappOwner = computed<boolean>(() => {
       if (ownDapps.value.length > 0) return true;
       return false;
     });
@@ -255,7 +240,6 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
-      bg,
       isDappStakingV3,
       nativeTokenSymbol,
       isZkEvm,

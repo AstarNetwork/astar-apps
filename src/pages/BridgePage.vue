@@ -18,14 +18,21 @@ export default defineComponent({
   setup() {
     useMeta(generateMeta(Path.Bridge));
     const { isReady } = usePageReady();
+
     return { isReady };
   },
 });
 </script>
 <style lang="scss" scoped>
 #bridge-top {
+  padding: 0 16px;
+  @media (min-width: $sm) {
+    padding-top: 16px;
+  }
   @media (min-width: $lg) {
-    padding: 0 16px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 36px;
   }
 }
 </style>
