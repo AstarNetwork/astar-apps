@@ -134,7 +134,7 @@
     </div>
     <div v-else>
       <div v-if="isLoadingHistories">{{ $t('common.loading') }}</div>
-      <div v-else>{{ $t('bridge.noHistory') }}</div>
+      <div v-else>{{ $t('bridge.noTransactions') }}</div>
     </div>
   </div>
 </template>

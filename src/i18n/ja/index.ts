@@ -698,7 +698,7 @@ export default {
     history: '最近の履歴',
     actionRequired: '必要なアクション',
     claim: '請求',
-    noHistory: '履歴が見つかりません',
+    noTransactions: 'トランザクションが見つかりませんでした',
     completed: '完了',
     inProgress: '進行中',
     approvalMaxAmount: '最高額の承認（オプション）',
