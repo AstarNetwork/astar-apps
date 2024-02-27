@@ -31,7 +31,7 @@
         >
           <swiper-slide v-for="[tier, dapps] in leaderBoards" :key="tier">
             <tier
-              :slots="tiersConfiguration.slotsPerTier[tier]"
+              :slots="tiersConfiguration.slotsPerTier[tier - 1]"
               :tier="tier"
               :dapps="dapps"
               :daily-reward="getDailyReward(tier)"
