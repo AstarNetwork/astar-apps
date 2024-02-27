@@ -8,6 +8,10 @@
           <token-balance-native :balance="dailyReward?.toString() ?? '0'" />
         </div>
       </div>
+      <div v-if="percentToBeBurned" class="column--reward">
+        <div class="text--reward">{{ $t('stakingV3.burn') }}</div>
+        <div class="text--amount">{{ percentToBeBurned }}%</div>
+      </div>
     </div>
 
     <swiper class="swiper--tier" :navigation="true" :modules="modules">
@@ -90,6 +94,8 @@ export default defineComponent({
     const itemsToShow = 10;
     const itemsPerPage = 5;
     const slicedDapps = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsToShow));
+    const spots = props.dapps.length;
+    const percentToBeBurned = Math.floor(100 * ((props.slots - spots) / props.slots));
 
     const page1 = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsPerPage));
     const page2 = computed<CombinedDappInfo[]>(() => props.dapps.slice(itemsPerPage, itemsToShow));
@@ -102,6 +108,7 @@ export default defineComponent({
       itemsPerPage,
       page1,
       page2,
+      percentToBeBurned,
       navigateDappPage,
     };
   },

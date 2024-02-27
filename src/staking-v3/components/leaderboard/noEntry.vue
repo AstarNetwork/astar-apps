@@ -8,7 +8,6 @@
       <div>{{ $t('stakingV3.noEntry') }}</div>
     </div>
     <div class="amount">
-      <token-balance-native :balance="toBeBurned.toString() ?? '0'" />
       {{ $t('stakingV3.burn') }}
     </div>
   </div>
@@ -19,9 +18,7 @@ import { defineComponent, PropType } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
-  components: {
-    TokenBalanceNative,
-  },
+  components: {},
   props: {
     index: {
       type: Number,
