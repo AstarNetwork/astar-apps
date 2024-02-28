@@ -143,7 +143,7 @@ export default defineComponent({
     });
 
     const isEnableEthBridge = computed<boolean>(() => {
-      if (!isZkEvm.value || currentNetworkName.value === EthBridgeNetworkName.AstarZk) {
+      if (!isZkEvm.value) {
         return false;
       }
       return true;

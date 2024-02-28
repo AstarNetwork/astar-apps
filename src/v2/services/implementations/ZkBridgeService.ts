@@ -87,6 +87,7 @@ export class ZkBridgeService implements IZkBridgeService {
       param,
       web3,
     });
+
     const transactionHash = await this.wallet.sendEvmTransaction({
       from: String(rawTx.from),
       to: String(rawTx.to),

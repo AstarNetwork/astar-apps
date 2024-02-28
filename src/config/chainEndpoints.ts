@@ -117,7 +117,6 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
-  // Memo: It's dummy data. To be updated
   {
     networkAlias: 'astar-zkevm',
     displayName: 'Astar zkEVM Network',
@@ -131,9 +130,9 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.ASTAR_ZKEVM,
     isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
-    blockscout: 'https://akiba-explorer.astar.network',
-    evmChainId: '7759',
-    evmEndpoints: ['http://161.35.17.216:8545'],
+    blockscout: 'https://astar-zkevm.blockscout.com',
+    evmChainId: '3776',
+    evmEndpoints: ['https://rpc.startale.com/astar-zkevm'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
@@ -191,7 +190,6 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
-
   {
     networkAlias: 'rocstar',
     displayName: 'Rocstar',

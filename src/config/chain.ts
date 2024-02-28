@@ -28,8 +28,7 @@ export type ASTAR_NETWORK_IDX =
   | endpointKey.LOCAL
   | endpointKey.ROCSTAR;
 
-//Todo: add Astar zkEVM
-export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81 | 4369 | 692 | 7759;
+export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81 | 4369 | 692 | 1261120 | 3776;
 
 export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY' | 'LOC' | 'RSTR' | 'ETH';
 export const astarMainnetNativeToken: ASTAR_NATIVE_TOKEN[] = ['ASTR', 'SDN'];

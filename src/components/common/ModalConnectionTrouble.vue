@@ -110,11 +110,10 @@
 import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { defineComponent, ref, computed } from 'vue';
-import { docsUrl, polkadotJsUrl, socialUrl } from 'src/links';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { docsUrl, socialUrl } from 'src/links';
 import { useStore } from 'src/store';
+import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

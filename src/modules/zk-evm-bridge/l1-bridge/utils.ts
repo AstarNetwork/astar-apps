@@ -9,6 +9,7 @@ import {
   EthBridgeContract,
   EthBridgeNetworkName,
   ZK_EVM_BRIDGE_ABI,
+  ZK_EVM_AGGREGATED_BRIDGE_ABI,
   ZkChainId,
   ZkNetworkId,
   zkEvmApi,
@@ -21,30 +22,31 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 type MerkleProof = {
   main_exit_root: string;
   merkle_proof: string[];
-  rollup_merkle_proof: string[];
+  // Todo: remove '?'
+  rollup_merkle_proof?: string[];
   rollup_exit_root: string;
+};
+
+export const getNetworkId = async (chainName: EthBridgeNetworkName) => {
+  const chainId = EthBridgeChainId[chainName];
+  const web3 = buildWeb3Instance(chainId);
+  if (!web3) throw Error('Failed creating Web3 instance');
+
+  const contractAddress = EthBridgeContract[chainName];
+  const isAggregateContract = contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
+
+  const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
+  const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+  return await contract.methods.networkID().call();
 };
 
 export const checkIsL1 = (zkNetwork: ZkNetworkId): boolean => {
   return zkNetwork === ZkNetworkId.L1;
 };
 
-const getMainOrTestNet = (): 'mainnet' | 'testnet' => {
+export const getMainOrTestNet = (): 'mainnet' | 'testnet' => {
   const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
   return networkIdxStore === String(endpointKey.ASTAR_ZKEVM) ? 'mainnet' : 'testnet';
-};
-
-export const getContractFromNetId = (zkNetwork: ZkNetworkId): string => {
-  const network = getMainOrTestNet();
-  if (network === 'mainnet') {
-    return zkNetwork === ZkNetworkId.L1
-      ? EthBridgeContract[EthBridgeNetworkName.Ethereum]
-      : EthBridgeContract[EthBridgeNetworkName.AstarZk];
-  } else {
-    return zkNetwork === ZkNetworkId.L1
-      ? EthBridgeContract[EthBridgeNetworkName.Sepolia]
-      : EthBridgeContract[EthBridgeNetworkName.Zkatana];
-  }
 };
 
 export const getChainIdFromNetId = (zkNetwork: ZkNetworkId): ZkChainId => {
@@ -106,16 +108,17 @@ export const getBridgedTokenAddress = async ({
   const fromChainName = EthBridgeChainIdToName[srcChainId];
   const fromChainWeb3 = buildWeb3Instance(srcChainId) as Web3;
   const toChainContractAddress = EthBridgeContract[fromChainName];
+
+  const isAggregateContract =
+    toChainContractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
+
+  const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
   const fromChainContract = new fromChainWeb3.eth.Contract(
-    ZK_EVM_BRIDGE_ABI as AbiItem[],
+    abi as AbiItem[],
     toChainContractAddress
   );
 
-  const networkId =
-    fromChainName === EthBridgeNetworkName.Ethereum ||
-    fromChainName === EthBridgeNetworkName.Sepolia
-      ? ZkNetworkId.L1
-      : ZkNetworkId.L2;
+  const networkId = await getNetworkId(fromChainName);
 
   // Memo: check if the bridge token is wrapped token
   const data = await fromChainContract.methods.wrappedTokenToTokenInfo(tokenAddress).call();

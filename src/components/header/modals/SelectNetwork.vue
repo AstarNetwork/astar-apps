@@ -13,7 +13,6 @@
 
       <button
         class="card--astar box--hover--active"
-        :disabled="true"
         :class="selNetworkId === endpointKey.ASTAR_ZKEVM && 'border--active'"
         @click="setSelNetwork(endpointKey.ASTAR_ZKEVM)"
       >

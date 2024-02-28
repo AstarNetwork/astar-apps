@@ -11,6 +11,7 @@ import {
   EthBridgeContract,
   EthBridgeNetworkName,
   ZkToken,
+  getNetworkId,
 } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
@@ -281,6 +282,8 @@ export const useL1Bridge = () => {
       throw Error('Please approve first');
     }
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    const destNetworkId = await getNetworkId(toChainName.value);
+
     const hash = await zkBridgeService.bridgeAsset({
       amount: bridgeAmt.value,
       fromChainName: fromChainName.value,
@@ -288,6 +291,7 @@ export const useL1Bridge = () => {
       senderAddress: currentAccount.value,
       tokenAddress: selectedToken.value.address,
       decimal: selectedToken.value.decimal,
+      destNetworkId,
     });
     await setIsApproved();
     bridgeAmt.value = '';
