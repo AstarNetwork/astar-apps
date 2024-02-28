@@ -74,6 +74,12 @@
       >
         {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
       </data-card>
+      <data-card
+        :title="$t('stakingV3.tokensToBeBurned')"
+        :description="$t('stakingV3.tokensToBeBurnedDescription')"
+      >
+        <format-balance :balance="tokensToBeBurned.toString() ?? ''" />
+      </data-card>
     </div>
 
     <div class="row--title">{{ $t('stakingV3.stakerRewards') }}</div>
@@ -143,6 +149,43 @@ export default defineComponent({
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
     );
 
+    const dappsPerTier = computed<number[]>(() => {
+      const tierCounts: { [key: number]: number } = {};
+
+      // Loop through each dApp in the list and count occurrences per tierId
+      dAppTiers.value.dapps.forEach((dapp) => {
+        const tierId = dapp.tierId!;
+        tierCounts[tierId] = (tierCounts[tierId] || 0) + 1;
+      });
+
+      // Convert the tierCounts object to a sorted array of counts
+      const sortedCounts = Object.entries(tierCounts)
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .map((entry) => entry[1]);
+
+      return sortedCounts;
+    });
+
+    const tokensToBeBurned = computed(() => {
+      // Calculate the sum of tokens to be burned
+      const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: BigInt, i) => {
+        const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
+        const dappsInTier = dappsPerTier.value[i];
+        const tokensForTier =
+          (BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
+          BigInt(slotsPerTier);
+        console.log(
+          `${reward.toString()} * (${
+            slotsPerTier - dappsInTier
+          } / ${slotsPerTier}) = ${tokensForTier}`
+        );
+
+        return acc + tokensForTier;
+      }, BigInt(0));
+
+      return tbb.toString();
+    });
+
     const { nativeTokenSymbol } = useNetworkInfo();
 
     const periodRemainingDays = computed<number>(() => {
@@ -167,6 +210,7 @@ export default defineComponent({
       unfilledSlots,
       tiersConfiguration,
       tvlPercentage,
+      tokensToBeBurned,
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,

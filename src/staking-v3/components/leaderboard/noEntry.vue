@@ -7,15 +7,12 @@
       </div>
       <div>{{ $t('stakingV3.noEntry') }}</div>
     </div>
-    <div class="amount">
-      {{ $t('stakingV3.burn') }}
-    </div>
+    <div class="amount">{{ $t('stakingV3.burn') }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {},
@@ -28,27 +25,9 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    dailyreward: {
-      type: BigInt as unknown as PropType<bigint>,
-      required: true,
-    },
-    slots: {
-      type: Number,
-      required: true,
-    },
   },
   setup(props) {
-    const oneE18 = BigInt('1000000000000000000'); // Equivalent to 10^18
-
-    let toBeBurned = BigInt(0);
-
-    if (props.slots && props.dailyreward) {
-      toBeBurned = (props.dailyreward / BigInt(props.slots) / oneE18) * oneE18;
-    }
-
-    return {
-      toBeBurned,
-    };
+    return {};
   },
 });
 </script>

@@ -871,6 +871,8 @@ export default {
       'The total number of dApps that are currently listed on dApp Staking.',
     stakingAndLockingAccounts: 'Staking & Locking accounts',
     numberOfStakersAndLockersDescription: 'The total number of dApp Staking & Locking users.',
+    tokensToBeBurned: 'Total Tokens to be Burned',
+    tokensToBeBurnedDescription: 'Total Number of Tokens to be Burned in the Build&Earn Subperiod',
     tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
@@ -911,7 +913,7 @@ export default {
     searchDapps: 'Search dapps',
     startStakingNow: 'Start Staking Now',
     noEntry: 'No entry',
-    burn: 'To be Burned',
+    burn: 'Burn',
     availableToWithdraw: 'Available to withdraw',
     congrats: 'Congrats!!',
     dappRegistered:
