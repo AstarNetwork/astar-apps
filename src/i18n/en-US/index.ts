@@ -991,6 +991,7 @@ export default {
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+    gelatoApiError: 'Bridge UI is not available, please try again later',
     tokenInfo: {
       invalidTokenAddress: 'Invalid token address',
       tokenAddress: '{network} token address',
