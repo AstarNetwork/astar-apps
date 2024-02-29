@@ -64,7 +64,6 @@ export interface BridgeHistory {
   block_num: string;
   deposit_cnt: string;
   network_id: ZkNetworkId;
-  // network_id: number;
   tx_hash: string;
   claim_tx_hash: string;
   metadata: string;

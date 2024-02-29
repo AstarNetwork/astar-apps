@@ -61,16 +61,8 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const isNativeToken = param.tokenAddress === astarNativeTokenErcAddr;
     const destinationAddress = param.senderAddress;
     const amount = ethers.utils.parseUnits(String(param.amount), param.decimal).toString();
-    // Todo: Ask if we need to care about `forceUpdateGlobalExitRoot` and `permitData`
     const forceUpdateGlobalExitRoot = true;
     const permitData = '0x';
-
-    console.log('param.destNetworkId', param.destNetworkId);
-    console.log('destinationAddress', destinationAddress);
-    console.log('amount', amount);
-    console.log('param.tokenAddress', param.tokenAddress);
-    console.log('forceUpdateGlobalExitRoot', forceUpdateGlobalExitRoot);
-    console.log('permitData', permitData);
 
     const data = contract.methods
       .bridgeAsset(

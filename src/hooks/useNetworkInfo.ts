@@ -31,6 +31,7 @@ export function useNetworkInfo() {
   );
 
   const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
+  const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -116,5 +117,6 @@ export function useNetworkInfo() {
     networkNameSubstrate,
     isAllowLockdropDispatch,
     isZkatana,
+    isAstarZkEvm,
   };
 }
