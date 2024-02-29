@@ -71,8 +71,10 @@ export default defineComponent({
     const symbol = ref<string>('');
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
-    const { isMainnet } = useNetworkInfo();
-    const isListReady = computed<boolean>(() => !!(!isMainnet.value || props.tokens.length > 0));
+    const { isMainnet, isZkEvm } = useNetworkInfo();
+    const isListReady = computed<boolean>(
+      () => !!(!isMainnet.value || props.tokens.length > 0 || isZkEvm.value)
+    );
 
     const filteredTokens = computed<Erc20Token[] | []>(() => {
       if (!props.tokens) return [];

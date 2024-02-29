@@ -23,13 +23,23 @@
           </div>
         </div>
       </div>
-      <div class="row--reverse">
+      <div v-if="isEnabledWithdrawal" class="row--reverse">
         <button
           class="icon--reverse cursor-pointer"
           @click="() => reverseChain(fromChainName, toChainName)"
         >
           <astar-icon-sync size="20" />
         </button>
+      </div>
+      <div v-else class="row--reverse">
+        <button class="icon--reverse" disabled>
+          <astar-icon-sync size="20" />
+        </button>
+        <q-tooltip>
+          <span class="text--tooltip">
+            {{ $t('bridge.disabledWithdrawal', { network: fromChainName }) }}
+          </span>
+        </q-tooltip>
       </div>
       <div class="box--input-field">
         <div class="box__space-between">
@@ -154,7 +164,7 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, defineComponent, watch, ref, computed } from 'vue';
@@ -245,9 +255,11 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const { isZkatana } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isEnabledWithdrawal = computed<boolean>(() => isZkatana.value);
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
@@ -292,6 +304,7 @@ export default defineComponent({
       EthBridgeNetworkName,
       isHandling,
       isLoading,
+      isEnabledWithdrawal,
       bridge,
       approve,
     };

@@ -15,7 +15,7 @@ import {
   supportEvmWalletObj,
   supportWalletObj,
 } from 'src/config/wallets';
-import { getChainId, setupNetwork } from 'src/config/web3';
+import { getChainId, handleCheckProviderChainId, setupNetwork } from 'src/config/web3';
 import { ETHEREUM_EXTENSION, useAccount, useNetworkInfo } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
@@ -314,7 +314,6 @@ export const useConnectWallet = () => {
     const isWalletConnect = wallet === SupportWallet.WalletConnect;
     // Memo: WalletConnect does not have an address before scanning the QR code (when the user switch the network with selecting WalletConnect)
     const isNoAddress = !address && !isWalletConnect;
-
     if (
       currentRouter.value === undefined ||
       isNoAddress ||
@@ -398,6 +397,23 @@ export const useConnectWallet = () => {
   );
 
   watch([currentNetworkChain], handleCheckLedgerEnvironment);
+
+  // Memo: check the EVM wallet's connected chainId when users switch the page
+  watch(
+    [currentRouter, selectedWallet, isH160],
+    async () => {
+      if (!selectedWallet.value || !isH160.value) return;
+      const provider = getEvmProvider(selectedWallet.value as SupportWallet);
+      const resultCheckProvider = await handleCheckProviderChainId(provider);
+      if (!resultCheckProvider) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('wallet.switchWalletConnectNetwork', { network: currentNetworkName.value }),
+          alertType: 'error',
+        });
+      }
+    },
+    { immediate: false }
+  );
 
   return {
     WalletModalOption,

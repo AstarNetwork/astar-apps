@@ -13,6 +13,7 @@ export {
   getTransactionTimestamp,
   checkAllowance,
   getTokenImage,
+  handleCheckProviderChainId,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';

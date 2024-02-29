@@ -972,6 +972,7 @@ export default {
     completed: 'Completed',
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
+    disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
