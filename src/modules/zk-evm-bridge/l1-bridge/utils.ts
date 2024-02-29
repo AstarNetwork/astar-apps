@@ -137,5 +137,5 @@ export const getBridgedTokenAddress = async ({
 };
 
 export const getShortNetworkName = (network: string) => {
-  return network.replace('zkEVM', '').replace('Testnet', '');
+  return network.replace('Testnet', '');
 };
