@@ -172,12 +172,13 @@ export default defineComponent({
         const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
         const dappsInTier = dappsPerTier.value[i];
         const tokensForTier =
-          (BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
-          BigInt(slotsPerTier);
+          ((BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
+            BigInt(slotsPerTier)) *
+          BigInt(111); // Days in a Build&Earn subperiod
         console.log(
           `${reward.toString()} * (${
             slotsPerTier - dappsInTier
-          } / ${slotsPerTier}) = ${tokensForTier}`
+          } / ${slotsPerTier}) * 111 = ${tokensForTier}`
         );
 
         return acc + tokensForTier;
