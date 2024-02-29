@@ -113,7 +113,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDataCalculations } from 'src/staking-v3/hooks';
+import { useDataCalculations, useLeaderboard } from 'src/staking-v3/hooks';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
@@ -128,8 +128,14 @@ export default defineComponent({
     FormatBalance,
   },
   setup() {
-    const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration, isVotingPeriod } =
-      useDappStaking();
+    const {
+      protocolState,
+      currentEraInfo,
+      dAppTiers,
+      tiersConfiguration,
+      isVotingPeriod,
+      eraLengths,
+    } = useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
     const {
@@ -148,38 +154,17 @@ export default defineComponent({
     const unfilledSlots = computed<number>(
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
     );
-
-    const dappsPerTier = computed<number[]>(() => {
-      const tierCounts: { [key: number]: number } = {};
-
-      // Loop through each dApp in the list and count occurrences per tierId
-      dAppTiers.value.dapps.forEach((dapp) => {
-        const tierId = dapp.tierId!;
-        tierCounts[tierId] = (tierCounts[tierId] || 0) + 1;
-      });
-
-      // Convert the tierCounts object to a sorted array of counts
-      const sortedCounts = Object.entries(tierCounts)
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
-        .map((entry) => entry[1]);
-
-      return sortedCounts;
-    });
+    const { leaderBoards } = useLeaderboard();
 
     const tokensToBeBurned = computed(() => {
       // Calculate the sum of tokens to be burned
       const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: BigInt, i) => {
         const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
-        const dappsInTier = dappsPerTier.value[i];
+        const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
         const tokensForTier =
           ((BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
             BigInt(slotsPerTier)) *
-          BigInt(111); // Days in a Build&Earn subperiod
-        console.log(
-          `${reward.toString()} * (${
-            slotsPerTier - dappsInTier
-          } / ${slotsPerTier}) * 111 = ${tokensForTier}`
-        );
+          BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
 
         return acc + tokensForTier;
       }, BigInt(0));
