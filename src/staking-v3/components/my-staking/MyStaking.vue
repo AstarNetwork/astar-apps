@@ -168,7 +168,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watch } from 'vue';
+import { defineComponent, computed, PropType, ref, watchEffect } from 'vue';
 import { useAprV3, useDappStaking, useDappStakingNavigation } from '../../hooks';
 import MyStakingCard from './MyStakingCard.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
@@ -262,7 +262,7 @@ export default defineComponent({
       setShowUnlockModal(true);
     };
 
-    watch([rewards], setBonus);
+    watchEffect(setBonus);
 
     return {
       rewards,
