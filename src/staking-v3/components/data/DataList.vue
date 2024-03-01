@@ -113,7 +113,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDataCalculations, useLeaderboard } from 'src/staking-v3/hooks';
+import { useDataCalculations } from 'src/staking-v3/hooks';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
 import { useInflation } from 'src/hooks/useInflation';
@@ -128,14 +128,8 @@ export default defineComponent({
     FormatBalance,
   },
   setup() {
-    const {
-      protocolState,
-      currentEraInfo,
-      dAppTiers,
-      tiersConfiguration,
-      isVotingPeriod,
-      eraLengths,
-    } = useDappStaking();
+    const { protocolState, currentEraInfo, dAppTiers, tiersConfiguration, isVotingPeriod } =
+      useDappStaking();
     const { registeredDapps } = useDapps();
     const { periodName, periodDuration, periodCurrentDay } = usePeriod();
     const {
@@ -143,6 +137,7 @@ export default defineComponent({
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       numberOfStakersAndLockers,
+      tokensToBeBurned,
     } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
@@ -154,23 +149,6 @@ export default defineComponent({
     const unfilledSlots = computed<number>(
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
     );
-    const { leaderBoards } = useLeaderboard();
-
-    const tokensToBeBurned = computed(() => {
-      // Calculate the sum of tokens to be burned
-      const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: BigInt, i) => {
-        const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
-        const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
-        const tokensForTier =
-          ((BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
-            BigInt(slotsPerTier)) *
-          BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
-
-        return acc + tokensForTier;
-      }, BigInt(0));
-
-      return tbb.toString();
-    });
 
     const { nativeTokenSymbol } = useNetworkInfo();
 

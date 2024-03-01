@@ -4,10 +4,11 @@ import { useTokenCirculation } from 'src/hooks/useTokenCirculation';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { NumberOfStakersAndLockers } from '../logic';
+import { useLeaderboard } from './useLeaderboard';
 
 export function useDataCalculations() {
   const { totalSupply } = useTokenCirculation();
-  const { currentEraInfo } = useDappStaking();
+  const { currentEraInfo, eraLengths, dAppTiers, tiersConfiguration } = useDappStaking();
   const store = useStore();
 
   const tvlPercentage = computed<number>(() => {
@@ -51,10 +52,29 @@ export function useDataCalculations() {
     () => store.getters['stakingV3/getNumberOfStakersAndLockers']
   );
 
+  const { leaderBoards } = useLeaderboard();
+
+  const tokensToBeBurned = computed(() => {
+    // Calculate the sum of tokens to be burned
+    const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: BigInt, i) => {
+      const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
+      const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
+      const tokensForTier =
+        ((BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
+          BigInt(slotsPerTier)) *
+        BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
+
+      return acc + tokensForTier;
+    }, BigInt(0));
+
+    return tbb.toString();
+  });
+
   return {
     tvlPercentage,
     totalVolumeOfVotesPercentage,
     bonusEligibleTokens,
     numberOfStakersAndLockers,
+    tokensToBeBurned,
   };
 }
