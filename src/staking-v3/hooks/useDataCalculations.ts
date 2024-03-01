@@ -56,12 +56,11 @@ export function useDataCalculations() {
 
   const tokensToBeBurned = computed(() => {
     // Calculate the sum of tokens to be burned
-    const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: BigInt, i) => {
+    const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: bigint, i) => {
       const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
       const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
       const tokensForTier =
-        ((BigInt(reward.toString()) * (BigInt(slotsPerTier) - BigInt(dappsInTier))) /
-          BigInt(slotsPerTier)) *
+        ((reward * (BigInt(slotsPerTier) - BigInt(dappsInTier))) / BigInt(slotsPerTier)) *
         BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
 
       return acc + tokensForTier;
