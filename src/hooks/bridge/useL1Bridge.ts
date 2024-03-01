@@ -17,9 +17,10 @@ import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { WatchCallback, computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
+import { EthereumProvider } from '../types/CustomSignature';
 
 const eth = {
   symbol: 'ETH',
@@ -58,6 +59,7 @@ export const useL1Bridge = () => {
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
+  const providerChainId = ref<number>(0);
 
   const resetStates = (): void => {
     bridgeAmt.value = '';
@@ -219,11 +221,15 @@ export const useL1Bridge = () => {
   const setErrorMsg = (): void => {
     if (isLoading.value) return;
     const bridgeAmtRef = Number(bridgeAmt.value);
+    const providerChainIdRef = providerChainId.value;
+    const selectedTokenRef = selectedToken.value;
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
-          token: selectedToken.value.symbol,
+          token: selectedTokenRef.symbol,
         });
+      } else if (providerChainIdRef !== fromChainId.value) {
+        errMsg.value = t('warning.selectedInvalidNetworkInWallet');
       } else {
         errMsg.value = '';
       }
@@ -247,13 +253,32 @@ export const useL1Bridge = () => {
     resetStates();
   };
 
-  const handleNetwork = async (): Promise<void> => {
+  const setProviderChainId: WatchCallback<[EthereumProvider | undefined]> = async (
+    [provider],
+    _,
+    registerCleanup
+  ) => {
     try {
-      if (!web3Provider.value || !ethProvider.value) return;
-      const connectedNetwork = await web3Provider.value!.eth.net.getId();
-      if (connectedNetwork !== fromChainId.value) {
+      if (!provider || !web3Provider.value || !ethProvider.value) return;
+      const chainId = await web3Provider.value.eth.getChainId();
+      providerChainId.value = chainId;
+
+      providerChainId.value = await web3Provider.value!.eth.net.getId();
+      if (providerChainId.value !== fromChainId.value) {
         await setupNetwork({ network: fromChainId.value, provider: ethProvider.value });
       }
+
+      const handleChainChanged = (chainId: string) => {
+        providerChainId.value = Number(chainId);
+      };
+
+      //subscribe to chainChanged event
+      provider.on('chainChanged', handleChainChanged);
+
+      registerCleanup(() => {
+        // unsubscribe from chainChanged event to prevent memory leak
+        provider.removeListener('chainChanged', handleChainChanged);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -299,11 +324,15 @@ export const useL1Bridge = () => {
     return hash;
   };
 
-  watchEffect(setErrorMsg);
+  watch([ethProvider], setProviderChainId, { immediate: true });
+
+  watch([providerChainId, isLoading, bridgeAmt, selectedToken], setErrorMsg, {
+    immediate: true,
+  });
+
   watch([fromChainName, toChainName, currentAccount, selectedToken], setBridgeBalance, {
     immediate: true,
   });
-  watch([fromChainName], handleNetwork, { immediate: true });
   watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
 
   const debounceDelay = 500;

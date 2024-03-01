@@ -95,11 +95,12 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
 
     const network = getMainOrTestNet();
     const contractAddress =
-      network === 'mainnet' ? EthBridgeNetworkName.Ethereum : EthBridgeNetworkName.Sepolia;
+      network === 'mainnet'
+        ? EthBridgeContract[EthBridgeNetworkName.Ethereum]
+        : EthBridgeContract[EthBridgeNetworkName.Sepolia];
 
     const isAggregateContract =
       contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
-
     const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
 
@@ -134,7 +135,6 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
         deposit_cnt,
         Number(network_id)
       );
-
       const data = contract.methods
         .claimAsset(
           merkle_proof,

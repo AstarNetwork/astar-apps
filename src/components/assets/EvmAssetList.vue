@@ -51,6 +51,7 @@ import { useNetworkInfo } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { PropType, computed, defineComponent, ref } from 'vue';
 import { useStore } from 'src/store';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   components: {
@@ -72,9 +73,18 @@ export default defineComponent({
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
     const { isMainnet, isZkEvm } = useNetworkInfo();
-    const isListReady = computed<boolean>(
-      () => !!(!isMainnet.value || props.tokens.length > 0 || isZkEvm.value)
-    );
+    const isListReady = computed<boolean>(() => {
+      const importedEvmTokens = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
+      const tokensData = importedEvmTokens ? JSON.parse(importedEvmTokens) : [];
+      const isImportedTokens = tokensData.length > 0;
+      const baseCondition = !isMainnet.value || props.tokens.length > 0;
+
+      if (isImportedTokens) {
+        return !!baseCondition;
+      } else {
+        return !!(baseCondition || isZkEvm.value);
+      }
+    });
 
     const filteredTokens = computed<Erc20Token[] | []>(() => {
       if (!props.tokens) return [];

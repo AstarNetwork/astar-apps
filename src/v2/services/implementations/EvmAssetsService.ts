@@ -26,7 +26,6 @@ export class EvmAssetsService implements IEvmAssetsService {
       currentNetworkIdx,
       isFetchUsd
     );
-    console.log('assets', assets);
     let ttlEvmUsdAmount = 0;
 
     assets.forEach((it) => {
