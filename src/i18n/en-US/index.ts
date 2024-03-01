@@ -1000,7 +1000,7 @@ export default {
       fromChainBal: 'From Chain Balance',
       destChainBal: 'Destination Chain Balance',
       tokenHasBeenAdded: 'The token has been added already',
-      tokenNotSupported: "This token isn't supported",
+      tokenNotSupported: "This token isn't supported bridging from {network}",
       interactCarefully: 'Interact carefully with new or suspicious tokens',
     },
   },

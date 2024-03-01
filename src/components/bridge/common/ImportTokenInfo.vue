@@ -127,7 +127,7 @@
           <span> {{ $t('bridge.tokenInfo.tokenHasBeenAdded') }}</span>
         </span>
         <span v-else-if="isBlackListToken" class="text--error">
-          {{ $t('bridge.tokenInfo.tokenNotSupported') }}
+          {{ $t('bridge.tokenInfo.tokenNotSupported', { network: fromChainName }) }}
         </span>
         <span v-else class="text--error">{{ $t('bridge.tokenInfo.interactCarefully') }}</span>
       </div>
