@@ -130,7 +130,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.ASTAR_ZKEVM,
     isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
-    blockscout: 'https://astar-zkevm.blockscout.com',
+    blockscout: 'https://astar-zkevm.explorer.startale.com',
     evmChainId: '3776',
     evmEndpoints: ['https://rpc.startale.com/astar-zkevm'],
     faucetEndpoint: '',

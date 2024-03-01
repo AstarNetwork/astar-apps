@@ -17,7 +17,7 @@ export function usePrice() {
     if (!tokenSymbolRef) return;
     try {
       if (isMainnet.value) {
-        const nativeToken = isAstarZkEvm ? 'ETH' : tokenSymbolRef;
+        const nativeToken = isAstarZkEvm.value ? 'ETH' : tokenSymbolRef;
         nativeTokenUsd.value = await getUsdBySymbol(nativeToken);
       }
     } catch (error: any) {
