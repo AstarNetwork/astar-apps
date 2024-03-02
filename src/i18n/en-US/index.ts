@@ -873,6 +873,9 @@ export default {
       'The total number of dApps that are currently listed on dApp Staking.',
     stakingAndLockingAccounts: 'Staking & Locking accounts',
     numberOfStakersAndLockersDescription: 'The total number of dApp Staking & Locking users.',
+    tokensToBeBurned: 'Total Tokens to be Burned',
+    tokensToBeBurnedDescription:
+      'Estimated Total Number of Tokens to be Burned in this Build&Earn Subperiod',
     tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',

@@ -74,6 +74,12 @@
       >
         {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
       </data-card>
+      <data-card
+        :title="$t('stakingV3.tokensToBeBurned')"
+        :description="$t('stakingV3.tokensToBeBurnedDescription')"
+      >
+        <format-balance :balance="tokensToBeBurned.toString() ?? ''" />
+      </data-card>
     </div>
 
     <div class="row--title">{{ $t('stakingV3.stakerRewards') }}</div>
@@ -131,6 +137,7 @@ export default defineComponent({
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       numberOfStakersAndLockers,
+      tokensToBeBurned,
     } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
@@ -167,6 +174,7 @@ export default defineComponent({
       unfilledSlots,
       tiersConfiguration,
       tvlPercentage,
+      tokensToBeBurned,
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,
