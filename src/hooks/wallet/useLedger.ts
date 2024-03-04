@@ -81,9 +81,5 @@ export const useLedger = () => {
 
   watch([currentAccount], handleLedgerData, { immediate: true });
 
-  watchEffect(() => {
-    console.log('isLedger', isLedger.value);
-  });
-
   return { isLedgerNanoS, isLedger };
 };
