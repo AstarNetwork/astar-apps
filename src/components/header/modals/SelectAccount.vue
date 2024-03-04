@@ -291,7 +291,7 @@ export default defineComponent({
 
     const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
       localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
-      store.commit('general/setIsLedger', isLedger);
+      // store.commit('general/setIsLedger', isLedger);
       if (isLedger) {
         try {
           // Memo: send a popup request for permission(first time only)
@@ -305,6 +305,7 @@ export default defineComponent({
             isLedgerReady.value = true;
             const transport = (ledgerData as any).__internal__app.transport;
             transport.close();
+            store.commit('general/setIsLedger', isLedger);
           }
         } catch (error: any) {
           console.error(error);
