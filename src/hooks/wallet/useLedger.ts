@@ -1,7 +1,7 @@
 import { Ledger } from '@polkadot/hw-ledger';
 import { useAccount } from 'src/hooks/useAccount';
 import { useStore } from 'src/store';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 enum LedgerId {
@@ -80,6 +80,10 @@ export const useLedger = () => {
   };
 
   watch([currentAccount], handleLedgerData, { immediate: true });
+
+  watchEffect(() => {
+    console.log('isLedger', isLedger.value);
+  });
 
   return { isLedgerNanoS, isLedger };
 };

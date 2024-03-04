@@ -291,7 +291,6 @@ export default defineComponent({
 
     const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
       localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
-      // store.commit('general/setIsLedger', isLedger);
       if (isLedger) {
         try {
           // Memo: send a popup request for permission(first time only)
