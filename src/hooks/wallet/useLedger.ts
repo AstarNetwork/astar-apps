@@ -21,7 +21,7 @@ export const useLedger = () => {
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isLedger = computed<boolean>(() => {
     const isLedger = store.getters['general/isLedger'];
-    return !isH160 && isLedger;
+    return !isH160.value && isLedger;
   });
 
   const handleReset = (): void => {
