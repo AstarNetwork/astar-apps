@@ -5,7 +5,8 @@
     </template>
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
-      <claim-warning-banner :network="currentNetworkIdx" />
+      <yoki-banner v-if="isZkEvm" />
+      <claim-warning-banner v-else :network="currentNetworkIdx" />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
@@ -19,22 +20,25 @@
 
 <script lang="ts">
 import { defineComponent, watchEffect, computed } from 'vue';
-import { useBreakpoints, useGasPrice } from 'src/hooks';
+import { useBreakpoints, useGasPrice, useNetworkInfo } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import { useQuasar } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import ClaimWarningBanner from 'src/components/header/ClaimWarningBanner.vue';
+import YokiBanner from 'src/components/header/YokiBanner.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
     ClaimWarningBanner,
+    YokiBanner,
   },
   setup() {
     const store = useStore();
+    const { isZkEvm } = useNetworkInfo();
     const { width, screenSize } = useBreakpoints();
     const storedThemeColor = localStorage.getItem(LOCAL_STORAGE.THEME_COLOR);
     const isDark = storedThemeColor
@@ -70,6 +74,7 @@ export default defineComponent({
       screenSize,
       currentNetworkIdx,
       bg,
+      isZkEvm,
     };
   },
 });

@@ -74,6 +74,8 @@ export default {
     ledgerUsers: 'Ledger Users',
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
+    yoki: 'Yoki Origins',
+    yokiSignUp: 'Astar zkEVM launch campaign is coming soon!',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
