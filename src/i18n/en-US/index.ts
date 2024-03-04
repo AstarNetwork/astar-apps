@@ -875,6 +875,9 @@ export default {
       'The total number of dApps that are currently listed on dApp Staking.',
     stakingAndLockingAccounts: 'Staking & Locking accounts',
     numberOfStakersAndLockersDescription: 'The total number of dApp Staking & Locking users.',
+    tokensToBeBurned: 'Total Tokens to be Burned',
+    tokensToBeBurnedDescription:
+      'Estimated Total Number of Tokens to be Burned in this Build&Earn Subperiod',
     tokenomics: 'tokenomics',
     general: 'General',
     totalValueLocked: 'Total Value Locked ({token})',
@@ -994,6 +997,7 @@ export default {
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+    gelatoApiError: 'Bridge UI is not available, please try again later',
     tokenInfo: {
       invalidTokenAddress: 'Invalid token address',
       tokenAddress: '{network} token address',
