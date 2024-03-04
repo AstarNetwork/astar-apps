@@ -261,11 +261,15 @@ export const useL1Bridge = () => {
     try {
       if (!provider || !web3Provider.value || !ethProvider.value) return;
       const chainId = await web3Provider.value.eth.getChainId();
+      console.log('chainId', chainId);
+      console.log('fromChainId.value', fromChainId.value);
       providerChainId.value = chainId;
 
       providerChainId.value = await web3Provider.value!.eth.net.getId();
       if (providerChainId.value !== fromChainId.value) {
         await setupNetwork({ network: fromChainId.value, provider: ethProvider.value });
+        const chainId = await web3Provider.value.eth.getChainId();
+        providerChainId.value = chainId;
       }
 
       const handleChainChanged = (chainId: string) => {
@@ -325,7 +329,6 @@ export const useL1Bridge = () => {
   };
 
   watch([ethProvider], setProviderChainId, { immediate: true });
-
   watch([providerChainId, isLoading, bridgeAmt, selectedToken], setErrorMsg, {
     immediate: true,
   });
