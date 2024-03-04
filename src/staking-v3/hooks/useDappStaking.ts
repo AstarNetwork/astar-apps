@@ -80,7 +80,7 @@ export function useDappStaking() {
   });
 
   const totalStakerRewards = computed<BigInt>(
-    () => BigInt(rewards.value.staker.amount) + BigInt(rewards.value.bonus)
+    () => rewards.value.staker.amount + rewards.value.bonus
   );
 
   const constants = computed<Constants | undefined>(() => {
