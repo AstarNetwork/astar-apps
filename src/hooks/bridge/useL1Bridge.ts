@@ -261,8 +261,6 @@ export const useL1Bridge = () => {
     try {
       if (!provider || !web3Provider.value || !ethProvider.value) return;
       const chainId = await web3Provider.value.eth.getChainId();
-      console.log('chainId', chainId);
-      console.log('fromChainId.value', fromChainId.value);
       providerChainId.value = chainId;
 
       providerChainId.value = await web3Provider.value!.eth.net.getId();
