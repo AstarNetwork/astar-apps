@@ -230,6 +230,9 @@ export default defineComponent({
     let previousAddress: string | undefined = undefined;
     watch([isEthWallet, currentWallet, isH160, currentAccountName], async () => {
       const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
+      console.log('isEthWallet.value', isEthWallet.value);
+      console.log('currentWallet.value', currentWallet.value);
+      console.log('isLockdropAccount', isLockdropAccount);
       setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
 
       // Subscribe to an account specific dApp staking v3 data.
