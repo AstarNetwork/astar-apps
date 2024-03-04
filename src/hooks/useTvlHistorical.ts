@@ -3,7 +3,6 @@ import { $api } from 'src/boot/api';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
 import {
-  getDappStakers,
   getTvlData,
   filterTvlData,
   mergeTvlArray,
@@ -31,11 +30,6 @@ export function useTvlHistorical() {
   const lenStakers = ref<string>('0');
 
   const { currentNetworkName } = useNetworkInfo();
-
-  const fetchDappStakers = async (api: ApiPromise) => {
-    const result = await getDappStakers({ api });
-    lenStakers.value = `${result.toLocaleString('en-US')} stakers`;
-  };
 
   const loadData = async (network: string): Promise<void> => {
     const {
@@ -147,11 +141,7 @@ export function useTvlHistorical() {
       const api = $api;
       try {
         if (!currentNetworkName.value || !currentNetworkName.value.length || !api) return;
-        await Promise.all([
-          loadData(currentNetworkName.value.toLowerCase()),
-          fetchDappStakers(api),
-          getTvl(),
-        ]);
+        await Promise.all([loadData(currentNetworkName.value.toLowerCase()), getTvl()]);
       } catch (error) {
         console.error(error);
       }
@@ -168,7 +158,6 @@ export function useTvlHistorical() {
     ecosystemTvlAmount,
     ecosystemTvl,
     dappStakingTvl,
-    lenStakers,
     dappStakingTvlTokens,
     handleMergedTvlFilterChanged,
     handleDappStakingTvlFilterChanged,
