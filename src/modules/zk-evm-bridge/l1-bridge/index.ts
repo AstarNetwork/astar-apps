@@ -94,11 +94,9 @@ export interface ZkToken {
   image?: string;
 }
 
-// Ref: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/src/constants.ts#L73
 export const TOKEN_BLACKLIST = [
-  // WETH
+  // WETH (Ethereum)
   '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-  // '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-  // '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
-  '',
+  // WETH (Astar zkEVM)
+  '0xE9CC37904875B459Fa5D0FE37680d36F1ED55e38',
 ];
