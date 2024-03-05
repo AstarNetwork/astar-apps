@@ -175,8 +175,7 @@ export const DEFAULT_TOKENS = [
     decimal: '18',
     symbol: 'MATIC',
     name: 'Matic Token',
-    image:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png',
+    image: 'https://assets.coingecko.com/coins/images/4713/standard/polygon.png?1698233745',
     isWrappedToken: false,
     isXC20: false,
     wrapUrl: null,
@@ -189,8 +188,7 @@ export const DEFAULT_TOKENS = [
     decimal: '18',
     symbol: 'MATIC',
     name: 'Matic Token',
-    image:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png',
+    image: 'https://assets.coingecko.com/coins/images/4713/standard/polygon.png?1698233745',
     isWrappedToken: false,
     isXC20: false,
     wrapUrl: null,
