@@ -259,7 +259,7 @@ export default defineComponent({
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isEnabledWithdrawal = computed<boolean>(() => isZkatana.value);
+    const isEnabledWithdrawal = computed<boolean>(() => true);
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
