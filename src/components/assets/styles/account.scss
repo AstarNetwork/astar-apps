@@ -121,7 +121,7 @@
   // zkEVM
   &.network-3 {
     .text--address {
-      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
+      background: linear-gradient(90deg, #0047ff 0%, #00d4ff 98%);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -328,7 +328,7 @@
     .wallet-tab {
       .btn {
         &.active {
-          background: linear-gradient(270deg, #226dff 25%, #703ac2 100%);
+          background: linear-gradient(90deg, #0047ff 0%, #00d4ff 98%);
         }
       }
     }
