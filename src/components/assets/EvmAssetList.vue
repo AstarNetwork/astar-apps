@@ -102,6 +102,15 @@ export default defineComponent({
           return isFoundToken ? token : undefined;
         })
         .filter((it) => it !== undefined)
+        .sort((a, b) => {
+          if (a!.symbol < b!.symbol) {
+            return -1;
+          }
+          if (a!.symbol > b!.symbol) {
+            return 1;
+          }
+          return 0;
+        })
         .sort((a, b) => Number(b?.userBalanceUsd) - Number(a?.userBalanceUsd)) as Erc20Token[];
       return result.length > 0 ? result : [];
     });

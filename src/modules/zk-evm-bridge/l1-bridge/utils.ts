@@ -13,6 +13,7 @@ import {
   ZkChainId,
   ZkNetworkId,
   zkEvmApi,
+  DEFAULT_TOKENS,
 } from 'src/modules/zk-evm-bridge';
 
 import { buildWeb3Instance } from 'src/config/web3';
@@ -145,4 +146,22 @@ export const getBridgedTokenAddress = async ({
 
 export const getShortNetworkName = (network: string) => {
   return network.replace('Testnet', '');
+};
+
+// Memo: add default tokens to Astar zkEVM assets
+export const handleAddDefaultTokens = (): void => {
+  try {
+    const importedEvmTokens = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
+    const tokensData = importedEvmTokens ? JSON.parse(importedEvmTokens) : [];
+    const mergedArray = [...DEFAULT_TOKENS, ...tokensData];
+    const seen = new Set();
+    const updatedTokens = mergedArray.filter((token: any) => {
+      const duplicate = seen.has(`${token.srcChainId}-${token.address}`);
+      seen.add(`${token.srcChainId}-${token.address}`);
+      return !duplicate;
+    });
+    localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(updatedTokens));
+  } catch (error) {
+    console.error(error);
+  }
 };

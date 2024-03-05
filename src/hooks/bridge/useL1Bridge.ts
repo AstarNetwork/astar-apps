@@ -159,7 +159,7 @@ export const useL1Bridge = () => {
       tokens = [eth];
     }
 
-    zkTokens.value = await Promise.all(
+    const balTokens = await Promise.all(
       tokens.map(async (token: ZkToken) => {
         let fromChainBalance = '0';
         fromChainBalance = await getTokenBal({
@@ -174,6 +174,31 @@ export const useL1Bridge = () => {
         };
       })
     );
+
+    const sortedTokens = balTokens
+      .sort((a, b) => {
+        if (a.symbol < b.symbol) {
+          return -1;
+        }
+        if (a.symbol > b.symbol) {
+          return 1;
+        }
+        return 0;
+      })
+      .sort((a, b) => Number(b.fromChainBalance) - Number(a.fromChainBalance));
+
+    const moveEthToFront = (tokens: ZkToken[]): ZkToken[] => {
+      const ethIndex = tokens.findIndex((token) => token.symbol === 'ETH');
+      if (ethIndex > -1) {
+        // Memo: Remove the ETH token from its current position
+        const [ethToken] = tokens.splice(ethIndex, 1);
+        // Memo Add the ETH token to the beginning of the array
+        tokens.unshift(ethToken);
+      }
+      return tokens;
+    };
+
+    zkTokens.value = moveEthToFront(sortedTokens);
   };
 
   const setZkTokens = async (token: ZkToken): Promise<void> => {

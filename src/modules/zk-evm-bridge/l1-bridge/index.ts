@@ -93,10 +93,3 @@ export interface ZkToken {
   toChainBalance?: number;
   image?: string;
 }
-
-export const TOKEN_BLACKLIST = [
-  // WETH (Ethereum)
-  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-  // WETH (Astar zkEVM)
-  '0xE9CC37904875B459Fa5D0FE37680d36F1ED55e38',
-];
