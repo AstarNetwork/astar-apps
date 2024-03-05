@@ -253,8 +253,8 @@ export const useL1Bridge = () => {
     resetStates();
   };
 
-  const setProviderChainId: WatchCallback<[EthereumProvider | undefined]> = async (
-    [provider],
+  const setProviderChainId: WatchCallback<[number, EthereumProvider | undefined]> = async (
+    [fromChainId, provider],
     _,
     registerCleanup
   ) => {
@@ -264,8 +264,8 @@ export const useL1Bridge = () => {
       providerChainId.value = chainId;
 
       providerChainId.value = await web3Provider.value!.eth.net.getId();
-      if (providerChainId.value !== fromChainId.value) {
-        await setupNetwork({ network: fromChainId.value, provider: ethProvider.value });
+      if (providerChainId.value !== fromChainId) {
+        await setupNetwork({ network: fromChainId, provider: ethProvider.value });
         const chainId = await web3Provider.value.eth.getChainId();
         providerChainId.value = chainId;
       }
@@ -326,7 +326,7 @@ export const useL1Bridge = () => {
     return hash;
   };
 
-  watch([ethProvider], setProviderChainId, { immediate: true });
+  watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
   watch([providerChainId, isLoading, bridgeAmt, selectedToken], setErrorMsg, {
     immediate: true,
   });
