@@ -75,7 +75,7 @@ export default {
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
     yoki: 'Yoki Origins',
-    yokiSignUp: 'Astar zkEVM launch experience is coming soon!',
+    yokiSignUp: 'Yoki Origins is a user onboarding journey on Astar zkEVM. Coming Soon!',
     stakingNotSupportZkEvm:
       'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
   },
