@@ -214,7 +214,6 @@ export default defineComponent({
       l1Name,
       l2Name,
       relayBridgeAppLink,
-      isZkEvm,
       substrateNetwork,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,
