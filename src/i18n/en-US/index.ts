@@ -44,6 +44,14 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
+  modals: {
+    yokiOrigins: {
+      introducing: 'Introducing a new experience on zkEVM',
+      experienceNow: 'Experience now',
+      learnMore: 'Learn more',
+      keep: 'Keep me on the Portal',
+    },
+  },
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
