@@ -9,7 +9,7 @@
           {{ $t('warning.yokiSignUp') }}
         </span>
       </span>
-      <astar-icon-arrow-right />
+      <!-- <astar-icon-arrow-right /> -->
       <!-- </a> -->
     </div>
   </div>
