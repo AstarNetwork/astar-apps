@@ -5,7 +5,7 @@
         <span>{{ $t('bridge.selectBridge') }}</span>
       </div>
       <div class="container--selection">
-        <div v-if="isZkEvm" class="column--selection">
+        <div class="column--selection">
           <button>
             <a
               :href="relayBridgeAppLink"
@@ -120,8 +120,9 @@
           </button>
           <p class="text--bridge-details">{{ $t('bridge.astarBridge.text2') }}</p>
         </div>
-
-        <div v-if="!isZkEvm" class="column--selection">
+      </div>
+      <div class="container--selection">
+        <div class="column--selection">
           <button>
             <a
               :href="cbridgeAppLink"
