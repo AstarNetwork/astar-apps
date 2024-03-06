@@ -1,7 +1,11 @@
 <template>
   <div :class="`wrapper--dapp-statistics ${small ? 'small' : ''}`">
     <div class="row--data">
-      <button class="button--vote-stake" @click="navigateToVote(dapp.extended?.address)">
+      <button
+        :disabled="isZkEvm"
+        class="button--vote-stake"
+        @click="navigateToVote(dapp.extended?.address)"
+      >
         <span>{{ $t('stakingV3.dapp.voteAndStake') }}</span>
         <vote-stake-button-bg />
       </button>
@@ -25,6 +29,7 @@ import { defineComponent, PropType } from 'vue';
 import KpiCard from '../KpiCard.vue';
 import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -45,9 +50,10 @@ export default defineComponent({
   },
   setup(props) {
     const { getDappTier } = useDappStaking();
+    const { isZkEvm } = useNetworkInfo();
     const { navigateToVote } = useDappStakingNavigation();
 
-    return { getDappTier, navigateToVote };
+    return { getDappTier, navigateToVote, isZkEvm };
   },
 });
 </script>
