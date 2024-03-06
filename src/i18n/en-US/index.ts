@@ -76,6 +76,8 @@ export default {
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
     yoki: 'Yoki Origins',
     yokiSignUp: 'Astar zkEVM launch campaign is coming soon!',
+    stakingNotSupportZkEvm:
+      'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -754,6 +756,7 @@ export default {
         'Unstaking is rejected since the period in which past stake was active has passed.',
       ZeroAmount: 'Amount must be greater than 0.',
       LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
+      WrongNetworkZkEvm: 'dApp staking is not available on zkEVM network.',
     },
     innovativeWayOfStaking:
       'Innovative way of staking, only at Astar. Where ecosystem grow together',
@@ -797,7 +800,7 @@ export default {
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
     projectLeaderboards: 'Project Leaderboards',
-    rewardPerDay: 'Reward per era',
+    rewardPerDay: 'Rewards per era',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
@@ -981,8 +984,7 @@ export default {
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
-      text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
+      text2: 'Available on Astar zkEVM. Switch the network to use it.',
       lean: '(learn more)',
     },
     astarBridge: {
