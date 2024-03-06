@@ -75,6 +75,15 @@ export function useNetworkInfo() {
       : chain;
   });
 
+  const dappStakingCurrency = computed<string>(() => {
+    // Memo: avoid displaying ETH'
+    if (isZkEvm.value) {
+      return isAstarZkEvm.value ? 'ASTAR' : 'SBY';
+    } else {
+      return nativeTokenSymbol.value;
+    }
+  });
+
   const currentNetworkName = computed<string>(() => {
     if (isZkEvm.value) {
       return providerEndpoints[currentNetworkIdx.value].displayName.replace(' Network', '');
@@ -118,5 +127,6 @@ export function useNetworkInfo() {
     isAllowLockdropDispatch,
     isZkatana,
     isAstarZkEvm,
+    dappStakingCurrency,
   };
 }
