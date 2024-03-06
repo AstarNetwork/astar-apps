@@ -981,8 +981,7 @@ export default {
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
-      text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
+      text2: 'Available on Astar zkEVM(L2). Switch the network to use it.',
       lean: '(learn more)',
     },
     astarBridge: {

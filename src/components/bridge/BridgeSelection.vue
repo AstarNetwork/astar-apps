@@ -31,15 +31,15 @@
               </div>
             </component>
           </button>
-          <p class="text--bridge-details">
+          <p v-if="!isEnableEthBridge" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.text2') }}
-            <a
+            <!-- <a
               href="https://docs.astar.network/docs/build/zkEVM/bridge-to-zkevm"
               target="_blank"
               rel="noopener noreferrer"
             >
               {{ $t('bridge.ethereumBridge.lean') }}
-            </a>
+            </a> -->
           </p>
         </div>
 
