@@ -74,6 +74,8 @@ export default {
     ledgerUsers: 'Ledger Users',
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
+    yoki: 'Yoki Origins',
+    yokiSignUp: 'Astar zkEVM launch campaign is coming soon!',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -975,6 +977,7 @@ export default {
     completed: 'Completed',
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
+    disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     ethereumBridge: {
       title: 'Ethereum Bridge',
       text: 'Bridge assets between {l1} and {l2}',
@@ -1003,7 +1006,7 @@ export default {
       fromChainBal: 'From Chain Balance',
       destChainBal: 'Destination Chain Balance',
       tokenHasBeenAdded: 'The token has been added already',
-      tokenNotSupported: "This token isn't supported on zkEVM",
+      tokenNotSupported: "This token isn't supported bridging from {network}",
       interactCarefully: 'Interact carefully with new or suspicious tokens',
     },
   },

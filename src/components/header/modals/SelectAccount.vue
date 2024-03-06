@@ -305,6 +305,8 @@ export default defineComponent({
             isLedgerReady.value = true;
             const transport = (ledgerData as any).__internal__app.transport;
             transport.close();
+            localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
+            store.commit('general/setIsLedger', isLedger);
           }
         } catch (error: any) {
           console.error(error);

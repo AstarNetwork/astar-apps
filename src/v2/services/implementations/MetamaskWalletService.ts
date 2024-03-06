@@ -1,9 +1,14 @@
-import { ethers } from 'ethers';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
+import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { handleCheckProviderChainId } from 'src/config/web3';
+import lockdropDispatchAbi from 'src/config/web3/abi/dispatch-lockdrop.json';
+import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmExplorerUrl } from 'src/links';
+import { getRawEvmTransaction } from 'src/modules/evm';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -17,10 +22,6 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { getRawEvmTransaction } from 'src/modules/evm';
-import * as utils from 'src/hooks/custom-signature/utils';
-import lockdropDispatchAbi from 'src/config/web3/abi/dispatch-lockdrop.json';
-import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AbiItem } from 'web3-utils';
 
 @injectable()
@@ -165,6 +166,10 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   }: ParamSendEvmTransaction): Promise<string> {
     try {
       const web3 = new Web3(this.provider as any);
+      const resultCheckProvider = await handleCheckProviderChainId(this.provider);
+      if (!resultCheckProvider) {
+        throw Error('Please connect to the correct network in your wallet');
+      }
       const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
 
       // Memo: passing this variable (estimatedGas) to `sendTransaction({gas: estimatedGas})` causes an error when sending `withdrawal` transactions.

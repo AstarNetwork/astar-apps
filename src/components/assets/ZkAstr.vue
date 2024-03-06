@@ -26,7 +26,8 @@
           </button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+            <!-- <span class="text--tooltip">{{ $t('assets.bridge') }}</span> -->
+            <span class="text--tooltip">Coming soon!</span>
           </q-tooltip>
         </router-link>
 
@@ -36,7 +37,8 @@
           </button>
           <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
           <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.send') }}</span>
+            <!-- <span class="text--tooltip">{{ $t('assets.send') }}</span> -->
+            <span class="text--tooltip">Coming soon!</span>
           </q-tooltip>
         </router-link>
       </div>
@@ -45,7 +47,6 @@
 </template>
 <script lang="ts">
 import { getUsdBySymbol, truncate } from '@astar-network/astar-sdk-core';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { useNetworkInfo } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';

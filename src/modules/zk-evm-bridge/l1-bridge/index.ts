@@ -1,12 +1,14 @@
 import ABI_ZK_EVM_BRIDGE from 'src/config/web3/abi/zkevm-bridge-abi.json';
+import ABI_ZK_EVM_AGGREGATED_BRIDGE from 'src/config/web3/abi/zkevm-aggregated-bridge-abi.json';
 export * from './utils';
 
+// Todo: combine to one abi after zKatana has been migrated
 export const ZK_EVM_BRIDGE_ABI = ABI_ZK_EVM_BRIDGE;
+export const ZK_EVM_AGGREGATED_BRIDGE_ABI = ABI_ZK_EVM_AGGREGATED_BRIDGE;
 
-// Todo: update to https
 export const zkEvmApi = {
   testnet: 'https://bridge-api.zkatana.gelato.digital',
-  mainnet: 'https://akiba-bridge-api.astar.network',
+  mainnet: 'https://bridge-api.astar-zkevm.gelato.digital',
 };
 
 export enum EthBridgeNetworkName {
@@ -21,15 +23,14 @@ export enum ZkChainId {
   'Sepolia' = 11155111,
   'Zkatana' = 1261120,
   'Ethereum' = 1,
-  'AstarZk' = 9999999, // Todo: update
+  'AstarZk' = 3776,
 }
 
-// Todo: check mainnet contract
 export const EthBridgeContract = {
   [EthBridgeNetworkName.Sepolia]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
-  [EthBridgeNetworkName.Ethereum]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.Ethereum]: '0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe',
   [EthBridgeNetworkName.Zkatana]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
-  [EthBridgeNetworkName.AstarZk]: '0xA34BBAf52eE84Cd95a6d5Ac2Eab9de142D4cdB53',
+  [EthBridgeNetworkName.AstarZk]: '0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe',
 };
 
 export const EthBridgeChainId = {
@@ -43,7 +44,7 @@ export const EthBridgeChainIdToName = {
   [ZkChainId.Sepolia]: EthBridgeNetworkName.Sepolia,
   [ZkChainId.Ethereum]: EthBridgeNetworkName.Ethereum,
   [ZkChainId.Zkatana]: EthBridgeNetworkName.Zkatana,
-  [ZkChainId.AstarZk]: EthBridgeNetworkName.AstarZk, // Todo: update
+  [ZkChainId.AstarZk]: EthBridgeNetworkName.AstarZk,
 };
 
 export const zkBridgeIcon = {
@@ -78,7 +79,8 @@ export interface BridgeHistory {
 
 export enum ZkNetworkId {
   L1 = 0,
-  L2 = 1,
+  L2_Testnet = 1,
+  L2_Mainnet = 2,
 }
 
 export interface ZkToken {
@@ -91,12 +93,3 @@ export interface ZkToken {
   toChainBalance?: number;
   image?: string;
 }
-
-// Ref: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/src/constants.ts#L73
-export const TOKEN_BLACKLIST = [
-  // WETH
-  // '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-  // '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-  // '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
-  '',
-];

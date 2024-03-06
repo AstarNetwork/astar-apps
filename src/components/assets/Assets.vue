@@ -198,7 +198,7 @@ export default defineComponent({
     );
 
     const handleEvmAssetLoader = (): void => {
-      if (isMainnet.value && isH160.value) {
+      if (isMainnet.value && isH160.value && !isZkEvm.value) {
         const isAssets = evmAssets.value.assets.length > 0;
         store.commit('general/setLoading', !isAssets);
       }
