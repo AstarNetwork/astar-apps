@@ -979,20 +979,28 @@ export default {
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     ethereumBridge: {
-      title: 'Ethereum Bridge',
-      text: 'Bridge assets between {l1} and {l2}',
+      title: 'Native Bridge',
+      tag: 'ERC20',
+      text: 'Bridge ERC20 assets between {l1} and {l2}.',
       text2:
         'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
-      lean: '(learn more)',
+      learn: '(learn more)',
     },
     astarBridge: {
-      title: 'Astar Bridge',
-      text: 'Bridge ASTR token and assets to {l2} from {substrateNetwork} EVM',
+      title: 'LayerZero',
+      tag: 'ASTR',
+      text: 'Bridge ASTR token between {l2} and {substrateNetwork} EVM.',
       text2: 'Currently under development',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Celer Bridge',
-      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
+      tag: 'ERC20',
+      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge.',
+    },
+    relayBridge: {
+      title: 'Relay Link',
+      tag: 'ETH',
+      text: 'Low cost, instant bridge. Bridge between {l1} or other L2 chains and {l2}.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:

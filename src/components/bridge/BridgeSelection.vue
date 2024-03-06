@@ -5,6 +5,40 @@
         <span>{{ $t('bridge.selectBridge') }}</span>
       </div>
       <div class="container--selection">
+        <div v-if="isZkEvm" class="column--selection">
+          <button>
+            <a
+              :href="relayBridgeAppLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/relay_bridge_logo.svg')"
+                    alt="cbridge"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.relayBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.relayBridge.text', { l1: l1Name, l2: l2Name }) }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
+
         <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
@@ -22,6 +56,11 @@
                 </div>
               </div>
               <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.ethereumBridge.tag') }}
+                  </q-chip>
+                </div>
                 <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
@@ -38,7 +77,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ $t('bridge.ethereumBridge.lean') }}
+              {{ $t('bridge.ethereumBridge.learn') }}
             </a>
           </p>
         </div>
@@ -54,12 +93,17 @@
                 <div class="img--logo-bg">
                   <img
                     class="img--logo"
-                    :src="require('src/assets/img/chain/astar.png')"
+                    :src="require('src/assets/img/layerzero_bridge_logo.svg')"
                     alt="astar-bridge"
                   />
                 </div>
               </div>
               <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.astarBridge.tag') }}
+                  </q-chip>
+                </div>
                 <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
@@ -77,7 +121,7 @@
           <p class="text--bridge-details">{{ $t('bridge.astarBridge.text2') }}</p>
         </div>
 
-        <div class="column--selection">
+        <div v-if="!isZkEvm" class="column--selection">
           <button>
             <a
               :href="cbridgeAppLink"
@@ -95,10 +139,15 @@
                 </div>
               </div>
               <div class="row--bridge-title">
-                <span class="text--bridge-title">{{ $t('bridge.celetBridge.title') }}</span>
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.celerBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{ $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName }) }}
+                    {{ $t('bridge.celerBridge.text', { cbridgeNetworkName: cbridgeNetworkName }) }}
                   </span>
                 </div>
               </div>
@@ -111,6 +160,7 @@
 </template>
 <script lang="ts">
 import { cbridgeAppLink } from 'src/c-bridge';
+import { relayBridgeAppLink } from 'src/relay-bridge';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
@@ -162,6 +212,8 @@ export default defineComponent({
       isEnableEthBridge,
       l1Name,
       l2Name,
+      relayBridgeAppLink,
+      isZkEvm,
       substrateNetwork,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,

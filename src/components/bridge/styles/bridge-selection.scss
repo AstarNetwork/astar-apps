@@ -101,7 +101,7 @@
 .row--logo-bg {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 24px;
+  margin-bottom: 0px;
 }
 
 .img--logo-bg {
@@ -125,6 +125,12 @@
 
 .text--bridge-title {
   font-weight: 800;
+  font-size: 24px;
+  color: $navy-1;
+}
+
+.text--bridge-tag {
+  font-weight: 1000;
   font-size: 24px;
   color: $navy-1;
 }
