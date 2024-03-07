@@ -63,22 +63,27 @@ export class ZkBridgeService implements IZkBridgeService {
     try {
       const provider = getEvmProvider(this.currentWallet as any);
       const web3 = new Web3(provider as any);
-      const accountBalanceWei = await web3.eth.getBalance(param.senderAddress);
+
+      const [accountBalanceWei, gasPriceWei, rawTx] = await Promise.all([
+        web3.eth.getBalance(param.senderAddress),
+        web3.eth.getGasPrice(),
+        this.ZkBridgeRepository.getBridgeAssetData({
+          param,
+          web3,
+        }),
+      ]);
+
+      // Memo: double the transaction fee here because MetaMask estimates higher gas fee than 'getGasPrice'
+      // Fixme: find a way to duplicate how MetaMask works with fee calculation
+      const feeAdj = 2;
+      const gasPrice = Number(ethers.utils.formatEther(gasPriceWei.toString())) * feeAdj;
+
+      const estimatedGas = await web3.eth.estimateGas({ ...rawTx });
+      const txFee = gasPrice * Number(estimatedGas);
       const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
       const sendingEth = param.tokenAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
-
-      const rawTx = await this.ZkBridgeRepository.getBridgeAssetData({
-        param,
-        web3,
-      });
-
-      const gasPriceWei = await web3.eth.getGasPrice();
-      const gasPrice = ethers.utils.formatEther(gasPriceWei);
-      const estimatedGas = await web3.eth.estimateGas({ ...rawTx, gasPrice: gasPriceWei });
-      const txFeeWei = BigInt(gasPriceWei) * BigInt(estimatedGas);
-      const txFee = Number(ethers.utils.formatEther(txFeeWei.toString()));
-
-      return accountBalance - sendingEth - txFee > 0;
+      const result = accountBalance - sendingEth - txFee > 0;
+      return result;
     } catch (error) {
       return false;
     }

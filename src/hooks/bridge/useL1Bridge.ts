@@ -53,7 +53,8 @@ export const useL1Bridge = () => {
   const bridgeAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
   const fromBridgeBalance = ref<number>(0);
-  const isGasPayable = ref<boolean>(false);
+  const isGasPayable = ref<boolean | undefined>(undefined);
+  const isLoadingGasPayable = ref<boolean>(true);
   const errMsg = ref<string>('');
   const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
   const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
@@ -250,6 +251,9 @@ export const useL1Bridge = () => {
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
     const isGasPayableRef = isGasPayable.value;
+    const isLoadingGasPayableRef = isLoadingGasPayable.value;
+    const isBalanceNotEnough =
+      !isGasPayableRef && bridgeAmtRef > 0 && isApproved.value && !isLoadingGasPayableRef;
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
@@ -257,7 +261,7 @@ export const useL1Bridge = () => {
         });
       } else if (providerChainIdRef !== fromChainId.value) {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
-      } else if (!isGasPayableRef && bridgeAmtRef > 0) {
+      } else if (isBalanceNotEnough) {
         errMsg.value = t('warning.balanceNotEnough');
       } else {
         errMsg.value = '';
@@ -357,19 +361,25 @@ export const useL1Bridge = () => {
 
   const setIsGasPayable = async (): Promise<void> => {
     if (!bridgeAmt.value || !selectedToken.value.address) return;
-    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-    const destNetworkId = await getNetworkId(toChainName.value);
+    try {
+      isLoadingGasPayable.value = true;
+      const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+      const destNetworkId = await getNetworkId(toChainName.value);
 
-    const result = await zkBridgeService.dryRunBridgeAsset({
-      amount: bridgeAmt.value,
-      fromChainName: fromChainName.value,
-      toChainName: toChainName.value,
-      senderAddress: currentAccount.value,
-      tokenAddress: selectedToken.value.address,
-      decimal: selectedToken.value.decimal,
-      destNetworkId,
-    });
-    isGasPayable.value = result;
+      isGasPayable.value = await zkBridgeService.dryRunBridgeAsset({
+        amount: bridgeAmt.value,
+        fromChainName: fromChainName.value,
+        toChainName: toChainName.value,
+        senderAddress: currentAccount.value,
+        tokenAddress: selectedToken.value.address,
+        decimal: selectedToken.value.decimal,
+        destNetworkId,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      isLoadingGasPayable.value = false;
+    }
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
@@ -391,7 +401,7 @@ export const useL1Bridge = () => {
     immediate: true,
   });
 
-  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsGasPayable, {
+  watch([bridgeAmt], debouncedSetIsGasPayable, {
     immediate: false,
   });
 
