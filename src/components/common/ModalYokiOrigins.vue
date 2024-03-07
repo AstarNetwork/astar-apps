@@ -15,28 +15,26 @@
       class="bg--modal-yoki-origins"
     />
 
-    <div class="conteiner--yoki-origins">
-      <div class="title--yoki-origins">
-        {{ $t('modals.yokiOrigins.introducing') }}
-      </div>
-      <div class="logo--yoki-origins">
-        <img :src="require('/src/assets/img/yoki-origins-logo.png')" :style="imageStyle" alt="" />
-      </div>
+    <div class="title--yoki-origins">
+      {{ $t('modals.yokiOrigins.introducing') }}
+    </div>
+    <div class="logo--yoki-origins">
+      <img :src="require('/src/assets/img/yoki-origins-logo.png')" :style="imageStyle" alt="" />
+    </div>
 
-      <div class="button--experience-now">
-        <a :href="modals.yokiOrigins.experienceNow" target="_blank" rel="noopener noreferrer">
-          {{ $t('modals.yokiOrigins.experienceNow') }}
-        </a>
-      </div>
+    <div class="button--experience-now">
+      <a :href="modals.yokiOrigins.experienceNow" target="_blank" rel="noopener noreferrer">
+        {{ $t('modals.yokiOrigins.experienceNow') }}
+      </a>
+    </div>
 
-      <div class="bottoms--yoki-origins">
-        <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
-          {{ $t('modals.yokiOrigins.learnMore') }}
-        </a>
-        <router-link :to="RoutePath.Assets" @click="closeModal">
-          {{ $t('modals.yokiOrigins.keep') }}
-        </router-link>
-      </div>
+    <div class="bottoms--yoki-origins">
+      <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
+        {{ $t('modals.yokiOrigins.learnMore') }}
+      </a>
+      <router-link :to="RoutePath.Assets" @click="closeModal">
+        {{ $t('modals.yokiOrigins.keep') }}
+      </router-link>
     </div>
   </astar-default-modal>
 </template>
@@ -130,23 +128,10 @@ export default defineComponent({
 .modal-content {
   position: relative;
   overflow: hidden;
-  height: 100vh !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @media (min-width: $sm) {
-    height: auto !important;
-  }
 }
+</style>
 
-.modal-header {
-  display: none !important;
-}
-
-.conteiner--yoki-origins {
-  padding: 12px 0;
-}
-
+<style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Laila:wght@700&display=swap');
 
 .button--experience-now {
@@ -176,9 +161,14 @@ export default defineComponent({
   z-index: 1;
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   gap: 12px;
-  margin-top: 12px;
+  padding: 12px 12px 40px 12px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    padding: 12px;
+  }
   a {
     display: inline-block;
     background-color: rgba(white, 0.8);
@@ -216,10 +206,6 @@ export default defineComponent({
 
 .logo--yoki-origins img {
   transition: transform 0.5s ease-out; /* Adjust the duration and easing as needed */
-}
-
-.q-chip__content {
-  cursor: pointer;
 }
 
 .bg--modal-yoki-origins {
