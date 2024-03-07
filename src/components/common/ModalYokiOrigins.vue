@@ -4,7 +4,7 @@
     :show="show"
     :is-closing="isClosingModal"
     :width="580"
-    :class="'highest-z-index wrapper--modal-yoki-origins'"
+    :class="'highest-z-index'"
     @close="closeModal()"
   >
     <div class="bg--modal-yoki-origins">
@@ -43,8 +43,7 @@ import { wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { defineComponent, ref } from 'vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { Path as RoutePath } from 'src/router/routes';
-import { docsUrl } from 'src/links';
+import { modals } from 'src/links';
 export default defineComponent({
   components: {},
   props: {
@@ -71,17 +70,14 @@ export default defineComponent({
     }
     const learnMore = (): void => {
       console.log('learnMore');
-      window.open('https://astar.network/blog/84017', '_blank');
+      window.open(modals.yokiOrigins.learnMore, '_blank');
     };
     const experienceNow = (): void => {
       console.log('experienceNow');
-      window.open('https://yoki.astar.network', '_blank');
+      window.open(modals.yokiOrigins.experienceNow, '_blank');
     };
     return {
       isClosingModal,
-      modules: [],
-      RoutePath,
-      docsUrl,
       learnMore,
       experienceNow,
       closeModal,
@@ -151,8 +147,6 @@ export default defineComponent({
 .title--yoki-origins {
   font-size: 24px;
   font-weight: 700;
-  display: flex;
-  flex-direction: column;
   text-align: center;
   align-items: center;
   justify-content: center;
