@@ -5,7 +5,8 @@
     </template>
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
-      <yoki-banner />
+      <yoki-banner v-if="isZkEvm" />
+      <claim-warning-banner v-else :network="currentNetworkIdx" />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
@@ -32,6 +33,7 @@ export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
+    ClaimWarningBanner,
     YokiBanner,
   },
   setup() {
