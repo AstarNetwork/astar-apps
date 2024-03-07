@@ -7,21 +7,26 @@
     :class="'highest-z-index wrapper--modal-yoki-origins'"
     @close="closeModal()"
   >
+    <div class="bg--modal-yoki-origins">
+      <img :src="require('/src/assets/img/yoki-origins-background.png')" alt="" />
+    </div>
     <div @mousemove="handleMouseMove" @mouseleave="handleMouseLeave">
       <div>
         <div class="title--yoki-origins">
-          {{ $t('modals.yokiOrigins.introducing') }}<br />
+          {{ $t('modals.yokiOrigins.introducing') }}
+        </div>
+        <div class="logo--yoki-origins">
           <img :src="require('/src/assets/img/yoki-origins-logo.png')" :style="imageStyle" alt="" />
         </div>
       </div>
       <div class="bottom--yoki-origins">
         <div class="">
-          <q-chip dense size="35px" color="grey-9" text-color="white" @click="closeModal()">
+          <q-chip dense size="35px" color="grey-9" text-color="white" @click="experienceNow()">
             {{ $t('modals.yokiOrigins.experienceNow') }}
           </q-chip>
         </div>
         <div class="q-pa-md">
-          <q-chip size="lg" @click="closeModal()">
+          <q-chip size="lg" @click="learnMore()">
             {{ $t('modals.yokiOrigins.learnMore') }}
           </q-chip>
           <q-chip size="lg" @click="closeModal()">
@@ -64,11 +69,21 @@ export default defineComponent({
     if (localStorage.getItem(LOCAL_STORAGE.CLOSE_YOKI_ORIGINS_MODAL)) {
       closeModal();
     }
+    const learnMore = (): void => {
+      console.log('learnMore');
+      window.open('https://astar.network/blog/84017', '_blank');
+    };
+    const experienceNow = (): void => {
+      console.log('experienceNow');
+      window.open('https://yoki.astar.network', '_blank');
+    };
     return {
       isClosingModal,
       modules: [],
       RoutePath,
       docsUrl,
+      learnMore,
+      experienceNow,
       closeModal,
     };
   },
@@ -115,10 +130,6 @@ export default defineComponent({
 .modal-content {
   display: flex;
   flex-direction: column;
-  background: transparent !important;
-  background-image: url('assets/img/yoki-origins-background.png') !important;
-  background-size: cover;
-  background-position: center;
 }
 
 .modal-header {
@@ -147,7 +158,31 @@ export default defineComponent({
   justify-content: center;
 }
 
-.title--yoki-origins img {
+.logo--yoki-origins {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo--yoki-origins img {
   transition: transform 0.5s ease-out; /* Adjust the duration and easing as needed */
+}
+
+.q-chip__content {
+  cursor: pointer;
+}
+
+.bg--modal-yoki-origins {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+}
+
+.bg--modal-yoki-origins img {
+  border-radius: 20px;
+  overflow: hidden;
 }
 </style>
