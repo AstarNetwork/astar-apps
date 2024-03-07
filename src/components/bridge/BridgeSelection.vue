@@ -110,7 +110,6 @@
                   <q-chip outline>
                     {{ $t('bridge.relayBridge.tag') }}
                   </q-chip>
-                  <i class="text--bridge-identity">{{ $t('bridge.thirdPartyBridge') }}</i>
                 </div>
                 <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
                 <div class="box--text-bridge">
@@ -145,12 +144,16 @@
                   <q-chip outline>
                     {{ $t('bridge.celerBridge.tag') }}
                   </q-chip>
-                  <i class="text--bridge-identity">{{ $t('bridge.thirdPartyBridge') }}</i>
                 </div>
                 <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{ $t('bridge.celerBridge.text', { cbridgeNetworkName: cbridgeNetworkName }) }}
+                    {{
+                      $t('bridge.celerBridge.text', {
+                        l1: l1Name,
+                        cbridgeNetworkName,
+                      })
+                    }}
                   </span>
                 </div>
               </div>

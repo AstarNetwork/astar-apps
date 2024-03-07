@@ -998,12 +998,12 @@ export default {
     celerBridge: {
       title: 'Celer Bridge',
       tag: 'ERC20',
-      text: 'Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
+      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {cbridgeNetworkName} EVM.',
     },
     relayBridge: {
       title: 'Relay Link',
       tag: 'ETH',
-      text: 'Low cost, instant bridge. Bridge between {l1} or other L2 chains and {l2}.',
+      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {l2}.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
