@@ -53,6 +53,7 @@ export const useL1Bridge = () => {
   const bridgeAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
   const fromBridgeBalance = ref<number>(0);
+  const isGasPayable = ref<boolean>(false);
   const errMsg = ref<string>('');
   const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
   const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
@@ -248,6 +249,7 @@ export const useL1Bridge = () => {
     const bridgeAmtRef = Number(bridgeAmt.value);
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
+    const isGasPayableRef = isGasPayable.value;
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
@@ -255,6 +257,8 @@ export const useL1Bridge = () => {
         });
       } else if (providerChainIdRef !== fromChainId.value) {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
+      } else if (!isGasPayableRef && bridgeAmtRef > 0) {
+        errMsg.value = t('warning.balanceNotEnough');
       } else {
         errMsg.value = '';
       }
@@ -351,8 +355,25 @@ export const useL1Bridge = () => {
     return hash;
   };
 
+  const setIsGasPayable = async (): Promise<void> => {
+    if (!bridgeAmt.value || !selectedToken.value.address) return;
+    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    const destNetworkId = await getNetworkId(toChainName.value);
+
+    const result = await zkBridgeService.dryRunBridgeAsset({
+      amount: bridgeAmt.value,
+      fromChainName: fromChainName.value,
+      toChainName: toChainName.value,
+      senderAddress: currentAccount.value,
+      tokenAddress: selectedToken.value.address,
+      decimal: selectedToken.value.decimal,
+      destNetworkId,
+    });
+    isGasPayable.value = result;
+  };
+
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
-  watch([providerChainId, isLoading, bridgeAmt, selectedToken], setErrorMsg, {
+  watch([providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable], setErrorMsg, {
     immediate: true,
   });
 
@@ -362,10 +383,18 @@ export const useL1Bridge = () => {
   watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
 
   const debounceDelay = 500;
+  const debounceIsGasPayable = 1000;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
+  const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceIsGasPayable);
+
   watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
     immediate: true,
   });
+
+  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsGasPayable, {
+    immediate: false,
+  });
+
   watch([selectedToken, fromChainId, currentAccount], resetStates);
 
   const autoFetchAllowanceHandler = setInterval(
