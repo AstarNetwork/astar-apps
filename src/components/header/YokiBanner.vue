@@ -1,17 +1,14 @@
 <template>
   <div>
-    <!-- Memo: add this line later -->
-    <!-- <a href="https://yoki.astar.network/" target="_blank" rel="noopener noreferrer" class="banner"> -->
-    <div class="banner">
+    <a href="https://yoki.astar.network/" target="_blank" rel="noopener noreferrer" class="banner">
       <span>
         <span class="text--ledger-users">{{ $t('warning.yoki') }}</span>
         <span>
           {{ $t('warning.yokiSignUp') }}
         </span>
       </span>
-      <!-- <astar-icon-arrow-right /> -->
-      <!-- </a> -->
-    </div>
+      <astar-icon-arrow-right />
+    </a>
   </div>
 </template>
 
