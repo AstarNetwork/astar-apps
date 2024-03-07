@@ -31,12 +31,12 @@
         </div>
         <div class="q-pa-md">
           <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
-            <q-chip size="lg" @click="learnMore">
+            <q-chip size="lg" color="grey-3" text-color="black">
               {{ $t('modals.yokiOrigins.learnMore') }}
             </q-chip>
           </a>
           <router-link :to="RoutePath.Assets" @click="closeModal">
-            <q-chip size="lg">
+            <q-chip size="lg" color="grey-3" text-color="black">
               {{ $t('modals.yokiOrigins.keep') }}
             </q-chip>
           </router-link>
