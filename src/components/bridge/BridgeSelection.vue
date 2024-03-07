@@ -6,40 +6,6 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button>
-            <a
-              :href="relayBridgeAppLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/relay_bridge_logo.svg')"
-                    alt="cbridge"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.relayBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.relayBridge.text', { l1: l1Name, l2: l2Name }) }}
-                  </span>
-                </div>
-              </div>
-            </a>
-          </button>
-        </div>
-
-        <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
               :is="isEnableEthBridge ? 'router-link' : 'div'"
@@ -125,6 +91,41 @@
         <div class="column--selection">
           <button>
             <a
+              :href="relayBridgeAppLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/relay_bridge_logo.svg')"
+                    alt="relay-link"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.relayBridge.tag') }}
+                  </q-chip>
+                  <i class="text--bridge-identity">{{ $t('bridge.thirdPartyBridge') }}</i>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.relayBridge.text', { l1: l1Name, l2: l2Name }) }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
+
+        <div class="column--selection">
+          <button>
+            <a
               :href="cbridgeAppLink"
               target="_blank"
               rel="noopener noreferrer"
@@ -144,6 +145,7 @@
                   <q-chip outline>
                     {{ $t('bridge.celerBridge.tag') }}
                   </q-chip>
+                  <i class="text--bridge-identity">{{ $t('bridge.thirdPartyBridge') }}</i>
                 </div>
                 <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
                 <div class="box--text-bridge">

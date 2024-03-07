@@ -981,23 +981,24 @@ export default {
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
+    thirdPartyBridge: '3rd Party Bridge',
     ethereumBridge: {
       title: 'Native Bridge',
       tag: 'ERC20',
-      text: 'Bridge ERC20 assets between {l1} and {l2}.',
+      text: 'Transfer assets between {l1} and {l2}.',
       text2: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
     },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
-      text: 'Bridge ASTR token between {l2} and {substrateNetwork} EVM.',
+      text: 'Transfer ASTR token between {substrateNetwork} EVM and {l2}.',
       text2: 'Currently under development',
     },
     celerBridge: {
       title: 'Celer Bridge',
       tag: 'ERC20',
-      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge.',
+      text: 'Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
     },
     relayBridge: {
       title: 'Relay Link',
