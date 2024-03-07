@@ -154,6 +154,8 @@ export default defineComponent({
 }
 
 .title--yoki-origins {
+  z-index: 1;
+  position: relative;
   font-size: 24px;
   font-weight: 700;
   text-align: center;
