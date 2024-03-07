@@ -54,6 +54,13 @@ export const polkadotJsUrl = {
   },
 };
 
+export const modals = {
+  yokiOrigins: {
+    learnMore: 'https://astar.network/blog/84017',
+    experienceNow: 'https://yoki.astar.network/',
+  },
+};
+
 export const getSubscanExtrinsic = ({
   subscanBase,
   hash,
