@@ -9,38 +9,33 @@
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
   >
-    <div class="bg--modal-yoki-origins">
-      <img :src="require('/src/assets/img/yoki-origins-background.png')" alt="" />
-    </div>
-    <div>
-      <div class="modal__top">
-        <div class="title--yoki-origins">
-          {{ $t('modals.yokiOrigins.introducing') }}
-        </div>
-        <div class="logo--yoki-origins">
-          <img :src="require('/src/assets/img/yoki-origins-logo.png')" :style="imageStyle" alt="" />
-        </div>
+    <img
+      :src="require('/src/assets/img/yoki-origins-background.png')"
+      alt=""
+      class="bg--modal-yoki-origins"
+    />
+
+    <div class="conteiner--yoki-origins">
+      <div class="title--yoki-origins">
+        {{ $t('modals.yokiOrigins.introducing') }}
       </div>
-      <div class="bottom--yoki-origins">
-        <div class="">
-          <a :href="modals.yokiOrigins.experienceNow" target="_blank" rel="noopener noreferrer">
-            <q-chip dense size="35px" color="grey-9" text-color="white">
-              {{ $t('modals.yokiOrigins.experienceNow') }}
-            </q-chip>
-          </a>
-        </div>
-        <div class="q-pa-md">
-          <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
-            <q-chip size="lg" color="grey-3" text-color="black">
-              {{ $t('modals.yokiOrigins.learnMore') }}
-            </q-chip>
-          </a>
-          <router-link :to="RoutePath.Assets" @click="closeModal">
-            <q-chip size="lg" color="grey-3" text-color="black">
-              {{ $t('modals.yokiOrigins.keep') }}
-            </q-chip>
-          </router-link>
-        </div>
+      <div class="logo--yoki-origins">
+        <img :src="require('/src/assets/img/yoki-origins-logo.png')" :style="imageStyle" alt="" />
+      </div>
+
+      <div class="button--experience-now">
+        <a :href="modals.yokiOrigins.experienceNow" target="_blank" rel="noopener noreferrer">
+          {{ $t('modals.yokiOrigins.experienceNow') }}
+        </a>
+      </div>
+
+      <div class="bottoms--yoki-origins">
+        <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
+          {{ $t('modals.yokiOrigins.learnMore') }}
+        </a>
+        <router-link :to="RoutePath.Assets" @click="closeModal">
+          {{ $t('modals.yokiOrigins.keep') }}
+        </router-link>
       </div>
     </div>
   </astar-default-modal>
@@ -133,24 +128,73 @@ export default defineComponent({
 
 <style lang="scss">
 .modal-content {
+  position: relative;
+  overflow: hidden;
+  height: 100vh !important;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  @media (min-width: $sm) {
+    height: auto !important;
+  }
 }
 
 .modal-header {
-  margin-bottom: 0px !important;
+  display: none !important;
 }
 
-.modal--close {
-  background-color: white !important;
+.conteiner--yoki-origins {
+  padding: 12px 0;
 }
 
-.bottom--yoki-origins {
+@import url('https://fonts.googleapis.com/css2?family=Laila:wght@700&display=swap');
+
+.button--experience-now {
+  text-align: center;
+  z-index: 1;
+  position: relative;
+  a {
+    font-family: 'Laila', serif;
+    display: inline-block;
+    background-color: $navy-1;
+    color: $white;
+    border-radius: 9999px;
+    padding: 12px 24px;
+    min-width: 300px;
+    font-size: 24px;
+    text-align: center;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    &:hover {
+      background-color: $navy-3;
+    }
+  }
+}
+
+.bottoms--yoki-origins {
+  z-index: 1;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 12px;
+  a {
+    display: inline-block;
+    background-color: rgba(white, 0.8);
+    color: $navy-1;
+    border-radius: 9999px;
+    padding: 16px 24px;
+    min-width: 200px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    &:hover {
+      background-color: white;
+    }
+  }
 }
 
 .title--yoki-origins {
@@ -159,8 +203,7 @@ export default defineComponent({
   font-size: 24px;
   font-weight: 700;
   text-align: center;
-  align-items: center;
-  justify-content: center;
+  color: $navy-1;
 }
 
 .logo--yoki-origins {
@@ -168,6 +211,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: 12px 0;
 }
 
 .logo--yoki-origins img {
@@ -180,14 +224,10 @@ export default defineComponent({
 
 .bg--modal-yoki-origins {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 20px;
-}
-
-.bg--modal-yoki-origins img {
-  border-radius: 20px;
-  overflow: hidden;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 </style>
