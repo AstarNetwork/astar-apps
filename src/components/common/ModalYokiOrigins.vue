@@ -6,12 +6,14 @@
     :width="580"
     :class="'highest-z-index'"
     @close="closeModal()"
+    @mousemove="handleMouseMove"
+    @mouseleave="handleMouseLeave"
   >
     <div class="bg--modal-yoki-origins">
       <img :src="require('/src/assets/img/yoki-origins-background.png')" alt="" />
     </div>
-    <div @mousemove="handleMouseMove" @mouseleave="handleMouseLeave">
-      <div>
+    <div>
+      <div class="modal__top">
         <div class="title--yoki-origins">
           {{ $t('modals.yokiOrigins.introducing') }}
         </div>
@@ -21,17 +23,23 @@
       </div>
       <div class="bottom--yoki-origins">
         <div class="">
-          <q-chip dense size="35px" color="grey-9" text-color="white" @click="experienceNow()">
-            {{ $t('modals.yokiOrigins.experienceNow') }}
-          </q-chip>
+          <a :href="modals.yokiOrigins.experienceNow" target="_blank" rel="noopener noreferrer">
+            <q-chip dense size="35px" color="grey-9" text-color="white">
+              {{ $t('modals.yokiOrigins.experienceNow') }}
+            </q-chip>
+          </a>
         </div>
         <div class="q-pa-md">
-          <q-chip size="lg" @click="learnMore()">
-            {{ $t('modals.yokiOrigins.learnMore') }}
-          </q-chip>
-          <q-chip size="lg" @click="closeModal()">
-            {{ $t('modals.yokiOrigins.keep') }}
-          </q-chip>
+          <a :href="modals.yokiOrigins.learnMore" target="_blank" rel="noopener noreferrer">
+            <q-chip size="lg" @click="learnMore">
+              {{ $t('modals.yokiOrigins.learnMore') }}
+            </q-chip>
+          </a>
+          <router-link :to="RoutePath.Assets" @click="closeModal">
+            <q-chip size="lg">
+              {{ $t('modals.yokiOrigins.keep') }}
+            </q-chip>
+          </router-link>
         </div>
       </div>
     </div>
@@ -43,6 +51,7 @@ import { wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { defineComponent, ref } from 'vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { Path as RoutePath } from 'src/router/routes';
 import { modals } from 'src/links';
 export default defineComponent({
   components: {},
@@ -69,15 +78,15 @@ export default defineComponent({
       closeModal();
     }
     const learnMore = (): void => {
-      console.log('learnMore');
       window.open(modals.yokiOrigins.learnMore, '_blank');
     };
     const experienceNow = (): void => {
-      console.log('experienceNow');
       window.open(modals.yokiOrigins.experienceNow, '_blank');
     };
     return {
       isClosingModal,
+      modals,
+      RoutePath,
       learnMore,
       experienceNow,
       closeModal,
@@ -107,8 +116,8 @@ export default defineComponent({
       const mouseY = event.clientY - centerY;
 
       // These factors determine the parallax movement speed
-      const factorX = 0.15;
-      const factorY = 0.15;
+      const factorX = 0.05;
+      const factorY = 0.05;
 
       this.moveX = mouseX * factorX;
       this.moveY = mouseY * factorY;
