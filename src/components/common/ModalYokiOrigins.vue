@@ -125,6 +125,10 @@ export default defineComponent({
   margin-bottom: 0px !important;
 }
 
+.modal--close {
+  background-color: white !important;
+}
+
 .bottom--yoki-origins {
   display: flex;
   flex-direction: column;
