@@ -89,13 +89,14 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button>
-            <a
+          <button :disabled="true">
+            <!-- <a
               :href="relayBridgeAppLink"
               target="_blank"
               rel="noopener noreferrer"
               class="button--bridge"
-            >
+            > -->
+            <div class="button--bridge">
               <div class="row--logo-bg">
                 <div class="img--logo-bg">
                   <img
@@ -118,7 +119,8 @@
                   </span>
                 </div>
               </div>
-            </a>
+            </div>
+            <!-- </a> -->
           </button>
         </div>
 
