@@ -1,7 +1,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import {
   BridgeHistory,
   EthBridgeChainId,
@@ -11,6 +11,7 @@ import {
   fetchAccountHistory,
   fetchIsGelatoApiHealth,
   getChainIdFromNetId,
+  getNetworkId,
 } from 'src/modules/zk-evm-bridge';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
@@ -55,6 +56,7 @@ export const useL1History = () => {
 
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
+  const { isAstarZkEvm } = useNetworkInfo();
 
   const handleNetwork = async (chainId: ZkChainId): Promise<void> => {
     if (!web3Provider.value || !ethProvider.value) return;
@@ -85,11 +87,20 @@ export const useL1History = () => {
       }
       isGelatoApiConnected.value = true;
 
+      const l2NetworkId = await getNetworkId(l2Network.value as EthBridgeNetworkName);
+      // Memo: remove the data bridging between Ethereum and Polygon zkEVM
+      const filteredData = data.filter((it) => {
+        if (isAstarZkEvm.value) {
+          return it['dest_net'] === l2NetworkId || it['network_id'] === l2NetworkId;
+        }
+        return true;
+      });
+
       const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Network.value as EthBridgeNetworkName]);
       const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Network.value as EthBridgeNetworkName]);
       let numberInProgress = 0;
       const formattedResult = await Promise.all(
-        data.map(async (it) => {
+        filteredData.map(async (it) => {
           try {
             const isTokenOriginL1 = checkIsL1(it['orig_net']);
             const isL1Tx = checkIsL1(it['network_id']);
