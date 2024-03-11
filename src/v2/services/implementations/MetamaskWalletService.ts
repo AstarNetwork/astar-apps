@@ -176,9 +176,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       // the function goes the catch statement if something goes wrong while getting the estimatedGas. This way, the UI prevents sending invalid transactions which could cause loss of assets.
       const estimatedGas = await web3.eth.estimateGas(rawTx);
       const transactionHash = await web3.eth
-        .sendTransaction({
-          ...rawTx,
-        })
+        .sendTransaction({ ...rawTx })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })
