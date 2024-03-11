@@ -8,6 +8,7 @@ import { IWalletService, IZkBridgeService, ParamBridgeAsset, ParamClaim } from '
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { ethers } from 'ethers';
+import { getRawEvmTransaction } from 'src/modules/evm';
 
 @injectable()
 export class ZkBridgeService implements IZkBridgeService {
@@ -73,12 +74,19 @@ export class ZkBridgeService implements IZkBridgeService {
         }),
       ]);
 
+      const tx = await getRawEvmTransaction(
+        web3,
+        param.senderAddress,
+        rawTx.to as string,
+        rawTx.data as string,
+        rawTx.value as string
+      );
+
       // Memo: double the transaction fee here because MetaMask estimates higher gas fee than 'getGasPrice'
       // Fixme: find a way to duplicate how MetaMask works with fee calculation
       const feeAdj = 2;
       const gasPrice = Number(ethers.utils.formatEther(gasPriceWei.toString())) * feeAdj;
-
-      const estimatedGas = await web3.eth.estimateGas({ ...rawTx });
+      const estimatedGas = await web3.eth.estimateGas({ ...tx });
       const txFee = gasPrice * Number(estimatedGas);
       const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
       const sendingEth = param.tokenAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
