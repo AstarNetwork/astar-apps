@@ -67,7 +67,7 @@ export default defineComponent({
 
   // zkEVM
   &.banner--3 {
-    background: linear-gradient(90deg, #703ac2 25%, #226dff 100%);
+    background: linear-gradient(90deg, #0047ff 0%, #00d4ff 100%);
   }
 }
 
