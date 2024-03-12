@@ -23,7 +23,7 @@
           <div ref="nativeSection">
             <evm-native-token class="container" />
           </div>
-          <zk-astr v-if="isZkEvm" class="container" />
+          <zk-astr v-if="isAstarZkEvm && astr" :astr="astr" class="container" />
         </template>
         <template v-else>
           <div ref="nativeSection">
@@ -81,6 +81,8 @@ import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
+import { Erc20Token } from 'src/modules/token';
+import { addressAstrZkEvm } from 'src/modules/zk-evm-bridge';
 import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
 import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
@@ -114,8 +116,14 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm, nativeTokenSymbol } =
-      useNetworkInfo();
+    const {
+      isMainnet,
+      currentNetworkIdx,
+      evmNetworkIdx,
+      isZkEvm,
+      isAstarZkEvm,
+      nativeTokenSymbol,
+    } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -136,6 +144,14 @@ export default defineComponent({
       } else {
         return false;
       }
+    });
+
+    const astr = computed<Erc20Token | undefined>(() => {
+      return (
+        evmAssets.value &&
+        evmAssets.value.assets &&
+        evmAssets.value.assets.find((t) => t.address === addressAstrZkEvm)
+      );
     });
 
     const handleUpdateNativeTokenAssets = () => {
@@ -249,6 +265,8 @@ export default defineComponent({
       stakingSection,
       projectSection,
       assetsSection,
+      isAstarZkEvm,
+      astr,
     };
   },
 });

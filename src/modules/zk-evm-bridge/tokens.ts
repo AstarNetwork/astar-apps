@@ -5,6 +5,8 @@ export const TOKEN_BLACKLIST = [
   '0xE9CC37904875B459Fa5D0FE37680d36F1ED55e38',
 ];
 
+export const addressAstrZkEvm = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
+
 export const DEFAULT_TOKENS = [
   {
     srcChainId: 1,

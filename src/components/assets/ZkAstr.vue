@@ -3,19 +3,14 @@
     <div class="row row--transferable row--transferable-evm">
       <div class="row__info">
         <div class="column--token-name">
-          <img class="token-logo" :src="astrTokenImg" :alt="astrTokenSymbol" />
-          <template v-if="astrTokenSymbol">
-            <span class="text--title">{{ astrTokenSymbol }}</span>
-          </template>
-          <template v-else>
-            <q-skeleton animation="fade" class="skeleton--md" />
-          </template>
+          <img class="token-logo" :src="astr.image" :alt="astr.symbol" />
+          <span class="text--title">{{ astr.symbol }}</span>
         </div>
         <div class="column--balance">
           <span class="column--amount text--amount">
-            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
+            {{ $n(truncate(Number(astr.userBalance), 3)) }}
           </span>
-          <span class="column--symbol text--symbol">{{ astrTokenSymbol }}</span>
+          <span class="column--symbol text--symbol">{{ astr.symbol }}</span>
         </div>
       </div>
 
@@ -51,7 +46,18 @@
           </q-tooltip>
         </a>
         <div>
-          <button class="btn btn--icon">
+          <button
+            class="btn btn--icon"
+            @click="
+              addToEvmProvider({
+                tokenAddress: astr.address,
+                symbol: astr.symbol,
+                decimals: astr.decimal,
+                image: String(astr.image),
+                provider: ethProvider,
+              })
+            "
+          >
             <astar-icon-base class="icon--plus">
               <astar-icon-plus />
             </astar-icon-base>
@@ -66,61 +72,35 @@
   </div>
 </template>
 <script lang="ts">
-import { getUsdBySymbol, truncate } from '@astar-network/astar-sdk-core';
-import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from 'src/hooks';
-import { getTokenImage } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import { addToEvmProvider } from 'src/hooks/helper/wallet';
+import { Erc20Token, getErc20Explorer } from 'src/modules/token';
+import { PropType, computed, defineComponent } from 'vue';
 
 export default defineComponent({
   components: {},
-  setup() {
-    const bal = ref<number>(0);
-    const balUsd = ref<number>(0);
+  props: {
+    astr: {
+      type: Object as PropType<Erc20Token>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { currentNetworkIdx } = useNetworkInfo();
+    const { ethProvider } = useEthProvider();
 
-    const { networkNameSubstrate, isMainnet } = useNetworkInfo();
-    const store = useStore();
-
-    const astrTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
+    const explorerLink = computed(() => {
+      const tokenAddress = props.astr.address;
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
-    const astrTokenImg = computed<string>(() =>
-      getTokenImage({
-        isNativeToken: true,
-        symbol: astrTokenSymbol.value,
-        isZkEvm: false,
-      })
-    );
-
-    // Todo: fetch balance after wrapped tokens are deployed
-    const handleAstrPrice = async () => {
-      const tokenSymbolRef = astrTokenSymbol.value;
-      if (!tokenSymbolRef) return;
-      try {
-        if (isMainnet.value) {
-          const price = await getUsdBySymbol(tokenSymbolRef);
-          balUsd.value = bal.value * price;
-        }
-      } catch (error: any) {
-        console.error(error.message);
-      }
-    };
-
-    watchEffect(handleAstrPrice);
-
-    const isTruncate = !astrTokenSymbol.value.toUpperCase().includes('BTC');
-
     return {
-      astrTokenImg,
-      astrTokenSymbol,
-      networkNameSubstrate,
-      bal,
-      balUsd,
-      isTruncate,
       truncate,
+      explorerLink,
+      addToEvmProvider,
+      ethProvider,
     };
   },
 });
