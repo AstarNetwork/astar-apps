@@ -144,7 +144,7 @@
   </div>
 </template>
 <script lang="ts">
-import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, isValidEvmAddress, wait } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
@@ -278,6 +278,8 @@ export default defineComponent({
       try {
         if (!isH160.value || !isValidEvmAddress(currentAccount.value)) return;
         isCheckingSignature.value = true;
+        // Memo: to avoid display signature request twice while changing network
+        await wait(2000);
         await setAddressMapping({ evmAddress: currentAccount.value, requestSignature });
       } catch (error: any) {
         console.error(error.message);

@@ -168,7 +168,6 @@ export const useAccount = () => {
     () => {
       if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
         currentAccountName.value = ETHEREUM_EXTENSION;
-        localStorage.setItem(SELECTED_ADDRESS, ETHEREUM_EXTENSION);
         store.commit('general/setIsEthWallet', true);
 
         const { ss58, h160 } = currentEcdsaAccount.value;
