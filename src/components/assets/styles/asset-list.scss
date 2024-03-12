@@ -590,8 +590,10 @@
     &:hover {
       color: white;
       background-color: $astar-blue;
-      svg {
-        stroke: white;
+      .icon-helper {
+        svg {
+          stroke: white;
+        }
       }
     }
     svg {

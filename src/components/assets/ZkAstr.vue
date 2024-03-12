@@ -51,7 +51,9 @@
 
         <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
           <button class="btn btn--icon">
-            <astar-icon-external-link class="icon--external-link" />
+            <div class="icon-helper">
+              <astar-icon-external-link class="icon--external-link" />
+            </div>
           </button>
           <span class="text--mobile-menu">{{ $t('blockscout') }}</span>
           <q-tooltip>
@@ -71,9 +73,11 @@
               })
             "
           >
-            <astar-icon-base class="icon--plus">
-              <astar-icon-plus />
-            </astar-icon-base>
+            <div class="icon-helper">
+              <astar-icon-base class="icon--plus">
+                <astar-icon-plus />
+              </astar-icon-base>
+            </div>
           </button>
           <span class="text--mobile-menu">{{ $t('add') }}</span>
           <q-tooltip>
