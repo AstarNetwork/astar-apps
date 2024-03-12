@@ -14,10 +14,12 @@
       <swiper-slide v-for="(page, pageIndex) in pages" :key="`page-${pageIndex}`">
         <div class="container--dapps">
           <div v-for="(dapp, index) in page" :key="`page-${index}`">
-            <dapp-item :index="pageIndex * itemsPerPage + index" :dapp="dapp" />
-          </div>
-          <div v-for="index in itemsPerPage - page.length" :key="`page-${index}`">
-            <no-entry :index="pageIndex * itemsPerPage + index" :length="page.length" />
+            <dapp-item
+              v-if="dapp !== null"
+              :index="pageIndex * itemsPerPage + index"
+              :dapp="dapp"
+            />
+            <no-entry v-else :index="pageIndex * itemsPerPage + index" />
           </div>
         </div>
       </swiper-slide>
@@ -28,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { CombinedDappInfo } from '../../logic';
-import { useDappStakingNavigation } from '../../hooks';
+import { useDappStakingNavigation, useDappStaking } from '../../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import DappItem from './DappItem.vue';
 import noEntry from './noEntry.vue';
@@ -63,13 +65,26 @@ export default defineComponent({
   },
   setup(props) {
     const itemsPerPage = 5;
+    const { tiersConfiguration } = useDappStaking();
 
-    const pages = computed<CombinedDappInfo[][]>(() => {
-      const pages = [];
-      for (let i = 0; i < props.dapps.length; i += itemsPerPage) {
-        pages.push(props.dapps.slice(i, i + itemsPerPage));
+    const slotsPerTier = computed<number>(() => {
+      return tiersConfiguration.value.slotsPerTier[props.tier - 1];
+    });
+
+    // Fill in dapps array with nulls so total array length matches number of available slots.
+    const dappsFull = computed<(CombinedDappInfo | null)[]>(() => {
+      const result: (CombinedDappInfo | null)[] = [];
+      for (let i = 0; i < slotsPerTier.value; i++) {
+        result.push(i < props.dapps.length ? props.dapps[i] : null);
       }
+      return result;
+    });
 
+    const pages = computed<(CombinedDappInfo | null)[][]>(() => {
+      const pages = [];
+      for (let i = 0; i < dappsFull.value.length; i += itemsPerPage) {
+        pages.push(dappsFull.value.slice(i, i + itemsPerPage));
+      }
       return pages;
     });
 
