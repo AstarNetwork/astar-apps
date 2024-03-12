@@ -226,11 +226,14 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     for (let era = firstStakedEra; era <= lastStakedEra; era++) {
       let stakedSum = BigInt(0);
 
-      if (ledger.staked.era <= era) {
+      if (ledger.staked.era <= era && !ledger.stakedFuture) {
         stakedSum += ledger.staked.totalStake;
-      }
-      if (ledger.stakedFuture && ledger.stakedFuture.era <= era) {
-        stakedSum += ledger.stakedFuture.totalStake;
+      } else if (ledger.stakedFuture) {
+        if (ledger.stakedFuture.era <= era) {
+          stakedSum += ledger.stakedFuture.totalStake;
+        } else if (ledger.staked.era <= era) {
+          stakedSum += ledger.staked.totalStake;
+        }
       }
 
       claimableEras.set(era, stakedSum);
