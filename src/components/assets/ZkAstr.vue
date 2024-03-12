@@ -6,16 +6,29 @@
           <img class="token-logo" :src="astr.image" :alt="astr.symbol" />
           <span class="text--title">{{ astr.symbol }}</span>
         </div>
-        <div class="column--balance">
-          <span class="column--amount text--amount">
-            {{ $n(truncate(Number(astr.userBalance), 3)) }}
-          </span>
-          <span class="column--symbol text--symbol">{{ astr.symbol }}</span>
+        <div class="column--balance-evm">
+          <div class="column--balance__row text--title">
+            <div class="column--amount">
+              {{ $n(truncate(Number(astr.userBalance), 3)) }}
+            </div>
+            <div class="column--symbol">
+              {{ astr.symbol }}
+            </div>
+          </div>
+
+          <div class="column--balance__row text--label">
+            <div class="column--amount">
+              {{ $n(Number(astr.userBalanceUsd)) }}
+            </div>
+            <div class="column--symbol">
+              {{ $t('usd') }}
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="row__actions">
-        <router-link to="/">
+        <router-link :to="buildTransferPageLink(astr.symbol)">
           <button class="btn btn--icon">
             <astar-icon-transfer />
           </button>
@@ -78,6 +91,7 @@ import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { PropType, computed, defineComponent } from 'vue';
+import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({
   components: {},
@@ -97,10 +111,11 @@ export default defineComponent({
     });
 
     return {
-      truncate,
       explorerLink,
-      addToEvmProvider,
       ethProvider,
+      truncate,
+      addToEvmProvider,
+      buildTransferPageLink,
     };
   },
 });
@@ -108,5 +123,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/asset-list.scss';
-/* @use 'src/components/assets/styles/asset-list-xcm.scss'; */
 </style>

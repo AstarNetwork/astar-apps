@@ -11,11 +11,24 @@
             <q-skeleton animation="fade" class="skeleton--md" />
           </template>
         </div>
-        <div class="column--balance">
-          <span class="column--amount text--amount">
-            {{ isTruncate ? $n(truncate(bal, 3)) : Number(bal) }}
-          </span>
-          <span class="column--symbol text--symbol">{{ nativeTokenSymbol }}</span>
+        <div class="column--balance-evm">
+          <div class="column--balance__row text--title">
+            <div class="column--amount">
+              {{ $n(truncate(Number(bal), 3)) }}
+            </div>
+            <div class="column--symbol">
+              {{ nativeTokenSymbol }}
+            </div>
+          </div>
+
+          <div class="column--balance__row text--label">
+            <div class="column--amount">
+              {{ $n(truncate(Number(balUsd), 3)) }}
+            </div>
+            <div class="column--symbol">
+              {{ $t('usd') }}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -82,22 +95,28 @@
   </div>
 </template>
 <script lang="ts">
+import { truncate } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useNetworkInfo, usePrice, useBreakpoints, useFaucet } from 'src/hooks';
-import { getTokenImage } from 'src/modules/token';
-import { buildTransferPageLink, buildEthereumBridgePageLink } from 'src/router/routes';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks';
 import { faucetSethLink } from 'src/links';
-import { truncate } from '@astar-network/astar-sdk-core';
+import { getTokenImage } from 'src/modules/token';
+import { buildEthereumBridgePageLink, buildTransferPageLink } from 'src/router/routes';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   components: { ModalFaucet },
-  setup() {
+  props: {
+    nativeTokenUsd: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+  },
+  setup(props) {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const isShibuya = ref<boolean>(false);
@@ -107,7 +126,6 @@ export default defineComponent({
 
     const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
     const { currentAccount } = useAccount();
-    const { nativeTokenUsd } = usePrice();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -139,8 +157,8 @@ export default defineComponent({
       }
     };
 
-    watchEffect(async () => {
-      await updateStates(nativeTokenUsd.value);
+    watch([props, isLoading, nativeTokenSymbol, isH160], async () => {
+      await updateStates(props.nativeTokenUsd);
     });
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
