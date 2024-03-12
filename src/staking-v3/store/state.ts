@@ -3,6 +3,7 @@ import {
   CombinedDappInfo,
   ProtocolState,
   SingularStakingInfo,
+  NumberOfStakersAndLockers,
   Rewards,
   Constants,
   EraInfo,
@@ -16,6 +17,7 @@ export interface DappStakingState {
   version: string;
   dapps: CombinedDappInfo[];
   newDapps: DappInfo[];
+  numberOfStakersAndLockers: NumberOfStakersAndLockers;
   protocolState: ProtocolState | undefined;
   ledger: AccountLedger | undefined;
   stakerInfo: Map<string, SingularStakingInfo> | undefined;
@@ -25,6 +27,7 @@ export interface DappStakingState {
   dAppTiers: DAppTierRewards;
   tiersConfiguration: TiersConfiguration;
   eraLengths: EraLengths;
+  leaderboard: Map<number, number>;
 }
 
 function state(): DappStakingState {
@@ -32,6 +35,7 @@ function state(): DappStakingState {
     version: '3.0.0',
     dapps: [],
     newDapps: [],
+    numberOfStakersAndLockers: initialNumberOfStakersAndLockers,
     protocolState: undefined,
     ledger: undefined,
     stakerInfo: undefined,
@@ -41,8 +45,17 @@ function state(): DappStakingState {
     dAppTiers: initialDappTiersConfiguration,
     tiersConfiguration: initialTiersConfiguration,
     eraLengths: initialEraLengths,
+    leaderboard: new Map<number, number>(),
   };
 }
+
+export const initialNumberOfStakersAndLockers: NumberOfStakersAndLockers = {
+  date: '',
+  tvl: '',
+  lockersCount: 0,
+  tvs: '',
+  stakersCount: 0,
+};
 
 export const initialTiersConfiguration: TiersConfiguration = {
   numberOfSlots: 0,
@@ -61,6 +74,7 @@ export const initialEraLengths: EraLengths = {
   standardErasPerBuildAndEarnPeriod: 0,
   standardErasPerVotingPeriod: 0,
   standardEraLength: 0,
+  periodsPerCycle: 0,
 };
 
 export default state;

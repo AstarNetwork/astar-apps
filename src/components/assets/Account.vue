@@ -5,31 +5,55 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
+          <div v-if="isLockdropAccount && isAllowLockdropDispatch" class="row--lockdrop">
+            <span>{{ $t('assets.lockdropAccount') }}</span>
+            <span class="text--switch-account" @click="toggleEvmWalletSchema">
+              {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
+            </span>
+          </div>
+          <div v-else />
           <div class="wallet-tab__bg">
-            <!-- EVM -->
             <template v-if="isH160">
-              <!-- zkEVM -->
               <template v-if="isZkEvm">
-                <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
-                <div v-if="isZkEvm" class="btn active">Astar zKatana</div>
+                <template v-if="currentNetworkIdx === endpointKey.ASTAR_ZKEVM">
+                  <a class="btn" href="/astar/assets"> Astar EVM (L1) </a>
+                  <div class="btn active">Astar zkEVM</div>
+                </template>
+                <template v-if="currentNetworkIdx === endpointKey.ZKATANA">
+                  <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
+                  <div class="btn active">Astar zKatana</div>
+                </template>
               </template>
 
-              <!-- Astar EVM -->
               <template v-else>
                 <div class="btn active">
                   {{ currentNetworkName.replace('Network', '') }}
                   EVM (L1)
                 </div>
-                <a v-if="currentNetworkIdx === 2" class="btn" href="/zkatana-testnet/assets">
+                <a
+                  v-if="currentNetworkIdx === endpointKey.SHIBUYA"
+                  class="btn"
+                  href="/zkatana-testnet/assets"
+                >
                   Astar zKatana
                 </a>
-                <a v-else-if="currentNetworkIdx !== 1" class="btn" disabled>Astar zkEVM</a>
+                <a
+                  v-else-if="currentNetworkIdx === endpointKey.ASTAR"
+                  href="/astar-zkevm/assets"
+                  class="btn"
+                >
+                  Astar zkEVM
+                </a>
               </template>
             </template>
 
             <!-- Native -->
             <div v-else class="btn active">
-              {{ currentNetworkIdx === 4 ? 'Astar' : currentNetworkName.replace('Network', '') }}
+              {{
+                currentNetworkIdx === endpointKey.ZKATANA
+                  ? 'Astar'
+                  : currentNetworkName.replace('Network', '')
+              }}
               {{ $t('native') }}
             </div>
           </div>
@@ -92,15 +116,17 @@
             </a>
           </div>
         </div>
+        <div v-if="isWalletConnect" class="row--wc-warning">
+          <span class="text--warning">
+            {{
+              $t('assets.verifyWalletCompatibility', {
+                network: currentNetworkName.replace('Network', ''),
+              })
+            }}
+          </span>
+        </div>
       </div>
-
-      <rewards v-if="!isZkEvm" />
     </div>
-
-    <template v-if="isH160">
-      <evm-native-token class="container" />
-      <zk-astr v-if="isZkEvm" class="container" />
-    </template>
 
     <div v-if="multisig" class="row--details-signatory">
       <div class="column-account-name">
@@ -110,10 +136,11 @@
         }}</span>
       </div>
     </div>
-
-    <div v-if="!isH160" class="container">
-      <native-asset-list />
-    </div>
+    <modal-lockdrop-warning
+      v-if="isLockdropAccount && !isH160"
+      :is-modal="isModalLockdropWarning"
+      :handle-modal="handleModalLockdropWarning"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -122,12 +149,9 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { supportWalletObj } from 'src/config/wallets';
+import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import {
   ETHEREUM_EXTENSION,
   useAccount,
@@ -136,21 +160,19 @@ import {
   usePrice,
   useWalletIcon,
   useAccountUnification,
+  useConnectWallet,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Rewards from 'src/components/assets/Rewards.vue';
+import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 
 export default defineComponent({
   components: {
-    NativeAssetList,
-    EvmNativeToken,
-    ZkAstr,
     AuIcon,
-    Rewards,
+    ModalLockdropWarning,
   },
   props: {
     ttlErc20Amount: {
@@ -165,6 +187,9 @@ export default defineComponent({
   setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
+    const isLockdropAccount = ref<boolean>(false);
+    const isModalLockdropWarning = ref<boolean>(true);
+
     const {
       currentAccount,
       currentAccountName,
@@ -173,6 +198,7 @@ export default defineComponent({
       isAccountUnification,
     } = useAccount();
 
+    const { toggleEvmWalletSchema } = useConnectWallet();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
@@ -186,7 +212,13 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm, isAllowLockdropDispatch } = useNetworkInfo();
+
+    const isWalletConnect = computed<boolean>(() => {
+      const currentWallet = store.getters['general/currentWallet'];
+      return currentWallet === SupportWallet.WalletConnect;
+    });
+
     const blockscout = computed<string>(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -216,6 +248,10 @@ export default defineComponent({
       if (!nativeTokenUsd.value) return false;
       return isLoadingBalance.value;
     });
+
+    const handleModalLockdropWarning = ({ isOpen }: { isOpen: boolean }) => {
+      isModalLockdropWarning.value = isOpen;
+    };
 
     watch(
       [balance, nativeTokenUsd, currentAccount, isH160],
@@ -252,6 +288,8 @@ export default defineComponent({
       async () => {
         const apiRef = $api;
         if (!isEthWallet.value) {
+          isLockdropAccount.value = false;
+
           return;
         }
         if (
@@ -266,8 +304,14 @@ export default defineComponent({
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
           const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
+          if (Number(data.free.toString()) > 0) {
+            isLockdropAccount.value = true;
+          } else {
+            isLockdropAccount.value = false;
+          }
         } catch (error: any) {
           console.error(error.message);
+          isLockdropAccount.value = false;
         }
       },
       { immediate: false }
@@ -317,9 +361,16 @@ export default defineComponent({
       bg,
       currentNetworkIdx,
       currentNetworkName,
+      isLockdropAccount,
+      isModalLockdropWarning,
+      isAllowLockdropDispatch,
+      isWalletConnect,
+      endpointKey,
+      handleModalLockdropWarning,
       getShortenAddress,
       copyAddress,
       showAccountUnificationModal,
+      toggleEvmWalletSchema,
     };
   },
 });

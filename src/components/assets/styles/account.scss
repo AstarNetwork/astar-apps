@@ -4,10 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  margin-top: -36px;
-  @media (min-width: $lg) {
-    margin-top: 0;
-  }
 }
 
 .row--details-signatory {
@@ -54,10 +50,25 @@
   position: relative;
   z-index: 1;
 }
+
 .body--dark {
   .row--account-info {
     color: white;
   }
+}
+
+.row--wc-warning {
+  font-size: 12px;
+  bottom: 14px;
+  position: absolute;
+  @media (min-width: $sm) {
+    font-size: 14px;
+  }
+}
+
+.text--warning {
+  color: $warning-red;
+  font-weight: 700;
 }
 
 .column--account-icon {
@@ -110,14 +121,14 @@
   // zkEVM
   &.network-3 {
     .text--address {
-      background: linear-gradient(90deg, #226dff 25%, #703ac2 100%);
+      background: linear-gradient(90deg, #0047ff 0%, #00d4ff 98%);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
   }
 
-  // zKatana
+  // zKyoto
   &.network-4 {
     .text--address {
       background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
@@ -220,7 +231,7 @@
   background-color: white;
   padding: 16px;
   min-height: 180px;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     border-radius: 16px;
     margin: 0;
   }
@@ -255,7 +266,7 @@
   position: relative;
   margin-bottom: 16px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   .wallet-tab__bg {
     background-color: rgba(255, 255, 255, 0.3);
     padding: 4px;
@@ -317,13 +328,13 @@
     .wallet-tab {
       .btn {
         &.active {
-          background: linear-gradient(270deg, #226dff 25%, #703ac2 100%);
+          background: linear-gradient(90deg, #0047ff 0%, #00d4ff 98%);
         }
       }
     }
   }
 
-  // zKatana
+  // zKyoto
   &.network-4 {
     .wallet-tab {
       .btn {
@@ -343,4 +354,17 @@
     flex-direction: row;
     gap: 16px;
   }
+}
+
+.row--lockdrop {
+  display: flex;
+  column-gap: 8px;
+  color: black;
+  font-weight: 800;
+}
+
+.text--switch-account {
+  color: $neon-blue;
+  text-decoration: underline;
+  cursor: pointer;
 }

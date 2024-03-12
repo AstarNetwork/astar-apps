@@ -1,26 +1,80 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--owner {
-  display: flex;
-  flex-direction: column;
   margin: 0 auto;
-  padding: 64px 16px 0 16px;
-  max-width: 1140px;
   position: relative;
   z-index: 1;
   @media (min-width: $lg) {
-    padding: 0;
+    margin: 0 -40px;
   }
 }
 
-.container--dapp-hero {
+.container--owner-header,
+.container--owner-main {
+  width: 100%;
+}
+
+.container--owner-header {
+  padding-top: 52px;
+  padding-bottom: 40px;
+  @media (min-width: $sm) {
+    padding-bottom: 80px;
+  }
+}
+
+.container--owner-main {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-repeat: repeat;
+  @media (min-width: $sm) {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+.container--owner-header__inner,
+.container--owner-main__inner {
+  display: flex;
+  flex-direction: column;
+  max-width: 1140px;
+  margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.container--owner-header__inner {
+  gap: 16px;
+}
+
+.container--owner-main__inner {
+  gap: 80px;
+}
+
+.row--your-dashboard {
+  text-align: center;
+  font-weight: 800;
+  color: $navy-1;
+  font-size: 16px;
+  order: 2;
+  @media (min-width: $lg) {
+    text-align: left;
+    order: 1;
+  }
+}
+
+.row--dapp-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
+  order: 1;
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 16px;
-    margin-bottom: 100px;
+    order: 2;
   }
 }
 
@@ -39,37 +93,11 @@
   font-weight: 800;
   font-size: 32px;
   color: $navy-1;
-}
-
-.row--your-dashboard {
-  display: none;
-  @media (min-width: $lg) {
-    display: block;
-    font-weight: 800;
-    color: $navy-1;
-    font-size: 16px;
-    margin-bottom: 16px;
+  @media (min-width: $sm) {
+    font-size: 40px;
   }
-}
-
-.row--your-dashboard-mobile {
-  font-weight: 800;
-  font-size: 16px;
-  color: $navy-1;
-  margin-top: 16px;
-  margin-bottom: 84px;
   @media (min-width: $lg) {
-    display: none;
-  }
-}
-
-.row--statistics {
-  display: flex;
-  justify-content: center;
-  column-gap: 4px;
-  margin-bottom: 80px;
-  @media (min-width: $lg) {
-    margin-bottom: 160px;
+    font-size: 48px;
   }
 }
 

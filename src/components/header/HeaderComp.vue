@@ -51,26 +51,27 @@ export default defineComponent({
     height: 6rem;
   }
 
-  // shibuya, zKatana, local
-  border-image: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
-  border-image-slice: 1;
+  // Memo: hide the border bottom as we have header message with background color
+  // shibuya, zkyoto, local
+  /* border-image: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%); */
+  /* border-image-slice: 1; */
 
   // astar native
   &.header__border-0 {
-    border-image: linear-gradient(90deg, #e6007a 25%, #ff9dd1 100%);
-    border-image-slice: 1;
+    /* border-image: linear-gradient(90deg, #e6007a 25%, #ff9dd1 100%); */
+    /* border-image-slice: 1; */
   }
 
   // shiden
   &.header__border-1 {
-    border-image: linear-gradient(90deg, #5928b1 25%, #b092ea 100%);
-    border-image-slice: 1;
+    /* border-image: linear-gradient(90deg, #5928b1 25%, #b092ea 100%); */
+    /* border-image-slice: 1; */
   }
 
   // zkEVM
   &.header__border-3 {
-    border-image: linear-gradient(90deg, #703ac2 25%, #226dff 100%);
-    border-image-slice: 1;
+    /* border-image: linear-gradient(90deg, #703ac2 25%, #226dff 100%); */
+    /* border-image-slice: 1; */
   }
 }
 

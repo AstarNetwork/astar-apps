@@ -13,6 +13,7 @@ export {
   getTransactionTimestamp,
   checkAllowance,
   getTokenImage,
+  handleCheckProviderChainId,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';
@@ -135,7 +136,7 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
-  [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
+  [EVM.ETHEREUM_MAINNET]: ['https://eth.public-rpc.com'],
   [EVM.SEPOLIA_TESTNET]: ['https://sepolia-01.astar.network'],
   // [EVM.SEPOLIA_TESTNET]: ['https://eth-sepolia.public.blastapi.io'],
   // [EVM.SEPOLIA_TESTNET]: ['https://rpc.sepolia.online'],

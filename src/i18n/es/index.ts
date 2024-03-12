@@ -157,8 +157,8 @@ export default {
   wallet: {
     connectWallet: 'Conectar billetera',
     select: 'Por favor, selecciona una billetera para conectarse a este Portal',
-    nativeAccount: 'Cuentas nativas',
-    evmAccount: 'Cuentas EVM',
+    nativeWallets: 'Cuentas nativas',
+    evmWallets: 'Cuentas EVM',
     multisigAccount: 'Cuentas multisig',
     accountUnification: 'Unificación de cuentas',
     math: {
@@ -692,7 +692,7 @@ export default {
     history: 'Historia reciente',
     actionRequired: 'Acción requerida',
     claim: 'Reclamar',
-    noHistory: 'No se ha encontrado historial',
+    noTransactions: 'No se encontraron transacciones',
     completed: 'Completado',
     inProgress: 'En progreso',
     approvalMaxAmount: 'Aprobar importe máximo (opcional)',

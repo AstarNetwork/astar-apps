@@ -3,8 +3,10 @@ import {
   CombinedDappInfo,
   DappInfo,
   DappStakeInfo,
+  DappState,
   SingularStakingInfo,
   StakeAmount,
+  StakerRewards,
 } from '../models';
 import { IDappStakingService } from './IDappStakingService';
 import { Symbols } from 'src/v2/symbols';
@@ -13,16 +15,19 @@ import { Guard } from 'src/v2/common';
 import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
+import { SignerService } from './SignerService';
 
 @injectable()
-export class DappStakingService implements IDappStakingService {
+export class DappStakingService extends SignerService implements IDappStakingService {
   constructor(
     @inject(Symbols.DappStakingRepositoryV3)
     protected dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.TokenApiProviderRepository)
     protected tokenApiRepository: IDataProviderRepository,
-    @inject(Symbols.WalletFactory) private walletFactory: () => IWalletService
-  ) {}
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+  ) {
+    super(walletFactory);
+  }
 
   // @inheritdoc
   public async getDapps(
@@ -36,7 +41,7 @@ export class DappStakingService implements IDappStakingService {
       this.tokenApiRepository.getDapps(network.toLowerCase()),
     ]);
 
-    // Map on chain and in store dApps
+    // Map on chain and in store dApps (registered only)
     const dApps: CombinedDappInfo[] = [];
     const onlyChain: DappInfo[] = [];
     chainDapps.forEach((chainDapp) => {
@@ -56,6 +61,27 @@ export class DappStakingService implements IDappStakingService {
         onlyChain.push(chainDapp);
       }
     });
+
+    // Map unregistered dApps
+    tokenApiDapps
+      .filter((x) => x.state === 'Unregistered')
+      .forEach((dapp) => {
+        const storeDapp = storeDapps.find(
+          (x) => x.address.toLowerCase() === dapp.contractAddress.toLowerCase()
+        );
+        if (storeDapp) {
+          dApps.push({
+            basic: storeDapp,
+            dappDetails: dapp,
+            chain: {
+              address: dapp.contractAddress,
+              id: dapp.dappId,
+              owner: dapp.owner,
+              state: DappState.Unregistered,
+            },
+          });
+        }
+      });
 
     return { fullInfo: dApps, chainInfo: onlyChain };
   }
@@ -169,11 +195,10 @@ export class DappStakingService implements IDappStakingService {
   }
 
   // @inheritdoc
-  public async getStakerRewards(senderAddress: string): Promise<bigint> {
+  public async getStakerRewards(senderAddress: string): Promise<StakerRewards> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
     const ledger = await this.dappStakingRepository.getAccountLedger(senderAddress);
-    let result = BigInt(0);
 
     // *** 1. Determine last claimable era.
     const {
@@ -183,7 +208,14 @@ export class DappStakingService implements IDappStakingService {
       lastSpanIndex,
       rewardsExpired,
       eraRewardSpanLength,
+      lastStakedPeriod,
     } = await this.getStakerEraRange(senderAddress);
+
+    let result = {
+      amount: BigInt(0),
+      period: lastStakedPeriod,
+      eraCount: 0,
+    };
 
     if (rewardsExpired) {
       return result;
@@ -203,6 +235,7 @@ export class DappStakingService implements IDappStakingService {
 
       claimableEras.set(era, stakedSum);
     }
+    result.eraCount = claimableEras.size;
 
     // *** 3. Calculate rewards.
     for (
@@ -219,7 +252,8 @@ export class DappStakingService implements IDappStakingService {
         const staked = claimableEras.get(era);
         if (staked) {
           const eraIndex = era - span.firstEra;
-          result += (staked * span.span[eraIndex].stakerRewardPool) / span.span[eraIndex].staked;
+          result.amount +=
+            (staked * span.span[eraIndex].stakerRewardPool) / span.span[eraIndex].staked;
         }
       }
     }
@@ -672,6 +706,7 @@ export class DappStakingService implements IDappStakingService {
       lastSpanIndex,
       rewardsExpired,
       eraRewardSpanLength: constants.eraRewardSpanLength,
+      lastStakedPeriod,
     };
   }
 
@@ -681,18 +716,5 @@ export class DappStakingService implements IDappStakingService {
     rewardRetentionInPeriods: number
   ): boolean {
     return stakedPeriod < currentPeriod - rewardRetentionInPeriods;
-  }
-
-  private async signCall(
-    call: ExtrinsicPayload,
-    senderAddress: string,
-    successMessage: string
-  ): Promise<void> {
-    const wallet = this.walletFactory();
-    await wallet.signAndSend({
-      extrinsic: call,
-      senderAddress: senderAddress,
-      successMessage,
-    });
   }
 }

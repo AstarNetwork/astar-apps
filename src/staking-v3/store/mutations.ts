@@ -6,6 +6,7 @@ import {
   Dapp,
   ProtocolState,
   SingularStakingInfo,
+  NumberOfStakersAndLockers,
   Rewards,
   Constants,
   EraInfo,
@@ -23,6 +24,10 @@ export interface DappStakingMutations<S = DappStakingState> {
   updateDappExtended(state: DappStakingState, dapp: Dapp): void;
   updateDappChain(state: DappStakingState, dapp: DappInfo): void;
   updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void;
+  setNumberOfStakersAndLockers(
+    state: DappStakingState,
+    numberOfStakersAndLockers: NumberOfStakersAndLockers
+  ): void;
   setProtocolState(state: DappStakingState, protocolState: ProtocolState): void;
   setLedger(state: DappStakingState, ledger: AccountLedger): void;
   setStakerInfo(state: DappStakingState, stakerInfo: Map<string, SingularStakingInfo>): void;
@@ -32,6 +37,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setDappTiers(state: DappStakingState, dAppTiers: DAppTierRewards): void;
   setTiersConfiguration(state: DappStakingState, tiersConfiguration: TiersConfiguration): void;
   setEraLengths(state: DappStakingState, eraLengths: EraLengths): void;
+  setLeaderboard(state: DappStakingState, leaderboard: Map<number, number>): void;
 }
 
 const updateDapp = <T>(
@@ -72,6 +78,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   updateDappDetails(state: DappStakingState, dapp: ProviderDappData): void {
     updateDapp(state, dapp.contractAddress, dapp, 'dappDetails');
   },
+  setNumberOfStakersAndLockers(state, numberOfStakersAndLockers) {
+    state.numberOfStakersAndLockers = numberOfStakersAndLockers;
+  },
   setProtocolState(state, protocolState) {
     state.protocolState = protocolState;
   },
@@ -98,6 +107,9 @@ const mutations: MutationTree<DappStakingState> & DappStakingMutations = {
   },
   setEraLengths(state, eraLengths) {
     state.eraLengths = eraLengths;
+  },
+  setLeaderboard(state, leaderboard) {
+    state.leaderboard = leaderboard;
   },
 };
 

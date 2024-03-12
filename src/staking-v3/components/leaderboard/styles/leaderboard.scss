@@ -2,18 +2,64 @@
 
 .wrapper--leaderboard {
   width: 100%;
+  padding: 100px 0 20px 0;
+  position: relative;
+  background-color: $navy-1;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.wrapper--leaderboard__inner {
+  margin: auto;
+  max-width: $container-max-width;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-3000px);
+  }
+}
+
+.bg--leaderboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll() !important;
+  img {
+    width: 100%;
+  }
 }
 
 .title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.25;
-  margin-bottom: 20px;
   position: relative;
   z-index: 1;
+  color: white;
+  font-style: italic;
+  @media (min-width: $xxxl) {
+    padding-top: 80px;
+  }
 }
 
 .container--boards {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+  z-index: 1;
   mask-image: linear-gradient(
     to right,
     transparent,
@@ -29,19 +75,25 @@
     mask-image: linear-gradient(
       to right,
       transparent,
-      black 48px,
-      black calc(100% - 48px),
+      black 40px,
+      black calc(100% - 40px),
       transparent
     );
-    margin-left: -48px;
-    margin-right: -48px;
-    padding-left: 48px;
-    padding-right: 48px;
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 }
-.swiper {
+
+.swiper--leaderboard {
   overflow: visible;
 }
+
+.wrapper--tier .swiper {
+  overflow: hidden;
+}
+
 .swiper-slide {
   height: auto;
 }

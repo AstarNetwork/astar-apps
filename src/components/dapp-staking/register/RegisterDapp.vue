@@ -68,7 +68,6 @@
           <contract-types :dapp="data" class="custom-component" />
           <main-category :dapp="data" class="custom-component" />
           <tags :dapp="data" class="component" />
-          <license :dapp="data" class="component" />
           <div class="button--container">
             <!-- <astar-button class="button--submit" @click="handleSubmit">
               {{ $t('dappStaking.modals.submit') }}
@@ -117,9 +116,7 @@ import Description from './components/Description.vue';
 import WelcomeBanner from './components/WelcomeBanner.vue';
 import ContractTypes, { possibleContractTypes } from './components/ContractTypes.vue';
 import MainCategory, { possibleCategories } from './components/MainCategory.vue';
-import License from './components/License.vue';
 import Tags from './components/Tags.vue';
-import { possibleLicenses } from './components/License.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from './components/ItemsToggle.vue';
@@ -147,7 +144,6 @@ export default defineComponent({
     Description,
     ContractTypes,
     MainCategory,
-    License,
     Tags,
     BackToPage,
     WelcomeBanner,
@@ -192,7 +188,6 @@ export default defineComponent({
     data.communities = [];
     data.tags = [];
     data.mainCategory = currentCategory.value.value as Category;
-    data.license = possibleLicenses[0].value;
     data.iconFile = '';
 
     data.images = [];
@@ -293,7 +288,7 @@ export default defineComponent({
             data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
               registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
-            data.license = registeredDapp.license;
+            data.license = '';
             data.tags = registeredDapp.tags;
           }
         } else {
@@ -332,7 +327,6 @@ export default defineComponent({
 
           if (result) {
             await router.push(Path.DappStaking);
-            router.go(0);
           }
         }
       });
@@ -352,7 +346,11 @@ export default defineComponent({
     const handleModalAddIntroduction = ({ isOpen }: { isOpen: boolean }): void => {
       dappForm?.value?.validate().then(async (success: boolean) => {
         if (success && validateCustomComponents()) {
-          isModalAddIntroduction.value = isOpen;
+          if (isNewDapp.value) {
+            isModalAddIntroduction.value = isOpen;
+          } else {
+            handleSubmit();
+          }
         }
       });
     };
@@ -426,7 +424,7 @@ export default defineComponent({
 
 <style lang="scss">
 .q-field__native {
-  color: $gray-1 !important;
+  color: $gray-5 !important;
 }
 .body--dark {
   .q-field__native {

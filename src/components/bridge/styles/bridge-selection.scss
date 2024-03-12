@@ -3,14 +3,42 @@
 .wrapper--bridge-selection {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: 100%;
-  margin-top: 48px;
-  margin-bottom: 48px;
+  margin-top: 24px;
+  position: relative;
+  padding-left: 8px;
+  padding-right: 8px;
+  @media (min-width: $sm) {
+    align-items: center;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
   @media (min-width: $xl) {
     margin-top: 0px;
     margin-bottom: 0px;
+  }
+}
+
+.container--title {
+  font-weight: 800;
+  font-size: 24px;
+  margin-bottom: 24px;
+  @media (min-width: $lg) {
+    margin-bottom: 50px;
+  }
+}
+
+.container--box {
+  @media (min-width: $xl) {
+    position: absolute;
+    right: -40px;
+    top: -36px;
+    height: calc(100vh - 98px);
+    padding-right: 168px;
+    padding-left: 48px;
+    padding-top: 58px;
+    box-shadow: 0px 2px 8px 0px #00000014;
   }
 }
 
@@ -18,45 +46,39 @@
   display: flex;
   flex-direction: column;
   row-gap: 24px;
-  @media (min-width: $lg) {
+  width: 100%;
+  @media (min-width: $md) {
     flex-direction: row;
     column-gap: 16px;
   }
   @media (min-width: $xl) {
     flex-direction: row;
-    column-gap: 56px;
+    column-gap: 8px;
   }
 }
 
 .column--selection {
-  width: 260px;
-  @media (min-width: $lg) {
-    width: 254px;
+  width: 100%;
+  button {
+    width: 100%;
   }
-  @media (min-width: $xl) {
-    width: 300px;
+  @media (min-width: $sm) {
+    width: 232px;
   }
 }
 
 .button--bridge {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   border-radius: 16px;
-  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.3s ease 0s;
-  row-gap: 24px;
   padding: 16px;
-  height: 260px;
-  margin-bottom: 12px;
-  @media (min-width: $lg) {
-    height: 254px;
-  }
-  @media (min-width: $xl) {
-    height: 300px;
-  }
+  height: 232px;
+  margin-bottom: 16px;
+  border: 1px solid $gray-0;
+  width: 100%;
 }
 
 .column--selection button:not([disabled]) .button--bridge:hover {
@@ -76,28 +98,40 @@
   }
 }
 
+.row--logo-bg {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.img--logo-bg {
+  height: 64px;
+  width: 64px;
+  background-color: $gray-0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
 .img--logo {
   width: 32px;
   height: 32px;
-  @media (min-width: $lg) {
-    width: 30px;
-    height: 30px;
-  }
-  @media (min-width: $xl) {
-    width: 32px;
-    height: 32px;
-  }
+}
+
+.row--bridge-title {
+  text-align: left;
 }
 
 .text--bridge-title {
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 800;
+  font-size: 24px;
   color: $navy-1;
 }
 
 .text--bridge {
-  font-weight: 400;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 12px;
   color: $navy-1;
   a {
     color: $astar-blue;
@@ -107,18 +141,24 @@
   }
 }
 
-.box--text-bridge {
-  display: flex;
-  flex-direction: column;
-  row-gap: 16px;
+.text--bridge-details {
+  font-weight: 600;
+  font-size: 14px;
+  color: #596381;
+  a {
+    color: $astar-blue;
+    &:hover {
+      color: lighten($astar-blue-dark, 10%);
+    }
+  }
 }
 
 .body--dark {
   .text--bridge-title,
   .text--bridge {
-    color: $gray-1;
+    color: $gray-0;
   }
-  .text--bridge {
+  .text--bridge-details {
     a {
       color: $astar-blue-dark;
       &:hover {
@@ -127,12 +167,24 @@
     }
   }
   .button--bridge {
-    border: 1px solid $gray-4;
-    background-color: $navy-2;
+    border: 1px solid $navy-3;
+    background-color: $navy-1;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+  }
+
+  .container--box {
+    @media (min-width: $xl) {
+      background: rgba(8, 16, 41, 0.7);
+      box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
+    }
   }
 
   .column--selection button:not([disabled]) .button--bridge:hover {
     border: 1px solid $astar-blue !important;
     transition: all 0.3s ease 0s;
+  }
+
+  .img--logo-bg {
+    background-color: $navy-3;
   }
 }

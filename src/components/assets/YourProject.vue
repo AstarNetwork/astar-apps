@@ -9,13 +9,20 @@
       <div class="box--dapps">
         <router-link
           v-for="dapp in ownDapps"
-          :key="dapp.basic.address"
-          :to="navigateOwnerPage(dapp.basic.address)"
+          :key="dapp.chain.address"
+          :to="navigateOwnerPage(dapp.chain.address)"
           class="card--dapp"
         >
           <img class="icon--dapp-logo" :src="dapp.basic.iconUrl" :alt="dapp.basic.name" />
-          <div>
-            <span>{{ dapp.basic.name }}</span>
+          <div class="row--dapp-name">
+            <span> {{ dapp.basic.name }} </span>
+            <div v-if="checkIsRewards(dapp.chain.address)" class="column--rewards">
+              <span>{{ $t('assets.rewardsAvailable') }}</span>
+            </div>
+          </div>
+          <div v-if="checkIsRewards(dapp.chain.address)">
+            <div class="dot--bg" />
+            <div class="dot--active" />
           </div>
         </router-link>
       </div>
@@ -24,22 +31,51 @@
 </template>
 
 <script lang="ts">
-import { useAccount, useClaimAll } from 'src/hooks';
-import { CombinedDappInfo, useDappStakingNavigation, useDapps } from 'src/staking-v3';
-import { computed, defineComponent } from 'vue';
+import { useClaimAll } from 'src/hooks';
+import { CombinedDappInfo, IDappStakingService, useDappStaking, useDappStakingNavigation } from 'src/staking-v3';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { defineComponent, watch, ref } from 'vue';
 
 export default defineComponent({
-  setup() {
-    const { currentAccount } = useAccount();
+  props: {
+    ownDapps: {
+      type: Array<CombinedDappInfo>,
+      required: true,
+    },
+  },
+  setup(props) {
     useClaimAll();
-    const { allDapps } = useDapps();
     const { navigateOwnerPage } = useDappStakingNavigation();
-    const ownDapps = computed<CombinedDappInfo[]>(() => {
-      if (!allDapps.value) return [];
-      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
-    });
+    const { rewards, getDappRewards } = useDappStaking();
+    const dAppRewardsMap = ref<{ dapp: string, rewards: bigint }[]>([]);
 
-    return { ownDapps, navigateOwnerPage };
+    const checkIsRewards = (address: string): boolean => {
+      const dapp = dAppRewardsMap.value.find((it) => it.dapp === address);
+      if (dapp) {
+        return dapp.rewards > 0;
+      }
+      return false;
+    }
+
+    const setDappRewardsMap = async (): Promise<void> => {
+      const dAppRewardsArray: { dapp: string, rewards: bigint }[] = [];
+      if (props.ownDapps.length === 0) return
+
+
+      for await (const dapp of props.ownDapps) {
+        const ownedContractAddress = dapp.chain.address;
+        const dAppRewards = await getDappRewards(ownedContractAddress);
+        if (dAppRewards > 0) {
+          dAppRewardsArray.push({ dapp: ownedContractAddress, rewards: dAppRewards });
+        }
+      }
+      dAppRewardsMap.value = dAppRewardsArray;
+    }
+
+    watch([rewards], setDappRewardsMap, { immediate: false });
+
+    return { navigateOwnerPage, checkIsRewards };
   },
 });
 </script>

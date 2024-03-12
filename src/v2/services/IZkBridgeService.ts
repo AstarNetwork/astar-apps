@@ -12,6 +12,7 @@ export interface ParamBridgeAsset {
   amount: string | BigNumber;
   fromChainName: EthBridgeNetworkName;
   toChainName: EthBridgeNetworkName;
+  destNetworkId?: number;
   tokenAddress: string;
   decimal: number;
 }

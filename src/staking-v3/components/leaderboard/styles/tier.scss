@@ -1,13 +1,14 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--tier {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(white, 0.05);
   height: 100%;
   transition: all 0.2s ease;
-  border: solid 1px $gray-2;
   border-radius: 16px;
   overflow: hidden;
   padding: 16px;
+  color: white;
+  box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.16);
 }
 
 .row--tier-header {
@@ -19,6 +20,7 @@
 .text--title {
   font-size: 24px;
   font-weight: 700;
+  color: white;
 }
 
 .column--reward {
@@ -73,8 +75,9 @@
   align-items: center;
   gap: 16px;
   flex: 1;
+  transition: all 0.2s ease;
   &:hover {
-    background-color: $gray-1;
+    background: rgba(white, 0.1);
   }
 }
 
@@ -91,10 +94,4 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-}
-
-.body--dark {
-  .text--title {
-    color: $navy-1;
-  }
 }

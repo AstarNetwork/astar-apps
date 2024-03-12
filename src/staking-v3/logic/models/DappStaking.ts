@@ -1,4 +1,4 @@
-import { DappInfo, ProtocolState } from './Node';
+import { DappInfo, DappState, ProtocolState } from './Node';
 import { Community } from '@astar-network/astar-sdk-core';
 
 /**
@@ -131,6 +131,7 @@ export interface EraLengths {
   standardErasPerBuildAndEarnPeriod: number;
   standardErasPerVotingPeriod: number;
   standardEraLength: number;
+  periodsPerCycle: number;
 }
 
 export interface DAppTierRewards {
@@ -139,14 +140,14 @@ export interface DAppTierRewards {
   readonly period: number;
 }
 
-interface DAppTier {
+export interface DAppTier {
   readonly dappId: number;
   readonly tierId: number | undefined;
 }
 
 export interface Rewards {
   dApp: bigint;
-  staker: bigint;
+  staker: StakerRewards;
   bonus: bigint;
 }
 
@@ -197,4 +198,22 @@ export interface ProviderDappData {
   registrationBlockNumber: number;
   unregisteredAt?: number;
   unregistrationBlockNumber?: number;
+  owner: string;
+  beneficiary?: string;
+  state: DappState;
+  dappId: number;
+}
+
+export interface NumberOfStakersAndLockers {
+  date: string;
+  tvl: string;
+  lockersCount: number;
+  tvs: string;
+  stakersCount: number;
+}
+
+export interface StakerRewards {
+  amount: bigint;
+  period: number;
+  eraCount: number;
 }

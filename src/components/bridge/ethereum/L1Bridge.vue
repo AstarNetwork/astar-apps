@@ -23,13 +23,23 @@
           </div>
         </div>
       </div>
-      <div class="row--reverse">
+      <div v-if="isEnabledWithdrawal" class="row--reverse">
         <button
           class="icon--reverse cursor-pointer"
           @click="() => reverseChain(fromChainName, toChainName)"
         >
           <astar-icon-sync size="20" />
         </button>
+      </div>
+      <div v-else class="row--reverse">
+        <button class="icon--reverse" disabled>
+          <astar-icon-sync size="20" />
+        </button>
+        <q-tooltip>
+          <span class="text--tooltip">
+            {{ $t('bridge.disabledWithdrawal', { network: fromChainName }) }}
+          </span>
+        </q-tooltip>
       </div>
       <div class="box--input-field">
         <div class="box__space-between">
@@ -96,7 +106,7 @@
               type="number"
               min="0"
               pattern="^[0-9]*(\.)?[0-9]*$"
-              placeholder="0.0"
+              placeholder="0"
               class="input--amount input--no-spin"
               @input="(e) => inputHandler(e)"
             />
@@ -154,7 +164,7 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, defineComponent, watch, ref, computed } from 'vue';
@@ -245,9 +255,11 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const { isZkatana } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isEnabledWithdrawal = computed<boolean>(() => true);
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
@@ -275,16 +287,15 @@ export default defineComponent({
       isHandling.value = false;
     };
 
-    // Watching the 'isApproved' prop
-    // When 'isApproved' changes and becomes true, stop loading animation
     watch(
-      () => props.isApproved,
-      async (newVal, oldVal) => {
-        if (newVal === true) {
+      [props],
+      () => {
+        if (props.isApproved) {
           props.setIsApproving(false);
           store.commit('general/setLoading', false, { root: true });
         }
-      }
+      },
+      { immediate: false }
     );
 
     return {
@@ -293,6 +304,7 @@ export default defineComponent({
       EthBridgeNetworkName,
       isHandling,
       isLoading,
+      isEnabledWithdrawal,
       bridge,
       approve,
     };

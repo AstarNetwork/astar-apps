@@ -74,12 +74,18 @@ export const useGasPrice = (isFetch = false) => {
   watch(
     [network],
     async () => {
-      if (isFetch && network.value && !gas.value && isEnableSpeedConfiguration.value) {
+      if (
+        isFetch &&
+        network.value &&
+        !gas.value &&
+        isEnableSpeedConfiguration.value &&
+        !isZkEvm.value
+      ) {
         // console.info('gas price', network.value, gas.value);
         await dispatchGasPrice(network.value);
       }
     },
-    { immediate: false }
+    { immediate: true }
   );
 
   watchEffect(async () => {

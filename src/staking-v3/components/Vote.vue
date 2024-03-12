@@ -26,7 +26,7 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="$t('stakingV3.voteProject')"
               :selected-dapp="dapp"
               :disable-selection="!canAddDapp"
             />
@@ -41,7 +41,9 @@
             <dapp-selector
               :dapps="dapps"
               :on-select-dapps="handleSelectDapp"
-              :placeholder="$t('stakingV3.chooseProject')"
+              :placeholder="
+                $t(selectedDapps.length > 0 ? 'stakingV3.voteMoreProject' : 'stakingV3.voteProject')
+              "
             />
           </div>
 
@@ -51,7 +53,9 @@
                 <b>{{ $t('stakingV3.availableToVote') }}</b>
               </div>
               <div>
-                <b><token-balance-native :balance="availableToVote.toString()" /></b>
+                <b v-if="!isLoading"
+                  ><token-balance-native :balance="availableToVoteDisplay.toString()"
+                /></b>
               </div>
             </div>
 
@@ -68,9 +72,11 @@
                     isVotingPeriod ? $t('stakingV3.alreadyVoted') : $t('stakingV3.alreadyStaked')
                   }}
                 </div>
-                <div><token-balance-native :balance="totalStake.toString()" /></div>
+                <div>
+                  <token-balance-native :balance="totalStake.toString()" />
+                </div>
               </div>
-              <div class="balance--row" :class="remainLockedToken !== BigInt(0) && 'warning--text'">
+              <div class="balance--row" :class="remainLockedToken > BigInt(0) && 'warning--text'">
                 <div>
                   <b>{{ $t('stakingV3.remainingLockedBalance') }}</b>
                 </div>
@@ -95,7 +101,7 @@
             </div>
           </div>
           <rewards-panel />
-          <error-panel :error-message="errorMessage" />
+          <error-panel :error-message="errorMessage" :url="refUrl" />
           <div class="wrapper--button">
             <astar-button
               :disabled="!canConfirm()"
@@ -115,11 +121,11 @@
 
         <div class="column--help">
           <div class="note">
-            <b>{{ $t('toast.note') }}</b>
+            <b>{{ $t('stakingV3.voting.note') }}</b>
             <ul>
               <li>
                 {{
-                  $t('stakingV3.minimumStakingAmount', {
+                  $t('stakingV3.voting.minimumStakingAmount', {
                     amount: constants?.minStakeAmountToken,
                     symbol: nativeTokenSymbol,
                   })
@@ -127,11 +133,37 @@
               </li>
               <li>
                 {{
-                  $t('stakingV3.minBalanceAfterStaking', {
+                  $t('stakingV3.voting.minBalanceAfterStaking', {
                     amount: constants?.minBalanceAfterStaking,
                     symbol: nativeTokenSymbol,
                   })
                 }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="note">
+            <b>{{ $t('stakingV3.voting.learn') }}</b>
+            <ul>
+              <li>
+                <a
+                  :href="docsUrl.learnDappStaking"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.whatIsDappStaking') }}
+                </a>
+              </li>
+              <li>
+                <a
+                  :href="docsUrl.dappStakingForStakers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link--learn"
+                >
+                  {{ $t('stakingV3.voting.howToParticipate') }}
+                </a>
               </li>
             </ul>
           </div>
@@ -153,13 +185,15 @@ import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalSelectDapp from './dapp-selector/ModalSelectDapp.vue';
 import { ethers } from 'ethers';
-import { max } from 'src/v2/common';
+import { abs, max } from 'src/v2/common';
 import { useRoute } from 'vue-router';
 import { CombinedDappInfo, DappStakeInfo } from '../logic';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import RewardsPanel from './RewardsPanel.vue';
 import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
+import { docsUrl } from 'src/links';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -182,11 +216,13 @@ export default defineComponent({
       claimLockAndStake,
     } = useDappStaking();
     const { registeredDapps, getDapp } = useDapps();
-    const { goBack } = useDappStakingNavigation();
+    const { navigateToAssets } = useDappStakingNavigation();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { useableBalance } = useBalance(currentAccount);
     const route = useRoute();
+    const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const dapps = ref<Dapp[]>([]);
     const selectedDapps = ref<Dapp[]>([]);
@@ -222,7 +258,16 @@ export default defineComponent({
     });
 
     const availableToVote = computed<bigint>(
-      () => BigInt(useableBalance.value) + max(remainLockedTokenInitial, BigInt(0))
+      () =>
+        BigInt(useableBalance.value) +
+        max(remainLockedTokenInitial, BigInt(0)) +
+        availableToMove.value
+    );
+
+    const availableToVoteDisplay = computed<bigint>(() =>
+      remainLockedToken.value >= BigInt(0)
+        ? BigInt(useableBalance.value) + remainLockedToken.value + availableToMove.value
+        : BigInt(useableBalance.value) - abs(remainLockedToken.value) + availableToMove.value
     );
 
     const amountToUnstake = computed<bigint>(() =>
@@ -247,10 +292,12 @@ export default defineComponent({
     });
 
     const errorMessage = ref<string>('');
+    const refUrl = ref<string>('');
 
     const canConfirm = (): boolean => {
-      const [enabled, message] = canStake(stakeInfo.value, availableToVote.value);
+      const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value);
       errorMessage.value = message;
+      refUrl.value = url;
 
       return enabled && totalStakeAmount.value > 0;
     };
@@ -284,7 +331,7 @@ export default defineComponent({
         amountToUnstake.value
       );
 
-      goBack();
+      navigateToAssets();
     };
 
     watch(
@@ -330,6 +377,7 @@ export default defineComponent({
       dapps,
       locked,
       availableToVote,
+      availableToVoteDisplay,
       totalStake,
       totalStakeAmountBigInt,
       remainLockedToken,
@@ -348,6 +396,10 @@ export default defineComponent({
       dAppToMoveTokensFrom,
       availableToMove,
       errorMessage,
+      docsUrl,
+      isLoading,
+      stakeInfo,
+      refUrl,
     };
   },
 });

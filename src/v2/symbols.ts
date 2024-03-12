@@ -22,6 +22,7 @@ export const Symbols = {
   TypeMappings: Symbol.for('TypeMappings'),
   RegisteredTokens: Symbol.for('RegisteredTokens'),
   PolkasafeClient: Symbol.for('PolkasafeClient'),
+  WcProvider: Symbol.for('WcProvider'),
   PolkasafeRepository: Symbol.for('PolkasafeRepository'),
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
@@ -42,4 +43,6 @@ export const Symbols = {
   DappStakingServiceFactoryV3: Symbol.for('DappStakingServiceFactoryV3'),
   DappStakingServiceV2V3: Symbol.for('DappStakingServiceV2V3'),
   TokenApiProviderRepository: Symbol.for('TokenApiProviderRepository'),
+  InflationRepository: Symbol.for('InflationRepository'),
+  DappStakingServiceV2Ledger: Symbol.for('DappStakingServiceV2Ledger'),
 };

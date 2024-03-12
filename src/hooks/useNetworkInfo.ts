@@ -8,7 +8,7 @@ import {
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 
 export function isCustomNetwork(network: string) {
   return network === 'custom-network';
@@ -31,6 +31,7 @@ export function useNetworkInfo() {
   );
 
   const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
+  const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -49,6 +50,14 @@ export function useNetworkInfo() {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
+  });
+
+  // Todo: Delete this code when all the networks allow to use Lockdrop Dispatch
+  const isAllowLockdropDispatch = computed<boolean>(() => {
+    return (
+      currentNetworkIdx.value === endpointKey.LOCAL ||
+      currentNetworkIdx.value === endpointKey.SHIBUYA
+    );
   });
 
   const evmNetworkIdx = computed<ASTAR_EVM_NETWORK_IDX>(() => {
@@ -106,6 +115,8 @@ export function useNetworkInfo() {
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,
+    isAllowLockdropDispatch,
     isZkatana,
+    isAstarZkEvm,
   };
 }

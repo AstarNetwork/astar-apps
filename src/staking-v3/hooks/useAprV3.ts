@@ -1,18 +1,17 @@
+import { u128 } from '@polkadot/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { container } from 'src/v2/common';
+import { IInflationRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { ref, watch, computed } from 'vue';
-import { EraInfo, EraLengths, IDappStakingRepository, InflationParam } from '../logic';
+import { computed, ref, watch } from 'vue';
+import { EraInfo, EraLengths, InflationParam } from '../logic';
 import { useDappStaking } from './useDappStaking';
-import { u128 } from '@polkadot/types';
-import { useNetworkInfo } from 'src/hooks';
 
-export const useAprV3 = () => {
+export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
-  const { eraLengths, isVotingPeriod, currentEraInfo } = useDappStaking();
-  const { currentNetworkName } = useNetworkInfo();
+  const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
 
   const percentageToNumber = (percent: string): number => {
     // e.g.: percent 1%: 10000000000000000
@@ -23,10 +22,7 @@ export const useAprV3 = () => {
     return Number(ethers.utils.formatEther(String(wei)));
   };
 
-  // Todo: fetch it via API
-  const periodsPerCycle = computed<number>(() => {
-    return currentNetworkName.value === 'Shibuya' ? 2 : 4;
-  });
+  const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
     const secBlockProductionRate = 12;
@@ -77,14 +73,14 @@ export const useAprV3 = () => {
     currentEraInfo,
     eraLength,
     bonusRewardsPoolPerPeriod,
+    // Memo: Any amount can be simulated for calculating APR
+    simulatedVoteAmount = 1000,
   }: {
     currentEraInfo: EraInfo;
     eraLength: EraLengths;
     bonusRewardsPoolPerPeriod: string;
-  }): number => {
-    // Memo: Any amount can be simulated
-    const simulatedVoteAmount = 1000;
-
+    simulatedVoteAmount?: number;
+  }): { bonusApr: number; simulatedBonusPerPeriod: number } => {
     const cyclesPerYear = getCyclePerYear(eraLength);
 
     const formattedBonusRewardsPoolPerPeriod = Number(
@@ -101,7 +97,7 @@ export const useAprV3 = () => {
     const periodsPerYear = periodsPerCycle.value * cyclesPerYear;
     const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
     const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;
-    return bonusApr;
+    return { bonusApr, simulatedBonusPerPeriod };
   };
 
   const getApr = async (): Promise<{ stakerApr: number; bonusApr: number }> => {
@@ -117,12 +113,14 @@ export const useAprV3 = () => {
         return { stakerApr: 0, bonusApr: 0 };
       }
 
-      const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-      const [inflationParams, bonusRewardsPoolPerPeriod, totalIssuanceRaw] = await Promise.all([
-        stakingRepo.getInflationParams(),
-        stakingRepo.getBonusRewardPoolPerPeriod(),
+      const inflationRepo = container.get<IInflationRepository>(Symbols.InflationRepository);
+      const [inflationParams, inflationConfiguration, totalIssuanceRaw] = await Promise.all([
+        inflationRepo.getInflationParams(),
+        inflationRepo.getInflationConfiguration(),
         apiRef.query.balances.totalIssuance(),
       ]);
+
+      const bonusRewardsPoolPerPeriod = inflationConfiguration.bonusRewardPoolPerPeriod.toString();
 
       const stakerApr = getStakerApr({
         totalIssuance: totalIssuanceRaw,
@@ -131,7 +129,7 @@ export const useAprV3 = () => {
         eraLength: eraLengthRef,
       });
 
-      const bonusApr = getBonusApr({
+      const { bonusApr } = getBonusApr({
         currentEraInfo: currentEraInfoRef,
         eraLength: eraLengthRef,
         bonusRewardsPoolPerPeriod,
@@ -143,9 +141,51 @@ export const useAprV3 = () => {
     }
   };
 
+  const getEstimatedBonus = async (): Promise<number> => {
+    try {
+      const eraLengthRef = eraLengths.value;
+      const currentEraInfoRef = currentEraInfo.value;
+      const stakerInfoRef = stakerInfo.value;
+      if (
+        !stakerInfoRef ||
+        !eraLengthRef.standardEraLength ||
+        !currentEraInfoRef ||
+        !currentEraInfoRef.nextStakeAmount
+      ) {
+        return 0;
+      }
+
+      let stakedBonusEligible: bigint = BigInt(0);
+      stakerInfoRef.forEach((it) => {
+        const amount = it.loyalStaker ? it.staked.voting : BigInt(0);
+        stakedBonusEligible += amount;
+      });
+
+      if (!stakedBonusEligible) return 0;
+
+      const inflationRepo = container.get<IInflationRepository>(Symbols.InflationRepository);
+      const inflationConfiguration = await inflationRepo.getInflationConfiguration();
+      const bonusRewardsPoolPerPeriod = inflationConfiguration.bonusRewardPoolPerPeriod.toString();
+
+      const { simulatedBonusPerPeriod } = getBonusApr({
+        currentEraInfo: currentEraInfoRef,
+        eraLength: eraLengthRef,
+        bonusRewardsPoolPerPeriod,
+        simulatedVoteAmount: Number(ethers.utils.formatEther(stakedBonusEligible)),
+      });
+
+      return simulatedBonusPerPeriod;
+    } catch (error) {
+      return 0;
+    }
+  };
+
+  watch([stakerInfo], getEstimatedBonus);
+
   watch(
     [isVotingPeriod, eraLengths, currentEraInfo, periodsPerCycle],
     async () => {
+      if (!isWatch) return;
       const apr = await getApr();
       stakerApr.value = apr.stakerApr;
       bonusApr.value = apr.bonusApr;
@@ -156,5 +196,6 @@ export const useAprV3 = () => {
   return {
     stakerApr,
     bonusApr,
+    getEstimatedBonus,
   };
 };

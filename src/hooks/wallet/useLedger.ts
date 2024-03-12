@@ -19,7 +19,10 @@ export const useLedger = () => {
 
   const store = useStore();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
+  const isLedger = computed<boolean>(() => {
+    const isLedger = store.getters['general/isLedger'];
+    return !isH160.value && isLedger;
+  });
 
   const handleReset = (): void => {
     isLedgerNanoS.value = false;
@@ -78,5 +81,5 @@ export const useLedger = () => {
 
   watch([currentAccount], handleLedgerData, { immediate: true });
 
-  return { isLedgerNanoS };
+  return { isLedgerNanoS, isLedger };
 };

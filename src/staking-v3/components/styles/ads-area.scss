@@ -1,6 +1,25 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--ads-area {
+  background-color: $navy-1;
+  width: 100%;
+  padding: 40px 0 80px 0;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.wrapper--ads-area__inner {
+  margin: auto;
+  max-width: $container-max-width;
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.container--mask {
   mask-image: linear-gradient(
     to right,
     transparent,
@@ -12,20 +31,18 @@
   margin-right: -16px;
   padding-left: 16px;
   padding-right: 16px;
-  width: calc(100% + 32px);
   @media (min-width: $md) {
     mask-image: linear-gradient(
       to right,
       transparent,
-      black 48px,
-      black calc(100% - 48px),
+      black 40px,
+      black calc(100% - 40px),
       transparent
     );
-    margin-left: -48px;
-    margin-right: -48px;
-    padding-left: 48px;
-    padding-right: 48px;
-    width: calc(100% + 96px);
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 }
 
@@ -41,11 +58,14 @@
   height: 100%;
   transition: all 0.2s ease;
   cursor: pointer;
-  border: solid 1px $gray-2;
-  border-radius: 6px;
+  border-radius: 16px;
   overflow: hidden;
+  background-color: rgba(white, 0.1);
   &:hover {
-    background-color: $gray-1;
+    background-color: rgba(white, 0.2);
+    .card__img{
+      filter: brightness(1.1);
+    }
   }
 }
 
@@ -77,7 +97,7 @@
   margin: 4px 0 16px 0;
   font-size: 16px;
   font-weight: 700;
-  color: $navy-1;
+  color: $gray-2;
 }
 
 .text--description {
@@ -85,16 +105,5 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  color: $navy-1;
-}
-
-.text--title {
-  margin: 4px 0 16px 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.text--subtitle {
-  color: $gray-3;
-  font-weight: 600;
+  color: $gray-2;
 }

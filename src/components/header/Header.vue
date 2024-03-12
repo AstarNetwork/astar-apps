@@ -5,7 +5,7 @@
         <div class="icon"><logo /></div>
       </template>
       <div v-if="!currentAccount">
-        <connect-button :class="isLoading && 'cursor--disabled'" @click="openSelectModal">
+        <connect-button @click="clickAccountBtn">
           <astar-icon-wallet />
         </connect-button>
         <q-tooltip>
@@ -13,62 +13,31 @@
         </q-tooltip>
       </div>
       <template v-else>
-        <account-button
-          :account="currentAccount"
-          :class="isLoading && 'cursor--disabled'"
-          @click="clickAccountBtn"
-        />
+        <account-button :account="currentAccount" @click="clickAccountBtn" />
       </template>
       <network-button @show-network="clickNetworkBtn" />
       <trouble-help />
       <mobile-nav v-if="width <= screenSize.lg" />
     </header-comp>
 
-    <claim-warning-banner :network="currentNetworkIdx" />
-
     <!-- Modals -->
-    <modal-network
-      v-if="modalNetwork"
-      v-model:isOpen="modalNetwork"
-      v-model:selectNetwork="currentNetworkIdx"
+    <modal-network-wallet
+      v-if="isModalNetworkWallet"
+      v-model:isOpen="isModalNetworkWallet"
       :network-idx="currentNetworkIdx"
-    />
-
-    <modal-connect-wallet
-      :is-modal-connect-wallet="
-        modalName === WalletModalOption.SelectWallet ||
-        modalName === WalletModalOption.NoExtension ||
-        modalName === WalletModalOption.OutdatedWallet
-      "
-      :is-no-extension="
-        modalName === WalletModalOption.NoExtension ||
-        modalName === WalletModalOption.OutdatedWallet
-      "
+      :is-select-wallet="isSelectWallet"
+      :modal-name="modalName"
+      :selected-wallet="selectedWallet"
+      :modal-account-select="modalAccountSelect"
+      :modal-polkasafe-select="modalPolkasafeSelect"
       :set-wallet-modal="setWalletModal"
-      :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
-      :selected-wallet="selectedWallet"
       :open-polkasafe-modal="openPolkasafeModal"
-      :open-account-unification-modal="openAccountUnificationModal"
+      :set-modal-account-select="setModalAccountSelect"
+      :set-modal-polkasafe-select="setModalPolkasafeSelect"
+      :set-is-select-wallet="setIsSelectWallet"
     />
 
-    <modal-account
-      v-if="modalAccountSelect"
-      v-model:isOpen="modalAccountSelect"
-      :open-select-modal="openSelectModal"
-      :selected-wallet="selectedWallet"
-      :connect-ethereum-wallet="connectEthereumWallet"
-      :disconnect-account="disconnectAccount"
-      :current-account="currentAccount"
-    />
-    <modal-polkasafe
-      v-if="modalPolkasafeSelect"
-      v-model:isOpen="modalPolkasafeSelect"
-      :open-select-modal="openSelectModal"
-      :selected-wallet="selectedWallet"
-      :disconnect-account="disconnectAccount"
-      :current-account="currentAccount"
-    />
     <modal-account-unification
       v-if="modalAccountUnificationSelect"
       v-model:isOpen="modalAccountUnificationSelect"
@@ -78,16 +47,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  ref,
-  watch,
-  onMounted,
-  onUnmounted,
-} from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted, watchEffect } from 'vue';
 import { useAccount, useConnectWallet, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -98,96 +58,83 @@ import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import MobileNav from 'src/components/header/mobile/MobileNav.vue';
-import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
-import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
-import ModalPolkasafe from 'src/components/header/modals/ModalPolkasafe.vue';
 import ModalAccountUnification from 'src/components/header/modals/ModalAccountUnification.vue';
-import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
+import ModalNetworkWallet from 'src/components/header/modals/ModalNetworkWallet.vue';
 import Logo from 'src/components/common/Logo.vue';
 import HeaderComp from './HeaderComp.vue';
-import { WalletModalOption } from 'src/config/wallets';
+import { SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { container } from 'src/v2/common';
 import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { Symbols } from 'src/v2/symbols';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
-import ClaimWarningBanner from './ClaimWarningBanner.vue';
-
-interface Modal {
-  modalNetwork: boolean;
-}
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   components: {
     ConnectButton,
     AccountButton,
     NetworkButton,
-    ModalAccount,
-    ModalConnectWallet,
-    ModalNetwork,
+    ModalNetworkWallet,
     Logo,
     HeaderComp,
     TroubleHelp,
-    ModalPolkasafe,
     ModalAccountUnification,
     MobileNav,
-    ClaimWarningBanner,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
-    const { multisig } = useAccount();
 
-    const stateModal = reactive<Modal>({
-      modalNetwork: false,
-    });
+    const { currentAccount, disconnectAccount } = useAccount();
+    const { currentNetworkName } = useNetworkInfo();
+    const isModalNetworkWallet = ref<boolean>(false);
+    const isSelectWallet = ref<boolean>(false);
+
+    const setIsSelectWallet = (result: boolean): void => {
+      isSelectWallet.value = result;
+    };
 
     const {
-      modalConnectWallet,
       modalName,
-      currentAccount,
-      currentAccountName,
-      selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
       modalAccountUnificationSelect,
-      setCloseModal,
-      setWalletModal,
+      selectedWallet,
       openSelectModal,
-      changeAccount,
+      setWalletModal,
       connectEthereumWallet,
-      disconnectAccount,
       openPolkasafeModal,
-      openAccountUnificationModal,
+      setModalAccountSelect,
+      setModalPolkasafeSelect,
     } = useConnectWallet();
 
     const { isZkEvm } = useNetworkInfo();
 
     const clickAccountBtn = (): void => {
-      if (multisig.value) {
-        openPolkasafeModal();
-      } else {
-        if (modalName.value === WalletModalOption.SelectWallet) {
-          return;
-        }
-
-        if (isH160.value) {
-          modalName.value = WalletModalOption.SelectWallet;
-        } else {
-          changeAccount();
-        }
-      }
-      stateModal.modalNetwork = false;
+      isModalNetworkWallet.value = true;
+      isSelectWallet.value = true;
     };
 
     const clickNetworkBtn = (): void => {
-      stateModal.modalNetwork = true;
+      isModalNetworkWallet.value = true;
+      isSelectWallet.value = false;
       modalName.value = '';
       modalAccountSelect.value = false;
       modalPolkasafeSelect.value = false;
     };
 
+    // Memo: open the network modal if there is no wallet address stored in the browser
+    const initIsModalNetworkWallet = () => {
+      const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
+      const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
+      const isWalletConnect = wallet === SupportWallet.WalletConnect;
+      if (!currentNetworkName.value || selectedAddress !== 'null' || isWalletConnect) {
+        return;
+      }
+      isModalNetworkWallet.value = true;
+    };
+
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed<string>(() => route.path);
@@ -230,32 +177,33 @@ export default defineComponent({
       { immediate: true }
     );
 
+    watch([currentNetworkName], initIsModalNetworkWallet, { immediate: true });
+
     return {
-      ...toRefs(stateModal),
+      isModalNetworkWallet,
       headerName,
       currentNetworkIdx,
       WalletModalOption,
-      modalConnectWallet,
       currentAccount,
-      modalName,
-      currentAccountName,
-      selectedWallet,
       modalAccountSelect,
       modalPolkasafeSelect,
       width,
       screenSize,
       isLoading,
       modalAccountUnificationSelect,
+      isSelectWallet,
+      modalName,
+      selectedWallet,
       clickAccountBtn,
       clickNetworkBtn,
-      setCloseModal,
-      setWalletModal,
       openSelectModal,
-      changeAccount,
-      connectEthereumWallet,
       disconnectAccount,
+      setWalletModal,
+      connectEthereumWallet,
       openPolkasafeModal,
-      openAccountUnificationModal,
+      setModalAccountSelect,
+      setModalPolkasafeSelect,
+      setIsSelectWallet,
     };
   },
 });

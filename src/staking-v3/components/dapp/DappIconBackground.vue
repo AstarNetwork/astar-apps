@@ -23,14 +23,10 @@ export default defineComponent({
   position: absolute;
   z-index: 0;
   right: calc(50% - 200px);
-  top: -200px;
+  top: -350px;
   @media (min-width: $sm) {
-    right: -300px;
-    top: -500px;
-  }
-  @media (min-width: $lg) {
     right: -200px;
-    top: -400px;
+    top: -500px;
   }
 }
 .image--dapp-icon {
@@ -39,11 +35,11 @@ export default defineComponent({
   object-fit: cover;
   overflow: hidden;
   border-radius: 99999px;
-  filter: blur(75px) brightness(1.2);
-  opacity: 0.7;
+  filter: blur(80px) brightness(1.2);
+  opacity: 0.5;
   @media (min-width: $sm) {
-    width: 800px;
-    height: 800px;
+    width: 600px;
+    height: 600px;
     filter: blur(150px) brightness(1.2);
   }
 }

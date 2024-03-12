@@ -1,121 +1,121 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--your-rewards {
-  margin-bottom: 80px;
-}
-
 .row--title {
   font-weight: 800;
   font-size: 32px;
   color: $navy-1;
   margin-bottom: 24px;
-  @media (min-width: $xl) {
-    margin-bottom: 44px;
-  }
-}
-
-.button--claim {
-  width: 100%;
-  max-width: 400px;
-  font-size: 22px;
-  font-weight: 600;
-  height: 44px;
-}
-
-.row--claim-temporary {
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
-  margin-bottom: 40px;
-}
-
-.box__row {
-  background: $gray-1;
-  border-radius: 16px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 24px;
-  @media (min-width: $sm) {
-    padding: 16px;
-  }
-}
-
-.text--vivid {
-  color: $astar-pink-01;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.text--info {
-  color: $navy-1;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.text--info-bond {
-  color: $navy-1;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.text--vivid-bond {
-  color: $astar-pink-01;
-  font-weight: 600;
-  font-size: 16px;
 }
 
 .container--rewards {
   display: flex;
   flex-direction: column;
-  row-gap: 12px;
-  @media (min-width: $md) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-  }
-}
-
-.box--rewards {
-  padding: 16px 12px;
+  gap: 32px;
   border: solid 1px $navy-1;
   border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
+  padding: 16px;
+  background-color: white;
   @media (min-width: $sm) {
     padding: 32px 24px;
   }
 }
 
-.row--claim-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.box__column {
+.rows--rewards {
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
+  gap: 8px;
 }
 
-.column--status-claimed {
-  width: 108px;
-  border: 1px solid rgba(47, 211, 63, 1);
+.box--rewards {
   border-radius: 16px;
+  background-color: $gray-1;
   display: flex;
-  justify-content: center;
+  padding: 16px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.row--claim-info {
+  display: flex;
   align-items: center;
-  color: rgba(47, 211, 63, 1);
-  background: rgba(47, 211, 63, 0.1);
+  gap: 16px;
+  flex-wrap: wrap;
+  @media (min-width: $sm) {
+    gap: 32px;
+    flex-wrap: nowrap;
+  }
+  .column {
+    @media (min-width: $sm) {
+      flex-basis: 0;
+      flex-grow: 1;
+    }
+
+    &.column--label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &.column--days {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+      flex: 1;
+    }
+
+    &.column--amount {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: right;
+      width: 100%;
+    }
+  }
+}
+
+.row--attention {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $astar-pink;
+  background: rgba($astar-pink, 0.05);
+  color: $astar-pink;
   font-size: 14px;
   font-weight: 500;
+  line-height: 1.25;
+}
+
+.button--claim {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 32px 16px;
+  border-radius: 16px;
+  width: 100%;
+  gap: 24px;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.button--claim__label {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.button--claim__amount {
+  font-size: 24px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.button--claim__symbol {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .body--dark {
-  .text--title,
-  .text--lg {
+  .text--title {
     color: $navy-1;
   }
 }

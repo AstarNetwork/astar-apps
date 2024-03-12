@@ -1,34 +1,34 @@
 <template>
   <div>
     <div v-if="dappAddress && dapp" class="wrapper--owner">
-      <div class="row--your-dashboard">
-        <span>{{ $t('stakingV3.yourDashboard') }}</span>
-      </div>
-      <div class="container--dapp-hero">
-        <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
-        <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
-        <div class="row--your-dashboard-mobile">
-          <span>{{ $t('stakingV3.yourDashboard') }}</span>
+      <div class="container--owner-header">
+        <div class="container--owner-header__inner">
+          <div class="row--your-dashboard">
+            <span>{{ $t('stakingV3.yourDashboard') }}</span>
+          </div>
+          <div class="row--dapp-hero">
+            <img :src="dapp.basic.iconUrl" alt="icon" class="img--dapp-icon" />
+            <span class="text--dapp-name">{{ dapp.basic.name }}</span> ({{ dapp.chain.state }})
+          </div>
         </div>
       </div>
-      <div class="row--statistics">
-        <kpi-card :title="$t('stakingV3.currentTier')">{{
-          getDappTier(dapp.chain.id) ?? '--'
-        }}</kpi-card>
-        <kpi-card :title="$t('stakingV3.numberOfStakers')">
-          {{ dapp.dappDetails?.stakersCount ?? '--' }}
-        </kpi-card>
-        <kpi-card :title="$t('stakingV3.totalEarned')"> -- </kpi-card>
+
+      <div
+        class="container--owner-main"
+        :style="{ backgroundImage: `url(${require('src/staking-v3/assets/grid_bg.svg')})` }"
+      >
+        <div class="container--owner-main__inner">
+          <your-rewards
+            :total-rewards="totalRewards"
+            :rewards-per-period="rewardsPerPeriod"
+            :claim-rewards="claimRewards"
+          />
+          <edit />
+        </div>
       </div>
-      <your-rewards
-        :total-rewards="totalRewards"
-        :rewards-per-period="rewardsPerPeriod"
-        :claim-rewards="claimRewards"
-      />
-      <edit />
     </div>
     <div class="bg--owner" />
-    <dapp-background :dapp="dapp" />
+    <dapp-icon-background :dapp="dapp" />
   </div>
 </template>
 
@@ -39,18 +39,15 @@ import { useRoute } from 'vue-router';
 import { useDapps, useDappStakingNavigation, useDappStaking, RewardsPerPeriod } from '../hooks';
 import { CombinedDappInfo } from '../logic';
 import Edit from './Edit.vue';
-import KpiCard from './KpiCard.vue';
 import YourRewards from './YourRewards.vue';
-import DappBackground from './dapp/DappBackground.vue';
+import DappIconBackground from './dapp/DappIconBackground.vue';
 
 export default defineComponent({
-  components: { KpiCard, YourRewards, Edit, DappBackground },
+  components: { YourRewards, Edit, DappIconBackground },
   setup() {
     const route = useRoute();
-    const { nativeTokenSymbol } = useNetworkInfo();
     const { getDapp } = useDapps();
-    const { getDappTier, getDappRewards, getUnclaimedDappRewardsPerPeriod, claimDappRewards } =
-      useDappStaking();
+    const { getDappRewards, getUnclaimedDappRewardsPerPeriod, claimDappRewards } = useDappStaking();
     const { navigateToHome } = useDappStakingNavigation();
     const dappAddress = computed<string>(() => route.query.dapp as string);
 
@@ -76,10 +73,10 @@ export default defineComponent({
 
     watch(
       [dapp],
-      () => {
-        if (dapp.value) {
+      (oldDapp, newDapp) => {
+        if (newDapp) {
           fetchRewards();
-        } else {
+        } else if (!newDapp && !oldDapp) {
           navigateToHome();
         }
       },
@@ -89,10 +86,8 @@ export default defineComponent({
     return {
       dappAddress,
       dapp,
-      nativeTokenSymbol,
       totalRewards,
       rewardsPerPeriod,
-      getDappTier,
       claimRewards,
     };
   },

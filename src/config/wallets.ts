@@ -27,6 +27,7 @@ export enum SupportWallet {
   Snap = 'Snap',
   EnkryptEvm = 'enkryptEvm',
   EnkryptNative = 'enkrypt',
+  WalletConnect = 'wallet-connect',
 }
 
 export enum SupportMultisig {
@@ -291,6 +292,16 @@ export const supportEvmWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
     ethExtension: 'enkrypt.providers.ethereum',
+  },
+  [SupportWallet.WalletConnect]: {
+    img: require('/src/assets/img/wallet-connect.png'),
+    name: 'WalletConnect',
+    source: SupportWallet.WalletConnect,
+    walletUrl: 'https://walletconnect.com/',
+    guideUrl: 'https://walletconnect.com/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+    ethExtension: SupportWallet.WalletConnect,
   },
 };
 

@@ -1,4 +1,4 @@
-import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
+import { hasProperty, isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportMultisig, SupportWallet } from 'src/config/wallets';
@@ -10,11 +10,13 @@ import { IEventAggregator, UnifyAccountMessage } from 'src/v2/messaging';
 import { IdentityRepository } from 'src/v2/repositories/implementations/IdentityRepository';
 import { IAccountUnificationService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
 import { INftRepository } from 'src/v2/repositories';
 import { useNft } from './useNft';
 import { NftMetadata } from 'src/v2/models';
+import { getWcProvider } from './helper/wallet';
+import { useEthProvider } from './custom-signature/useEthProvider';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
@@ -25,6 +27,7 @@ export const useAccount = () => {
   const store = useStore();
   const { getProxiedUrl } = useNft();
   const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
+  const { ethProvider } = useEthProvider();
   const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -32,6 +35,9 @@ export const useAccount = () => {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const unifiedAccount = computed(() => store.getters['general/getUnifiedAccount']);
+  const isLockdropAccount = computed<boolean>(
+    () => !isH160Formatted.value && currentAccountName.value === ETHEREUM_EXTENSION
+  );
 
   const isAccountUnification = computed<boolean>(() => {
     return !!(
@@ -66,9 +72,23 @@ export const useAccount = () => {
         ss58: '',
         h160: '',
       });
+      const wallet = String(localStorage.getItem(SELECTED_WALLET));
+      if (wallet === SupportWallet.WalletConnect) {
+        const wcProvider = getWcProvider();
+        if (wcProvider) {
+          try {
+            await wcProvider.disconnect();
+          } catch (error) {
+            console.error(error);
+          }
+          localStorage.removeItem('WCM_VERSION');
+          container.unbind(Symbols.WcProvider);
+        }
+      }
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
       localStorage.removeItem(MULTISIG);
+
       currentAccount.value = '';
       currentAccountName.value = '';
       resolve(true);
@@ -231,6 +251,7 @@ export const useAccount = () => {
     isMultisig,
     isAccountUnification,
     isH160Formatted,
+    isLockdropAccount,
     disconnectAccount,
     showAccountUnificationModal,
     checkIfUnified,

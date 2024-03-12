@@ -1,0 +1,64 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper__row--button {
+  display: flex;
+  justify-content: center;
+}
+
+.button--confirm {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+
+.row--title {
+  display: flex;
+  justify-content: center;
+  column-gap: 8px;
+  margin-bottom: 28px;
+  width: 100%;
+  color: $warning-yellow;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.box--list {
+  margin-bottom: 24px;
+  padding: 0px 14px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.row--warning-box {
+  width: 100%;
+  padding: 8px;
+  background-color: $warning-yellow;
+  margin-bottom: 32px;
+  color: $navy-1;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.icon--warning {
+  margin-top: -4px;
+}
+
+.text--message {
+  font-weight: 600;
+}
+
+.row--message {
+  margin-bottom: 8px;
+  padding: 0px 14px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.body--dark {
+}

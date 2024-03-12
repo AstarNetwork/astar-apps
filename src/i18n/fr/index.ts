@@ -160,8 +160,8 @@ export default {
   wallet: {
     connectWallet: 'Connecter le portefeuille',
     select: 'Veuillez sélectionner un portefeuille pour vous connecter à ce portail',
-    nativeAccount: 'Comptes natifs',
-    evmAccount: 'Comptes EVM',
+    nativeWallets: 'Comptes natifs',
+    evmWallets: 'Comptes EVM',
     multisigAccount: 'Comptes multi-signatures',
     accountUnification: "Unification d'un compte",
     math: {
@@ -699,7 +699,7 @@ export default {
     history: 'Historique récent',
     actionRequired: 'Action requise',
     claim: 'Réclamer',
-    noHistory: 'Aucun historique trouvé',
+    noTransactions: 'Aucune transaction trouvé',
     completed: 'Terminé',
     inProgress: 'En cours',
     approvalMaxAmount: 'Approuver le montant maximum (option)',

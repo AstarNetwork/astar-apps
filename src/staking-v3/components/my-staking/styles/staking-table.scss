@@ -1,0 +1,202 @@
+@import 'src/css/quasar.variables.scss';
+
+.table--wrapper {
+  background-color: $gray-1;
+  margin: 0 -16px;
+  @media (min-width: $sm) {
+    margin: 0;
+    padding: 24px;
+    border-radius: 16px;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: solid 1px $gray-2;
+  padding: 4px;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+    padding: 0;
+  }
+  .column {
+    padding: 16px;
+    flex-basis: 0;
+    flex-grow: 1;
+    &.column--amount {
+      text-align: right;
+    }
+    &.column--bonus,
+    &.column--remaining-days {
+      text-align: center;
+    }
+    &.column--actions {
+      justify-content: center;
+      flex-wrap: nowrap;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      width: 100%;
+      flex-basis: auto;
+      @media (min-width: $sm) {
+        gap: 8px;
+        width: auto;
+        flex-basis: 0;
+      }
+    }
+  }
+}
+
+.row--header {
+  background: rgba(0, 0, 0, 0.03);
+  color: $gray-4;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: solid 1px $gray-2;
+  font-size: 12px;
+  @media (min-width: $sm) {
+    flex-wrap: nowrap;
+    font-size: 14px;
+  }
+  .column {
+    flex-basis: 0;
+    flex-grow: 1;
+    padding: 16px;
+    text-align: center;
+    &.column--dapp,
+    &.column--index {
+      text-align: left;
+    }
+  }
+}
+
+.btn--icon {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: $gray-3;
+  margin: auto;
+  @media (min-width: $sm) {
+    background-color: transparent;
+    color: $gray-3;
+    margin: auto;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  &.icon--move svg {
+    transform: rotate(45deg);
+  }
+  &.icon--unlock svg {
+    transform: rotate(-45deg);
+  }
+  &.icon--add svg {
+    transform: rotate(135deg);
+  }
+  &:not(:disabled) {
+    background-color: $astar-blue;
+    @media (min-width: $sm) {
+      background-color: transparent;
+      color: $astar-blue;
+      &:hover {
+        color: white;
+        background-color: $astar-blue;
+      }
+    }
+  }
+}
+
+.text--mobile-menu {
+  font-size: 12px;
+  color: $gray-3;
+  font-weight: 500;
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  @media (min-width: $sm) {
+    display: none;
+  }
+}
+
+.icon--check {
+  color: white;
+  border-radius: 9999px;
+  background: $success-green;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.text--remaining-days {
+  color: $astar-blue;
+}
+
+.row--actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 8px;
+  margin: 0 -4px;
+  @media (min-width: $sm) {
+    padding: 16px 0 0 0;
+    margin: 0 -8px;
+  }
+  .row {
+    border-radius: 16px;
+    background-color: white;
+    border: 0;
+    padding: 0;
+    line-height: 1.25;
+    @media (min-width: $sm) {
+      padding: 0 8px;
+    }
+    .column {
+      padding: 16px;
+      @media (min-width: $sm) {
+        padding: 16px;
+      }
+      &.column--actions {
+        width: auto;
+        flex-basis: 0;
+      }
+    }
+  }
+}
+
+.body--dark {
+  .table--wrapper {
+    background-color: $navy-3;
+  }
+  .row--header {
+    color: $gray-2;
+    background: $navy-4;
+    border-color: lighten($navy-3, 10%);
+  }
+  .row {
+    border-color: lighten($navy-3, 10%);
+  }
+  .row--actions {
+    .row {
+      background-color: $navy-4;
+    }
+  }
+}

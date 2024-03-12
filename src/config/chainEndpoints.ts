@@ -44,7 +44,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
-      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
+      // { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
     ],
     isSupportContract: true,
@@ -73,7 +73,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shiden.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
-      { name: 'RadiumBlock', endpoint: 'wss://shiden.public.curie.radiumblock.co/ws' },
+      // { name: 'RadiumBlock', endpoint: 'wss://shiden.public.curie.radiumblock.co/ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
     ],
     isSupportContract: true,
@@ -117,25 +117,22 @@ export const providerEndpoints: ChainProvider[] = [
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
-  // Memo: It's dummy data. To be updated
   {
     networkAlias: 'astar-zkevm',
     displayName: 'Astar zkEVM Network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
-      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
-      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR_ZKEVM,
     isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
-    blockscout: 'https://akiba-explorer.astar.network',
-    evmChainId: '7759',
-    evmEndpoints: ['http://161.35.17.216:8545'],
+    blockscout: 'https://astar-zkevm.explorer.startale.com',
+    evmChainId: '3776',
+    evmEndpoints: ['https://rpc.startale.com/astar-zkevm'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
@@ -146,7 +143,6 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
-      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -194,7 +190,6 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
-
   {
     networkAlias: 'rocstar',
     displayName: 'Rocstar',

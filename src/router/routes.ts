@@ -8,7 +8,6 @@ import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
-import StakingTop from 'components/dapp-staking/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
@@ -153,12 +152,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component:
-          networkParam === '/development' ||
-          networkParam === '/shibuya-testnet' ||
-          networkParam === '/custom-node'
-            ? DiscoverV3
-            : StakingTop,
+        component: DiscoverV3,
       },
       {
         path: 'owner',

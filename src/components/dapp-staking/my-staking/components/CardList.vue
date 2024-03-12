@@ -44,7 +44,7 @@
           class="button--stake"
           :width="274"
           :height="24"
-          :disabled="isZkEvm"
+          :disabled="isZkEvm || decommissionStarted"
           @click="goStakePageLink(t.dapp?.address)"
         >
           {{ $t('dappStaking.stakeNow') }}
@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useDecommission } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
@@ -82,6 +82,7 @@ export default defineComponent({
     const hoverIndex = ref<number>(-1);
     const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
+    const { decommissionStarted } = useDecommission();
 
     const goStakePageLink = (address: string | undefined): void => {
       isToStakePage.value = true;
@@ -106,6 +107,7 @@ export default defineComponent({
       nativeTokenSymbol,
       widthCardLineUp,
       isZkEvm,
+      decommissionStarted,
     };
   },
 });
@@ -181,7 +183,7 @@ export default defineComponent({
     }
 
     .badge--tag {
-      width: 54px;
+      width: 64px;
       height: 18px;
       padding: 2px 8px;
       background: $navy-3;
@@ -194,6 +196,8 @@ export default defineComponent({
       color: #fff;
       margin-top: 16px;
       margin-bottom: 16px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .divider {

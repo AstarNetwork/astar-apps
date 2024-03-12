@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="button--icon-help">
     <button type="button" class="btn--help" @click="setShowModal(true)">
       <div class="icon--help">
         <astar-icon-question />

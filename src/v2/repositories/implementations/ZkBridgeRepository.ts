@@ -6,9 +6,9 @@ import {
   EthBridgeContract,
   EthBridgeNetworkName,
   ZK_EVM_BRIDGE_ABI,
-  ZkNetworkId,
+  ZK_EVM_AGGREGATED_BRIDGE_ABI,
   fetchMerkleProof,
-  getContractFromNetId,
+  getMainOrTestNet,
 } from 'src/modules/zk-evm-bridge';
 import { ParamBridgeAsset, ParamClaim } from 'src/v2/services';
 import Web3 from 'web3';
@@ -39,6 +39,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
       data,
     };
   }
+
   public async getBridgeAssetData({
     param,
     web3,
@@ -46,27 +47,26 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     param: ParamBridgeAsset;
     web3: Web3;
   }): Promise<TransactionConfig> {
+    if (param.destNetworkId === undefined || param.destNetworkId === null) {
+      throw Error('destNetworkId is not set');
+    }
+
     const contractAddress = EthBridgeContract[param.fromChainName];
+    const isAggregateContract =
+      contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
+
+    const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
     // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/abis/bridge.json
-    const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
-
-    const isToL1 =
-      param.toChainName === EthBridgeNetworkName.Ethereum ||
-      param.toChainName === EthBridgeNetworkName.Sepolia;
-
+    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
     const isNativeToken = param.tokenAddress === astarNativeTokenErcAddr;
-
-    // Todo: Ask if `0` is L1 and `1` is L1
-    const destinationNetwork = isToL1 ? ZkNetworkId.L1 : ZkNetworkId.L2;
     const destinationAddress = param.senderAddress;
     const amount = ethers.utils.parseUnits(String(param.amount), param.decimal).toString();
-    // Todo: Ask if we need to care about `forceUpdateGlobalExitRoot` and `permitData`
     const forceUpdateGlobalExitRoot = true;
     const permitData = '0x';
 
     const data = contract.methods
       .bridgeAsset(
-        destinationNetwork,
+        param.destNetworkId,
         destinationAddress,
         amount,
         param.tokenAddress,
@@ -92,33 +92,69 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
   }): Promise<TransactionConfig> {
     const { deposit_cnt, orig_net, orig_addr, dest_net, dest_addr, amount, metadata, network_id } =
       param.withdrawal;
-    const { main_exit_root, merkle_proof, rollup_exit_root } = await fetchMerkleProof(
-      deposit_cnt,
-      Number(network_id)
-    );
 
-    const contractAddress = getContractFromNetId(network_id);
-    const contract = new web3.eth.Contract(ZK_EVM_BRIDGE_ABI as AbiItem[], contractAddress);
+    const network = getMainOrTestNet();
+    const contractAddress =
+      network === 'mainnet'
+        ? EthBridgeContract[EthBridgeNetworkName.Ethereum]
+        : EthBridgeContract[EthBridgeNetworkName.Sepolia];
 
-    const data = contract.methods
-      .claimAsset(
-        merkle_proof,
-        Number(deposit_cnt),
-        main_exit_root,
-        rollup_exit_root,
-        orig_net,
-        orig_addr,
-        dest_net,
-        dest_addr,
-        amount,
-        metadata
-      )
-      .encodeABI();
+    const isAggregateContract =
+      contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
+    const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
+    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
 
-    return {
-      from: param.senderAddress,
-      to: contractAddress,
-      data,
-    };
+    // Todo: remove when zKatana has been migrated to zKyoto
+    if (isAggregateContract) {
+      const { main_exit_root, merkle_proof, rollup_exit_root, rollup_merkle_proof } =
+        await fetchMerkleProof(deposit_cnt, Number(network_id));
+
+      const data = contract.methods
+        .claimAsset(
+          merkle_proof,
+          rollup_merkle_proof,
+          Number(param.withdrawal.global_index),
+          main_exit_root,
+          rollup_exit_root,
+          orig_net,
+          orig_addr,
+          dest_net,
+          dest_addr,
+          amount,
+          metadata
+        )
+        .encodeABI();
+
+      return {
+        from: param.senderAddress,
+        to: contractAddress,
+        data,
+      };
+    } else {
+      const { main_exit_root, merkle_proof, rollup_exit_root } = await fetchMerkleProof(
+        deposit_cnt,
+        Number(network_id)
+      );
+      const data = contract.methods
+        .claimAsset(
+          merkle_proof,
+          Number(deposit_cnt),
+          main_exit_root,
+          rollup_exit_root,
+          orig_net,
+          orig_addr,
+          dest_net,
+          dest_addr,
+          amount,
+          metadata
+        )
+        .encodeABI();
+
+      return {
+        from: param.senderAddress,
+        to: contractAddress,
+        data,
+      };
+    }
   }
 }

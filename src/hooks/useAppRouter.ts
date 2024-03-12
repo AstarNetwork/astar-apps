@@ -1,3 +1,9 @@
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
+import { web3Enable } from '@polkadot/extension-dapp';
+import { encodeAddress } from '@polkadot/util-crypto';
+import { Polkasafe } from 'polkasafe';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import { ASTAR_CHAIN } from 'src/config/chain';
 import {
   ChainProvider,
   endpointKey,
@@ -5,21 +11,17 @@ import {
   getProviderIndex,
   providerEndpoints,
 } from 'src/config/chainEndpoints';
-import { Path } from 'src/router/routes';
-import { computed, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
-import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
-import { ASTAR_CHAIN } from 'src/config/chain';
-import { container } from 'src/v2/common';
-import { Polkasafe } from 'polkasafe';
-import { Symbols } from 'src/v2/symbols';
-import { encodeAddress } from '@polkadot/util-crypto';
-import { web3Enable } from '@polkadot/extension-dapp';
+import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
+import { Path } from 'src/router/routes';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
 import { useAccount } from './useAccount';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
@@ -53,7 +55,10 @@ export function useAppRouter() {
   const handleInvalidStorage = (): void => {
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const storedWallet = localStorage.getItem(SELECTED_WALLET);
-    const invalidCondition = (storedAddress && !storedWallet) || (storedWallet && !storedAddress);
+    const isWalletConnect = storedWallet === SupportWallet.WalletConnect;
+    const invalidCondition =
+      (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
+
     if (invalidCondition) {
       handleResetAccount();
     }
@@ -143,4 +148,5 @@ export function useAppRouter() {
   watchEffect(handleInputNetworkParam);
   watchEffect(handleInvalidStorage);
   watchEffect(initializePolkasafeClient);
+  watchEffect(handleAddDefaultTokens);
 }

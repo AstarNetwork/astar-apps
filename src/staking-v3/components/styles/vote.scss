@@ -65,6 +65,9 @@ li {
 
 .column--help {
   order: 1;
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
   @media (min-width: $sm) {
     width: 320px;
     order: 2;
@@ -117,7 +120,6 @@ li {
 }
 
 .dapp-amount {
-  margin-bottom: 16px;
   border: solid 1px $gray-3;
   border-radius: 16px;
   &:hover {
@@ -227,4 +229,12 @@ li {
   color: $white;
   font-size: 14px;
   font-weight: 500;
+}
+
+.link--learn {
+  color: $astar-blue;
+  transition: all 0.2s ease;
+  &:hover {
+    color: $astar-blue-dark;
+  }
 }

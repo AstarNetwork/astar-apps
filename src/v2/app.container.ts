@@ -17,6 +17,7 @@ import {
   IIdentityRepository,
   INftRepository,
   IAccountUnificationRepository,
+  IInflationRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -31,6 +32,7 @@ import {
   PolkasafeRepository,
   NftRepository,
   AccountUnificationRepository,
+  InflationRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -83,18 +85,29 @@ import {
   DappStakingServiceV2V3,
   IDappStakingServiceV2V3,
 } from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
-import { IDataProviderRepository, TokenApiProviderRepository } from '../staking-v3/logic';
+import {
+  DappStakingServiceV2Ledger,
+  IDappStakingServiceV2Ledger,
+  IDataProviderRepository,
+  TokenApiProviderRepository,
+} from '../staking-v3/logic';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
+let isLockdropAccount = false;
 
-export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+export function setCurrentWallet(
+  isEthWallet: boolean,
+  currentWallet: string,
+  isLockdrop: boolean
+): void {
   if (!currentWallet) {
     return;
   }
 
   currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
   currentWalletName = currentWallet;
+  isLockdropAccount = isLockdrop;
 
   // Memo: Trying to fix 'Invalid binding type: Symbol(CurrentWallet)' error here
   // Try to get the current wallet
@@ -132,7 +145,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
             ? Symbols.DappStakingService
             : Symbols.EvmDappStakingService
         );
@@ -160,6 +173,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     AccountUnificationRepository,
     Symbols.AccountUnificationRepository
   );
+  container.addSingleton<IInflationRepository>(InflationRepository, Symbols.InflationRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
@@ -218,7 +232,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     .toFactory(() => {
       return () =>
         container.get<IDappStakingServiceV3>(
-          currentWalletType === WalletType.Polkadot
+          currentWalletType === WalletType.Polkadot || isLockdropAccount
             ? Symbols.DappStakingServiceV3
             : Symbols.DappStakingServiceEvmV3
         );
@@ -227,6 +241,11 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addSingleton<IDappStakingServiceV2V3>(
     DappStakingServiceV2V3,
     Symbols.DappStakingServiceV2V3
+  );
+
+  container.addSingleton<IDappStakingServiceV2Ledger>(
+    DappStakingServiceV2Ledger,
+    Symbols.DappStakingServiceV2Ledger
   );
 
   // Start block change subscription. Needed for remaining unlocking blocks calculation.

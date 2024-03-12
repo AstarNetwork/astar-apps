@@ -157,8 +157,8 @@ export default {
   wallet: {
     connectWallet: 'ウォレットを接続',
     select: 'このポータルに接続するウォレットを選択してください。',
-    nativeAccount: 'Native アカウント',
-    evmAccount: 'EVM アカウント',
+    nativeWallets: 'Native アカウント',
+    evmWallets: 'EVM アカウント',
     multisigAccount: 'マルチシグ アカウント',
     accountUnification: 'Account Unification',
     math: {
@@ -698,7 +698,7 @@ export default {
     history: '最近の履歴',
     actionRequired: '必要なアクション',
     claim: '請求',
-    noHistory: '履歴が見つかりません',
+    noTransactions: 'トランザクションが見つかりませんでした',
     completed: '完了',
     inProgress: '進行中',
     approvalMaxAmount: '最高額の承認（オプション）',

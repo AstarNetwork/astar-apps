@@ -35,6 +35,7 @@ export interface DappStateInterface {
   claimedRewards: number;
   tvl: TvlModel;
   currentEra: number;
+  decommission: boolean;
 }
 
 export interface FileInfo {
@@ -56,6 +57,7 @@ function state(): DappStateInterface {
     claimedRewards: 0,
     tvl: new TvlModel('0', 0, 0),
     currentEra: 0,
+    decommission: false,
   };
 }
 

@@ -1,40 +1,47 @@
 <template>
   <div class="table--wrapper">
-    <div class="chunk--row header--row">
-      <div>{{ $t('stakingV3.dApp') }}</div>
-      <div>{{ $t('stakingV3.stakedAmount') }}</div>
-      <div>{{ $t('stakingV3.bonusReward') }}</div>
-      <div v-if="width >= screenSize.sm" class="center">{{ $t('stakingV3.manage') }}</div>
+    <div class="row--header">
+      <div class="column column--dapp">{{ $t('stakingV3.dApp') }}</div>
+      <div class="column column--amount">{{ $t('stakingV3.stakedAmount') }}</div>
+      <div class="column column--bonus">{{ $t('stakingV3.bonusRewards') }}</div>
+      <div v-if="width >= screenSize.sm" class="column column--manage">
+        {{ $t('stakingV3.manage') }}
+      </div>
     </div>
     <div v-for="[key, value] in stakedDapps" :key="key">
-      <div class="chunk--row">
-        <div>{{ getDappName(key) }}</div>
-        <div class="right">
-          <token-balance-native :balance="getStakedAmount(value).toString()" />
-        </div>
-        <div class="right">{{ value.loyalStaker ? 'Yes' : 'No' }}</div>
-        <div v-if="isRegistered(key)" class="buttons">
-          <astar-button :width="50" :height="24" @click="navigateToMove(key)">{{
-            $t('stakingV3.move')
-          }}</astar-button>
-          <astar-button :width="50" :height="24" @click="navigateToVote(key)">{{
-            $t('stakingV3.add')
-          }}</astar-button>
-          <astar-button :width="90" :height="24" @click="handleUnbonding(key)">{{
-            $t('stakingV3.unbond')
-          }}</astar-button>
-        </div>
-        <div v-else class="button--single">
-          <astar-button
-            :width="97"
-            :height="24"
-            @click="unstakeFromUnregistered(key, getDappName(key))"
-            >{{ $t('stakingV3.unbond') }}</astar-button
-          >
-        </div>
-      </div>
-      <div v-if="!isRegistered(key)" class="unregistered--dapp">
-        <astar-icon-warning size="20" />{{ $t('stakingV3.unregisteredDappInfo') }}
+      <my-dapp
+        v-if="getStakedAmountInVoting(value) > BigInt(0)"
+        :name="getDappName(key)"
+        :address="key"
+        :amount="getStakedAmountInVoting(value)"
+        :loyal-staker="value.loyalStaker"
+        :actions-enabled="isRegistered(key)"
+        :navigate-to-move="navigateToMove"
+        :navigate-to-vote="navigateToVote"
+        :handle-unbonding="handleUnbonding"
+      />
+      <my-dapp
+        v-if="getStakedAmountInBuild(value) > BigInt(0)"
+        :name="getDappName(key)"
+        :address="key"
+        :amount="getStakedAmountInBuild(value)"
+        :loyal-staker="false"
+        :actions-enabled="isRegistered(key)"
+        :navigate-to-move="navigateToMove"
+        :navigate-to-vote="navigateToVote"
+        :handle-unbonding="handleUnbonding"
+      />
+      <div v-if="!isRegistered(key)" class="warning--unregistered-dapp">
+        <astar-icon-warning size="20" />
+        <span class="text--unregistered-dapp">
+          {{ $t('stakingV3.unregisteredDappInfo', { days: constants?.unlockingPeriod ?? '--' }) }}
+        </span>
+        <astar-button
+          class="btn--unregistered-dapp"
+          @click="unstakeFromUnregistered(key, getDappName(key))"
+        >
+          {{ $t('stakingV3.claim') }}
+        </astar-button>
       </div>
     </div>
     <modal-unbond-dapp
@@ -50,14 +57,14 @@
 import { CombinedDappInfo, DappState, SingularStakingInfo } from 'src/staking-v3/logic';
 import { defineComponent, PropType, ref } from 'vue';
 import { useDapps, useDappStakingNavigation, useDappStaking } from 'src/staking-v3/hooks';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ModalUnbondDapp from './ModalUnbondDapp.vue';
+import MyDapp from './MyDapp.vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
-    TokenBalanceNative,
     ModalUnbondDapp,
+    MyDapp,
   },
   props: {
     stakedDapps: {
@@ -68,7 +75,7 @@ export default defineComponent({
   setup() {
     const { getDapp } = useDapps();
     const { navigateToVote, navigateToMove } = useDappStakingNavigation();
-    const { unstake, unstakeFromUnregistered } = useDappStaking();
+    const { unstake, unstakeFromUnregistered, constants } = useDappStaking();
 
     const dappToUnbond = ref<CombinedDappInfo | undefined>();
     const showModalUnbond = ref<boolean>(false);
@@ -82,6 +89,14 @@ export default defineComponent({
 
     const getStakedAmount = (stakingInfo: SingularStakingInfo): bigint => {
       return stakingInfo.staked.totalStake;
+    };
+
+    const getStakedAmountInVoting = (stakingInfo: SingularStakingInfo): bigint => {
+      return stakingInfo.staked.voting;
+    };
+
+    const getStakedAmountInBuild = (stakingInfo: SingularStakingInfo): bigint => {
+      return stakingInfo.staked.buildAndEarn;
     };
 
     const isRegistered = (dappAddress: string): boolean => {
@@ -100,6 +115,7 @@ export default defineComponent({
       dappToUnbond,
       width,
       screenSize,
+      constants,
       setShowModalUnbond,
       getDappName,
       getStakedAmount,
@@ -109,74 +125,35 @@ export default defineComponent({
       handleUnbonding,
       isRegistered,
       unstakeFromUnregistered,
+      getStakedAmountInBuild,
+      getStakedAmountInVoting,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
+@use './styles/staking-table.scss';
 
-.table--wrapper {
-  background-color: $gray-1;
-  padding: 20px 12px;
-  border-radius: 16px;
-  @media (min-width: $sm) {
-    padding: 40px 24px;
-  }
-}
-
-.chunk--row {
+.warning--unregistered-dapp {
+  border-radius: 6px;
+  border: 1px solid $border-yellow;
+  background: rgba(240, 185, 11, 0.1);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: solid 1px $gray-2;
+  padding: 8px 16px;
+  gap: 8px;
+  align-items: flex-start;
+  align-items: center;
+  font-size: 12px;
   @media (min-width: $sm) {
-    flex-wrap: nowrap;
+    font-size: 14px;
   }
-  div {
-    flex-basis: 0;
-    flex-grow: 1;
-    padding: 16px;
+  .text--unregistered-dapp {
+    flex: 1;
   }
-}
-
-.header--row {
-  background: rgba(0, 0, 0, 0.03);
-  color: $gray-4;
-  border: 0;
-}
-
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  column-gap: 8px;
-  width: 100%;
-  @media (min-width: $sm) {
-    width: auto;
-  }
-}
-
-.body--dark {
-  .table--wrapper {
-    background-color: $navy-3;
-  }
-  .header--row {
-    color: $gray-2;
-    background: rgba(0, 0, 0, 0.15);
-  }
-  .chunk--row {
-    border-color: lighten($navy-3, 10%);
+  .btn--unregistered-dapp {
+    width: 64px;
+    padding: 4px;
   }
 }
 </style>

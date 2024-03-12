@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   CHAIN_INFORMATION,
   EVM,
@@ -50,6 +51,7 @@ export const setupNetwork = async ({
   network: number;
   provider: EthereumProvider;
 }): Promise<boolean> => {
+  if (network === Number(provider.chainId)) return true;
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
@@ -65,26 +67,31 @@ export const setupNetwork = async ({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId }],
           });
+          return true;
         } catch (error: any) {
           const codeUserRejected = 4001;
           if (error.code !== codeUserRejected) {
-            await provider.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId,
-                  chainName,
-                  nativeCurrency,
-                  rpcUrls,
-                  blockExplorerUrls,
-                },
-              ],
-            });
+            try {
+              await provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId,
+                    chainName,
+                    nativeCurrency,
+                    rpcUrls,
+                    blockExplorerUrls,
+                  },
+                ],
+              });
+              return true;
+            } catch (error) {
+              console.error(error);
+              return false;
+            }
           }
         }
       }
-
-      return true;
     } catch (error) {
       console.error('Failed to setup the network in EVM extension:', error);
       return false;
@@ -335,4 +342,22 @@ export const checkAllowance = async ({
   const contract = buildErc20Contract({ tokenAddress, srcChainId });
   const allowance = await contract.methods.allowance(senderAddress, contractAddress).call();
   return allowance;
+};
+
+export const handleCheckProviderChainId = async (provider: any): Promise<boolean> => {
+  const pathname = window.location.pathname;
+  const page = pathname.split('/')[2];
+  // Memo: their is a logic to check the network at useL1Bridge.ts
+  if (page === 'bridge') return true;
+
+  const web3 = new Web3(provider);
+  const providerChainId = await web3.eth.net.getId();
+  const storedNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  const selectedChainId = Number(providerEndpoints[storedNetworkIdx].evmChainId);
+
+  if (selectedChainId === providerChainId) {
+    return true;
+  } else {
+    return await setupNetwork({ network: selectedChainId, provider });
+  }
 };

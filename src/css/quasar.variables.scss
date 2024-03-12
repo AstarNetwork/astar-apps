@@ -1,4 +1,5 @@
 $white: #fff;
+$gray-0: rgba(230, 233, 238, 1);
 $gray-1: #f7f7f8;
 $gray-2: #e6e9ee;
 $gray-3: #9da3ae;
@@ -20,7 +21,7 @@ $modal-item-bg-dark: #141c34;
 $astar-blue: #0085ff;
 $astar-blue-dark: #05b6fd;
 $astar-pink: #e0338f;
-$astar-pink-01: rgba(230, 0, 122, 1);
+$astar-pink-1: #e6007a;
 
 $astar-purple: #703ac2;
 $shiden-purple: #770cff;
@@ -29,6 +30,7 @@ $warning-red: #ff5621;
 $negative: $warning-red; // Override Quasar negative color (--q-negative).
 $warning-yellow: #d8a400;
 $connected-green: #56f566;
+$success-green: #38c146;
 
 $neon-blue: rgb(33, 89, 254);
 

@@ -19,6 +19,7 @@ import {
 } from '../common';
 import { ApiPromise } from '@polkadot/api';
 import { chainDecimals, getApi, getBalance } from '../common-api';
+import { wait } from '@astar-network/astar-sdk-core';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -33,8 +34,10 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   // TODO consider moving this into beforeAll
   await page.goto('/astar/assets');
   await clickDisclaimerButton(page);
-  const closeButton = page.getByText('Polkadot.js');
-  await closeButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
@@ -142,9 +145,6 @@ test.describe('account panel', () => {
     page: Page;
   }) => {
     await page.goto('/astar/assets/transfer?token=astr&from=astar&to=acala&mode=xcm');
-    await connectToNetwork(page);
-    await selectAccount(page, ALICE_ACCOUNT_NAME);
-
     const baseTransferAmount = BigInt(5);
     const lowerTransferAmount = BigInt(3);
     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);

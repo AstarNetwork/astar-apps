@@ -2,7 +2,7 @@ import { GasTip } from '@astar-network/astar-sdk-core';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { NftMetadata } from 'src/v2/models';
+import { InflationConfiguration, NftMetadata } from 'src/v2/models';
 
 export type SubstrateAccount = {
   address: string;
@@ -67,6 +67,7 @@ export interface GeneralStateInterface {
   gas: GasTip | undefined;
   currentBlock: number;
   unifiedAccount?: UnifiedAccount;
+  activeInflationConfiguration: InflationConfiguration | undefined;
 }
 
 function state(): GeneralStateInterface {
@@ -108,6 +109,7 @@ function state(): GeneralStateInterface {
     currentWallet: '',
     gas: undefined,
     currentBlock: 0,
+    activeInflationConfiguration: undefined,
   };
 }
 

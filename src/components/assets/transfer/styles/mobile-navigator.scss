@@ -1,7 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--mobile-navigator {
-  background: white;
   margin-left: -16px;
   margin-right: -16px;
   margin-top: 16px;
@@ -37,9 +36,6 @@
 }
 
 .body--dark {
-  .wrapper--mobile-navigator {
-    background: $container-bg-dark;
-  }
   .circle--button {
     color: $gray-4;
     border: 1px solid $gray-4;

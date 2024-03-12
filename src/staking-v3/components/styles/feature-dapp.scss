@@ -2,6 +2,33 @@
 
 .wrapper--promo {
   width: 100%;
+  position: relative;
+  @media (min-width: $lg) {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.wrapper--promo__inner {
+  margin: auto;
+  max-width: $container-max-width;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+  animation: parallax-small-anim linear;
+  animation-timeline: scroll() !important;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+@keyframes parallax-small-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(200px);
+  }
 }
 
 .row--title {
@@ -16,9 +43,10 @@
 
 .text--promo-title {
   font-size: 40px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.5px;
   line-height: 1.25;
+  font-style: italic;
   @media (min-width: $sm) {
     font-size: 48px;
   }
@@ -27,7 +55,7 @@
 .text--promo-description {
   font-size: 14px;
   font-weight: 600;
-  max-width: 420px;
+  font-style: italic;
 }
 
 .row--data {
@@ -36,32 +64,13 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 40px;
+  margin-bottom: 40px;
   @media (min-width: $sm) {
     flex-wrap: nowrap;
+    margin-top: 80px;
+    margin-bottom: 0;
   }
-}
-
-.promo__data {
-  background-color: $navy-1;
-  height: 110px;
-  border-radius: 16px;
-  padding: 16px 8px;
-  flex: 1;
-  @media (min-width: $sm) {
-    padding: 24px 16px 16px 16px;
-    min-width: 134px;
-    flex: none;
-  }
-}
-
-.card--data {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  line-height: 1.25;
-  height: 100%;
 }
 
 .button--link {
@@ -104,7 +113,7 @@
 .text--value {
   font-weight: 800;
   font-size: 20px;
-  color: white;
+  white-space: nowrap;
   @media (min-width: $sm) {
     font-size: 24px;
   }
@@ -113,13 +122,12 @@
 .text--value-small {
   font-weight: 500;
   font-size: 14px;
-  color: white;
+  padding-left: 4px;
 }
 
 .text--card-title {
   font-weight: 600;
   font-size: 14px;
-  color: white;
 }
 
 .row--start-staking {
@@ -136,7 +144,8 @@
   border-radius: 16px;
   padding: 16px;
   font-size: 16px;
-  font-weight: 700;
+  font-style: italic;
+  font-weight: 900;
   box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
   color: white;
   line-height: 1.25;
@@ -177,7 +186,7 @@
 
   .wrapper--promo__inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   .text--promo-title {
@@ -203,5 +212,23 @@
     font-size: 16px;
     font-weight: 800;
     max-width: inherit;
+  }
+}
+
+.bg--voting-period {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  mix-blend-mode: multiply;
+  img {
+    max-width: 1340px;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    object-fit: cover;
+    overflow: visible;
   }
 }

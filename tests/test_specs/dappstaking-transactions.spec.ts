@@ -22,6 +22,7 @@ import {
   setRewardDestination,
 } from '../common-api';
 import { ethers } from 'ethers';
+import { wait } from '@astar-network/astar-sdk-core';
 
 // Memo: Astar Core Contributors
 const TEST_DAPP_ADDRESS = '0xa602d021da61ec4cc44dedbd4e3090a05c97a435';
@@ -54,8 +55,10 @@ test.beforeEach(async ({ page, context }) => {
   // Close disclaimer popup
   await clickDisclaimerButton(page);
 
-  const closeButton = page.getByText('Polkadot.js');
-  await closeButton.click();
+  const walletTab = page.getByTestId('select-wallet-tab');
+  await walletTab.click();
+  const polkadotJsButton = page.getByText('Polkadot.js');
+  await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
@@ -77,7 +80,8 @@ test.describe('dApp staking transactions', () => {
       page
         .locator('div')
         .filter({
-          hasText: /^Account must hold amount greater than 10ASTR in transferable after you stake\.$/,
+          hasText:
+            /^Account must hold amount greater than 10ASTR in transferable after you stake\.$/,
         })
         .locator('span')
     ).toBeVisible();
