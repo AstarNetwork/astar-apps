@@ -45,7 +45,7 @@ export function useDappStaking() {
   const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
-  const { nativeTokenSymbol } = useNetworkInfo();
+  const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
   const { isLedger } = useLedger();
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
@@ -414,6 +414,8 @@ export function useDappStaking() {
       stakeSum += stakeAmount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
+      } else if (isZkEvm.value) {
+        return [false, t('stakingV3.dappStaking.WrongNetworkZkEvm'), ''];
       } else if (stake.amount <= 0) {
         return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (

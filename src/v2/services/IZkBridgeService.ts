@@ -4,6 +4,7 @@ import { BridgeHistory, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 export interface IZkBridgeService {
   approve(param: ParamBridgeAsset): Promise<String>;
   bridgeAsset(param: ParamBridgeAsset): Promise<String>;
+  dryRunBridgeAsset(param: ParamBridgeAsset): Promise<boolean>;
   claimAsset(param: ParamClaim): Promise<String>;
 }
 

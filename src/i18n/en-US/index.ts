@@ -44,6 +44,14 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
+  modals: {
+    yokiOrigins: {
+      introducing: 'Introducing a new experience on zkEVM',
+      experienceNow: 'Experience now',
+      learnMore: 'Learn more',
+      keep: 'Keep me on the Portal',
+    },
+  },
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -60,6 +68,7 @@ export default {
     blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
+    balanceNotEnough: 'You do not have enough ETH in your account to pay for the transaction fee',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
@@ -75,7 +84,9 @@ export default {
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
     yoki: 'Yoki Origins',
-    yokiSignUp: 'Astar zkEVM launch campaign is coming soon!',
+    yokiSignUp: 'Yoki Origins is a user onboarding journey on Astar zkEVM. Experience now!',
+    stakingNotSupportZkEvm:
+      'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -754,6 +765,7 @@ export default {
         'Unstaking is rejected since the period in which past stake was active has passed.',
       ZeroAmount: 'Amount must be greater than 0.',
       LockedAmountBelowThreshold: 'Minimum staking amount is {amount} tokens per dApp.',
+      WrongNetworkZkEvm: 'dApp staking is not available on zkEVM network.',
     },
     innovativeWayOfStaking:
       'Innovative way of staking, only at Astar. Where ecosystem grow together',
@@ -797,7 +809,7 @@ export default {
     tier: 'Tier',
     tierLeaderboard: 'Tier Leaderboard',
     projectLeaderboards: 'Project Leaderboards',
-    rewardPerDay: 'Reward per era',
+    rewardPerDay: 'Rewards per era',
     myStaking: 'My Staking',
     myDapps: 'My dApps',
     unbonding: 'Unbonding',
@@ -978,21 +990,29 @@ export default {
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
+    thirdPartyBridge: '3rd Party Bridge',
     ethereumBridge: {
-      title: 'Ethereum Bridge',
-      text: 'Bridge assets between {l1} and {l2}',
-      text2:
-        'Available on testnet! - To experience, connect your wallet to Astar zKatana (zkEVM testnet) and get testnet ETH',
-      lean: '(learn more)',
+      title: 'Native Bridge',
+      tag: 'ERC20',
+      text: 'Transfer assets between {l1} and {l2}.',
+      text2: 'Available on Astar zkEVM. Switch the network to use it.',
+      learn: '(learn more)',
     },
     astarBridge: {
-      title: 'Astar Bridge',
-      text: 'Bridge ASTR token and assets to {l2} from {substrateNetwork} EVM',
+      title: 'LayerZero',
+      tag: 'ASTR',
+      text: 'Transfer ASTR token between {substrateNetwork} EVM and {l2}.',
       text2: 'Currently under development',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Celer Bridge',
-      text: 'Bridge assets to {cbridgeNetworkName} Polkadot EVM via Celer Bridge',
+      tag: 'ERC20',
+      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {cbridgeNetworkName} EVM.',
+    },
+    relayBridge: {
+      title: 'Relay Link',
+      tag: 'ETH',
+      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {l2}.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
