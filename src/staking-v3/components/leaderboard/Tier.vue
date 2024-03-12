@@ -11,24 +11,13 @@
     </div>
 
     <swiper class="swiper--tier" :navigation="true" :modules="modules">
-      <swiper-slide>
+      <swiper-slide v-for="(page, pageIndex) in pages" :key="`page-${pageIndex}`">
         <div class="container--dapps">
-          <div v-for="(dapp, index) in page1" :key="dapp.chain.id">
-            <dapp-item :index="index" :dapp="dapp" />
+          <div v-for="(dapp, index) in page" :key="`page-${index}`">
+            <dapp-item :index="pageIndex * itemsPerPage + index" :dapp="dapp" />
           </div>
-          <div v-for="index in itemsPerPage - page1.length" :key="index">
-            <no-entry :index="index" :length="page1.length" />
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="container--dapps">
-          <div v-for="(dapp, index) in page2" :key="dapp.chain.id">
-            <dapp-item :index="index + itemsPerPage" :dapp="dapp" />
-          </div>
-          <div v-for="index in itemsPerPage - page2.length" :key="index">
-            <no-entry :index="index + itemsPerPage" :length="page2.length" />
+          <div v-for="index in itemsPerPage - page.length" :key="`page-${index}`">
+            <no-entry :index="pageIndex * itemsPerPage + index" :length="page.length" />
           </div>
         </div>
       </swiper-slide>
@@ -73,21 +62,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const itemsToShow = 10;
     const itemsPerPage = 5;
-    const slicedDapps = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsToShow));
 
-    const page1 = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsPerPage));
-    const page2 = computed<CombinedDappInfo[]>(() => props.dapps.slice(itemsPerPage, itemsToShow));
+    const pages = computed<CombinedDappInfo[][]>(() => {
+      const pages = [];
+      for (let i = 0; i < props.dapps.length; i += itemsPerPage) {
+        pages.push(props.dapps.slice(i, i + itemsPerPage));
+      }
+
+      return pages;
+    });
 
     const { navigateDappPage } = useDappStakingNavigation();
 
     return {
       modules: [Navigation],
-      slicedDapps,
       itemsPerPage,
-      page1,
-      page2,
+      pages,
       navigateDappPage,
     };
   },
