@@ -20,16 +20,6 @@
       </div>
 
       <div class="row__actions">
-        <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
-          <button class="btn btn--icon">
-            <astar-icon-bridge />
-          </button>
-          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
-          </q-tooltip>
-        </router-link>
-
         <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
           <button class="btn btn--icon">
             <astar-icon-transfer />
@@ -37,6 +27,16 @@
           <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.send') }}</span>
+          </q-tooltip>
+        </router-link>
+
+        <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
+          <button class="btn btn--icon">
+            <astar-icon-bridge />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
         </router-link>
 

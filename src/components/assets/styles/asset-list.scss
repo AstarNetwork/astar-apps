@@ -291,6 +291,17 @@
   .text--value {
     color: $gray-1;
   }
+
+  .icon--external-link,
+  .icon--plus {
+    @media (min-width: $sm) {
+      stroke: $astar-blue;
+      &:hover {
+        stroke: white;
+      }
+    }
+  }
+
   .container--explorer-icon {
     stroke: $astar-blue;
     &:hover {
@@ -535,26 +546,47 @@
   border-radius: 9999px;
   background-color: $astar-blue;
   margin: auto;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
   @media (min-width: $sm) {
     background-color: transparent;
     color: $astar-blue;
     margin: auto;
-    svg {
-      width: 20px;
-      height: 20px;
-    }
     &:hover {
       color: white;
       background-color: $astar-blue;
+      svg {
+        stroke: white;
+      }
     }
-  }
-  svg {
-    width: 20px;
-    height: 20px;
-    @media (min-width: $sm) {
+    svg {
       width: 24px;
       height: 24px;
     }
+  }
+}
+
+.icon--external-link {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 1px;
+  stroke: white;
+  @media (min-width: $sm) {
+    stroke: $astar-blue;
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+.icon--plus {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 1px;
+  stroke: white;
+  @media (min-width: $sm) {
+    stroke: $astar-blue;
   }
 }
 

@@ -21,7 +21,17 @@
 
       <div class="row__actions">
         <router-link to="/">
-          <button class="btn btn--icon" :disabled="true">
+          <button class="btn btn--icon">
+            <astar-icon-transfer />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.send') }}</span>
+          </q-tooltip>
+        </router-link>
+
+        <router-link :disabled="true" to="/">
+          <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
@@ -31,16 +41,26 @@
           </q-tooltip>
         </router-link>
 
-        <router-link to="/">
-          <button class="btn btn--icon" :disabled="true">
-            <astar-icon-transfer />
+        <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+          <button class="btn btn--icon">
+            <astar-icon-external-link class="icon--external-link" />
           </button>
-          <span class="text--mobile-menu">{{ $t('assets.send') }}</span>
+          <span class="text--mobile-menu">{{ $t('blockscout') }}</span>
           <q-tooltip>
-            <!-- <span class="text--tooltip">{{ $t('assets.send') }}</span> -->
-            <span class="text--tooltip">Coming soon!</span>
+            <span class="text--tooltip">{{ $t('blockscout') }}</span>
           </q-tooltip>
-        </router-link>
+        </a>
+        <div>
+          <button class="btn btn--icon">
+            <astar-icon-base class="icon--plus">
+              <astar-icon-plus />
+            </astar-icon-base>
+          </button>
+          <span class="text--mobile-menu">{{ $t('add') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+          </q-tooltip>
+        </div>
       </div>
     </div>
   </div>
@@ -108,4 +128,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/asset-list.scss';
+/* @use 'src/components/assets/styles/asset-list-xcm.scss'; */
 </style>
