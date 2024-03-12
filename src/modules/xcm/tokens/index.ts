@@ -157,7 +157,7 @@ export const xcmToken = {
       symbol: 'PINK',
       isNativeToken: false,
       assetId: '18446744073709551633',
-      originAssetId: 'PINK',
+      originAssetId: '23',
       logo: require('/src/assets/img/token/pink.png'),
       isXcmCompatible: true,
       originChain: Chain.ASSET_HUB,
