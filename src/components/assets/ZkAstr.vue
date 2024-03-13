@@ -38,16 +38,15 @@
           </q-tooltip>
         </router-link>
 
-        <router-link :disabled="true" to="/">
+        <a :href="stargateUrl" target="_blank" rel="noopener noreferrer">
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
-            <!-- <span class="text--tooltip">{{ $t('assets.bridge') }}</span> -->
-            <span class="text--tooltip">Coming soon!</span>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
-        </router-link>
+        </a>
 
         <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
           <button class="btn btn--icon">
@@ -96,6 +95,7 @@ import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { PropType, computed, defineComponent } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
+import { stargateUrl } from '../../modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
@@ -117,6 +117,7 @@ export default defineComponent({
     return {
       explorerLink,
       ethProvider,
+      stargateUrl,
       truncate,
       addToEvmProvider,
       buildTransferPageLink,
