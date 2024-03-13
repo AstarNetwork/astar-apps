@@ -37,8 +37,6 @@ export function useAppRouter() {
   const network = computed<string>(() => route.params.network as string);
   const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-
   const castNetworkName = (networkParam: string): string => {
     let name = networkParam.toLowerCase();
     if (name === 'shibuya') {
