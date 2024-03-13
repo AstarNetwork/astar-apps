@@ -23,6 +23,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
 import { useAccount } from './useAccount';
+import { checkIsNativeWallet } from './helper/wallet';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -66,8 +67,9 @@ export function useAppRouter() {
   };
 
   const handleCheckWalletType = (): void => {
-    const storedWallet = localStorage.getItem(SELECTED_WALLET);
-    const invalidCondition = isZkEvm.value && !isH160.value && storedWallet;
+    const storedWallet = String(localStorage.getItem(SELECTED_WALLET));
+    const isNativeWallet = checkIsNativeWallet(storedWallet as SupportWallet);
+    const invalidCondition = !!(isZkEvm.value && isNativeWallet && storedWallet);
     invalidCondition && handleResetAccount();
   };
 
