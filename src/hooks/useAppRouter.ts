@@ -34,7 +34,10 @@ export function useAppRouter() {
   const { t } = useI18n();
   const { disconnectAccount } = useAccount();
   const network = computed<string>(() => route.params.network as string);
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
   const castNetworkName = (networkParam: string): string => {
     let name = networkParam.toLowerCase();
     if (name === 'shibuya') {
@@ -59,9 +62,13 @@ export function useAppRouter() {
     const invalidCondition =
       (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
 
-    if (invalidCondition) {
-      handleResetAccount();
-    }
+    invalidCondition && handleResetAccount();
+  };
+
+  const handleCheckWalletType = (): void => {
+    const storedWallet = localStorage.getItem(SELECTED_WALLET);
+    const invalidCondition = isZkEvm.value && !isH160.value && storedWallet;
+    invalidCondition && handleResetAccount();
   };
 
   // Memo: this function is invoked whenever users change the `:network` param via browser's address bar
@@ -149,4 +156,5 @@ export function useAppRouter() {
   watchEffect(handleInvalidStorage);
   watchEffect(initializePolkasafeClient);
   watchEffect(handleAddDefaultTokens);
+  watchEffect(handleCheckWalletType);
 }
