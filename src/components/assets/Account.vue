@@ -144,30 +144,30 @@
   </div>
 </template>
 <script lang="ts">
-import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, isValidEvmAddress, wait } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
+import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import {
   ETHEREUM_EXTENSION,
   useAccount,
-  useBalance,
-  useNetworkInfo,
-  usePrice,
-  useWalletIcon,
   useAccountUnification,
+  useBalance,
   useConnectWallet,
+  useNetworkInfo,
+  useWalletIcon,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
+import { useDappStaking } from 'src/staking-v3';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 
 export default defineComponent({
   components: {
@@ -182,6 +182,11 @@ export default defineComponent({
     ttlNativeXcmUsdAmount: {
       type: Number,
       required: true,
+    },
+    nativeTokenUsd: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   setup(props) {
@@ -198,9 +203,10 @@ export default defineComponent({
       isAccountUnification,
     } = useAccount();
 
+    const { ledger } = useDappStaking();
+
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { balance, isLoadingBalance } = useBalance(currentAccount);
-    const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
     const { unifiedAccount, isAccountUnified } = useAccountUnification();
@@ -245,7 +251,7 @@ export default defineComponent({
     };
 
     const isSkeleton = computed<boolean>(() => {
-      if (!nativeTokenUsd.value) return false;
+      if (!props.nativeTokenUsd) return false;
       return isLoadingBalance.value;
     });
 
@@ -254,19 +260,16 @@ export default defineComponent({
     };
 
     watch(
-      [balance, nativeTokenUsd, currentAccount, isH160],
+      [balance, props, currentAccount, ledger, isZkEvm],
       () => {
         balUsd.value = null;
-        const isEvmShiden = currentNetworkIdx.value === endpointKey.SHIDEN && isH160.value;
-        if (!balance.value || !nativeTokenUsd.value) return;
-        if (isEvmShiden) {
-          // Memo: get the value from cbridge hooks
-          balUsd.value = 0;
-          return;
-        }
+        const lockedBal = isZkEvm.value ? '0' : String(ledger?.value?.locked.toString());
+        if (!balance.value || !props.nativeTokenUsd) return;
 
-        const bal = Number(ethers.utils.formatEther(balance.value.toString()));
-        balUsd.value = nativeTokenUsd.value * bal;
+        const bal =
+          Number(ethers.utils.formatEther(balance.value.toString())) +
+          Number(ethers.utils.formatEther(lockedBal));
+        balUsd.value = props.nativeTokenUsd * bal;
       },
       { immediate: true }
     );
@@ -275,6 +278,8 @@ export default defineComponent({
       try {
         if (!isH160.value || !isValidEvmAddress(currentAccount.value)) return;
         isCheckingSignature.value = true;
+        // Memo: to avoid display signature request twice while changing network
+        await wait(2000);
         await setAddressMapping({ evmAddress: currentAccount.value, requestSignature });
       } catch (error: any) {
         console.error(error.message);

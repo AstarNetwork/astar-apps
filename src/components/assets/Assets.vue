@@ -8,6 +8,7 @@
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
           :is-loading-erc20-amount="isLoading"
           :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+          :native-token-usd="nativeTokenUsd"
         />
 
         <anchor-links
@@ -21,19 +22,19 @@
 
         <template v-if="isH160">
           <div ref="nativeSection">
-            <evm-native-token class="container" />
+            <evm-native-token class="container" :native-token-usd="nativeTokenUsd" />
           </div>
-          <zk-astr v-if="isZkEvm" class="container" />
+          <zk-astr v-if="isAstarZkEvm && astr" :astr="astr" class="container" />
         </template>
         <template v-else>
           <div ref="nativeSection">
-            <native-asset-list class="container" />
+            <native-asset-list class="container" :native-token-usd="nativeTokenUsd" />
           </div>
         </template>
 
         <template v-if="isDappStakingV3 && !isZkEvm">
           <div ref="stakingSection">
-            <staking />
+            <staking :native-token-usd="nativeTokenUsd" />
           </div>
         </template>
 
@@ -45,7 +46,10 @@
 
         <div v-if="!isLoading" ref="assetsSection">
           <template v-if="isH160">
-            <evm-asset-list :tokens="evmAssets.assets" class="container" />
+            <evm-asset-list
+              :tokens="isAstarZkEvm ? zkErcTokens : evmAssets.assets"
+              class="container"
+            />
           </template>
           <template v-else>
             <!-- Memo: hide xvm panel because AA might replace it -->
@@ -80,7 +84,9 @@ import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo, usePrice } from 'src/hooks';
+import { Erc20Token } from 'src/modules/token';
+import { addressAstrZkEvm } from 'src/modules/zk-evm-bridge';
 import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
 import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
@@ -114,10 +120,17 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isZkEvm, nativeTokenSymbol } =
-      useNetworkInfo();
+    const {
+      isMainnet,
+      currentNetworkIdx,
+      evmNetworkIdx,
+      isZkEvm,
+      isAstarZkEvm,
+      nativeTokenSymbol,
+    } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
+    const { nativeTokenUsd } = usePrice();
 
     const evmNetworkId = computed(() => {
       return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
@@ -136,6 +149,22 @@ export default defineComponent({
       } else {
         return false;
       }
+    });
+
+    const astr = computed<Erc20Token | undefined>(() => {
+      return (
+        evmAssets.value &&
+        evmAssets.value.assets &&
+        evmAssets.value.assets.find((t) => t.address === addressAstrZkEvm)
+      );
+    });
+
+    const zkErcTokens = computed<Erc20Token[] | undefined>(() => {
+      return (
+        evmAssets.value &&
+        evmAssets.value.assets &&
+        evmAssets.value.assets.filter((t) => t.address !== addressAstrZkEvm)
+      );
     });
 
     const handleUpdateNativeTokenAssets = () => {
@@ -249,6 +278,10 @@ export default defineComponent({
       stakingSection,
       projectSection,
       assetsSection,
+      isAstarZkEvm,
+      astr,
+      zkErcTokens,
+      nativeTokenUsd,
     };
   },
 });

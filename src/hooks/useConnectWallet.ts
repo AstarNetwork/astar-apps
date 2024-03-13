@@ -259,7 +259,8 @@ export const useConnectWallet = () => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
-
+    // Memo: This will avoid selecting EVM wallet twice for the first time visitor
+    localStorage.setItem(SELECTED_ADDRESS, ETHEREUM_EXTENSION);
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;

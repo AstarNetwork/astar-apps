@@ -5,6 +5,8 @@ export const TOKEN_BLACKLIST = [
   '0xE9CC37904875B459Fa5D0FE37680d36F1ED55e38',
 ];
 
+export const addressAstrZkEvm = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
+
 export const DEFAULT_TOKENS = [
   {
     srcChainId: 1,
@@ -112,7 +114,6 @@ export const DEFAULT_TOKENS = [
     bridgedTokenAddress: '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee',
     bridgedChainId: 1,
   },
-
   {
     srcChainId: 1,
     address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -194,5 +195,31 @@ export const DEFAULT_TOKENS = [
     wrapUrl: null,
     bridgedTokenAddress: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
     bridgedChainId: 1,
+  },
+  {
+    srcChainId: 3776,
+    address: '0xdf41220C7e322bFEF933D85D01821ad277f90172',
+    decimal: '18',
+    symbol: 'ASTR',
+    name: 'Astar Token',
+    image: 'https://assets.coingecko.com/coins/images/22617/standard/astr.png?1696521933',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0x90bE3031Ffbf419881D205d81483aeF9640c31C3',
+    bridgedChainId: 1,
+  },
+  {
+    srcChainId: 1,
+    address: '0x90bE3031Ffbf419881D205d81483aeF9640c31C3',
+    decimal: '18',
+    symbol: 'ASTR',
+    name: 'Astar Token',
+    image: 'https://assets.coingecko.com/coins/images/22617/standard/astr.png?1696521933',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0xdf41220C7e322bFEF933D85D01821ad277f90172',
+    bridgedChainId: 3776,
   },
 ];
