@@ -19,6 +19,7 @@ import {
 } from 'src/v2/services/IAssetsService';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
+import { handleCheckProviderChainId } from 'src/config/web3';
 
 @injectable()
 export class AssetsService implements IAssetsService {
@@ -57,6 +58,11 @@ export class AssetsService implements IAssetsService {
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
+
+    const resultCheckProvider = await handleCheckProviderChainId(provider);
+    if (!resultCheckProvider) {
+      throw Error('Please connect to the correct network in your wallet');
+    }
 
     const balWei = await web3.eth.getBalance(param.senderAddress);
     const useableBalance = Number(ethers.utils.formatEther(balWei));

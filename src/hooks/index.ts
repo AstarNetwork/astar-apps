@@ -35,7 +35,6 @@ export * from './dapps-staking/useDispatchGetDapps';
 export * from './dapps-staking/useCampaign';
 export * from './dapps-staking/useDecommission';
 export * from './wallet/useWalletIcon';
-export * from './wallet/useEvmWallet';
 export * from './wallet/useLedger';
 export * from './wallet/useAccountUnification';
 export * from './xcm/useXcmBridge';
