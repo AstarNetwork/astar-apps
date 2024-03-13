@@ -49,12 +49,8 @@
         </div>
 
         <div class="column--selection">
-          <button :disabled="!isEnableAstrBridge">
-            <component
-              :is="isEnableAstrBridge ? 'router-link' : 'div'"
-              :to="buildEthereumBridgePageLink()"
-              class="button--bridge"
-            >
+          <button>
+            <a :href="stargateUrl" target="_blank" rel="noopener noreferrer" class="button--bridge">
               <div class="row--logo-bg">
                 <div class="img--logo-bg">
                   <img
@@ -82,9 +78,8 @@
                   </span>
                 </div>
               </div>
-            </component>
+            </a>
           </button>
-          <p class="text--bridge-details">{{ $t('bridge.astarBridge.text2') }}</p>
         </div>
       </div>
       <div class="container--selection">
@@ -171,6 +166,7 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
+import { stargateUrl } from '../../modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
@@ -205,16 +201,10 @@ export default defineComponent({
       return true;
     });
 
-    // Memo: waiting for Stargate to deliver
-    const isEnableAstrBridge = computed<boolean>(() => {
-      return false;
-    });
-
     return {
       currentAccount,
       cbridgeAppLink,
       RoutePath,
-      isEnableAstrBridge,
       isEnableEthBridge,
       l1Name,
       l2Name,
@@ -222,6 +212,7 @@ export default defineComponent({
       substrateNetwork,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,
+      stargateUrl,
     };
   },
 });
