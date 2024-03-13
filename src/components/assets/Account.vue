@@ -327,7 +327,6 @@ export default defineComponent({
       shiden: require('/src/assets/img/account_bg_shiden.webp'),
       testnet: require('/src/assets/img/account_bg_testnet.webp'),
       zk: require('/src/assets/img/account_bg_zk.webp'),
-      testnet_zk: require('/src/assets/img/account_bg_testnet_zk.webp'),
     };
 
     const bg = computed<String>(() => {
@@ -335,8 +334,8 @@ export default defineComponent({
         return bg_img.native;
       } else if (currentNetworkIdx.value === endpointKey.SHIDEN) {
         return bg_img.shiden;
-      } else if (currentNetworkIdx.value === endpointKey.ZKATANA) {
-        return bg_img.testnet_zk;
+      } else if (currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM) {
+        return bg_img.zk;
       }
       return bg_img.testnet;
     });
