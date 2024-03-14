@@ -1001,18 +1001,23 @@ export default {
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
-      text: 'Transfer ASTR token between {substrateNetwork} EVM and {l2}.',
+      text: 'Transfer ASTR token between Astar EVM and Astar zkEVM.',
       text2: 'Currently under development',
     },
     celerBridge: {
       title: 'Celer Bridge',
       tag: 'ERC20',
-      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {cbridgeNetworkName} EVM.',
+      text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
     },
     relayBridge: {
       title: 'Relay Link',
       tag: 'ETH',
-      text: '3rd Party Bridge. Transfer assets between {l1} or L2s and {l2}.',
+      text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and Astar zkEVM.',
+    },
+    layerSwap: {
+      title: 'Layerswap',
+      tag: 'ETH',
+      text: '3rd Party Bridge. Fast and reliable crypto transfers across networks to Astar zkEVM.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warning2steps:
