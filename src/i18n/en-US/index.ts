@@ -87,6 +87,7 @@ export default {
     yokiSignUp: 'Yoki Origins is a user onboarding journey on Astar zkEVM. Experience now!',
     stakingNotSupportZkEvm:
       'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
+    connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',

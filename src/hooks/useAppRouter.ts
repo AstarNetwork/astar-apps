@@ -19,7 +19,7 @@ import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { computed, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ComposerTranslation, useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
 import { useAccount } from './useAccount';
@@ -152,9 +152,14 @@ export function useAppRouter() {
     }
   };
 
+  const handleI18Constant = (): void => {
+    container.addConstant<ComposerTranslation>(Symbols.I18Translation, t);
+  };
+
   watchEffect(handleInputNetworkParam);
   watchEffect(handleInvalidStorage);
   watchEffect(initializePolkasafeClient);
   watchEffect(handleAddDefaultTokens);
   watchEffect(handleCheckWalletType);
+  watchEffect(handleI18Constant);
 }

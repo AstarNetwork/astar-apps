@@ -23,6 +23,7 @@ export const Symbols = {
   RegisteredTokens: Symbol.for('RegisteredTokens'),
   PolkasafeClient: Symbol.for('PolkasafeClient'),
   WcProvider: Symbol.for('WcProvider'),
+  I18Translation: Symbol.for('I18Translation'),
   PolkasafeRepository: Symbol.for('PolkasafeRepository'),
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
