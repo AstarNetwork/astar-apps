@@ -39,7 +39,7 @@ import { useRouter } from 'vue-router';
 import * as utils from 'src/hooks/custom-signature/utils';
 
 export const useConnectWallet = () => {
-  const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, IS_LEDGER, SELECTED_WALLET } = LOCAL_STORAGE;
 
   const modalAccountSelect = ref<boolean>(false);
   const modalPolkasafeSelect = ref<boolean>(false);
@@ -357,8 +357,11 @@ export const useConnectWallet = () => {
 
     const handleAccountsChanged = async (accounts: string[]) => {
       if (accounts[0] !== account) {
+        const wallet = localStorage.getItem(SELECTED_WALLET);
         await disconnectAccount();
         await setEvmWallet(wallet as SupportWallet);
+        localStorage.setItem(SELECTED_ADDRESS, ETHEREUM_EXTENSION);
+        localStorage.setItem(SELECTED_WALLET, String(wallet));
       }
     };
 
