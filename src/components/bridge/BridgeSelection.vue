@@ -38,13 +38,6 @@
           </button>
           <p v-if="!isEnableEthBridge" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.text2') }}
-            <!-- <a
-              href="https://docs.astar.network/docs/build/zkEVM/bridge-to-zkevm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ $t('bridge.ethereumBridge.learn') }}
-            </a> -->
           </p>
         </div>
 
@@ -69,12 +62,7 @@
                 <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{
-                      $t('bridge.astarBridge.text', {
-                        substrateNetwork: substrateNetwork,
-                        l2: l2Name,
-                      })
-                    }}
+                    {{ $t('bridge.astarBridge.text') }}
                   </span>
                 </div>
               </div>
@@ -83,6 +71,39 @@
         </div>
       </div>
       <div class="container--selection">
+        <div class="column--selection">
+          <button>
+            <a
+              :href="layerSwapLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/layerswap_logo.svg')"
+                    alt="relay-link"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.layerSwap.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.layerSwap.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.layerSwap.text') }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
         <div class="column--selection">
           <button>
             <a
@@ -145,7 +166,6 @@
                   <span class="text--bridge">
                     {{
                       $t('bridge.celerBridge.text', {
-                        l1: l1Name,
                         cbridgeNetworkName,
                       })
                     }}
@@ -161,33 +181,24 @@
 </template>
 <script lang="ts">
 import { cbridgeAppLink } from 'src/c-bridge';
-import { relayBridgeAppLink } from 'src/relay-bridge';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
-import { stargateUrl } from '../../modules/zk-evm-bridge/index';
+import { stargateUrl, layerSwapLink, relayBridgeAppLink } from 'src/modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
+    const { isZkEvm, networkNameSubstrate, isMainnet, isZkatana } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
-        ? EthBridgeNetworkName.Sepolia
-        : EthBridgeNetworkName.Ethereum;
+      return isZkatana.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
-        ? EthBridgeNetworkName.Zkatana
-        : EthBridgeNetworkName.AstarZk;
-    });
-
-    const substrateNetwork = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana ? 'Shibuya' : 'Astar';
+      return isZkatana.value ? EthBridgeNetworkName.Zkatana : EthBridgeNetworkName.AstarZk;
     });
 
     const cbridgeNetworkName = computed<string>(() => {
@@ -209,10 +220,10 @@ export default defineComponent({
       l1Name,
       l2Name,
       relayBridgeAppLink,
-      substrateNetwork,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,
       stargateUrl,
+      layerSwapLink,
     };
   },
 });
