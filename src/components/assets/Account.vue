@@ -263,12 +263,13 @@ export default defineComponent({
       [balance, props, currentAccount, ledger, isZkEvm],
       () => {
         balUsd.value = null;
-        const lockedBal = isZkEvm.value ? '0' : String(ledger?.value?.locked.toString());
+        const h160LockedBal =
+          isZkEvm.value || !isH160.value ? '0' : String(ledger?.value?.locked.toString());
         if (!balance.value || !props.nativeTokenUsd) return;
 
         const bal =
           Number(ethers.utils.formatEther(balance.value.toString())) +
-          Number(ethers.utils.formatEther(lockedBal));
+          Number(ethers.utils.formatEther(h160LockedBal));
         balUsd.value = props.nativeTokenUsd * bal;
       },
       { immediate: true }
