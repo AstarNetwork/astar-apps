@@ -130,6 +130,10 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getTiersConfiguration'] ?? initialTiersConfiguration
   );
 
+  const leaderboard = computed<Map<number, number>>(
+    () => store.getters['stakingV3/getLeaderboard']
+  );
+
   const isCurrentPeriod = (period: number): boolean =>
     protocolState.value?.periodInfo.number === period;
 
@@ -548,9 +552,8 @@ export function useDappStaking() {
   };
 
   const getDappTier = (dappId: number): number | undefined => {
-    const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
-
-    return tierId !== undefined ? tierId + 1 : undefined;
+    const tier = leaderboard.value?.get(dappId);
+    return tier !== undefined ? tier + 1 : undefined;
   };
 
   const fetchStakerInfoToStore = async (): Promise<void> => {

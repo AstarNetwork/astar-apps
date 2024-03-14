@@ -1,6 +1,6 @@
 <template>
   <div class="dapp">
-    <div>{{ index + length }}</div>
+    <div>{{ index + 1 }}</div>
     <div class="dapp--button">
       <div class="dapp--image">
         <img :src="require('../../assets/burn.png')" :alt="$t('stakingV3.burn')" />
@@ -18,10 +18,6 @@ export default defineComponent({
   components: {},
   props: {
     index: {
-      type: Number,
-      required: true,
-    },
-    length: {
       type: Number,
       required: true,
     },
