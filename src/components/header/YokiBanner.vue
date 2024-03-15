@@ -1,8 +1,12 @@
 <template>
   <div>
-    <!-- Memo: add this line later -->
-    <!-- <a href="https://yoki.astar.network/" target="_blank" rel="noopener noreferrer" class="banner"> -->
-    <div class="banner">
+    <a
+      href="https://yoki.astar.network/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="banner"
+      :class="`banner--${network}`"
+    >
       <span>
         <span class="text--ledger-users">{{ $t('warning.yoki') }}</span>
         <span>
@@ -10,8 +14,7 @@
         </span>
       </span>
       <astar-icon-arrow-right />
-      <!-- </a> -->
-    </div>
+    </a>
   </div>
 </template>
 
@@ -20,6 +23,12 @@ import { defineComponent } from 'vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
+  props: {
+    network: {
+      type: Number,
+      default: 0,
+    },
+  },
   setup() {
     return { endpointKey };
   },
@@ -43,8 +52,22 @@ export default defineComponent({
     padding: 4px 16px 8px 16px;
   }
 
-  &.banner {
-    background: linear-gradient(90deg, #0047ff 0%, #00d4ff 98%);
+  // shibuya, zkyoto, local
+  background: linear-gradient(90deg, #6c6c6c 25%, #b7b7b7 100%);
+
+  // astar native
+  &.banner--0 {
+    background: linear-gradient(90deg, #e6007a 25%, #ff9dd1 100%);
+  }
+
+  // shiden
+  &.banner--1 {
+    background: linear-gradient(90deg, #5928b1 25%, #b092ea 100%);
+  }
+
+  // zkEVM
+  &.banner--3 {
+    background: linear-gradient(90deg, #0047ff 0%, #00d4ff 100%);
   }
 }
 

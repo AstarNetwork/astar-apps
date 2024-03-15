@@ -12,6 +12,7 @@ export function usePrice() {
   });
 
   const { isMainnet, isAstarZkEvm } = useNetworkInfo();
+
   watchEffect(async () => {
     const tokenSymbolRef = tokenSymbol.value;
     if (!tokenSymbolRef) return;

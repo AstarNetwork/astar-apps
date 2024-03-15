@@ -708,14 +708,14 @@ export default {
       text: 'Bridger les actifs entre {l1} et {l2}',
       text2:
         "Disponible sur le testnet! - Pour en faire l'expérience, connectez votre portefeuille à Astar zKatana (zkEVM testnet) et obtenez des ETH sur le testnet",
-      lean: '(En apprendre plus)',
+      learn: '(En apprendre plus)',
     },
     astarBridge: {
       title: 'Bridge Astar',
       text: 'Bridger le jeton ASTR et les actifs vers {l2} depuis {substrateNetwork} EVM',
       text2: 'Actuellement en développement',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Bridge Celer',
       text: 'Bridger les actifs de {cbridgeNetworkName} Polkadot EVM via le Bridge Celer',
     },

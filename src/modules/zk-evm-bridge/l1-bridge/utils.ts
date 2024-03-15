@@ -28,7 +28,7 @@ type MerkleProof = {
   rollup_exit_root: string;
 };
 
-export const getNetworkId = async (chainName: EthBridgeNetworkName) => {
+export const getNetworkId = async (chainName: EthBridgeNetworkName): Promise<number> => {
   const chainId = EthBridgeChainId[chainName];
   const web3 = buildWeb3Instance(chainId);
   if (!web3) throw Error('Failed creating Web3 instance');
@@ -38,7 +38,7 @@ export const getNetworkId = async (chainName: EthBridgeNetworkName) => {
 
   const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
   const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
-  return await contract.methods.networkID().call();
+  return Number(await contract.methods.networkID().call());
 };
 
 export const checkIsL1 = (zkNetwork: ZkNetworkId): boolean => {

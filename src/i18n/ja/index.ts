@@ -707,14 +707,14 @@ export default {
       text: ' {l1} と {l2} のブリッジとなる資産',
       text2:
         'テストネットで利用可能！- 体験するには、あなたのウォレットをAstar zKatana (zkEVM testnet)に接続し、testnet ETHを取得してください。',
-      lean: '(もっと学ぶ)',
+      learn: '(もっと学ぶ)',
     },
     astarBridge: {
       title: 'Astar ブリッジ',
       text: 'ASTRトークンと資産を {substrateNetwork} EVMから {l2} へブリッジ',
       text2: '現在開発中',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Celer ブリッジ',
       text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへ資産をブリッジ',
     },

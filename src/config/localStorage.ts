@@ -21,6 +21,7 @@ export enum LOCAL_STORAGE {
   IS_LEDGER = 'isLedger',
   MULTISIG = 'multisig',
   CLOSE_DAPP_STAKING_V3_ONBOARDING = 'closeDappStakingV3Onboarding',
+  CLOSE_YOKI_ORIGINS_MODAL = 'closeYokiOriginsModal',
   DECOMMISSION = 'decommission',
 }
 

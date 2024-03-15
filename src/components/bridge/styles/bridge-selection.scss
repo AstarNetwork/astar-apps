@@ -47,13 +47,10 @@
   flex-direction: column;
   row-gap: 24px;
   width: 100%;
+  margin-top: 48px;
   @media (min-width: $md) {
     flex-direction: row;
     column-gap: 16px;
-  }
-  @media (min-width: $xl) {
-    flex-direction: row;
-    column-gap: 8px;
   }
 }
 
@@ -63,7 +60,7 @@
     width: 100%;
   }
   @media (min-width: $sm) {
-    width: 232px;
+    width: 240px;
   }
 }
 
@@ -75,7 +72,7 @@
   cursor: pointer;
   transition: all 0.3s ease 0s;
   padding: 16px;
-  height: 232px;
+  height: 240px;
   margin-bottom: 16px;
   border: 1px solid $gray-0;
   width: 100%;
@@ -101,7 +98,7 @@
 .row--logo-bg {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 24px;
+  margin-bottom: 0px;
 }
 
 .img--logo-bg {
@@ -129,6 +126,20 @@
   color: $navy-1;
 }
 
+.text--bridge-tag {
+  font-weight: 1000;
+  font-size: 24px;
+  color: $navy-1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text--bridge-identity {
+  font-size: 14px;
+}
+
 .text--bridge {
   font-weight: 600;
   font-size: 12px;
@@ -153,9 +164,16 @@
   }
 }
 
+.body--light {
+  .button--bridge {
+    background-color: white;
+  }
+}
+
 .body--dark {
   .text--bridge-title,
-  .text--bridge {
+  .text--bridge,
+  .text--bridge-identity {
     color: $gray-0;
   }
   .text--bridge-details {

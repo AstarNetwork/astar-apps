@@ -3,7 +3,7 @@
     :balance="ethers.utils.formatEther(balance)"
     :text="text"
     :decimals="decimals"
-    :symbol="showTokenSymbol ? nativeTokenSymbol : ''"
+    :symbol="showTokenSymbol ? dappStakingCurrency : ''"
   />
 </template>
 
@@ -39,9 +39,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { dappStakingCurrency } = useNetworkInfo();
 
-    return { nativeTokenSymbol, ethers };
+    return { dappStakingCurrency, ethers };
   },
 });
 </script>

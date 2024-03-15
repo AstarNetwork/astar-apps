@@ -19,10 +19,11 @@ import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { computed, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ComposerTranslation, useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
 import { useAccount } from './useAccount';
+import { checkIsNativeWallet } from './helper/wallet';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -34,7 +35,8 @@ export function useAppRouter() {
   const { t } = useI18n();
   const { disconnectAccount } = useAccount();
   const network = computed<string>(() => route.params.network as string);
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+
   const castNetworkName = (networkParam: string): string => {
     let name = networkParam.toLowerCase();
     if (name === 'shibuya') {
@@ -59,9 +61,14 @@ export function useAppRouter() {
     const invalidCondition =
       (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
 
-    if (invalidCondition) {
-      handleResetAccount();
-    }
+    invalidCondition && handleResetAccount();
+  };
+
+  const handleCheckWalletType = (): void => {
+    const storedWallet = String(localStorage.getItem(SELECTED_WALLET));
+    const isNativeWallet = checkIsNativeWallet(storedWallet as SupportWallet);
+    const invalidCondition = !!(isZkEvm.value && isNativeWallet && storedWallet);
+    invalidCondition && handleResetAccount();
   };
 
   // Memo: this function is invoked whenever users change the `:network` param via browser's address bar
@@ -145,8 +152,14 @@ export function useAppRouter() {
     }
   };
 
+  const handleI18Constant = (): void => {
+    container.addConstant<ComposerTranslation>(Symbols.I18Translation, t);
+  };
+
   watchEffect(handleInputNetworkParam);
   watchEffect(handleInvalidStorage);
   watchEffect(initializePolkasafeClient);
   watchEffect(handleAddDefaultTokens);
+  watchEffect(handleCheckWalletType);
+  watchEffect(handleI18Constant);
 }

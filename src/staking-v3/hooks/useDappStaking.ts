@@ -45,7 +45,7 @@ export function useDappStaking() {
   const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
-  const { nativeTokenSymbol } = useNetworkInfo();
+  const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
   const { isLedger } = useLedger();
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
@@ -128,6 +128,10 @@ export function useDappStaking() {
 
   const tiersConfiguration = computed<TiersConfiguration>(
     () => store.getters['stakingV3/getTiersConfiguration'] ?? initialTiersConfiguration
+  );
+
+  const leaderboard = computed<Map<number, number>>(
+    () => store.getters['stakingV3/getLeaderboard']
   );
 
   const isCurrentPeriod = (period: number): boolean =>
@@ -414,6 +418,8 @@ export function useDappStaking() {
       stakeSum += stakeAmount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
+      } else if (isZkEvm.value) {
+        return [false, t('stakingV3.dappStaking.WrongNetworkZkEvm'), ''];
       } else if (stake.amount <= 0) {
         return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (
@@ -546,9 +552,8 @@ export function useDappStaking() {
   };
 
   const getDappTier = (dappId: number): number | undefined => {
-    const tierId = dAppTiers.value?.dapps.find((x) => x.dappId === dappId)?.tierId;
-
-    return tierId !== undefined ? tierId + 1 : undefined;
+    const tier = leaderboard.value?.get(dappId);
+    return tier !== undefined ? tier + 1 : undefined;
   };
 
   const fetchStakerInfoToStore = async (): Promise<void> => {

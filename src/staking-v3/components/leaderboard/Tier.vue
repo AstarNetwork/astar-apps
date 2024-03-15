@@ -11,24 +11,15 @@
     </div>
 
     <swiper class="swiper--tier" :navigation="true" :modules="modules">
-      <swiper-slide>
+      <swiper-slide v-for="(page, pageIndex) in pages" :key="`page-${pageIndex}`">
         <div class="container--dapps">
-          <div v-for="(dapp, index) in page1" :key="dapp.chain.id">
-            <dapp-item :index="index" :dapp="dapp" />
-          </div>
-          <div v-for="index in itemsPerPage - page1.length" :key="index">
-            <no-entry :index="index" :length="page1.length" />
-          </div>
-        </div>
-      </swiper-slide>
-
-      <swiper-slide>
-        <div class="container--dapps">
-          <div v-for="(dapp, index) in page2" :key="dapp.chain.id">
-            <dapp-item :index="index + itemsPerPage" :dapp="dapp" />
-          </div>
-          <div v-for="index in itemsPerPage - page2.length" :key="index">
-            <no-entry :index="index + itemsPerPage" :length="page2.length" />
+          <div v-for="(dapp, index) in page" :key="`page-${index}`">
+            <dapp-item
+              v-if="dapp !== null"
+              :index="pageIndex * itemsPerPage + index"
+              :dapp="dapp"
+            />
+            <no-entry v-else :index="pageIndex * itemsPerPage + index" />
           </div>
         </div>
       </swiper-slide>
@@ -39,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { CombinedDappInfo } from '../../logic';
-import { useDappStakingNavigation } from '../../hooks';
+import { useDappStakingNavigation, useDappStaking } from '../../hooks';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import DappItem from './DappItem.vue';
 import noEntry from './noEntry.vue';
@@ -73,21 +64,36 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const itemsToShow = 10;
     const itemsPerPage = 5;
-    const slicedDapps = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsToShow));
+    const { tiersConfiguration } = useDappStaking();
 
-    const page1 = computed<CombinedDappInfo[]>(() => props.dapps.slice(0, itemsPerPage));
-    const page2 = computed<CombinedDappInfo[]>(() => props.dapps.slice(itemsPerPage, itemsToShow));
+    const slotsPerTier = computed<number>(() => {
+      return tiersConfiguration.value.slotsPerTier[props.tier - 1];
+    });
+
+    // Fill in dapps array with nulls so total array length matches number of available slots.
+    const dappsFull = computed<(CombinedDappInfo | null)[]>(() => {
+      const result: (CombinedDappInfo | null)[] = [];
+      for (let i = 0; i < slotsPerTier.value; i++) {
+        result.push(i < props.dapps.length ? props.dapps[i] : null);
+      }
+      return result;
+    });
+
+    const pages = computed<(CombinedDappInfo | null)[][]>(() => {
+      const pages = [];
+      for (let i = 0; i < dappsFull.value.length; i += itemsPerPage) {
+        pages.push(dappsFull.value.slice(i, i + itemsPerPage));
+      }
+      return pages;
+    });
 
     const { navigateDappPage } = useDappStakingNavigation();
 
     return {
       modules: [Navigation],
-      slicedDapps,
       itemsPerPage,
-      page1,
-      page2,
+      pages,
       navigateDappPage,
     };
   },

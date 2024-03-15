@@ -22,6 +22,11 @@
                 </div>
               </div>
               <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.ethereumBridge.tag') }}
+                  </q-chip>
+                </div>
                 <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
@@ -31,50 +36,106 @@
               </div>
             </component>
           </button>
-          <p class="text--bridge-details">
+          <p v-if="!isEnableEthBridge" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.text2') }}
-            <a
-              href="https://docs.astar.network/docs/build/zkEVM/bridge-to-zkevm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ $t('bridge.ethereumBridge.lean') }}
-            </a>
           </p>
         </div>
 
         <div class="column--selection">
-          <button :disabled="!isEnableAstrBridge">
-            <component
-              :is="isEnableAstrBridge ? 'router-link' : 'div'"
-              :to="buildEthereumBridgePageLink()"
+          <button>
+            <a :href="stargateUrl" target="_blank" rel="noopener noreferrer" class="button--bridge">
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/layerzero_bridge_logo.svg')"
+                    alt="astar-bridge"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.astarBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.astarBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
+      </div>
+      <div class="container--selection">
+        <div class="column--selection">
+          <button>
+            <a
+              :href="layerSwapLink"
+              target="_blank"
+              rel="noopener noreferrer"
               class="button--bridge"
             >
               <div class="row--logo-bg">
                 <div class="img--logo-bg">
                   <img
                     class="img--logo"
-                    :src="require('src/assets/img/chain/astar.png')"
-                    alt="astar-bridge"
+                    :src="require('src/assets/img/layerswap_logo.svg')"
+                    alt="relay-link"
                   />
                 </div>
               </div>
               <div class="row--bridge-title">
-                <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.layerSwap.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.layerSwap.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{
-                      $t('bridge.astarBridge.text', {
-                        substrateNetwork: substrateNetwork,
-                        l2: l2Name,
-                      })
-                    }}
+                    {{ $t('bridge.layerSwap.text') }}
                   </span>
                 </div>
               </div>
-            </component>
+            </a>
           </button>
-          <p class="text--bridge-details">{{ $t('bridge.astarBridge.text2') }}</p>
+        </div>
+        <div class="column--selection">
+          <button>
+            <a
+              :href="relayBridgeAppLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/relay_bridge_logo.svg')"
+                    alt="relay-link"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.relayBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.relayBridge.text', { l1: l1Name, l2: l2Name }) }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
         </div>
 
         <div class="column--selection">
@@ -95,10 +156,19 @@
                 </div>
               </div>
               <div class="row--bridge-title">
-                <span class="text--bridge-title">{{ $t('bridge.celetBridge.title') }}</span>
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.celerBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{ $t('bridge.celetBridge.text', { cbridgeNetworkName: cbridgeNetworkName }) }}
+                    {{
+                      $t('bridge.celerBridge.text', {
+                        cbridgeNetworkName,
+                      })
+                    }}
                   </span>
                 </div>
               </div>
@@ -115,27 +185,20 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
+import { stargateUrl, layerSwapLink, relayBridgeAppLink } from 'src/modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, currentNetworkName, networkNameSubstrate, isMainnet } = useNetworkInfo();
+    const { isZkEvm, networkNameSubstrate, isMainnet, isZkatana } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
-        ? EthBridgeNetworkName.Sepolia
-        : EthBridgeNetworkName.Ethereum;
+      return isZkatana.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana
-        ? EthBridgeNetworkName.Zkatana
-        : EthBridgeNetworkName.AstarZk;
-    });
-
-    const substrateNetwork = computed<string>(() => {
-      return currentNetworkName.value === EthBridgeNetworkName.Zkatana ? 'Shibuya' : 'Astar';
+      return isZkatana.value ? EthBridgeNetworkName.Zkatana : EthBridgeNetworkName.AstarZk;
     });
 
     const cbridgeNetworkName = computed<string>(() => {
@@ -149,22 +212,18 @@ export default defineComponent({
       return true;
     });
 
-    // Memo: waiting for Stargate to deliver
-    const isEnableAstrBridge = computed<boolean>(() => {
-      return false;
-    });
-
     return {
       currentAccount,
       cbridgeAppLink,
       RoutePath,
-      isEnableAstrBridge,
       isEnableEthBridge,
       l1Name,
       l2Name,
-      substrateNetwork,
+      relayBridgeAppLink,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,
+      stargateUrl,
+      layerSwapLink,
     };
   },
 });
