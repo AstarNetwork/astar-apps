@@ -125,7 +125,6 @@
           :caption="$t('stakingV3.bonus')"
           :amount="bonus"
           :eras="bonusRewardEras"
-          :is-text-bonus-eligible="isMainnet"
           :is-tool-tip="!!bonus"
           :text-tool-tip="$t('stakingV3.bonusTip')"
         />

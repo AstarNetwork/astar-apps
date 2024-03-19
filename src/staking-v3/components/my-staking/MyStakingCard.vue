@@ -28,12 +28,7 @@
         {{ $t(`stakingV3.${eras > 1 ? 'days' : 'day'}`, { day: eras }) }}
       </span>
     </div>
-    <div v-if="isTextBonusEligible && amount.toString() > '0'" class="card--balance">
-      <div class="card--amount">
-        <span>{{ $t('stakingV3.bonusEligible') }}</span>
-      </div>
-    </div>
-    <div v-else class="card--balance">
+    <div class="card--balance">
       <div class="card--amount">
         {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
       </div>
@@ -62,11 +57,6 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 0,
-    },
-    isTextBonusEligible: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isToolTip: {
       type: Boolean,
