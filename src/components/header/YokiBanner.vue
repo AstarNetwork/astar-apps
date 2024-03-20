@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isTestnet">
+  <div v-if="!isZkatana">
     <a
       href="https://yoki.astar.network/"
       target="_blank"
@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { defineComponent } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   props: {
@@ -36,9 +36,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const isTestnet = computed<boolean>(() => props.network === endpointKey.ZKATANA);
+    const { isZkatana } = useNetworkInfo();
 
-    return { isTestnet };
+    return { isZkatana };
   },
 });
 </script>
