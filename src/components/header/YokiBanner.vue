@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!isTestnet">
     <a
       href="https://yoki.astar.network/"
       target="_blank"
@@ -16,10 +16,16 @@
       <astar-icon-arrow-right />
     </a>
   </div>
+  <div v-else class="banner" :class="`banner--${network}`">
+    <span>
+      <span class="text--ledger-users">{{ $t('warning.attention') }}</span>
+      <span>{{ $t('warning.testnetSwitchWarning') }}</span>
+    </span>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
@@ -29,8 +35,11 @@ export default defineComponent({
       default: 0,
     },
   },
-  setup() {
-    return { endpointKey };
+  setup(props) {
+    const isTestnet = computed<boolean>(() => props.network === endpointKey.ZKATANA);
+    console.log(props.network, isTestnet.value);
+
+    return { isTestnet };
   },
 });
 </script>
