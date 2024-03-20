@@ -37,7 +37,6 @@ export default defineComponent({
   },
   setup(props) {
     const isTestnet = computed<boolean>(() => props.network === endpointKey.ZKATANA);
-    console.log(props.network, isTestnet.value);
 
     return { isTestnet };
   },
