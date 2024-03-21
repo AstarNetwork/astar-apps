@@ -8,7 +8,6 @@ import {
   EthBridgeChainIdToName,
   EthBridgeContract,
   EthBridgeNetworkName,
-  ZK_EVM_BRIDGE_ABI,
   ZK_EVM_AGGREGATED_BRIDGE_ABI,
   ZkChainId,
   ZkNetworkId,
@@ -34,9 +33,8 @@ export const getNetworkId = async (chainName: EthBridgeNetworkName): Promise<num
   if (!web3) throw Error('Failed creating Web3 instance');
 
   const contractAddress = EthBridgeContract[chainName];
-  const isAggregateContract = contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
 
-  const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
+  const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
   const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   return Number(await contract.methods.networkID().call());
 };
@@ -117,10 +115,7 @@ export const getBridgedTokenAddress = async ({
   const fromChainWeb3 = buildWeb3Instance(srcChainId) as Web3;
   const toChainContractAddress = EthBridgeContract[fromChainName];
 
-  const isAggregateContract =
-    toChainContractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
-
-  const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
+  const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
   const fromChainContract = new fromChainWeb3.eth.Contract(
     abi as AbiItem[],
     toChainContractAddress

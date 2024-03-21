@@ -1,9 +1,6 @@
-import ABI_ZK_EVM_BRIDGE from 'src/config/web3/abi/zkevm-bridge-abi.json';
 import ABI_ZK_EVM_AGGREGATED_BRIDGE from 'src/config/web3/abi/zkevm-aggregated-bridge-abi.json';
 export * from './utils';
 
-// Todo: combine to one abi after zKatana has been migrated
-export const ZK_EVM_BRIDGE_ABI = ABI_ZK_EVM_BRIDGE;
 export const ZK_EVM_AGGREGATED_BRIDGE_ABI = ABI_ZK_EVM_AGGREGATED_BRIDGE;
 
 export const zkEvmApi = {
@@ -27,9 +24,9 @@ export enum ZkChainId {
 }
 
 export const EthBridgeContract = {
-  [EthBridgeNetworkName.Sepolia]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
+  [EthBridgeNetworkName.Sepolia]: '0x528e26b25a34a4A5d0dbDa1d57D318153d2ED582',
   [EthBridgeNetworkName.Ethereum]: '0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe',
-  [EthBridgeNetworkName.Zkyoto]: '0x46d13b853f1B4cf7FEa9fDb335445A197Ef7374D',
+  [EthBridgeNetworkName.Zkyoto]: '0x528e26b25a34a4A5d0dbDa1d57D318153d2ED582',
   [EthBridgeNetworkName.AstarZk]: '0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe',
 };
 

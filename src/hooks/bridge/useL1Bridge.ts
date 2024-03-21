@@ -1,5 +1,5 @@
 import { ethers, constants as ethersConstants } from 'ethers';
-import { debounce } from 'lodash-es'; // If using lodash
+import { debounce } from 'lodash-es';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
@@ -360,7 +360,7 @@ export const useL1Bridge = () => {
   };
 
   const setIsGasPayable = async (): Promise<void> => {
-    if (!bridgeAmt.value || !selectedToken.value.address) return;
+    if (!bridgeAmt.value || !selectedToken.value.address || !isApproved.value) return;
     try {
       isLoadingGasPayable.value = true;
       const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
@@ -401,7 +401,7 @@ export const useL1Bridge = () => {
     immediate: true,
   });
 
-  watch([bridgeAmt], debouncedSetIsGasPayable, {
+  watch([bridgeAmt, isApproved], debouncedSetIsGasPayable, {
     immediate: false,
   });
 
