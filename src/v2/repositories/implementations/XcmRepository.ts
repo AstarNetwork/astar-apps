@@ -367,7 +367,7 @@ export class XcmRepository implements IXcmRepository {
     feeAssetId: string;
     feeAmount: number;
   } {
-    if (token.metadata.name == 'PINK' && destination.name == Chain.ASSET_HUB) {
+    if (token.metadata.name === 'PINK' && destination.name === Chain.ASSET_HUB) {
       // Pink in not a sufficient token and cannot be used as gas fee in Asset Hub,
       // it means we need to transfer another token to pay the fee and we will use USDT token.
       return { feeAssetIsRequired: true, feeAssetId: '4294969280', feeAmount: 700000 };
