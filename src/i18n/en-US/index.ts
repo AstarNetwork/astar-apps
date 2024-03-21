@@ -1002,6 +1002,11 @@ export default {
       text2: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
     },
+    zkatanaBridge: {
+      title: 'zKatana Bridge',
+      tag: 'ERC20',
+      text: 'Transfer assets between Sepolia and zKatana testnet.',
+    },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',

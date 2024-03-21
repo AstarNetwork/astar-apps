@@ -5,3 +5,4 @@ export const stargateUrl = 'https://stargate.finance/transfer';
 export const relayBridgeAppLink = 'https://relay.link/bridge/astar-zkevm/?fromChainId=1';
 export const layerSwapLink =
   'https://www.layerswap.io/app?to=astarzk_mainnet&from=ethereum_mainnet';
+export const zkatanaBridgeUrl = 'https://bridge.gelato.network/bridge/zkatana';

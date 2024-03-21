@@ -69,6 +69,39 @@
             </a>
           </button>
         </div>
+        <div v-if="isZkyoto" class="column--selection">
+          <button :disabled="!isEnableEthBridge">
+            <a
+              :href="zkatanaBridgeUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/ethereum.png')"
+                    alt="ethereum"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.zkatanaBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.zkatanaBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.zkatanaBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
       </div>
       <div class="container--selection">
         <div class="column--selection">
@@ -185,7 +218,12 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
-import { stargateUrl, layerSwapLink, relayBridgeAppLink } from 'src/modules/zk-evm-bridge/index';
+import {
+  stargateUrl,
+  layerSwapLink,
+  relayBridgeAppLink,
+  zkatanaBridgeUrl,
+} from 'src/modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
@@ -224,6 +262,8 @@ export default defineComponent({
       buildEthereumBridgePageLink,
       stargateUrl,
       layerSwapLink,
+      zkatanaBridgeUrl,
+      isZkyoto,
     };
   },
 });
