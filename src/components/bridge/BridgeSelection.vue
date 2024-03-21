@@ -191,14 +191,14 @@ export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, networkNameSubstrate, isMainnet, isZkatana } = useNetworkInfo();
+    const { isZkEvm, networkNameSubstrate, isMainnet, isZkyoto } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return isZkatana.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
+      return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return isZkatana.value ? EthBridgeNetworkName.Zkatana : EthBridgeNetworkName.AstarZk;
+      return isZkyoto.value ? EthBridgeNetworkName.Zkyoto : EthBridgeNetworkName.AstarZk;
     });
 
     const cbridgeNetworkName = computed<string>(() => {

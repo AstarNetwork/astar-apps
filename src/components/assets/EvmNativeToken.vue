@@ -69,7 +69,7 @@
           </q-tooltip>
         </a>
 
-        <a v-if="isZkatana" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
+        <a v-if="isZkyoto" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
           <button class="btn btn--icon">
             <astar-icon-faucet />
           </button>
@@ -124,7 +124,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkyoto } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -179,7 +179,7 @@ export default defineComponent({
       isFaucet,
       isModalFaucet,
       isZkEvm,
-      isZkatana,
+      isZkyoto,
       faucetSethLink,
       width,
       screenSize,

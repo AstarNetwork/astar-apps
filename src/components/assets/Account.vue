@@ -19,9 +19,9 @@
                   <a class="btn" href="/astar/assets"> Astar EVM (L1) </a>
                   <div class="btn active">Astar zkEVM</div>
                 </template>
-                <template v-if="currentNetworkIdx === endpointKey.ZKATANA">
+                <template v-if="currentNetworkIdx === endpointKey.ZKYOTO">
                   <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
-                  <div class="btn active">Astar zKatana</div>
+                  <div class="btn active">Astar zKyoto</div>
                 </template>
               </template>
 
@@ -33,9 +33,9 @@
                 <a
                   v-if="currentNetworkIdx === endpointKey.SHIBUYA"
                   class="btn"
-                  href="/zkatana-testnet/assets"
+                  href="/zkyoto-testnet/assets"
                 >
-                  Astar zKatana
+                  Astar zKyoto
                 </a>
                 <a
                   v-else-if="currentNetworkIdx === endpointKey.ASTAR"
@@ -50,7 +50,7 @@
             <!-- Native -->
             <div v-else class="btn active">
               {{
-                currentNetworkIdx === endpointKey.ZKATANA
+                currentNetworkIdx === endpointKey.ZKYOTO
                   ? 'Astar'
                   : currentNetworkName.replace('Network', '')
               }}

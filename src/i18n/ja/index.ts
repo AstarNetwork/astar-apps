@@ -706,7 +706,7 @@ export default {
       title: 'Ethereum ブリッジ',
       text: ' {l1} と {l2} のブリッジとなる資産',
       text2:
-        'テストネットで利用可能！- 体験するには、あなたのウォレットをAstar zKatana (zkEVM testnet)に接続し、testnet ETHを取得してください。',
+        'テストネットで利用可能！- 体験するには、あなたのウォレットをAstar zKyoto (zkEVM testnet)に接続し、testnet ETHを取得してください。',
       learn: '(もっと学ぶ)',
     },
     astarBridge: {

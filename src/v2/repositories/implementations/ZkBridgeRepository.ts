@@ -64,6 +64,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const forceUpdateGlobalExitRoot = true;
     const permitData = '0x';
 
+    console.log('param.destNetworkId', param.destNetworkId);
     const data = contract.methods
       .bridgeAsset(
         param.destNetworkId,
