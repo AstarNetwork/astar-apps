@@ -149,9 +149,9 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.ZKYOTO,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
-    blockscout: 'https://explorer.zkyoto.gelato.digital',
+    blockscout: 'https://astar-zkyoto.blockscout.com',
     evmChainId: '6038361',
-    evmEndpoints: ['https://rpc.zkyoto.gelato.digital'],
+    evmEndpoints: ['https://rpc.startale.com/zkyoto'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
