@@ -65,8 +65,7 @@ export interface BridgeHistory {
   claim_tx_hash: string;
   metadata: string;
   ready_for_claim: boolean;
-  // Todo: remove '?'
-  global_index?: string;
+  global_index: string;
   timestamp?: number;
   isActionRequired?: boolean;
   symbol?: string;
@@ -76,8 +75,8 @@ export interface BridgeHistory {
 
 export enum ZkNetworkId {
   L1 = 0,
-  L2_Testnet = 1,
-  L2_Mainnet = 2,
+  L2_PolygonZk = 1,
+  L2_AstarZk = 2,
 }
 
 export interface ZkToken {

@@ -6,6 +6,7 @@ import {
   EthBridgeContract,
   EthBridgeNetworkName,
   ZK_EVM_AGGREGATED_BRIDGE_ABI,
+  ZkNetworkId,
   fetchMerkleProof,
   getMainOrTestNet,
 } from 'src/modules/zk-evm-bridge';
@@ -46,12 +47,10 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     param: ParamBridgeAsset;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    const network = getMainOrTestNet();
-    const polygonZkId = 1;
     if (param.destNetworkId === undefined || param.destNetworkId === null) {
       throw Error('destNetworkId is not set');
-    } else if (network === 'mainnet' && param.destNetworkId === polygonZkId) {
-      // Memo: destNetworkId shouldn't be polygonZkId but just in case
+    } else if (param.destNetworkId === ZkNetworkId.L2_PolygonZk) {
+      // Memo: destNetworkId shouldn't be polygonZk but check it for just in case
       throw Error('destNetworkId is Polygon zkEVM');
     }
 

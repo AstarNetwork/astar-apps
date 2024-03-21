@@ -157,9 +157,13 @@ export default defineComponent({
       }
     };
 
-    watch([props, isLoading, nativeTokenSymbol, isH160], async () => {
-      await updateStates(props.nativeTokenUsd);
-    });
+    watch(
+      [props, isLoading, nativeTokenSymbol, isH160],
+      async () => {
+        await updateStates(props.nativeTokenUsd);
+      },
+      { immediate: isZkyoto.value }
+    );
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
