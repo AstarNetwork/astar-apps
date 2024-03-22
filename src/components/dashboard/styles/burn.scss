@@ -5,14 +5,14 @@
 }
 
 .container--value {
-  padding: 8px 16px 32px;
+  padding: 16px 24px;
 
   @media (min-width: $sm) {
-    padding: 8px 24px 32px;
+    padding: 24px;
   }
+
   @media (min-width: $xxl) {
     width: 560px;
-    padding: 24px;
   }
 }
 
