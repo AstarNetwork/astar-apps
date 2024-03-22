@@ -4,12 +4,13 @@
       <div class="container--value-panels-row">
         <div class="container--network-status">
           <network-status />
+          <burn v-if="isZkEvm" />
         </div>
         <div class="container--panel">
-          <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
+          <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
         </div>
       </div>
-      <div class="container--value-panels-row row-gap">
+      <div v-if="!isZkEvm" class="container--value-panels-row row-gap">
         <div class="container--panel">
           <value-panel title="Holders" :value="holders" />
         </div>
@@ -17,10 +18,10 @@
           <collators />
         </div>
       </div>
-      <div class="container--panel">
+      <div v-if="!isZkEvm" class="container--panel">
         <block-panel />
       </div>
-      <div v-if="isMainnet" class="container--charts">
+      <div v-if="isMainnet && !isZkEvm" class="container--charts">
         <tvl-chart
           :title="textChart.tvl.title"
           :tooltip="textChart.tvl.tooltip"
@@ -71,6 +72,8 @@ import { textChart } from 'src/modules/token-api';
 import { defineComponent, ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import Burn from 'src/components/dashboard/Burn.vue';
+
 export default defineComponent({
   components: {
     TokenPriceChart,
@@ -81,6 +84,7 @@ export default defineComponent({
     NetworkStatus,
     Collators,
     // TotalTransactionsChart,
+    Burn,
   },
   setup() {
     const holders = ref<string>('');
@@ -106,7 +110,8 @@ export default defineComponent({
       () => `${dappStakingTvlTokens.value} ${nativeTokenSymbol.value}`
     );
     const dappStakingTvlAmountDisplay = computed(() => `(${dappStakingTvlAmount.value})`);
-    const { isMainnet, currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { isMainnet, currentNetworkName, nativeTokenSymbol, dappStakingCurrency, isZkEvm } =
+      useNetworkInfo();
     const loadStats = async (network: string) => {
       if (!network) return;
       const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
@@ -141,6 +146,8 @@ export default defineComponent({
       filteredMergedTvl,
       mergedTvlAmount,
       lenStakers,
+      dappStakingCurrency,
+      isZkEvm,
     };
   },
 });

@@ -178,6 +178,10 @@
   width: 100%;
   margin-bottom: 32px;
 
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
   @media (min-width: $xxl) {
     margin-bottom: 0px;
   }
