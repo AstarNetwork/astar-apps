@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLoadingNetwork || 0 >= networkStatuses.length">
-    <q-skeleton class="skeleton--value-panel" />
+    <q-skeleton :class="skeletonClassName" />
   </div>
   <div v-else class="wrapper--value" data-testid="network-statuses">
     <div class="container container--value">
@@ -10,7 +10,7 @@
         </span>
       </div>
       <div class="box--statuses">
-        <div class="row--network-statuses">
+        <div v-if="!isZkEvm" class="row--network-statuses">
           <div v-for="(network, index) in networkStatuses" :key="index" class="row--network">
             <div v-if="network" class="column--network-name">
               <div>
@@ -81,6 +81,29 @@
             <li v-for="(item, index) in xcmRestrictions" :key="index">{{ item }}</li>
           </div>
         </div>
+        <div v-else class="row--network-statuses">
+          <div v-for="(network, index) in zkNetworkStatuses" :key="index" class="row--network">
+            <div v-if="network" class="column--network-name">
+              <div>
+                <span class="text--accent">{{ network.name }}</span>
+              </div>
+              <div>
+                <span class="text--label-small">
+                  {{ $t('dashboard.network.updatedAgo', { time: network.timeAgo }) }}
+                </span>
+              </div>
+            </div>
+            <div
+              v-if="network"
+              class="column--status"
+              :class="
+                network.status === NetworkStatus.Working ? 'status--success' : 'status--fixing'
+              "
+            >
+              <span>{{ $t(`common.status.${network.status}`) }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -111,7 +134,7 @@ interface INetworkStatus {
 
 export default defineComponent({
   setup() {
-    const { currentNetworkChain } = useNetworkInfo();
+    const { currentNetworkChain, isZkEvm } = useNetworkInfo();
     const store = useStore();
     const { t } = useI18n();
 
@@ -136,6 +159,8 @@ export default defineComponent({
     const shidenEvmStatus = ref<INetworkStatus>();
     const shibuyaStatus = ref<INetworkStatus>();
     const shibuyaEvmStatus = ref<INetworkStatus>();
+    const astarZkEvmStatus = ref<INetworkStatus>();
+    const zKatanaStatus = ref<INetworkStatus>();
 
     const getTimeAndStatus = (blockTime: DateTime): { timeAgo: string; status: NetworkStatus } => {
       const currentTime = DateTime.local();
@@ -176,8 +201,18 @@ export default defineComponent({
       }
     };
 
-    const setEvmStatus = async (networkRef: Ref, networkKey: endpointKey): Promise<void> => {
+    const setEvmStatus = async (
+      networkRef: Ref,
+      networkKey: endpointKey,
+      postfix?: string
+    ): Promise<void> => {
       const chainEndpoint = providerEndpoints.find((it) => networkKey === it.key)!;
+      let name = chainEndpoint.displayName;
+
+      if (postfix) {
+        name += ` (${postfix})`;
+      }
+
       try {
         const web3 = new Web3(chainEndpoint.evmEndpoints[0]);
         const latestBlock = await web3.eth.getBlock('latest');
@@ -185,14 +220,14 @@ export default defineComponent({
         const { status, timeAgo } = getTimeAndStatus(blockTime);
 
         networkRef.value = {
-          name: `${chainEndpoint.displayName} (EVM)`,
+          name,
           status,
           timeAgo,
         };
       } catch (error) {
         console.error(error);
         networkRef.value = {
-          name: `${chainEndpoint.displayName} (EVM)`,
+          name,
           status: NetworkStatus.Fixing,
           timeAgo: '0s',
         };
@@ -208,25 +243,39 @@ export default defineComponent({
       shibuyaEvmStatus.value,
     ]);
 
+    const zkNetworkStatuses = computed<(INetworkStatus | undefined)[]>(() => [
+      astarZkEvmStatus.value,
+      zKatanaStatus.value,
+    ]);
+
     watchEffect(async () => {
       isLoadingNetwork.value = true;
       await Promise.all([
         await setSubstrateStatus(astarStatus, endpointKey.ASTAR),
         await setSubstrateStatus(shidenStatus, endpointKey.SHIDEN),
         await setSubstrateStatus(shibuyaStatus, endpointKey.SHIBUYA),
-        await setEvmStatus(astarEvmStatus, endpointKey.ASTAR),
-        await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN),
-        await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA),
+        await setEvmStatus(astarEvmStatus, endpointKey.ASTAR, 'EVM'),
+        await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN, 'EVM'),
+        await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA, 'EVM'),
+        await setEvmStatus(astarZkEvmStatus, endpointKey.ASTAR_ZKEVM),
+        await setEvmStatus(zKatanaStatus, endpointKey.ZKATANA),
       ]);
       isLoadingNetwork.value = false;
     });
 
+    const skeletonClassName = computed<string>(() => {
+      return `skeleton--value-panel ${isZkEvm ? 'is-zk-evm' : ''}`;
+    });
+
     return {
       networkStatuses,
+      zkNetworkStatuses,
       xcmRestrictions,
       isLoadingNetwork,
       NetworkStatus,
       isDappStakingDisabled,
+      isZkEvm,
+      skeletonClassName,
     };
   },
 });
