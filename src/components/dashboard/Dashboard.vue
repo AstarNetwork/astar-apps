@@ -4,7 +4,7 @@
       <div class="container--value-panels-row">
         <div class="container--network-status">
           <network-status />
-          <burn v-if="isZkEvm" />
+          <burn v-if="isZkEvm" :symbol="dappStakingCurrency" />
         </div>
         <div class="container--panel">
           <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />

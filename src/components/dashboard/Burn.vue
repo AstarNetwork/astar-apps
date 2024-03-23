@@ -2,7 +2,7 @@
   <div class="wrapper--value" data-testid="burn-status">
     <div class="container container--value">
       <div class="row--title">
-        <span class="text--accent container--title--color"> Burn </span>
+        <span class="text--accent container--title--color"> {{ symbol }} Burn </span>
         <span class="text--accent container--title--color"> Coming Soon </span>
       </div>
     </div>
@@ -13,6 +13,12 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  props: {
+    symbol: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {},
 });
 </script>

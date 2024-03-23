@@ -6,7 +6,7 @@
     <div class="container container--value">
       <div class="row--title">
         <span class="text--accent container--title--color">
-          {{ $t('dashboard.network.networkStatuses') }}
+          {{ !isZkEvm ? $t('dashboard.network.networkStatuses') : 'Astar zkEVM Network Status' }}
         </span>
       </div>
       <div class="box--statuses">
@@ -209,6 +209,14 @@ export default defineComponent({
       const chainEndpoint = providerEndpoints.find((it) => networkKey === it.key)!;
       let name = chainEndpoint.displayName;
 
+      if (networkKey === endpointKey.ZKATANA || networkKey === endpointKey.ASTAR_ZKEVM) {
+        name = name.replace(/Network/g, '');
+
+        if (!name.startsWith('Astar')) {
+          name = 'Astar ' + name;
+        }
+      }
+
       if (postfix) {
         name += ` (${postfix})`;
       }
@@ -258,7 +266,7 @@ export default defineComponent({
         await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN, 'EVM'),
         await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA, 'EVM'),
         await setEvmStatus(astarZkEvmStatus, endpointKey.ASTAR_ZKEVM),
-        await setEvmStatus(zKatanaStatus, endpointKey.ZKATANA),
+        await setEvmStatus(zKatanaStatus, endpointKey.ZKATANA, 'testnet'),
       ]);
       isLoadingNetwork.value = false;
     });
