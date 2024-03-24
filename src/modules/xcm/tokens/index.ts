@@ -161,7 +161,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/pink.png'),
       isXcmCompatible: true,
       originChain: Chain.ASSET_HUB,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '1',
     },
   ],
   [endpointKey.SHIDEN]: [
