@@ -23,6 +23,7 @@ import { SystemAccount } from 'src/modules/account';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
+  astarNativeTokenErcAddr,
   checkIsDeposit,
   fetchXcmBalance,
   monitorBalanceIncreasing,
@@ -271,8 +272,10 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       return;
     }
 
+    const isAstr = selectedToken.value.mappedERC20Addr === astarNativeTokenErcAddr;
+
     if (isDeposit.value) {
-      if (!checkIsEnoughMinBal(sendingAmount)) {
+      if (!checkIsEnoughMinBal(sendingAmount) && !isAstr) {
         errMsg.value = t('warning.insufficientOriginChainBalance', {
           chain: selectedToken.value.originChain,
           amount: selectedToken.value.minBridgeAmount,
@@ -284,6 +287,17 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         errMsg.value = t('warning.insufficientOriginChainNativeBalance', {
           chain: selectedToken.value.originChain,
         });
+        return;
+      }
+    } else {
+      // Memo: withdrawal ASTR
+      if (!checkIsEnoughMinBal(sendingAmount) && isAstr) {
+        errMsg.value = t('warning.insufficientOriginChainBalance', {
+          chain: selectedToken.value.originChain,
+          amount: selectedToken.value.minBridgeAmount,
+          token: selectedToken.value.metadata.symbol,
+        });
+        return;
       }
     }
   };
