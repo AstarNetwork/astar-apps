@@ -2,8 +2,12 @@
   <div class="wrapper--value" data-testid="burn-status">
     <div class="container container--value">
       <div class="row--title">
-        <span class="text--accent container--title--color"> {{ symbol }} Burn </span>
-        <span class="text--accent container--title--color"> Coming Soon </span>
+        <span class="text--accent container--title--color">
+          {{ symbol }} {{ $t('dashboard.burn.burn') }}
+        </span>
+        <span class="text--accent container--title--color">
+          {{ $t('dashboard.burn.comingSoon') }}
+        </span>
       </div>
     </div>
   </div>

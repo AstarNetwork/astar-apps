@@ -6,7 +6,11 @@
     <div class="container container--value">
       <div class="row--title">
         <span class="text--accent container--title--color">
-          {{ !isZkEvm ? $t('dashboard.network.networkStatuses') : 'Astar zkEVM Network Status' }}
+          {{
+            !isZkEvm
+              ? $t('dashboard.network.networkStatuses')
+              : $t('dashboard.network.zkEVMNetworkStatuses')
+          }}
         </span>
       </div>
       <div class="box--statuses">
