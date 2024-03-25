@@ -10,17 +10,7 @@ export interface StatsData {
 }
 
 export function useTokenCirculation() {
-  const { currentNetworkName, isZkEvm, dappStakingCurrency } = useNetworkInfo();
-  const currencyToNetworkMap: Record<string, string> = {
-    ASTR: 'astar',
-    SBY: 'shibuya',
-  };
-
-  const nativeNetwork = ref<string>(currentNetworkName.value.toLowerCase());
-
-  if (isZkEvm.value) {
-    nativeNetwork.value = currencyToNetworkMap[dappStakingCurrency.value];
-  }
+  const { networkNameSubstrate, isZkEvm } = useNetworkInfo();
 
   const totalSupply = ref<number>(0);
   const currentCirculating = ref<number>(0);
@@ -36,11 +26,11 @@ export function useTokenCirculation() {
   };
 
   watch(
-    currentNetworkName,
+    networkNameSubstrate,
     async () => {
       try {
-        if (nativeNetwork.value) {
-          await loadStats(nativeNetwork.value);
+        if (networkNameSubstrate.value) {
+          await loadStats(networkNameSubstrate.value.toLowerCase());
         }
       } catch (error) {
         console.error(error);
