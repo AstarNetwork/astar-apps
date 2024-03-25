@@ -149,7 +149,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.ZKYOTO,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
-    blockscout: 'https://astar-zkyoto.blockscout.com',
+    blockscout: 'https://zkyoto.explorer.startale.com',
     evmChainId: '6038361',
     evmEndpoints: ['https://rpc.startale.com/zkyoto'],
     faucetEndpoint: '',
