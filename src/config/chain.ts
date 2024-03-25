@@ -6,7 +6,7 @@ export enum astarChain {
   ASTAR = 'Astar',
   DEVELOPMENT = 'Development',
   ASTAR_ZKEVM = 'Astar zkEVM',
-  ZKATANA = 'zKatana Testnet',
+  ZKYOTO = 'zKyoto Testnet',
   ROCSTAR = 'Rocstar Testnet',
 }
 
@@ -15,7 +15,7 @@ export type ASTAR_CHAIN =
   | astarChain.ASTAR
   | astarChain.SHIBUYA
   | astarChain.ASTAR_ZKEVM
-  | astarChain.ZKATANA
+  | astarChain.ZKYOTO
   | astarChain.DEVELOPMENT
   | astarChain.ROCSTAR;
 
@@ -24,11 +24,11 @@ export type ASTAR_NETWORK_IDX =
   | endpointKey.SHIDEN
   | endpointKey.SHIBUYA
   | endpointKey.ASTAR_ZKEVM
-  | endpointKey.ZKATANA
+  | endpointKey.ZKYOTO
   | endpointKey.LOCAL
   | endpointKey.ROCSTAR;
 
-export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81 | 4369 | 692 | 1261120 | 3776;
+export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81 | 4369 | 692 | 6038361 | 3776;
 
 export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY' | 'LOC' | 'RSTR' | 'ETH';
 export const astarMainnetNativeToken: ASTAR_NATIVE_TOKEN[] = ['ASTR', 'SDN'];

@@ -255,7 +255,7 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { isZkatana } = useNetworkInfo();
+    const { isZkyoto } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);

@@ -90,7 +90,7 @@ export default {
     connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
     attention: 'Attention',
     testnetSwitchWarning:
-      'We are switching our Astar zkEVM testnet to zKyoto on 25th March. We recommend you to move your test tokens to Sepolia. zKatana network will be closed soon.',
+      'We are switching our Astar zkEVM testnet to zKyoto on 25th March. We recommend you to move your test tokens to Sepolia. zKyoto network will be closed soon.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -1001,6 +1001,11 @@ export default {
       text: 'Transfer assets between {l1} and {l2}.',
       text2: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
+    },
+    zKatanaBridge: {
+      title: 'zKatana Bridge',
+      tag: 'ERC20',
+      text: 'Transfer assets between Sepolia and zKatana testnet.',
     },
     astarBridge: {
       title: 'LayerZero',

@@ -287,7 +287,7 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
   const astar = providerEndpoints[endpointKey.ASTAR];
   const shiden = providerEndpoints[endpointKey.SHIDEN];
   const shibuya = providerEndpoints[endpointKey.SHIBUYA];
-  const zKatana = providerEndpoints[endpointKey.ZKATANA];
+  const zKyoto = providerEndpoints[endpointKey.ZKYOTO];
   const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
 
   // Memo: this can be committed as it can be exposed on the browser anyway
@@ -310,7 +310,7 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
       Number(shiden.evmChainId),
       Number(shibuya.evmChainId),
       Number(astarZkEvm.evmChainId),
-      Number(zKatana.evmChainId),
+      Number(zKyoto.evmChainId),
       EVM.SEPOLIA_TESTNET,
     ],
     chains: [EVM.ETHEREUM_MAINNET],
@@ -319,7 +319,7 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
       [shiden.evmChainId]: shiden.evmEndpoints[0],
       [shibuya.evmChainId]: shibuya.evmEndpoints[0],
       [astarZkEvm.evmChainId]: astarZkEvm.evmEndpoints[0],
-      [zKatana.evmChainId]: zKatana.evmEndpoints[0],
+      [zKyoto.evmChainId]: zKyoto.evmEndpoints[0],
       [String(EVM.SEPOLIA_TESTNET)]: String(rpcUrls[EVM.SEPOLIA_TESTNET][0]),
     },
   })) as any;
