@@ -32,6 +32,7 @@ export function useNetworkInfo() {
 
   const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
+  const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -127,6 +128,7 @@ export function useNetworkInfo() {
     isAllowLockdropDispatch,
     isZkatana,
     isAstarZkEvm,
+    isAstar,
     dappStakingCurrency,
   };
 }
