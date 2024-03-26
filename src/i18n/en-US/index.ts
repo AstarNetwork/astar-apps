@@ -90,7 +90,7 @@ export default {
     connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
     attention: 'Attention',
     testnetSwitchWarning:
-      'We are switching our Astar zkEVM testnet to zKyoto on 25th March. We recommend you to move your test tokens to Sepolia. zKyoto network will be closed soon.',
+      'We have switched our zkEVM testnet to zKyoto from zKatana. zKatana will no longer available.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
