@@ -134,6 +134,10 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
+      <div class="row--box-error">
+        <span class="color--white"> {{ $t('bridge.warningHighTraffic') }}</span>
+      </div>
+
       <div class="container--warning">
         <ul>
           <li>{{ $t('bridge.warning32blocks') }}</li>

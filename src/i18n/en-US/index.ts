@@ -1032,6 +1032,8 @@ export default {
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
+    warningHighTraffic:
+      'High bridge traffic may delay withdrawal transactions up to 10 hours. We appreciate your patience.',
     tokenInfo: {
       invalidTokenAddress: 'Invalid token address',
       tokenAddress: '{network} token address',
