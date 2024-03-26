@@ -134,7 +134,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div class="row--box-error">
+      <div v-if="isAstarZkEvm" class="row--box-error">
         <span class="color--white"> {{ $t('bridge.warningHighTraffic') }}</span>
       </div>
 
@@ -259,7 +259,7 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { isZkyoto } = useNetworkInfo();
+    const { isZkyoto, isAstarZkEvm } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -311,6 +311,7 @@ export default defineComponent({
       isEnabledWithdrawal,
       bridge,
       approve,
+      isAstarZkEvm,
     };
   },
 });
