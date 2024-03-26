@@ -4,13 +4,12 @@
       <div class="container--value-panels-row">
         <div class="container--network-status">
           <network-status />
-          <burn v-if="isZkEvm" :symbol="dappStakingCurrency" />
         </div>
         <div class="container--panel">
           <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
         </div>
       </div>
-      <div v-if="!isZkEvm" class="container--value-panels-row row-gap">
+      <div class="container--value-panels-row row-gap">
         <div class="container--panel">
           <value-panel title="Holders" :value="holders" />
         </div>
@@ -18,10 +17,10 @@
           <collators />
         </div>
       </div>
-      <div v-if="!isZkEvm" class="container--panel">
+      <div class="container--panel">
         <block-panel />
       </div>
-      <div v-if="isMainnet && !isZkEvm" class="container--charts">
+      <div v-if="isMainnet" class="container--charts">
         <tvl-chart
           :title="textChart.tvl.title"
           :tooltip="textChart.tvl.tooltip"
@@ -72,7 +71,6 @@ import { textChart } from 'src/modules/token-api';
 import { defineComponent, ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
-import Burn from 'src/components/dashboard/Burn.vue';
 
 export default defineComponent({
   components: {
@@ -84,7 +82,6 @@ export default defineComponent({
     NetworkStatus,
     Collators,
     // TotalTransactionsChart,
-    Burn,
   },
   setup() {
     const holders = ref<string>('');
@@ -110,7 +107,7 @@ export default defineComponent({
       () => `${dappStakingTvlTokens.value} ${nativeTokenSymbol.value}`
     );
     const dappStakingTvlAmountDisplay = computed(() => `(${dappStakingTvlAmount.value})`);
-    const { isMainnet, currentNetworkName, nativeTokenSymbol, dappStakingCurrency, isZkEvm } =
+    const { isMainnet, currentNetworkName, nativeTokenSymbol, dappStakingCurrency } =
       useNetworkInfo();
     const loadStats = async (network: string) => {
       if (!network) return;
@@ -129,6 +126,7 @@ export default defineComponent({
         console.error(error);
       }
     });
+
     return {
       textChart,
       nativeTokenSymbol,
@@ -147,7 +145,6 @@ export default defineComponent({
       mergedTvlAmount,
       lenStakers,
       dappStakingCurrency,
-      isZkEvm,
     };
   },
 });
