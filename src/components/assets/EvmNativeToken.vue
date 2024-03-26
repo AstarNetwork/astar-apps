@@ -43,6 +43,16 @@
           </q-tooltip>
         </router-link>
 
+        <a v-if="isAstar" :href="stargateUrl" target="_blank" rel="noopener noreferrer">
+          <button class="btn btn--icon">
+            <astar-icon-bridge />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+          </q-tooltip>
+        </a>
+
         <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
           <button class="btn btn--icon">
             <astar-icon-bridge />
@@ -106,6 +116,7 @@ import { getTokenImage } from 'src/modules/token';
 import { buildEthereumBridgePageLink, buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
+import { stargateUrl } from '../../modules/zk-evm-bridge';
 
 export default defineComponent({
   components: { ModalFaucet },
@@ -124,7 +135,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana, isAstar } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -184,6 +195,8 @@ export default defineComponent({
       width,
       screenSize,
       isTruncate,
+      stargateUrl,
+      isAstar,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,
