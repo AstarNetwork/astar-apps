@@ -1,20 +1,16 @@
 <template>
   <div v-if="isLoadingNetwork || 0 >= networkStatuses.length">
-    <q-skeleton :class="skeletonClassName" />
+    <q-skeleton class="skeleton--value-panel" />
   </div>
   <div v-else class="wrapper--value" data-testid="network-statuses">
     <div class="container container--value">
       <div class="row--title">
         <span class="text--accent container--title--color">
-          {{
-            !isZkEvm
-              ? $t('dashboard.network.networkStatuses')
-              : $t('dashboard.network.zkEVMNetworkStatuses')
-          }}
+          {{ $t('dashboard.network.networkStatuses') }}
         </span>
       </div>
       <div class="box--statuses">
-        <div v-if="!isZkEvm" class="row--network-statuses">
+        <div class="row--network-statuses">
           <div v-for="(network, index) in networkStatuses" :key="index" class="row--network">
             <div v-if="network" class="column--network-name">
               <div>
@@ -85,29 +81,6 @@
             <li v-for="(item, index) in xcmRestrictions" :key="index">{{ item }}</li>
           </div>
         </div>
-        <div v-else class="row--network-statuses">
-          <div v-for="(network, index) in zkNetworkStatuses" :key="index" class="row--network">
-            <div v-if="network" class="column--network-name">
-              <div>
-                <span class="text--accent">{{ network.name }}</span>
-              </div>
-              <div>
-                <span class="text--label-small">
-                  {{ $t('dashboard.network.updatedAgo', { time: network.timeAgo }) }}
-                </span>
-              </div>
-            </div>
-            <div
-              v-if="network"
-              class="column--status"
-              :class="
-                network.status === NetworkStatus.Working ? 'status--success' : 'status--fixing'
-              "
-            >
-              <span>{{ $t(`common.status.${network.status}`) }}</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -138,7 +111,7 @@ interface INetworkStatus {
 
 export default defineComponent({
   setup() {
-    const { currentNetworkChain, isZkEvm } = useNetworkInfo();
+    const { currentNetworkChain } = useNetworkInfo();
     const store = useStore();
     const { t } = useI18n();
 
@@ -163,8 +136,6 @@ export default defineComponent({
     const shidenEvmStatus = ref<INetworkStatus>();
     const shibuyaStatus = ref<INetworkStatus>();
     const shibuyaEvmStatus = ref<INetworkStatus>();
-    const astarZkEvmStatus = ref<INetworkStatus>();
-    const zKatanaStatus = ref<INetworkStatus>();
 
     const getTimeAndStatus = (blockTime: DateTime): { timeAgo: string; status: NetworkStatus } => {
       const currentTime = DateTime.local();
@@ -213,14 +184,6 @@ export default defineComponent({
       const chainEndpoint = providerEndpoints.find((it) => networkKey === it.key)!;
       let name = chainEndpoint.displayName;
 
-      if (networkKey === endpointKey.ZKATANA || networkKey === endpointKey.ASTAR_ZKEVM) {
-        name = name.replace(/Network/g, '');
-
-        if (!name.startsWith('Astar')) {
-          name = 'Astar ' + name;
-        }
-      }
-
       if (postfix) {
         name += ` (${postfix})`;
       }
@@ -255,11 +218,6 @@ export default defineComponent({
       shibuyaEvmStatus.value,
     ]);
 
-    const zkNetworkStatuses = computed<(INetworkStatus | undefined)[]>(() => [
-      astarZkEvmStatus.value,
-      zKatanaStatus.value,
-    ]);
-
     watchEffect(async () => {
       isLoadingNetwork.value = true;
       await Promise.all([
@@ -269,25 +227,16 @@ export default defineComponent({
         await setEvmStatus(astarEvmStatus, endpointKey.ASTAR, 'EVM'),
         await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN, 'EVM'),
         await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA, 'EVM'),
-        await setEvmStatus(astarZkEvmStatus, endpointKey.ASTAR_ZKEVM),
-        await setEvmStatus(zKatanaStatus, endpointKey.ZKATANA, 'testnet'),
       ]);
       isLoadingNetwork.value = false;
     });
 
-    const skeletonClassName = computed<string>(() => {
-      return `skeleton--value-panel ${isZkEvm ? 'is-zk-evm' : ''}`;
-    });
-
     return {
       networkStatuses,
-      zkNetworkStatuses,
       xcmRestrictions,
       isLoadingNetwork,
       NetworkStatus,
       isDappStakingDisabled,
-      isZkEvm,
-      skeletonClassName,
     };
   },
 });
