@@ -6,7 +6,7 @@
           {{ symbol }} {{ $t('dashboard.burn.burn') }}
         </span>
         <span class="text--accent container--title--color">
-          {{ $t('dashboard.burn.comingSoon') }}
+          {{ $t('common.comingSoon') }}
         </span>
       </div>
     </div>

@@ -681,7 +681,6 @@ export default {
     },
     burn: {
       burn: 'Burn',
-      comingSoon: 'Coming soon',
     },
   },
   chart: {
