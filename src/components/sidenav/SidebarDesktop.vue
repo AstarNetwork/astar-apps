@@ -22,25 +22,7 @@
         </router-link>
       </div>
       <div>
-        <button
-          v-if="isZkyoto"
-          :disabled="true"
-          class="link--disabled"
-          :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
-        >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            icon-color="#0085FF"
-            icon-name="dashboard"
-          >
-            <astar-icon-dashboard />
-          </astar-icon-base>
-          <div class="row--item">
-            <astar-text type="H4">{{ $t('dashboard.dashboard') }}</astar-text>
-          </div>
-        </button>
         <router-link
-          v-else
           :to="RoutePath.Dashboard"
           :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
         >

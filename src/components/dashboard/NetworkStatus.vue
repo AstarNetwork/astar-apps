@@ -176,8 +176,18 @@ export default defineComponent({
       }
     };
 
-    const setEvmStatus = async (networkRef: Ref, networkKey: endpointKey): Promise<void> => {
+    const setEvmStatus = async (
+      networkRef: Ref,
+      networkKey: endpointKey,
+      postfix?: string
+    ): Promise<void> => {
       const chainEndpoint = providerEndpoints.find((it) => networkKey === it.key)!;
+      let name = chainEndpoint.displayName;
+
+      if (postfix) {
+        name += ` (${postfix})`;
+      }
+
       try {
         const web3 = new Web3(chainEndpoint.evmEndpoints[0]);
         const latestBlock = await web3.eth.getBlock('latest');
@@ -185,14 +195,14 @@ export default defineComponent({
         const { status, timeAgo } = getTimeAndStatus(blockTime);
 
         networkRef.value = {
-          name: `${chainEndpoint.displayName} (EVM)`,
+          name,
           status,
           timeAgo,
         };
       } catch (error) {
         console.error(error);
         networkRef.value = {
-          name: `${chainEndpoint.displayName} (EVM)`,
+          name,
           status: NetworkStatus.Fixing,
           timeAgo: '0s',
         };
@@ -214,9 +224,9 @@ export default defineComponent({
         await setSubstrateStatus(astarStatus, endpointKey.ASTAR),
         await setSubstrateStatus(shidenStatus, endpointKey.SHIDEN),
         await setSubstrateStatus(shibuyaStatus, endpointKey.SHIBUYA),
-        await setEvmStatus(astarEvmStatus, endpointKey.ASTAR),
-        await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN),
-        await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA),
+        await setEvmStatus(astarEvmStatus, endpointKey.ASTAR, 'EVM'),
+        await setEvmStatus(shidenEvmStatus, endpointKey.SHIDEN, 'EVM'),
+        await setEvmStatus(shibuyaEvmStatus, endpointKey.SHIBUYA, 'EVM'),
       ]);
       isLoadingNetwork.value = false;
     });

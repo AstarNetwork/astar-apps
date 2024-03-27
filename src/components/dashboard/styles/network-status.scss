@@ -6,6 +6,10 @@
 
 .skeleton--value-panel {
   height: 514px;
+
+  &.is-zk-evm {
+    height: 151px !important;
+  }
 }
 
 .container--value {

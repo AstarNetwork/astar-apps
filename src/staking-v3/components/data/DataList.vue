@@ -19,7 +19,9 @@
       <data-card :title="$t('stakingV3.era')" :description="$t('stakingV3.eraDescription')">
         {{ protocolState?.era ?? '--' }}
       </data-card>
+      <!-- staking and locking accounts is only available for Native Network -->
       <data-card
+        v-if="!isZkEvm"
         :title="$t('stakingV3.stakingAndLockingAccounts')"
         :description="$t('stakingV3.numberOfStakersAndLockersDescription')"
       >
@@ -150,7 +152,7 @@ export default defineComponent({
       () => tiersConfiguration.value.numberOfSlots - dAppTiers.value.dapps.length
     );
 
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
 
     const periodRemainingDays = computed<number>(() => {
       if (periodDuration.value && periodCurrentDay.value) {
@@ -184,6 +186,7 @@ export default defineComponent({
       isVotingPeriod,
       docsUrl,
       formattedTvlBalance,
+      isZkEvm,
     };
   },
 });
