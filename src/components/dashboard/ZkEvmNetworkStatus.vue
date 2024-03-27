@@ -60,7 +60,7 @@ export default defineComponent({
   setup() {
     const isLoadingNetwork = ref<boolean>(false);
     const astarZkEvmStatus = ref<INetworkStatus>();
-    const zKatanaStatus = ref<INetworkStatus>();
+    const zKyotoStatus = ref<INetworkStatus>();
 
     const getTimeAndStatus = (blockTime: DateTime): { timeAgo: string; status: NetworkStatus } => {
       const currentTime = DateTime.local();
@@ -115,14 +115,14 @@ export default defineComponent({
 
     const zkNetworkStatuses = computed<(INetworkStatus | undefined)[]>(() => [
       astarZkEvmStatus.value,
-      zKatanaStatus.value,
+      zKyotoStatus.value,
     ]);
 
     watchEffect(async () => {
       isLoadingNetwork.value = true;
       await Promise.all([
         await setEvmStatus(astarZkEvmStatus, endpointKey.ASTAR_ZKEVM),
-        await setEvmStatus(zKatanaStatus, endpointKey.ZKATANA, 'testnet'),
+        await setEvmStatus(zKyotoStatus, endpointKey.ZKYOTO, 'testnet'),
       ]);
       isLoadingNetwork.value = false;
     });
