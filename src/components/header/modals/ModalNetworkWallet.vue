@@ -168,7 +168,7 @@ export default defineComponent({
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
     const selEndpointAstarZkevm = ref<string>('');
-    const selEndpointZkatana = ref<string>('');
+    const selEndpointZkyoto = ref<string>('');
 
     const setIsAnimatedIn = (result: boolean): void => {
       isAnimatedIn.value = result;
@@ -184,7 +184,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isZkEvm = computed<boolean>(
       () =>
-        selNetworkId.value === endpointKey.ASTAR_ZKEVM || selNetworkId.value === endpointKey.ZKATANA
+        selNetworkId.value === endpointKey.ASTAR_ZKEVM || selNetworkId.value === endpointKey.ZKYOTO
     );
 
     const setInitialCustomEndpoint = (): string => {
@@ -219,8 +219,8 @@ export default defineComponent({
           return selEndpointShiden.value;
         case endpointKey.SHIBUYA:
           return selEndpointShibuya.value;
-        case endpointKey.ZKATANA:
-          return selEndpointZkatana.value;
+        case endpointKey.ZKYOTO:
+          return selEndpointZkyoto.value;
         case endpointKey.ASTAR_ZKEVM:
           return selEndpointAstarZkevm.value;
 
@@ -255,7 +255,7 @@ export default defineComponent({
       // Memo: zkEVM configuration is using substrate API to fetch the dApp staking information
       // that's why `isEndpointChange` returns fails in `isChangeNetwork` variable
       const isSwitchBetweenZkEvmTestnet =
-        networkIdxRef === endpointKey.SHIBUYA && currentNetworkIdx.value === endpointKey.ZKATANA;
+        networkIdxRef === endpointKey.SHIBUYA && currentNetworkIdx.value === endpointKey.ZKYOTO;
       const isSwitchBetweenZkEvmMainnet =
         networkIdxRef === endpointKey.ASTAR && currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM;
 
@@ -333,7 +333,7 @@ export default defineComponent({
         ? selEndpointShibuya.value === endpoint
         : index === endpointKey.ASTAR_ZKEVM
         ? selEndpointAstarZkevm.value === endpoint
-        : selEndpointZkatana.value === endpoint;
+        : selEndpointZkyoto.value === endpoint;
     };
 
     const setSelNetwork = (networkId: number): void => {
@@ -355,8 +355,8 @@ export default defineComponent({
         selEndpointShibuya.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.ASTAR_ZKEVM) {
         selEndpointAstarZkevm.value = endpointObj.endpoint;
-      } else if (networkIdx === endpointKey.ZKATANA) {
-        selEndpointZkatana.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.ZKYOTO) {
+        selEndpointZkyoto.value = endpointObj.endpoint;
       }
     };
 
@@ -380,8 +380,8 @@ export default defineComponent({
       if (networkIdx === endpointKey.ASTAR_ZKEVM) {
         selEndpointAstarZkevm.value = getRandomizedEndpoint(endpointKey.ASTAR_ZKEVM);
       }
-      if (networkIdx === endpointKey.ZKATANA) {
-        selEndpointZkatana.value = getRandomizedEndpoint(endpointKey.ZKATANA);
+      if (networkIdx === endpointKey.ZKYOTO) {
+        selEndpointZkyoto.value = getRandomizedEndpoint(endpointKey.ZKYOTO);
       }
     };
 
@@ -391,7 +391,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ZKYOTO);
         return;
       }
 
@@ -400,7 +400,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ZKYOTO);
         return;
       }
 
@@ -409,7 +409,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
-        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ZKYOTO);
         return;
       }
       if (networkIdx === endpointKey.ASTAR_ZKEVM) {
@@ -417,10 +417,10 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
-        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ZKYOTO);
         return;
       }
-      if (networkIdx === endpointKey.ZKATANA) {
+      if (networkIdx === endpointKey.ZKYOTO) {
         selEndpointShibuya.value = setInitialSelEndpoint();
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
@@ -432,7 +432,7 @@ export default defineComponent({
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
-        randomizedEndpoint(endpointKey.ZKATANA);
+        randomizedEndpoint(endpointKey.ZKYOTO);
         randomizedEndpoint(endpointKey.ASTAR_ZKEVM);
         return;
       }

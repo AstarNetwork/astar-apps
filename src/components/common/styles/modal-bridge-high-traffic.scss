@@ -1,0 +1,59 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--modal-bridge-high-traffic {
+  display: flex;
+  flex-direction: column;
+  padding: 0 14px;
+  padding-bottom: 36px;
+  width: 100%;
+  @media (min-width: $lg) {
+    padding: 0;
+    padding-bottom: 0px;
+    max-width: 480px;
+  }
+}
+
+.row--description {
+  display: flex;
+  flex-direction: column;
+  gap: 21px; // the line height of the text
+
+  margin-bottom: 34px;
+  padding: 0 16px;
+
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.bottoms--modal-bridge-high-traffic {
+  width: 100%;
+
+  & > button {
+    width: 100%;
+    padding: 14px 0px;
+    border-radius: 50px;
+    background-color: $astar-blue;
+    color: $white;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.2px;
+  }
+}
+
+.text--button {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.body--dark {
+  .text--tips-title {
+    color: $gray-1;
+  }
+  .container--tips {
+    border: 1px solid $gray-3;
+  }
+}

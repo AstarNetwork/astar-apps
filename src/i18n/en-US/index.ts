@@ -90,7 +90,7 @@ export default {
     connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
     attention: 'Attention',
     testnetSwitchWarning:
-      'We are switching our Astar zkEVM testnet to zKyoto on 25th March. We recommend you to move your test tokens to Sepolia. zKatana network will be closed soon.',
+      'We have switched our zkEVM testnet to zKyoto from zKatana. zKatana will no longer available.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -1002,6 +1002,11 @@ export default {
       text2: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
     },
+    zKatanaBridge: {
+      title: 'zKatana Bridge',
+      tag: 'ERC20',
+      text: 'Transfer assets between Sepolia and zKatana testnet.',
+    },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
@@ -1027,6 +1032,18 @@ export default {
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
+    warningHighTraffic:
+      'High bridge traffic may delay withdrawal transactions up to 10 hours. We appreciate your patience.',
+    warningHighTrafficMore: '(read more)',
+    modals: {
+      highTraffic: {
+        text1:
+          'We are currently experiencing unusually high traffic on our canonical bridge, leading to longer than usual processing times for withdrawal. Your transaction may take up to 10 hours to complete. We understand how valuable your time is and are working diligently to resolve this congestion by scaling the infrastructure.',
+        text2:
+          'For urgent transactions, you might consider scheduling them during off-peak hours or exploring alternative 3rd party bridge partners. We appreciate your patience and understanding as we strive to enhance your experience. Thank you for your continued support.',
+        understood: 'Understood',
+      },
+    },
     tokenInfo: {
       invalidTokenAddress: 'Invalid token address',
       tokenAddress: '{network} token address',

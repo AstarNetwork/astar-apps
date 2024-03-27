@@ -133,7 +133,7 @@ export default boot(async ({ store }) => {
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
     const networkIdx = store.getters['general/networkIdx'];
-    const isZkEvm = networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM;
+    const isZkEvm = networkIdx === endpointKey.ZKYOTO || networkIdx === endpointKey.ASTAR_ZKEVM;
 
     if (isZkEvm) {
       await setWeb3(networkIdx);

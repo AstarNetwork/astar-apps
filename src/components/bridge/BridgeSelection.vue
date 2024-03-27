@@ -69,6 +69,39 @@
             </a>
           </button>
         </div>
+        <div v-if="isZkyoto" class="column--selection">
+          <button :disabled="!isEnableEthBridge">
+            <a
+              :href="zKatanaBridgeUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/ethereum.png')"
+                    alt="ethereum"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.zKatanaBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.zKatanaBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.zKatanaBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+        </div>
       </div>
       <div class="container--selection">
         <div class="column--selection">
@@ -185,20 +218,25 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { Path as RoutePath, buildEthereumBridgePageLink } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
-import { stargateUrl, layerSwapLink, relayBridgeAppLink } from 'src/modules/zk-evm-bridge/index';
+import {
+  stargateUrl,
+  layerSwapLink,
+  relayBridgeAppLink,
+  zKatanaBridgeUrl,
+} from 'src/modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, networkNameSubstrate, isMainnet, isZkatana } = useNetworkInfo();
+    const { isZkEvm, networkNameSubstrate, isMainnet, isZkyoto } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return isZkatana.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
+      return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return isZkatana.value ? EthBridgeNetworkName.Zkatana : EthBridgeNetworkName.AstarZk;
+      return isZkyoto.value ? EthBridgeNetworkName.Zkyoto : EthBridgeNetworkName.AstarZk;
     });
 
     const cbridgeNetworkName = computed<string>(() => {
@@ -224,6 +262,8 @@ export default defineComponent({
       buildEthereumBridgePageLink,
       stargateUrl,
       layerSwapLink,
+      zKatanaBridgeUrl,
+      isZkyoto,
     };
   },
 });
