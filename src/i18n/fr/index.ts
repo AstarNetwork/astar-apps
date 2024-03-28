@@ -294,6 +294,7 @@ export default {
       ledgerX: 'Ledger Nano X: 6 ères',
       ledgerSPlus: 'Ledger Nano S Plus: 6 ères',
       ledgerS: 'Ledger Nano S: 2 ères',
+      dcentWallet: "D'CENT Wallet: ≒28 ères",
     },
     dappsOwners:
       "Propriétaires de DApps! Nous pouvons désormais vous aider à promouvoir votre campagne. Vérifiez s'il vous plaît",

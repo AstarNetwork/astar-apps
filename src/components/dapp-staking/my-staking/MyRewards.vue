@@ -84,6 +84,7 @@
                     <span class="text--tooltip">{{ $t('myReward.claimable.ledgerX') }}</span>
                     <span class="text--tooltip">{{ $t('myReward.claimable.ledgerSPlus') }}</span>
                     <span class="text--tooltip">{{ $t('myReward.claimable.ledgerS') }}</span>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.dcentWallet') }}</span>
                   </div>
                 </q-tooltip>
               </span>
