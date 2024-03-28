@@ -7,6 +7,14 @@
   align-items: center;
 }
 
+.row--hover {
+  &:hover {
+    @media (min-width: $sm) {
+      background-color: $gray-1;
+    }
+  }
+}
+
 .row {
   padding: 16px 14px;
   display: flex;
@@ -800,6 +808,14 @@
 .body--dark {
   .row--locked-tokens .expand-container .rows--expand .row--expand {
     background-color: $navy-1;
+  }
+
+  .row--hover {
+    &:hover {
+      @media (min-width: $sm) {
+        background-color: $navy-3;
+      }
+    }
   }
 }
 

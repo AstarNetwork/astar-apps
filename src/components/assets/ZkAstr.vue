@@ -3,7 +3,7 @@
     <div
       v-for="(t, index) in astrTokens"
       :key="index"
-      class="row row--transferable row--transferable-evm"
+      class="row row--hover row--transferable row--transferable-evm"
     >
       <div class="row__info">
         <div class="column--token-name">
@@ -142,5 +142,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/asset-list.scss';
-@use 'src/components/assets/styles/asset-list-xcm.scss';
 </style>
