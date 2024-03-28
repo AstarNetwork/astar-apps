@@ -379,8 +379,8 @@
   flex-direction: row;
   &.row--transferable-evm {
     @media (min-width: $sm) {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 22px;
+      padding-bottom: 22px;
     }
   }
 }
