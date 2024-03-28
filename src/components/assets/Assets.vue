@@ -25,9 +25,8 @@
             <evm-native-token class="container" :native-token-usd="nativeTokenUsd" />
           </div>
           <zk-astr
-            v-if="isAstarZkEvm && astr && vAstr"
-            :astr="astr"
-            :v-astr="vAstr"
+            v-if="isAstarZkEvm && astrTokens.length === 2"
+            :astr-tokens="astrTokens"
             class="container"
           />
         </template>
@@ -156,20 +155,13 @@ export default defineComponent({
       }
     });
 
-    const astr = computed<Erc20Token | undefined>(() => {
-      return (
-        evmAssets.value &&
-        evmAssets.value.assets &&
-        evmAssets.value.assets.find((t) => t.address === addressAstrZkEvm)
-      );
-    });
-
-    const vAstr = computed<Erc20Token | undefined>(() => {
-      return (
-        evmAssets.value &&
-        evmAssets.value.assets &&
-        evmAssets.value.assets.find((t) => t.address === addressVastrZkEvm)
-      );
+    const astrTokens = computed<(Erc20Token | undefined)[]>(() => {
+      const astr = evmAssets.value.assets?.find((t) => t.address === addressAstrZkEvm);
+      const vAstr = evmAssets.value.assets?.find((t) => t.address === addressVastrZkEvm);
+      if (astr && vAstr) {
+        return [astr, vAstr];
+      }
+      return [];
     });
 
     const zkErcTokens = computed<Erc20Token[] | undefined>(() => {
@@ -294,10 +286,9 @@ export default defineComponent({
       projectSection,
       assetsSection,
       isAstarZkEvm,
-      astr,
       zkErcTokens,
       nativeTokenUsd,
-      vAstr,
+      astrTokens,
     };
   },
 });

@@ -1,7 +1,7 @@
 <template>
   <div data-testid="evm-native-token">
     <div
-      v-for="(t, index) in [astr, vAstr]"
+      v-for="(t, index) in astrTokens"
       :key="index"
       class="row row--transferable row--transferable-evm"
     >
@@ -114,12 +114,8 @@ import { stargateUrl, vAstrOmniLink } from '../../modules/zk-evm-bridge';
 export default defineComponent({
   components: {},
   props: {
-    astr: {
-      type: Object as PropType<Erc20Token>,
-      required: true,
-    },
-    vAstr: {
-      type: Object as PropType<Erc20Token>,
+    astrTokens: {
+      type: Array as PropType<Erc20Token[]>,
       required: true,
     },
   },
