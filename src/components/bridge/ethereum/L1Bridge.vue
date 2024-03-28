@@ -134,7 +134,8 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div v-if="fromChainName === EthBridgeNetworkName.AstarZk" class="row--box-error">
+      <!-- <div v-if="fromChainName === EthBridgeNetworkName.AstarZk" class="row--box-error"> -->
+      <div v-if="false" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.warningHighTraffic') }}
           <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
