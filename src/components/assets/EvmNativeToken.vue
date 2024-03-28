@@ -105,7 +105,7 @@ import { faucetSethLink } from 'src/links';
 import { getTokenImage } from 'src/modules/token';
 import { buildEthereumBridgePageLink, buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: { ModalFaucet },
@@ -157,13 +157,9 @@ export default defineComponent({
       }
     };
 
-    watch(
-      [props, isLoading, nativeTokenSymbol, isH160],
-      async () => {
-        await updateStates(props.nativeTokenUsd);
-      },
-      { immediate: isZkyoto.value }
-    );
+    watchEffect(async () => {
+      await updateStates(props.nativeTokenUsd);
+    });
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;

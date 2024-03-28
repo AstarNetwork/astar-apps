@@ -24,7 +24,11 @@
           <div ref="nativeSection">
             <evm-native-token class="container" :native-token-usd="nativeTokenUsd" />
           </div>
-          <zk-astr v-if="isAstarZkEvm && astr" :astr="astr" class="container" />
+          <zk-astr
+            v-if="isAstarZkEvm && astrTokens.length === 2"
+            :astr-tokens="astrTokens"
+            class="container"
+          />
         </template>
         <template v-else>
           <div ref="nativeSection">
@@ -86,7 +90,7 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
-import { addressAstrZkEvm } from 'src/modules/zk-evm-bridge';
+import { addressAstrZkEvm, addressVastrZkEvm } from 'src/modules/zk-evm-bridge';
 import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
 import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
@@ -151,19 +155,22 @@ export default defineComponent({
       }
     });
 
-    const astr = computed<Erc20Token | undefined>(() => {
-      return (
-        evmAssets.value &&
-        evmAssets.value.assets &&
-        evmAssets.value.assets.find((t) => t.address === addressAstrZkEvm)
-      );
+    const astrTokens = computed<(Erc20Token | undefined)[]>(() => {
+      const astr = evmAssets.value.assets?.find((t) => t.address === addressAstrZkEvm);
+      const vAstr = evmAssets.value.assets?.find((t) => t.address === addressVastrZkEvm);
+      if (astr && vAstr) {
+        return [astr, vAstr];
+      }
+      return [];
     });
 
     const zkErcTokens = computed<Erc20Token[] | undefined>(() => {
       return (
         evmAssets.value &&
         evmAssets.value.assets &&
-        evmAssets.value.assets.filter((t) => t.address !== addressAstrZkEvm)
+        evmAssets.value.assets.filter(
+          (t) => t.address !== addressAstrZkEvm && t.address !== addressVastrZkEvm
+        )
       );
     });
 
@@ -279,9 +286,9 @@ export default defineComponent({
       projectSection,
       assetsSection,
       isAstarZkEvm,
-      astr,
       zkErcTokens,
       nativeTokenUsd,
+      astrTokens,
     };
   },
 });
