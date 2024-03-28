@@ -31,8 +31,8 @@
         </div>
       </div>
 
-      <div class="row__actions">
-        <router-link :to="buildTransferPageLink(t.symbol)">
+      <div class="row__actions-multi">
+        <router-link :to="buildTransferPageLink(t.symbol)" class="box--icon">
           <button class="btn btn--icon">
             <astar-icon-transfer />
           </button>
@@ -42,7 +42,13 @@
           </q-tooltip>
         </router-link>
 
-        <a v-if="t.symbol === 'ASTR'" :href="stargateUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          v-if="t.symbol === 'ASTR'"
+          :href="stargateUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -52,7 +58,7 @@
           </q-tooltip>
         </a>
 
-        <a v-else :href="vAstrOmniLink" target="_blank" rel="noopener noreferrer">
+        <a v-else :href="vAstrOmniLink" target="_blank" rel="noopener noreferrer" class="box--icon">
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -62,7 +68,12 @@
           </q-tooltip>
         </a>
 
-        <a :href="getExplorerLink(t.address)" target="_blank" rel="noopener noreferrer">
+        <a
+          :href="getExplorerLink(t.address)"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <div class="icon-helper">
               <astar-icon-external-link class="icon--external-link" />
@@ -73,7 +84,7 @@
             <span class="text--tooltip">{{ $t('blockscout') }}</span>
           </q-tooltip>
         </a>
-        <div>
+        <div class="box--icon">
           <button
             class="btn btn--icon"
             @click="
@@ -86,7 +97,7 @@
               })
             "
           >
-            <div class="icon-helper">
+            <div class="icon-helper box--icon">
               <astar-icon-base class="icon--plus">
                 <astar-icon-plus />
               </astar-icon-base>
