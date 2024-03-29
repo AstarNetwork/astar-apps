@@ -134,7 +134,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div v-if="fromChainName === EthBridgeNetworkName.AstarZk" class="row--box-error">
+      <div v-if="isWarningHighTraffic" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.warningHighTraffic') }}
           <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
@@ -278,6 +278,9 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
+    const isWarningHighTraffic = computed<boolean>(
+      () => false && props.fromChainName === EthBridgeNetworkName.AstarZk
+    );
 
     const setHighTrafficModalOpen = (value: boolean): void => {
       isHighTrafficModalOpen.value = value;
@@ -331,6 +334,7 @@ export default defineComponent({
       approve,
       isHighTrafficModalOpen,
       setHighTrafficModalOpen,
+      isWarningHighTraffic,
     };
   },
 });
