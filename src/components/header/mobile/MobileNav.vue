@@ -37,18 +37,7 @@
             </div>
           </router-link>
 
-          <button
-            v-if="isZkyoto"
-            :disabled="true"
-            :class="['link', path === 'dashboard' && 'active-link']"
-          >
-            <div class="column--item column--item--dashboard">
-              <span class="text--link">Data</span>
-            </div>
-          </button>
-
           <router-link
-            v-else
             :to="RoutePath.Dashboard"
             :class="['link', path === 'dashboard' && 'active-link']"
             @click="showNav = !showNav"

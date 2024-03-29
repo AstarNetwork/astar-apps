@@ -6,7 +6,7 @@
           <network-status />
         </div>
         <div class="container--panel">
-          <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
+          <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
         </div>
       </div>
       <div class="container--value-panels-row row-gap">
@@ -71,6 +71,7 @@ import { textChart } from 'src/modules/token-api';
 import { defineComponent, ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+
 export default defineComponent({
   components: {
     TokenPriceChart,
@@ -106,7 +107,8 @@ export default defineComponent({
       () => `${dappStakingTvlTokens.value} ${nativeTokenSymbol.value}`
     );
     const dappStakingTvlAmountDisplay = computed(() => `(${dappStakingTvlAmount.value})`);
-    const { isMainnet, currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { isMainnet, currentNetworkName, nativeTokenSymbol, dappStakingCurrency } =
+      useNetworkInfo();
     const loadStats = async (network: string) => {
       if (!network) return;
       const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
@@ -124,6 +126,7 @@ export default defineComponent({
         console.error(error);
       }
     });
+
     return {
       textChart,
       nativeTokenSymbol,
@@ -141,6 +144,7 @@ export default defineComponent({
       filteredMergedTvl,
       mergedTvlAmount,
       lenStakers,
+      dappStakingCurrency,
     };
   },
 });

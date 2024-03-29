@@ -10,7 +10,8 @@ export interface StatsData {
 }
 
 export function useTokenCirculation() {
-  const { currentNetworkName } = useNetworkInfo();
+  const { networkNameSubstrate, isZkEvm } = useNetworkInfo();
+
   const totalSupply = ref<number>(0);
   const currentCirculating = ref<number>(0);
 
@@ -25,11 +26,11 @@ export function useTokenCirculation() {
   };
 
   watch(
-    currentNetworkName,
+    networkNameSubstrate,
     async () => {
       try {
-        if (currentNetworkName.value) {
-          await loadStats(currentNetworkName.value.toLowerCase());
+        if (networkNameSubstrate.value) {
+          await loadStats(networkNameSubstrate.value.toLowerCase());
         }
       } catch (error) {
         console.error(error);
