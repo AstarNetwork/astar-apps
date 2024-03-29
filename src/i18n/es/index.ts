@@ -700,7 +700,7 @@ export default {
       title: 'Puente de Ethereum',
       text: 'Puente de activos entre {l1} y {l2}',
       text2:
-        '¡Disponible en testnet! - Para experimentar, conecte su cartera a Astar zKatana (zkEVM testnet) y obtenga ETH en testnet',
+        '¡Disponible en testnet! - Para experimentar, conecte su cartera a Astar zKyoto (zkEVM testnet) y obtenga ETH en testnet',
       learn: '(aprenda más)',
     },
     astarBridge: {

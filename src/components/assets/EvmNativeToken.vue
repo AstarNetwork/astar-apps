@@ -79,7 +79,7 @@
           </q-tooltip>
         </a>
 
-        <a v-if="isZkatana" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
+        <a v-if="isZkyoto" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
           <button class="btn btn--icon">
             <astar-icon-faucet />
           </button>
@@ -135,7 +135,7 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkatana, isAstar } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkyoto, isAstar } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -168,9 +168,13 @@ export default defineComponent({
       }
     };
 
-    watch([props, isLoading, nativeTokenSymbol, isH160], async () => {
-      await updateStates(props.nativeTokenUsd);
-    });
+    watch(
+      [props, isLoading, nativeTokenSymbol, isH160],
+      async () => {
+        await updateStates(props.nativeTokenUsd);
+      },
+      { immediate: isZkyoto.value }
+    );
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
@@ -190,7 +194,7 @@ export default defineComponent({
       isFaucet,
       isModalFaucet,
       isZkEvm,
-      isZkatana,
+      isZkyoto,
       faucetSethLink,
       width,
       screenSize,

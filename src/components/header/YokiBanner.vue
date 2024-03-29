@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isZkatana">
+  <div v-if="!isZkyoto">
     <a
       href="https://yoki.astar.network/"
       target="_blank"
@@ -36,9 +36,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { isZkatana } = useNetworkInfo();
+    const { isZkyoto } = useNetworkInfo();
 
-    return { isZkatana };
+    return { isZkyoto };
   },
 });
 </script>

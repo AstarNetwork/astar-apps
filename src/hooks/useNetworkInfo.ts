@@ -26,11 +26,11 @@ export function useNetworkInfo() {
 
   const isZkEvm = computed<boolean>(
     () =>
-      currentNetworkIdx.value === endpointKey.ZKATANA ||
+      currentNetworkIdx.value === endpointKey.ZKYOTO ||
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
-  const isZkatana = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKATANA);
+  const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
@@ -45,7 +45,7 @@ export function useNetworkInfo() {
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
     const networkIdx = store.getters['general/networkIdx'];
-    if (networkIdx === endpointKey.ZKATANA || networkIdx === endpointKey.ASTAR_ZKEVM) {
+    if (networkIdx === endpointKey.ZKYOTO || networkIdx === endpointKey.ASTAR_ZKEVM) {
       return networkIdx;
     }
     const chainInfo = store.getters['general/chainInfo'];
@@ -79,7 +79,7 @@ export function useNetworkInfo() {
   const dappStakingCurrency = computed<string>(() => {
     // Memo: avoid displaying 'ETH'
     if (isZkEvm.value) {
-      return isAstarZkEvm.value ? 'ASTAR' : 'SBY';
+      return isAstarZkEvm.value ? 'ASTR' : 'SBY';
     } else {
       return nativeTokenSymbol.value;
     }
@@ -126,7 +126,7 @@ export function useNetworkInfo() {
     isZkEvm,
     networkNameSubstrate,
     isAllowLockdropDispatch,
-    isZkatana,
+    isZkyoto,
     isAstarZkEvm,
     isAstar,
     dappStakingCurrency,

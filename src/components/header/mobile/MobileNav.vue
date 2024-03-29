@@ -37,18 +37,7 @@
             </div>
           </router-link>
 
-          <button
-            v-if="isZkatana"
-            :disabled="true"
-            :class="['link', path === 'dashboard' && 'active-link']"
-          >
-            <div class="column--item column--item--dashboard">
-              <span class="text--link">Data</span>
-            </div>
-          </button>
-
           <router-link
-            v-else
             :to="RoutePath.Dashboard"
             :class="['link', path === 'dashboard' && 'active-link']"
             @click="showNav = !showNav"
@@ -114,7 +103,7 @@ export default defineComponent({
     const showNav = ref<boolean>(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
-    const { isZkatana } = useNetworkInfo();
+    const { isZkyoto } = useNetworkInfo();
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -127,7 +116,7 @@ export default defineComponent({
       path,
       RoutePath,
       network,
-      isZkatana,
+      isZkyoto,
     };
   },
 });

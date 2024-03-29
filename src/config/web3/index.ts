@@ -23,7 +23,7 @@ export type TNetworkId =
   | endpointKey.SHIBUYA
   | endpointKey.ASTAR
   | endpointKey.ASTAR_ZKEVM
-  | endpointKey.ZKATANA;
+  | endpointKey.ZKYOTO;
 
 const chain = {
   shiden: providerEndpoints.find((it) => it.key === endpointKey.SHIDEN),
@@ -32,7 +32,7 @@ const chain = {
   localNode: providerEndpoints.find((it) => it.key === endpointKey.LOCAL),
   rocstar: providerEndpoints.find((it) => it.key === endpointKey.ROCSTAR),
   astarZkEvm: providerEndpoints.find((it) => it.key === endpointKey.ASTAR_ZKEVM),
-  zKatana: providerEndpoints.find((it) => it.key === endpointKey.ZKATANA),
+  zkyoto: providerEndpoints.find((it) => it.key === endpointKey.ZKYOTO),
 };
 
 export enum EVM {
@@ -42,7 +42,7 @@ export enum EVM {
   ASTAR_LOCAL_NODE = Number(chain.localNode!.evmChainId),
   ROCSTAR_TESTNET = Number(chain.rocstar!.evmChainId),
   ASTAR_ZKEVM_MAINNET = Number(chain.astarZkEvm!.evmChainId),
-  ZKATANA_TESTNET = Number(chain.zKatana!.evmChainId),
+  ZKYOTO_TESTNET = Number(chain.zkyoto!.evmChainId),
   ETHEREUM_MAINNET = 1,
   SEPOLIA_TESTNET = 11155111,
   BSC = 56,
@@ -58,7 +58,7 @@ export const chainName = {
   [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.ASTAR_ZKEVM_MAINNET]: 'Astar zkEVM Mainnet',
-  [EVM.ZKATANA_TESTNET]: 'zKatana Testnet',
+  [EVM.ZKYOTO_TESTNET]: 'zKyoto Testnet',
   [EVM.ASTAR_LOCAL_NODE]: 'Astar Local Node',
   [EVM.ROCSTAR_TESTNET]: 'Rocstar',
   [EVM.BSC]: 'Binance Smart Chain',
@@ -103,7 +103,7 @@ export const nativeCurrency = {
     symbol: 'ETH',
     decimals: 18,
   },
-  [EVM.ZKATANA_TESTNET]: {
+  [EVM.ZKYOTO_TESTNET]: {
     name: 'ETH',
     symbol: 'ETH',
     decimals: 18,
@@ -145,7 +145,7 @@ export const rpcUrls = {
   [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.evmEndpoints[0]],
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
   [EVM.ASTAR_ZKEVM_MAINNET]: [chain.astarZkEvm?.evmEndpoints[0]],
-  [EVM.ZKATANA_TESTNET]: [chain.zKatana?.evmEndpoints[0]],
+  [EVM.ZKYOTO_TESTNET]: [chain.zkyoto?.evmEndpoints[0]],
   [EVM.ASTAR_LOCAL_NODE]: [chain.localNode?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
@@ -161,7 +161,7 @@ export const blockExplorerUrls = {
   [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.blockscout],
   [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],
   [EVM.ASTAR_ZKEVM_MAINNET]: [chain.astarZkEvm?.blockscout],
-  [EVM.ZKATANA_TESTNET]: [chain.zKatana?.blockscout],
+  [EVM.ZKYOTO_TESTNET]: [chain.zkyoto?.blockscout],
   [EVM.BSC]: ['https://bscscan.com'],
   [EVM.POLYGON]: ['https://explorer.matic.network'],
   [EVM.MOONRIVER]: ['https://moonriver.moonscan.io'],

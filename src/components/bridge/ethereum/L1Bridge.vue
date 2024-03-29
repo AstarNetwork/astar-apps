@@ -134,6 +134,15 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
+      <div v-if="fromChainName === EthBridgeNetworkName.AstarZk" class="row--box-error">
+        <span class="color--white">
+          {{ $t('bridge.warningHighTraffic') }}
+          <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
+            {{ $t('bridge.warningHighTrafficMore') }}
+          </a>
+        </span>
+      </div>
+
       <div class="container--warning">
         <ul>
           <li>{{ $t('bridge.warning32blocks') }}</li>
@@ -158,13 +167,21 @@
         </astar-button>
       </div>
     </div>
+
+    <modal-bridge-high-traffic
+      v-if="isHighTrafficModalOpen"
+      :set-is-open="setHighTrafficModalOpen"
+      :show="isHighTrafficModalOpen"
+    />
   </div>
 </template>
+
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import ModalBridgeHighTraffic from 'src/components/common/ModalBridgeHighTraffic.vue';
+import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, defineComponent, watch, ref, computed } from 'vue';
@@ -174,6 +191,7 @@ export default defineComponent({
   components: {
     TokenBalance,
     [Jazzicon.name]: Jazzicon,
+    ModalBridgeHighTraffic,
   },
   props: {
     fetchUserHistory: {
@@ -255,11 +273,15 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { isZkatana } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
+    const isHighTrafficModalOpen = ref<boolean>(false);
+
+    const setHighTrafficModalOpen = (value: boolean): void => {
+      isHighTrafficModalOpen.value = value;
+    };
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
@@ -307,6 +329,8 @@ export default defineComponent({
       isEnabledWithdrawal,
       bridge,
       approve,
+      isHighTrafficModalOpen,
+      setHighTrafficModalOpen,
     };
   },
 });

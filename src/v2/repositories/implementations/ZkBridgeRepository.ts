@@ -5,8 +5,8 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
 import {
   EthBridgeContract,
   EthBridgeNetworkName,
-  ZK_EVM_BRIDGE_ABI,
   ZK_EVM_AGGREGATED_BRIDGE_ABI,
+  ZkNetworkId,
   fetchMerkleProof,
   getMainOrTestNet,
 } from 'src/modules/zk-evm-bridge';
@@ -49,14 +49,15 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
   }): Promise<TransactionConfig> {
     if (param.destNetworkId === undefined || param.destNetworkId === null) {
       throw Error('destNetworkId is not set');
+    } else if (param.destNetworkId === ZkNetworkId.L2_PolygonZk) {
+      // Memo: destNetworkId shouldn't be polygonZk but check it for just in case
+      throw Error('destNetworkId is Polygon zkEVM');
     }
 
     const contractAddress = EthBridgeContract[param.fromChainName];
-    const isAggregateContract =
-      contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
 
-    const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
-    // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/7c84791d06770569d316f27d62c3989bef81be58/abis/bridge.json
+    const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
+    // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/develop/abis/bridge.json
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
     const isNativeToken = param.tokenAddress === astarNativeTokenErcAddr;
     const destinationAddress = param.senderAddress;
@@ -99,62 +100,32 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
         ? EthBridgeContract[EthBridgeNetworkName.Ethereum]
         : EthBridgeContract[EthBridgeNetworkName.Sepolia];
 
-    const isAggregateContract =
-      contractAddress === EthBridgeContract[EthBridgeNetworkName.Ethereum];
-    const abi = isAggregateContract ? ZK_EVM_AGGREGATED_BRIDGE_ABI : ZK_EVM_BRIDGE_ABI;
+    const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
 
-    // Todo: remove when zKatana has been migrated to zKyoto
-    if (isAggregateContract) {
-      const { main_exit_root, merkle_proof, rollup_exit_root, rollup_merkle_proof } =
-        await fetchMerkleProof(deposit_cnt, Number(network_id));
+    const { main_exit_root, merkle_proof, rollup_exit_root, rollup_merkle_proof } =
+      await fetchMerkleProof(deposit_cnt, Number(network_id));
 
-      const data = contract.methods
-        .claimAsset(
-          merkle_proof,
-          rollup_merkle_proof,
-          Number(param.withdrawal.global_index),
-          main_exit_root,
-          rollup_exit_root,
-          orig_net,
-          orig_addr,
-          dest_net,
-          dest_addr,
-          amount,
-          metadata
-        )
-        .encodeABI();
+    const data = contract.methods
+      .claimAsset(
+        merkle_proof,
+        rollup_merkle_proof,
+        Number(param.withdrawal.global_index),
+        main_exit_root,
+        rollup_exit_root,
+        orig_net,
+        orig_addr,
+        dest_net,
+        dest_addr,
+        amount,
+        metadata
+      )
+      .encodeABI();
 
-      return {
-        from: param.senderAddress,
-        to: contractAddress,
-        data,
-      };
-    } else {
-      const { main_exit_root, merkle_proof, rollup_exit_root } = await fetchMerkleProof(
-        deposit_cnt,
-        Number(network_id)
-      );
-      const data = contract.methods
-        .claimAsset(
-          merkle_proof,
-          Number(deposit_cnt),
-          main_exit_root,
-          rollup_exit_root,
-          orig_net,
-          orig_addr,
-          dest_net,
-          dest_addr,
-          amount,
-          metadata
-        )
-        .encodeABI();
-
-      return {
-        from: param.senderAddress,
-        to: contractAddress,
-        data,
-      };
-    }
+    return {
+      from: param.senderAddress,
+      to: contractAddress,
+      data,
+    };
   }
 }
