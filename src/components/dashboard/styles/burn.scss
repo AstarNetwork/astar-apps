@@ -1,0 +1,27 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--value {
+  width: 100%;
+}
+
+.container--value {
+  padding: 16px 24px;
+
+  @media (min-width: $sm) {
+    padding: 24px;
+  }
+
+  @media (min-width: $xxl) {
+    width: 560px;
+  }
+}
+
+.row--title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.container--title--color {
+  color: #b1b7c1;
+}

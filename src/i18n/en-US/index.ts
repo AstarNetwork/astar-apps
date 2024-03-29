@@ -677,6 +677,10 @@ export default {
       networkStatuses: 'Network Status',
       updatedAgo: 'Updated {time} ago',
       xcmDepositWithdrawalAssets: 'XCM Deposit/Withdrawal Assets',
+      zkEVMNetworkStatuses: 'Astar zkEVM Network Status',
+    },
+    burn: {
+      burn: 'Burn',
     },
   },
   chart: {

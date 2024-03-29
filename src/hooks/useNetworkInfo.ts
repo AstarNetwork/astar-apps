@@ -78,7 +78,7 @@ export function useNetworkInfo() {
   const dappStakingCurrency = computed<string>(() => {
     // Memo: avoid displaying 'ETH'
     if (isZkEvm.value) {
-      return isAstarZkEvm.value ? 'ASTAR' : 'SBY';
+      return isAstarZkEvm.value ? 'ASTR' : 'SBY';
     } else {
       return nativeTokenSymbol.value;
     }
