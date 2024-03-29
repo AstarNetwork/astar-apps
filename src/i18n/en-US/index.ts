@@ -506,6 +506,7 @@ export default {
     syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
     wrap: 'Wrap',
