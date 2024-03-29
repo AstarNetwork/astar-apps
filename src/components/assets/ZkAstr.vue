@@ -1,24 +1,28 @@
 <template>
   <div data-testid="evm-native-token">
-    <div class="row row--transferable row--transferable-evm">
+    <div
+      v-for="(t, index) in astrTokens"
+      :key="index"
+      class="row row--hover row--transferable row--transferable-evm"
+    >
       <div class="row__info">
         <div class="column--token-name">
-          <img class="token-logo" :src="astr.image" :alt="astr.symbol" />
-          <span class="text--title">{{ astr.symbol }}</span>
+          <img class="token-logo" :src="t.image" :alt="t.symbol" />
+          <span class="text--title">{{ t.symbol }}</span>
         </div>
         <div class="column--balance-evm">
           <div class="column--balance__row text--title">
             <div class="column--amount">
-              {{ $n(truncate(Number(astr.userBalance), 3)) }}
+              {{ $n(truncate(Number(t.userBalance), 3)) }}
             </div>
             <div class="column--symbol">
-              {{ astr.symbol }}
+              {{ t.symbol }}
             </div>
           </div>
 
           <div class="column--balance__row text--label">
             <div class="column--amount">
-              {{ $n(Number(astr.userBalanceUsd)) }}
+              {{ $n(Number(t.userBalanceUsd)) }}
             </div>
             <div class="column--symbol">
               {{ $t('usd') }}
@@ -27,8 +31,8 @@
         </div>
       </div>
 
-      <div class="row__actions">
-        <router-link :to="buildTransferPageLink(astr.symbol)">
+      <div class="row__actions-multi">
+        <router-link :to="buildTransferPageLink(t.symbol)" class="box--icon">
           <button class="btn btn--icon">
             <astar-icon-transfer />
           </button>
@@ -38,7 +42,13 @@
           </q-tooltip>
         </router-link>
 
-        <a :href="stargateUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          v-if="t.symbol === 'ASTR'"
+          :href="stargateUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -48,7 +58,22 @@
           </q-tooltip>
         </a>
 
-        <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
+        <a v-else :href="vAstrOmniLink" target="_blank" rel="noopener noreferrer" class="box--icon">
+          <button class="btn btn--icon">
+            <astar-icon-bridge />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.swap') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.swap') }}</span>
+          </q-tooltip>
+        </a>
+
+        <a
+          :href="getExplorerLink(t.address)"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <div class="icon-helper">
               <astar-icon-external-link class="icon--external-link" />
@@ -59,20 +84,20 @@
             <span class="text--tooltip">{{ $t('blockscout') }}</span>
           </q-tooltip>
         </a>
-        <div>
+        <div class="box--icon">
           <button
             class="btn btn--icon"
             @click="
               addToEvmProvider({
-                tokenAddress: astr.address,
-                symbol: astr.symbol,
-                decimals: astr.decimal,
-                image: String(astr.image),
+                tokenAddress: t.address,
+                symbol: t.symbol,
+                decimals: t.decimal,
+                image: String(t.image),
                 provider: ethProvider,
               })
             "
           >
-            <div class="icon-helper">
+            <div class="icon-helper box--icon">
               <astar-icon-base class="icon--plus">
                 <astar-icon-plus />
               </astar-icon-base>
@@ -93,15 +118,15 @@ import { useNetworkInfo } from 'src/hooks';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer } from 'src/modules/token';
-import { PropType, computed, defineComponent } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
-import { stargateUrl } from '../../modules/zk-evm-bridge/index';
+import { PropType, defineComponent } from 'vue';
+import { stargateUrl, vAstrOmniLink } from '../../modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {},
   props: {
-    astr: {
-      type: Object as PropType<Erc20Token>,
+    astrTokens: {
+      type: Array as PropType<Erc20Token[]>,
       required: true,
     },
   },
@@ -109,18 +134,18 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const { ethProvider } = useEthProvider();
 
-    const explorerLink = computed(() => {
-      const tokenAddress = props.astr.address;
+    const getExplorerLink = (tokenAddress: string): string => {
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
-    });
+    };
 
     return {
-      explorerLink,
       ethProvider,
       stargateUrl,
+      vAstrOmniLink,
       truncate,
       addToEvmProvider,
       buildTransferPageLink,
+      getExplorerLink,
     };
   },
 });

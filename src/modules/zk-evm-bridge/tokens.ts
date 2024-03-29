@@ -6,6 +6,7 @@ export const TOKEN_BLACKLIST = [
 ];
 
 export const addressAstrZkEvm = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
+export const addressVastrZkEvm = '0x7746ef546d562b443AE4B4145541a3b1a3D75717';
 
 export const DEFAULT_TOKENS = [
   {
@@ -220,6 +221,58 @@ export const DEFAULT_TOKENS = [
     isXC20: false,
     wrapUrl: null,
     bridgedTokenAddress: '0xdf41220C7e322bFEF933D85D01821ad277f90172',
+    bridgedChainId: 3776,
+  },
+  {
+    srcChainId: 11155111,
+    address: '0x80e01ecc2f1c73025b177dbacc928580fdc562be',
+    decimal: '18',
+    symbol: 'CAT',
+    name: 'CAT',
+    image: '',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0x3Fe1220e5CB4cED5747245191CF0c4a2786dF4D3',
+    bridgedChainId: 6038361,
+  },
+  {
+    srcChainId: 6038361,
+    address: '0x3Fe1220e5CB4cED5747245191CF0c4a2786dF4D3',
+    decimal: '18',
+    symbol: 'CAT',
+    name: 'CAT',
+    image: '',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0x80e01ecc2f1c73025b177dbacc928580fdc562be',
+    bridgedChainId: 11155111,
+  },
+  {
+    srcChainId: 3776,
+    address: '0x7746ef546d562b443AE4B4145541a3b1a3D75717',
+    decimal: '18',
+    symbol: 'vASTR',
+    name: 'Bifrost Voucher ASTR',
+    image: 'https://assets.coingecko.com/coins/images/34706/standard/vASTR.png?1705893008',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0x362e5b2CbE72f1A164F61dfAACCb9B1Ab0Cb0802',
+    bridgedChainId: 1,
+  },
+  {
+    srcChainId: 1,
+    address: '0x362e5b2CbE72f1A164F61dfAACCb9B1Ab0Cb0802',
+    decimal: '18',
+    symbol: 'vASTR',
+    name: 'Bifrost Voucher ASTR',
+    image: 'https://assets.coingecko.com/coins/images/34706/standard/vASTR.png?1705893008',
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    bridgedTokenAddress: '0x7746ef546d562b443AE4B4145541a3b1a3D75717',
     bridgedChainId: 3776,
   },
 ];
