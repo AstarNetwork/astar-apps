@@ -4,7 +4,7 @@ import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
-import { Asset, ethWalletChains, XcmChain } from 'src/v2/models';
+import { Asset, Chain, ethWalletChains, XcmChain } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
@@ -91,6 +91,37 @@ export class AstarXcmRepository extends XcmRepository {
     const weightLimit = {
       Unlimited: null,
     };
+
+    const feeAssetInformation = this.getFeeInformation(token, from, to);
+
+    if (feeAssetInformation.feeAssetIsRequired) {
+      // we need to use another token for the fee
+      const fee = {
+        V3: {
+          fun: {
+            Fungible: new BN(feeAssetInformation.feeAmount),
+          },
+          id: {
+            Concrete: await this.fetchAssetConfigById(
+              from,
+              feeAssetInformation.feeAssetId,
+              endpoint
+            ),
+          },
+        },
+      };
+
+      return await this.buildTxCall(
+        from,
+        endpoint,
+        'xTokens',
+        'transferMultiassetWithFee',
+        assets,
+        fee,
+        destination,
+        weightLimit
+      );
+    }
 
     return await this.buildTxCall(
       from,

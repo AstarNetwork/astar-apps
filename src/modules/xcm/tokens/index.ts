@@ -153,6 +153,16 @@ export const xcmToken = {
       originChain: Chain.BIFROST_POLKADOT,
       minBridgeAmount: '0.1',
     },
+    {
+      symbol: 'PINK',
+      isNativeToken: false,
+      assetId: '18446744073709551633',
+      originAssetId: '23',
+      logo: require('/src/assets/img/token/pink.png'),
+      isXcmCompatible: true,
+      originChain: Chain.ASSET_HUB,
+      minBridgeAmount: '1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
