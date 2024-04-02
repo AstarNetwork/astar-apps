@@ -311,9 +311,6 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       }
     }
     if (selectedToken.value.metadata.symbol === 'PINK') {
-      const pink = xcmAssets.value.assets.find(
-        (it) => it.metadata.symbol === 'PINK' && it.id === '18446744073709551633'
-      );
       // Todo: remove after the runtime upgrade
       if (isH160.value) {
         errMsg.value = t('warning.xcmEvmTokenIsDisabled', {
