@@ -51,6 +51,8 @@ import {
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
+import { XcmAssets } from 'src/store/assets/state';
+import { usdtMinFeeAmount } from 'src/modules/xcm/tokens';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
@@ -80,6 +82,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   const isDeposit = computed<boolean>(() =>
     srcChain.value ? checkIsDeposit(srcChain.value.name) : false
   );
+  const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
@@ -117,6 +121,12 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     // Memo: Moonbeam and Moonriver
     ethWalletChains.includes(destChain.value.name)
   );
+
+  const isWithdrawal = computed<boolean>(() => {
+    if (!srcChain.value) return false;
+    const chains = [Chain.ASTAR, Chain.ASTAR_EVM, Chain.SHIDEN, Chain.SHIDEN_EVM];
+    return chains.some((it) => it === srcChain.value.name);
+  });
 
   const { accountData } = useBalance(currentAccount);
 
@@ -298,6 +308,29 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           token: selectedToken.value.metadata.symbol,
         });
         return;
+      }
+    }
+    if (selectedToken.value.metadata.symbol === 'PINK') {
+      const pink = xcmAssets.value.assets.find(
+        (it) => it.metadata.symbol === 'PINK' && it.id === '18446744073709551633'
+      );
+      // Todo: remove after the runtime upgrade
+      if (isH160.value) {
+        errMsg.value = t('warning.xcmEvmTokenIsDisabled', {
+          token: 'PINK',
+        });
+        return;
+      } else {
+        const usdt = xcmAssets.value.assets.find(
+          (it) => it.metadata.symbol === 'USDT' && it.id === '4294969280'
+        );
+        const usdtBal = usdt ? usdt.userBalance : 0;
+        if (usdtMinFeeAmount > usdtBal) {
+          errMsg.value = t('warning.notEnoughFeeToken', {
+            token: 'USDT',
+          });
+          return;
+        }
       }
     }
   };
@@ -671,6 +704,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     isLoadingApi,
     isAstarNativeTransfer,
     isWithdrawalEthChain,
+    isWithdrawal,
     isInputDestAddrManually,
     inputHandler,
     bridge,
