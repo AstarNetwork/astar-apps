@@ -6,7 +6,7 @@ export const docsUrl = {
   topPage: 'https://docs.astar.network',
   evmDeposit:
     'https://docs.astar.network/tutorial/how-to-send-astr-sdn-from-metamask-to-polkadot.js',
-  troubleShooting: 'https://docs.astar.network/docs/use/user-guides/troubleshooting',
+  troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
   createPromotion: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
   faqLedger:
