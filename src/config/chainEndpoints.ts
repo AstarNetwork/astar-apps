@@ -137,7 +137,7 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
   },
-  // Memo: this is dummy comment to create a staging URL.
+  // Memo: this is dummy comment to create a staging URL...
   {
     networkAlias: 'zkatana-testnet',
     displayName: 'zKatana Network',
