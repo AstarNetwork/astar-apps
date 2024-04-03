@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          args: --verbose "./src/modules/information/faq/dapp-staking/index.ts" "./src/modules/information/faq/transfer/index.ts" "./src/modules/information/faq/xvm-transfer/index.ts" "./src/data/ads.json" "./src/data/dynamic_links.json"
+          args: --verbose "./src/modules/information/faq/dapp-staking/index.ts" "./src/modules/information/faq/transfer/index.ts" "./src/modules/information/faq/xvm-transfer/index.ts" "./src/links/index.ts" "./src/data/ads.json" "./src/data/dynamic_links.json"
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
