@@ -65,7 +65,21 @@
           </div>
 
           <div v-if="isZkEvm">
-            <router-link :to="buildEthereumBridgePageLink()">
+            <a
+              v-if="token.bridgeUrl"
+              :href="token.bridgeUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button class="btn btn--icon">
+                <astar-icon-bridge class="icon--bridge" />
+              </button>
+              <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+              </q-tooltip>
+            </a>
+            <router-link v-else :to="buildEthereumBridgePageLink()">
               <button class="btn btn--icon">
                 <astar-icon-bridge class="icon--bridge" />
               </button>
