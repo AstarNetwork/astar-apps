@@ -11,6 +11,8 @@ import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
 // Ref: https://wiki.acala.network/get-started/acala-network/acala-account
 // Ref: https://wiki.acala.network/get-started/get-started/karura-account
 
+export const usdtMinFeeAmount = 0.7;
+
 export const xcmToken = {
   [endpointKey.ASTAR]: [
     {

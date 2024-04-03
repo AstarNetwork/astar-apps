@@ -19,6 +19,8 @@ import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations/SystemRepository';
+import { ethers } from 'ethers';
+import { usdtMinFeeAmount } from 'src/modules/xcm/tokens';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -373,8 +375,7 @@ export class XcmRepository implements IXcmRepository {
       const feeAssetIsRequired = true;
       // 4294969280 is the USDT id
       const feeAssetId = '4294969280';
-      // 700000 = 0.7 USDT
-      const feeAmount = 700000;
+      const feeAmount = Number(ethers.utils.parseUnits(String(usdtMinFeeAmount), 6).toString());
       return { feeAssetIsRequired, feeAssetId, feeAmount };
     }
     return { feeAssetIsRequired: false, feeAssetId: '', feeAmount: 0 };
