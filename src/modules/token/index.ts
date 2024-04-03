@@ -25,7 +25,6 @@ export interface Erc20Token {
   image?: string;
   isWrappedToken?: boolean;
   isXC20?: boolean;
-  wrapUrl?: string | null;
   bridgeUrl?: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
@@ -40,10 +39,10 @@ export const WASTR: Erc20Token = {
   decimal: 18,
   symbol: 'WASTR',
   name: 'Wrapped ASTR',
-  image: 'https://app.arthswap.org/images/coins/0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720.png',
+  image: 'https://v2.arthswap.org/images/coins/0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720.png',
   isWrappedToken: true,
   isXC20: false,
-  wrapUrl: 'https://app.arthswap.org/#/swap',
+  bridgeUrl: 'https://app.arthswap.org/#/swap',
 };
 
 export const registeredErc20Tokens: Erc20Token[] = [WASTR];

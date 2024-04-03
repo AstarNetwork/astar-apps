@@ -43,7 +43,7 @@ export class XvmRepository implements IXvmRepository {
           image: '',
           isWrappedToken: false,
           isXC20: false,
-          wrapUrl: null,
+          bridgeUrl: null,
         };
 
         const { balUsd, userBalance } = await this.evmAssetsRepository.updateTokenBalanceHandler({

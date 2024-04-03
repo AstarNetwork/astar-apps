@@ -154,7 +154,7 @@ export const castCbridgeToErc20 = ({
     image: token.icon,
     isWrappedToken: false,
     isXC20: false,
-    wrapUrl: null,
+    bridgeUrl: null,
     userBalance: token.userBalance,
     userBalanceUsd: token.userBalanceUsd,
     isCbridgeToken: true,
@@ -180,7 +180,7 @@ export const getRegisteredErc20Tokens = ({
         image: it.logo,
         isWrappedToken: false,
         isXC20: true,
-        wrapUrl: null,
+        bridgeUrl: null,
       };
     } catch (error) {
       console.error(error);
