@@ -127,7 +127,7 @@ export const useImportToken = ({
         image: zkToken.value?.image,
         isWrappedToken: false,
         isXC20: false,
-        wrapUrl: null,
+        bridgeUrl: null,
         bridgedTokenAddress: toChainTokenAddress,
         bridgedChainId: toChainId,
       };
@@ -141,7 +141,7 @@ export const useImportToken = ({
         image: zkToken.value?.image,
         isWrappedToken: false,
         isXC20: false,
-        wrapUrl: null,
+        bridgeUrl: null,
         bridgedTokenAddress: tokenAddress,
         bridgedChainId: fromChainId,
       };

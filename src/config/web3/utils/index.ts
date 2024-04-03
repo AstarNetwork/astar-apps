@@ -299,7 +299,7 @@ export const fetchErc20TokenInfo = async ({
       image,
       isWrappedToken: false,
       isXC20: isXc20Token(address),
-      wrapUrl: null,
+      bridgeUrl: null,
       bridgedChainId: toChainId,
       bridgedTokenAddress,
     };
