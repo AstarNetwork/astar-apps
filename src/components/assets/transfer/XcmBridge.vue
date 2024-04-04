@@ -168,6 +168,16 @@
             </span>
           </div>
         </div>
+        <div v-if="token.metadata.symbol === 'PINK' && isWithdrawal" class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
+              {{
+                $t('assets.modals.xcmWarning.otherTokenAsFee', { amount: '0.7', feeToken: 'USDT' })
+              }}
+            </span>
+          </div>
+        </div>
       </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
@@ -254,6 +264,7 @@ export default defineComponent({
       isLoadingApi,
       isInputDestAddrManually,
       isWithdrawalEthChain,
+      isWithdrawal,
       initializeXcmApi,
       inputHandler,
       bridge,
@@ -306,6 +317,7 @@ export default defineComponent({
       isReverseButton,
       isDepositEthChain,
       isWithdrawalEthChain,
+      isWithdrawal,
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,

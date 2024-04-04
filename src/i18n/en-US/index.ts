@@ -91,6 +91,8 @@ export default {
     attention: 'Attention',
     testnetSwitchWarning:
       'We have switched our zkEVM testnet to zKyoto from zKatana. zKatana will no longer available.',
+    xcmEvmTokenIsDisabled: 'Withdrawing {token} via EVM wallets is temporarily disabled',
+    notEnoughFeeToken: "You don't have enough {token} for the withdrawal fee",
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -637,6 +639,7 @@ export default {
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in the origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
+        otherTokenAsFee: '{amount} {feeToken} is used for withdrawal fee to AssetHub',
       },
       lockdropWarning: {
         warning:

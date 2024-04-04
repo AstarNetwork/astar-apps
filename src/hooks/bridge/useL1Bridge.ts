@@ -149,10 +149,11 @@ export const useL1Bridge = () => {
                 toChainBalance: 0,
                 toChainTokenAddress: it.bridgedTokenAddress,
                 image: it.image,
+                bridgeUrl: it.bridgeUrl,
               }
             : null;
         })
-        .filter((it: Erc20Token) => it !== null);
+        .filter((it: Erc20Token) => it !== null && !it.bridgeUrl);
 
     let tokens = [];
     if (filteredTokens) {

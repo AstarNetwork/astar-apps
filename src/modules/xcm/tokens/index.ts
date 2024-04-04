@@ -11,6 +11,8 @@ import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
 // Ref: https://wiki.acala.network/get-started/acala-network/acala-account
 // Ref: https://wiki.acala.network/get-started/get-started/karura-account
 
+export const usdtMinFeeAmount = 0.7;
+
 export const xcmToken = {
   [endpointKey.ASTAR]: [
     {
@@ -152,6 +154,16 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: Chain.BIFROST_POLKADOT,
       minBridgeAmount: '0.1',
+    },
+    {
+      symbol: 'PINK',
+      isNativeToken: false,
+      assetId: '18446744073709551633',
+      originAssetId: '23',
+      logo: require('/src/assets/img/token/pink.png'),
+      isXcmCompatible: true,
+      originChain: Chain.ASSET_HUB,
+      minBridgeAmount: '1',
     },
   ],
   [endpointKey.SHIDEN]: [

@@ -19,6 +19,8 @@ import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations/SystemRepository';
+import { ethers } from 'ethers';
+import { usdtMinFeeAmount } from 'src/modules/xcm/tokens';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -280,6 +282,20 @@ export class XcmRepository implements IXcmRepository {
     throw `Undefined extrinsic call ${extrinsic} with method ${method}`;
   }
 
+  protected async fetchAssetConfigById(
+    source: XcmChain,
+    tokenId: string,
+    endpoint: string
+  ): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const api = await this.apiFactory.get(endpoint);
+    const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(tokenId);
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return formattedAssetConfig.v3;
+  }
+
   protected async fetchAssetConfig(
     source: XcmChain,
     token: Asset,
@@ -288,10 +304,7 @@ export class XcmRepository implements IXcmRepository {
     parents: number;
     interior: Interior;
   }> {
-    const api = await this.apiFactory.get(endpoint);
-    const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
-    const formattedAssetConfig = JSON.parse(config.toString());
-    return formattedAssetConfig.v3;
+    return this.fetchAssetConfigById(source, token.id, endpoint);
   }
 
   protected isAstarNativeToken(token: Asset): boolean {
@@ -345,5 +358,26 @@ export class XcmRepository implements IXcmRepository {
       const fixedAddress = a + b + c;
       return fixedAddress;
     }
+  }
+
+  protected getFeeInformation(
+    token: Asset,
+    source: XcmChain,
+    destination: XcmChain
+  ): {
+    feeAssetIsRequired: boolean;
+    feeAssetId: string;
+    feeAmount: number;
+  } {
+    if (token.metadata.name === 'PINK' && destination.name === Chain.ASSET_HUB) {
+      // Pink is not a sufficient token and cannot be used as gas fee in Asset Hub,
+      // it means we need to transfer another token to pay the fee and we will use USDT token.
+      const feeAssetIsRequired = true;
+      // 4294969280 is the USDT id
+      const feeAssetId = '4294969280';
+      const feeAmount = Number(ethers.utils.parseUnits(String(usdtMinFeeAmount), 6).toString());
+      return { feeAssetIsRequired, feeAssetId, feeAmount };
+    }
+    return { feeAssetIsRequired: false, feeAssetId: '', feeAmount: 0 };
   }
 }
