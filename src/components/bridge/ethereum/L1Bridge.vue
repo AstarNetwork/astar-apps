@@ -279,7 +279,7 @@ export default defineComponent({
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
     const isWarningHighTraffic = computed<boolean>(
-      () => false && props.fromChainName === EthBridgeNetworkName.AstarZk
+      () => props.fromChainName === EthBridgeNetworkName.AstarZk
     );
 
     const setHighTrafficModalOpen = (value: boolean): void => {
