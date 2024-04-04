@@ -1038,12 +1038,12 @@ export default {
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
-      'High bridge traffic may delay withdrawal transactions up to 10 hours. We appreciate your patience.',
+      'High bridge traffic may delay withdrawal transactions up to 20 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
     modals: {
       highTraffic: {
         text1:
-          'We are currently experiencing unusually high traffic on our canonical bridge, leading to longer than usual processing times for withdrawal. Your transaction may take up to 10 hours to complete. We understand how valuable your time is and are working diligently to resolve this congestion by scaling the infrastructure.',
+          'We are currently experiencing unusually high traffic on our canonical bridge, leading to longer than usual processing times for withdrawal. Your transaction may take up to 20 hours to complete. We understand how valuable your time is and are working diligently to resolve this congestion by scaling the infrastructure.',
         text2:
           'For urgent transactions, you might consider scheduling them during off-peak hours or exploring alternative 3rd party bridge partners. We appreciate your patience and understanding as we strive to enhance your experience. Thank you for your continued support.',
         understood: 'Understood',
