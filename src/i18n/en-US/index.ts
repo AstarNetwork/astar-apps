@@ -93,6 +93,8 @@ export default {
       'We have switched our zkEVM testnet to zKyoto from zKatana. zKatana will no longer available.',
     xcmEvmTokenIsDisabled: 'Withdrawing {token} via EVM wallets is temporarily disabled',
     notEnoughFeeToken: "You don't have enough {token} for the withdrawal fee",
+    zkevmUnderMaintenance:
+      'Astar zkEVM is currently under maintenance due to an upgrade that applies the latest fixes. We apologize for any inconvenience.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',

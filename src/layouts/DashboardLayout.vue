@@ -5,7 +5,8 @@
     </template>
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
-      <yoki-banner :network="currentNetworkIdx" />
+      <under-maintenance-banner />
+      <!-- <yoki-banner :network="currentNetworkIdx" /> -->
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
@@ -25,14 +26,13 @@ import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import { useQuasar } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
-import ClaimWarningBanner from 'src/components/header/ClaimWarningBanner.vue';
-import YokiBanner from 'src/components/header/YokiBanner.vue';
+import UnderMaintenanceBanner from 'src/components/header/UnderMaintenanceBanner.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
-    YokiBanner,
+    UnderMaintenanceBanner,
   },
   setup() {
     const store = useStore();
