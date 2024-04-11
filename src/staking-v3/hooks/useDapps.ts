@@ -44,10 +44,11 @@ export function useDapps() {
       // Memo: this can a heavy operations since we are querying all dapps stakes for a chain.
       await fetchStakeAmountsToStore();
 
-      const numberOfParticipants = await tokenApiProviderRepository.getNumberOfParticipants(
-        currentNetworkName.value.toLowerCase()
-      );
-      store.commit('stakingV3/setNumberOfParticipants', numberOfParticipants);
+      const numberOfStakersAndLockers =
+        await tokenApiProviderRepository.getNumberOfStakersAndLockers(
+          currentNetworkName.value.toLowerCase()
+        );
+      store.commit('stakingV3/setNumberOfStakersAndLockers', numberOfStakersAndLockers);
     } finally {
       aggregator.publish(new BusyMessage(false));
     }

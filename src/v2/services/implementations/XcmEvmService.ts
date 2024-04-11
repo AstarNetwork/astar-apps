@@ -1,14 +1,20 @@
+import {
+  getPubkeyFromSS58Addr,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+} from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { handleCheckProviderChainId } from 'src/config/web3';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
-import {
-  isValidAddressPolkadotAddress,
-  getPubkeyFromSS58Addr,
-  isValidEvmAddress,
-} from '@astar-network/astar-sdk-core';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import { getEvmExplorerUrl } from 'src/links';
+import { getRawEvmTransaction } from 'src/modules/evm';
+import { evmPrecompiledContract } from 'src/modules/precompiled';
+import { AlertMsg } from 'src/modules/toast';
 import { relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -17,18 +23,23 @@ import { IGasPriceProvider, IXcmEvmService, TransferParam } from 'src/v2/service
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { AlertMsg } from 'src/modules/toast';
-import { getEvmExplorerUrl } from 'src/links';
-import { evmPrecompiledContract } from 'src/modules/precompiled';
-import { getRawEvmTransaction } from 'src/modules/evm';
 
 @injectable()
 export class XcmEvmService implements IXcmEvmService {
+  private provider!: EthereumProvider;
   constructor(
     @inject(Symbols.EventAggregator) private eventAggregator: IEventAggregator,
     @inject(Symbols.GasPriceProvider) private gasPriceProvider: IGasPriceProvider,
     @inject(Symbols.CurrentWallet) private currentWallet: string
-  ) {}
+  ) {
+    const ethProvider = getEvmProvider(currentWallet as any);
+
+    if (ethProvider) {
+      this.provider = ethProvider;
+    } else {
+      Guard.ThrowIfUndefined('provider', this.provider);
+    }
+  }
 
   public async transfer({
     from,
@@ -52,6 +63,11 @@ export class XcmEvmService implements IXcmEvmService {
       (isMoonbeamWithdrawal && isValidEvmAddress(recipientAddress));
     if (!isValidDestAddress) {
       throw Error('Invalid destination address');
+    }
+
+    const resultCheckProvider = await handleCheckProviderChainId(this.provider);
+    if (!resultCheckProvider) {
+      throw Error('Please connect to the correct network in your wallet');
     }
 
     return new Promise<void>(async (resolve, reject) => {

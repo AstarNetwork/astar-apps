@@ -1,3 +1,9 @@
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
+import { web3Enable } from '@polkadot/extension-dapp';
+import { encodeAddress } from '@polkadot/util-crypto';
+import { Polkasafe } from 'polkasafe';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import { ASTAR_CHAIN } from 'src/config/chain';
 import {
   ChainProvider,
   endpointKey,
@@ -5,23 +11,19 @@ import {
   getProviderIndex,
   providerEndpoints,
 } from 'src/config/chainEndpoints';
-import { Path } from 'src/router/routes';
-import { computed, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
-import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
-import { ASTAR_CHAIN } from 'src/config/chain';
-import { container } from 'src/v2/common';
-import { Polkasafe } from 'polkasafe';
-import { Symbols } from 'src/v2/symbols';
-import { encodeAddress } from '@polkadot/util-crypto';
-import { web3Enable } from '@polkadot/extension-dapp';
-import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
-import { useStore } from 'src/store';
-import { useI18n } from 'vue-i18n';
-import { useAccount } from './useAccount';
 import { SupportWallet } from 'src/config/wallets';
+import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
+import { Path } from 'src/router/routes';
+import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { computed, watchEffect } from 'vue';
+import { ComposerTranslation, useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
+import { useAccount } from './useAccount';
+import { checkIsNativeWallet } from './helper/wallet';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -33,7 +35,8 @@ export function useAppRouter() {
   const { t } = useI18n();
   const { disconnectAccount } = useAccount();
   const network = computed<string>(() => route.params.network as string);
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+
   const castNetworkName = (networkParam: string): string => {
     let name = networkParam.toLowerCase();
     if (name === 'shibuya') {
@@ -58,9 +61,14 @@ export function useAppRouter() {
     const invalidCondition =
       (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
 
-    if (invalidCondition) {
-      handleResetAccount();
-    }
+    invalidCondition && handleResetAccount();
+  };
+
+  const handleCheckWalletType = (): void => {
+    const storedWallet = String(localStorage.getItem(SELECTED_WALLET));
+    const isNativeWallet = checkIsNativeWallet(storedWallet as SupportWallet);
+    const invalidCondition = !!(isZkEvm.value && isNativeWallet && storedWallet);
+    invalidCondition && handleResetAccount();
   };
 
   // Memo: this function is invoked whenever users change the `:network` param via browser's address bar
@@ -144,7 +152,14 @@ export function useAppRouter() {
     }
   };
 
+  const handleI18Constant = (): void => {
+    container.addConstant<ComposerTranslation>(Symbols.I18Translation, t);
+  };
+
   watchEffect(handleInputNetworkParam);
   watchEffect(handleInvalidStorage);
   watchEffect(initializePolkasafeClient);
+  watchEffect(handleAddDefaultTokens);
+  watchEffect(handleCheckWalletType);
+  watchEffect(handleI18Constant);
 }

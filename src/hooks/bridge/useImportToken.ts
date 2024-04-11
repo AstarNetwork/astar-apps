@@ -64,10 +64,14 @@ export const useImportToken = ({
         decimal,
       });
 
+      const web3 = new Web3();
       const isFromEthChains =
         fromChainId === ZkChainId.Ethereum || fromChainId === ZkChainId.Sepolia;
       const ethereumAddress = isFromEthChains ? tokenAddress : toChainTokenAddress;
-      const logoURI = await getTokenImage({ symbol, address: ethereumAddress });
+      const logoURI = await getTokenImage({
+        symbol,
+        address: web3.utils.toChecksumAddress(ethereumAddress),
+      });
 
       const toChainUserBalance = await getTokenBal({
         address: currentAccount.value,

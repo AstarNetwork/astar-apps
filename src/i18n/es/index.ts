@@ -693,7 +693,7 @@ export default {
     history: 'Historia reciente',
     actionRequired: 'Acción requerida',
     claim: 'Reclamar',
-    noHistory: 'No se ha encontrado historial',
+    noTransactions: 'No se encontraron transacciones',
     completed: 'Completado',
     inProgress: 'En progreso',
     approvalMaxAmount: 'Aprobar importe máximo (opcional)',
@@ -702,14 +702,14 @@ export default {
       text: 'Puente de activos entre {l1} y {l2}',
       text2:
         '¡Disponible en testnet! - Para experimentar, conecte su cartera a Astar zKatana (zkEVM testnet) y obtenga ETH en testnet',
-      lean: '(aprenda más)',
+      learn: '(aprenda más)',
     },
     astarBridge: {
       title: 'Puente Astar',
       text: 'Puentear token ASTR y activos a {l2} desde {substrateNetwork} EVM',
       text2: 'Actualmente en desarrollo',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Puente Celer',
       text: 'Puente de activos a {cbridgeNetworkName} Polkadot EVM via el puente de Celer',
     },

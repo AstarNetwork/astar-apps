@@ -41,16 +41,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
+import { defineComponent, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
-import FeatureDapp from './FeatureDapp.vue';
-import Leaderboard from './leaderboard/Leaderboard.vue';
-import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
+import FeatureDapp from './FeatureDapp.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
-import RegisterBanner from './RegisterBanner.vue';
-import { useDappStaking } from '../hooks';
+import Leaderboard from './leaderboard/Leaderboard.vue';
+import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 
 export default defineComponent({
   components: {
@@ -65,6 +68,9 @@ export default defineComponent({
   setup() {
     const displayIndex = ref<number>(0);
     const { warnIfLedger } = useDappStaking();
+    const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
+    const { t } = useI18n();
+    const store = useStore();
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;
@@ -75,6 +81,21 @@ export default defineComponent({
     onMounted(() => {
       warnIfLedger();
     });
+
+    watch(
+      [isZkEvm],
+      () => {
+        if (isZkEvm.value) {
+          const networkSupport = isAstarZkEvm ? 'Astar EVM' : 'Shibuya EVM';
+          const networkNotSupport = providerEndpoints[currentNetworkIdx.value].displayName;
+          store.dispatch('general/showAlertMsg', {
+            msg: t('warning.stakingNotSupportZkEvm', { networkNotSupport, networkSupport }),
+            alertType: 'error',
+          });
+        }
+      },
+      { immediate: true }
+    );
 
     return { displayIndex, searchText, toggleDapps };
   },

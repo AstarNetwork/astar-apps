@@ -20,10 +20,10 @@
         {{ protocolState?.era ?? '--' }}
       </data-card>
       <data-card
-        :title="$t('stakingV3.lockAccounts')"
-        :description="$t('stakingV3.numberOfParticipantsDescription')"
+        :title="$t('stakingV3.stakingAndLockingAccounts')"
+        :description="$t('stakingV3.numberOfStakersAndLockersDescription')"
       >
-        {{ numberOfParticipants }}
+        {{ numberOfStakersAndLockers.stakersCount }} / {{ numberOfStakersAndLockers.lockersCount }}
       </data-card>
     </div>
 
@@ -73,6 +73,12 @@
         :description="$t('stakingV3.dAppsSlotsDescription')"
       >
         {{ dAppTiers?.dapps.length ?? 0 }} / {{ tiersConfiguration.numberOfSlots }}
+      </data-card>
+      <data-card
+        :title="$t('stakingV3.tokensToBeBurned')"
+        :description="$t('stakingV3.tokensToBeBurnedDescription')"
+      >
+        <format-balance :balance="tokensToBeBurned.toString() ?? ''" />
       </data-card>
     </div>
 
@@ -130,7 +136,8 @@ export default defineComponent({
       tvlPercentage,
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
-      numberOfParticipants,
+      numberOfStakersAndLockers,
+      tokensToBeBurned,
     } = useDataCalculations();
     const { activeInflationConfiguration } = useInflation();
 
@@ -167,10 +174,11 @@ export default defineComponent({
       unfilledSlots,
       tiersConfiguration,
       tvlPercentage,
+      tokensToBeBurned,
       totalVolumeOfVotesPercentage,
       bonusEligibleTokens,
       activeInflationConfiguration,
-      numberOfParticipants,
+      numberOfStakersAndLockers,
       nativeTokenSymbol,
       periodRemainingDays,
       isVotingPeriod,

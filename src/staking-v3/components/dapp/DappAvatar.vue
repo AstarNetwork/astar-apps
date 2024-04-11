@@ -1,15 +1,15 @@
 <template>
   <div :class="`wrapper--dapp-avatar ${small ? 'small' : ''}`">
     <div class="column--avatar">
-      <div>
-        <img class="image--dapp-icon" :src="dapp.extended?.iconUrl" :alt="dapp.extended?.name" />
+      <div class="image--dapp-icon">
+        <img :src="dapp.extended?.iconUrl" :alt="dapp.extended?.name" />
       </div>
       <div class="column--details">
         <div class="row--dapp-title">
           {{ dapp.extended?.name }}
         </div>
         <div v-if="!small" class="row--dapp-description">
-          {{ dapp.extended?.description }}
+          {{ dapp.extended?.shortDescription }}
         </div>
         <div v-if="dapp.extended?.tags && !small" class="row--tags">
           <div v-for="tag in dapp.extended?.tags" :key="tag" class="tag">

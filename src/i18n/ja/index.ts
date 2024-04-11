@@ -699,7 +699,7 @@ export default {
     history: '最近の履歴',
     actionRequired: '必要なアクション',
     claim: '請求',
-    noHistory: '履歴が見つかりません',
+    noTransactions: 'トランザクションが見つかりませんでした',
     completed: '完了',
     inProgress: '進行中',
     approvalMaxAmount: '最高額の承認（オプション）',
@@ -708,14 +708,14 @@ export default {
       text: ' {l1} と {l2} のブリッジとなる資産',
       text2:
         'テストネットで利用可能！- 体験するには、あなたのウォレットをAstar zKatana (zkEVM testnet)に接続し、testnet ETHを取得してください。',
-      lean: '(もっと学ぶ)',
+      learn: '(もっと学ぶ)',
     },
     astarBridge: {
       title: 'Astar ブリッジ',
       text: 'ASTRトークンと資産を {substrateNetwork} EVMから {l2} へブリッジ',
       text2: '現在開発中',
     },
-    celetBridge: {
+    celerBridge: {
       title: 'Celer ブリッジ',
       text: 'Celerブリッジを経由して {cbridgeNetworkName} Polkadot EVMへ資産をブリッジ',
     },

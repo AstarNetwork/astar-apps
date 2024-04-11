@@ -1,7 +1,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { buildWeb3Instance, getTransactionTimestamp, setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import {
   BridgeHistory,
   EthBridgeChainId,
@@ -9,7 +9,9 @@ import {
   ZkChainId,
   checkIsL1,
   fetchAccountHistory,
+  fetchIsGelatoApiHealth,
   getChainIdFromNetId,
+  getNetworkId,
 } from 'src/modules/zk-evm-bridge';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
@@ -19,8 +21,14 @@ import { useEthProvider } from '../custom-signature/useEthProvider';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { AbiItem } from 'web3-utils';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
+import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
 
 export const useL1History = () => {
+  const { t } = useI18n();
+  const store = useStore();
+  const isGelatoApiConnected = ref<boolean>(false);
+
   const l1Network = computed<string>(() => {
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
     return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
@@ -48,6 +56,7 @@ export const useL1History = () => {
 
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
+  const { isAstarZkEvm } = useNetworkInfo();
 
   const handleNetwork = async (chainId: ZkChainId): Promise<void> => {
     if (!web3Provider.value || !ethProvider.value) return;
@@ -68,15 +77,30 @@ export const useL1History = () => {
   };
 
   const fetchUserHistory = async (): Promise<void> => {
+    if (!currentAccount.value) return;
     try {
       isLoadingHistories.value = true;
       const data = await fetchAccountHistory(currentAccount.value);
+      const isHealth = await fetchIsGelatoApiHealth();
+      if (!isHealth) {
+        throw Error('The API is currently in maintenance mode.');
+      }
+      isGelatoApiConnected.value = true;
+
+      const l2NetworkId = await getNetworkId(l2Network.value as EthBridgeNetworkName);
+      // Memo: remove the data bridging between Ethereum and Polygon zkEVM
+      const filteredData = data.filter((it) => {
+        if (isAstarZkEvm.value) {
+          return it['dest_net'] === l2NetworkId || it['network_id'] === l2NetworkId;
+        }
+        return true;
+      });
+
       const l1Web3 = buildWeb3Instance(EthBridgeChainId[l1Network.value as EthBridgeNetworkName]);
       const l2Web3 = buildWeb3Instance(EthBridgeChainId[l2Network.value as EthBridgeNetworkName]);
-
       let numberInProgress = 0;
       const formattedResult = await Promise.all(
-        data.map(async (it) => {
+        filteredData.map(async (it) => {
           try {
             const isTokenOriginL1 = checkIsL1(it['orig_net']);
             const isL1Tx = checkIsL1(it['network_id']);
@@ -121,6 +145,16 @@ export const useL1History = () => {
       isFetchAutomatically.value = numberInProgress > 0;
       histories.value = formattedResult.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
     } catch (error) {
+      // Memo: disable sending bridge transactions from UI
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: t('bridge.gelatoApiError'),
+          alertType: 'error',
+        },
+        { root: true }
+      );
+      isGelatoApiConnected.value = false;
       console.error(error);
       isFetchAutomatically.value = false;
     } finally {
@@ -146,6 +180,7 @@ export const useL1History = () => {
     histories,
     isLoadingHistories,
     isActionRequired,
+    isGelatoApiConnected,
     handleClaim,
     fetchUserHistory,
   };

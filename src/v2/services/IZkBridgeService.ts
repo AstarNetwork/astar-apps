@@ -4,6 +4,7 @@ import { BridgeHistory, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 export interface IZkBridgeService {
   approve(param: ParamBridgeAsset): Promise<String>;
   bridgeAsset(param: ParamBridgeAsset): Promise<String>;
+  dryRunBridgeAsset(param: ParamBridgeAsset): Promise<boolean>;
   claimAsset(param: ParamClaim): Promise<String>;
 }
 
@@ -12,6 +13,7 @@ export interface ParamBridgeAsset {
   amount: string | BigNumber;
   fromChainName: EthBridgeNetworkName;
   toChainName: EthBridgeNetworkName;
+  destNetworkId?: number;
   tokenAddress: string;
   decimal: number;
 }

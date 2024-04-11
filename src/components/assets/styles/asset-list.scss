@@ -291,6 +291,17 @@
   .text--value {
     color: $gray-1;
   }
+
+  .icon--external-link,
+  .icon--plus {
+    @media (min-width: $sm) {
+      stroke: $astar-blue;
+      &:hover {
+        stroke: white;
+      }
+    }
+  }
+
   .container--explorer-icon {
     stroke: $astar-blue;
     &:hover {
@@ -438,11 +449,7 @@
     font-size: 14px;
   }
 }
-.body--dark {
-  .text--label {
-    color: white;
-  }
-}
+
 .row--transferable,
 .row--evm-deposit {
   .column--balance {
@@ -466,6 +473,37 @@
     width: 50%;
   }
 }
+
+.column--balance-usd {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 8px;
+  width: 100%;
+  font-size: 12px;
+}
+
+.column--balance-evm {
+  width: 50%;
+  .column--balance__row {
+    display: flex;
+    gap: 8px;
+    &.text--title {
+      font-size: 14px;
+    }
+    &.text--label {
+      font-size: 12px;
+    }
+  }
+  .column--amount {
+    width: 70%;
+    text-align: right;
+  }
+  .column--symbol {
+    width: 30%;
+    text-align: left;
+  }
+}
+
 .body--dark {
   .column--balance {
     color: white;
@@ -502,6 +540,12 @@
     font-size: 14px;
   }
 }
+
+.text--label {
+  color: $gray-3;
+  font-weight: 500;
+}
+
 .text--symbol {
   font-size: 16px;
   font-weight: 600;
@@ -535,26 +579,49 @@
   border-radius: 9999px;
   background-color: $astar-blue;
   margin: auto;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
   @media (min-width: $sm) {
     background-color: transparent;
     color: $astar-blue;
     margin: auto;
-    svg {
-      width: 20px;
-      height: 20px;
-    }
     &:hover {
       color: white;
       background-color: $astar-blue;
+      .icon-helper {
+        svg {
+          stroke: white;
+        }
+      }
     }
-  }
-  svg {
-    width: 20px;
-    height: 20px;
-    @media (min-width: $sm) {
+    svg {
       width: 24px;
       height: 24px;
     }
+  }
+}
+
+.icon--external-link {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 1px;
+  stroke: white;
+  @media (min-width: $sm) {
+    stroke: $astar-blue;
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+.icon--plus {
+  width: 28px !important;
+  height: 28px !important;
+  stroke-width: 1px;
+  stroke: white;
+  @media (min-width: $sm) {
+    stroke: $astar-blue;
   }
 }
 

@@ -11,13 +11,15 @@ export function usePrice() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
-  const { isMainnet } = useNetworkInfo();
+  const { isMainnet, isAstarZkEvm } = useNetworkInfo();
+
   watchEffect(async () => {
     const tokenSymbolRef = tokenSymbol.value;
     if (!tokenSymbolRef) return;
     try {
       if (isMainnet.value) {
-        nativeTokenUsd.value = await getUsdBySymbol(tokenSymbolRef);
+        const nativeToken = isAstarZkEvm.value ? 'ETH' : tokenSymbolRef;
+        nativeTokenUsd.value = await getUsdBySymbol(nativeToken);
       }
     } catch (error: any) {
       console.error(error.message);

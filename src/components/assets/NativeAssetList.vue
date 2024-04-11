@@ -22,6 +22,14 @@
           <div v-else class="skeleton--right">
             <q-skeleton animation="fade" class="skeleton--md" />
           </div>
+          <div class="column--balance-usd text--label">
+            <span>
+              {{ $n(truncate(Number(balUsd), 3)) }}
+            </span>
+            <span>
+              {{ $t('usd') }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -270,14 +278,7 @@ import { ethers } from 'ethers';
 import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
-import {
-  useBalance,
-  useBreakpoints,
-  useEvmDeposit,
-  useFaucet,
-  useNetworkInfo,
-  usePrice,
-} from 'src/hooks';
+import { useBalance, useBreakpoints, useEvmDeposit, useFaucet, useNetworkInfo } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { Path } from 'src/router';
@@ -292,7 +293,14 @@ export default defineComponent({
     ModalEvmWithdraw,
     ModalVesting,
   },
-  setup() {
+  props: {
+    nativeTokenUsd: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+  },
+  setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isModalEvmWithdraw = ref<boolean>(false);
@@ -312,7 +320,6 @@ export default defineComponent({
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
-    const { nativeTokenUsd } = usePrice();
     const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
     const { faucetBalRequirement } = useFaucet();
     const { isDappStakingV3, ledger } = useDappStaking();
@@ -352,8 +359,8 @@ export default defineComponent({
         isFaucet.value = isRocstar.value
           ? false
           : isShibuya.value || faucetBalRequirement.value > bal.value;
-        if (nativeTokenUsd.value) {
-          balUsd.value = nativeTokenUsd.value * bal.value;
+        if (props.nativeTokenUsd) {
+          balUsd.value = props.nativeTokenUsd * bal.value;
         } else {
           balUsd.value = 0;
         }
@@ -362,7 +369,7 @@ export default defineComponent({
       }
     };
 
-    watch([nativeTokenSymbol, balance], setBalanceData, { immediate: false });
+    watch([nativeTokenSymbol, balance, props], setBalanceData, { immediate: false });
 
     watchEffect(() => {
       const accountDataRef = accountData.value;

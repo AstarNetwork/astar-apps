@@ -15,7 +15,7 @@
           :set-right-ui="setRightUi"
           :bridge-amt="String(bridgeAmt)"
           :err-msg="errMsg"
-          :is-disabled-bridge="isDisabledBridge"
+          :is-disabled-bridge="isDisabledBridge || !isGelatoApiConnected"
           :from-bridge-balance="fromBridgeBalance"
           :to-bridge-balance="toBridgeBalance"
           :from-chain-name="fromChainName"
@@ -111,6 +111,7 @@ export default defineComponent({
       l1Network,
       l2Network,
       isActionRequired,
+      isGelatoApiConnected,
       fetchUserHistory,
       handleClaim,
     } = useL1History();
@@ -224,6 +225,7 @@ export default defineComponent({
       isApproved,
       isApproving,
       isApproveMaxAmount,
+      isGelatoApiConnected,
       inputImportTokenHandler,
       cancelHighlight,
       handleSetToken,

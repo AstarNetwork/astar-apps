@@ -1,4 +1,10 @@
-import { astarChain, checkSumEvmAddress, hasProperty, wait } from '@astar-network/astar-sdk-core';
+import {
+  ASTAR_SS58_FORMAT,
+  astarChain,
+  checkSumEvmAddress,
+  hasProperty,
+  wait,
+} from '@astar-network/astar-sdk-core';
 import { $api } from 'boot/api';
 import { get } from 'lodash-es';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -9,7 +15,7 @@ import {
   supportEvmWalletObj,
   supportWalletObj,
 } from 'src/config/wallets';
-import { getChainId, setupNetwork } from 'src/config/web3';
+import { getChainId, handleCheckProviderChainId, setupNetwork } from 'src/config/web3';
 import { ETHEREUM_EXTENSION, useAccount, useNetworkInfo } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
@@ -30,8 +36,10 @@ import { WatchCallback, computed, ref, watch, watchEffect, watchPostEffect } fro
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import * as utils from 'src/hooks/custom-signature/utils';
+
 export const useConnectWallet = () => {
-  const { SELECTED_ADDRESS, IS_LEDGER } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, IS_LEDGER, SELECTED_WALLET } = LOCAL_STORAGE;
 
   const modalAccountSelect = ref<boolean>(false);
   const modalPolkasafeSelect = ref<boolean>(false);
@@ -41,7 +49,7 @@ export const useConnectWallet = () => {
 
   const { t } = useI18n();
   const store = useStore();
-  const { requestAccounts } = useEvmAccount();
+  const { requestAccounts, requestSignature } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
   const { currentNetworkIdx, currentNetworkChain, evmNetworkIdx, currentNetworkName } =
@@ -193,6 +201,29 @@ export const useConnectWallet = () => {
     await loadEvmWallet({ ss58, currentWallet: wallet, isSetupNetwork });
   };
 
+  const toggleEvmWalletSchema = async () => {
+    const accounts = await requestAccounts();
+    const loadingAddr = checkSumEvmAddress(accounts[0]);
+    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+    const signature = await requestSignature(loginMsg, loadingAddr);
+    const { pubKey } = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+
+    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+
+    if (isH160.value) {
+      store.commit('general/setIsH160Formatted', false);
+      store.commit('general/setCurrentEcdsaAccount', {
+        ethereum: loadingAddr,
+        ss58: ss58Address,
+      });
+    } else {
+      await loadEvmWallet({
+        currentWallet: selectedWallet.value as SupportWallet,
+        isSetupNetwork: true,
+      });
+    }
+  };
+
   const setWallet = (wallet: SupportWallet): void => {
     selectedWallet.value = wallet;
     modalName.value = wallet;
@@ -228,7 +259,8 @@ export const useConnectWallet = () => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
-
+    // Memo: This will avoid selecting EVM wallet twice for the first time visitor
+    localStorage.setItem(SELECTED_ADDRESS, ETHEREUM_EXTENSION);
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
@@ -283,7 +315,6 @@ export const useConnectWallet = () => {
     const isWalletConnect = wallet === SupportWallet.WalletConnect;
     // Memo: WalletConnect does not have an address before scanning the QR code (when the user switch the network with selecting WalletConnect)
     const isNoAddress = !address && !isWalletConnect;
-
     if (
       currentRouter.value === undefined ||
       isNoAddress ||
@@ -326,8 +357,11 @@ export const useConnectWallet = () => {
 
     const handleAccountsChanged = async (accounts: string[]) => {
       if (accounts[0] !== account) {
+        const wallet = localStorage.getItem(SELECTED_WALLET);
         await disconnectAccount();
         await setEvmWallet(wallet as SupportWallet);
+        localStorage.setItem(SELECTED_ADDRESS, ETHEREUM_EXTENSION);
+        localStorage.setItem(SELECTED_WALLET, String(wallet));
       }
     };
 
@@ -368,6 +402,23 @@ export const useConnectWallet = () => {
 
   watch([currentNetworkChain], handleCheckLedgerEnvironment);
 
+  // Memo: check the EVM wallet's connected chainId when users switch the page
+  watch(
+    [currentRouter, selectedWallet, isH160],
+    async () => {
+      if (!selectedWallet.value || !isH160.value) return;
+      const provider = getEvmProvider(selectedWallet.value as SupportWallet);
+      const resultCheckProvider = await handleCheckProviderChainId(provider);
+      if (!resultCheckProvider) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('wallet.switchWalletConnectNetwork', { network: currentNetworkName.value }),
+          alertType: 'error',
+        });
+      }
+    },
+    { immediate: false }
+  );
+
   return {
     WalletModalOption,
     currentNetworkStatus,
@@ -388,5 +439,6 @@ export const useConnectWallet = () => {
     openPolkasafeModal,
     setModalAccountSelect,
     setModalPolkasafeSelect,
+    toggleEvmWalletSchema,
   };
 };

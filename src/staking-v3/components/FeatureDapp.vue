@@ -28,7 +28,12 @@
       </div>
 
       <div class="row--data">
-        <button v-if="isVotingPeriod" class="button--vote-stake" @click="navigateToVote()">
+        <button
+          v-if="isVotingPeriod"
+          :disabled="isZkEvm"
+          class="button--vote-stake"
+          @click="navigateToVote()"
+        >
           <span>{{ $t('stakingV3.voteStakeToday') }}</span>
           <vote-stake-button-bg />
         </button>
@@ -51,7 +56,7 @@
           <span class="text--value-small">%</span>
         </kpi-card>
         <div v-if="!isVotingPeriod" class="row--start-staking">
-          <button class="button--vote-stake" @click="navigateToVote()">
+          <button :disabled="isZkEvm" class="button--vote-stake" @click="navigateToVote()">
             <span>{{ $t('stakingV3.startStakingNow') }}</span>
             <vote-stake-button-bg />
           </button>
@@ -79,6 +84,7 @@ import {
 } from '../hooks';
 import KpiCard from './KpiCard.vue';
 import VoteStakeButtonBg from './VoteStakeButtonBg.vue';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -87,12 +93,13 @@ export default defineComponent({
   },
   setup() {
     const { constants, isVotingPeriod } = useDappStaking();
-    const { stakerApr, bonusApr } = useAprV3();
+    const { stakerApr, bonusApr } = useAprV3({ isWatch: true });
     const { registeredDapps } = useDapps();
     const { newListings } = useCampaign();
     const { navigateToVote } = useDappStakingNavigation();
     const { periodCurrentDay, periodDuration, periodName } = usePeriod();
     const { timeLeftFormatted } = useVotingCountdown();
+    const { isZkEvm } = useNetworkInfo();
 
     const promotedDapp = computed<Campaign | undefined>(() =>
       newListings.value.length ? newListings.value[0] : undefined
@@ -109,6 +116,7 @@ export default defineComponent({
       stakerApr,
       bonusApr,
       timeLeftFormatted,
+      isZkEvm,
       navigateToVote,
       truncate,
     };

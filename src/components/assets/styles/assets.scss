@@ -11,23 +11,6 @@
   }
 }
 
-.assets-page-bg {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  @media (orientation: landscape) {
-    height: 100vh;
-  }
-  @media (orientation: portrait) {
-    height: 100vh;
-  }
-}
-
 .container--assets {
   width: 100%;
   max-width: $container-max-width;

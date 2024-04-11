@@ -134,7 +134,7 @@
     </div>
     <div v-else>
       <div v-if="isLoadingHistories">{{ $t('common.loading') }}</div>
-      <div v-else>{{ $t('bridge.noHistory') }}</div>
+      <div v-else>{{ $t('bridge.noTransactions') }}</div>
     </div>
   </div>
 </template>
@@ -249,7 +249,7 @@ export default defineComponent({
         case EthBridgeNetworkName.Zkatana:
           return blockExplorerUrls[EVM.ZKATANA_TESTNET] + txUrl;
         case EthBridgeNetworkName.AstarZk:
-          return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;
+          return blockExplorerUrls[EVM.ASTAR_ZKEVM_MAINNET] + txUrl;
 
         default:
           return blockExplorerUrls[EVM.SEPOLIA_TESTNET] + txUrl;

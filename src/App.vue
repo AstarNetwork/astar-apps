@@ -28,10 +28,16 @@
     </transition>
     <notification-stack />
 
-    <modal-onboarding
+    <!-- <modal-onboarding
       v-if="showOnboardingModal"
       :set-is-open="setShowOnboardingModal"
       :show="showOnboardingModal"
+    /> -->
+
+    <modal-yoki-origins
+      v-if="showYokiOriginsModal"
+      :set-is-open="setYokiOriginsModal"
+      :show="showYokiOriginsModal"
     />
 
     <modal-disclaimer
@@ -56,6 +62,7 @@ import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
+import ModalYokiOrigins from 'components/common/ModalYokiOrigins.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
 import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
@@ -72,7 +79,7 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAccount, useAppRouter, useDecommission } from 'src/hooks';
+import { ETHEREUM_EXTENSION, useAccount, useAppRouter, useDecommission } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
@@ -91,6 +98,7 @@ export default defineComponent({
     ModalLoading,
     AlertBox,
     CookiePolicy,
+    ModalYokiOrigins,
     ModalDisclaimer,
     NotificationStack,
     ModalOnboarding,
@@ -138,18 +146,30 @@ export default defineComponent({
     };
 
     // dApp staking onboarding modal
-    const showOnboardingModal = ref<boolean>(false);
-    if (
-      !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
-      isDappStakingV3.value
-    ) {
+    // const showOnboardingModal = ref<boolean>(false);
+    // if (
+    //   !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
+    //   isDappStakingV3.value
+    // ) {
+    //   setTimeout(() => {
+    //     showOnboardingModal.value = true;
+    //   }, 2000);
+    // }
+
+    // const setShowOnboardingModal = (isOpen: boolean): void => {
+    //   showOnboardingModal.value = isOpen;
+    // };
+
+    // Yoki Origins modal
+    const showYokiOriginsModal = ref<boolean>(false);
+    if (!localStorage.getItem(LOCAL_STORAGE.CLOSE_YOKI_ORIGINS_MODAL)) {
       setTimeout(() => {
-        showOnboardingModal.value = true;
+        showYokiOriginsModal.value = true;
       }, 2000);
     }
 
-    const setShowOnboardingModal = (isOpen: boolean): void => {
-      showOnboardingModal.value = isOpen;
+    const setYokiOriginsModal = (isOpen: boolean): void => {
+      showYokiOriginsModal.value = isOpen;
     };
 
     const setShowDecommissionModal = (isOpen: boolean): void => {
@@ -229,7 +249,8 @@ export default defineComponent({
     // Handle wallet change so we can inject proper wallet
     let previousAddress: string | undefined = undefined;
     watch([isEthWallet, currentWallet, isH160, currentAccountName], async () => {
-      setCurrentWallet(isEthWallet.value, currentWallet.value);
+      const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
+      setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
 
       // Subscribe to an account specific dApp staking v3 data.
       if (!isDappStakingV3.value) return;
@@ -275,9 +296,9 @@ export default defineComponent({
       showAlert,
       showDisclaimerModal,
       showDecommissionModal,
+      showYokiOriginsModal,
+      setYokiOriginsModal,
       setShowDisclaimerModal,
-      showOnboardingModal,
-      setShowOnboardingModal,
       setShowDecommissionModal,
     };
   },

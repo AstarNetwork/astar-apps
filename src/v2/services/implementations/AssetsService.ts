@@ -1,17 +1,27 @@
+import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { handleCheckProviderChainId } from 'src/config/web3';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import {
+  AlertMsg,
+  REQUIRED_MINIMUM_BALANCE,
+  REQUIRED_MINIMUM_BALANCE_ETH,
+} from 'src/modules/toast/index';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { container } from 'src/v2/common';
 import { IEventAggregator } from 'src/v2/messaging';
 import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
 import { IAssetsService, IWalletService } from 'src/v2/services';
-import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast/index';
 import {
   ParamAssetTransfer,
   ParamEvmTransfer,
   ParamEvmWithdraw,
 } from 'src/v2/services/IAssetsService';
 import { Symbols } from 'src/v2/symbols';
+import { ComposerTranslation } from 'vue-i18n';
 import Web3 from 'web3';
-import { ethers } from 'ethers';
 
 @injectable()
 export class AssetsService implements IAssetsService {
@@ -50,10 +60,24 @@ export class AssetsService implements IAssetsService {
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
+    const t = container.get<ComposerTranslation>(Symbols.I18Translation);
+
+    const resultCheckProvider = await handleCheckProviderChainId(provider);
+    if (!resultCheckProvider) {
+      throw Error(t('warning.connectedInvalidNetwork'));
+    }
 
     const balWei = await web3.eth.getBalance(param.senderAddress);
     const useableBalance = Number(ethers.utils.formatEther(balWei));
-    const isBalanceEnough = useableBalance - Number(param.amount) > REQUIRED_MINIMUM_BALANCE;
+    const amount = param.contractAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
+    const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+
+    const minBal =
+      Number(networkIdxStore) === endpointKey.ASTAR_ZKEVM
+        ? REQUIRED_MINIMUM_BALANCE_ETH
+        : REQUIRED_MINIMUM_BALANCE;
+
+    const isBalanceEnough = useableBalance - amount > minBal;
     if (isBalanceEnough) {
       const rawTx = await this.AssetsRepository.getEvmTransferData({
         param,

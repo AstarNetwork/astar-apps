@@ -3,10 +3,12 @@ import { useDappStaking } from './useDappStaking';
 import { useTokenCirculation } from 'src/hooks/useTokenCirculation';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
+import { NumberOfStakersAndLockers } from '../logic';
+import { useLeaderboard } from './useLeaderboard';
 
 export function useDataCalculations() {
   const { totalSupply } = useTokenCirculation();
-  const { currentEraInfo } = useDappStaking();
+  const { currentEraInfo, eraLengths, dAppTiers, tiersConfiguration } = useDappStaking();
   const store = useStore();
 
   const tvlPercentage = computed<number>(() => {
@@ -46,9 +48,32 @@ export function useDataCalculations() {
       : currentEraInfo.value.currentStakeAmount.voting;
   });
 
-  const numberOfParticipants = computed<number>(
-    () => store.getters['stakingV3/getNumberOfParticipants']
+  const numberOfStakersAndLockers = computed<NumberOfStakersAndLockers>(
+    () => store.getters['stakingV3/getNumberOfStakersAndLockers']
   );
 
-  return { tvlPercentage, totalVolumeOfVotesPercentage, bonusEligibleTokens, numberOfParticipants };
+  const { leaderBoards } = useLeaderboard();
+
+  const tokensToBeBurned = computed(() => {
+    // Calculate the sum of tokens to be burned
+    const tbb = dAppTiers.value.rewards.reduce((acc: bigint, reward: bigint, i) => {
+      const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
+      const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
+      const tokensForTier =
+        ((reward * (BigInt(slotsPerTier) - BigInt(dappsInTier))) / BigInt(slotsPerTier)) *
+        BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
+
+      return acc + tokensForTier;
+    }, BigInt(0));
+
+    return tbb.toString();
+  });
+
+  return {
+    tvlPercentage,
+    totalVolumeOfVotesPercentage,
+    bonusEligibleTokens,
+    numberOfStakersAndLockers,
+    tokensToBeBurned,
+  };
 }

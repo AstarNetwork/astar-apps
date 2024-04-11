@@ -8,3 +8,4 @@ export enum AlertMsg {
 }
 
 export const REQUIRED_MINIMUM_BALANCE: number = 0.05;
+export const REQUIRED_MINIMUM_BALANCE_ETH: number = 0.0005;

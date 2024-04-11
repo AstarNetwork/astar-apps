@@ -134,6 +134,7 @@ export default defineComponent({
       tooling: require('/src/staking-v3/assets/category_blue.webp'),
       utility: require('/src/staking-v3/assets/category_sky.webp'),
       others: require('/src/staking-v3/assets/category_green.webp'),
+      'unstoppable-grants': require('/src/staking-v3/assets/category_unstoppable.webp'),
     };
 
     return {
