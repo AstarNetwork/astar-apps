@@ -292,4 +292,17 @@ export const DEFAULT_TOKENS = [
     bridgedTokenAddress: '',
     bridgedChainId: 1,
   },
+  {
+    srcChainId: 3776,
+    address: '0x7Cb5d4D178d93D59ea0592abF139459957898a59',
+    decimal: '18',
+    symbol: 'DOT',
+    name: 'DOT Token',
+    image: 'https://assets.coingecko.com/coins/images/12171/standard/polkadot.png?1696512008',
+    isWrappedToken: false,
+    isXC20: false,
+    bridgeUrl: 'https://stargate.finance/transfer',
+    bridgedTokenAddress: '',
+    bridgedChainId: 1,
+  },
 ];
