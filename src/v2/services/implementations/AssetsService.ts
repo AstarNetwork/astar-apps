@@ -38,11 +38,14 @@ export class AssetsService implements IAssetsService {
   }
 
   public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
+    console.log('transferNativeAsset');
     const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
-    const isBalanceEnough =
-      Number(ethers.utils.formatEther(useableBalance)) -
-        Number(ethers.utils.formatEther(param.amount)) >
-      REQUIRED_MINIMUM_BALANCE;
+    console.log('useableBalance', ethers.utils.formatEther(useableBalance));
+    // const isBalanceEnough =
+    //   Number(ethers.utils.formatEther(useableBalance)) -
+    //     Number(ethers.utils.formatEther(param.amount)) >
+    //   REQUIRED_MINIMUM_BALANCE;
+    const isBalanceEnough = true;
 
     if (isBalanceEnough) {
       const transaction = await this.AssetsRepository.getNativeTransferCall(param);
@@ -58,6 +61,7 @@ export class AssetsService implements IAssetsService {
   }
 
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
+    console.log('transferEvmAsset');
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
     const t = container.get<ComposerTranslation>(Symbols.I18Translation);
@@ -69,6 +73,7 @@ export class AssetsService implements IAssetsService {
 
     const balWei = await web3.eth.getBalance(param.senderAddress);
     const useableBalance = Number(ethers.utils.formatEther(balWei));
+    console.log('useableBalance', useableBalance);
     const amount = param.contractAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
 
@@ -77,7 +82,8 @@ export class AssetsService implements IAssetsService {
         ? REQUIRED_MINIMUM_BALANCE_ETH
         : REQUIRED_MINIMUM_BALANCE;
 
-    const isBalanceEnough = useableBalance - amount > minBal;
+    // const isBalanceEnough = useableBalance - amount > minBal;
+    const isBalanceEnough = true;
     if (isBalanceEnough) {
       const rawTx = await this.AssetsRepository.getEvmTransferData({
         param,
