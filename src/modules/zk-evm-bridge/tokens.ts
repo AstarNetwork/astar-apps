@@ -5,8 +5,11 @@ export const TOKEN_BLACKLIST = [
   '0xE9CC37904875B459Fa5D0FE37680d36F1ED55e38',
   // STONE (Ethereum)
   '0x7122985656e38BDC0302Db86685bb972b145bD3C',
-  // STONE (Astar zkEVM)
+  // STONE (Astar zkEVM, OFT)
   '0x80137510979822322193fc997d400d5a6c747bf7',
+  // weETH (Ethereum)
+  '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee',
+  // Todo: add weETH(Astar zkEVM, OFT)
 ];
 
 export const addressAstrZkEvm = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
@@ -91,32 +94,6 @@ export const DEFAULT_TOKENS = [
     isXC20: false,
     bridgeUrl: null,
     bridgedTokenAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-    bridgedChainId: 1,
-  },
-  {
-    srcChainId: 1,
-    address: '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee',
-    decimal: '18',
-    symbol: 'weETH',
-    name: 'Wrapped eETH',
-    image: 'https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396',
-    isWrappedToken: false,
-    isXC20: false,
-    bridgeUrl: null,
-    bridgedTokenAddress: '0xcD68DFf4415358c35a28f96Fd5bF7083B22De1D6',
-    bridgedChainId: 3776,
-  },
-  {
-    srcChainId: 3776,
-    address: '0xcD68DFf4415358c35a28f96Fd5bF7083B22De1D6',
-    decimal: '18',
-    symbol: 'weETH',
-    name: 'Wrapped eETH',
-    image: 'https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396',
-    isWrappedToken: false,
-    isXC20: false,
-    bridgeUrl: null,
-    bridgedTokenAddress: '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee',
     bridgedChainId: 1,
   },
   {
@@ -305,4 +282,18 @@ export const DEFAULT_TOKENS = [
     bridgedTokenAddress: '',
     bridgedChainId: 1,
   },
+  // This will be updated after OFT weETH is added
+  // {
+  //   srcChainId: 3776,
+  //   address: '',
+  //   decimal: '18',
+  //   symbol: 'weETH',
+  //   name: 'Wrapped eETH',
+  //   image: 'https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396',
+  //   isWrappedToken: false,
+  //   isXC20: false,
+  // bridgeUrl: 'https://stargate.finance/transfer',
+  //   bridgedTokenAddress: '',
+  //   bridgedChainId: 1,
+  // },
 ];
