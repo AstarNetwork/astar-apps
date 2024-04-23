@@ -332,6 +332,7 @@ export default {
       ledgerX: 'Ledger Nano X: 6 eras',
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
+      dcentWallet: "D'CENT Wallet: ≒28 eras",
     },
     dappsOwners: 'DApps owners! We can now help to promote your campaign. Please check',
     dappsOwnersLink: 'the details.',
