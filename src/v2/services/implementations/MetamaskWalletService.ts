@@ -126,10 +126,15 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         })) as string;
         const { uncompressedPubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
 
-        const contract = new web3.eth.Contract(
-          lockdropDispatchAbi as AbiItem[],
-          evmPrecompiledContract.lockdropDispatch
-        );
+        // Todo: remove this logic once contract address for Shiden lockdrop has been updated to align with Astar and Shibuya
+        const chainId = await web3.eth.getChainId();
+        const isShiden = chainId === 336;
+
+        const contractAddress = isShiden
+          ? '0x0000000000000000000000000000000000005005'
+          : evmPrecompiledContract.lockdropDispatch;
+
+        const contract = new web3.eth.Contract(lockdropDispatchAbi as AbiItem[], contractAddress);
 
         const data = contract.methods
           .dispatch_lockdrop_call(hexEncodedCall, uncompressedPubKey)
@@ -137,7 +142,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
         const hash = await this.sendEvmTransaction({
           from: h160Address,
-          to: evmPrecompiledContract.lockdropDispatch,
+          to: contractAddress,
           data,
           successMessage,
         });
