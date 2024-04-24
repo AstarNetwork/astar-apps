@@ -1,9 +1,16 @@
 import { BigNumber } from 'ethers';
-import { BridgeHistory, EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
+import {
+  BridgeHistory,
+  EthBridgeNetworkName,
+  LayerZeroBridgeNetworkName,
+  LayerZeroId,
+  LayerZeroToken,
+} from 'src/modules/zk-evm-bridge';
 
 export interface IZkBridgeService {
   approve(param: ParamBridgeAsset): Promise<String>;
   bridgeAsset(param: ParamBridgeAsset): Promise<String>;
+  bridgeLzAsset(param: ParamBridgeLzAsset): Promise<String>;
   dryRunBridgeAsset(param: ParamBridgeAsset): Promise<boolean>;
   claimAsset(param: ParamClaim): Promise<String>;
 }
@@ -16,6 +23,16 @@ export interface ParamBridgeAsset {
   destNetworkId?: number;
   tokenAddress: string;
   decimal: number;
+}
+
+export interface ParamBridgeLzAsset {
+  senderAddress: string;
+  amount: string;
+  fromChainName: LayerZeroBridgeNetworkName;
+  toChainName: LayerZeroBridgeNetworkName;
+  destNetworkId: LayerZeroId;
+  tokenAddress: string;
+  token: LayerZeroToken;
 }
 
 export interface ParamClaim {

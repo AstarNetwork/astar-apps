@@ -17,6 +17,7 @@ import DiscoverV3 from 'src/staking-v3/components/DiscoverV3.vue';
 import Owner from 'src/staking-v3/components/Owner.vue';
 import MaintenanceMode from 'src/staking-v3/components/MaintenanceMode.vue';
 import { RouteRecordRaw } from 'vue-router';
+import LayerZero from 'src/components/bridge/layerzero/LayerZero.vue';
 
 export {
   buildTransferPageLink,
@@ -35,6 +36,7 @@ export enum Path {
   Assets = '/assets',
   Bridge = '/bridge',
   Ethereum = '/ethereum',
+  Layerzero = '/layerzero',
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
   Discover = '/discover',
@@ -117,6 +119,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'ethereum',
         component: L1,
+      },
+      {
+        path: 'Layerzero',
+        component: LayerZero,
       },
     ],
   },

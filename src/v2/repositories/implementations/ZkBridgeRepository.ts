@@ -1,4 +1,6 @@
 import ERC20_ABI from 'src/config/abi/ERC20.json';
+import ASTR_OFT_ABI from 'src/config/web3/abi/oft-astar-native-abi.json';
+import XC20_OFT_ABI from 'src/config/web3/abi/oft-bridge-abi.json';
 import { ethers } from 'ethers';
 import { injectable } from 'inversify';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
@@ -10,11 +12,12 @@ import {
   fetchMerkleProof,
   getMainOrTestNet,
 } from 'src/modules/zk-evm-bridge';
-import { ParamBridgeAsset, ParamClaim } from 'src/v2/services';
+import { ParamBridgeAsset, ParamClaim, ParamBridgeLzAsset } from 'src/v2/services';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { IZkBridgeRepository } from '../IZkBridgeRepository';
+import { addressToBytes32 } from 'src/config/web3';
 
 @injectable()
 export class ZkBridgeRepository implements IZkBridgeRepository {
@@ -80,6 +83,80 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
       from: param.senderAddress,
       to: contractAddress,
       value: isNativeToken ? amount : '0x0',
+      data,
+    };
+  }
+
+  public async getBridgeLzAssetData({
+    param,
+    web3,
+  }: {
+    param: ParamBridgeLzAsset;
+    web3: Web3;
+  }): Promise<TransactionConfig> {
+    console.log('param', param);
+
+    const isNativeToken = true;
+
+    const astarNative = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
+    const dotContract = '0x105C0F4a5Eae3bcb4c9Edbb3FD5f6b60FAcc3b36';
+
+    const contractAddress = isNativeToken ? astarNative : dotContract;
+    const zeroAddress = '0x0000000000000000000000000000000000000000';
+    const adapterParams = isNativeToken
+      ? // Value: 0x000100000000000000000000000000000000000000000000000000000000000186a0
+        // ethers.utils.solidityPack(['uint16', 'uint256'], [1, 100000])
+        ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
+      : // Value: 0x00010000000000000000000000000000000000000000000000000000000000036ee8
+        ethers.utils.solidityPack(['uint16', 'uint256'], [1, 225000]);
+
+    console.log('adapterParams', adapterParams);
+
+    const abi = isNativeToken ? ASTR_OFT_ABI : XC20_OFT_ABI;
+    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+
+    const from = '0xb680c8f33f058163185ab6121f7582bab57ef8a7';
+    const fromAddressByte32 = addressToBytes32(from);
+    console.log('fromAddressByte32', fromAddressByte32);
+    const destChainId = 257;
+    const toAddress = fromAddressByte32;
+    // const amount = 10;
+    const amount = 0.05;
+    const minAmount = amount * 0.995;
+    const callParams = [from, zeroAddress, adapterParams];
+    const decimal = isNativeToken ? 18 : 10;
+    const qty = ethers.utils.parseUnits(String(amount), decimal);
+
+    console.log('adapterParams', adapterParams);
+    const fee = await contract.methods
+      .estimateSendFee(destChainId, fromAddressByte32, qty, false, adapterParams)
+      .call();
+    console.log('fee', fee);
+
+    const data = contract.methods
+      .sendFrom(
+        from,
+        destChainId,
+        toAddress,
+        ethers.utils.parseUnits(String(amount), decimal),
+        ethers.utils.parseUnits(String(minAmount), decimal),
+        callParams
+      )
+      .encodeABI();
+    console.log('data', data);
+
+    // Memo: add 0.0001% fee here to avoid getting insufficient fee error
+    const nativeFee = Number(ethers.utils.formatEther(String(fee[0]))) * 1.00001;
+    console.log('amount', amount);
+    console.log('nativeFee', nativeFee);
+    const value = ethers.utils
+      .parseEther(String(isNativeToken ? amount + nativeFee : nativeFee))
+      .toString();
+    console.log('value', value);
+    return {
+      from,
+      to: contractAddress,
+      value,
       data,
     };
   }
