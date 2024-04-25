@@ -30,6 +30,7 @@ export enum SupportWallet {
   WalletConnect = 'wallet-connect',
   Dcent = 'DcentWallet',
   DcentEvm = 'DcentWalletEvm',
+  Okx = 'okxwallet',
 }
 
 export enum SupportMultisig {
@@ -64,6 +65,7 @@ export const WalletModalOption = {
   EnkryptNative: SupportWallet.EnkryptNative,
   Dcent: SupportWallet.Dcent,
   DcentEvm: SupportWallet.DcentEvm,
+  Okx: SupportWallet.Okx,
 };
 
 export const SubstrateWallets = [
@@ -326,6 +328,16 @@ export const supportEvmWalletObj = {
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
     ethExtension: 'ethereum',
+  },
+  [SupportWallet.Okx]: {
+    img: require('/src/assets/img/icon_okx.png'),
+    name: 'OKX Wallet',
+    source: SupportWallet.Okx,
+    walletUrl: 'https://www.okx.com/web3',
+    guideUrl: 'https://www.okx.com/web3',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+    ethExtension: 'okxwallet',
   },
 };
 
