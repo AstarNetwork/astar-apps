@@ -78,6 +78,11 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     try {
       return new Promise<string>(async (resolve) => {
         const web3 = new Web3(this.provider as any);
+        const resultCheckProvider = await handleCheckProviderChainId(this.provider);
+        if (!resultCheckProvider) {
+          throw Error('Please connect to the correct network in your wallet');
+        }
+
         const accounts = await web3.eth.getAccounts();
         const h160Address = accounts[0];
 
