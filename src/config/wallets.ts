@@ -28,6 +28,8 @@ export enum SupportWallet {
   EnkryptEvm = 'enkryptEvm',
   EnkryptNative = 'enkrypt',
   WalletConnect = 'wallet-connect',
+  Dcent = 'DcentWallet',
+  DcentEvm = 'DcentWalletEvm',
 }
 
 export enum SupportMultisig {
@@ -60,6 +62,8 @@ export const WalletModalOption = {
   Snap: SupportWallet.Snap,
   EnkryptEvm: SupportWallet.EnkryptEvm,
   EnkryptNative: SupportWallet.EnkryptNative,
+  Dcent: SupportWallet.Dcent,
+  DcentEvm: SupportWallet.DcentEvm,
 };
 
 export const SubstrateWallets = [
@@ -76,6 +80,7 @@ export const SubstrateWallets = [
   SupportWallet.OneKeyNative,
   SupportWallet.Snap,
   SupportWallet.EnkryptNative,
+  SupportWallet.Dcent,
 ];
 
 export interface Wallet {
@@ -200,6 +205,15 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
+  [SupportWallet.Dcent]: {
+    img: require('/src/assets/img/icon_dcent.png'),
+    name: "D'CENT Wallet",
+    source: SupportWallet.Dcent,
+    walletUrl: 'https://store.dcentwallet.com/pages/dcent-wallet-app',
+    guideUrl: 'https://userguide.dcentwallet.com',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+  },
 };
 
 export const supportEvmWalletObj = {
@@ -302,6 +316,16 @@ export const supportEvmWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
     ethExtension: SupportWallet.WalletConnect,
+  },
+  [SupportWallet.DcentEvm]: {
+    img: require('/src/assets/img/icon_dcent.png'),
+    name: "D'CENT Wallet (EVM)",
+    source: SupportWallet.DcentEvm,
+    walletUrl: 'https://store.dcentwallet.com/pages/dcent-wallet-app',
+    guideUrl: 'https://userguide.dcentwallet.com',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+    ethExtension: 'ethereum',
   },
 };
 

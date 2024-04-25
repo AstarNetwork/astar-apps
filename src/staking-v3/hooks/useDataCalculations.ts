@@ -60,9 +60,8 @@ export function useDataCalculations() {
       const slotsPerTier = tiersConfiguration.value.slotsPerTier[i];
       const dappsInTier = leaderBoards.value.get(i + 1)?.length ?? 0;
       const tokensForTier =
-        ((reward * (BigInt(slotsPerTier) - BigInt(dappsInTier))) / BigInt(slotsPerTier)) *
-        BigInt(eraLengths.value.standardErasPerBuildAndEarnPeriod);
-
+        reward *
+        BigInt((slotsPerTier - dappsInTier) * eraLengths.value.standardErasPerBuildAndEarnPeriod);
       return acc + tokensForTier;
     }, BigInt(0));
 

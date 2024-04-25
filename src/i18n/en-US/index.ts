@@ -93,6 +93,8 @@ export default {
       'We have switched our zkEVM testnet to zKyoto from zKatana. zKatana will no longer available.',
     xcmEvmTokenIsDisabled: 'Withdrawing {token} via EVM wallets is temporarily disabled',
     notEnoughFeeToken: "You don't have enough {token} for the withdrawal fee",
+    zkevmUnderMaintenance:
+      'Astar zkEVM is currently under maintenance due to an upgrade that applies the latest fixes. We apologize for any inconvenience.',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -332,6 +334,7 @@ export default {
       ledgerX: 'Ledger Nano X: 6 eras',
       ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
+      dcentWallet: "D'CENT Wallet: ≒28 eras",
     },
     dappsOwners: 'DApps owners! We can now help to promote your campaign. Please check',
     dappsOwnersLink: 'the details.',
