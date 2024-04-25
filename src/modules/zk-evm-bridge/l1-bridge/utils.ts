@@ -155,7 +155,17 @@ export const handleAddDefaultTokens = (): void => {
       seen.add(`${token.srcChainId}-${token.address}`);
       return !duplicate;
     });
-    localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(updatedTokens));
+
+    // Todo: this is temporary solution to remove weETH from browser's localstorage
+    // This will be removed after OFT weETH is added to Astar zkEVM assets
+    const filteredTokens = updatedTokens.filter((token) => {
+      const weEthEthereum = '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee';
+      const weEthZkevm = '0xcD68DFf4415358c35a28f96Fd5bF7083B22De1D6';
+      const address = token.address.toLowerCase();
+      return address !== weEthEthereum.toLowerCase() && address !== weEthZkevm.toLowerCase();
+    });
+
+    localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(filteredTokens));
   } catch (error) {
     console.error(error);
   }
