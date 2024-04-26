@@ -99,7 +99,6 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
 
     const isNativeToken = fromNetworkId === LayerZeroId.AstarEvm && token.symbol === 'ASTR';
     const contractAddress = token.oftBridgeContract[fromNetworkId];
-    const zeroAddress = '0x0000000000000000000000000000000000000000';
     const abi = isNativeToken ? ASTR_OFT_ABI : ERC20_OFT_ABI;
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
 
@@ -108,6 +107,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, Number(minDstGas)]);
 
     const fromAddressByte32 = addressToBytes32(senderAddress);
+    const zeroAddress = '0x0000000000000000000000000000000000000000';
     const callParams = [senderAddress, zeroAddress, adapterParams];
     const decimal = token.decimals[fromNetworkId];
     const qty = ethers.utils.parseUnits(String(amount), decimal);

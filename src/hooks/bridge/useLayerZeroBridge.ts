@@ -346,20 +346,17 @@ export const useLayerZeroBridge = () => {
     //   throw Error('Please approve first');
     // }
     const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-    // const destNetworkId = await getNetworkId(toChainName.value);
 
     const tokenAddress = astarNativeTokenErcAddr;
-    const token = LayerZeroTokens[0];
-    const amount = 10;
+    const token = LayerZeroTokens[1];
+    const amount = 0.06;
 
     const hash = await zkBridgeService.bridgeLzAsset({
       senderAddress: currentAccount.value,
       amount,
       minAmount: amount * 0.995,
-      fromChainName: LayerZeroBridgeNetworkName.AstarEvm,
-      toChainName: LayerZeroBridgeNetworkName.AstarZk,
-      fromNetworkId: LayerZeroId.AstarEvm,
-      destNetworkId: LayerZeroId.AstarZk,
+      fromNetworkId: LayerZeroId.AstarZk,
+      destNetworkId: LayerZeroId.AstarEvm,
       tokenAddress,
       token,
     });
@@ -367,8 +364,6 @@ export const useLayerZeroBridge = () => {
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
     return hash;
-
-    return '';
   };
 
   const setIsGasPayable = async (): Promise<void> => {

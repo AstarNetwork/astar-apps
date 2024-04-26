@@ -50,7 +50,7 @@ export const LayerZeroTokens: LayerZeroToken[] = [
     name: 'DOT Token',
     oftBridgeContract: {
       [LayerZeroId.AstarEvm]: '0x105C0F4a5Eae3bcb4c9Edbb3FD5f6b60FAcc3b36',
-      [LayerZeroId.AstarZk]: '',
+      [LayerZeroId.AstarZk]: '0x7Cb5d4D178d93D59ea0592abF139459957898a59',
     },
     tokenAddress: {
       [LayerZeroId.AstarEvm]: '0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF',

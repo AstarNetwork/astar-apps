@@ -29,8 +29,6 @@ export interface ParamBridgeLzAsset {
   senderAddress: string;
   amount: number;
   minAmount: number;
-  fromChainName: LayerZeroBridgeNetworkName;
-  toChainName: LayerZeroBridgeNetworkName;
   destNetworkId: LayerZeroId;
   fromNetworkId: LayerZeroId;
   tokenAddress: string;
