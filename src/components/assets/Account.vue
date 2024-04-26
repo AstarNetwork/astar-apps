@@ -5,7 +5,7 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
-          <div v-if="isLockdropAccount" class="row--lockdrop">
+          <div v-if="isLockdropAccount && !isZkEvm" class="row--lockdrop">
             <span>{{ $t('assets.lockdropAccount') }}</span>
             <span class="text--switch-account" @click="toggleEvmWalletSchema">
               {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
@@ -233,9 +233,10 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const totalBal = computed<number>(
-      () => Number(balUsd.value) + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount
-    );
+    const totalBal = computed<number>(() => {
+      const addAmount = isH160.value ? props.ttlErc20Amount : props.ttlNativeXcmUsdAmount;
+      return Number(balUsd.value) + addAmount;
+    });
 
     const signatoryIconWallet = computed<string>(() => {
       // @ts-ignore
