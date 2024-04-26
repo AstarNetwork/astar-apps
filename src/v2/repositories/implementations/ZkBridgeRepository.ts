@@ -1,12 +1,13 @@
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import ASTR_OFT_ABI from 'src/config/web3/abi/oft-astar-native-abi.json';
-import XC20_OFT_ABI from 'src/config/web3/abi/oft-bridge-abi.json';
+import ERC20_OFT_ABI from 'src/config/web3/abi/oft-bridge-abi.json';
 import { ethers } from 'ethers';
 import { injectable } from 'inversify';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
 import {
   EthBridgeContract,
   EthBridgeNetworkName,
+  LayerZeroId,
   ZK_EVM_AGGREGATED_BRIDGE_ABI,
   ZkNetworkId,
   fetchMerkleProof,
@@ -94,67 +95,44 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
     param: ParamBridgeLzAsset;
     web3: Web3;
   }): Promise<TransactionConfig> {
-    console.log('param', param);
+    const { token, fromNetworkId, destNetworkId, senderAddress, amount, minAmount } = param;
 
-    const isNativeToken = true;
-
-    const astarNative = '0xdf41220C7e322bFEF933D85D01821ad277f90172';
-    const dotContract = '0x105C0F4a5Eae3bcb4c9Edbb3FD5f6b60FAcc3b36';
-
-    const contractAddress = isNativeToken ? astarNative : dotContract;
+    const isNativeToken = fromNetworkId === LayerZeroId.AstarEvm && token.symbol === 'ASTR';
+    const contractAddress = token.oftBridgeContract[fromNetworkId];
     const zeroAddress = '0x0000000000000000000000000000000000000000';
-    const adapterParams = isNativeToken
-      ? // Value: 0x000100000000000000000000000000000000000000000000000000000000000186a0
-        // ethers.utils.solidityPack(['uint16', 'uint256'], [1, 100000])
-        ethers.utils.solidityPack(['uint16', 'uint256'], [1, 200000])
-      : // Value: 0x00010000000000000000000000000000000000000000000000000000000000036ee8
-        ethers.utils.solidityPack(['uint16', 'uint256'], [1, 225000]);
-
-    console.log('adapterParams', adapterParams);
-
-    const abi = isNativeToken ? ASTR_OFT_ABI : XC20_OFT_ABI;
+    const abi = isNativeToken ? ASTR_OFT_ABI : ERC20_OFT_ABI;
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
 
-    const from = '0xb680c8f33f058163185ab6121f7582bab57ef8a7';
-    const fromAddressByte32 = addressToBytes32(from);
-    console.log('fromAddressByte32', fromAddressByte32);
-    const destChainId = 257;
-    const toAddress = fromAddressByte32;
-    // const amount = 10;
-    const amount = 0.05;
-    const minAmount = amount * 0.995;
-    const callParams = [from, zeroAddress, adapterParams];
-    const decimal = isNativeToken ? 18 : 10;
-    const qty = ethers.utils.parseUnits(String(amount), decimal);
+    // Ref: https://docs.layerzero.network/v1/developers/evm-guides/contract-standards/oft-v1.2#how-to-deploy-proxyoft-and-oft-contracts
+    const minDstGas = await contract.methods.minDstGasLookup(destNetworkId, 1).call();
+    const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, Number(minDstGas)]);
 
-    console.log('adapterParams', adapterParams);
+    const fromAddressByte32 = addressToBytes32(senderAddress);
+    const callParams = [senderAddress, zeroAddress, adapterParams];
+    const decimal = token.decimals[fromNetworkId];
+    const qty = ethers.utils.parseUnits(String(amount), decimal);
     const fee = await contract.methods
-      .estimateSendFee(destChainId, fromAddressByte32, qty, false, adapterParams)
+      .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, adapterParams)
       .call();
-    console.log('fee', fee);
 
     const data = contract.methods
       .sendFrom(
-        from,
-        destChainId,
-        toAddress,
+        senderAddress,
+        destNetworkId,
+        fromAddressByte32,
         ethers.utils.parseUnits(String(amount), decimal),
         ethers.utils.parseUnits(String(minAmount), decimal),
         callParams
       )
       .encodeABI();
-    console.log('data', data);
 
-    // Memo: add 0.0001% fee here to avoid getting insufficient fee error
-    const nativeFee = Number(ethers.utils.formatEther(String(fee[0]))) * 1.00001;
-    console.log('amount', amount);
-    console.log('nativeFee', nativeFee);
+    const nativeFee = Number(ethers.utils.formatEther(String(fee[0])));
     const value = ethers.utils
       .parseEther(String(isNativeToken ? amount + nativeFee : nativeFee))
       .toString();
-    console.log('value', value);
+
     return {
-      from,
+      from: senderAddress,
       to: contractAddress,
       value,
       data,

@@ -27,10 +27,12 @@ export interface ParamBridgeAsset {
 
 export interface ParamBridgeLzAsset {
   senderAddress: string;
-  amount: string;
+  amount: number;
+  minAmount: number;
   fromChainName: LayerZeroBridgeNetworkName;
   toChainName: LayerZeroBridgeNetworkName;
   destNetworkId: LayerZeroId;
+  fromNetworkId: LayerZeroId;
   tokenAddress: string;
   token: LayerZeroToken;
 }

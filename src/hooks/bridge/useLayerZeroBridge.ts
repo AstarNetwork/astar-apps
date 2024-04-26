@@ -341,7 +341,6 @@ export const useLayerZeroBridge = () => {
   };
 
   const handleBridge = async (): Promise<String> => {
-    console.log('handleBridge');
     // if (!bridgeAmt.value || !selectedToken.value.address) return '';
     // if (!isApproved.value) {
     //   throw Error('Please approve first');
@@ -351,12 +350,15 @@ export const useLayerZeroBridge = () => {
 
     const tokenAddress = astarNativeTokenErcAddr;
     const token = LayerZeroTokens[0];
+    const amount = 10;
 
     const hash = await zkBridgeService.bridgeLzAsset({
       senderAddress: currentAccount.value,
-      amount: '10',
-      fromChainName: LayerZeroBridgeNetworkName.AstaEvm,
+      amount,
+      minAmount: amount * 0.995,
+      fromChainName: LayerZeroBridgeNetworkName.AstarEvm,
       toChainName: LayerZeroBridgeNetworkName.AstarZk,
+      fromNetworkId: LayerZeroId.AstarEvm,
       destNetworkId: LayerZeroId.AstarZk,
       tokenAddress,
       token,
