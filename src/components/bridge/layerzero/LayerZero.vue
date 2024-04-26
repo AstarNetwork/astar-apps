@@ -27,7 +27,7 @@
           :transfer-type="HistoryTxType.ZK_ETHEREUM_BRIDGE"
           :is-history="false"
         />
-        <select-token
+        <!-- <select-token
           v-if="rightUi === 'select-token'"
           v-click-away="cancelHighlight"
           :set-token="handleSetToken"
@@ -38,7 +38,7 @@
           :from-chain-name="fromChainName"
           :to-chain-name="toChainName"
           :set-zk-tokens="setZkTokens"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -61,7 +61,7 @@ export default defineComponent({
   components: {
     Information,
     LzBridge,
-    SelectToken,
+    // SelectToken,
   },
   setup() {
     const isBridge = ref<boolean>(true);
@@ -99,7 +99,7 @@ export default defineComponent({
       reverseChain,
       handleBridge,
       inputImportTokenHandler,
-      setZkTokens,
+      // setZkTokens,
       setSelectedToken,
       handleApprove,
       setIsApproving,
@@ -137,7 +137,7 @@ export default defineComponent({
     };
 
     const handleSetToken = async (t: ZkToken): Promise<void> => {
-      setSelectedToken(t);
+      // setSelectedToken(t);
       await setRightUi('information');
       isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
     };
@@ -178,7 +178,7 @@ export default defineComponent({
       inputHandler,
       reverseChain,
       handleBridge,
-      setZkTokens,
+      // setZkTokens,
       setSelectedToken,
       handleApprove,
       setIsApproving,

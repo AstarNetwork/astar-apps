@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="zkBridgeIcon[fromChainName]" alt="chain-icon" />
+          <img width="24" :src="lzBridgeIcon[fromChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ fromChainName }}</span>
@@ -27,11 +27,11 @@
         <button class="icon--reverse" disabled>
           <astar-icon-sync size="20" />
         </button>
-        <q-tooltip>
+        <!-- <q-tooltip>
           <span class="text--tooltip">
             {{ $t('bridge.disabledWithdrawal', { network: fromChainName }) }}
           </span>
-        </q-tooltip>
+        </q-tooltip> -->
       </div>
       <div class="box--input-field">
         <div class="box__space-between">
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="zkBridgeIcon[toChainName]" alt="chain-icon" />
+          <img width="24" :src="lzBridgeIcon[toChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ toChainName }}</span>
@@ -72,19 +72,7 @@
         <div class="box__row">
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <img
-                v-if="selectedToken.symbol === 'ETH'"
-                width="24"
-                alt="token-logo"
-                :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
-              />
-              <img
-                v-else-if="selectedToken.image !== ''"
-                width="24"
-                alt="token-logo"
-                :src="selectedToken.image"
-              />
-              <jazzicon v-else :address="selectedToken.address" :diameter="24" class="item-logo" />
+              <img width="24" alt="token-logo" :src="selectedToken.image" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>
             <div class="icon--expand">
@@ -106,7 +94,7 @@
         </div>
       </div>
 
-      <div v-if="!isApproved && selectedToken.symbol !== 'ETH'">
+      <div v-if="!isApproved && !isNativeToken">
         <div class="input--checkbox" :class="isApproveMaxAmount && 'input--checkbox--checked'">
           <input
             id="approve-max-amount"
@@ -157,10 +145,11 @@
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
-import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
-import { PropType, defineComponent, watch, ref, computed } from 'vue';
+import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { LayerZeroId, LayerZeroNetworkName } from '../../../modules/zk-evm-bridge/layerzero/index';
 
 export default defineComponent({
   components: {
@@ -173,7 +162,7 @@ export default defineComponent({
       required: true,
     },
     selectedToken: {
-      type: Object as PropType<ZkToken>,
+      type: Object as PropType<LayerZeroToken>,
       required: true,
     },
     bridgeAmt: {
@@ -238,6 +227,13 @@ export default defineComponent({
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isNativeToken = computed<boolean>(() => {
+      return (
+        props.fromChainName === LayerZeroNetworkName.AstarEvm &&
+        props.selectedToken.symbol === 'ASTR'
+      );
+    });
+
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
       const transactionHash = await props.handleBridge();
@@ -271,11 +267,12 @@ export default defineComponent({
     );
 
     return {
-      zkBridgeIcon,
+      lzBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
       isHandling,
       isLoading,
+      isNativeToken,
       bridge,
       approve,
     };

@@ -1,96 +1,100 @@
-import 'reflect-metadata';
 import { interfaces } from 'inversify';
-import { IApi, IApiFactory } from './integration';
-import { ApiFactory, DefaultApi } from './integration/implementation';
-import {
-  IDappStakingRepository,
-  IEthCallRepository,
-  IMetadataRepository,
-  IPriceRepository,
-  ISystemRepository,
-  IXcmRepository,
-  IEvmAssetsRepository,
-  IXvmRepository,
-  IAssetsRepository,
-  IZkBridgeRepository,
-  IPolkasafeRepository,
-  IIdentityRepository,
-  INftRepository,
-  IAccountUnificationRepository,
-  IInflationRepository,
-} from './repositories';
-import {
-  DappStakingRepository,
-  EthCallRepository,
-  MetadataRepository,
-  SystemRepository,
-  TokenApiRepository,
-  XcmRepository,
-  EvmAssetsRepository,
-  AssetsRepository,
-  ZkBridgeRepository,
-  PolkasafeRepository,
-  NftRepository,
-  AccountUnificationRepository,
-  InflationRepository,
-} from './repositories/implementations';
-import {
-  IBalanceFormatterService,
-  IDappStakingService,
-  IGasPriceProvider,
-  IWalletService,
-  IXcmEvmService,
-  IXcmService,
-  IEvmAssetsService,
-  IAssetsService,
-  IZkBridgeService,
-  WalletType,
-  IXvmService,
-  IAccountUnificationService,
-  IIdentityService,
-} from './services';
-import {
-  DappStakingService,
-  PolkadotWalletService,
-  MetamaskWalletService,
-  GasPriceProvider,
-  XcmService,
-  EvmAssetsService,
-  BalanceFormatterService,
-  XcmEvmService,
-  EvmDappStakingService,
-  AssetsService,
-  ZkBridgeService,
-  AccountUnificationService,
-  IdentityService,
-} from './services/implementations';
-import {
-  IDappStakingRepository as IDappStakingRepositoryV3,
-  DappStakingRepository as DappStakingRepositoryV3,
-  IDappStakingService as IDappStakingServiceV3,
-  DappStakingService as DappStakingServiceV3,
-  DappStakingServiceEvm as DappStakingServiceEvmV3,
-} from 'src/staking-v3';
-import { Symbols } from './symbols';
-import { IEventAggregator, EventAggregator } from './messaging';
-import { container } from './common';
-import { ITypeFactory, TypeFactory, TypeMapping } from './config/types';
-import { XcmRepositoryConfiguration } from './config/xcm/XcmRepositoryConfiguration';
+import 'reflect-metadata';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
-import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
-import { XvmService } from 'src/v2/services/implementations/XvmService';
-import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import { XcmTokenInformation, xcmToken } from 'src/modules/xcm';
+import {
+  DappStakingRepository as DappStakingRepositoryV3,
+  DappStakingServiceEvm as DappStakingServiceEvmV3,
+  DappStakingService as DappStakingServiceV3,
+  IDappStakingRepository as IDappStakingRepositoryV3,
+  IDappStakingService as IDappStakingServiceV3,
+} from 'src/staking-v3';
 import {
   DappStakingServiceV2V3,
   IDappStakingServiceV2V3,
 } from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
+import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
+import { XvmService } from 'src/v2/services/implementations/XvmService';
 import {
   DappStakingServiceV2Ledger,
   IDappStakingServiceV2Ledger,
   IDataProviderRepository,
   TokenApiProviderRepository,
 } from '../staking-v3/logic';
+import { container } from './common';
+import { ITypeFactory, TypeFactory, TypeMapping } from './config/types';
+import { XcmRepositoryConfiguration } from './config/xcm/XcmRepositoryConfiguration';
+import { IApi, IApiFactory } from './integration';
+import { ApiFactory, DefaultApi } from './integration/implementation';
+import { EventAggregator, IEventAggregator } from './messaging';
+import {
+  IAccountUnificationRepository,
+  IAssetsRepository,
+  IDappStakingRepository,
+  IEthCallRepository,
+  IEvmAssetsRepository,
+  IIdentityRepository,
+  IInflationRepository,
+  IMetadataRepository,
+  INftRepository,
+  IPolkasafeRepository,
+  IPriceRepository,
+  ISystemRepository,
+  IXcmRepository,
+  IXvmRepository,
+  IZkBridgeRepository,
+} from './repositories';
+import { ILzBridgeRepository } from './repositories/ILzBridgeRepository';
+import {
+  AccountUnificationRepository,
+  AssetsRepository,
+  DappStakingRepository,
+  EthCallRepository,
+  EvmAssetsRepository,
+  InflationRepository,
+  MetadataRepository,
+  NftRepository,
+  PolkasafeRepository,
+  SystemRepository,
+  TokenApiRepository,
+  XcmRepository,
+  ZkBridgeRepository,
+} from './repositories/implementations';
+import { IdentityRepository } from './repositories/implementations/IdentityRepository';
+import { LzBridgeRepository } from './repositories/implementations/LzBridgeRepository';
+import {
+  IAccountUnificationService,
+  IAssetsService,
+  IBalanceFormatterService,
+  IDappStakingService,
+  IEvmAssetsService,
+  IGasPriceProvider,
+  IIdentityService,
+  IWalletService,
+  IXcmEvmService,
+  IXcmService,
+  IXvmService,
+  IZkBridgeService,
+  ILzBridgeService,
+  WalletType,
+} from './services';
+import {
+  AccountUnificationService,
+  AssetsService,
+  BalanceFormatterService,
+  DappStakingService,
+  EvmAssetsService,
+  EvmDappStakingService,
+  GasPriceProvider,
+  IdentityService,
+  MetamaskWalletService,
+  PolkadotWalletService,
+  XcmEvmService,
+  XcmService,
+  ZkBridgeService,
+  LzBridgeService,
+} from './services/implementations';
+import { Symbols } from './symbols';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -167,6 +171,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
   container.addTransient<IZkBridgeRepository>(ZkBridgeRepository, Symbols.ZkBridgeRepository);
+  container.addTransient<ILzBridgeRepository>(LzBridgeRepository, Symbols.LzBridgeRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
   container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
   container.addSingleton<IAccountUnificationRepository>(
@@ -191,6 +196,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   );
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
   container.addTransient<IZkBridgeService>(ZkBridgeService, Symbols.ZkBridgeService);
+  container.addTransient<ILzBridgeService>(LzBridgeService, Symbols.LzBridgeService);
   container.addSingleton<IAccountUnificationService>(
     AccountUnificationService,
     Symbols.AccountUnificationService

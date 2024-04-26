@@ -1,24 +1,20 @@
-import { ethers, constants as ethersConstants } from 'ethers';
+import { ethers } from 'ethers';
 import { debounce } from 'lodash-es';
-import { endpointKey } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
+import { checkAllowance } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
-import { Erc20Token } from 'src/modules/token';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
-  EthBridgeChainId,
-  EthBridgeContract,
-  EthBridgeNetworkName,
-  LayerZeroBridgeNetworkName,
+  LayerZeroChainId,
   LayerZeroId,
+  LayerZeroNetworkName,
+  LayerZeroToken,
   LayerZeroTokens,
-  ZkToken,
-  getNetworkId,
+  layerZeroId,
+  lzBridgeChainId,
 } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { IZkBridgeService } from 'src/v2/services';
+import { ILzBridgeService } from 'src/v2/services/ILzBridgeService';
 import { Symbols } from 'src/v2/symbols';
 import { WatchCallback, computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -36,22 +32,22 @@ const eth = {
 };
 
 export const useLayerZeroBridge = () => {
-  const l1Network = computed<EthBridgeNetworkName>(() => {
-    const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
-    return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
-      ? EthBridgeNetworkName.Ethereum
-      : EthBridgeNetworkName.Sepolia;
-  });
+  // const l1Network = computed<EthBridgeNetworkName>(() => {
+  //   const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  //   return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
+  //     ? EthBridgeNetworkName.Ethereum
+  //     : EthBridgeNetworkName.Sepolia;
+  // });
 
-  const l2Network = computed<EthBridgeNetworkName>(() => {
-    const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
-    return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
-      ? EthBridgeNetworkName.AstarZk
-      : EthBridgeNetworkName.Zkyoto;
-  });
+  // const l2Network = computed<EthBridgeNetworkName>(() => {
+  //   const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  //   return networkIdxStore === String(endpointKey.ASTAR_ZKEVM)
+  //     ? EthBridgeNetworkName.AstarZk
+  //     : EthBridgeNetworkName.Zkyoto;
+  // });
 
-  const zkTokens = ref<ZkToken[]>([]);
-  const selectedToken = ref<ZkToken>(eth);
+  const zkTokens = ref<LayerZeroToken[]>([]);
+  const selectedToken = ref<LayerZeroToken>(LayerZeroTokens[0]);
   const importTokenAddress = ref<string>('');
   const bridgeAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
@@ -59,8 +55,8 @@ export const useLayerZeroBridge = () => {
   const isGasPayable = ref<boolean | undefined>(undefined);
   const isLoadingGasPayable = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
-  const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
+  const fromChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarEvm);
+  const toChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarZk);
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
@@ -83,10 +79,19 @@ export const useLayerZeroBridge = () => {
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const fromChainId = computed<number>(
-    () => EthBridgeChainId[fromChainName.value as EthBridgeNetworkName]
+    () => lzBridgeChainId[fromChainName.value as LayerZeroNetworkName]
   );
+
+  const fromLzId = computed<LayerZeroId>(
+    () => layerZeroId[fromChainName.value as LayerZeroNetworkName]
+  );
+
   const toChainId = computed<number>(
-    () => EthBridgeChainId[toChainName.value as EthBridgeNetworkName]
+    () => lzBridgeChainId[toChainName.value as LayerZeroNetworkName]
+  );
+
+  const toLzId = computed<LayerZeroId>(
+    () => layerZeroId[toChainName.value as LayerZeroNetworkName]
   );
 
   const isDisabledBridge = computed<boolean>(() => {
@@ -95,7 +100,7 @@ export const useLayerZeroBridge = () => {
     return errMsg.value !== '' || isLessAmount;
   });
 
-  const setSelectedToken = (token: ZkToken): void => {
+  const setSelectedToken = (token: LayerZeroToken): void => {
     selectedToken.value = token;
   };
 
@@ -106,9 +111,10 @@ export const useLayerZeroBridge = () => {
   const setIsApproved = async (): Promise<void> => {
     const fromChainIdRef = fromChainId.value;
     const senderAddress = currentAccount.value;
-    const contractAddress = EthBridgeContract[fromChainName.value];
-    const tokenAddress = selectedToken.value.address;
-    const decimals = selectedToken.value.decimal;
+    const fromNetworkId = layerZeroId[fromChainName.value];
+    const contractAddress = selectedToken.value.oftBridgeContract[fromNetworkId];
+    const tokenAddress = selectedToken.value.tokenAddress[fromNetworkId];
+    const decimals = selectedToken.value.decimals[fromNetworkId];
     const amount = bridgeAmt.value ?? '0';
     if (tokenAddress === astarNativeTokenErcAddr) {
       isApproved.value = true;
@@ -123,7 +129,7 @@ export const useLayerZeroBridge = () => {
         tokenAddress,
       });
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
-      console.info('allowance: ', formattedAllowance, selectedToken.value.symbol);
+      console.info('allowance: ', formattedAllowance, selectedToken.value.symbol[fromNetworkId]);
       isApproved.value = Number(formattedAllowance) >= Number(amount);
     } catch (error) {
       console.error(error);
@@ -131,86 +137,76 @@ export const useLayerZeroBridge = () => {
     }
   };
 
-  const initZkTokens = async (): Promise<void> => {
-    const address = currentAccount.value;
-    const fromChainIdRef = fromChainId.value;
-    if (!address) return;
-    const tokensRaw = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
-    const tokensData = tokensRaw ? JSON.parse(tokensRaw) : [];
-    const filteredTokens =
-      tokensData.length > 0 &&
-      tokensData
-        .map((it: Erc20Token) => {
-          const isValidToken = it.bridgedTokenAddress && it.srcChainId === fromChainIdRef;
-          return isValidToken
-            ? {
-                address: it.address,
-                decimal: Number(it.decimal),
-                fromChainBalance: 0,
-                name: it.name,
-                symbol: it.symbol,
-                toChainBalance: 0,
-                toChainTokenAddress: it.bridgedTokenAddress,
-                image: it.image,
-                bridgeUrl: it.bridgeUrl,
-              }
-            : null;
-        })
-        .filter((it: Erc20Token) => it !== null && !it.bridgeUrl);
+  // const initZkTokens = async (): Promise<void> => {
+  //   const address = currentAccount.value;
+  //   const fromNetworkId = layerZeroId[fromChainName.value];
 
-    let tokens = [];
-    if (filteredTokens) {
-      tokens = [eth, ...filteredTokens];
-    } else {
-      tokens = [eth];
-    }
+  //   if (!address) return;
+  //   const filteredTokens = LayerZeroTokens.map((it: LayerZeroToken) => {
+  //     return {
+  //       address: it.tokenAddress[fromNetworkId],
+  //       decimal: Number(it.decimals[fromNetworkId]),
+  //       fromChainBalance: 0,
+  //       toChainBalance: 0,
+  //       name: it.name,
+  //       symbol: it.symbol,
+  //       image: it.image,
+  //     };
+  //   });
 
-    const balTokens = await Promise.all(
-      tokens.map(async (token: ZkToken) => {
-        let fromChainBalance = '0';
-        fromChainBalance = await getTokenBal({
-          address,
-          tokenAddress: token.address,
-          srcChainId: fromChainIdRef,
-          tokenSymbol: token.symbol,
-        });
-        return {
-          ...token,
-          fromChainBalance: Number(fromChainBalance),
-        };
-      })
-    );
+  //   let tokens = [];
+  //   if (filteredTokens) {
+  //     tokens = [eth, ...filteredTokens];
+  //   } else {
+  //     tokens = [eth];
+  //   }
 
-    const sortedTokens = balTokens
-      .sort((a, b) => {
-        if (a.symbol < b.symbol) {
-          return -1;
-        }
-        if (a.symbol > b.symbol) {
-          return 1;
-        }
-        return 0;
-      })
-      .sort((a, b) => Number(b.fromChainBalance) - Number(a.fromChainBalance));
+  //   const balTokens = await Promise.all(
+  //     tokens.map(async (token: ZkToken) => {
+  //       let fromChainBalance = '0';
+  //       fromChainBalance = await getTokenBal({
+  //         address,
+  //         tokenAddress: token.address,
+  //         srcChainId: fromChainIdRef,
+  //         tokenSymbol: token.symbol,
+  //       });
+  //       return {
+  //         ...token,
+  //         fromChainBalance: Number(fromChainBalance),
+  //       };
+  //     })
+  //   );
 
-    const moveEthToFront = (tokens: ZkToken[]): ZkToken[] => {
-      const ethIndex = tokens.findIndex((token) => token.symbol === 'ETH');
-      if (ethIndex > -1) {
-        // Memo: Remove the ETH token from its current position
-        const [ethToken] = tokens.splice(ethIndex, 1);
-        // Memo Add the ETH token to the beginning of the array
-        tokens.unshift(ethToken);
-      }
-      return tokens;
-    };
+  //   const sortedTokens = balTokens
+  //     .sort((a, b) => {
+  //       if (a.symbol < b.symbol) {
+  //         return -1;
+  //       }
+  //       if (a.symbol > b.symbol) {
+  //         return 1;
+  //       }
+  //       return 0;
+  //     })
+  //     .sort((a, b) => Number(b.fromChainBalance) - Number(a.fromChainBalance));
 
-    zkTokens.value = moveEthToFront(sortedTokens);
-  };
+  //   const moveEthToFront = (tokens: ZkToken[]): ZkToken[] => {
+  //     const ethIndex = tokens.findIndex((token) => token.symbol === 'ETH');
+  //     if (ethIndex > -1) {
+  //       // Memo: Remove the ETH token from its current position
+  //       const [ethToken] = tokens.splice(ethIndex, 1);
+  //       // Memo Add the ETH token to the beginning of the array
+  //       tokens.unshift(ethToken);
+  //     }
+  //     return tokens;
+  //   };
 
-  const setZkTokens = async (token: ZkToken): Promise<void> => {
-    zkTokens.value.push(token);
-    importTokenAddress.value = '';
-  };
+  //   zkTokens.value = moveEthToFront(sortedTokens);
+  // };
+
+  // const setZkTokens = async (token: ZkToken): Promise<void> => {
+  //   zkTokens.value.push(token);
+  //   importTokenAddress.value = '';
+  // };
 
   const inputHandler = (event: any): void => {
     bridgeAmt.value = event.target.value;
@@ -220,34 +216,34 @@ export const useLayerZeroBridge = () => {
     importTokenAddress.value = event.target.value;
   };
 
-  const setBridgeBalance = async () => {
-    if (
-      !currentAccount.value ||
-      !fromChainId.value ||
-      !selectedToken.value ||
-      !toChainId.value ||
-      !selectedToken.value.toChainTokenAddress
-    ) {
-      return;
-    }
-    const [fromBal, toBal] = await Promise.all([
-      getTokenBal({
-        address: currentAccount.value,
-        tokenAddress: selectedToken.value.address,
-        srcChainId: fromChainId.value,
-        tokenSymbol: selectedToken.value.symbol,
-      }),
-      getTokenBal({
-        address: currentAccount.value,
-        tokenAddress: selectedToken.value.toChainTokenAddress ?? '',
-        srcChainId: toChainId.value,
-        tokenSymbol: selectedToken.value.symbol,
-      }),
-    ]);
+  // const setBridgeBalance = async () => {
+  //   if (
+  //     !currentAccount.value ||
+  //     !fromChainId.value ||
+  //     !selectedToken.value ||
+  //     !toChainId.value ||
+  //     !selectedToken.value.toChainTokenAddress
+  //   ) {
+  //     return;
+  //   }
+  //   const [fromBal, toBal] = await Promise.all([
+  //     getTokenBal({
+  //       address: currentAccount.value,
+  //       tokenAddress: selectedToken.value.address,
+  //       srcChainId: fromChainId.value,
+  //       tokenSymbol: selectedToken.value.symbol,
+  //     }),
+  //     getTokenBal({
+  //       address: currentAccount.value,
+  //       tokenAddress: selectedToken.value.toChainTokenAddress ?? '',
+  //       srcChainId: toChainId.value,
+  //       tokenSymbol: selectedToken.value.symbol,
+  //     }),
+  //   ]);
 
-    fromBridgeBalance.value = Number(fromBal);
-    toBridgeBalance.value = Number(toBal);
-  };
+  //   fromBridgeBalance.value = Number(fromBal);
+  //   toBridgeBalance.value = Number(toBal);
+  // };
 
   const setErrorMsg = (): void => {
     if (isLoading.value) return;
@@ -276,8 +272,8 @@ export const useLayerZeroBridge = () => {
   };
 
   const reverseChain = async (
-    fromChain: EthBridgeNetworkName,
-    toChain: EthBridgeNetworkName
+    fromChain: LayerZeroNetworkName,
+    toChain: LayerZeroNetworkName
   ): Promise<void> => {
     fromChainName.value = toChain;
     toChainName.value = fromChain;
@@ -286,7 +282,7 @@ export const useLayerZeroBridge = () => {
     // await wait(waitDelay);
     // const t = zkTokens.value.find((it) => it.address === selectedToken.value.toChainTokenAddress);
     // setSelectedToken(t ? t : eth);
-    setSelectedToken(eth);
+    // setSelectedToken(eth);
     resetStates();
   };
 
@@ -324,41 +320,45 @@ export const useLayerZeroBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    if (!bridgeAmt.value || !selectedToken.value.address) return '';
-    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-    const amount = isApproveMaxAmount.value
-      ? ethersConstants.MaxUint256
-      : ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimal).toString();
-
-    return await zkBridgeService.approve({
-      amount,
-      fromChainName: fromChainName.value,
-      toChainName: toChainName.value,
-      senderAddress: currentAccount.value,
-      tokenAddress: selectedToken.value.address,
-      decimal: selectedToken.value.decimal,
-    });
+    // if (!bridgeAmt.value || !selectedToken.value.address) return '';
+    // const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
+    // const amount = isApproveMaxAmount.value
+    //   ? ethersConstants.MaxUint256
+    //   : ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimal).toString();
+    // return await lzBridgeService.approve({
+    //   amount,
+    //   fromChainName: fromChainName.value,
+    //   toChainName: toChainName.value,
+    //   senderAddress: currentAccount.value,
+    //   tokenAddress: selectedToken.value.address,
+    //   decimal: selectedToken.value.decimal,
+    // });
+    return '';
   };
 
   const handleBridge = async (): Promise<String> => {
-    // if (!bridgeAmt.value || !selectedToken.value.address) return '';
+    console.log('handleBridge');
+    // if (!bridgeAmt.value) return '';
     // if (!isApproved.value) {
     //   throw Error('Please approve first');
     // }
-    const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
+    const amount = Number(bridgeAmt.value);
 
-    const tokenAddress = astarNativeTokenErcAddr;
-    const token = LayerZeroTokens[1];
-    const amount = 0.06;
+    const isNativeToken =
+      fromChainName.value === LayerZeroNetworkName.AstarEvm &&
+      selectedToken.value.symbol === 'ASTR';
 
-    const hash = await zkBridgeService.bridgeLzAsset({
+    console.log('amount', amount);
+    const hash = await lzBridgeService.bridgeLzAsset({
       senderAddress: currentAccount.value,
       amount,
       minAmount: amount * 0.995,
-      fromNetworkId: LayerZeroId.AstarZk,
-      destNetworkId: LayerZeroId.AstarEvm,
-      tokenAddress,
-      token,
+      fromNetworkId: layerZeroId[fromChainName.value],
+      destNetworkId: layerZeroId[toChainName.value],
+      tokenAddress: selectedToken.value.tokenAddress[fromLzId.value],
+      isNativeToken,
+      token: selectedToken.value,
     });
     await setIsApproved();
     bridgeAmt.value = '';
@@ -367,26 +367,25 @@ export const useLayerZeroBridge = () => {
   };
 
   const setIsGasPayable = async (): Promise<void> => {
-    if (!bridgeAmt.value || !selectedToken.value.address || !isApproved.value) return;
-    try {
-      isLoadingGasPayable.value = true;
-      const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
-      const destNetworkId = await getNetworkId(toChainName.value);
-
-      isGasPayable.value = await zkBridgeService.dryRunBridgeAsset({
-        amount: bridgeAmt.value,
-        fromChainName: fromChainName.value,
-        toChainName: toChainName.value,
-        senderAddress: currentAccount.value,
-        tokenAddress: selectedToken.value.address,
-        decimal: selectedToken.value.decimal,
-        destNetworkId,
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      isLoadingGasPayable.value = false;
-    }
+    // if (!bridgeAmt.value || !selectedToken.value.address || !isApproved.value) return;
+    // try {
+    //   isLoadingGasPayable.value = true;
+    //   const zkBridgeService = container.get<IZkBridgeService>(Symbols.ZkBridgeService);
+    //   const destNetworkId = await getNetworkId(toChainName.value);
+    //   isGasPayable.value = await zkBridgeService.dryRunBridgeAsset({
+    //     amount: bridgeAmt.value,
+    //     fromChainName: fromChainName.value,
+    //     toChainName: toChainName.value,
+    //     senderAddress: currentAccount.value,
+    //     tokenAddress: selectedToken.value.address,
+    //     decimal: selectedToken.value.decimal,
+    //     destNetworkId,
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   isLoadingGasPayable.value = false;
+    // }
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
@@ -394,10 +393,10 @@ export const useLayerZeroBridge = () => {
     immediate: true,
   });
 
-  watch([fromChainName, toChainName, currentAccount, selectedToken], setBridgeBalance, {
-    immediate: true,
-  });
-  watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
+  // watch([fromChainName, toChainName, currentAccount, selectedToken], setBridgeBalance, {
+  //   immediate: true,
+  // });
+  // watch([currentAccount, fromChainName], initZkTokens, { immediate: true });
 
   const debounceDelay = 500;
   const debounceIsGasPayable = 1000;
@@ -445,7 +444,7 @@ export const useLayerZeroBridge = () => {
     isApproveMaxAmount,
     setIsApproving,
     setSelectedToken,
-    setZkTokens,
+    // setZkTokens,
     inputHandler,
     inputImportTokenHandler,
     resetStates,

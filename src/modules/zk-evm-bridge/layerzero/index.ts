@@ -1,6 +1,6 @@
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
-export enum LayerZeroBridgeNetworkName {
+export enum LayerZeroNetworkName {
   'AstarZk' = 'Astar zkEVM',
   'AstarEvm' = 'Astar EVM',
 }
@@ -9,6 +9,27 @@ export enum LayerZeroId {
   'AstarZk' = 257,
   'AstarEvm' = 210,
 }
+
+export enum LayerZeroChainId {
+  'AstarZk' = 3776,
+  'Astar' = 592,
+}
+
+export const lzBridgeIcon = {
+  [LayerZeroNetworkName.AstarEvm]: require('src/assets/img/chain/astar.png'),
+  [LayerZeroNetworkName.AstarZk]: require('src/assets/img/chain/zkatana-logo.png'),
+} as any;
+
+export const lzBridgeChainId = {
+  [LayerZeroNetworkName.AstarEvm]: LayerZeroChainId.Astar,
+  [LayerZeroNetworkName.AstarZk]: LayerZeroChainId.AstarZk,
+};
+
+export const layerZeroId = {
+  [LayerZeroNetworkName.AstarEvm]: LayerZeroId.AstarEvm,
+  [LayerZeroNetworkName.AstarZk]: LayerZeroId.AstarZk,
+};
+
 export interface LayerZeroToken {
   symbol: string;
   name: string;
