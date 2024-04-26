@@ -115,7 +115,7 @@ export function useDataCalculations() {
 
     // Determine number of used dApp slots per tier.
     for (let dapp of dappTierRewards.dapps) {
-      if (dapp.tierId !== undefined) {
+      if (dapp.tierId) {
         const dappsInTier = slotsPerTier.get(dapp.tierId) ?? 0;
         slotsPerTier.set(dapp.tierId, dappsInTier + 1);
       }
