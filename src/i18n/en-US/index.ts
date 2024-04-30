@@ -1038,8 +1038,8 @@ export default {
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
-    warningHighTraffic: 'Deposit is currently being disabled due to maintenance.',
-    warningHighTrafficMore: '(read more)',
+    warningMessage: 'Deposit is currently being disabled due to maintenance.',
+    warningMore: '(read more)',
     modals: {
       highTraffic: {
         text1:

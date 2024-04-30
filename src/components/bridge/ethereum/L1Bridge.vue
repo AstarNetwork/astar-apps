@@ -136,9 +136,9 @@
 
       <div v-if="isZkEvmDeposit" class="row--box-error">
         <span class="color--white">
-          {{ $t('bridge.warningHighTraffic') }}
+          {{ $t('bridge.warningMessage') }}
           <!-- <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
-            {{ $t('bridge.warningHighTrafficMore') }}
+            {{ $t('bridge.warningMore') }}
           </a> -->
         </span>
       </div>
