@@ -134,7 +134,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div v-if="isWarningHighTraffic" class="row--box-error">
+      <div v-if="isZkEvmDeposit" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.warningHighTraffic') }}
           <!-- <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
@@ -153,14 +153,14 @@
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading || isZkEvmDeposit"
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading || isZkEvmDeposit"
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -278,7 +278,7 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
-    const isWarningHighTraffic = computed<boolean>(
+    const isZkEvmDeposit = computed<boolean>(
       () => props.toChainName === EthBridgeNetworkName.AstarZk
     );
 
@@ -334,7 +334,7 @@ export default defineComponent({
       approve,
       isHighTrafficModalOpen,
       setHighTrafficModalOpen,
-      isWarningHighTraffic,
+      isZkEvmDeposit,
     };
   },
 });
