@@ -137,9 +137,9 @@
       <div v-if="isWarningHighTraffic" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.warningHighTraffic') }}
-          <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
+          <!-- <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
             {{ $t('bridge.warningHighTrafficMore') }}
-          </a>
+          </a> -->
         </span>
       </div>
 
@@ -279,7 +279,7 @@ export default defineComponent({
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
     const isWarningHighTraffic = computed<boolean>(
-      () => props.fromChainName === EthBridgeNetworkName.AstarZk
+      () => props.toChainName === EthBridgeNetworkName.AstarZk
     );
 
     const setHighTrafficModalOpen = (value: boolean): void => {

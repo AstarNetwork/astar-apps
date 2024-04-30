@@ -1039,7 +1039,7 @@ export default {
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
-      'High bridge traffic may delay withdrawal transactions up to 20 hours. We appreciate your patience.',
+      'Deposits from Ethereum to Astar zkEVM are taking longer than usual and up to several days. We are currently investigating this issue. Please take this into account before using the native bridge.',
     warningHighTrafficMore: '(read more)',
     modals: {
       highTraffic: {
