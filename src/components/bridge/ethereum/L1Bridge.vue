@@ -134,12 +134,12 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div v-if="isZkEvmDeposit" class="row--box-error">
+      <div v-if="isWarningHighTraffic" class="row--box-error">
         <span class="color--white">
-          {{ $t('bridge.warningMessage') }}
-          <!-- <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
-            {{ $t('bridge.warningMore') }}
-          </a> -->
+          {{ $t('bridge.warningHighTraffic') }}
+          <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
+            {{ $t('bridge.warningHighTrafficMore') }}
+          </a>
         </span>
       </div>
 
@@ -153,14 +153,14 @@
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isDisabledBridge || isHandling || isLoading || isZkEvmDeposit"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading || isZkEvmDeposit"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -278,8 +278,8 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
-    const isZkEvmDeposit = computed<boolean>(
-      () => props.toChainName === EthBridgeNetworkName.AstarZk
+    const isWarningHighTraffic = computed<boolean>(
+      () => props.fromChainName === EthBridgeNetworkName.AstarZk
     );
 
     const setHighTrafficModalOpen = (value: boolean): void => {
@@ -334,7 +334,7 @@ export default defineComponent({
       approve,
       isHighTrafficModalOpen,
       setHighTrafficModalOpen,
-      isZkEvmDeposit,
+      isWarningHighTraffic,
     };
   },
 });
