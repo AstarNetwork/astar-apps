@@ -42,6 +42,7 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     param: ParamBridgeLzAsset;
     web3: Web3;
   }): Promise<{ txParam: TransactionConfig; nativeFee: number }> {
+    console.log('param', param);
     const { token, fromNetworkId, destNetworkId, senderAddress, amount, minAmount, isNativeToken } =
       param;
 
@@ -56,7 +57,6 @@ export class LzBridgeRepository implements ILzBridgeRepository {
 
     // Ref: https://docs.layerzero.network/v1/developers/evm-guides/contract-standards/oft-v1.2#how-to-deploy-proxyoft-and-oft-contracts
     const minDstGas = await contract.methods.minDstGasLookup(destNetworkId, 1).call();
-    console.log('destNetworkId:', destNetworkId);
     console.log('minDstGas', minDstGas);
 
     // This will work if I send more than 30 ASTR
@@ -79,7 +79,6 @@ export class LzBridgeRepository implements ILzBridgeRepository {
       .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, adapterParams)
       // .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, '0x')
       .call();
-    console.log('param', param);
 
     const data = contract.methods
       .sendFrom(
@@ -91,8 +90,6 @@ export class LzBridgeRepository implements ILzBridgeRepository {
         callParams
       )
       .encodeABI();
-    console.log('data', data);
-    console.log('fee', fee);
 
     // Memo: increasing 20% of the fee to avoid transactions stacking. This is the same amount of increasing percentage as LayerZero does.
     // Ref: https://github.com/LayerZero-Labs/mainnet-testnet-bridge/blob/9c80a2c5bfaa64bee5f98c7cd450010f8eecca19/tasks/swapAndBridge.js#L13

@@ -226,6 +226,7 @@ export const useLayerZeroBridge = () => {
     const selectedTokenRef = selectedToken.value;
     const isGasPayableRef = isGasPayable.value;
     const isBalanceNotEnough = !isGasPayableRef && bridgeAmtRef > 0 && isApproved.value;
+
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
         errMsg.value = t('warning.insufficientBalance', {
