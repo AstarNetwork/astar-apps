@@ -170,11 +170,12 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   public async unlockTokens(
     senderAddress: string,
     amount: number,
+    isLockdrop: boolean,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const call = await this.dappStakingRepository.getUnlockCall(amount);
+    const call = await this.dappStakingRepository.getUnlockCall(amount, isLockdrop);
     await this.signCall(call, senderAddress, successMessage);
   }
 

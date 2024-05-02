@@ -101,8 +101,9 @@ export interface IDappStakingRepository {
   /**
    * Gets unlock call.
    * @param amount Amount of tokens to unlock.
+   * @param isLockdrop result of if it is a lockdrop account.
    */
-  getUnlockCall(amount: number): Promise<ExtrinsicPayload>;
+  getUnlockCall(amount: number, isLockdrop: boolean): Promise<ExtrinsicPayload>;
 
   /**
    * Gets batch call made of unstake and unlock calls.

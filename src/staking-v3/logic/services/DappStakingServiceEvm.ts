@@ -92,11 +92,12 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   public async unlockTokens(
     senderAddress: string,
     amount: number,
+    isLockdrop: boolean,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
 
-    const call = await this.dappStakingRepository.getUnlockCall(amount);
+    const call = await this.dappStakingRepository.getUnlockCall(amount, false);
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
