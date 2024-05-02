@@ -306,7 +306,9 @@ export const useLayerZeroBridge = () => {
 
   const calcMinAmount = (amount: number): number => {
     // Memo: LayerZeroSlippage: 0.5%
-    return amount * (1 - LayerZeroSlippage / 100);
+    const result = amount * (1 - LayerZeroSlippage / 100);
+    // Memo: resolve the issue due to the limitations of floating-point precision in JS.
+    return parseFloat(result.toFixed(5));
   };
 
   const handleBridge = async (): Promise<String> => {

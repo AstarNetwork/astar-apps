@@ -76,10 +76,10 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     const decimal = token.decimals[fromNetworkId];
     const qty = ethers.utils.parseUnits(String(amount), decimal);
     const fee = await contract.methods
-      // .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, adapterParams)
-      .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, '0x')
+      .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, adapterParams)
+      // .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, '0x')
       .call();
-    console.log('fee', fee);
+    console.log('param', param);
 
     const data = contract.methods
       .sendFrom(
@@ -91,11 +91,13 @@ export class LzBridgeRepository implements ILzBridgeRepository {
         callParams
       )
       .encodeABI();
+    console.log('data', data);
+    console.log('fee', fee);
 
     // Memo: increasing 20% of the fee to avoid transactions stacking. This is the same amount of increasing percentage as LayerZero does.
     // Ref: https://github.com/LayerZero-Labs/mainnet-testnet-bridge/blob/9c80a2c5bfaa64bee5f98c7cd450010f8eecca19/tasks/swapAndBridge.js#L13
-    const nativeFee = Number(ethers.utils.formatEther(String(Number(fee[0] * 1.2))));
-
+    const increasedFee = Number(ethers.utils.formatEther(fee[0])) * 1.2;
+    const nativeFee = Number(parseFloat(String(increasedFee)).toFixed(5));
     const value = ethers.utils
       .parseEther(String(isNativeToken ? amount + nativeFee : nativeFee))
       .toString();
