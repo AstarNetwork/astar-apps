@@ -41,7 +41,7 @@ export class LzBridgeService implements ILzBridgeService {
     return;
   }
 
-  public async approve(param: ParamApprove): Promise<String> {
+  public async approve(param: ParamApprove): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 
@@ -60,7 +60,7 @@ export class LzBridgeService implements ILzBridgeService {
     return transactionHash;
   }
 
-  public async bridgeLzAsset(param: ParamBridgeLzAsset): Promise<String> {
+  public async bridgeLzAsset(param: ParamBridgeLzAsset): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
     await this.checkConnectedNetwork(param.fromChainId, web3);

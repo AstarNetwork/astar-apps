@@ -36,3 +36,43 @@ export const addTxHistories = ({
     txs,
   });
 };
+
+// Memo: store users lz bridge histories to browser's local-storage
+export const addLzHistories = ({
+  hash,
+  type,
+  address,
+  amount,
+  symbol,
+  fromChainId,
+}: {
+  hash: string;
+  type: HistoryTxType;
+  address: string;
+  amount: string;
+  symbol: string;
+  fromChainId: number;
+}): void => {
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const network = getNetworkName(Number(networkIdx));
+  if (network === 'development') return;
+
+  const txs = getAccountHistories({ storageKey: TX_HISTORIES, address, network }) as TxHistory[];
+  const data = {
+    hash,
+    type,
+    timestamp: getTimestamp(),
+    data: {
+      amount,
+      symbol,
+    },
+  };
+  txs.unshift(data);
+
+  updateAccountHistories({
+    storageKey: TX_HISTORIES,
+    address,
+    network,
+    txs,
+  });
+};

@@ -28,7 +28,10 @@ export type RecentHistoryTxType =
   | 'BondAndStake'
   | 'NominationTransfer'
   | 'UnbondAndUnstake'
-  | 'Reward';
+  | 'Reward'
+  | 'LayerZeroBridge';
+
+export type LayerZeroStatus = 'SENT' | 'INFLIGHT' | 'DELIVERED' | 'FAILED';
 
 export interface RecentHistory {
   timestamp: string;
@@ -43,4 +46,14 @@ export interface RecentStakeHistory {
   timestamp: string;
   amount: string;
   explorerUrl: string;
+}
+
+export interface RecentLzHistory {
+  timestamp: string;
+  txType: RecentHistoryTxType;
+  amount: string;
+  symbol: string;
+  note: string;
+  explorerUrl: string;
+  status?: LayerZeroStatus;
 }

@@ -22,6 +22,8 @@ import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
 import { showLoading } from 'src/modules/extrinsic/utils';
+import { HistoryTxType, addTxHistories } from 'src/modules/account';
+import { addLzHistories } from 'src/modules/account/utils';
 
 export const useLayerZeroBridge = () => {
   const lzTokens = ref<LayerZeroToken[]>([]);
@@ -335,6 +337,14 @@ export const useLayerZeroBridge = () => {
     await setIsApproved();
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
+    addLzHistories({
+      hash: hash,
+      type: HistoryTxType.ZK_LZ_BRIDGE,
+      address: currentAccount.value,
+      amount: bridgeAmt.value,
+      symbol: selectedToken.value.symbol,
+      fromChainId: fromChainId.value,
+    });
     return hash;
   };
 
@@ -387,7 +397,7 @@ export const useLayerZeroBridge = () => {
     immediate: true,
   });
 
-  watch([bridgeAmt, fromChainName], debouncedSetIsGasPayable, {
+  watch([bridgeAmt, fromChainName, currentAccount], debouncedSetIsGasPayable, {
     immediate: false,
   });
 

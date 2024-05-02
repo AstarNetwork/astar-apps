@@ -1,8 +1,8 @@
 import { LayerZeroChainId, LayerZeroId, LayerZeroToken } from 'src/modules/zk-evm-bridge';
 
 export interface ILzBridgeService {
-  approve(param: ParamApprove): Promise<String>;
-  bridgeLzAsset(param: ParamBridgeLzAsset): Promise<String>;
+  approve(param: ParamApprove): Promise<string>;
+  bridgeLzAsset(param: ParamBridgeLzAsset): Promise<string>;
   dryRunBridgeAsset(param: ParamBridgeLzAsset): Promise<{ isGasPayable: boolean; fee: number }>;
 }
 

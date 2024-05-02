@@ -56,6 +56,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useLayerZeroBridge } from '../../../hooks/bridge/useLayerZeroBridge';
 import { LayerZeroToken } from '../../../modules/zk-evm-bridge/layerzero/index';
+import { useLayerZeroHistory } from '../../../hooks/bridge/useLayerZeroHistory';
 
 export default defineComponent({
   components: {
@@ -94,6 +95,7 @@ export default defineComponent({
       handleApprove,
       setIsApproving,
     } = useLayerZeroBridge();
+    useLayerZeroHistory();
 
     const { currentAccount } = useAccount();
     const router = useRouter();
