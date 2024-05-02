@@ -1,5 +1,7 @@
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
+export const LayerZeroSlippage = 0.5;
+
 export enum LayerZeroNetworkName {
   'AstarZk' = 'Astar zkEVM',
   'AstarEvm' = 'Astar EVM',
@@ -46,6 +48,8 @@ export interface LayerZeroToken {
     [LayerZeroId.AstarZk]: number;
   };
   image: string;
+  fromChainBalance?: number;
+  toChainBalance?: number;
 }
 
 export const LayerZeroTokens: LayerZeroToken[] = [
@@ -64,7 +68,7 @@ export const LayerZeroTokens: LayerZeroToken[] = [
       [LayerZeroId.AstarEvm]: 18,
       [LayerZeroId.AstarZk]: 18,
     },
-    image: 'https://assets.coingecko.com/coins/images/22617/standard/astr.png?1696521933',
+    image: require('/src/assets/img/token/astr.png'),
   },
   {
     symbol: 'DOT',
@@ -81,6 +85,6 @@ export const LayerZeroTokens: LayerZeroToken[] = [
       [LayerZeroId.AstarEvm]: 10,
       [LayerZeroId.AstarZk]: 18,
     },
-    image: 'https://assets.coingecko.com/coins/images/22617/standard/astr.png?1696521933',
+    image: require('/src/assets/img/token/dot.png'),
   },
 ];

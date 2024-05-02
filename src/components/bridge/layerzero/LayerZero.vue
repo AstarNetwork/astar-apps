@@ -7,7 +7,7 @@
           :set-right-ui="setRightUi"
           :bridge-amt="String(bridgeAmt)"
           :err-msg="errMsg"
-          :is-disabled-bridge="isDisabledBridge || !isGelatoApiConnected"
+          :is-disabled-bridge="isDisabledBridge"
           :from-bridge-balance="fromBridgeBalance"
           :to-bridge-balance="toBridgeBalance"
           :from-chain-name="fromChainName"
@@ -20,6 +20,7 @@
           :handle-approve="handleApprove"
           :set-is-approving="setIsApproving"
           :is-approve-max-amount="isApproveMaxAmount"
+          :transaction-fee="transactionFee"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
         <information
@@ -27,41 +28,40 @@
           :transfer-type="HistoryTxType.ZK_ETHEREUM_BRIDGE"
           :is-history="false"
         />
-        <!-- <select-token
+        <select-token
           v-if="rightUi === 'select-token'"
           v-click-away="cancelHighlight"
           :set-token="handleSetToken"
-          :tokens="zkTokens"
+          :tokens="lzTokens"
           :input-import-token-handler="inputImportTokenHandler"
           :import-token-address="importTokenAddress"
           :from-chain-id="fromChainId"
           :from-chain-name="fromChainName"
           :to-chain-name="toChainName"
-          :set-zk-tokens="setZkTokens"
-        /> -->
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
-import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
-import SelectToken from 'src/components/bridge/common/SelectToken.vue';
-import { useAccount, useBreakpoints, useL1Bridge, useL1History } from 'src/hooks';
-import { HistoryTxType } from 'src/modules/account';
-import { ZkToken } from 'src/modules/zk-evm-bridge';
-import { defineComponent, ref, computed, watch } from 'vue';
 import Information from 'src/components/assets/transfer/Information.vue';
+import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
 import LzBridge from 'src/components/bridge/layerzero/LzBridge.vue';
+import SelectToken from 'src/components/bridge/layerzero/SelectToken.vue';
+import { useAccount, useBreakpoints } from 'src/hooks';
+import { HistoryTxType } from 'src/modules/account';
+import { computed, defineComponent, ref } from 'vue';
 
 import { useRoute, useRouter } from 'vue-router';
 import { useLayerZeroBridge } from '../../../hooks/bridge/useLayerZeroBridge';
+import { LayerZeroToken } from '../../../modules/zk-evm-bridge/layerzero/index';
 
 export default defineComponent({
   components: {
     Information,
     LzBridge,
-    // SelectToken,
+    SelectToken,
   },
   setup() {
     const isBridge = ref<boolean>(true);
@@ -69,16 +69,6 @@ export default defineComponent({
     const isModalSelectToken = ref<boolean>(false);
 
     const { screenSize, width } = useBreakpoints();
-    const {
-      histories,
-      isLoadingHistories,
-      l1Network,
-      l2Network,
-      isActionRequired,
-      isGelatoApiConnected,
-      fetchUserHistory,
-      handleClaim,
-    } = useL1History();
 
     const {
       bridgeAmt,
@@ -90,16 +80,16 @@ export default defineComponent({
       toChainName,
       importTokenAddress,
       fromChainId,
-      zkTokens,
+      lzTokens,
       selectedToken,
       isApproved,
       isApproving,
       isApproveMaxAmount,
+      transactionFee,
       inputHandler,
       reverseChain,
       handleBridge,
       inputImportTokenHandler,
-      // setZkTokens,
       setSelectedToken,
       handleApprove,
       setIsApproving,
@@ -136,8 +126,8 @@ export default defineComponent({
       isModalSelectToken.value = isOpen;
     };
 
-    const handleSetToken = async (t: ZkToken): Promise<void> => {
-      // setSelectedToken(t);
+    const handleSetToken = async (t: LayerZeroToken): Promise<void> => {
+      setSelectedToken(t);
       await setRightUi('information');
       isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
     };
@@ -146,15 +136,10 @@ export default defineComponent({
       currentAccount,
       isBridge,
       HistoryTxType,
-      histories,
-      isLoadingHistories,
-      l1Network,
-      l2Network,
-      isActionRequired,
       isModalSelectToken,
       rightUi,
       isHighlightRightUi,
-      zkTokens,
+      lzTokens,
       selectedToken,
       importTokenAddress,
       bridgeAmt,
@@ -168,17 +153,14 @@ export default defineComponent({
       isApproved,
       isApproving,
       isApproveMaxAmount,
-      isGelatoApiConnected,
+      transactionFee,
       inputImportTokenHandler,
       cancelHighlight,
       handleSetToken,
       setRightUi,
-      fetchUserHistory,
-      handleClaim,
       inputHandler,
       reverseChain,
       handleBridge,
-      // setZkTokens,
       setSelectedToken,
       handleApprove,
       setIsApproving,

@@ -23,15 +23,23 @@
           </div>
         </div>
       </div>
-      <div class="row--reverse">
+      <div v-if="isEnabledWithdrawal" class="row--reverse">
+        <button
+          class="icon--reverse cursor-pointer"
+          @click="() => reverseChain(fromChainName, toChainName)"
+        >
+          <astar-icon-sync size="20" />
+        </button>
+      </div>
+      <div v-else class="row--reverse">
         <button class="icon--reverse" disabled>
           <astar-icon-sync size="20" />
         </button>
-        <!-- <q-tooltip>
+        <q-tooltip>
           <span class="text--tooltip">
             {{ $t('bridge.disabledWithdrawal', { network: fromChainName }) }}
           </span>
-        </q-tooltip> -->
+        </q-tooltip>
       </div>
       <div class="box--input-field">
         <div class="box__space-between">
@@ -116,22 +124,30 @@
 
       <div class="container--warning">
         <ul>
-          <li>{{ $t('bridge.warning32blocks') }}</li>
-          <li>{{ $t('bridge.warning2steps') }}</li>
+          <li>{{ $t('bridge.slippage', { percent: LayerZeroSlippage }) }}</li>
+          <li>
+            {{
+              $t('bridge.feeOnTransaction', {
+                amount: $n(truncate(transactionFee, nativeTokenSymbol === 'ASTR' ? 4 : 6)),
+                symbol: nativeTokenSymbol,
+              })
+            }}
+          </li>
+          <li>{{ $t('bridge.warningLzWithdrawal') }}</li>
         </ul>
       </div>
 
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isHandling || isLoading"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isHandling || isLoading"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -142,6 +158,7 @@
 </template>
 
 <script lang="ts">
+import { truncate } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
@@ -149,7 +166,7 @@ import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { LayerZeroId, LayerZeroNetworkName } from '../../../modules/zk-evm-bridge/layerzero/index';
+import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
 
 export default defineComponent({
   components: {
@@ -183,6 +200,14 @@ export default defineComponent({
     },
     isApproveMaxAmount: {
       type: Boolean,
+      required: true,
+    },
+    isDisabledBridge: {
+      type: Boolean,
+      required: true,
+    },
+    transactionFee: {
+      type: Number,
       required: true,
     },
     fromBridgeBalance: {
@@ -224,9 +249,14 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const nativeTokenSymbol = computed<string>(() => {
+      return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
+    });
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isEnabledWithdrawal = computed<boolean>(() => true);
+
     const isNativeToken = computed<boolean>(() => {
       return (
         props.fromChainName === LayerZeroNetworkName.AstarEvm &&
@@ -273,6 +303,10 @@ export default defineComponent({
       isHandling,
       isLoading,
       isNativeToken,
+      isEnabledWithdrawal,
+      LayerZeroSlippage,
+      nativeTokenSymbol,
+      truncate,
       bridge,
       approve,
     };

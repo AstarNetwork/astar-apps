@@ -1,8 +1,9 @@
-import { LayerZeroId, LayerZeroToken } from 'src/modules/zk-evm-bridge';
+import { LayerZeroChainId, LayerZeroId, LayerZeroToken } from 'src/modules/zk-evm-bridge';
 
 export interface ILzBridgeService {
-  approve(param: ParamBridgeLzAsset): Promise<String>;
+  approve(param: ParamApprove): Promise<String>;
   bridgeLzAsset(param: ParamBridgeLzAsset): Promise<String>;
+  dryRunBridgeAsset(param: ParamBridgeLzAsset): Promise<{ isGasPayable: boolean; fee: number }>;
 }
 
 export interface ParamBridgeLzAsset {
@@ -11,7 +12,16 @@ export interface ParamBridgeLzAsset {
   minAmount: number;
   destNetworkId: LayerZeroId;
   fromNetworkId: LayerZeroId;
+  fromChainId: LayerZeroChainId;
   tokenAddress: string;
   isNativeToken: boolean;
   token: LayerZeroToken;
+}
+
+export interface ParamApprove {
+  contractAddress: string;
+  tokenAddress: string;
+  amount: string;
+  senderAddress: string;
+  fromChainId: LayerZeroChainId;
 }
