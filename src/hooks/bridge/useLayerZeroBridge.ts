@@ -1,7 +1,7 @@
 import { ethers, constants as ethersConstants } from 'ethers';
 import { debounce } from 'lodash-es';
 import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
   LayerZeroId,
@@ -26,6 +26,8 @@ import { HistoryTxType, addLzHistories } from 'src/modules/account';
 import { isHex } from '@polkadot/util';
 
 export const useLayerZeroBridge = () => {
+  const { isAstar } = useNetworkInfo();
+
   const lzTokens = ref<LayerZeroToken[]>([]);
   const selectedToken = ref<LayerZeroToken>(LayerZeroTokens[0]);
   const importTokenAddress = ref<string>('');
@@ -35,8 +37,12 @@ export const useLayerZeroBridge = () => {
   const isGasPayable = ref<boolean | undefined>(undefined);
   const isLoadingGasPayable = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarEvm);
-  const toChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarZk);
+  const fromChainName = ref<LayerZeroNetworkName>(
+    isAstar.value ? LayerZeroNetworkName.AstarEvm : LayerZeroNetworkName.AstarZk
+  );
+  const toChainName = ref<LayerZeroNetworkName>(
+    isAstar.value ? LayerZeroNetworkName.AstarZk : LayerZeroNetworkName.AstarEvm
+  );
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
@@ -211,6 +217,7 @@ export const useLayerZeroBridge = () => {
         }),
       ]);
 
+      console.log('fromChainBalance', fromChainBalance);
       fromBridgeBalance.value = Number(fromChainBalance);
       toBridgeBalance.value = Number(toChainBalance);
     } catch (error) {
@@ -355,6 +362,7 @@ export const useLayerZeroBridge = () => {
 
   const setIsGasPayable = async (): Promise<void> => {
     try {
+      if (errMsg.value || !currentAccount.value) return;
       isLoadingGasPayable.value = true;
       const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
       const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.01;
@@ -402,9 +410,13 @@ export const useLayerZeroBridge = () => {
     immediate: true,
   });
 
-  watch([bridgeAmt, fromChainName, currentAccount], debouncedSetIsGasPayable, {
-    immediate: false,
-  });
+  watch(
+    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    debouncedSetIsGasPayable,
+    {
+      immediate: false,
+    }
+  );
 
   watch([selectedToken, fromChainId], resetStates, {
     immediate: false,

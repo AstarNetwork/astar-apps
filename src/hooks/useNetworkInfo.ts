@@ -33,6 +33,7 @@ export function useNetworkInfo() {
   const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -121,5 +122,6 @@ export function useNetworkInfo() {
     isAstarZkEvm,
     isAstar,
     dappStakingCurrency,
+    isH160,
   };
 }

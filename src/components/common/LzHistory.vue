@@ -1,8 +1,14 @@
 <template>
   <a :href="tx.explorerUrl" target="_blank" rel="noopener noreferrer" class="box--history">
     <div class="history--left">
-      <div class="icon--check">
+      <div
+        v-if="tx.status !== 'FAILED'"
+        :class="tx.status === 'DELIVERED' ? 'icon--check' : 'icon--pending'"
+      >
         <astar-icon-circle-check size="20" />
+      </div>
+      <div v-else class="icon--failed">
+        <astar-icon-circle-close size="20" />
       </div>
       <div class="history-description">
         <p>{{ time }}</p>

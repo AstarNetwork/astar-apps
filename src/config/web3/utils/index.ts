@@ -364,13 +364,13 @@ export const handleCheckProviderChainId = async (provider: any): Promise<boolean
 
 export const addressToBytes32 = (address: string): string => {
   if (!address.startsWith('0x')) {
-    throw new Error('Address must start with 0x');
+    throw Error('Address must start with 0x');
   }
   const abiCoder = new ethers.utils.AbiCoder();
   const byte32Address = abiCoder.encode(['address'], [address]);
 
   if (byte32Address.length !== 66) {
-    throw new Error('There is an error with formatting address');
+    throw Error('There is an error with formatting address');
   }
 
   return byte32Address;

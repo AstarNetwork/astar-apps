@@ -24,6 +24,7 @@ export {
   getHeaderName,
   buildXvmTransferPageLink,
   buildEthereumBridgePageLink,
+  buildLzBridgePageLink,
 } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);

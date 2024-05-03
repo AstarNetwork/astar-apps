@@ -102,6 +102,7 @@ import { computed, defineComponent, PropType, ref, watchEffect, onUnmounted } fr
 import { RecentLzHistory } from '../../../modules/information/index';
 import { getLzTxHistories } from '../../../modules/information/recent-history/transfer/index';
 import { LOCAL_STORAGE } from '../../../config/localStorage';
+import { endpointKey, providerEndpoints } from '../../../config/chainEndpoints';
 
 export default defineComponent({
   components: { TransactionHistory, LzHistory },
@@ -122,7 +123,7 @@ export default defineComponent({
     const lztTxHistories = ref<RecentLzHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
     const { senderSs58Account, isMultisig, currentAccount } = useAccount();
-    const { currentNetworkName } = useNetworkInfo();
+    const { currentNetworkName, isAstarZkEvm } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const faqs = computed<Faq[]>(() => {
@@ -135,12 +136,18 @@ export default defineComponent({
       if (props.transferType === HistoryTxType.ZK_ETHEREUM_BRIDGE) {
         return faqZkEthereumBridge;
       }
+      if (props.transferType === HistoryTxType.LZ_BRIDGE) {
+        return faqZkEthereumBridge;
+      }
       return faqSs58XvmTransfer;
     });
 
     const setTxHistories = async (): Promise<void> => {
       if (!senderSs58Account.value || !currentNetworkName.value) return;
-      const network = currentNetworkName.value.toLowerCase();
+      const network = isAstarZkEvm.value
+        ? providerEndpoints[endpointKey.ASTAR_ZKEVM].networkAlias
+        : currentNetworkName.value.toLowerCase();
+
       if (props.transferType === HistoryTxType.Xvm) {
         txHistories.value = await getXvmAssetsTransferHistories({
           address: senderSs58Account.value,

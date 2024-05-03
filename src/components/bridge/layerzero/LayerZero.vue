@@ -52,11 +52,8 @@ import SelectToken from 'src/components/bridge/layerzero/SelectToken.vue';
 import { useAccount, useBreakpoints } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
 import { computed, defineComponent, ref } from 'vue';
-
-import { useRoute, useRouter } from 'vue-router';
 import { useLayerZeroBridge } from '../../../hooks/bridge/useLayerZeroBridge';
 import { LayerZeroToken } from '../../../modules/zk-evm-bridge/layerzero/index';
-import { useLayerZeroHistory } from '../../../hooks/bridge/useLayerZeroHistory';
 
 export default defineComponent({
   components: {
@@ -95,12 +92,8 @@ export default defineComponent({
       handleApprove,
       setIsApproving,
     } = useLayerZeroBridge();
-    useLayerZeroHistory();
 
     const { currentAccount } = useAccount();
-    const router = useRouter();
-    const route = useRoute();
-    const network = computed<string>(() => route.params.network as string);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
 
     const setRightUi = async (ui: RightUi): Promise<void> => {
@@ -173,5 +166,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/ethereum/styles/l1.scss';
+@use 'src/components/bridge/layerzero/styles/layerzero.scss';
 </style>

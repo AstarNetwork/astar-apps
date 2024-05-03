@@ -316,5 +316,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/ethereum/styles/l1-bridge.scss';
+@use 'src/components/bridge/layerzero/styles/lz-bridge.scss';
 </style>

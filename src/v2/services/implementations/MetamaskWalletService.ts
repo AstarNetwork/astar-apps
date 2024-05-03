@@ -183,9 +183,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
       // Memo: passing this variable (estimatedGas) to `sendTransaction({gas: estimatedGas})` causes an error when sending `withdrawal` transactions.
       // the function goes the catch statement if something goes wrong while getting the estimatedGas. This way, the UI prevents sending invalid transactions which could cause loss of assets.
-      console.log(1);
       const estimatedGas = await web3.eth.estimateGas(rawTx);
-      console.log(2);
       const transactionHash = await web3.eth
         .sendTransaction({ ...rawTx })
         .once('transactionHash', (transactionHash) => {
