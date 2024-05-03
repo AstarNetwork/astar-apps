@@ -217,7 +217,6 @@ export const useLayerZeroBridge = () => {
         }),
       ]);
 
-      console.log('fromChainBalance', fromChainBalance);
       fromBridgeBalance.value = Number(fromChainBalance);
       toBridgeBalance.value = Number(toChainBalance);
     } catch (error) {
