@@ -42,7 +42,6 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     param: ParamBridgeLzAsset;
     web3: Web3;
   }): Promise<{ txParam: TransactionConfig; nativeFee: number }> {
-    console.log('param', param);
     const { token, fromNetworkId, destNetworkId, senderAddress, amount, minAmount, isNativeToken } =
       param;
 
@@ -58,7 +57,7 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     // Ref: https://docs.layerzero.network/v1/developers/evm-guides/contract-standards/oft-v1.2#how-to-deploy-proxyoft-and-oft-contracts
     const minDstGas = await contract.methods.minDstGasLookup(destNetworkId, 1).call();
 
-    const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, Number(minDstGas)]); // 200000
+    const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, Number(minDstGas)]);
 
     const fromAddressByte32 = addressToBytes32(senderAddress);
     const zeroAddress = '0x0000000000000000000000000000000000000000';
