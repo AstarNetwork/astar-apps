@@ -80,7 +80,7 @@
         :title="$t('stakingV3.tokensToBeBurned')"
         :description="$t('stakingV3.tokensToBeBurnedDescription')"
       >
-        <format-balance :balance="tokensToBeBurned.toString() ?? ''" />
+        <format-balance :balance="tokensToBeBurned?.toString() ?? ''" />
       </data-card>
     </div>
 

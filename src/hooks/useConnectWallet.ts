@@ -128,16 +128,9 @@ export const useConnectWallet = () => {
       const accounts = await requestAccounts();
       accounts?.length && setCurrentEcdsaAccount(accounts[0]);
 
-      const chainId = getChainId(currentNetworkIdx.value);
-
       const provider = getEvmProvider(currentWallet);
       if (!provider) {
         return false;
-      }
-
-      // Memo: Do not change the network for the Bridge page
-      if (currentRouter.value.name !== 'Bridge') {
-        isSetupNetwork && (await setupNetwork({ network: chainId, provider }));
       }
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.

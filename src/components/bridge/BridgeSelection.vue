@@ -124,7 +124,7 @@
                   <img
                     class="img--logo"
                     :src="require('src/assets/img/layerswap_logo.svg')"
-                    alt="relay-link"
+                    alt="layer-swap"
                   />
                 </div>
               </div>
@@ -144,40 +144,6 @@
             </a>
           </button>
         </div>
-        <div class="column--selection">
-          <button>
-            <a
-              :href="relayBridgeAppLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/relay_bridge_logo.svg')"
-                    alt="relay-link"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.relayBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.relayBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.relayBridge.text', { l1: l1Name, l2: l2Name }) }}
-                  </span>
-                </div>
-              </div>
-            </a>
-          </button>
-        </div>
-
         <div class="column--selection">
           <button>
             <a
@@ -229,11 +195,7 @@ import {
   buildLzBridgePageLink,
 } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
-import {
-  layerSwapLink,
-  relayBridgeAppLink,
-  zKatanaBridgeUrl,
-} from 'src/modules/zk-evm-bridge/index';
+import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
 
 export default defineComponent({
   components: {},
@@ -272,7 +234,6 @@ export default defineComponent({
       isEnableEthBridge,
       l1Name,
       l2Name,
-      relayBridgeAppLink,
       cbridgeNetworkName,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
