@@ -7,7 +7,7 @@
       <div class="history-description">
         <p>{{ time }}</p>
         <div class="row--tx-description">
-          <p>[{{ tx.txType }}]</p>
+          <p>[{{ tx.status }}]</p>
           <p><token-balance :balance="tx.amount ? tx.amount : '0'" :symbol="tx.symbol" /></p>
         </div>
         <p>{{ tx.note }}</p>
@@ -23,7 +23,7 @@
 <script lang="ts">
 import { date } from 'quasar';
 import { truncate } from '@astar-network/astar-sdk-core';
-import { RecentHistory } from 'src/modules/information';
+import { RecentLzHistory } from 'src/modules/information';
 import { defineComponent, PropType } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
@@ -31,7 +31,7 @@ export default defineComponent({
   components: { TokenBalance },
   props: {
     tx: {
-      type: Object as PropType<RecentHistory>,
+      type: Object as PropType<RecentLzHistory>,
       required: true,
     },
   },

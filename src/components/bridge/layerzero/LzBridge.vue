@@ -165,7 +165,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
-import { PropType, computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
 

@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 
-export { addTxHistories } from 'src/modules/account/utils';
+export { addTxHistories, addLzHistories } from 'src/modules/account/utils';
 
 export interface SystemAccount extends Struct {
   data: {
@@ -17,7 +17,7 @@ export enum HistoryTxType {
   Xcm = 'XCM',
   Xvm = 'XVM Transfer',
   ZK_ETHEREUM_BRIDGE = 'ZK Ethereum Bridge',
-  ZK_LZ_BRIDGE = 'ZK LayerZero Bridge',
+  LZ_BRIDGE = 'LayerZero Bridge',
 }
 
 export interface TxHistory {

@@ -22,8 +22,8 @@ import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
 import { showLoading } from 'src/modules/extrinsic/utils';
-import { HistoryTxType, addTxHistories } from 'src/modules/account';
-import { addLzHistories } from 'src/modules/account/utils';
+import { HistoryTxType, addLzHistories } from 'src/modules/account';
+import { isHex } from '@polkadot/util';
 
 export const useLayerZeroBridge = () => {
   const lzTokens = ref<LayerZeroToken[]>([]);
@@ -334,17 +334,22 @@ export const useLayerZeroBridge = () => {
       token: selectedToken.value,
       fromChainId: fromChainId.value,
     });
+
+    if (isHex(hash)) {
+      addLzHistories({
+        hash: hash,
+        type: HistoryTxType.LZ_BRIDGE,
+        address: currentAccount.value,
+        amount: bridgeAmt.value,
+        symbol: selectedToken.value.symbol,
+        fromChainId: fromChainId.value,
+        toChainId: toChainId.value,
+      });
+    }
+
     await setIsApproved();
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
-    addLzHistories({
-      hash: hash,
-      type: HistoryTxType.ZK_LZ_BRIDGE,
-      address: currentAccount.value,
-      amount: bridgeAmt.value,
-      symbol: selectedToken.value.symbol,
-      fromChainId: fromChainId.value,
-    });
     return hash;
   };
 
@@ -352,7 +357,7 @@ export const useLayerZeroBridge = () => {
     try {
       isLoadingGasPayable.value = true;
       const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
-      const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.1;
+      const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.01;
       const isNativeToken =
         fromChainName.value === LayerZeroNetworkName.AstarEvm &&
         selectedToken.value.symbol === 'ASTR';

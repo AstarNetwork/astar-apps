@@ -45,6 +45,7 @@ export const addLzHistories = ({
   amount,
   symbol,
   fromChainId,
+  toChainId,
 }: {
   hash: string;
   type: HistoryTxType;
@@ -52,6 +53,7 @@ export const addLzHistories = ({
   amount: string;
   symbol: string;
   fromChainId: number;
+  toChainId: number;
 }): void => {
   const networkIdx = localStorage.getItem(NETWORK_IDX);
   const network = getNetworkName(Number(networkIdx));
@@ -65,6 +67,8 @@ export const addLzHistories = ({
     data: {
       amount,
       symbol,
+      fromChainId,
+      toChainId,
     },
   };
   txs.unshift(data);

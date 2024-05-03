@@ -50,10 +50,9 @@ export interface RecentStakeHistory {
 
 export interface RecentLzHistory {
   timestamp: string;
-  txType: RecentHistoryTxType;
   amount: string;
   symbol: string;
   note: string;
   explorerUrl: string;
-  status?: LayerZeroStatus;
+  status: string;
 }

@@ -57,18 +57,8 @@ export class LzBridgeRepository implements ILzBridgeRepository {
 
     // Ref: https://docs.layerzero.network/v1/developers/evm-guides/contract-standards/oft-v1.2#how-to-deploy-proxyoft-and-oft-contracts
     const minDstGas = await contract.methods.minDstGasLookup(destNetworkId, 1).call();
-    console.log('minDstGas', minDstGas);
 
-    // This will work if I send more than 30 ASTR
     const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, Number(minDstGas)]); // 200000
-    // const adapterParams = ethers.utils.solidityPack(
-    //   ['uint16', 'uint256'],
-    //   [1, Number(minDstGas) + 50000]
-    // ); // 250000
-
-    // This will work if I send less than 30 ASTR
-    // const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 100000]);
-    // const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 300000]);
 
     const fromAddressByte32 = addressToBytes32(senderAddress);
     const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -77,7 +67,6 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     const qty = ethers.utils.parseUnits(String(amount), decimal);
     const fee = await contract.methods
       .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, adapterParams)
-      // .estimateSendFee(destNetworkId, fromAddressByte32, qty, false, '0x')
       .call();
 
     const data = contract.methods

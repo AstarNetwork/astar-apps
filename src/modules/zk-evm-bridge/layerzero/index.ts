@@ -1,5 +1,7 @@
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
+export const urlLayerZeroScan = 'https://layerzeroscan.com';
+
 export const LayerZeroSlippage = 0.5;
 
 export enum LayerZeroNetworkName {
