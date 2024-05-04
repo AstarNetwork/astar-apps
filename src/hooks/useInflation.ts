@@ -1,15 +1,18 @@
 import { computed, watch } from 'vue';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { IInflationRepository } from 'src/v2/repositories';
+import { IInflationRepository, ISubscanRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { InflationConfiguration } from 'src/v2/models';
 import { $api } from 'src/boot/api';
 import { useDappStaking } from 'src/staking-v3';
+import { ethers } from 'ethers';
+import { useNetworkInfo } from './useNetworkInfo';
 
 export function useInflation() {
   const store = useStore();
   const { eraLengths } = useDappStaking();
+  const { networkNameSubstrate } = useNetworkInfo();
 
   const activeInflationConfiguration = computed<InflationConfiguration>(
     () => store.getters['general/getActiveInflationConfiguration']
@@ -27,8 +30,13 @@ export function useInflation() {
 
     if ($api) {
       try {
-        // TODO Fetch latest newinflationconfiguration event and determine block
-        const latestInflationConfigBlock = 5514935;
+        const subscanRepository = container.get<ISubscanRepository>(Symbols.SubscanRepository);
+        const response = await subscanRepository.getEvents(
+          networkNameSubstrate.value.toLocaleLowerCase(),
+          'inflation',
+          'NewInflationConfiguration'
+        );
+        const latestInflationConfigBlock = response.events[response.events.length - 1].block;
 
         const initialIssuanceBlockHash = await $api.rpc.chain.getBlockHash(
           latestInflationConfigBlock - 1
@@ -51,6 +59,11 @@ export function useInflation() {
         const slope =
           BigInt(realizedTotalIssuance.sub(initialTotalIssuance).toString()) / blockDifference;
         inflation = blockDifference * slope + initialTotalIssuance.toBigInt();
+        console.log(
+          'Inflation:',
+          Number(ethers.utils.formatEther(initialTotalIssuance.toString())) /
+            Number(ethers.utils.formatEther(realizedTotalIssuance.toString()))
+        );
       } catch (error) {
         console.error('Error calculating realized inflation', error);
       }

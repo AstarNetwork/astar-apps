@@ -18,6 +18,7 @@ import {
   INftRepository,
   IAccountUnificationRepository,
   IInflationRepository,
+  ISubscanRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -33,6 +34,7 @@ import {
   NftRepository,
   AccountUnificationRepository,
   InflationRepository,
+  SubscanRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -174,6 +176,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.AccountUnificationRepository
   );
   container.addSingleton<IInflationRepository>(InflationRepository, Symbols.InflationRepository);
+  container.addSingleton<ISubscanRepository>(SubscanRepository, Symbols.SubscanRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
