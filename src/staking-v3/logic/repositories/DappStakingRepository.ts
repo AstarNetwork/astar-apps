@@ -431,9 +431,9 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload> {
+  public async getClaimUnlockedTokensCall(isLockdrop: boolean): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
-    return api.tx.dappStaking.claimUnlocked();
+    return isLockdrop ? this.getWithdrawUnbondedCall() : api.tx.dappStaking.claimUnlocked();
   }
 
   //* @inheritdoc

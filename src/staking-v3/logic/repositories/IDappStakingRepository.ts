@@ -196,8 +196,10 @@ export interface IDappStakingRepository {
 
   /**
    * Gets a call to claim all fully unlocked chunks.
+   * @param isLockdrop result of if it is a lockdrop account.
+
    */
-  getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload>;
+  getClaimUnlockedTokensCall(isLockdrop: boolean): Promise<ExtrinsicPayload>;
 
   /**
    * Gets a call to relock all unbonding chunks.

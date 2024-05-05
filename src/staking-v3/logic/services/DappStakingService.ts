@@ -508,10 +508,14 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   // @inheritdoc
-  public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
+  public async claimUnlockedTokens(
+    senderAddress: string,
+    isLockdrop: boolean,
+    successMessage: string
+  ): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
+    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall(isLockdrop);
     await this.signCall(call, senderAddress, successMessage);
   }
 

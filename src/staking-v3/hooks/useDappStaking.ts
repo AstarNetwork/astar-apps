@@ -308,6 +308,7 @@ export function useDappStaking() {
       )();
       await stakingService.claimUnlockedTokens(
         currentAccount.value,
+        isLockdropAccount.value,
         t('stakingV3.withdrawSuccess')
       );
     }
