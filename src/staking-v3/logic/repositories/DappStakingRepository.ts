@@ -13,6 +13,7 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
+  InflationParam,
   PeriodEndInfo,
   PeriodType,
   ProtocolState,
@@ -198,17 +199,11 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getUnlockCall(amount: number, isLockdrop: boolean): Promise<ExtrinsicPayload> {
+  public async getUnlockCall(amount: number): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
     const amountFormatted = this.getFormattedAmount(amount);
-    // Memo: address is ignored by runtime, but we need to pass something
-    // because runtime needs to keep the method signature.
-    const lockdropUnlock = api.tx.dappStaking.unbondAndUnstake(
-      getDappAddressEnum('ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8'),
-      amountFormatted
-    );
 
-    return isLockdrop ? lockdropUnlock : api.tx.dappStaking.unlock(amountFormatted);
+    return api.tx.dappStaking.unlock(amountFormatted);
   }
 
   private getFormattedAmount(amount: number): BigInt {
@@ -221,13 +216,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     amount: number
   ): Promise<ExtrinsicPayload[]> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
-    // Memo: this shouldn't be the case for Lockdrop accounts as all the staked amount is under frozen (locked) balance already
-    const isLockdrop = false;
+    const api = await this.api.getApi();
 
-    return [
-      await this.getUnstakeCall(contractAddress, amount),
-      await this.getUnlockCall(amount, isLockdrop),
-    ];
+    return [await this.getUnstakeCall(contractAddress, amount), await this.getUnlockCall(amount)];
   }
 
   //* @inheritdoc

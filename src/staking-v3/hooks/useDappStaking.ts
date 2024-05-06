@@ -22,13 +22,7 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import {
-  useAccount,
-  useChainMetadata,
-  useNetworkInfo,
-  useLedger,
-  ETHEREUM_EXTENSION,
-} from 'src/hooks';
+import { useAccount, useChainMetadata, useNetworkInfo, useLedger } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
@@ -48,17 +42,11 @@ export interface RewardsPerPeriod {
 export function useDappStaking() {
   const { t } = useI18n();
   const store = useStore();
-  const { currentAccount, currentAccountName } = useAccount();
+  const { currentAccount } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
   const { isLedger } = useLedger();
-
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-
-  const isLockdropAccount = computed<boolean>(
-    () => !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION
-  );
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
@@ -334,7 +322,6 @@ export function useDappStaking() {
       await stakingService.unlockTokens(
         currentAccount.value,
         Number(ethers.utils.formatEther(amount)),
-        isLockdropAccount.value,
         t('stakingV3.unlockSuccess')
       );
     }
