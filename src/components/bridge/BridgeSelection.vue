@@ -73,7 +73,7 @@
             </component>
           </button>
           <p v-if="!isEnableLzBridge" class="text--bridge-details">
-            {{ $t('bridge.ethereumBridge.text2') }}
+            {{ $t('bridge.astarBridge.text2') }}
           </p>
         </div>
         <div v-if="isZkyoto" class="column--selection">
