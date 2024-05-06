@@ -135,14 +135,8 @@ export interface IDappStakingService {
   /**
    * Claims all fully unlocked tokens.
    * @param senderAddress Address of the request sender.
-   * @param isLockdrop result of if it is a lockdrop account.
-
    */
-  claimUnlockedTokens(
-    senderAddress: string,
-    isLockdrop: boolean,
-    successMessage: string
-  ): Promise<void>;
+  claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void>;
 
   /**
    * Re locks all unbonding chunks.

@@ -186,15 +186,10 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   }
 
   // @inheritdoc
-  public async claimUnlockedTokens(
-    senderAddress: string,
-    isLockdrop: boolean,
-    successMessage: string
-  ): Promise<void> {
+  public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-    const isLockdropAccount = false;
-    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall(isLockdropAccount);
+    const call = await this.dappStakingRepository.getClaimUnlockedTokensCall();
     await this.wallet.sendEvmTransaction({
       from: senderAddress,
       to: dispatch,
