@@ -42,7 +42,7 @@
         </div>
 
         <div class="column--selection">
-          <button>
+          <button :disabled="!isEnableLzBridge">
             <component
               :is="isEnableLzBridge ? 'router-link' : 'div'"
               :to="buildLzBridgePageLink()"
