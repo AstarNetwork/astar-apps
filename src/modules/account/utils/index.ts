@@ -57,7 +57,6 @@ export const addLzHistories = ({
 }): void => {
   const networkIdx = localStorage.getItem(NETWORK_IDX);
   const network = getNetworkName(Number(networkIdx));
-  if (network === 'development') return;
 
   const txs = getAccountHistories({ storageKey: TX_HISTORIES, address, network }) as TxHistory[];
   const data = {
