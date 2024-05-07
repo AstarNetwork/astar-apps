@@ -22,13 +22,9 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import {
-  useAccount,
-  useChainMetadata,
-  useNetworkInfo,
-  useLedger,
-  ETHEREUM_EXTENSION,
-} from 'src/hooks';
+import { useAccount, useChainMetadata, useNetworkInfo, useLedger } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
+
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
