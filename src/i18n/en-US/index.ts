@@ -1022,7 +1022,7 @@ export default {
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
-      text: 'Transfer ASTR token between Astar EVM and Astar zkEVM.',
+      text: 'Transfer assets between Astar EVM and Astar zkEVM.',
       text2: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
     },
     celerBridge: {
