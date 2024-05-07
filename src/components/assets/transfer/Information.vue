@@ -160,7 +160,7 @@ export default defineComponent({
         });
       } else {
         txHistories.value = await getTxHistories({
-          address: senderSs58Account.value,
+          address: isH160.value ? currentAccount.value : senderSs58Account.value,
           network,
         });
       }
