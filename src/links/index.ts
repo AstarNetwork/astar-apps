@@ -9,6 +9,7 @@ export const docsUrl = {
   troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
   createPromotion: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
+  inflation: 'https://docs.astar.network/docs/learn/tokenomics2/Inflation/',
   faqLedger:
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do',
   learnDappStaking: 'https://docs.astar.network/docs/learn/dapp-staking/',
