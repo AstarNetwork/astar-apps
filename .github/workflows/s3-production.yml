@@ -41,7 +41,7 @@ jobs:
         run: git pull
 
       - name: Remove release-hotfix
-        run: git branch --delete release-hotfix || true
+        run: git push origin --delete release-hotfix
 
       - name: Re-create release-hotfix
         run: |
