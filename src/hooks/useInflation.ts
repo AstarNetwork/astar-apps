@@ -29,12 +29,14 @@ export function useInflation() {
   /**
    * Estimates the realized inflation rate percentage based on the actual total issuance at the beginning
    * and estimated total issuance at the end of the current cycle.
+   * According to the https://github.com/AstarNetwork/astar-apps/issues/1259
    */
   const estimateRealizedInflation = async (): Promise<number | undefined> => {
     let inflation: number | undefined;
 
     if ($api) {
       try {
+        // Find the block when last NewInflationConfiguration event was emitted.
         const subscanRepository = container.get<ISubscanRepository>(Symbols.SubscanRepository);
         const response = await subscanRepository.getEvents(
           networkNameSubstrate.value.toLocaleLowerCase(),
@@ -73,7 +75,7 @@ export function useInflation() {
           )
         );
 
-        // Estimated inflation at the end of the cycle.
+        // Estimated inflation at the end of the current cycle.
         inflation =
           (100 *
             (endOfCycleTotalIssuance -
