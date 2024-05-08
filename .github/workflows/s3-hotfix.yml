@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - release-hotfix
+  workflow_dispatch:
+    branches:
+      - release-hotfix
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}

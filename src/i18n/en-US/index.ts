@@ -1033,11 +1033,6 @@ export default {
       tag: 'ERC20',
       text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
     },
-    relayBridge: {
-      title: 'Relay Link',
-      tag: 'ETH',
-      text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and Astar zkEVM.',
-    },
     layerSwap: {
       title: 'Layerswap',
       tag: 'ETH',

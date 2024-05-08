@@ -5,7 +5,7 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
-          <div v-if="isLockdropAccount && isAllowLockdropDispatch" class="row--lockdrop">
+          <div v-if="isLockdropAccount && !isZkEvm" class="row--lockdrop">
             <span>{{ $t('assets.lockdropAccount') }}</span>
             <span class="text--switch-account" @click="toggleEvmWalletSchema">
               {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
@@ -218,7 +218,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx, isZkEvm, isAllowLockdropDispatch } = useNetworkInfo();
+    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const isWalletConnect = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -233,9 +233,10 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const totalBal = computed<number>(
-      () => Number(balUsd.value) + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount
-    );
+    const totalBal = computed<number>(() => {
+      const addAmount = isH160.value ? props.ttlErc20Amount : props.ttlNativeXcmUsdAmount;
+      return Number(balUsd.value) + addAmount;
+    });
 
     const signatoryIconWallet = computed<string>(() => {
       // @ts-ignore
@@ -368,7 +369,6 @@ export default defineComponent({
       currentNetworkName,
       isLockdropAccount,
       isModalLockdropWarning,
-      isAllowLockdropDispatch,
       isWalletConnect,
       endpointKey,
       handleModalLockdropWarning,
