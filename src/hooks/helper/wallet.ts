@@ -9,7 +9,7 @@ import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { EVM, rpcUrls } from 'src/config/web3';
-import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { deepLink } from 'src/links';
 import { addTxHistories } from 'src/modules/account';
