@@ -342,7 +342,8 @@ export function useDappStaking() {
 
     if (currentAccount.value) {
       staker = await stakingV3service.getStakerRewards(currentAccount.value);
-      bonus = await stakingV3service.getBonusRewards(currentAccount.value);
+      const bonusRewards = await stakingV3service.getBonusRewards(currentAccount.value);
+      bonus = bonusRewards.amount;
 
       if (ownedContracts.length > 0) {
         for await (const ownedContractAddress of ownedContracts) {
