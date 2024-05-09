@@ -217,3 +217,8 @@ export interface StakerRewards {
   period: number;
   eraCount: number;
 }
+
+export type BonusRewards = {
+  amount: bigint;
+  contractsToClaim: Map<string, bigint>;
+};

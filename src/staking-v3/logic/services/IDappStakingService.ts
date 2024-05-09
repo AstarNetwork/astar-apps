@@ -1,4 +1,5 @@
 import {
+  BonusRewards,
   CombinedDappInfo,
   DappInfo,
   DappStakeInfo,
@@ -82,7 +83,7 @@ export interface IDappStakingService {
    * @param senderAddress Staker address.
    * @returns Staker bonus rewards amount.
    */
-  getBonusRewards(senderAddress: string): Promise<bigint>;
+  getBonusRewards(senderAddress: string): Promise<BonusRewards>;
 
   /**
    * Invokes claim bonus rewards call.
