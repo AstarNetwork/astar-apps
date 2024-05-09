@@ -89,7 +89,6 @@ import {
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 import { useInflation } from 'src/hooks/useInflation';
-import ModalDecommission from './components/dapp-staking/ModalDecommission.vue';
 
 export default defineComponent({
   name: 'App',
@@ -102,7 +101,6 @@ export default defineComponent({
     ModalDisclaimer,
     NotificationStack,
     ModalOnboarding,
-    ModalDecommission,
   },
   setup() {
     useAppRouter();
