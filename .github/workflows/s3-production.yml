@@ -36,12 +36,15 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
-      - name: Remove & re-create release-hotfix
+      - name: Remove release-hotfix
+        continue-on-error: true
         run: |
           git checkout main
           git pull
           git branch -D release-hotfix
           git push origin --delete release-hotfix
+
+      - name: Re-create release-hotfix
+        run: |
           git checkout -b release-hotfix
           git push origin release-hotfix
