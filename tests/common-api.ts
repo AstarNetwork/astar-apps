@@ -1,7 +1,6 @@
 import { GeneralStakerInfo, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
-import { AccountLedger } from 'src/hooks';
 import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -69,13 +68,6 @@ export const fetchAccountStakingAmount = async (
 export const fetchMinimumStakingAmount = async (): Promise<string> => {
   const api = await getApi();
   return String(api.consts.dappsStaking.minimumStakingAmount);
-};
-
-export const getAccountLedger = async (address: string): Promise<AccountLedger> => {
-  const api = await getApi();
-  const ledger = await api.query.dappsStaking.ledger<AccountLedger>(address);
-
-  return ledger;
 };
 
 const getSigner = async (): Promise<KeyringPair> => {

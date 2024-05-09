@@ -87,7 +87,7 @@ import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { addressAstrZkEvm, addressVastrZkEvm } from 'src/modules/zk-evm-bridge';
 import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
@@ -130,8 +130,6 @@ export default defineComponent({
       isAstarZkEvm,
       nativeTokenSymbol,
     } = useNetworkInfo();
-    // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
-    useDispatchGetDapps();
     const { nativeTokenUsd } = usePrice();
 
     const evmNetworkId = computed(() => {

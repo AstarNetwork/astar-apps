@@ -4,6 +4,7 @@ import {
   getIndividualClaimTxs,
   wait,
   checkSumEvmAddress,
+  DappItem,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -13,7 +14,7 @@ import { ethers } from 'ethers';
 import { get } from 'lodash-es';
 import ABI from 'src/config/abi/ERC20.json';
 import { setupNetwork } from 'src/config/web3';
-import { MyStakeInfo, useCurrentEra } from 'src/hooks';
+import { useCurrentEra } from 'src/hooks';
 import { useAccount } from 'src/hooks/useAccount';
 import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
@@ -34,6 +35,7 @@ import { useNetworkInfo } from '../useNetworkInfo';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 import { getRawEvmTransaction } from 'src/modules/evm';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 const provider = get(window, 'ethereum') as any;
 
@@ -45,6 +47,8 @@ export interface TransferXc20Token {
   symbol: string;
   tokenImage: string;
 }
+
+export type MyStakeInfo = StakeInfo | DappItem;
 
 export const useAccountUnification = () => {
   const web3 = ref<Web3>();
