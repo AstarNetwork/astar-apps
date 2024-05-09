@@ -1037,7 +1037,7 @@ export default {
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:
-      'It could take more than 7 days to finalize the bridge transaction from Astar zkEVM to Astar EVM due to block confirmation fixed by LayerZero',
+      'It could take approximately 6 hours to finalize the bridge transaction from Astar zkEVM to Astar EVM',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     slippage: 'Slippage: {percent}%',
