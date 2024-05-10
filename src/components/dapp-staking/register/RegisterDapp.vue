@@ -104,7 +104,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { FileInfo, NewDappItem } from 'src/staking-v3';
+import { EditDappItem, FileInfo, IDappStakingRepository, NewDappItem } from 'src/staking-v3';
 import { Category, Developer } from '@astar-network/astar-sdk-core';
 import ImageCard from './components/ImageCard.vue';
 import AddItemCard from './components/AddItemCard.vue';
@@ -120,7 +120,7 @@ import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from './components/ItemsToggle.vue';
 import { container } from 'src/v2/common';
-import { IDappStakingServiceV2V3 } from 'src/staking-v3/logic/services';
+import { IDappStakingService } from 'src/staking-v3/logic/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
@@ -167,7 +167,6 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
@@ -239,18 +238,20 @@ export default defineComponent({
     const getDapp = async (): Promise<void> => {
       try {
         store.commit('general/setLoading', true);
-        const service = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
+        const service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+        const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
         const developerContract =
           currentAddress.value &&
           !isH160.value &&
           (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
-          const registeredDapp = await service.getDapp(
-            data.address,
+          const registeredDapp = (await repository.getDapp(
             currentNetworkName.value,
+            data.address,
             true
-          );
+          )) as unknown as EditDappItem;
+          console.log('registeredDapp', registeredDapp);
           isNewDapp.value = !registeredDapp;
           if (registeredDapp && !registeredDapp.tags) {
             registeredDapp.tags = [];

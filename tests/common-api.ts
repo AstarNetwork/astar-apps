@@ -1,7 +1,7 @@
 import { GeneralStakerInfo, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
-import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
@@ -39,16 +39,16 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
   return balance;
 };
 
-export const getStakedAmount = async (address: string): Promise<bigint> => {
-  const api = await getApi();
-  const era = await api.query.dappsStaking.currentEra();
-  const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
-    getAddress(address),
-    era
-  );
+// export const getStakedAmount = async (address: string): Promise<bigint> => {
+//   const api = await getApi();
+//   const era = await api.query.dappsStaking.currentEra();
+//   const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
+//     getAddress(address),
+//     era
+//   );
 
-  return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
-};
+//   return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
+// };
 
 export const fetchAccountStakingAmount = async (
   currentAccount: string,

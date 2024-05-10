@@ -3,7 +3,6 @@ import { interfaces } from 'inversify';
 import { IApi, IApiFactory } from './integration';
 import { ApiFactory, DefaultApi } from './integration/implementation';
 import {
-  IDappStakingRepository,
   IEthCallRepository,
   IMetadataRepository,
   IPriceRepository,
@@ -20,7 +19,6 @@ import {
   IInflationRepository,
 } from './repositories';
 import {
-  DappStakingRepository,
   EthCallRepository,
   MetadataRepository,
   SystemRepository,
@@ -36,7 +34,6 @@ import {
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
-  IDappStakingService,
   IGasPriceProvider,
   IWalletService,
   IXcmEvmService,
@@ -50,7 +47,6 @@ import {
   IIdentityService,
 } from './services';
 import {
-  DappStakingService,
   PolkadotWalletService,
   MetamaskWalletService,
   GasPriceProvider,
@@ -58,7 +54,6 @@ import {
   EvmAssetsService,
   BalanceFormatterService,
   XcmEvmService,
-  EvmDappStakingService,
   AssetsService,
   ZkBridgeService,
   AccountUnificationService,
@@ -81,10 +76,6 @@ import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
 import { XvmService } from 'src/v2/services/implementations/XvmService';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
-import {
-  DappStakingServiceV2V3,
-  IDappStakingServiceV2V3,
-} from 'src/staking-v3/logic/services/DappStakingServiceV2V3';
 import {
   DappStakingServiceV2Ledger,
   IDappStakingServiceV2Ledger,
@@ -139,24 +130,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
     };
   });
 
-  // dApp Staking service factory
-  container
-    .bind<interfaces.Factory<IDappStakingService>>(Symbols.DappStakingServiceFactory)
-    .toFactory(() => {
-      return () =>
-        container.get<IDappStakingService>(
-          currentWalletType === WalletType.Polkadot || isLockdropAccount
-            ? Symbols.DappStakingService
-            : Symbols.EvmDappStakingService
-        );
-    });
-
-  // Repositories
-  container.addSingleton<IDappStakingRepository>(
-    DappStakingRepository,
-    Symbols.DappStakingRepository
-  );
-
   container.addTransient<IPriceRepository>(TokenApiRepository, Symbols.PriceRepository);
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
@@ -178,8 +151,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
-  container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
-  container.addTransient<IDappStakingService>(EvmDappStakingService, Symbols.EvmDappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
   container.addTransient<IXvmService>(XvmService, Symbols.XvmService);
@@ -237,11 +208,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
             : Symbols.DappStakingServiceEvmV3
         );
     });
-
-  container.addSingleton<IDappStakingServiceV2V3>(
-    DappStakingServiceV2V3,
-    Symbols.DappStakingServiceV2V3
-  );
 
   container.addSingleton<IDappStakingServiceV2Ledger>(
     DappStakingServiceV2Ledger,

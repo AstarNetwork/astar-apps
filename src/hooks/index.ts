@@ -20,7 +20,6 @@ export * from './useGasPrice';
 export * from './useNetworkInfo';
 export * from './useAppRouter';
 export * from './chain/useAvgBlockTime';
-export * from './chain/useAvgBlockTimeApi';
 export * from './dapps-staking/useSignPayload';
 export * from './dapps-staking/useCampaign';
 export * from './wallet/useWalletIcon';
