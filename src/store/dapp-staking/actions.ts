@@ -249,7 +249,6 @@ export interface RegisterParameters {
   substrateAccounts: SubstrateAccount[];
   tip: string;
   network: string;
-  isCustomSignature: boolean;
   getCallFunc: (transaction: Transaction) => Promise<Transaction>;
   signature: string;
 }

@@ -9,8 +9,10 @@ import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { useDappStaking, useDapps } from 'src/staking-v3';
 
 function useCall(addressRef: Ref<string>) {
+  const { allDapps } = useDapps();
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const remainingVests = ref(new BN(0));
@@ -19,7 +21,6 @@ function useCall(addressRef: Ref<string>) {
   const isLoadingAccount = ref<boolean>(true);
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
 
@@ -116,7 +117,7 @@ function useCall(addressRef: Ref<string>) {
   }, 12000);
 
   watch(
-    [addressRef, isLoading, dapps],
+    [addressRef, isLoading, allDapps],
     () => {
       isLoadingAccount.value = true;
       updateAccountBalance();

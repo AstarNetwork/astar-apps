@@ -1,3 +1,4 @@
+import { NewDappItem } from 'src/store/dapp-staking/state';
 import { DappInfo, DappState, ProtocolState } from './Node';
 import { Community } from '@astar-network/astar-sdk-core';
 
@@ -217,3 +218,16 @@ export interface StakerRewards {
   period: number;
   eraCount: number;
 }
+
+export type DappRegistrationParameters = {
+  dapp: NewDappItem;
+  senderAddress: string;
+  signature: string;
+  network: string;
+};
+
+export type FileInfo = {
+  name: string;
+  base64content: string;
+  contentType: string;
+};

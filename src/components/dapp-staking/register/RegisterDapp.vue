@@ -124,7 +124,7 @@ import { container } from 'src/v2/common';
 import { IDappStakingServiceV2V3 } from 'src/staking-v3/logic/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
+import { useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { Path } from 'src/router';
@@ -133,6 +133,7 @@ import { useRouter } from 'vue-router';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import DesktopOnlyBanner from './components/DesktopOnlyBanner.vue';
 import ModalAddIntroduction from './components/ModalAddIntroduction.vue';
+import { useDapps } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
@@ -160,9 +161,9 @@ export default defineComponent({
     });
 
     const { t } = useI18n();
+    const { registerDapp } = useDapps();
     const { signPayload } = useSignPayload();
     const { selectedTip } = useGasPrice();
-    const { isCustomSig } = useCustomSignature({});
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
     const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
@@ -313,17 +314,12 @@ export default defineComponent({
           });
 
           const signature = await signPayload(senderAddress, data.address);
-          const result = await store.dispatch('dapps/registerDappApi', {
+          const result = await registerDapp({
             dapp: data,
-            api: $api,
             senderAddress,
-            substrateAccounts: substrateAccounts.value,
-            tip: selectedTip.value.price,
             network: currentNetwork.value,
-            isCustomSignature: isCustomSig.value,
-            getCallFunc,
             signature,
-          } as RegisterParameters);
+          });
 
           if (result) {
             await router.push(Path.DappStaking);

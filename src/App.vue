@@ -68,7 +68,6 @@ import {
   ExtrinsicStatusMessage,
   IEventAggregator,
   NewBlockMessage,
-  NewEraMessage,
 } from 'src/v2/messaging';
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
@@ -180,11 +179,6 @@ export default defineComponent({
     eventAggregator.subscribe(NewBlockMessage.name, (m) => {
       const message = m as NewBlockMessage;
       store.commit('general/setCurrentBlock', message.blockNumber, { root: true });
-    });
-
-    eventAggregator.subscribe(NewEraMessage.name, (m) => {
-      const message = m as NewEraMessage;
-      store.commit('dapps/setCurrentEra', message.era, { root: true });
     });
 
     // **** dApp staking v3

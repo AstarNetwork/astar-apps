@@ -993,6 +993,11 @@ export default {
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
     },
+    registration: {
+      success: 'You successfully registered dApp {name} to the store.',
+      error:
+        'An unexpected error occurred during dApp registration. Please screenshot this message and send to the Astar team. {error}',
+    },
   },
   bridge: {
     selectBridge: 'Select a Bridge',

@@ -3,19 +3,26 @@ import { container } from 'src/v2/common';
 import {
   CombinedDappInfo,
   DappInfo,
+  DappRegistrationParameters,
   DappState,
+  FileInfo,
   IDappStakingRepository,
   IDappStakingService,
   TokenApiProviderRepository,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
-import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
+import axios, { AxiosError } from 'axios';
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { NewDappItem } from 'src/store/dapp-staking/state';
+import { useI18n } from 'vue-i18n';
 
 export function useDapps() {
   const store = useStore();
   const { currentNetworkName } = useNetworkInfo();
+  const { t } = useI18n();
   const tokenApiProviderRepository = container.get<TokenApiProviderRepository>(
     Symbols.TokenApiProviderRepository
   );
@@ -99,6 +106,72 @@ export function useDapps() {
     return dapps.find((d) => d.owner === ownerAddress && d.state === DappState.Registered);
   };
 
+  const getFileInfo = (fileName: string, dataUrl: string): FileInfo => {
+    const urlParts = dataUrl.split(/[:;,]+/);
+
+    return {
+      name: fileName,
+      base64content: urlParts[3],
+      contentType: urlParts[1],
+    };
+  };
+
+  const getImagesInfo = (dapp: NewDappItem): FileInfo[] => {
+    return dapp.images
+      .slice(1) // Ignore first image since it is just an add image placeholder.
+      .map((image, index) => getFileInfo(image.name, dapp.imagesContent[index + 1]));
+  };
+
+  const registerDapp = async (parameters: DappRegistrationParameters): Promise<boolean> => {
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+
+    try {
+      const payload = {
+        name: parameters.dapp.name,
+        iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
+        address: parameters.dapp.address,
+        url: parameters.dapp.url,
+        images: getImagesInfo(parameters.dapp),
+        developers: parameters.dapp.developers,
+        description: parameters.dapp.description,
+        shortDescription: parameters.dapp.shortDescription,
+        communities: parameters.dapp.communities,
+        contractType: parameters.dapp.contractType,
+        mainCategory: parameters.dapp.mainCategory,
+        license: parameters.dapp.license,
+        tags: parameters.dapp.tags,
+        senderAddress: parameters.senderAddress,
+        signature: parameters.signature,
+      };
+
+      eventAggregator.publish(new BusyMessage(true));
+      const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
+      await axios.post(url, payload);
+
+      eventAggregator.publish(
+        new ExtrinsicStatusMessage({
+          success: true,
+          message: t('stakingV3.registration.success', { name: parameters.dapp.name }),
+        })
+      );
+
+      return true;
+    } catch (e) {
+      const error = e as unknown as AxiosError;
+      console.error(error);
+      eventAggregator.publish(
+        new ExtrinsicStatusMessage({
+          success: false,
+          message: error.response?.data,
+        })
+      );
+      alert(t('stakingV3.registration.error', { error: error.response?.data }));
+      return false;
+    } finally {
+      eventAggregator.publish(new BusyMessage(false));
+    }
+  };
+
   return {
     registeredDapps,
     allDapps,
@@ -107,5 +180,6 @@ export function useDapps() {
     fetchStakeAmountsToStore,
     getDapp,
     getDappByOwner,
+    registerDapp,
   };
 }
