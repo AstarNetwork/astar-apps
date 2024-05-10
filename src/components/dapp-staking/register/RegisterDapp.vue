@@ -104,8 +104,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { $api } from 'boot/api';
-import { FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
+import { FileInfo, NewDappItem } from 'src/staking-v3';
 import { Category, Developer } from '@astar-network/astar-sdk-core';
 import ImageCard from './components/ImageCard.vue';
 import AddItemCard from './components/AddItemCard.vue';
@@ -126,7 +125,6 @@ import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
-import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { Path } from 'src/router';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';

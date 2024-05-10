@@ -5,7 +5,6 @@ import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/i
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';
 import { RewardDestination } from 'src/v2/models';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
@@ -83,18 +82,6 @@ export const forceNewEra = async (): Promise<void> => {
   const signer = await getSigner();
 
   await sendTransaction(sudo, signer);
-};
-
-export const getContractEraStake = async (
-  address: string,
-  era: number
-): Promise<EraStakingPointsIndividualClaim | undefined> => {
-  const api = await getApi();
-  const eraStake = await api.query.dappsStaking.contractEraStake<
-    Option<EraStakingPointsIndividualClaim>
-  >({ Evm: address }, era);
-
-  return eraStake.unwrapOrDefault();
 };
 
 export const getCurrentEra = async (): Promise<number> => {

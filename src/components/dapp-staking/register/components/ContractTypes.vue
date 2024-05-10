@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive } from 'vue';
 import ItemsContainer from './ItemsContainer.vue';
+import { NewDappItem } from 'src/staking-v3';
 
 export const possibleContractTypes = [
   { label: 'WASM+EVM', value: 'wasm+evm' },

@@ -4,8 +4,7 @@ import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { EditDappItem } from 'src/store/dapp-staking/state';
+import { EditDappItem } from 'src/staking-v3';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
 import { AccountLedger, DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
@@ -230,14 +229,6 @@ export class DappStakingService implements IDappStakingService {
       senderAddress,
       finalizedCallback: finalizedCallback,
     });
-  }
-
-  public async getStakeInfo(
-    dappAddress: string,
-    currentAccount: string
-  ): Promise<StakeInfo | undefined> {
-    Guard.ThrowIfUndefined('currentAccount', currentAccount);
-    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 
   public async setRewardDestination({

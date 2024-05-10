@@ -7,9 +7,9 @@ import { Symbols } from 'src/v2/symbols';
 import { inject, injectable } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from '../repositories';
-import { EditDappItem } from 'src/store/dapp-staking/state';
+import { EditDappItem } from '../models';
 import { TvlModel } from 'src/v2/models';
-import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
+import { IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { ethers } from 'ethers';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 
@@ -37,20 +37,15 @@ export class DappStakingServiceV2V3 implements IDappStakingServiceV2V3 {
     @inject(Symbols.DefaultApi) private api: IApi,
     @inject(Symbols.DappStakingService) private stakingV2: IDappStakingService,
     @inject(Symbols.DappStakingRepositoryV3) private repositoryV3: IDappStakingRepositoryV3,
-    @inject(Symbols.DappStakingRepository) private repositoryV2: IDappStakingRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository
   ) {}
 
   public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
-    if (await this.isV3()) {
-      const allDapps = await this.repositoryV3.getChainDapps();
-      const dapp = allDapps.find((d) => d.owner === developerAddress);
+    const allDapps = await this.repositoryV3.getChainDapps();
+    const dapp = allDapps.find((d) => d.owner === developerAddress);
 
-      return dapp?.address;
-    } else {
-      return await this.stakingV2.getRegisteredContract(developerAddress);
-    }
+    return dapp?.address;
   }
 
   public async getDapp(
@@ -63,11 +58,8 @@ export class DappStakingServiceV2V3 implements IDappStakingServiceV2V3 {
 
   public async getTvl(): Promise<TvlModel> {
     const metadata = await this.metadataRepository.getChainMetadata();
-    const v3 = await this.isV3();
     const [tvl, priceUsd] = await Promise.all([
-      v3
-        ? (await this.repositoryV3.getCurrentEraInfo()).totalLocked.toString()
-        : this.repositoryV2.getTvl(),
+      (await this.repositoryV3.getCurrentEraInfo()).totalLocked.toString(),
       this.priceRepository.getUsdPrice(metadata.token),
     ]);
 
@@ -79,10 +71,5 @@ export class DappStakingServiceV2V3 implements IDappStakingServiceV2V3 {
       : 0;
 
     return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
-  }
-
-  private async isV3() {
-    const api = await this.api.getApi();
-    return api.query.hasOwnProperty('dappStaking');
   }
 }

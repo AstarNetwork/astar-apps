@@ -10,7 +10,6 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
-  InflationParam,
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,

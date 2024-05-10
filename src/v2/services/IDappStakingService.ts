@@ -1,11 +1,10 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
-import { EditDappItem } from 'src/store/dapp-staking/state';
+import { EditDappItem } from 'src/staking-v3';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, RewardDestination, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { PayloadWithWeight } from '@astar-network/astar-sdk-core';
 
 /**
@@ -123,8 +122,6 @@ export interface IDappStakingService {
     transaction: SubmittableExtrinsic<'promise'>;
     finalizedCallback: (result: ISubmittableResult) => void;
   }): Promise<void>;
-
-  getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 
   // Memo: set re-stake to turn it On/Off
   setRewardDestination(param: ParamSetRewardDestination): Promise<void>;

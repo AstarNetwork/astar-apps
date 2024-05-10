@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { NewDappItem } from 'src/store/dapp-staking/state';
+import { NewDappItem } from 'src/staking-v3';
 import { defineComponent, PropType, reactive } from 'vue';
 import ItemsContainer from './ItemsContainer.vue';
 import ItemsToggle from './ItemsToggle.vue';

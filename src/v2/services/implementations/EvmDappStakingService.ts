@@ -5,8 +5,7 @@ import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { EditDappItem } from 'src/store/dapp-staking/state';
+import { EditDappItem } from 'src/staking-v3';
 import { Guard } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { TvlModel } from 'src/v2/models';
@@ -238,14 +237,6 @@ export class EvmDappStakingService implements IDappStakingService {
     });
   }
 
-  public async getStakeInfo(
-    dappAddress: string,
-    currentAccount: string
-  ): Promise<StakeInfo | undefined> {
-    Guard.ThrowIfUndefined('currentAccount', currentAccount);
-
-    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
-  }
   public async setRewardDestination({
     rewardDestination,
     senderAddress,

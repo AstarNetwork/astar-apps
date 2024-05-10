@@ -2,7 +2,6 @@ import {
   ExtrinsicPayload,
   PayloadWithWeight,
   checkSumEvmAddress,
-  DappItem,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -21,7 +20,7 @@ import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
-import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
+import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { WatchCallback, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -31,7 +30,6 @@ import { useNetworkInfo } from '../useNetworkInfo';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 import { getRawEvmTransaction } from 'src/modules/evm';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { useDappStaking, useDapps } from 'src/staking-v3';
 
 const provider = get(window, 'ethereum') as any;
@@ -44,8 +42,6 @@ export interface TransferXc20Token {
   symbol: string;
   tokenImage: string;
 }
-
-export type MyStakeInfo = StakeInfo | DappItem;
 
 export const useAccountUnification = () => {
   const web3 = ref<Web3>();

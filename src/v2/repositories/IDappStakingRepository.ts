@@ -8,10 +8,9 @@ import {
   AccountLedger,
   RewardDestination,
 } from '../models/DappsStaking';
-import { EditDappItem } from 'src/store/dapp-staking/state';
+import { EditDappItem } from 'src/staking-v3';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { ParamClaimAll } from '../services';
 
 export interface DappAggregatedMetrics {
@@ -126,7 +125,6 @@ export interface IDappStakingRepository {
 
   getNextEraEta(network: string): Promise<number>;
 
-  getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
   getSetRewardDestinationCall(
     rewardDestination: RewardDestination
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
