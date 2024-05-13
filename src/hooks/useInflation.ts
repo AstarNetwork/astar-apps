@@ -93,7 +93,6 @@ export function useInflation() {
     [$api],
     async () => {
       estimatedInflation.value = await estimateRealizedInflation();
-      console.log('Realized inflation:', estimatedInflation.value);
     },
     { immediate: true }
   );
