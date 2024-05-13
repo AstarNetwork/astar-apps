@@ -1,5 +1,5 @@
 name: Deploy to S3-Production
-'on':
+on:
   workflow_dispatch:
     inputs:
       ref:
@@ -11,18 +11,40 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: '${{ github.event.inputs.ref }}'
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: yarn && yarn build
+
+      - name: install dependencies & build
+        run: yarn && yarn build
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/spa  s3://astar-apps --delete
+
+      - name: Setup Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Remove release-hotfix
+        continue-on-error: true
+        run: |
+          git checkout main
+          git pull
+          git branch -D release-hotfix
+          git push origin --delete release-hotfix
+
+      - name: Re-create release-hotfix
+        run: |
+          git checkout -b release-hotfix
+          git push origin release-hotfix
