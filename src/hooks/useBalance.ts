@@ -1,4 +1,4 @@
-import { ETHEREUM_EXTENSION } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';

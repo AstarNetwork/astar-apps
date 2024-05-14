@@ -16,8 +16,7 @@ import { computed, ref, watch } from 'vue';
 import { getWcProvider } from './helper/wallet';
 import { useNetworkInfo } from './useNetworkInfo';
 import { useNft } from './useNft';
-
-export const ETHEREUM_EXTENSION = 'Ethereum Extension';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 
 // Memo: Gives some time for syncing
 const DELAY = 100;
