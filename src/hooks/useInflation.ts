@@ -39,7 +39,7 @@ export function useInflation() {
         // Find the block when last NewInflationConfiguration event was emitted.
         const subscanRepository = container.get<ISubscanRepository>(Symbols.SubscanRepository);
         const response = await subscanRepository.getEvents(
-          networkNameSubstrate.value.toLocaleLowerCase(),
+          networkNameSubstrate.value.toLowerCase(),
           'inflation',
           'NewInflationConfiguration'
         );
