@@ -30,6 +30,10 @@ export const buildEthereumBridgePageLink = (): string => {
   return networkParam + Path.Bridge + Path.Ethereum;
 };
 
+export const buildLzBridgePageLink = (): string => {
+  return networkParam + Path.Bridge + Path.Layerzero;
+};
+
 export const buildXvmTransferPageLink = (symbol: string): string => {
   const base = networkParam + Path.Assets + Path.XvmTransfer;
   return `${base}?token=${symbol.toLowerCase()}`;

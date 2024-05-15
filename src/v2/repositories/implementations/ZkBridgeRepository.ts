@@ -1,6 +1,6 @@
-import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { ethers } from 'ethers';
 import { injectable } from 'inversify';
+import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm/tokens/index';
 import {
   EthBridgeContract,

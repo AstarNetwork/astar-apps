@@ -14,6 +14,7 @@ export {
   checkAllowance,
   getTokenImage,
   handleCheckProviderChainId,
+  addressToBytes32,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';

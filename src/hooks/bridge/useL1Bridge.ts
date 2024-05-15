@@ -263,7 +263,7 @@ export const useL1Bridge = () => {
       } else if (providerChainIdRef !== fromChainId.value) {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
       } else if (isBalanceNotEnough) {
-        errMsg.value = t('warning.balanceNotEnough');
+        errMsg.value = t('warning.balanceNotEnough', { symbol: 'ETH' });
       } else {
         errMsg.value = '';
       }
