@@ -157,15 +157,23 @@ export function useDapps() {
 
       return true;
     } catch (e) {
-      const error = e as unknown as AxiosError;
-      console.error(error);
+      let errorMessage: string;
+      if (axios.isAxiosError(e)) {
+        errorMessage = e.response?.data;
+      } else if (e instanceof Error) {
+        errorMessage = (e as Error).message;
+      } else {
+        errorMessage = String(e);
+      }
+
+      console.error(errorMessage);
       eventAggregator.publish(
         new ExtrinsicStatusMessage({
           success: false,
-          message: error.response?.data,
+          message: errorMessage,
         })
       );
-      alert(t('stakingV3.registration.error', { error: error.response?.data }));
+      alert(t('stakingV3.registration.error', { error: errorMessage }));
       return false;
     } finally {
       eventAggregator.publish(new BusyMessage(false));

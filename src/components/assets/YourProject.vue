@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-// import { useClaimAll } from 'src/hooks';
 import { CombinedDappInfo, useDappStaking, useDappStakingNavigation } from 'src/staking-v3';
 import { defineComponent, watch, ref } from 'vue';
 
@@ -43,7 +42,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // useClaimAll();
     const { navigateOwnerPage } = useDappStakingNavigation();
     const { rewards, getDappRewards } = useDappStaking();
     const dAppRewardsMap = ref<{ dapp: string, rewards: bigint }[]>([]);
