@@ -994,6 +994,10 @@ export default {
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
     },
+    inflation: 'Inflation',
+    estimatedRealizedInflation: 'Estimated realized inflation',
+    estimatedRealizedInflationDescription:
+      'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
@@ -1044,7 +1048,7 @@ export default {
     feeOnTransaction: 'Transaction fee: {amount} {symbol}',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
-      'High bridge traffic may delay withdrawal transactions up to 20 hours. We appreciate your patience.',
+      'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
     modals: {
       highTraffic: {

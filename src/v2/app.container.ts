@@ -43,6 +43,7 @@ import {
   IXcmRepository,
   IXvmRepository,
   IZkBridgeRepository,
+  ISubscanRepository,
 } from './repositories';
 import { ILzBridgeRepository } from './repositories/ILzBridgeRepository';
 import {
@@ -59,6 +60,7 @@ import {
   TokenApiRepository,
   XcmRepository,
   ZkBridgeRepository,
+  SubscanRepository,
 } from './repositories/implementations';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
 import { LzBridgeRepository } from './repositories/implementations/LzBridgeRepository';
@@ -179,6 +181,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     Symbols.AccountUnificationRepository
   );
   container.addSingleton<IInflationRepository>(InflationRepository, Symbols.InflationRepository);
+  container.addSingleton<ISubscanRepository>(SubscanRepository, Symbols.SubscanRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);

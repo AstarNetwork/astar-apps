@@ -23,6 +23,8 @@ import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
 import { useAccount, useChainMetadata, useNetworkInfo, useLedger } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
+
 import { useI18n } from 'vue-i18n';
 import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
@@ -42,11 +44,17 @@ export interface RewardsPerPeriod {
 export function useDappStaking() {
   const { t } = useI18n();
   const store = useStore();
-  const { currentAccount } = useAccount();
+  const { currentAccount, currentAccountName } = useAccount();
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
   const { isLedger } = useLedger();
+
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+  const isLockdropAccount = computed<boolean>(
+    () => !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION
+  );
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
@@ -285,7 +293,7 @@ export function useDappStaking() {
   };
 
   const withdraw = async (): Promise<void> => {
-    if (isLedger.value) {
+    if (isLedger.value || isLockdropAccount.value) {
       const stakingService = container.get<IDappStakingServiceV2Ledger>(
         Symbols.DappStakingServiceV2Ledger
       );
@@ -310,7 +318,7 @@ export function useDappStaking() {
   };
 
   const unlock = async (amount: bigint): Promise<void> => {
-    if (isLedger.value) {
+    if (isLedger.value || isLockdropAccount.value) {
       const stakingService = container.get<IDappStakingServiceV2Ledger>(
         Symbols.DappStakingServiceV2Ledger
       );

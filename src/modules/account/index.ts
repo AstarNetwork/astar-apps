@@ -3,6 +3,9 @@ import { BN } from '@polkadot/util';
 
 export { addTxHistories, addLzHistories } from 'src/modules/account/utils';
 
+// Memo: used for determining if the SS58 account is Lockdrop account
+export const ETHEREUM_EXTENSION = 'Ethereum Extension';
+
 export interface SystemAccount extends Struct {
   data: {
     free: BN;

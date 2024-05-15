@@ -104,6 +104,18 @@
       </data-card>
     </div>
 
+    <div class="row--title">{{ $t('stakingV3.inflation') }}</div>
+    <div class="row--data-list">
+      <data-card
+        :title="$t('stakingV3.estimatedRealizedInflation')"
+        :description="$t('stakingV3.estimatedRealizedInflationDescription')"
+        :link-url="docsUrl.inflation"
+        :link-label="$t('stakingV3.tokenomics')"
+      >
+        {{ estimatedInflationFormatted }}
+      </data-card>
+    </div>
+
     <!-- Memo: hide for this moment. we should have Stake Unlock together. -->
     <div v-if="false" class="row--data-list">
       <data-card :title="$t('stakingV3.unlocking')" description="description">
@@ -141,7 +153,7 @@ export default defineComponent({
       numberOfStakersAndLockers,
       tokensToBeBurned,
     } = useDataCalculations();
-    const { activeInflationConfiguration } = useInflation();
+    const { activeInflationConfiguration, estimatedInflation } = useInflation();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
     const tvl = computed<string>(() => (currentEraInfo.value?.totalLocked ?? BigInt(0)).toString());
@@ -163,6 +175,10 @@ export default defineComponent({
 
     const formattedTvlBalance = computed<string>(() =>
       balanceFormatter(tvl.value.toString() ?? '')
+    );
+
+    const estimatedInflationFormatted = computed<string>(() =>
+      estimatedInflation.value ? `${estimatedInflation.value.toFixed(2)} %` : '--'
     );
 
     return {
@@ -187,6 +203,7 @@ export default defineComponent({
       docsUrl,
       formattedTvlBalance,
       isZkEvm,
+      estimatedInflationFormatted,
     };
   },
 });
