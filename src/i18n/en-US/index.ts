@@ -993,6 +993,10 @@ export default {
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
     },
+    inflation: 'Inflation',
+    estimatedRealizedInflation: 'Estimated realized inflation',
+    estimatedRealizedInflationDescription:
+      'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
