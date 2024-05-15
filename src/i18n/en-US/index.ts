@@ -998,6 +998,10 @@ export default {
       error:
         'An unexpected error occurred during dApp registration. Please screenshot this message and send to the Astar team. {error}',
     },
+    inflation: 'Inflation',
+    estimatedRealizedInflation: 'Estimated realized inflation',
+    estimatedRealizedInflationDescription:
+      'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
@@ -1044,7 +1048,7 @@ export default {
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
-      'High bridge traffic may delay withdrawal transactions up to 20 hours. We appreciate your patience.',
+      'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
     modals: {
       highTraffic: {
