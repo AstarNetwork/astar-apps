@@ -8,3 +8,4 @@ export * from './useAprV3';
 export * from './useVotingCountdown';
 export * from './useRegisterDapp';
 export * from './useDataCalculations';
+export * from './useSelectableComponent';
