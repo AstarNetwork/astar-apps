@@ -67,11 +67,30 @@
   display: flex;
 }
 
+.wizard-step-completed {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: $success-green;
+  color: $white;
+}
+
 .wizard-step-number-selected {
   color: $white;
   border-color: $white;
 }
 
-.wizard-panels{
+.wizard-panels {
   margin-top: 24px;
 }
+
+.wizard-step-header {
+  display: flex;
+  justify-content: space-between;
+}
+

@@ -4,4 +4,5 @@ export interface Dapp {
   logoUrl: string;
   amount: number;
   id: number;
+  mainCategory?: string;
 }

@@ -41,11 +41,29 @@ export default defineComponent({
       type: Array as PropType<Dapp[]>,
       required: true,
     },
+    category: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    onDappsSelected: {
+      type: Function as PropType<(dapps: Dapp[]) => void>,
+      required: true,
+    },
   },
   setup(props) {
     const itemsPerPage = 12;
     const { constants } = useDappStaking();
-    const { pagedItems } = usePaging(props.dapps, itemsPerPage);
+
+    const filteredDapps = computed<Dapp[]>(() =>
+      props.category
+        ? props.dapps.filter(
+            (dapp) => dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase()
+          )
+        : props.dapps
+    );
+
+    const { pagedItems } = usePaging(filteredDapps, itemsPerPage);
     const selectedIndexes = ref<number[]>([]);
 
     const maxDappsToSelect = computed<number>(
@@ -56,7 +74,6 @@ export default defineComponent({
       pageIndex * itemsPerPage + index;
 
     const handleItemSelected = (index: number): void => {
-      console.log('index', index);
       const indexToRemove = selectedIndexes.value.indexOf(index);
       if (indexToRemove >= 0) {
         selectedIndexes.value.splice(indexToRemove, 1);
@@ -64,6 +81,12 @@ export default defineComponent({
         if (selectedIndexes.value.length < maxDappsToSelect.value) {
           selectedIndexes.value.push(index);
         }
+      }
+
+      if (props.onDappsSelected) {
+        props.onDappsSelected(
+          selectedIndexes.value.map((selectedIndex) => filteredDapps.value[selectedIndex])
+        );
       }
     };
 
@@ -79,6 +102,7 @@ export default defineComponent({
       modules: [Navigation],
       pagedItems,
       itemsPerPage,
+      filteredDapps,
       itemIndex,
       handleItemSelected,
       isItemSelected,

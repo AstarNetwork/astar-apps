@@ -1004,6 +1004,7 @@ export default {
       category: 'Category',
       lastTVL: 'Last TVL',
       newbies: 'Newbies',
+      backToCategory: 'Go back to Category',
     },
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',

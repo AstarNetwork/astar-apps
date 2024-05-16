@@ -33,16 +33,14 @@
     border-radius: 16px;
     display: flex;
     align-items: center;
-    flex: 1 0 30%;
-    max-width: 30%;
     height: 72px;
     padding: 16px 24px;
     cursor: pointer;
   }
 
   @media (min-width: 768px) {
-    width: 100%;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

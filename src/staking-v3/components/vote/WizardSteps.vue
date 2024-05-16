@@ -5,6 +5,7 @@
       :key="index"
       :step="step"
       :is-selected="isStepSelected(index)"
+      :is-completed="isStepCompleted(index)"
       @click="handleStepSelected(index)"
     />
   </div>
@@ -29,6 +30,11 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+    completedSteps: {
+      type: Object as PropType<Map<number, boolean>>,
+      required: false,
+      default: () => new Map(),
+    },
     onStepSelected: {
       type: Function as PropType<(stepIndex: number) => void>,
       required: true,
@@ -43,7 +49,9 @@ export default defineComponent({
 
     const isStepSelected = (step: number): boolean => step === props.selectedStepIndex;
 
-    return { isStepSelected, handleStepSelected };
+    const isStepCompleted = (step: number): boolean => props.completedSteps.get(step) || false;
+
+    return { isStepSelected, handleStepSelected, isStepCompleted };
   },
 });
 </script>

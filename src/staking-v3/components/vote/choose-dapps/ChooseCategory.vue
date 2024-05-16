@@ -5,7 +5,7 @@
       :key="category.value"
       class="category-container"
       :class="{ selected: isComponentSelected(index) }"
-      @click="handleSelectComponent(index)"
+      @click="handleCategorySelected(index)"
     >
       <div class="text">
         <div
@@ -16,22 +16,35 @@
         </div>
         <div class="category-description">Some text ...</div>
       </div>
-      <div class="icon"><icon-arrow-right /></div>
+      <div class="icon"><astar-icon-arrow-right /></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { possibleCategories } from 'src/components/dapp-staking/register/components/MainCategory.vue';
-import { IconArrowRight } from '@astar-network/astar-ui';
 import { useSelectableComponent } from 'src/staking-v3/hooks';
 
 export default defineComponent({
-  components: { IconArrowRight },
-  setup() {
+  props: {
+    onCategorySelected: {
+      type: Function as PropType<(category: string) => void>,
+      required: true,
+    },
+  },
+  setup(props) {
     const { isComponentSelected, handleSelectComponent } = useSelectableComponent();
-    return { possibleCategories, isComponentSelected, handleSelectComponent };
+
+    const handleCategorySelected = (index: number) => {
+      handleSelectComponent(index);
+
+      if (props.onCategorySelected) {
+        props.onCategorySelected(possibleCategories[index].value);
+      }
+    };
+
+    return { possibleCategories, isComponentSelected, handleCategorySelected };
   },
 });
 </script>
