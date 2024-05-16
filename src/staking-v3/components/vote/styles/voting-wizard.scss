@@ -11,13 +11,19 @@
   backdrop-filter: blur(3px);
 }
 
+.wizard-header {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 24px;
+}
+
 .wizard-steps-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -40,7 +46,6 @@
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  letter-spacing: -0.48px;
   margin-top: 30px;
 }
 

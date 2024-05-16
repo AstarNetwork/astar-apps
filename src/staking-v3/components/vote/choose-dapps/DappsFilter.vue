@@ -5,7 +5,7 @@
       :key="`filter-${index}`"
       :class="{ 'dapp-filter-selected': isComponentSelected(index) }"
       class="dapp-filter"
-      @click="handleSelectComponent(index)"
+      @click="handleFilterSelected(index)"
     >
       {{ filter }}
     </div>
@@ -13,12 +13,18 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import { useSelectableComponent } from 'src/staking-v3/hooks';
-import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  setup() {
+  props: {
+    onFilterChange: {
+      type: Function as PropType<(index: number) => void>,
+      required: true,
+    },
+  },
+  setup(props) {
     const defaultFilterIndex = 0;
     const { t } = useI18n();
     const { isComponentSelected, handleSelectComponent } =
@@ -29,11 +35,19 @@ export default defineComponent({
       t('stakingV3.voting.newbies'),
     ];
 
-    return { filters, isComponentSelected, handleSelectComponent };
+    const handleFilterSelected = (index: number): void => {
+      handleSelectComponent(index);
+
+      if (props.onFilterChange) {
+        props.onFilterChange(index);
+      }
+    };
+
+    return { filters, isComponentSelected, handleFilterSelected };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import 'src/staking-v3/components/styles/choose-dapps.scss';
+@import 'src/staking-v3/components/vote/styles/choose-dapps.scss';
 </style>

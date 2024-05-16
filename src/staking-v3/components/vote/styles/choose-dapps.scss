@@ -1,0 +1,83 @@
+@import 'src/css/quasar.variables.scss';
+
+.dapp-filter-container {
+  display: flex;
+  gap: 8px;
+}
+
+.dapp-filter {
+  padding: 8px 24px;
+  background-color: $white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dapp-filter-selected {
+  background-color: $navy-1;
+  color: $white;
+}
+
+.container--dapps {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  // justify-content: space-around;
+  // align-items: center;
+  gap: 8px;
+
+  .container--item {
+    position: relative;
+    background-color: $white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    flex: 1 0 30%;
+    max-width: 30%;
+    height: 72px;
+    padding: 16px 24px;
+    cursor: pointer;
+  }
+
+  @media (min-width: 768px) {
+    width: 100%;
+    flex-direction: row;
+  }
+}
+
+.item--selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  border-radius: 50%;
+  background-color: $astar-blue;
+  color: $white;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
+.swiper--dapps {
+  > .swiper-button-prev,
+  > .swiper-button-next {
+    margin: 0;
+    margin-right: 6px;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: block;
+    text-align: center;
+    left: 0;
+    right: 0;
+    &::after {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 24px;
+    }
+  }
+}

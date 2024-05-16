@@ -1,16 +1,33 @@
 <template>
   <div>
-    <dapps-filter />
+    <choose-category v-if="!currentCategory" />
+    <dapps-list v-if="currentCategory" :dapps="dapps" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import DappsFilter from './DappsFilter.vue';
+import { defineComponent, computed, ref } from 'vue';
+import DappsList from './DappsList.vue';
+import ChooseCategory from './ChooseCategory.vue';
+import { Dapp } from './Model';
+import { useDapps } from 'src/staking-v3/hooks';
 
 export default defineComponent({
-  components: { DappsFilter },
+  components: { DappsList, ChooseCategory },
   setup() {
-    return {};
+    const { registeredDapps } = useDapps();
+    const currentCategory = ref<string>();
+
+    const dapps = computed<Dapp[]>(() =>
+      registeredDapps.value.map((dapp) => ({
+        name: dapp.basic.name,
+        address: dapp.chain.address,
+        logoUrl: dapp.basic.iconUrl,
+        amount: 0,
+        id: dapp.chain.id,
+      }))
+    );
+
+    return { dapps, currentCategory };
   },
 });
 </script>
