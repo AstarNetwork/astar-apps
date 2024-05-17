@@ -30,7 +30,7 @@ import { defineComponent, computed, ref, PropType } from 'vue';
 import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
-import { Dapp } from '../types';
+import { DappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 
 enum View {
@@ -42,7 +42,7 @@ export default defineComponent({
   components: { DappsList, ChooseCategory, DappSearch },
   props: {
     onDappsSelected: {
-      type: Function as PropType<(dapps: Dapp[]) => void>,
+      type: Function as PropType<(dapps: DappVote[]) => void>,
       required: true,
     },
   },
@@ -50,10 +50,10 @@ export default defineComponent({
     const { registeredDapps } = useDapps();
     const currentCategory = ref<string>();
     const currentView = ref<View>(View.Category);
-    const selectedDapps = ref<Dapp[]>([]);
+    const selectedDapps = ref<DappVote[]>([]);
     const searchTerm = ref<string>('');
 
-    const dapps = computed<Dapp[]>(() =>
+    const dapps = computed<DappVote[]>(() =>
       registeredDapps.value.map((dapp) => ({
         name: dapp.basic.name,
         address: dapp.chain.address,
@@ -73,7 +73,7 @@ export default defineComponent({
       }
     };
 
-    const handleDappsSelected = (dapps: Dapp[]): void => {
+    const handleDappsSelected = (dapps: DappVote[]): void => {
       selectedDapps.value = dapps;
     };
 
@@ -114,6 +114,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/staking-v3/components/vote/styles/vote-common.scss';
+
 .buttons {
   display: flex;
   justify-content: flex-end;
@@ -122,12 +124,6 @@ export default defineComponent({
 
   button {
     height: 40px;
-  }
-
-  .submit-button {
-    width: 160px;
-    font-size: 16px;
-    font-weight: 600;
   }
 
   .go-back {

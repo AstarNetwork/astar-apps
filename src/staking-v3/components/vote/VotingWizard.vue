@@ -16,6 +16,9 @@
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
         :dapps="selectedDapps"
+        :total-staked-amount="totalStakeAmount"
+        :remaining-locked-tokens="remainingLockedTokens"
+        :can-submit="canSubmit"
         :on-amount-changed="handleVoteAmountChanged"
       />
     </div>
@@ -28,8 +31,8 @@ import WizardSteps from './WizardSteps.vue';
 import { WizardItem } from './types';
 import { useI18n } from 'vue-i18n';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
-import { useSelectableComponent } from 'src/staking-v3/hooks';
-import { Dapp } from './types';
+import { useSelectableComponent, useVote } from 'src/staking-v3/hooks';
+import { DappVote } from '../../logic';
 import ChooseAmountsPanel from './enter-amount/ChooseAmountsPanel.vue';
 
 enum Steps {
@@ -47,7 +50,8 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent();
-    const selectedDapps = ref<Dapp[]>([]);
+    const selectedDapps = ref<DappVote[]>([]);
+    const { totalStakeAmount, remainingLockedTokens, canSubmit } = useVote(selectedDapps);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
         new Map([
@@ -75,13 +79,13 @@ export default defineComponent({
       },
     ];
 
-    const handleDappsSelected = (dapps: Dapp[]): void => {
+    const handleDappsSelected = (dapps: DappVote[]): void => {
       selectedDapps.value = dapps;
       selectedComponentIndex.value = Steps.AddAmount;
       console.log('Selected dapps:', dapps);
     };
 
-    const handleVoteAmountChanged = (dapp: Dapp, amount: number): void => {
+    const handleVoteAmountChanged = (dapp: DappVote, amount: number): void => {
       dapp.amount = amount;
     };
 
@@ -91,6 +95,9 @@ export default defineComponent({
       selectedStepIndex: selectedComponentIndex,
       completedSteps,
       selectedDapps,
+      totalStakeAmount,
+      remainingLockedTokens,
+      canSubmit,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
       handleVoteAmountChanged,

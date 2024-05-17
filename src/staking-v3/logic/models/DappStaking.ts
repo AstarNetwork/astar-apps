@@ -217,3 +217,12 @@ export interface StakerRewards {
   period: number;
   eraCount: number;
 }
+
+export type DappVote = {
+  name: string;
+  address: string;
+  logoUrl: string;
+  amount: number;
+  id: number;
+  mainCategory?: string;
+};

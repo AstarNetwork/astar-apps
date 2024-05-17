@@ -31,7 +31,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { Dapp } from '../types';
+import { DappVote } from '../../../logic';
 
 export default defineComponent({
   components: {
@@ -41,7 +41,7 @@ export default defineComponent({
   },
   props: {
     dapps: {
-      type: Array as PropType<Dapp[]>,
+      type: Array as PropType<DappVote[]>,
       required: true,
     },
     category: {
@@ -55,7 +55,7 @@ export default defineComponent({
       default: '',
     },
     onDappsSelected: {
-      type: Function as PropType<(dapps: Dapp[]) => void>,
+      type: Function as PropType<(dapps: DappVote[]) => void>,
       required: true,
     },
   },
@@ -63,8 +63,7 @@ export default defineComponent({
     const itemsPerPage = 12;
     const { constants } = useDappStaking();
 
-    const filteredDapps = computed<Dapp[]>(() => {
-      // console.log('props', props);
+    const filteredDapps = computed<DappVote[]>(() => {
       if (props.category && props.filter) {
         return props.dapps.filter(
           (dapp) =>
