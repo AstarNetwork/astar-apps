@@ -9,7 +9,15 @@
     />
 
     <div class="wizard-panels">
-      <choose-dapps-panel v-if="selectedStepIndex === 0" :on-dapps-selected="handleDappsSelected" />
+      <choose-dapps-panel
+        v-if="selectedStepIndex === Steps.ChooseDapps"
+        :on-dapps-selected="handleDappsSelected"
+      />
+      <choose-amounts-panel
+        v-if="selectedStepIndex === Steps.AddAmount"
+        :dapps="selectedDapps"
+        :on-amount-changed="handleVoteAmountChanged"
+      />
     </div>
   </div>
 </template>
@@ -21,7 +29,8 @@ import { WizardItem } from './types';
 import { useI18n } from 'vue-i18n';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import { useSelectableComponent } from 'src/staking-v3/hooks';
-import { Dapp } from './choose-dapps/Model';
+import { Dapp } from './types';
+import ChooseAmountsPanel from './enter-amount/ChooseAmountsPanel.vue';
 
 enum Steps {
   ChooseDapps,
@@ -33,6 +42,7 @@ export default defineComponent({
   components: {
     WizardSteps,
     ChooseDappsPanel,
+    ChooseAmountsPanel,
   },
   setup() {
     const { t } = useI18n();
@@ -71,12 +81,19 @@ export default defineComponent({
       console.log('Selected dapps:', dapps);
     };
 
+    const handleVoteAmountChanged = (dapp: Dapp, amount: number): void => {
+      dapp.amount = amount;
+    };
+
     return {
+      Steps,
       wizardSteps,
       selectedStepIndex: selectedComponentIndex,
       completedSteps,
+      selectedDapps,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
+      handleVoteAmountChanged,
     };
   },
 });

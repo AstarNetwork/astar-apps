@@ -1,21 +1,17 @@
-<!-- TODO Remove after Vote.vue is removed -->
-
 <template>
-  <div>
-    <div class="wrapper--amount">
-      <img class="token--logo" alt="token-logo" :src="nativeTokenImg" />
-      <span class="text--title">{{ nativeTokenSymbol }}</span>
-      <input
-        inputmode="decimal"
-        type="number"
-        min="0"
-        pattern="^[0-9]*(\.)?[0-9]*$"
-        placeholder="0"
-        class="input--amount input--no-spin"
-        @input="handleInputAmount"
-        @wheel="(e) => e.preventDefault()"
-      />
-    </div>
+  <div class="wrapper--amount">
+    <img class="token--logo" alt="token-logo" :src="nativeTokenImg" />
+    <input
+      inputmode="decimal"
+      type="number"
+      min="0"
+      pattern="^[0-9]*(\.)?[0-9]*$"
+      placeholder="0"
+      class="input--amount input--no-spin"
+      @input="handleInputAmount"
+      @wheel="(e) => e.preventDefault()"
+    />
+    <span class="text--title">{{ nativeTokenSymbol }}</span>
   </div>
 </template>
 
@@ -59,10 +55,11 @@ export default defineComponent({
 <style scoped lang="scss">
 .wrapper--amount {
   display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .input--amount {
-  flex-grow: 1;
   text-align: right;
   font-size: 18px;
   outline: none;
@@ -70,12 +67,12 @@ export default defineComponent({
   text-align: right;
   font-weight: 600;
   color: $navy-1;
+  min-width: 0;
 }
 
 .token--logo {
   width: 24px;
   height: 24px;
-  margin-right: 8px;
 }
 
 .body--dark {

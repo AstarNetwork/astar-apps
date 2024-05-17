@@ -1,5 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
+.main-container {
+  display: flex;
+  gap: 8px;
+}
+
 .dapp-filter-container {
   display: flex;
   gap: 8px;
@@ -23,8 +28,6 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  // justify-content: space-around;
-  // align-items: center;
   gap: 8px;
 
   .container--item {
@@ -33,9 +36,11 @@
     border-radius: 16px;
     display: flex;
     align-items: center;
+    gap: 16px;
     height: 72px;
     padding: 16px 24px;
     cursor: pointer;
+    font-weight: 600;
   }
 
   @media (min-width: 768px) {

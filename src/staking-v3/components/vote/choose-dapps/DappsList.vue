@@ -9,6 +9,7 @@
             class="container--item"
             @click="handleItemSelected(itemIndex(pageIndex, index))"
           >
+            <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
             <div>{{ dapp.name }}</div>
             <div v-if="isItemSelected(itemIndex(pageIndex, index))" class="item--selected">
               {{ getSelectionOrder(itemIndex(pageIndex, index)) }}
@@ -23,18 +24,20 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useDappStaking, usePaging } from 'src/staking-v3/hooks';
+import DappIcon from '../DappIcon.vue';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { Dapp } from './Model';
+import { Dapp } from '../types';
 
 export default defineComponent({
   components: {
     Swiper,
     SwiperSlide,
+    DappIcon,
   },
   props: {
     dapps: {
@@ -46,6 +49,11 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+    filter: {
+      type: String,
+      required: false,
+      default: '',
+    },
     onDappsSelected: {
       type: Function as PropType<(dapps: Dapp[]) => void>,
       required: true,
@@ -55,13 +63,27 @@ export default defineComponent({
     const itemsPerPage = 12;
     const { constants } = useDappStaking();
 
-    const filteredDapps = computed<Dapp[]>(() =>
-      props.category
-        ? props.dapps.filter(
-            (dapp) => dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase()
-          )
-        : props.dapps
-    );
+    const filteredDapps = computed<Dapp[]>(() => {
+      // console.log('props', props);
+      if (props.category && props.filter) {
+        return props.dapps.filter(
+          (dapp) =>
+            dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() &&
+            dapp.name.toLowerCase().includes(props.filter.toLowerCase())
+        );
+      }
+      if (props.category) {
+        return props.dapps.filter(
+          (dapp) => dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase()
+        );
+      } else if (props.filter) {
+        return props.dapps.filter((dapp) =>
+          dapp.name.toLowerCase().includes(props.filter.toLowerCase())
+        );
+      } else {
+        return props.dapps;
+      }
+    });
 
     const { pagedItems } = usePaging(filteredDapps, itemsPerPage);
     const selectedIndexes = ref<number[]>([]);

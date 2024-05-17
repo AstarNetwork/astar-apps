@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="main-container">
+    <dapp-search title="Search for dapps" :search-term="searchTerm" :on-search="handleSearch" />
     <choose-category
       v-if="currentView === View.Category"
       :on-category-selected="handleCategorySelected"
@@ -8,11 +9,19 @@
       v-if="currentView === View.Dapps"
       :dapps="dapps"
       :category="currentCategory"
+      :filter="searchTerm"
       :on-dapps-selected="handleDappsSelected"
     />
     <div v-if="currentView === View.Dapps" class="buttons">
-      <button @click="goBackToCategories()">{{ $t('stakingV3.voting.backToCategory') }}</button>
-      <button :disabled="!canSubmit" @click="submit()">{{ $t('stakingV3.done') }}</button>
+      <button class="go-back" @click="goBackToCategories()">
+        <div class="go-back-container">
+          <astar-icon-arrow-left />
+          {{ $t('stakingV3.voting.backToCategory') }}
+        </div>
+      </button>
+      <astar-button :disabled="!canSubmit" class="submit-button" @click="submit()">{{
+        $t('stakingV3.done')
+      }}</astar-button>
     </div>
   </div>
 </template>
@@ -20,7 +29,8 @@
 import { defineComponent, computed, ref, PropType } from 'vue';
 import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
-import { Dapp } from './Model';
+import DappSearch from './DappSearch.vue';
+import { Dapp } from '../types';
 import { useDapps } from 'src/staking-v3/hooks';
 
 enum View {
@@ -29,7 +39,7 @@ enum View {
 }
 
 export default defineComponent({
-  components: { DappsList, ChooseCategory },
+  components: { DappsList, ChooseCategory, DappSearch },
   props: {
     onDappsSelected: {
       type: Function as PropType<(dapps: Dapp[]) => void>,
@@ -41,6 +51,7 @@ export default defineComponent({
     const currentCategory = ref<string>();
     const currentView = ref<View>(View.Category);
     const selectedDapps = ref<Dapp[]>([]);
+    const searchTerm = ref<string>('');
 
     const dapps = computed<Dapp[]>(() =>
       registeredDapps.value.map((dapp) => ({
@@ -56,10 +67,21 @@ export default defineComponent({
     const handleCategorySelected = (category: string): void => {
       currentCategory.value = category;
       currentView.value = View.Dapps;
+
+      if (category) {
+        searchTerm.value = '';
+      }
     };
 
     const handleDappsSelected = (dapps: Dapp[]): void => {
       selectedDapps.value = dapps;
+    };
+
+    const handleSearch = (search: string): void => {
+      searchTerm.value = search;
+      if (searchTerm.value.length > 0) {
+        currentView.value = View.Dapps;
+      }
     };
 
     const canSubmit = computed<boolean>(() => selectedDapps.value.length > 0);
@@ -80,10 +102,12 @@ export default defineComponent({
       currentView,
       currentCategory,
       canSubmit,
+      searchTerm,
       handleCategorySelected,
       goBackToCategories,
       handleDappsSelected,
       submit,
+      handleSearch,
     };
   },
 });
@@ -93,15 +117,32 @@ export default defineComponent({
 .buttons {
   display: flex;
   justify-content: flex-end;
+  gap: 16px;
   margin-top: 20px;
 
   button {
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: white;
+    height: 40px;
+  }
+
+  .submit-button {
+    width: 160px;
     font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .go-back {
+    padding-right: 24px;
+    padding-left: 8px;
+    border-radius: 100px;
+    border: 1px solid $navy-1;
+    background: $white;
+  }
+
+  .go-back-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-weight: 600;
   }
 }
 </style>
