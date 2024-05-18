@@ -6,6 +6,7 @@
       :step="step"
       :is-selected="isStepSelected(index)"
       :is-completed="isStepCompleted(index)"
+      :class="{ 'not-selectable': !isStepSelectable(index) }"
       @click="handleStepSelected(index)"
     />
   </div>
@@ -42,7 +43,8 @@ export default defineComponent({
   },
   setup(props) {
     const handleStepSelected = (index: number) => {
-      if (props.onStepSelected) {
+      // Only allow selecting the first step if it's not completed
+      if (props.onStepSelected && isStepSelectable(index)) {
         props.onStepSelected(index);
       }
     };
@@ -51,11 +53,15 @@ export default defineComponent({
 
     const isStepCompleted = (step: number): boolean => props.completedSteps.get(step) || false;
 
-    return { isStepSelected, handleStepSelected, isStepCompleted };
+    const isStepSelectable = (step: number): boolean => step === 0 && !isStepCompleted(step);
+
+    return { isStepSelected, handleStepSelected, isStepCompleted, isStepSelectable };
   },
 });
 </script>
 
-<!-- <style lang="scss" scoped>
-@import 'src/staking-v3/components/styles/voting-wizard.scss';
-</style> -->
+<style lang="scss" scoped>
+.not-selectable {
+  cursor: default;
+}
+</style>

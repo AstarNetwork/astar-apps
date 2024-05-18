@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <dapp-search title="Search for dapps" :search-term="searchTerm" :on-search="handleSearch" />
+    <dapp-search :title="title" :search-term="searchTerm" :on-search="handleSearch" />
     <choose-category
       v-if="currentView === View.Category"
       :on-category-selected="handleCategorySelected"
@@ -32,6 +32,7 @@ import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
 import { DappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
+import { useI18n } from 'vue-i18n';
 
 enum View {
   Category,
@@ -48,10 +49,17 @@ export default defineComponent({
   },
   setup(props) {
     const { registeredDapps } = useDapps();
+    const { t } = useI18n();
     const currentCategory = ref<string>();
     const currentView = ref<View>(View.Category);
     const selectedDapps = ref<DappVote[]>([]);
     const searchTerm = ref<string>('');
+
+    const title = computed<string>(() =>
+      currentView.value === View.Dapps
+        ? t('stakingV3.voting.chooseProjects')
+        : t('stakingV3.voting.chooseCategory')
+    );
 
     const dapps = computed<DappVote[]>(() =>
       registeredDapps.value.map((dapp) => ({
@@ -103,6 +111,7 @@ export default defineComponent({
       currentCategory,
       canSubmit,
       searchTerm,
+      title,
       handleCategorySelected,
       goBackToCategories,
       handleDappsSelected,

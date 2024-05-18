@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="panel-title">{{ $t('stakingV3.voting.addAmounts') }}</div>
     <div class="vote-common-container">
       <div v-for="dapp of dapps" :key="`dapp-${dapp.id}`" class="item-wrapper">
         <div class="name-and-icon">
@@ -12,6 +13,9 @@
             :amount-changed="(amount) => handleAmountChanged(dapp, amount)"
           />
         </div>
+        <div v-if="dapps.length > 1" class="remove" @click="handleRemoveDapp(dapp)">
+          <astar-icon-close />
+        </div>
       </div>
     </div>
     <div>
@@ -20,7 +24,9 @@
       <token-balance-native :balance="remainingLockedTokens.toString()" />
     </div>
     <div class="button-container">
-      <astar-button :disabled="!canSubmit" class="submit-button">{{ $t('next') }}</astar-button>
+      <astar-button :disabled="!canSubmit" class="submit-button" @click="onAmountsEntered">{{
+        $t('next')
+      }}</astar-button>
     </div>
   </div>
 </template>
@@ -32,13 +38,14 @@ import DappIcon from '../DappIcon.vue';
 import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
-export type ChoseAmountPanelProps = {
-  dapps: DappVote[];
-  onAmountChanged?: (dapp: DappVote, amount: number) => void;
-  totalStakedAmount: bigint;
-  remainingLockedTokens: bigint;
-  canSubmit: boolean;
-};
+// export type ChoseAmountPanelProps = {
+//   dapps: DappVote[];
+//   totalStakedAmount: bigint;
+//   remainingLockedTokens: bigint;
+//   canSubmit: boolean;
+//   onAmountChanged?: (dapp: DappVote, amount: number) => void;
+//   onContinue: () => void;
+// };
 
 export default defineComponent({
   components: {
@@ -69,6 +76,15 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    onAmountsEntered: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+    onRemoveDapp: {
+      type: Function as PropType<(dapp: DappVote) => void>,
+      required: false,
+      default: undefined,
+    },
   },
   setup(props) {
     const handleAmountChanged = (dapp: DappVote, amount: number) => {
@@ -77,7 +93,14 @@ export default defineComponent({
       }
     };
 
-    return { handleAmountChanged };
+    const handleRemoveDapp = (dapp: DappVote) => {
+      console.log('remove dapp', dapp);
+      if (props.onRemoveDapp) {
+        props.onRemoveDapp(dapp);
+      }
+    };
+
+    return { handleAmountChanged, handleRemoveDapp };
   },
 });
 </script>
@@ -85,10 +108,44 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/staking-v3/components/vote/styles/vote-common.scss';
 
+.panel-title {
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
 .item-wrapper {
   padding: 16px;
   border-radius: 16px;
   background-color: $white;
+  position: relative;
+}
+
+.item-wrapper:hover .remove {
+  visibility: visible;
+  opacity: 0.5;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid $gray-3;
+  font-color: $gray-2;
+  margin-top: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .amount {
@@ -104,11 +161,5 @@ export default defineComponent({
   align-items: center;
   font-weight: 600;
   padding: 16px 16px 16px 8px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
 }
 </style>

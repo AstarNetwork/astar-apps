@@ -20,6 +20,14 @@
         :remaining-locked-tokens="remainingLockedTokens"
         :can-submit="canSubmit"
         :on-amount-changed="handleVoteAmountChanged"
+        :on-amounts-entered="handleAmountsEntered"
+        :on-remove-dapp="handleRemoveDapp"
+      />
+      <review-panel
+        v-if="selectedStepIndex === Steps.Review"
+        :dapps="selectedDapps.filter((dapp) => dapp.amount > 0)"
+        :total-stake-amount="totalStakeAmount"
+        :on-confirm="handleConfirm"
       />
     </div>
   </div>
@@ -34,6 +42,7 @@ import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import { useSelectableComponent, useVote } from 'src/staking-v3/hooks';
 import { DappVote } from '../../logic';
 import ChooseAmountsPanel from './enter-amount/ChooseAmountsPanel.vue';
+import ReviewPanel from './review/ReviewPanel.vue';
 
 enum Steps {
   ChooseDapps,
@@ -46,18 +55,21 @@ export default defineComponent({
     WizardSteps,
     ChooseDappsPanel,
     ChooseAmountsPanel,
+    ReviewPanel,
   },
   setup() {
     const { t } = useI18n();
     const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent();
     const selectedDapps = ref<DappVote[]>([]);
+    const stakesEntered = ref<boolean>(false);
+    const isConfirmed = ref<boolean>(false);
     const { totalStakeAmount, remainingLockedTokens, canSubmit } = useVote(selectedDapps);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
         new Map([
           [Steps.ChooseDapps, selectedDapps.value.length > 0],
-          [Steps.AddAmount, false],
-          [Steps.Review, false],
+          [Steps.AddAmount, stakesEntered.value],
+          [Steps.Review, isConfirmed.value],
         ])
     );
 
@@ -85,8 +97,35 @@ export default defineComponent({
       console.log('Selected dapps:', dapps);
     };
 
+    const handleAmountsEntered = (): void => {
+      selectedComponentIndex.value = Steps.Review;
+      stakesEntered.value = true;
+    };
+
+    const reset = (): void => {
+      selectedComponentIndex.value = undefined;
+      selectedDapps.value = [];
+      stakesEntered.value = false;
+      isConfirmed.value = false;
+    };
+
+    const handleConfirm = (): void => {
+      isConfirmed.value = true;
+
+      // TODO submit transactions
+
+      reset();
+    };
+
     const handleVoteAmountChanged = (dapp: DappVote, amount: number): void => {
       dapp.amount = amount;
+    };
+
+    const handleRemoveDapp = (dapp: DappVote): void => {
+      const index = selectedDapps.value.findIndex((d) => d.id === dapp.id);
+      if (index >= 0) {
+        selectedDapps.value.splice(index, 1);
+      }
     };
 
     return {
@@ -101,6 +140,9 @@ export default defineComponent({
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
       handleVoteAmountChanged,
+      handleAmountsEntered,
+      handleConfirm,
+      handleRemoveDapp,
     };
   },
 });
