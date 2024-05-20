@@ -81,6 +81,7 @@ import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import EvmNativeToken from 'src/components/assets/EvmNativeToken.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
+import SideAds from 'src/components/assets/SideAds.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import YourProject from 'src/components/assets/YourProject.vue';
 import ZkAstr from 'src/components/assets/ZkAstr.vue';
@@ -101,6 +102,7 @@ import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 
 export default defineComponent({
   components: {
     Account,
+    SideAds,
     AstarDomains,
     EvmAssetList,
     XcmNativeAssetList,
