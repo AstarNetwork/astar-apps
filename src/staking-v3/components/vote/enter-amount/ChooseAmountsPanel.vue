@@ -174,9 +174,14 @@ export default defineComponent({
   margin-top: 8px;
   margin-right: 8px;
   cursor: pointer;
-  visibility: hidden;
-  opacity: 0;
+  visibility: visible;
+  opacity: 0.5;
   transition: opacity 0.5s ease-in-out;
+
+  @media (min-width: 768px) {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 .amount {
@@ -207,6 +212,7 @@ export default defineComponent({
   span {
     font-weight: 600;
     font-size: 16px;
+    text-align: right;
   }
 }
 
@@ -230,6 +236,11 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin: -8px;
+
+  @media (min-width: 768px) {
+    margin: 0px;
+  }
 }
 
 .container-2-columns {

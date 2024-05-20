@@ -1004,7 +1004,7 @@ export default {
       category: 'Category',
       lastTVL: 'Last TVL',
       newbies: 'Newbies',
-      backToCategory: 'Go back to Category',
+      backToCategory: 'Go back',
       totalStakingAmount: 'Total staking amount',
       yourUnclaimedRewards: 'Your unclaimed rewards',
       chooseCategory: 'Which category are you interested in most?',

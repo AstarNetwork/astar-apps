@@ -1,5 +1,9 @@
 <template>
-  <div class="wizard-step-container" :class="{ 'wizard-step-selected': isSelected }">
+  <div
+    v-if="showStep"
+    class="wizard-step-container"
+    :class="{ 'wizard-step-selected': isSelected }"
+  >
     <div class="wizard-step-header">
       <div class="wizard-step-number" :class="{ 'wizard-step-number-selected': isSelected }">
         {{ step.number }}
@@ -8,12 +12,14 @@
     </div>
     <div class="wizard-step-title">{{ step.title }}</div>
     <div>{{ step.description }}</div>
+    <div :id="`step${step.number}`"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { WizardItem } from './types';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   props: {
@@ -31,8 +37,15 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
-    return {};
+  setup(props) {
+    // On mobile devices show only the selected step. Show first step initially (if not completed)
+    const showStep = computed<boolean>(() =>
+      isMobileDevice ?? false
+        ? props.isSelected || (props.step.number === 1 && !props.isCompleted)
+        : true
+    );
+
+    return { showStep };
   },
 });
 </script>

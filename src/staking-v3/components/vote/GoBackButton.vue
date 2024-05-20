@@ -27,7 +27,7 @@ export default defineComponent({
 .go-back-container {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   font-weight: 600;
 }
 </style>

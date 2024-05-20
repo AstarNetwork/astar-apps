@@ -44,6 +44,10 @@ export default defineComponent({
       type: Function as PropType<(dapps: DappVote[]) => void>,
       required: true,
     },
+    scrollToTop: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
   },
   setup(props) {
     const { registeredDapps } = useDapps();
@@ -71,6 +75,7 @@ export default defineComponent({
     );
 
     const handleCategorySelected = (category: string): void => {
+      props.scrollToTop();
       currentCategory.value = category;
       currentView.value = View.Dapps;
 
@@ -100,6 +105,7 @@ export default defineComponent({
 
     const goBackToCategories = (): void => {
       currentView.value = View.Category;
+      props.scrollToTop();
     };
 
     return {

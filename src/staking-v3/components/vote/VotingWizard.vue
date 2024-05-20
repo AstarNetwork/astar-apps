@@ -1,5 +1,5 @@
 <template>
-  <div class="wizard-container">
+  <div ref="wizard" class="wizard-container">
     <div class="wizard-header">{{ $t('stakingV3.voting.startStaking') }}</div>
     <wizard-steps
       :steps="wizardSteps"
@@ -8,10 +8,11 @@
       :on-step-selected="handleStepSelected"
     />
 
-    <div class="wizard-panels">
+    <div v-if="selectedStepIndex >= Steps.ChooseDapps" class="wizard-panels">
       <choose-dapps-panel
         v-if="selectedStepIndex === Steps.ChooseDapps"
         :on-dapps-selected="handleDappsSelected"
+        :scroll-to-top="scrollToWizardTop"
       />
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
@@ -63,6 +64,7 @@ export default defineComponent({
     const selectedDapps = ref<DappVote[]>([]);
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
+    const wizard = ref();
     const {
       totalStakeAmount,
       remainingLockedTokens,
@@ -107,24 +109,33 @@ export default defineComponent({
       },
     ];
 
+    const scrollToWizardTop = (): void => {
+      if (wizard.value) {
+        wizard.value.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
     const handleDappsSelected = (dapps: DappVote[]): void => {
       selectedDapps.value = dapps;
       selectedComponentIndex.value = Steps.AddAmount;
+      scrollToWizardTop();
     };
 
     const handleAmountsEntered = (): void => {
       selectedComponentIndex.value = Steps.Review;
       stakesEntered.value = true;
+      scrollToWizardTop();
     };
 
     const reset = (): void => {
-      selectedComponentIndex.value = undefined;
+      selectedComponentIndex.value = -1;
       selectedDapps.value = [];
       stakesEntered.value = false;
       isConfirmed.value = false;
     };
 
     const handleConfirm = async (): Promise<void> => {
+      scrollToWizardTop();
       isConfirmed.value = true;
       await vote();
       reset();
@@ -152,9 +163,10 @@ export default defineComponent({
       completedSteps,
       selectedDapps,
       stakeInfo,
+      wizard,
+      availableToVoteDisplay,
       canVote,
       vote,
-      availableToVoteDisplay,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
       handleVoteAmountChanged,
@@ -162,6 +174,7 @@ export default defineComponent({
       handleConfirm,
       handleRemoveDapp,
       handleGoBackToDapps,
+      scrollToWizardTop,
     };
   },
 });
