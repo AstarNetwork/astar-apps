@@ -43,6 +43,11 @@
             <transaction-history :tx="tx" />
           </div>
         </div>
+        <div v-else-if="lztTxHistories.length > 0" class="box--histories">
+          <div v-for="tx in lztTxHistories" :key="tx.timestamp">
+            <lz-history :tx="tx" />
+          </div>
+        </div>
         <div v-else>
           <span> {{ $t('assets.transferPage.noTxRecords') }} </span>
         </div>
@@ -75,6 +80,7 @@
 </template>
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
+import LzHistory from 'src/components/common/LzHistory.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import { HistoryTxType } from 'src/modules/account';
@@ -92,10 +98,14 @@ import {
 } from 'src/modules/information';
 import { getXvmAssetsTransferHistories } from 'src/modules/information/recent-history';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref, watchEffect, onUnmounted } from 'vue';
+import { RecentLzHistory } from '../../../modules/information/index';
+import { getLzTxHistories } from '../../../modules/information/recent-history/transfer/index';
+import { LOCAL_STORAGE } from '../../../config/localStorage';
+import { endpointKey, providerEndpoints } from '../../../config/chainEndpoints';
 
 export default defineComponent({
-  components: { TransactionHistory },
+  components: { TransactionHistory, LzHistory },
   props: {
     transferType: {
       type: String as PropType<HistoryTxType>,
@@ -110,9 +120,10 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const txHistories = ref<RecentHistory[]>([]);
+    const lztTxHistories = ref<RecentLzHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { senderSs58Account, isMultisig } = useAccount();
-    const { currentNetworkName } = useNetworkInfo();
+    const { senderSs58Account, isMultisig, currentAccount } = useAccount();
+    const { currentNetworkName, isAstarZkEvm } = useNetworkInfo();
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const faqs = computed<Faq[]>(() => {
@@ -125,35 +136,70 @@ export default defineComponent({
       if (props.transferType === HistoryTxType.ZK_ETHEREUM_BRIDGE) {
         return faqZkEthereumBridge;
       }
+      if (props.transferType === HistoryTxType.LZ_BRIDGE) {
+        return faqZkEthereumBridge;
+      }
       return faqSs58XvmTransfer;
     });
 
     const setTxHistories = async (): Promise<void> => {
       if (!senderSs58Account.value || !currentNetworkName.value) return;
+      const network = isAstarZkEvm.value
+        ? providerEndpoints[endpointKey.ASTAR_ZKEVM].networkAlias
+        : currentNetworkName.value.toLowerCase();
+
+      if (props.transferType === HistoryTxType.Xvm) {
+        txHistories.value = await getXvmAssetsTransferHistories({
+          address: senderSs58Account.value,
+          network,
+        });
+      } else if (props.transferType === HistoryTxType.LZ_BRIDGE) {
+        lztTxHistories.value = await getLzTxHistories({
+          address: currentAccount.value,
+          network,
+        });
+      } else {
+        txHistories.value = await getTxHistories({
+          address: isH160.value ? currentAccount.value : senderSs58Account.value,
+          network,
+        });
+      }
+    };
+
+    watchEffect(async () => {
       try {
         isLoadingTxHistories.value = true;
-        const network = currentNetworkName.value.toLowerCase();
-        if (props.transferType === HistoryTxType.Xvm) {
-          txHistories.value = await getXvmAssetsTransferHistories({
-            address: senderSs58Account.value,
-            network,
-          });
-        } else {
-          txHistories.value = await getTxHistories({
-            address: senderSs58Account.value,
-            network,
-          });
-        }
+        await setTxHistories();
       } catch (error) {
         console.error(error);
       } finally {
         isLoadingTxHistories.value = false;
       }
+    });
+
+    const autoFetchHistoryHandler = setInterval(async () => {
+      if (props.transferType === HistoryTxType.LZ_BRIDGE) {
+        try {
+          await setTxHistories();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }, 10 * 1000);
+
+    onUnmounted(() => {
+      clearInterval(autoFetchHistoryHandler);
+    });
+
+    return {
+      faqs,
+      hotTopics,
+      txHistories,
+      isLoadingTxHistories,
+      socialUrl,
+      isMultisig,
+      lztTxHistories,
     };
-
-    watchEffect(setTxHistories);
-
-    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl, isMultisig };
   },
 });
 </script>

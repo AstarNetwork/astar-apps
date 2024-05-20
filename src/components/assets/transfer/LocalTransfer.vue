@@ -97,6 +97,7 @@
               placeholder="0"
               class="input--amount input--no-spin"
               @input="inputHandler"
+              @wheel="(e) => e.preventDefault()"
             />
           </div>
         </div>

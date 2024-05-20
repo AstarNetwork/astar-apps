@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="zkBridgeIcon[fromChainName]" alt="chain-icon" />
+          <img width="24" :src="lzBridgeIcon[fromChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ fromChainName }}</span>
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="zkBridgeIcon[toChainName]" alt="chain-icon" />
+          <img width="24" :src="lzBridgeIcon[toChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ toChainName }}</span>
@@ -80,19 +80,7 @@
         <div class="box__row">
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <img
-                v-if="selectedToken.symbol === 'ETH'"
-                width="24"
-                alt="token-logo"
-                :src="zkBridgeIcon[EthBridgeNetworkName.Sepolia]"
-              />
-              <img
-                v-else-if="selectedToken.image !== ''"
-                width="24"
-                alt="token-logo"
-                :src="selectedToken.image"
-              />
-              <jazzicon v-else :address="selectedToken.address" :diameter="24" class="item-logo" />
+              <img width="24" alt="token-logo" :src="selectedToken.image" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>
             <div class="icon--expand">
@@ -109,13 +97,12 @@
               placeholder="0"
               class="input--amount input--no-spin"
               @input="(e) => inputHandler(e)"
-              @wheel="(e) => e.preventDefault()"
             />
           </div>
         </div>
       </div>
 
-      <div v-if="!isApproved && selectedToken.symbol !== 'ETH'">
+      <div v-if="!isApproved && !isNativeToken">
         <div class="input--checkbox" :class="isApproveMaxAmount && 'input--checkbox--checked'">
           <input
             id="approve-max-amount"
@@ -135,19 +122,19 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div v-if="isWarningHighTraffic" class="row--box-error">
-        <span class="color--white">
-          {{ $t('bridge.warningHighTraffic') }}
-          <a class="color--white text-underline" @click="setHighTrafficModalOpen(true)">
-            {{ $t('bridge.warningHighTrafficMore') }}
-          </a>
-        </span>
-      </div>
-
       <div class="container--warning">
         <ul>
-          <li>{{ $t('bridge.warning32blocks') }}</li>
-          <li>{{ $t('bridge.warning2steps') }}</li>
+          <li>{{ $t('bridge.slippage', { percent: LayerZeroSlippage }) }}</li>
+          <li>
+            {{
+              $t('bridge.feeOnTransaction', {
+                amount:
+                  nativeTokenSymbol === 'ASTR' ? $n(truncate(transactionFee, 4)) : transactionFee,
+                symbol: nativeTokenSymbol,
+              })
+            }}
+          </li>
+          <li>{{ $t('bridge.warningLzWithdrawal') }}</li>
         </ul>
       </div>
 
@@ -168,47 +155,32 @@
         </astar-button>
       </div>
     </div>
-
-    <modal-bridge-high-traffic
-      v-if="isHighTrafficModalOpen"
-      :set-is-open="setHighTrafficModalOpen"
-      :show="isHighTrafficModalOpen"
-    />
   </div>
 </template>
 
 <script lang="ts">
-import { wait } from '@astar-network/astar-sdk-core';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import ModalBridgeHighTraffic from 'src/components/common/ModalBridgeHighTraffic.vue';
 import { useAccount } from 'src/hooks';
-import { EthBridgeNetworkName, ZkToken, zkBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
-import { PropType, defineComponent, watch, ref, computed } from 'vue';
+import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
 
 export default defineComponent({
   components: {
     TokenBalance,
     [Jazzicon.name]: Jazzicon,
-    ModalBridgeHighTraffic,
   },
   props: {
-    fetchUserHistory: {
-      type: Function,
-      required: true,
-    },
-    setIsBridge: {
-      type: Function,
-      required: true,
-    },
     setRightUi: {
       type: Function,
       required: true,
     },
     selectedToken: {
-      type: Object as PropType<ZkToken>,
+      type: Object as PropType<LayerZeroToken>,
       required: true,
     },
     bridgeAmt: {
@@ -217,10 +189,6 @@ export default defineComponent({
     },
     errMsg: {
       type: String,
-      required: true,
-    },
-    isDisabledBridge: {
-      type: Boolean,
       required: true,
     },
     isApproved: {
@@ -233,6 +201,14 @@ export default defineComponent({
     },
     isApproveMaxAmount: {
       type: Boolean,
+      required: true,
+    },
+    isDisabledBridge: {
+      type: Boolean,
+      required: true,
+    },
+    transactionFee: {
+      type: Number,
       required: true,
     },
     fromBridgeBalance: {
@@ -274,29 +250,26 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const nativeTokenSymbol = computed<string>(() => {
+      return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
+    });
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
-    const isHighTrafficModalOpen = ref<boolean>(false);
-    const isWarningHighTraffic = computed<boolean>(
-      () => props.fromChainName === EthBridgeNetworkName.AstarZk
-    );
 
-    const setHighTrafficModalOpen = (value: boolean): void => {
-      isHighTrafficModalOpen.value = value;
-    };
+    const isNativeToken = computed<boolean>(() => {
+      return (
+        props.fromChainName === LayerZeroNetworkName.AstarEvm &&
+        props.selectedToken.symbol === 'ASTR'
+      );
+    });
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
       const transactionHash = await props.handleBridge();
       const isTransactionSuccessful = isHex(transactionHash);
       if (isTransactionSuccessful) {
-        store.commit('general/setLoading', true, { root: true });
-        // Memo: gives some time for updating in the bridge API
-        await wait(3 * 1000);
-        await props.fetchUserHistory();
-        props.setIsBridge(false);
         store.commit('general/setLoading', false, { root: true });
       }
       isHandling.value = false;
@@ -325,22 +298,23 @@ export default defineComponent({
     );
 
     return {
-      zkBridgeIcon,
+      lzBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
       isHandling,
       isLoading,
+      isNativeToken,
       isEnabledWithdrawal,
+      LayerZeroSlippage,
+      nativeTokenSymbol,
+      truncate,
       bridge,
       approve,
-      isHighTrafficModalOpen,
-      setHighTrafficModalOpen,
-      isWarningHighTraffic,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/ethereum/styles/l1-bridge.scss';
+@use 'src/components/bridge/layerzero/styles/lz-bridge.scss';
 </style>

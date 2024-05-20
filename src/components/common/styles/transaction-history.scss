@@ -33,6 +33,27 @@
   align-items: center;
 }
 
+@mixin icon-mark {
+  transition: all 0.3s ease 0s;
+  margin-bottom: -8px;
+  opacity: 0.5;
+}
+
+.icon--check {
+  @include icon-mark;
+  color: $connected-green;
+}
+
+.icon--pending {
+  @include icon-mark;
+  color: $warning-yellow;
+}
+
+.icon--failed {
+  @include icon-mark;
+  color: $warning-red;
+}
+
 .icon--check {
   opacity: 0.5;
   color: $connected-green;

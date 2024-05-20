@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { BN } from '@polkadot/util';
 
-export { addTxHistories } from 'src/modules/account/utils';
+export { addTxHistories, addLzHistories } from 'src/modules/account/utils';
 
 // Memo: used for determining if the SS58 account is Lockdrop account
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
@@ -20,6 +20,7 @@ export enum HistoryTxType {
   Xcm = 'XCM',
   Xvm = 'XVM Transfer',
   ZK_ETHEREUM_BRIDGE = 'ZK Ethereum Bridge',
+  LZ_BRIDGE = 'LayerZero Bridge',
 }
 
 export interface TxHistory {
