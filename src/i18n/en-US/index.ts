@@ -1011,6 +1011,9 @@ export default {
       chooseProjects: 'Now choose projects you would like to support.',
       addAmounts: 'Please add the amount to each card.',
       review: 'Check everything is ok before confirming.',
+      availableAfterStaking: 'Available amount after staking',
+      beSureToVote:
+        'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
     },
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',

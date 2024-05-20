@@ -19,15 +19,29 @@
       </div>
     </div>
     <div class="container-2-columns">
-      <div class="amount">
-        <token-balance-native :balance="totalStakedAmount.toString()" />
+      <div class="staking-balances">
+        <div class="container-2-columns">
+          <div>{{ $t('stakingV3.voting.availableAfterStaking') }}</div>
+          <token-balance-native :balance="stakeInfo.availableAfterStaking.toString()" />
+        </div>
+        <div v-if="stakeInfo.remainingLockedTokens > BigInt(0)" class="remaining-balance">
+          <div class="container-2-columns pink">
+            <div>{{ $t('stakingV3.remainingLockedBalance') }}</div>
+            <token-balance-native :balance="stakeInfo.remainingLockedTokens.toString()" />
+          </div>
+          <div class="vote">
+            {{ $t('stakingV3.voting.beSureToVote') }}
+          </div>
+        </div>
       </div>
-      <div class="amount">
-        <token-balance-native :balance="remainingLockedTokens.toString()" />
+      <div class="container-2-columns staking-balances">
+        <div>{{ $t('stakingV3.voting.totalStakingAmount') }}</div>
+        <token-balance-native :balance="stakeInfo.totalStakedAmount.toString()" />
       </div>
     </div>
+    <error-panel :error-message="stakeInfo.errorMessage" :error-ref-url="stakeInfo.errorRefUrl" />
     <div class="button-container">
-      <astar-button :disabled="!canSubmit" class="submit-button" @click="onAmountsEntered">{{
+      <astar-button :disabled="!canSubmit()" class="submit-button" @click="onAmountsEntered">{{
         $t('next')
       }}</astar-button>
     </div>
@@ -40,6 +54,7 @@ import { DappVote } from '../../../logic';
 import DappIcon from '../DappIcon.vue';
 import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import ErrorPanel from '../../ErrorPanel.vue';
 
 // export type ChoseAmountPanelProps = {
 //   dapps: DappVote[];
@@ -50,11 +65,20 @@ import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 //   onContinue: () => void;
 // };
 
+export type StakeInfo = {
+  totalStakedAmount: bigint;
+  remainingLockedTokens: bigint;
+  availableAfterStaking: bigint;
+  errorMessage: string;
+  errorRefUrl: string;
+};
+
 export default defineComponent({
   components: {
     DappIcon,
     Amount,
     TokenBalanceNative,
+    ErrorPanel,
   },
   props: {
     dapps: {
@@ -66,18 +90,13 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
-    totalStakedAmount: {
-      type: BigInt as unknown as PropType<bigint>,
-      required: true,
-    },
-    remainingLockedTokens: {
-      type: BigInt as unknown as PropType<bigint>,
+    stakeInfo: {
+      type: Object as PropType<StakeInfo>,
       required: true,
     },
     canSubmit: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: false,
+      type: Function as PropType<() => boolean>,
+      required: true,
     },
     onAmountsEntered: {
       type: Function as PropType<() => void>,
@@ -168,6 +187,34 @@ export default defineComponent({
 
 .amount {
   flex: 1;
+}
+
+.staking-balances {
+  flex: 1;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: $white;
+
+  span {
+    font-weight: 600;
+    font-size: 16px;
+  }
+}
+
+.remaining-balance {
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid $astar-pink-1;
+  margin-top: 16px;
+
+  .pink {
+    color: $astar-pink-1;
+  }
+
+  .vote {
+    font-size: 13px;
+    margin-top: 16px;
+  }
 }
 
 .choose-amount-container {

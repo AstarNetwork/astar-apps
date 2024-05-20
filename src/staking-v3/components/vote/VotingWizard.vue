@@ -16,9 +16,8 @@
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
         :dapps="selectedDapps"
-        :total-staked-amount="totalStakeAmount"
-        :remaining-locked-tokens="remainingLockedTokens"
-        :can-submit="canSubmit"
+        :stake-info="stakeInfo"
+        :can-submit="canVote"
         :on-amount-changed="handleVoteAmountChanged"
         :on-amounts-entered="handleAmountsEntered"
         :on-remove-dapp="handleRemoveDapp"
@@ -26,7 +25,7 @@
       <review-panel
         v-if="selectedStepIndex === Steps.Review"
         :dapps="selectedDapps.filter((dapp) => dapp.amount > 0)"
-        :total-stake-amount="totalStakeAmount"
+        :total-stake-amount="stakeInfo.totalStakedAmount"
         :on-confirm="handleConfirm"
       />
     </div>
@@ -41,7 +40,7 @@ import { useI18n } from 'vue-i18n';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import { useSelectableComponent, useVote } from 'src/staking-v3/hooks';
 import { DappVote } from '../../logic';
-import ChooseAmountsPanel from './enter-amount/ChooseAmountsPanel.vue';
+import ChooseAmountsPanel, { StakeInfo } from './enter-amount/ChooseAmountsPanel.vue';
 import ReviewPanel from './review/ReviewPanel.vue';
 
 enum Steps {
@@ -63,7 +62,15 @@ export default defineComponent({
     const selectedDapps = ref<DappVote[]>([]);
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
-    const { totalStakeAmount, remainingLockedTokens, canSubmit } = useVote(selectedDapps);
+    const {
+      totalStakeAmount,
+      remainingLockedTokens,
+      canVote,
+      vote,
+      availableToVoteDisplay,
+      errorMessage,
+      refUrl,
+    } = useVote(selectedDapps);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
         new Map([
@@ -72,6 +79,14 @@ export default defineComponent({
           [Steps.Review, isConfirmed.value],
         ])
     );
+
+    const stakeInfo = computed<StakeInfo>(() => ({
+      totalStakedAmount: totalStakeAmount.value,
+      remainingLockedTokens: remainingLockedTokens.value,
+      availableAfterStaking: availableToVoteDisplay.value,
+      errorMessage: errorMessage.value,
+      errorRefUrl: refUrl.value,
+    }));
 
     const wizardSteps: WizardItem[] = [
       {
@@ -109,11 +124,9 @@ export default defineComponent({
       isConfirmed.value = false;
     };
 
-    const handleConfirm = (): void => {
+    const handleConfirm = async (): Promise<void> => {
       isConfirmed.value = true;
-
-      // TODO submit transactions
-
+      await vote();
       reset();
     };
 
@@ -134,9 +147,10 @@ export default defineComponent({
       selectedStepIndex: selectedComponentIndex,
       completedSteps,
       selectedDapps,
-      totalStakeAmount,
-      remainingLockedTokens,
-      canSubmit,
+      stakeInfo,
+      canVote,
+      vote,
+      availableToVoteDisplay,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
       handleVoteAmountChanged,
