@@ -41,6 +41,9 @@
     </div>
     <error-panel :error-message="stakeInfo.errorMessage" :error-ref-url="stakeInfo.errorRefUrl" />
     <div class="button-container">
+      <go-back-button v-if="onGoBack" @click="onGoBack && onGoBack()">{{
+        $t('stakingV3.voting.backToCategory')
+      }}</go-back-button>
       <astar-button :disabled="!canSubmit()" class="submit-button" @click="onAmountsEntered">{{
         $t('next')
       }}</astar-button>
@@ -55,6 +58,7 @@ import DappIcon from '../DappIcon.vue';
 import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ErrorPanel from '../../ErrorPanel.vue';
+import GoBackButton from '../GoBackButton.vue';
 
 // export type ChoseAmountPanelProps = {
 //   dapps: DappVote[];
@@ -79,6 +83,7 @@ export default defineComponent({
     Amount,
     TokenBalanceNative,
     ErrorPanel,
+    GoBackButton,
   },
   props: {
     dapps: {
@@ -107,6 +112,11 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+    onGoBack: {
+      type: Function as PropType<() => void>,
+      required: false,
+      default: undefined,
+    },
   },
   setup(props) {
     const handleAmountChanged = (dapp: DappVote, amount: number) => {
@@ -116,7 +126,6 @@ export default defineComponent({
     };
 
     const handleRemoveDapp = (dapp: DappVote) => {
-      console.log('remove dapp', dapp);
       if (props.onRemoveDapp) {
         props.onRemoveDapp(dapp);
       }
@@ -221,5 +230,15 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.container-2-columns {
+  div {
+    flex: 1;
+  }
+
+  flex: {
+    span: 1;
+  }
 }
 </style>

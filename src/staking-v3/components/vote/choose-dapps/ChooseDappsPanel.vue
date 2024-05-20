@@ -13,12 +13,9 @@
       :on-dapps-selected="handleDappsSelected"
     />
     <div v-if="currentView === View.Dapps" class="buttons">
-      <button class="go-back" @click="goBackToCategories()">
-        <div class="go-back-container">
-          <astar-icon-arrow-left />
-          {{ $t('stakingV3.voting.backToCategory') }}
-        </div>
-      </button>
+      <go-back-button @click="goBackToCategories">{{
+        $t('stakingV3.voting.backToCategory')
+      }}</go-back-button>
       <astar-button :disabled="!canSubmit" class="submit-button" @click="submit()">{{
         $t('stakingV3.done')
       }}</astar-button>
@@ -30,6 +27,7 @@ import { defineComponent, computed, ref, PropType } from 'vue';
 import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
+import GoBackButton from '../GoBackButton.vue';
 import { DappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 import { useI18n } from 'vue-i18n';
@@ -40,7 +38,7 @@ enum View {
 }
 
 export default defineComponent({
-  components: { DappsList, ChooseCategory, DappSearch },
+  components: { DappsList, ChooseCategory, DappSearch, GoBackButton },
   props: {
     onDappsSelected: {
       type: Function as PropType<(dapps: DappVote[]) => void>,
@@ -133,21 +131,6 @@ export default defineComponent({
 
   button {
     height: 40px;
-  }
-
-  .go-back {
-    padding-right: 24px;
-    padding-left: 8px;
-    border-radius: 100px;
-    border: 1px solid $navy-1;
-    background: $white;
-  }
-
-  .go-back-container {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    font-weight: 600;
   }
 }
 </style>

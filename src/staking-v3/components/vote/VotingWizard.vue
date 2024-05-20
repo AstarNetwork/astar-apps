@@ -21,6 +21,7 @@
         :on-amount-changed="handleVoteAmountChanged"
         :on-amounts-entered="handleAmountsEntered"
         :on-remove-dapp="handleRemoveDapp"
+        :on-go-back="handleGoBackToDapps"
       />
       <review-panel
         v-if="selectedStepIndex === Steps.Review"
@@ -109,7 +110,6 @@ export default defineComponent({
     const handleDappsSelected = (dapps: DappVote[]): void => {
       selectedDapps.value = dapps;
       selectedComponentIndex.value = Steps.AddAmount;
-      console.log('Selected dapps:', dapps);
     };
 
     const handleAmountsEntered = (): void => {
@@ -141,6 +141,10 @@ export default defineComponent({
       }
     };
 
+    const handleGoBackToDapps = (): void => {
+      selectedComponentIndex.value = Steps.ChooseDapps;
+    };
+
     return {
       Steps,
       wizardSteps,
@@ -157,6 +161,7 @@ export default defineComponent({
       handleAmountsEntered,
       handleConfirm,
       handleRemoveDapp,
+      handleGoBackToDapps,
     };
   },
 });
