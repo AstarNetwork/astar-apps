@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-container">
     <div class="panel-title">{{ $t('stakingV3.voting.review') }}</div>
     <div class="container-2-columns review-container">
       <div class="item">
@@ -82,14 +82,10 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/staking-v3/components/vote/styles/vote-common.scss';
 
-.container-2-columns {
+.main-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
 }
 
 .review-container {

@@ -12,6 +12,16 @@
   }
 }
 
+.container-2-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
 .submit-button {
   width: 160px;
   font-size: 16px;

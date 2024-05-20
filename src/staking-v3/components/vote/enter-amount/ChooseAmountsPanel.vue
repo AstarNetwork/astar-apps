@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="choose-amount-container">
     <div class="panel-title">{{ $t('stakingV3.voting.addAmounts') }}</div>
     <div class="vote-common-container">
       <div v-for="dapp of dapps" :key="`dapp-${dapp.id}`" class="item-wrapper">
@@ -18,10 +18,13 @@
         </div>
       </div>
     </div>
-    <div>
-      <token-balance-native :balance="totalStakedAmount.toString()" />
-      <br />
-      <token-balance-native :balance="remainingLockedTokens.toString()" />
+    <div class="container-2-columns">
+      <div class="amount">
+        <token-balance-native :balance="totalStakedAmount.toString()" />
+      </div>
+      <div class="amount">
+        <token-balance-native :balance="remainingLockedTokens.toString()" />
+      </div>
     </div>
     <div class="button-container">
       <astar-button :disabled="!canSubmit" class="submit-button" @click="onAmountsEntered">{{
@@ -161,5 +164,15 @@ export default defineComponent({
   align-items: center;
   font-weight: 600;
   padding: 16px 16px 16px 8px;
+}
+
+.amount {
+  flex: 1;
+}
+
+.choose-amount-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 </style>
