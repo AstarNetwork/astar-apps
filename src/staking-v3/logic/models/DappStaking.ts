@@ -226,3 +226,12 @@ export type DappVote = {
   id: number;
   mainCategory?: string;
 };
+
+export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
+  name: dapp.basic.name,
+  address: dapp.chain.address,
+  logoUrl: dapp.basic.iconUrl,
+  amount: 0,
+  id: dapp.chain.id,
+  mainCategory: dapp.basic.mainCategory,
+});

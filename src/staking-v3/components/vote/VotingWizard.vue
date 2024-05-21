@@ -35,15 +35,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import WizardSteps from './WizardSteps.vue';
-import { WizardItem } from './types';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
-import { useSelectableComponent, useVote } from 'src/staking-v3/hooks';
-import { DappVote } from '../../logic';
+import { WizardItem } from './types';
+import { DappVote, mapToDappVote } from '../../logic';
+import { useSelectableComponent, useVote, useDapps } from 'src/staking-v3/hooks';
 import ChooseAmountsPanel, { StakeInfo } from './enter-amount/ChooseAmountsPanel.vue';
 import ReviewPanel from './review/ReviewPanel.vue';
+import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
+import WizardSteps from './WizardSteps.vue';
 
 enum Steps {
   ChooseDapps,
@@ -58,9 +58,17 @@ export default defineComponent({
     ChooseAmountsPanel,
     ReviewPanel,
   },
-  setup() {
+  props: {
+    stakeToAddress: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+  },
+  setup(props) {
     const { t } = useI18n();
     const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent();
+    const { registeredDapps, getDapp } = useDapps();
     const selectedDapps = ref<DappVote[]>([]);
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
@@ -155,6 +163,21 @@ export default defineComponent({
     const handleGoBackToDapps = (): void => {
       selectedComponentIndex.value = Steps.ChooseDapps;
     };
+
+    watch(
+      [registeredDapps],
+      () => {
+        // Preselect a dApp to stake to if the stakeToAddress prop is provided
+        if (props.stakeToAddress && registeredDapps.value.length > 0) {
+          const dapp = getDapp(props.stakeToAddress);
+          if (dapp) {
+            selectedDapps.value = [mapToDappVote(dapp)];
+            selectedComponentIndex.value = Steps.AddAmount;
+          }
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       Steps,

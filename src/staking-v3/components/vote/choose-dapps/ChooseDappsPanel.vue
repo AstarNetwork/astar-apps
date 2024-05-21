@@ -28,7 +28,7 @@ import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
 import GoBackButton from '../GoBackButton.vue';
-import { DappVote } from '../../../logic';
+import { CombinedDappInfo, DappVote, mapToDappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 import { useI18n } from 'vue-i18n';
 
@@ -48,6 +48,11 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: true,
     },
+    stakeToAddress: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   setup(props) {
     const { registeredDapps } = useDapps();
@@ -64,14 +69,7 @@ export default defineComponent({
     );
 
     const dapps = computed<DappVote[]>(() =>
-      registeredDapps.value.map((dapp) => ({
-        name: dapp.basic.name,
-        address: dapp.chain.address,
-        logoUrl: dapp.basic.iconUrl,
-        amount: 0,
-        id: dapp.chain.id,
-        mainCategory: dapp.basic.mainCategory,
-      }))
+      registeredDapps.value.map((dapp) => mapToDappVote(dapp))
     );
 
     const handleCategorySelected = (category: string): void => {

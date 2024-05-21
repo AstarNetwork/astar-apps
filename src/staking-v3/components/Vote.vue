@@ -5,12 +5,13 @@
       <div class="title">
         {{ isVotingPeriod ? $t('stakingV3.voteTitle') : $t('stakingV3.stakeTitle') }}
       </div>
-      <div v-if="dAppToMoveTokensFrom" class="text--title">
+      <voting-wizard :stake-to-address="selectedDappAddress" />
+      <!-- <div v-if="dAppToMoveTokensFrom" class="text--title">
         {{ $t('stakingV3.transferText') }}
       </div>
-      <div v-else-if="isVotingPeriod" class="text--title">{{ $t('stakingV3.voteText') }}</div>
-      <div class="inner--vote">
-        <div class="column--main">
+      <div v-else-if="isVotingPeriod" class="text--title">{{ $t('stakingV3.voteText') }}</div> -->
+      <!-- <div class="inner--vote"> -->
+      <!-- <div class="column--main">
           <div v-if="dAppToMoveTokensFrom">
             <div class="move--from">
               <img :src="dAppToMoveTokensFrom.basic.iconUrl" />
@@ -117,57 +118,57 @@
             :handle-modal-select-dapp="handleModalSelectDapp"
             :dapps-selected="handleDappsSelected"
           />
+        </div> -->
+
+      <div class="column--help">
+        <div class="note">
+          <b>{{ $t('stakingV3.voting.note') }}</b>
+          <ul>
+            <li>
+              {{
+                $t('stakingV3.voting.minimumStakingAmount', {
+                  amount: constants?.minStakeAmountToken,
+                  symbol: nativeTokenSymbol,
+                })
+              }}
+            </li>
+            <li>
+              {{
+                $t('stakingV3.voting.minBalanceAfterStaking', {
+                  amount: constants?.minBalanceAfterStaking,
+                  symbol: nativeTokenSymbol,
+                })
+              }}
+            </li>
+          </ul>
         </div>
 
-        <div class="column--help">
-          <div class="note">
-            <b>{{ $t('stakingV3.voting.note') }}</b>
-            <ul>
-              <li>
-                {{
-                  $t('stakingV3.voting.minimumStakingAmount', {
-                    amount: constants?.minStakeAmountToken,
-                    symbol: nativeTokenSymbol,
-                  })
-                }}
-              </li>
-              <li>
-                {{
-                  $t('stakingV3.voting.minBalanceAfterStaking', {
-                    amount: constants?.minBalanceAfterStaking,
-                    symbol: nativeTokenSymbol,
-                  })
-                }}
-              </li>
-            </ul>
-          </div>
-
-          <div class="note">
-            <b>{{ $t('stakingV3.voting.learn') }}</b>
-            <ul>
-              <li>
-                <a
-                  :href="docsUrl.learnDappStaking"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link--learn"
-                >
-                  {{ $t('stakingV3.voting.whatIsDappStaking') }}
-                </a>
-              </li>
-              <li>
-                <a
-                  :href="docsUrl.dappStakingForStakers"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link--learn"
-                >
-                  {{ $t('stakingV3.voting.howToParticipate') }}
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div class="note">
+          <b>{{ $t('stakingV3.voting.learn') }}</b>
+          <ul>
+            <li>
+              <a
+                :href="docsUrl.learnDappStaking"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link--learn"
+              >
+                {{ $t('stakingV3.voting.whatIsDappStaking') }}
+              </a>
+            </li>
+            <li>
+              <a
+                :href="docsUrl.dappStakingForStakers"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link--learn"
+              >
+                {{ $t('stakingV3.voting.howToParticipate') }}
+              </a>
+            </li>
+          </ul>
         </div>
+        <!-- </div> -->
       </div>
     </div>
     <div
@@ -194,16 +195,18 @@ import ErrorPanel from './ErrorPanel.vue';
 import { Path } from 'src/router';
 import { docsUrl } from 'src/links';
 import { useStore } from 'src/store';
+import VotingWizard from './vote/VotingWizard.vue';
 
 export default defineComponent({
   components: {
-    DappSelector,
-    Amount,
-    TokenBalanceNative,
-    ModalSelectDapp,
+    // DappSelector,
+    // Amount,
+    // TokenBalanceNative,
+    // ModalSelectDapp,
     BackToPage,
-    RewardsPanel,
-    ErrorPanel,
+    // RewardsPanel,
+    // ErrorPanel,
+    VotingWizard,
   },
   setup() {
     const {
@@ -400,6 +403,7 @@ export default defineComponent({
       isLoading,
       stakeInfo,
       refUrl,
+      selectedDappAddress,
     };
   },
 });

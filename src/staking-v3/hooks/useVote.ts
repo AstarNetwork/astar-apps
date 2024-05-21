@@ -12,7 +12,6 @@ export function useVote(dapps: Ref<DappVote[]>) {
   const route = useRoute();
   const { ledger, totalStake, canStake, getStakerInfo, claimLockAndStake } = useDappStaking();
 
-  const selectedDappAddress = ref<string>((route.query.dappAddress as string) ?? '');
   const dAppToMoveFromAddress = ref<string>((route.query.moveFromAddress as string) ?? '');
   let remainingLockedTokensInitial = BigInt(0);
 
