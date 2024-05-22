@@ -12,6 +12,7 @@ import {
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { InflationConfiguration } from 'src/v2/models';
+import { InflationParam } from 'src/staking-v3';
 
 export interface GeneralGetters {
   initialized(state: State): boolean;
@@ -36,6 +37,7 @@ export interface GeneralGetters {
   getCurrentBlock(state: State): number;
   getUnifiedAccount(state: State): UnifiedAccount | undefined;
   getActiveInflationConfiguration(state: State): InflationConfiguration | undefined;
+  getInflationParameters(state: State): InflationParam | undefined;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -63,6 +65,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   getCurrentBlock: (state: State) => state.currentBlock,
   getUnifiedAccount: (state: State) => state.unifiedAccount,
   getActiveInflationConfiguration: (state: State) => state.activeInflationConfiguration,
+  getInflationParameters: (state: State) => state.inflationParameters,
 };
 
 export default getters;

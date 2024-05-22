@@ -30,7 +30,7 @@
         {{ text }}
       </text>
       <text
-        v-if="value > 0"
+        v-if="value > 0 && tokenSymbol"
         :fill="textColor"
         :x="size * 0.55"
         :y="size * 0.52"
@@ -85,7 +85,8 @@ export default defineComponent({
     },
     tokenSymbol: {
       type: String,
-      required: true,
+      required: false,
+      default: undefined,
     },
     isDarkTheme: {
       type: Boolean,

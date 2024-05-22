@@ -5,7 +5,7 @@ import { IInflationRepository, ISubscanRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { InflationConfiguration } from 'src/v2/models';
 import { $api } from 'src/boot/api';
-import { useDappStaking } from 'src/staking-v3';
+import { InflationParam, useDappStaking } from 'src/staking-v3';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from './useNetworkInfo';
 
@@ -14,9 +14,14 @@ export function useInflation() {
   const { eraLengths } = useDappStaking();
   const { networkNameSubstrate } = useNetworkInfo();
   const estimatedInflation = ref<number | undefined>(undefined);
+  const maximumInflationData = ref<[number, number][]>([]);
+  const realizedInflationData = ref<[number, number][]>([]);
 
   const activeInflationConfiguration = computed<InflationConfiguration>(
     () => store.getters['general/getActiveInflationConfiguration']
+  );
+  const inflationParameters = computed<InflationParam>(
+    () => store.getters['general/getInflationParameters']
   );
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
@@ -24,6 +29,17 @@ export function useInflation() {
     const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
     const activeConfiguration = await inflationRepository.getInflationConfiguration();
     store.commit('general/setActiveInflationConfiguration', activeConfiguration);
+  };
+
+  const fetchInflationParamsToStore = async () => {
+    const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
+    const params = await inflationRepository.getInflationParams();
+    store.commit('general/setInflationParameters', params);
+  };
+
+  const getInflationParameters = async (): Promise<InflationParam> => {
+    const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
+    return await inflationRepository.getInflationParams();
   };
 
   /**
@@ -44,11 +60,9 @@ export function useInflation() {
           'NewInflationConfiguration'
         );
         // Latest item in array is for the current inflation cycle.
-        const latestInflationConfigBlock = response.events[response.events.length - 1].block;
+        const initialCycleBlock = response.events[response.events.length - 1].block;
 
-        const initialIssuanceBlockHash = await $api.rpc.chain.getBlockHash(
-          latestInflationConfigBlock - 1
-        );
+        const initialIssuanceBlockHash = await $api.rpc.chain.getBlockHash(initialCycleBlock - 1);
         const apiAt = await $api.at(initialIssuanceBlockHash);
         const initialTotalIssuance = await apiAt.query.balances.totalIssuance();
         const realizedTotalIssuance = await $api.query.balances.totalIssuance();
@@ -62,16 +76,15 @@ export function useInflation() {
           standardEraLength *
           periodsPerCycle *
           (standardErasPerBuildAndEarnPeriod + standardErasPerVotingPeriod);
-        const blockDifference = BigInt(currentBlock.value - latestInflationConfigBlock);
+        const blockDifference = BigInt(currentBlock.value - initialCycleBlock);
         const slope =
           BigInt(realizedTotalIssuance.sub(initialTotalIssuance).toString()) / blockDifference;
 
         // Estimate total issuance at the end of the current cycle.
-        const endOfCycleBlock = latestInflationConfigBlock + cycleLengthInBlocks;
+        const endOfCycleBlock = initialCycleBlock + cycleLengthInBlocks;
         const endOfCycleTotalIssuance = Number(
           ethers.utils.formatEther(
-            slope * BigInt(endOfCycleBlock - latestInflationConfigBlock) +
-              initialTotalIssuance.toBigInt()
+            slope * BigInt(endOfCycleBlock - initialCycleBlock) + initialTotalIssuance.toBigInt()
           )
         );
 
@@ -81,6 +94,12 @@ export function useInflation() {
             (endOfCycleTotalIssuance -
               Number(ethers.utils.formatEther(initialTotalIssuance.toString())))) /
           endOfCycleTotalIssuance;
+
+        calculateMaximumInflationData(
+          initialCycleBlock,
+          endOfCycleBlock,
+          initialTotalIssuance.toBigInt()
+        );
       } catch (error) {
         console.error('Error calculating realized inflation', error);
       }
@@ -89,8 +108,22 @@ export function useInflation() {
     return inflation;
   };
 
+  const calculateMaximumInflationData = (
+    firstBlock: number,
+    lastBlock: number,
+    firstBlockIssuance: bigint
+  ): void => {
+    // One sample per era.
+    const result: [number, number][] = [];
+    for (let i = firstBlock; i <= lastBlock; i += eraLengths.value.standardEraLength) {
+      // maximumInflationData.value.push([i, activeInflationConfiguration.value.issuanceSafetyCap]);
+    }
+
+    maximumInflationData.value = result;
+  };
+
   watch(
-    [$api],
+    [activeInflationConfiguration],
     async () => {
       estimatedInflation.value = await estimateRealizedInflation();
     },
@@ -100,6 +133,9 @@ export function useInflation() {
   return {
     activeInflationConfiguration,
     estimatedInflation,
+    inflationParameters,
     fetchActiveConfigurationToStore,
+    fetchInflationParamsToStore,
+    getInflationParameters,
   };
 }

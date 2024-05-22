@@ -1,3 +1,5 @@
+import { treasury } from '@polkadot/types/interfaces/definitions';
+
 export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
@@ -689,6 +691,16 @@ export default {
     },
     burn: {
       burn: 'Burn',
+    },
+    inflation: {
+      adjustableInflation: 'Adjustable inflation',
+      treasury: 'Treasury',
+      collators: 'Collators',
+      baseStakers: 'Base stakers',
+      bonus: 'Bonus',
+      dAppRewards: 'dApp rewards',
+      adjustableStakers: 'Adjustable stakers (TVL dependant)',
+      adjustableStakersShort: 'Adj. stakers',
     },
   },
   chart: {

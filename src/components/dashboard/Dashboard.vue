@@ -8,6 +8,9 @@
         <div class="container--panel">
           <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
         </div>
+        <div class="container--panel">
+          <inflation :symbol="dappStakingCurrency" :network="currentNetworkName" />
+        </div>
       </div>
       <div class="container--value-panels-row row-gap">
         <div class="container--panel">
@@ -63,6 +66,7 @@ import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import Collators from 'src/components/dashboard/Collators.vue';
 import NetworkStatus from 'src/components/dashboard/NetworkStatus.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
+import Inflation from './Inflation.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import { useDataCalculations } from 'src/staking-v3/hooks';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
@@ -81,6 +85,7 @@ export default defineComponent({
     ValuePanel,
     NetworkStatus,
     Collators,
+    Inflation,
     // TotalTransactionsChart,
   },
   setup() {
