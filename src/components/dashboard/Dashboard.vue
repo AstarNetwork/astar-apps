@@ -10,6 +10,7 @@
         </div>
         <div class="container--panel">
           <inflation :symbol="dappStakingCurrency" :network="currentNetworkName" />
+          <inflation-rate-chart />
         </div>
       </div>
       <div class="container--value-panels-row row-gap">
@@ -67,7 +68,7 @@ import Collators from 'src/components/dashboard/Collators.vue';
 import NetworkStatus from 'src/components/dashboard/NetworkStatus.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 import Inflation from './Inflation.vue';
-// import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
+import InflationRateChart from './InflationRateChart.vue';
 import { useDataCalculations } from 'src/staking-v3/hooks';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
@@ -86,7 +87,7 @@ export default defineComponent({
     NetworkStatus,
     Collators,
     Inflation,
-    // TotalTransactionsChart,
+    InflationRateChart,
   },
   setup() {
     const holders = ref<string>('');

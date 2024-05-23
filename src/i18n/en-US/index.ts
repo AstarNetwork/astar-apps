@@ -701,6 +701,9 @@ export default {
       dAppRewards: 'dApp rewards',
       adjustableStakers: 'Adjustable stakers (TVL dependant)',
       adjustableStakersShort: 'Adj. stakers',
+      currentInflationRate: 'Current inflation rate',
+      maximumInflation: 'Maximum inflation ({rate}%)',
+      realizedInflation: 'Realized inflation',
     },
   },
   chart: {

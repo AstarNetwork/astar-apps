@@ -98,6 +98,17 @@ export function useInflation() {
         calculateMaximumInflationData(
           initialCycleBlock,
           endOfCycleBlock,
+          initialTotalIssuance.toBigInt(),
+          cycleLengthInBlocks,
+          inflationParameters.value.maxInflationRate,
+          eraLengths.value.standardEraLength
+        );
+
+        calculateRealizedInflationData(
+          initialCycleBlock,
+          currentBlock.value,
+          slope,
+          eraLengths.value.standardEraLength,
           initialTotalIssuance.toBigInt()
         );
       } catch (error) {
@@ -111,15 +122,46 @@ export function useInflation() {
   const calculateMaximumInflationData = (
     firstBlock: number,
     lastBlock: number,
-    firstBlockIssuance: bigint
+    firstBlockIssuance: bigint,
+    cycleLengthInBlocks: number,
+    maxInflation: number,
+    eraLength: number
   ): void => {
-    // One sample per era.
     const result: [number, number][] = [];
-    for (let i = firstBlock; i <= lastBlock; i += eraLengths.value.standardEraLength) {
-      // maximumInflationData.value.push([i, activeInflationConfiguration.value.issuanceSafetyCap]);
+    const inflation = BigInt(Math.floor(maxInflation * 100)) * BigInt('10000000000000000');
+    const cycleProgression = (firstBlockIssuance * inflation) / BigInt('1000000000000000000');
+    const cycleLength = BigInt(cycleLengthInBlocks);
+
+    // One sample per era.
+    for (let i = firstBlock; i <= lastBlock; i += eraLength) {
+      const inflation =
+        (cycleProgression * BigInt(i - firstBlock)) / cycleLength + firstBlockIssuance;
+
+      result.push([i, Number(ethers.utils.formatEther(inflation.toString()))]);
     }
 
+    // console.log((result[result.length - 1][1] - result[0][1]) / result[result.length - 1][1]);
     maximumInflationData.value = result;
+  };
+
+  const calculateRealizedInflationData = (
+    firstBlock: number,
+    lastBlock: number,
+    slope: bigint,
+    eraLength: number,
+    firstBlockIssuance: bigint
+  ): void => {
+    const result: [number, number][] = [];
+
+    for (let i = firstBlock; i <= lastBlock; i += eraLength) {
+      const currentBlockIssuance = Number(
+        ethers.utils.formatEther(slope * BigInt(i - firstBlock) + firstBlockIssuance)
+      );
+
+      result.push([i, currentBlockIssuance]);
+    }
+
+    realizedInflationData.value = result;
   };
 
   watch(
@@ -134,6 +176,8 @@ export function useInflation() {
     activeInflationConfiguration,
     estimatedInflation,
     inflationParameters,
+    maximumInflationData,
+    realizedInflationData,
     fetchActiveConfigurationToStore,
     fetchInflationParamsToStore,
     getInflationParameters,
