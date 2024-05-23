@@ -50,7 +50,6 @@ import { useInflation } from 'src/hooks';
 import DoughnutChart, { Sector } from '../common/DoughnutChart.vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'src/store';
-import { InflationParam } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
@@ -126,22 +125,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .container--chart {
-  padding: 8px 16px 32px;
-  height: 514px;
-
-  @media (min-width: $sm) {
-    padding: 8px 24px 32px;
-  }
-  @media (min-width: $xxl) {
-    width: 560px;
-  }
+  height: auto;
+  padding-bottom: 16px;
 }
 .chart-row {
   justify-content: center;
 }
 
 .table--container {
-  margin-top: 20px;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -157,11 +148,9 @@ export default defineComponent({
 }
 
 .row--item {
-  // flex: 1 1 0px;
-  flex: 1;
+  flex: 1 0;
   justify-content: end;
   padding: 4px;
-  // max-width: 80px;
 }
 
 .skeleton--value-panel {

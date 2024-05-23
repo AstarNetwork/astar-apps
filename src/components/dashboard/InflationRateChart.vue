@@ -3,7 +3,7 @@
     <q-skeleton class="skeleton--chart" />
   </div>
   <div v-else>
-    <div class="container--chart">
+    <div class="container--component">
       <div class="row">
         <span class="text--accent container--title--color">{{
           $t('dashboard.inflation.currentInflationRate')
@@ -12,16 +12,7 @@
       <div class="row chart--value">
         <div>
           <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(1) }}%</span>
-          <!-- <span v-if="defaultValueAddOn" class="text--value--addon text-color--neon">{{
-            defaultValueAddOn
-          }}</span> -->
         </div>
-        <!-- <div v-if="secondValue">
-          <div v-if="secondValue === '0'">
-            <q-skeleton class="skeleton--staker" />
-          </div>
-          <span v-else class="text--second-value text-color--neon">{{ secondValue }}</span>
-        </div>-->
       </div>
       <div class="chart">
         <highcharts class="highcharts" :options="chartOptions"></highcharts>
@@ -36,7 +27,7 @@ import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import { titleFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
-import { useBreakpoints, useInflation } from 'src/hooks';
+import { useInflation } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -51,7 +42,6 @@ export default defineComponent({
     const getLineColor = (): string => (isDarkTheme.value ? 'rgba(108,111,111,0.1)' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
-    const { width, screenSize } = useBreakpoints();
     const { t } = useI18n();
     const { maximumInflationData, realizedInflationData, estimatedInflation, inflationParameters } =
       useInflation();
@@ -73,7 +63,6 @@ export default defineComponent({
         chart: {
           backgroundColor: getBackgroundColor(),
           zoomType: 'x',
-          height: width.value > screenSize.xxl ? '250px' : '200px',
         },
         xAxis: {
           type: 'number',
@@ -165,33 +154,10 @@ export default defineComponent({
       }
     });
 
-    // const handleFilterChanged = (filter: string): void => {
-    //   emit('filterChanged', filter);
-    // };
-
-    // watch(
-    //   [props],
-    //   () => {
-    //     if (props.isMultipleLine) {
-    //       chartOptions.value.series[0].data = props.mergedData;
-    //     } else {
-    //       chartOptions.value.series[0].data = props.data;
-    //     }
-
-    //     if (props.data && props.data.length > 0) {
-    //       hasData.value = true;
-    //     } else {
-    //       hasData.value = false;
-    //     }
-    //   },
-    //   { immediate: true }
-    // );
-
     return {
       estimatedInflation,
       chartOptions,
       hasData,
-      // handleFilterChanged,
     };
   },
 });
@@ -199,4 +165,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/common/styles/chart-panel.scss';
+@import 'src/css/quasar.variables.scss';
+
+.container--component {
+  box-shadow: $container-border-shadow-light;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.body--dark {
+  .container--component {
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+    background-color: $container-bg-dark;
+  }
+}
 </style>

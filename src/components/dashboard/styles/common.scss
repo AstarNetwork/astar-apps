@@ -1,0 +1,18 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--component {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
+  background: $white;
+
+  @media (min-width: $md) {
+    padding: 48px;
+  }
+}
+
+.container--title--large {
+  font-size: 32px;
+  font-weight: 900;
+}

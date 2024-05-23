@@ -3,11 +3,9 @@
     <q-skeleton class="skeleton--value-panel" />
   </div>
   <div v-else class="wrapper--value" data-testid="network-statuses">
-    <div class="container container--value">
-      <div class="row--title">
-        <span class="text--accent container--title--color">
-          {{ $t('dashboard.network.networkStatuses') }}
-        </span>
+    <div>
+      <div class="container--title--large">
+        {{ $t('dashboard.network.networkStatuses') }}
       </div>
       <div class="box--statuses">
         <div class="row--network-statuses">
@@ -77,9 +75,9 @@
               </span>
             </div>
           </div>
-          <div v-if="xcmRestrictions.length > 0" class="container--xcm-restricted">
-            <li v-for="(item, index) in xcmRestrictions" :key="index">{{ item }}</li>
-          </div>
+        </div>
+        <div v-if="xcmRestrictions.length > 0" class="container--xcm-restricted">
+          <li v-for="(item, index) in xcmRestrictions" :key="index">{{ item }}</li>
         </div>
       </div>
     </div>
@@ -243,5 +241,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use 'src/components/dashboard/styles/common.scss';
 @use 'src/components/dashboard/styles/network-status.scss';
 </style>

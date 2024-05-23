@@ -95,7 +95,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const getBackgroundColor = (): string => (isDarkTheme.value ? '#060b23' : '#fff');
+    const getBackgroundColor = (): string => 'transparent';
     const getLineColor = (): string => (isDarkTheme.value ? 'rgba(108,111,111,0.1)' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
@@ -188,7 +188,7 @@ export default defineComponent({
     });
 
     watch([isDarkTheme], () => {
-      chartOptions.value.chart.backgroundColor = getBackgroundColor();
+      // chartOptions.value.chart.backgroundColor = getBackgroundColor();
       chartOptions.value.xAxis.lineColor = getLineColor();
       chartOptions.value.xAxis.tickColor = getLineColor();
       chartOptions.value.yAxis.gridLineColor = getLineColor();

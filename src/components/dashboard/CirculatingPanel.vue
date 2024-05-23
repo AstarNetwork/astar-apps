@@ -107,22 +107,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .container--chart {
-  padding: 8px 16px 32px;
   height: 514px;
-
-  @media (min-width: $sm) {
-    padding: 8px 24px 32px;
-  }
-  @media (min-width: $xxl) {
-    width: 560px;
-  }
+  width: 100%;
 }
 .chart-row {
   justify-content: center;
 }
 
 .table--container {
-  margin-top: 20px;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;

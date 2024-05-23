@@ -1,28 +1,17 @@
 <template>
   <div class="wrapper--charts">
     <div class="container--chart-panels">
-      <div class="container--value-panels-row">
-        <div class="container--network-status">
-          <network-status />
-        </div>
-        <div class="container--panel">
+      <network-status class="container--component" />
+
+      <div class="container--component tokenomics">
+        <div class="tokenomics-panel">
+          <block-panel />
           <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
         </div>
-        <div class="container--panel">
+        <div class="tokenomics-panel">
           <inflation :symbol="dappStakingCurrency" :network="currentNetworkName" />
           <inflation-rate-chart />
         </div>
-      </div>
-      <div class="container--value-panels-row row-gap">
-        <div class="container--panel">
-          <value-panel title="Holders" :value="holders" />
-        </div>
-        <div class="container--panel">
-          <collators />
-        </div>
-      </div>
-      <div class="container--panel">
-        <block-panel />
       </div>
       <div v-if="isMainnet" class="container--charts">
         <tvl-chart
@@ -31,8 +20,8 @@
           :tvl-value="mergedTvlAmount"
           :tvl-data="filteredMergedTvl"
           :handle-filter-changed="handleMergedTvlFilterChanged"
+          class="container--component"
         />
-        <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
         <tvl-chart
           :title="textChart.dappStaking.title"
           :tooltip="textChart.dappStaking.tooltip"
@@ -43,6 +32,7 @@
           :handle-filter-changed="handleDappStakingTvlFilterChanged"
           :is-multiple-line="true"
           :second-value="lenStakers"
+          class="container--component"
         />
 
         <tvl-chart
@@ -53,8 +43,9 @@
           :merged-tvl-data="filteredEcosystemTvl.merged"
           :handle-filter-changed="handleEcosystemTvlFilterChanged"
           :is-multiple-line="true"
+          class="container--component"
         />
-        <token-price-chart :network="currentNetworkName" />
+        <token-price-chart :network="currentNetworkName" class="container--component" />
       </div>
     </div>
   </div>
@@ -63,8 +54,6 @@
 <script lang="ts">
 import BlockPanel from 'src/components/dashboard/BlockPanel.vue';
 import CirculatingPanel from 'src/components/dashboard/CirculatingPanel.vue';
-import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
-import Collators from 'src/components/dashboard/Collators.vue';
 import NetworkStatus from 'src/components/dashboard/NetworkStatus.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 import Inflation from './Inflation.vue';
@@ -83,9 +72,7 @@ export default defineComponent({
     TvlChart,
     BlockPanel,
     CirculatingPanel,
-    ValuePanel,
     NetworkStatus,
-    Collators,
     Inflation,
     InflationRateChart,
   },
@@ -158,4 +145,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/dashboard/styles/dashboard.scss';
+@use 'src/components/dashboard/styles/common.scss';
 </style>

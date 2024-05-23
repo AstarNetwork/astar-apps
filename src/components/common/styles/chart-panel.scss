@@ -1,16 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
 .container--chart {
-  box-shadow: $container-border-shadow-light;
-  background: $container-bg-white;
-  border-radius: 6px;
-  padding: 8px 16px;
-  @media (min-width: $md) {
-    padding: 8px 24px;
-  }
-  @media (min-width: $xxl) {
-    width: 560px;
-  }
+  // box-shadow: $container-border-shadow-light;
+  // // background: $container-bg-white;
+  // border-radius: 6px;
+  // padding: 8px 16px;
 }
 
 .row {
@@ -77,7 +71,7 @@
 
 .body--dark {
   .container--chart {
-    box-shadow: $container-border-shadow-dark;
-    background-color: $container-bg-dark;
+    // box-shadow: $container-border-shadow-dark;
+    // background-color: $container-bg-dark;
   }
 }
