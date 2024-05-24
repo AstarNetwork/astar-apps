@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hasData">
-    <q-skeleton class="skeleton--chart" />
+    <q-skeleton class="skeleton--chart inflation--skeleton" />
   </div>
   <div v-else>
     <div class="container--component">
@@ -171,6 +171,10 @@ export default defineComponent({
   box-shadow: $container-border-shadow-light;
   border-radius: 6px;
   padding: 8px 16px;
+}
+
+.inflation--skeleton {
+  height: 324px;
 }
 
 .body--dark {

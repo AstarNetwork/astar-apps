@@ -74,6 +74,9 @@ export default defineComponent({
       [isDarkTheme, inflationParameters],
       async () => {
         const params = inflationParameters.value;
+
+        if (!params) return;
+
         pieSectors.value = [];
 
         pieSectors.value.push({

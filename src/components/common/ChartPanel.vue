@@ -3,7 +3,7 @@
     <q-skeleton class="skeleton--chart" />
   </div>
   <div v-else>
-    <div class="container--chart">
+    <div>
       <div class="row">
         <span class="text--accent container--title--color">{{ $t(title) }}</span>
       </div>
@@ -188,7 +188,7 @@ export default defineComponent({
     });
 
     watch([isDarkTheme], () => {
-      // chartOptions.value.chart.backgroundColor = getBackgroundColor();
+      chartOptions.value.chart.backgroundColor = getBackgroundColor();
       chartOptions.value.xAxis.lineColor = getLineColor();
       chartOptions.value.xAxis.tickColor = getLineColor();
       chartOptions.value.yAxis.gridLineColor = getLineColor();
