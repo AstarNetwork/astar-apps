@@ -48,6 +48,7 @@ export * from './ui/useBalloons';
 export * from './bridge/useL1Bridge';
 export * from './bridge/useL1History';
 export * from './bridge/useImportToken';
+export * from './bridge/useLayerZeroBridge';
 export * from './dapps-staking/useCompoundRewards';
 export * from './useTokenDistribution';
 export * from './useTokenCirculation';

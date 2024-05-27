@@ -31,8 +31,10 @@ export const Symbols = {
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   AssetsRepository: Symbol.for('AssetsRepository'),
   ZkBridgeRepository: Symbol.for('ZkBridgeRepository'),
+  LzBridgeRepository: Symbol.for('LzBridgeRepository'),
   AssetsService: Symbol.for('AssetsService'),
   ZkBridgeService: Symbol.for('ZkBridgeService'),
+  LzBridgeService: Symbol.for('LzBridgeService'),
   AccountUnificationService: Symbol.for('AccountUnificationService'),
   IdentityRepository: Symbol.for('IdentityRepository'),
   IdentityService: Symbol.for('IdentityService'),
@@ -46,4 +48,5 @@ export const Symbols = {
   TokenApiProviderRepository: Symbol.for('TokenApiProviderRepository'),
   InflationRepository: Symbol.for('InflationRepository'),
   DappStakingServiceV2Ledger: Symbol.for('DappStakingServiceV2Ledger'),
+  SubscanRepository: Symbol.for('SubscanRepository'),
 };

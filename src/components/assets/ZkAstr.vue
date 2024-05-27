@@ -42,13 +42,7 @@
           </q-tooltip>
         </router-link>
 
-        <a
-          v-if="t.symbol === 'ASTR'"
-          :href="stargateUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="box--icon"
-        >
+        <router-link v-if="t.symbol === 'ASTR'" :to="buildLzBridgePageLink()" class="box--icon">
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -56,7 +50,7 @@
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
-        </a>
+        </router-link>
 
         <a v-else :href="vAstrOmniLink" target="_blank" rel="noopener noreferrer" class="box--icon">
           <button class="btn btn--icon">
@@ -118,9 +112,9 @@ import { useNetworkInfo } from 'src/hooks';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer } from 'src/modules/token';
-import { buildTransferPageLink } from 'src/router/routes';
+import { buildTransferPageLink, buildLzBridgePageLink } from 'src/router/routes';
 import { PropType, defineComponent } from 'vue';
-import { stargateUrl, vAstrOmniLink } from '../../modules/zk-evm-bridge';
+import { vAstrOmniLink } from '../../modules/zk-evm-bridge';
 
 export default defineComponent({
   components: {},
@@ -140,7 +134,7 @@ export default defineComponent({
 
     return {
       ethProvider,
-      stargateUrl,
+      buildLzBridgePageLink,
       vAstrOmniLink,
       truncate,
       addToEvmProvider,

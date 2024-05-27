@@ -68,7 +68,8 @@ export default {
     blankDestAddress: 'Destination address is blank',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
-    balanceNotEnough: 'You do not have enough ETH in your account to pay for the transaction fee',
+    balanceNotEnough:
+      'You do not have enough {symbol} in your account to pay for the transaction fee',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
@@ -993,6 +994,10 @@ export default {
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
     },
+    inflation: 'Inflation',
+    estimatedRealizedInflation: 'Estimated realized inflation',
+    estimatedRealizedInflationDescription:
+      'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
@@ -1021,8 +1026,8 @@ export default {
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
-      text: 'Transfer ASTR token between Astar EVM and Astar zkEVM.',
-      text2: 'Currently under development',
+      text: 'Transfer assets between Astar EVM and Astar zkEVM.',
+      text2: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
     },
     celerBridge: {
       title: 'Celer Bridge',
@@ -1035,11 +1040,15 @@ export default {
       text: '3rd Party Bridge. Fast and reliable crypto transfers across networks to Astar zkEVM.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
+    warningLzWithdrawal:
+      'It could take approximately 6 hours to finalize the bridge transaction from Astar zkEVM to Astar EVM',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
+    slippage: 'Slippage: {percent}%',
+    feeOnTransaction: 'Transaction fee: {amount} {symbol}',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
-      'High bridge traffic may delay withdrawal transactions up to 20 hours. We appreciate your patience.',
+      'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
     modals: {
       highTraffic: {

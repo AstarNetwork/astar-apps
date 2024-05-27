@@ -79,7 +79,8 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { ETHEREUM_EXTENSION, useAccount, useAppRouter, useDecommission } from 'src/hooks';
+import { useAccount, useAppRouter, useDecommission } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,

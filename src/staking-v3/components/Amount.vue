@@ -11,6 +11,7 @@
         placeholder="0"
         class="input--amount input--no-spin"
         @input="handleInputAmount"
+        @wheel="(e) => e.preventDefault()"
       />
     </div>
   </div>
