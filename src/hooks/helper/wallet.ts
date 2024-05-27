@@ -291,7 +291,7 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
   const astarZkEvm = providerEndpoints[endpointKey.ASTAR_ZKEVM];
 
   // Memo: this can be committed as it can be exposed on the browser anyway
-  const projectId = 'c236cca5c68248680dd7d0bf30fefbb5';
+  const projectId = '7424c1d6f096393092e9755dff0bb5f2';
   const isProductionPage = window.location.origin === productionOrigin;
 
   // Ref: https://docs.walletconnect.com/advanced/walletconnectmodal/options#explorerrecommendedwalletids-optional
