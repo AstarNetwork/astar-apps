@@ -3,14 +3,19 @@
     <div class="container--chart-panels">
       <network-status class="container--component" />
 
-      <div class="container--component tokenomics">
-        <div class="tokenomics-panel">
-          <block-panel />
-          <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
+      <div class="container--component">
+        <div class="container--title--large">
+          {{ `\$${nativeTokenSymbol.toUpperCase()}` }}
         </div>
-        <div class="tokenomics-panel">
-          <inflation :symbol="dappStakingCurrency" :network="currentNetworkName" />
-          <inflation-rate-chart />
+        <div class="tokenomics">
+          <div class="tokenomics-panel">
+            <block-panel />
+            <circulating-panel :symbol="dappStakingCurrency" :network="currentNetworkName" />
+          </div>
+          <div class="tokenomics-panel">
+            <inflation :symbol="dappStakingCurrency" :network="currentNetworkName" />
+            <inflation-rate-chart />
+          </div>
         </div>
       </div>
       <div v-if="isMainnet" class="container--charts">

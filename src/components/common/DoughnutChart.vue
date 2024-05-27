@@ -23,7 +23,7 @@
         :fill="textColor"
         :x="size * 0.55"
         :y="size * 0.55 - 28"
-        font-size="24"
+        font-size="20"
         font-weight="700"
         text-anchor="middle"
       >
