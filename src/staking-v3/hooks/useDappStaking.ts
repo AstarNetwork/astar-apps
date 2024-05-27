@@ -22,7 +22,7 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import { useAccount, useChainMetadata, useNetworkInfo, useLedger } from 'src/hooks';
+import { useAccount, useChainMetadata, useNetworkInfo } from 'src/hooks';
 import { ETHEREUM_EXTENSION } from 'src/modules/account';
 
 import { useI18n } from 'vue-i18n';
@@ -48,7 +48,6 @@ export function useDappStaking() {
   const { registeredDapps, fetchStakeAmountsToStore, getDapp } = useDapps();
   const { decimal } = useChainMetadata();
   const { nativeTokenSymbol, isZkEvm } = useNetworkInfo();
-  const { isLedger } = useLedger();
 
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
@@ -293,7 +292,7 @@ export function useDappStaking() {
   };
 
   const withdraw = async (): Promise<void> => {
-    if (isLedger.value || isLockdropAccount.value) {
+    if (isLockdropAccount.value) {
       const stakingService = container.get<IDappStakingServiceV2Ledger>(
         Symbols.DappStakingServiceV2Ledger
       );
@@ -318,7 +317,7 @@ export function useDappStaking() {
   };
 
   const unlock = async (amount: bigint): Promise<void> => {
-    if (isLedger.value || isLockdropAccount.value) {
+    if (isLockdropAccount.value) {
       const stakingService = container.get<IDappStakingServiceV2Ledger>(
         Symbols.DappStakingServiceV2Ledger
       );
@@ -626,21 +625,6 @@ export function useDappStaking() {
     return period.toString().padStart(3, '0');
   };
 
-  const warnIfLedger = (): void => {
-    // Show warning to ledger users.
-    const { isLedger } = useLedger();
-    const { isDappStakingV3 } = useDappStaking();
-    if (isLedger.value && isDappStakingV3.value) {
-      const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-      eventAggregator.publish(
-        new ExtrinsicStatusMessage({
-          success: false,
-          message: t('stakingV3.ledgerNotSupported'),
-        })
-      );
-    }
-  };
-
   return {
     protocolState,
     ledger,
@@ -687,6 +671,5 @@ export function useDappStaking() {
     rewardExpiresInNextPeriod,
     getStakerInfo,
     formatPeriod,
-    warnIfLedger,
   };
 }
