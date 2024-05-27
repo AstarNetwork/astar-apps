@@ -296,17 +296,10 @@ const initWcProvider = async (): Promise<typeof WcEthereumProvider> => {
 
   // Ref: https://docs.walletconnect.com/advanced/walletconnectmodal/options#explorerrecommendedwalletids-optional
   // Memo: disabled 'desktop wallet' section for production page as it doesn't work for our zkEVM wallet. We might want to filter the wallet by ids in the future
-  const walletConnectParams = isProductionPage
-    ? {
-        projectId,
-        explorerRecommendedWalletIds: 'NONE',
-      }
-    : {
-        projectId,
-        explorerRecommendedWalletIds: 'ALL',
-      };
-
-  new WalletConnectModal(walletConnectParams as WalletConnectModalConfig);
+  new WalletConnectModal({
+    projectId,
+    explorerRecommendedWalletIds: isProductionPage ? 'NONE' : 'ALL',
+  } as WalletConnectModalConfig);
 
   // Ref: https://docs.walletconnect.com/advanced/providers/ethereum
   const provider = (await WcEthereumProvider.init({
