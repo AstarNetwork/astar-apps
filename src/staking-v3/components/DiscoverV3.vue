@@ -67,7 +67,6 @@ export default defineComponent({
   },
   setup() {
     const displayIndex = ref<number>(0);
-    const { warnIfLedger } = useDappStaking();
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
     const { t } = useI18n();
     const store = useStore();
@@ -77,10 +76,6 @@ export default defineComponent({
     };
 
     const searchText = ref<string>('');
-
-    onMounted(() => {
-      warnIfLedger();
-    });
 
     watch(
       [isZkEvm],
