@@ -15,6 +15,7 @@ type UseInflation = {
   inflationParameters: Ref<InflationParam>;
   maximumInflationData: Ref<[number, number][]>;
   realizedInflationData: Ref<[number, number][]>;
+  realizedAdjustableStakersPart: Ref<number>;
   fetchActiveConfigurationToStore: () => Promise<void>;
   fetchInflationParamsToStore: () => Promise<void>;
   getInflationParameters: () => Promise<InflationParam>;
@@ -25,11 +26,12 @@ let inflationInstance: UseInflation | undefined = undefined;
 export function useInflation(): UseInflation {
   if (!inflationInstance) {
     const store = useStore();
-    const { eraLengths } = useDappStaking();
+    const { eraLengths, currentEraInfo } = useDappStaking();
     const { networkNameSubstrate } = useNetworkInfo();
     const estimatedInflation = ref<number | undefined>(undefined);
     const maximumInflationData = ref<[number, number][]>([]);
     const realizedInflationData = ref<[number, number][]>([]);
+    const realizedAdjustableStakersPart = ref<number>(0);
 
     const activeInflationConfiguration = computed<InflationConfiguration>(
       () => store.getters['general/getActiveInflationConfiguration']
@@ -126,6 +128,13 @@ export function useInflation(): UseInflation {
             eraLengths.value.standardEraLength,
             initialTotalIssuance.toBigInt()
           );
+
+          calculateAdjustableStakerRewards(
+            realizedTotalIssuance.toBigInt(),
+            currentEraInfo.value?.currentStakeAmount.totalStake ?? BigInt(0),
+            inflationParameters.value.adjustableStakersPart,
+            inflationParameters.value.idealStakingRate
+          );
         } catch (error) {
           console.error('Error calculating realized inflation', error);
         }
@@ -179,6 +188,21 @@ export function useInflation(): UseInflation {
       realizedInflationData.value = result;
     };
 
+    const calculateAdjustableStakerRewards = (
+      totalIssuance: bigint,
+      totalStake: bigint,
+      adjustableStakerPart: number,
+      idealStakingRate: number
+    ): void => {
+      const stakeRate =
+        totalStake <= BigInt(0)
+          ? 0
+          : Number(ethers.utils.formatEther(totalStake.toString())) /
+            Number(ethers.utils.formatEther(totalIssuance.toString()));
+      const result = adjustableStakerPart * Math.min(1, stakeRate / idealStakingRate);
+      realizedAdjustableStakersPart.value = Number(result.toFixed(3));
+    };
+
     watch(
       [activeInflationConfiguration, inflationParameters],
       async () => {
@@ -195,6 +219,7 @@ export function useInflation(): UseInflation {
       inflationParameters,
       maximumInflationData,
       realizedInflationData,
+      realizedAdjustableStakersPart,
       fetchActiveConfigurationToStore,
       fetchInflationParamsToStore,
       getInflationParameters,

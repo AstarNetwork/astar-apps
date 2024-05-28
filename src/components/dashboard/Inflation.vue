@@ -13,30 +13,47 @@
         <doughnut-chart :size="250" :sectors="pieSectors" :is-dark-theme="isDarkTheme" />
       </div>
       <div class="align-right table--container">
-        <div class="row--container">
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.treasury') }}</div>
           <div class="row--item">
             {{ numberFromPercentage(inflationParameters?.treasuryPart) }}%
           </div>
+        </div>
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.bonus') }}</div>
           <div class="row--item">{{ numberFromPercentage(inflationParameters?.bonusPart) }}%</div>
         </div>
-        <div class="row--container">
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.collators') }}</div>
           <div class="row--item">
             {{ numberFromPercentage(inflationParameters?.collatorsPart) }}%
           </div>
+        </div>
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.dAppRewards') }}</div>
           <div class="row--item">{{ numberFromPercentage(inflationParameters?.dappsPart) }}%</div>
         </div>
-        <div class="row--container">
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.baseStakers') }}</div>
           <div class="row--item">
             {{ numberFromPercentage(inflationParameters?.baseStakersPart) }}%
           </div>
+        </div>
+        <div class="item--container">
           <div class="row--item">{{ $t('dashboard.inflation.adjustableStakers') }}</div>
           <div class="row--item">
-            {{ numberFromPercentage(inflationParameters?.adjustableStakersPart) }}%
+            {{ numberFromPercentage(inflationParameters.adjustableStakersPart) }}%
+          </div>
+        </div>
+        <div class="item--container"></div>
+        <div class="item--container">
+          <div class="row--item"></div>
+          <div class="row--item small">
+            ({{
+              $t('dashboard.inflation.activeAdjustable', {
+                percentage: numberFromPercentage(adjustableStakersPercentage),
+              })
+            }})
           </div>
         </div>
       </div>
@@ -64,11 +81,18 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { t } = useI18n();
-    const { inflationParameters } = useInflation();
+    const { inflationParameters, realizedAdjustableStakersPart } = useInflation();
     const pieSectors = ref<Sector[]>([]);
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
     const numberFromPercentage = (value?: number): number | string => (value ? value * 100 : '--');
+    const adjustableStakersPercentage = computed<number>(() =>
+      Number(
+        (
+          realizedAdjustableStakersPart.value / inflationParameters.value.adjustableStakersPart
+        ).toFixed(3)
+      )
+    );
 
     watch(
       [isDarkTheme, inflationParameters],
@@ -118,7 +142,14 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { pieSectors, isDarkTheme, inflationParameters, numberFromPercentage };
+    return {
+      pieSectors,
+      isDarkTheme,
+      inflationParameters,
+      realizedAdjustableStakersPart,
+      adjustableStakersPercentage,
+      numberFromPercentage,
+    };
   },
 });
 </script>
@@ -136,23 +167,36 @@ export default defineComponent({
 }
 
 .table--container {
+  display: flex;
+  flex-direction: column;
   font-size: 16px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
   letter-spacing: -0.32px;
   color: $astar-blue;
+
+  @media screen and (min-width: $md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+  }
 }
 
-.row--container {
+.item--container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+
+  > :last-child {
+    margin-left: auto;
+  }
+}
+
+.small {
+  font-size: 12px;
+  padding: 0px;
+  margin-top: -12px;
 }
 
 .row--item {
-  flex: 1 0;
-  justify-content: end;
   padding: 4px;
 }
 
