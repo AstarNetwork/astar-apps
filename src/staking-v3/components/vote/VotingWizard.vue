@@ -1,6 +1,33 @@
 <template>
   <div ref="wizard" class="wizard-container">
-    <div class="wizard-header">{{ $t('stakingV3.voting.startStaking') }}</div>
+    <div class="wizard-header-container">
+      <div class="wizard-header">
+        {{ title }}
+      </div>
+      <div class="balance-container">
+        {{ $t('stakingV3.voting.yourAvailableBalance') }}
+        <token-balance-native :balance="availableToVoteDisplay.toString()" />
+      </div>
+    </div>
+    <div v-if="dappToMoveTokensFrom" class="move--wrapper">
+      <div>{{ $t('stakingV3.transferText') }}</div>
+      <div class="move--from">
+        <div>
+          <dapp-icon
+            :icon-url="dappToMoveTokensFrom.basic.iconUrl"
+            :alt-text="dappToMoveTokensFrom.basic.name"
+          />
+          <div>{{ dappToMoveTokensFrom.basic.name }}</div>
+        </div>
+        <div>
+          <img alt="token-logo" :src="nativeTokenImg" />
+          <token-balance-native
+            :balance="availableToMoveFrom.toString()"
+            class="nomination--balance"
+          />
+        </div>
+      </div>
+    </div>
     <wizard-steps
       :steps="wizardSteps"
       :selected-step-index="selectedStepIndex"
@@ -44,6 +71,9 @@ import ChooseAmountsPanel, { StakeInfo } from './enter-amount/ChooseAmountsPanel
 import ReviewPanel from './review/ReviewPanel.vue';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import WizardSteps from './WizardSteps.vue';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import DappIcon from './DappIcon.vue';
+import { useNetworkInfo } from 'src/hooks';
 
 enum Steps {
   ChooseDapps,
@@ -57,9 +87,16 @@ export default defineComponent({
     ChooseDappsPanel,
     ChooseAmountsPanel,
     ReviewPanel,
+    TokenBalanceNative,
+    DappIcon,
   },
   props: {
     stakeToAddress: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    moveFromAddress: {
       type: String,
       required: false,
       default: undefined,
@@ -69,6 +106,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent();
     const { registeredDapps, getDapp } = useDapps();
+    const { nativeTokenImg } = useNetworkInfo();
     const selectedDapps = ref<DappVote[]>([]);
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
@@ -76,12 +114,14 @@ export default defineComponent({
     const {
       totalStakeAmount,
       remainingLockedTokens,
-      canVote,
-      vote,
       availableToVoteDisplay,
       errorMessage,
       refUrl,
-    } = useVote(selectedDapps);
+      dappToMoveTokensFrom,
+      availableToMoveFrom,
+      canVote,
+      vote,
+    } = useVote(selectedDapps, props.moveFromAddress);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
         new Map([
@@ -98,6 +138,10 @@ export default defineComponent({
       errorMessage: errorMessage.value,
       errorRefUrl: refUrl.value,
     }));
+
+    const title = computed<string>(() =>
+      props.moveFromAddress ? t('stakingV3.voting.moveFunds') : t('stakingV3.voting.startStaking')
+    );
 
     const wizardSteps: WizardItem[] = [
       {
@@ -174,6 +218,8 @@ export default defineComponent({
             selectedDapps.value = [mapToDappVote(dapp)];
             selectedComponentIndex.value = Steps.AddAmount;
           }
+        } else if (props.moveFromAddress && registeredDapps.value.length > 0) {
+          selectedComponentIndex.value = Steps.ChooseDapps;
         }
       },
       { immediate: true }
@@ -188,6 +234,10 @@ export default defineComponent({
       stakeInfo,
       wizard,
       availableToVoteDisplay,
+      title,
+      dappToMoveTokensFrom,
+      availableToMoveFrom,
+      nativeTokenImg,
       canVote,
       vote,
       handleStepSelected: handleSelectComponent,

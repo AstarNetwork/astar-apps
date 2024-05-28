@@ -1014,6 +1014,8 @@ export default {
       availableAfterStaking: 'Available amount after staking',
       beSureToVote:
         'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
+      yourAvailableBalance: 'Your available balance',
+      moveFunds: 'Move funds',
     },
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',

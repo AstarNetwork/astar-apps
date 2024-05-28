@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { getTokenImage } from 'src/modules/token';
 import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
@@ -34,11 +33,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { nativeTokenSymbol } = useNetworkInfo();
-
-    const nativeTokenImg = computed<string>(() =>
-      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
-    );
+    const { nativeTokenSymbol, nativeTokenImg } = useNetworkInfo();
 
     const handleInputAmount = (event: Event): void => {
       const target = event.target as HTMLInputElement;

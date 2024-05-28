@@ -189,6 +189,11 @@ export default defineComponent({
   padding: 24px 24px 24px 18px;
   border-radius: 16px;
   background-color: $gray-1;
+  border: 1px solid transparent;
+}
+
+.amount:hover {
+  border: 1px solid $astar-blue;
 }
 
 .name-and-icon {

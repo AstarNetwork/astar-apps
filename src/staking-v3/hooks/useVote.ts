@@ -1,18 +1,20 @@
 import { Ref, computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { DappStakeInfo, DappVote } from '../logic';
+import { CombinedDappInfo, DappStakeInfo, DappVote } from '../logic';
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
 import { useDappStaking } from './useDappStaking';
 import { abs, max } from 'src/v2/common';
+import { useDapps } from './useDapps';
 
-export function useVote(dapps: Ref<DappVote[]>) {
+export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
   const { useableBalance } = useBalance(currentAccount);
   const route = useRoute();
   const { ledger, totalStake, canStake, getStakerInfo, claimLockAndStake } = useDappStaking();
+  const { getDapp } = useDapps();
 
-  const dAppToMoveFromAddress = ref<string>((route.query.moveFromAddress as string) ?? '');
+  const dAppToMoveFromAddress = ref<string>(dappToMoveTokensFromAddress ?? '');
   let remainingLockedTokensInitial = BigInt(0);
 
   const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
@@ -68,6 +70,24 @@ export function useVote(dapps: Ref<DappVote[]>) {
     return stakeInfo;
   });
 
+  const dappToMoveTokensFrom = computed<CombinedDappInfo | undefined>(() => {
+    if (dAppToMoveFromAddress.value) {
+      return getDapp(dAppToMoveFromAddress.value);
+    }
+
+    return undefined;
+  });
+
+  const availableToMoveFrom = computed<bigint>(() => {
+    const info = dAppToMoveFromAddress.value
+      ? getStakerInfo(dAppToMoveFromAddress.value)
+      : undefined;
+    if (info) {
+      return info.staked.totalStake;
+    }
+    return BigInt(0);
+  });
+
   const errorMessage = ref<string>('');
   const refUrl = ref<string>('');
 
@@ -110,6 +130,8 @@ export function useVote(dapps: Ref<DappVote[]>) {
     availableToVoteDisplay,
     errorMessage,
     refUrl,
+    dappToMoveTokensFrom,
+    availableToMoveFrom,
     canVote,
     vote,
   };

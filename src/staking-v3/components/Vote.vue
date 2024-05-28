@@ -2,7 +2,10 @@
   <div>
     <div class="wrapper--vote">
       <back-to-page :text="$t('stakingV3.back')" :link="Path.DappStaking" />
-      <voting-wizard :stake-to-address="selectedDappAddress" />
+      <voting-wizard
+        :stake-to-address="selectedDappAddress"
+        :move-from-address="dAppToMoveFromAddress"
+      />
       <div class="column--help">
         <div class="note">
           <b>{{ $t('stakingV3.voting.note') }}</b>
@@ -62,7 +65,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useDappStaking } from '../hooks';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo } from 'src/hooks';
 import { useRoute } from 'vue-router';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { Path } from 'src/router';
@@ -88,6 +91,7 @@ export default defineComponent({
       Path,
       docsUrl,
       selectedDappAddress,
+      dAppToMoveFromAddress,
     };
   },
 });
