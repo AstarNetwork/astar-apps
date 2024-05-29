@@ -298,7 +298,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
-      const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
+      const isAstarEvm = !!(from.value?.includes(pathEvm) || to.value?.includes(pathEvm));
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>

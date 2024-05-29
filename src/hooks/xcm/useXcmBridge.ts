@@ -295,7 +295,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       }
       if ((await getOriginChainNativeBal()) === '0') {
         errMsg.value = t('warning.insufficientOriginChainNativeBalance', {
-          chain: selectedToken.value.originChain,
+          chain: srcChain.value.name,
         });
         return;
       }
