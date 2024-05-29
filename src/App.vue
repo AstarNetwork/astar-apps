@@ -28,12 +28,6 @@
     </transition>
     <notification-stack />
 
-    <!-- <modal-onboarding
-      v-if="showOnboardingModal"
-      :set-is-open="setShowOnboardingModal"
-      :show="showOnboardingModal"
-    /> -->
-
     <modal-yoki-origins
       v-if="showYokiOriginsModal"
       :set-is-open="setYokiOriginsModal"
@@ -129,21 +123,6 @@ export default defineComponent({
     const setShowDisclaimerModal = (isOpen: boolean): void => {
       showDisclaimerModal.value = isOpen;
     };
-
-    // dApp staking onboarding modal
-    // const showOnboardingModal = ref<boolean>(false);
-    // if (
-    //   !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
-    //   isDappStakingV3.value
-    // ) {
-    //   setTimeout(() => {
-    //     showOnboardingModal.value = true;
-    //   }, 2000);
-    // }
-
-    // const setShowOnboardingModal = (isOpen: boolean): void => {
-    //   showOnboardingModal.value = isOpen;
-    // };
 
     // Yoki Origins modal
     const showYokiOriginsModal = ref<boolean>(false);
