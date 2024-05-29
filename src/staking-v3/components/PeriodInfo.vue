@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper-info">
+  <div v-if="protocolState?.periodInfo.subperiod === PeriodType.Voting" class="wrapper-info">
     <div class="wrapper-info-inner">
       <div class="left-panel panel">
         <div class="header">
@@ -29,13 +29,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useDappStaking, useVotingCountdown } from '../hooks';
+import { PeriodType } from 'src/staking-v3/logic';
 
 export default defineComponent({
   setup() {
     const { protocolState } = useDappStaking();
     const { timeLeftFormatted } = useVotingCountdown();
 
-    return { protocolState, timeLeftFormatted };
+    return { protocolState, timeLeftFormatted, PeriodType };
   },
 });
 </script>
