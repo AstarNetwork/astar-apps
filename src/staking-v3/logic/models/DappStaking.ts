@@ -1,5 +1,6 @@
+import { SocialIcon } from '@astar-network/astar-ui';
 import { DappInfo, DappState, ProtocolState } from './Node';
-import { Community } from '@astar-network/astar-sdk-core';
+import { Community, DappItem } from '@astar-network/astar-sdk-core';
 
 /**
  * Dapp model containing the basic information so dApps can be displayed on the homepage.
@@ -216,4 +217,37 @@ export interface StakerRewards {
   amount: bigint;
   period: number;
   eraCount: number;
+}
+
+export type DappRegistrationParameters = {
+  dapp: NewDappItem;
+  senderAddress: string;
+  signature: string;
+  network: string;
+};
+
+export interface NewDappItem extends DappItem {
+  iconFileName: string;
+  iconFile: string;
+  icon: File;
+  images: File[];
+  imagesContent: string[];
+  videoUrlInput: string;
+}
+
+export interface EditDappItem extends DappItem {
+  iconFile: FileInfo;
+  images: FileInfo[];
+}
+
+export type FileInfo = {
+  name: string;
+  base64content: string;
+  contentType: string;
+};
+
+export interface CommunityDefinition extends Community {
+  iconName: SocialIcon;
+  label: string;
+  validateHandle?: (v: string) => boolean | string;
 }

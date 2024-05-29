@@ -96,6 +96,7 @@ import Web3 from 'web3';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { useI18n } from 'vue-i18n';
+import { useDappStaking } from 'src/staking-v3';
 
 enum NetworkStatus {
   Working = 'working',
@@ -112,6 +113,7 @@ interface INetworkStatus {
 export default defineComponent({
   setup() {
     const { currentNetworkChain } = useNetworkInfo();
+    const { protocolState } = useDappStaking();
     const store = useStore();
     const { t } = useI18n();
 
@@ -125,9 +127,7 @@ export default defineComponent({
         : [];
     });
 
-    const isDappStakingDisabled = computed<boolean>(
-      () => store.getters['dapps/getIsPalletDisabled']
-    );
+    const isDappStakingDisabled = computed<boolean>(() => protocolState.value?.maintenance ?? true);
 
     const isLoadingNetwork = ref<boolean>(false);
     const astarStatus = ref<INetworkStatus>();
