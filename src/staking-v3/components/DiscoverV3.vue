@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="wrapper--discover">
-      <feature-dapp />
+      <period-info />
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
@@ -49,21 +49,21 @@ import { useI18n } from 'vue-i18n';
 import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
-import FeatureDapp from './FeatureDapp.vue';
 import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
+import PeriodInfo from './PeriodInfo.vue';
 
 export default defineComponent({
   components: {
-    FeatureDapp,
     Dapps,
     Leaderboard,
     LeaderboardVote,
     DataList,
     DynamicAdsArea,
     ToggleButtons,
+    PeriodInfo,
   },
   setup() {
     const displayIndex = ref<number>(0);
