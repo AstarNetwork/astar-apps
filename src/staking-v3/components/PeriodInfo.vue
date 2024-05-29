@@ -1,24 +1,45 @@
 <template>
-  <div class="wrapper-info">rr</div>
+  <div class="wrapper-info">
+    <div class="wrapper-info-inner">
+      <div class="left-panel panel">
+        <div class="header">
+          <div class="title">
+            <span>{{ protocolState?.periodInfo.number.toString().padStart(3, '0') ?? '--' }}</span>
+            <span>{{ $t('stakingV3.votingOpen') }}</span>
+          </div>
+          <div>
+            <div class="subtitle">{{ $t('stakingV3.stakeToday') }}</div>
+            <div class="time-left">{{ timeLeftFormatted }}</div>
+          </div>
+        </div>
+        <div>{{ $t('stakingV3.votingOpenText') }}</div>
+      </div>
+      <div class="right-panel panel">
+        <div>{{ $t('stakingV3.estimatedRewards') }}</div>
+        <div>{{ $t('stakingV3.basicPlusBonus') }}</div>
+        <div class="percentage">
+          <span>15</span>
+          <span>% +</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useDappStaking, useVotingCountdown } from '../hooks';
 
 export default defineComponent({
   setup() {
-    return {};
+    const { protocolState } = useDappStaking();
+    const { timeLeftFormatted } = useVotingCountdown();
+
+    return { protocolState, timeLeftFormatted };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-
-.wrapper-info {
-  width: 100%;
-  padding: 48px 24px;
-  border-radius: 24px;
-  background-color: $navy-1;
-}
+@import './styles/period-info.scss';
 </style>

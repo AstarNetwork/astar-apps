@@ -787,6 +787,10 @@ export default {
       'Innovative way of staking, only at Astar. Where ecosystem grow together',
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    votingOpen: 'Voting open',
+    votingOpenText:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    stakeToday: 'Stake today, be entitled to big bonus!',
     voteText: 'I would like to vote my tokens with',
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
@@ -831,6 +835,7 @@ export default {
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
     claimEstimatedRewards: 'Claim estimated Rewards',
+    basicPlusBonus: 'Basic rewards + Bonus',
     bonusEligible: 'Bonus Eligible',
     claimNow: 'Claim now',
     claim: 'Claim',
