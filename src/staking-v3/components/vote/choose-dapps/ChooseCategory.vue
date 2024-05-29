@@ -36,7 +36,7 @@ export default defineComponent({
   setup(props) {
     const { isComponentSelected, handleSelectComponent } = useSelectableComponent();
 
-    const handleCategorySelected = (index: number) => {
+    const handleCategorySelected = (index: number): void => {
       handleSelectComponent(index);
 
       if (props.onCategorySelected) {
