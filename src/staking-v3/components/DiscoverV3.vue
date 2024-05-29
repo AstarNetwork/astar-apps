@@ -2,7 +2,9 @@
   <div>
     <div class="wrapper--discover">
       <feature-dapp />
-      <voting-wizard />
+      <div class="wrapper--voting--wizard">
+        <voting-wizard />
+      </div>
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
