@@ -38,13 +38,13 @@ export function useInflation(): UseInflation {
   );
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
 
-  const fetchActiveConfigurationToStore = async () => {
+  const fetchActiveConfigurationToStore = async (): Promise<void> => {
     const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
     const activeConfiguration = await inflationRepository.getInflationConfiguration();
     store.commit('general/setActiveInflationConfiguration', activeConfiguration);
   };
 
-  const fetchInflationParamsToStore = async () => {
+  const fetchInflationParamsToStore = async (): Promise<void> => {
     const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
     const params = await inflationRepository.getInflationParams();
     store.commit('general/setInflationParameters', params);
