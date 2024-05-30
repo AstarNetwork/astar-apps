@@ -12,11 +12,15 @@ export interface PalletInflationActiveInflationConfig extends Struct {
   readonly idealStakingRate: Perquintill;
 }
 
-export interface PalletInflationInflationParams extends Struct {
-  readonly maxInflationRate: String;
-  readonly adjustableStakersPart: String;
-  readonly baseStakersPart: String;
-  readonly idealStakingRate: String;
+export interface PalletInflationInflationParameters extends Struct {
+  readonly maxInflationRate: Compact<Perquintill>;
+  readonly treasuryPart: Compact<Perquintill>;
+  readonly collatorsPart: Compact<Perquintill>;
+  readonly dappsPart: Compact<Perquintill>;
+  readonly baseStakersPart: Compact<Perquintill>;
+  readonly adjustableStakersPart: Compact<Perquintill>;
+  readonly bonusPart: Compact<Perquintill>;
+  readonly idealStakingRate: Compact<Perquintill>;
 }
 
 export interface InflationConfiguration {

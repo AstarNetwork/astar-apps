@@ -120,7 +120,7 @@ export default defineComponent({
       isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
-    const { fetchActiveConfigurationToStore } = useInflation();
+    const { fetchActiveConfigurationToStore, fetchInflationParamsToStore } = useInflation();
     const {
       decommissionStarted,
       isInLocalStorage,
@@ -234,6 +234,7 @@ export default defineComponent({
           fetchStakerInfoToStore(),
           fetchEraLengthsToStore(),
           fetchActiveConfigurationToStore(),
+          fetchInflationParamsToStore(),
         ]);
       }
     });
