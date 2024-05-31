@@ -29,12 +29,13 @@ export function useCampaign() {
   // Combine latest dApps with dApp promotions.
   const combinedCampaigns = computed<Campaign[]>(() => {
     const result: Campaign[] = [];
-    const minLen = Math.min(newListings.value.length, dappPromotions.length);
+    const dappsToPromote = dappPromotions.slice(0, dappsInCampaign);
+    const minLen = Math.min(newListings.value.length, dappsToPromote.length);
 
     for (let i = 0; i < minLen; i++) {
-      result.push(newListings.value[i], dappPromotions[i]);
+      result.push(newListings.value[i], dappsToPromote[i]);
     }
-    result.push(...newListings.value.slice(minLen), ...dappPromotions.slice(minLen));
+    result.push(...newListings.value.slice(minLen), ...dappsToPromote.slice(minLen));
 
     return result;
   });

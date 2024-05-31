@@ -7,7 +7,7 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useBalance } from './useBalance';
 import { ethers } from 'ethers';
-import { IDappStakingServiceV2V3 } from 'src/staking-v3';
+import { IDappStakingService } from 'src/staking-v3';
 
 export function useTokenDistribution() {
   const treasuryAddress = ref<string>('YQnbw3oWxBnCUarnbePrjFcrSgVPP2jqTZYzWcccmN8fXhd');
@@ -21,7 +21,7 @@ export function useTokenDistribution() {
   const other = ref<number>(0);
 
   const fetchData = async () => {
-    const dappService = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
+    const dappService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     tvlModel.value = await dappService.getTvl();
   };
 

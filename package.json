@@ -50,7 +50,7 @@
     "@quasar/app-webpack": "^3.11.2",
     "@quasar/extras": "^1.16.7",
     "@vue/apollo-composable": "^4.0.0-beta.4",
-    "@walletconnect/ethereum-provider": "^2.11.0",
+    "@walletconnect/ethereum-provider": "^2.12.2",
     "@walletconnect/modal": "^2.6.2",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",

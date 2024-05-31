@@ -980,13 +980,6 @@ export default {
     unbondFrom: 'Unbond from {name}',
     startUnbonding: 'Start unbonding',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
-    migrationSupport: {
-      actionRequired: 'Action Required',
-      yourTokensAreLocked:
-        'Your tokens are locked in dAppStaking V2. Please unbond and withdraw your tokens. dApp Staking V3 is temporally unavailable for those Ledger Astar Native App users, please move your funds to a soft wallet or a Ledger EVM account to be able to participate in dApp staking.',
-      migrateNow: 'Migrate Now',
-    },
-    ledgerNotSupported: 'Ledger native accounts are not supported for dApp staking V3 yet.',
     moreInfo: 'More info',
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
@@ -999,6 +992,11 @@ export default {
       learn: 'Learn',
       whatIsDappStaking: 'What is dApp staking?',
       howToParticipate: 'How to participate dApp staking?',
+    },
+    registration: {
+      success: 'You successfully registered dApp {name} to the store.',
+      error:
+        'An unexpected error occurred during dApp registration. Please screenshot this message and send to the Astar team. {error}',
     },
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',

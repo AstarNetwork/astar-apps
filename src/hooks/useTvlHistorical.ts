@@ -1,4 +1,3 @@
-import { ApiPromise } from '@polkadot/api';
 import { $api } from 'src/boot/api';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
@@ -11,7 +10,7 @@ import {
 } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { IDappStakingServiceV2V3 } from 'src/staking-v3';
+import { IDappStakingService } from 'src/staking-v3';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');
@@ -26,8 +25,6 @@ export function useTvlHistorical() {
   const mergedFilter = ref<Duration>('90 days');
   const dappStakingFilter = ref<Duration>('90 days');
   const ecosystemFilter = ref<Duration>('90 days');
-
-  const lenStakers = ref<string>('0');
 
   const { currentNetworkName } = useNetworkInfo();
 
@@ -52,7 +49,7 @@ export function useTvlHistorical() {
   };
 
   const getTvl = async (): Promise<void> => {
-    const tvlService = container.get<IDappStakingServiceV2V3>(Symbols.DappStakingServiceV2V3);
+    const tvlService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
     const tvl = await tvlService.getTvl();
     const tvlDefaultUnit = formatNumber(tvl.tvlDefaultUnit, 2);
 

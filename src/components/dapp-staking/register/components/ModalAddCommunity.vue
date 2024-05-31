@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { CommunityDefinition } from 'src/store/dapp-staking/state';
+import { CommunityDefinition } from 'src/staking-v3';
 import { wait, Community } from '@astar-network/astar-sdk-core';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 

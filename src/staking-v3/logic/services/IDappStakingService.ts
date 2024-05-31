@@ -1,3 +1,4 @@
+import { TvlModel } from 'src/v2/models';
 import {
   CombinedDappInfo,
   DappInfo,
@@ -152,4 +153,8 @@ export interface IDappStakingService {
   ): Promise<Map<string, SingularStakingInfo>>;
 
   startAccountLedgerSubscription(address: string): Promise<void>;
+
+  getRegisteredContract(developerAddress: string): Promise<string | undefined>;
+
+  getTvl(): Promise<TvlModel>;
 }
