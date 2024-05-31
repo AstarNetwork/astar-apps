@@ -34,12 +34,6 @@
       :show="showOnboardingModal"
     /> -->
 
-    <modal-yoki-origins
-      v-if="showYokiOriginsModal"
-      :set-is-open="setYokiOriginsModal"
-      :show="showYokiOriginsModal"
-    />
-
     <modal-disclaimer
       v-if="showDisclaimerModal"
       :set-is-open="setShowDisclaimerModal"
@@ -62,7 +56,6 @@ import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
-import ModalYokiOrigins from 'components/common/ModalYokiOrigins.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
 import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
@@ -99,7 +92,6 @@ export default defineComponent({
     ModalLoading,
     AlertBox,
     CookiePolicy,
-    ModalYokiOrigins,
     ModalDisclaimer,
     NotificationStack,
     ModalOnboarding,
@@ -160,18 +152,6 @@ export default defineComponent({
     // const setShowOnboardingModal = (isOpen: boolean): void => {
     //   showOnboardingModal.value = isOpen;
     // };
-
-    // Yoki Origins modal
-    const showYokiOriginsModal = ref<boolean>(false);
-    if (!localStorage.getItem(LOCAL_STORAGE.CLOSE_YOKI_ORIGINS_MODAL)) {
-      setTimeout(() => {
-        showYokiOriginsModal.value = true;
-      }, 2000);
-    }
-
-    const setYokiOriginsModal = (isOpen: boolean): void => {
-      showYokiOriginsModal.value = isOpen;
-    };
 
     const setShowDecommissionModal = (isOpen: boolean): void => {
       showDecommissionModal.value = isOpen;
@@ -298,8 +278,6 @@ export default defineComponent({
       showAlert,
       showDisclaimerModal,
       showDecommissionModal,
-      showYokiOriginsModal,
-      setYokiOriginsModal,
       setShowDisclaimerModal,
       setShowDecommissionModal,
     };
