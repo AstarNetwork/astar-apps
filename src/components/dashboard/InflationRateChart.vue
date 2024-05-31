@@ -1,106 +1,54 @@
 <template>
   <div v-if="!hasData">
-    <q-skeleton class="skeleton--chart" />
+    <q-skeleton class="skeleton--chart inflation--skeleton" />
   </div>
   <div v-else>
-    <div>
+    <div class="container--component">
       <div class="row">
-        <span class="text--accent container--title--color">{{ $t(title) }}</span>
+        <span class="text--accent container--title--color">{{
+          $t('dashboard.inflation.currentInflationRate')
+        }}</span>
       </div>
       <div class="row chart--value">
         <div>
-          <span class="text--value text-color--neon">{{ defaultValue }}</span>
-          <span v-if="defaultValueAddOn" class="text--value--addon text-color--neon">{{
-            defaultValueAddOn
-          }}</span>
-        </div>
-        <div v-if="secondValue">
-          <div v-if="secondValue === '0'">
-            <q-skeleton class="skeleton--staker" />
-          </div>
-          <span v-else class="text--second-value text-color--neon">{{ secondValue }}</span>
+          <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(1) }}%</span>
         </div>
       </div>
       <div class="chart">
         <highcharts class="highcharts" :options="chartOptions"></highcharts>
-        <chart-filter :range-filter="rangeFilter" @filterChanged="handleFilterChanged" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, PropType } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
-import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
-import { titleFormatter, valueDecimalsFormatter, seriesFormatter } from 'src/modules/token-api';
+import { titleFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
-import { useBreakpoints } from 'src/hooks';
+import { useInflation } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
     highcharts: Chart,
-    ChartFilter,
   },
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    tooltip: {
-      type: String,
-      required: true,
-    },
-    defaultValue: {
-      type: String,
-      required: true,
-    },
-    defaultValueAddOn: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    secondValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    data: {
-      type: Array as PropType<number[][] | null>,
-      required: false,
-      default: null,
-    },
-    mergedData: {
-      type: Array as PropType<number[][] | null>,
-      required: false,
-      default: null,
-    },
-    rangeFilter: {
-      type: String,
-      default: DEFAULT_FILTER,
-    },
-    isMultipleLine: {
-      type: Boolean,
-      required: true,
-    },
-    isPrice: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  emits: ['filterChanged'],
-  setup(props, { emit }) {
+
+  setup() {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const getBackgroundColor = (): string => 'transparent';
+    const getBackgroundColor = (): string => (isDarkTheme.value ? '#060b23' : '#fff');
     const getLineColor = (): string => (isDarkTheme.value ? 'rgba(108,111,111,0.1)' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
-    const { width, screenSize } = useBreakpoints();
     const { t } = useI18n();
+    const { maximumInflationData, realizedInflationData, estimatedInflation, inflationParameters } =
+      useInflation();
+
+    const maximumInflationRate = computed<string>(() =>
+      (inflationParameters.value.maxInflationRate * 100).toFixed(1)
+    );
 
     Highcharts.setOptions({
       lang: {
@@ -115,10 +63,9 @@ export default defineComponent({
         chart: {
           backgroundColor: getBackgroundColor(),
           zoomType: 'x',
-          height: width.value > screenSize.xxl ? '250px' : '200px',
         },
         xAxis: {
-          type: 'datetime',
+          type: 'number',
           lineColor: getLineColor(),
           tickColor: getLineColor(),
           labels: {
@@ -137,11 +84,11 @@ export default defineComponent({
             style: {
               color: getTextColor(),
             },
-            formatter: (data: any) => titleFormatter(props.isPrice, data),
+            formatter: (data: any) => titleFormatter(false, data),
           },
         },
         legend: {
-          enabled: props.isMultipleLine,
+          enabled: true,
           itemStyle: {
             color: getTextColor(),
           },
@@ -171,15 +118,17 @@ export default defineComponent({
           },
         },
         tooltip: {
-          valueDecimals: valueDecimalsFormatter(props.title),
+          valueDecimals: 'tooltip',
           shared: true,
         },
         series: seriesFormatter({
-          isMultipleLine: props.isMultipleLine,
-          tooltip: t(props.tooltip),
-          data: props.data,
-          mergedData: props.mergedData,
-          textTvl: t('dashboard.tvl'),
+          isMultipleLine: true,
+          tooltip: t('dashboard.inflation.realizedInflation'),
+          data: realizedInflationData.value,
+          mergedData: maximumInflationData.value,
+          textTvl: t('dashboard.inflation.maximumInflation', {
+            rate: maximumInflationRate.value,
+          }),
         }),
         credits: {
           enabled: false,
@@ -196,32 +145,19 @@ export default defineComponent({
       chartOptions.value.xAxis.labels.style.color = getTextColor();
     });
 
-    const handleFilterChanged = (filter: string): void => {
-      emit('filterChanged', filter);
-    };
-
-    watch(
-      [props],
-      () => {
-        if (props.isMultipleLine) {
-          chartOptions.value.series[0].data = props.mergedData;
-        } else {
-          chartOptions.value.series[0].data = props.data;
-        }
-
-        if (props.data && props.data.length > 0) {
-          hasData.value = true;
-        } else {
-          hasData.value = false;
-        }
-      },
-      { immediate: true }
-    );
+    watch([maximumInflationData], () => {
+      if (maximumInflationData.value && maximumInflationData.value.length > 0) {
+        hasData.value = true;
+        chartOptions.value.series[0].data = maximumInflationData.value;
+      } else {
+        hasData.value = false;
+      }
+    });
 
     return {
+      estimatedInflation,
       chartOptions,
       hasData,
-      handleFilterChanged,
     };
   },
 });
@@ -229,4 +165,22 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/common/styles/chart-panel.scss';
+@import 'src/css/quasar.variables.scss';
+
+.container--component {
+  box-shadow: $container-border-shadow-light;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.inflation--skeleton {
+  height: 324px;
+}
+
+.body--dark {
+  .container--component {
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+    background-color: $container-bg-dark;
+  }
+}
 </style>

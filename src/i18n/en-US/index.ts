@@ -1,3 +1,5 @@
+import { treasury } from '@polkadot/types/interfaces/definitions';
+
 export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
@@ -44,14 +46,6 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
-  modals: {
-    yokiOrigins: {
-      introducing: 'Introducing a new experience on zkEVM',
-      experienceNow: 'Experience now',
-      learnMore: 'Learn more',
-      keep: 'Keep me on the Portal',
-    },
-  },
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -84,8 +78,6 @@ export default {
     ledgerUsers: 'Ledger Users',
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
-    yoki: 'Yoki Origins',
-    yokiSignUp: 'Yoki Origins is a user onboarding journey on Astar zkEVM. Experience now!',
     stakingNotSupportZkEvm:
       'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
     connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
@@ -689,6 +681,20 @@ export default {
     },
     burn: {
       burn: 'Burn',
+    },
+    inflation: {
+      adjustableInflation: 'Adjustable inflation',
+      treasury: 'Treasury',
+      collators: 'Collators',
+      baseStakers: 'Base stakers',
+      bonus: 'Bonus',
+      dAppRewards: 'dApp rewards',
+      adjustableStakers: 'Adjustable stakers',
+      adjustableStakersShort: 'Adj. stakers',
+      activeAdjustable: '{percentage}% is active',
+      currentInflationRate: 'Current inflation rate',
+      maximumInflation: 'Maximum inflation ({rate}%)',
+      realizedInflation: 'Realized inflation',
     },
   },
   chart: {

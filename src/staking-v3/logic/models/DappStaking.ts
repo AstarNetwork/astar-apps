@@ -181,10 +181,14 @@ interface TierThreshold {
 }
 
 export interface InflationParam {
-  readonly maxInflationRate: string;
-  readonly adjustableStakersPart: string;
-  readonly baseStakersPart: string;
-  readonly idealStakingRate: string;
+  readonly maxInflationRate: number;
+  readonly treasuryPart: number;
+  readonly collatorsPart: number;
+  readonly dappsPart: number;
+  readonly baseStakersPart: number;
+  readonly adjustableStakersPart: number;
+  readonly bonusPart: number;
+  readonly idealStakingRate: number;
 }
 
 export enum TvlAmountType {

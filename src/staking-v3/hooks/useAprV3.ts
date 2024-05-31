@@ -13,11 +13,6 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
 
-  const percentageToNumber = (percent: string): number => {
-    // e.g.: percent 1%: 10000000000000000
-    return Number(percent) * 0.0000000000000001 * 0.01;
-  };
-
   const toAstr = (wei: bigint): number => {
     return Number(ethers.utils.formatEther(String(wei)));
   };
@@ -49,10 +44,10 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
     eraLength: EraLengths;
   }): number => {
     const numTotalIssuance = Number(ethers.utils.formatEther(totalIssuance.toString()));
-    const yearlyInflation = percentageToNumber(inflationParams.maxInflationRate);
-    const baseStakersPart = percentageToNumber(inflationParams.baseStakersPart);
-    const adjustableStakersPart = percentageToNumber(inflationParams.adjustableStakersPart);
-    const idealStakingRate = percentageToNumber(inflationParams.idealStakingRate);
+    const yearlyInflation = inflationParams.maxInflationRate;
+    const baseStakersPart = inflationParams.baseStakersPart;
+    const adjustableStakersPart = inflationParams.adjustableStakersPart;
+    const idealStakingRate = inflationParams.idealStakingRate;
 
     const cyclesPerYear = getCyclePerYear(eraLength);
     const currentStakeAmount = isVotingPeriod.value

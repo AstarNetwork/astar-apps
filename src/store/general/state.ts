@@ -3,6 +3,7 @@ import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { InflationConfiguration, NftMetadata } from 'src/v2/models';
+import { InflationParam } from 'src/staking-v3';
 
 export type SubstrateAccount = {
   address: string;
@@ -68,6 +69,7 @@ export interface GeneralStateInterface {
   currentBlock: number;
   unifiedAccount?: UnifiedAccount;
   activeInflationConfiguration: InflationConfiguration | undefined;
+  inflationParameters: InflationParam | undefined;
 }
 
 function state(): GeneralStateInterface {
@@ -110,6 +112,7 @@ function state(): GeneralStateInterface {
     gas: undefined,
     currentBlock: 0,
     activeInflationConfiguration: undefined,
+    inflationParameters: undefined,
   };
 }
 
