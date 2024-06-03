@@ -2,6 +2,10 @@
   <div>
     <div class="wrapper--discover">
       <period-info />
+      <!-- <feature-dapp /> -->
+      <div class="wrapper--voting--wizard">
+        <voting-wizard />
+      </div>
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
@@ -54,6 +58,7 @@ import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import PeriodInfo from './PeriodInfo.vue';
+import VotingWizard from './vote/VotingWizard.vue';
 
 export default defineComponent({
   components: {
@@ -64,6 +69,7 @@ export default defineComponent({
     DynamicAdsArea,
     ToggleButtons,
     PeriodInfo,
+    VotingWizard,
   },
   setup() {
     const displayIndex = ref<number>(0);

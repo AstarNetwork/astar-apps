@@ -29,6 +29,7 @@
   margin: auto;
   max-width: $container-max-width;
   padding: 0 16px;
+
   @media (min-width: $lg) {
     padding: 0;
   }
@@ -81,4 +82,14 @@
   flex-direction: column;
   width: 100%;
   row-gap: 24px;
+}
+
+.wrapper--voting--wizard {
+  z-index: 99;
+  padding: 0 16px;
+  width: 100%;
+
+  @media (min-width: $lg) {
+    padding: 40px 40px;
+  }
 }

@@ -1,0 +1,161 @@
+@import 'src/css/quasar.variables.scss';
+
+.wizard-container {
+  z-index: 100;
+  width: 100%;
+  padding: 16px;
+  border-radius: 24px;
+  border: $white;
+  background: rgba(255, 255, 255, 0.50);
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(3px);
+
+  @media (min-width: 768px) {
+    padding: 48px;
+  }
+}
+
+.wizard-header-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.wizard-header {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 24px;
+  flex:1;
+}
+
+.balance-container {
+  display: flex;
+  flex: 1;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: $white;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.wizard-steps-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 8px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.wizard-step-container {
+  width: 100%;
+  flex: 1;
+  background-color: $gray-1;
+  padding: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.wizard-step-title {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 30px;
+  margin-bottom: 8px;
+}
+
+.wizard-step-selected {
+  background: var(--Linear, linear-gradient(90deg, #0047FF 0%, #00D4FF 97.65%));
+  transition: background-color 500ms linear;
+  box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.30);
+  color: $white;
+}
+
+.wizard-step-number {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid $navy-1;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.wizard-step-completed {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: $success-green;
+  color: $white;
+}
+
+.wizard-step-number-selected {
+  color: $white;
+  border-color: $white;
+}
+
+.wizard-panels {
+  margin-top: 24px;
+}
+
+.wizard-step-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.move--from {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 16px;
+  border-radius: 16px;
+  background-color: $gray-1;
+  border: solid 1px $gray-3;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  img {
+    width: 24px;
+    margin: 8px;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.move--wrapper {
+  > div {
+    font-weight: 700;
+    margin-bottom: 32px;
+  }
+}
