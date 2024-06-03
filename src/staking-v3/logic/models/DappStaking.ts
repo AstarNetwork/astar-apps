@@ -217,3 +217,21 @@ export interface StakerRewards {
   period: number;
   eraCount: number;
 }
+
+export type DappVote = {
+  name: string;
+  address: string;
+  logoUrl: string;
+  amount: number;
+  id: number;
+  mainCategory?: string;
+};
+
+export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
+  name: dapp.basic.name,
+  address: dapp.chain.address,
+  logoUrl: dapp.basic.iconUrl,
+  amount: 0,
+  id: dapp.chain.id,
+  mainCategory: dapp.basic.mainCategory,
+});

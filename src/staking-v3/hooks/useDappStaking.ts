@@ -81,13 +81,17 @@ export function useDappStaking() {
     return (
       rewards ?? {
         dApp: BigInt(0),
-        staker: BigInt(0),
+        staker: {
+          amount: BigInt(0),
+          eraCount: 0,
+          period: 0,
+        },
         bonus: BigInt(0),
       }
     );
   });
 
-  const totalStakerRewards = computed<BigInt>(
+  const totalStakerRewards = computed<bigint>(
     () => rewards.value.staker.amount + rewards.value.bonus
   );
 

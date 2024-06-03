@@ -7,6 +7,7 @@ import {
 } from 'src/config/chain';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
+import { getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 
@@ -94,6 +95,10 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
+  const nativeTokenImg = computed<string>(() =>
+    getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+  );
+
   const isSupportAuTransfer = computed<boolean>(() => {
     return !isMainnet.value && !isZkEvm.value;
   });
@@ -123,5 +128,6 @@ export function useNetworkInfo() {
     isAstar,
     dappStakingCurrency,
     isH160,
+    nativeTokenImg,
   };
 }
