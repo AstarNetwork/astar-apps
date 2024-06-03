@@ -316,7 +316,7 @@ export default {
   myReward: {
     totalStaked: 'Total Staked',
     availableToClaim: 'Available to claim',
-    estimatedRewards: 'Estimated Rewards',
+    estimatedRewards: 'Estimated rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',
@@ -810,7 +810,7 @@ export default {
       'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
     rewardsWillBeClaimed: 'Your unclaimed rewards will be claimed.',
     basicRewards: 'Basic rewards',
-    bonusRewards: 'Bonus rewards',
+    estimatedBonus: 'Estimated bonus',
     bonus: 'Bonus',
     bonusTip: 'Bonus will be claimable in the next voting period',
     dAppRewards: 'dApp rewards',
@@ -1026,6 +1026,10 @@ export default {
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
       'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+    remainingTime: 'Remaining time',
+    stakingAPR: 'Staking APR',
+    bonusAPR: 'Bonus APR',
+    manageStakingAssets: 'Manage staking assets',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="wrapper--discover">
-      <period-info />
-      <!-- <feature-dapp /> -->
+      <period-info-vote />
+      <period-info-build />
       <div class="wrapper--voting--wizard">
         <voting-wizard />
       </div>
@@ -57,7 +57,8 @@ import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
-import PeriodInfo from './PeriodInfo.vue';
+import PeriodInfoVote from './PeriodInfoVote.vue';
+import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
 
 export default defineComponent({
@@ -68,7 +69,8 @@ export default defineComponent({
     DataList,
     DynamicAdsArea,
     ToggleButtons,
-    PeriodInfo,
+    PeriodInfoVote,
+    PeriodInfoBuild,
     VotingWizard,
   },
   setup() {
