@@ -1,5 +1,11 @@
 [
   {
+    "name": "Archisinal",
+    "shortDescription": "Pioneering Real-World-Assets in the built environment",
+    "link": "https://www.archisinal.io/",
+    "img": "images/dapp_promotions/Archisinal.png"
+  },
+  {
     "name": "DeStore",
     "shortDescription": "Web3 Shopify Powered by Astar",
     "link": "https://twitter.com/DeStore_Network",
@@ -46,11 +52,5 @@
     "shortDescription": "#1 Cross-chain Social Fitness App on iOS & Android, Apple Watch",
     "link": "https://app.moonfit.xyz/astar-reward",
     "img": "images/dapp_promotions/moonfit.png"
-  },
-  {
-    "name": "Archisinal",
-    "shortDescription": "Pioneering Real-World-Assets in the built environment",
-    "link": "https://www.archisinal.io/",
-    "img": "images/dapp_promotions/Archisinal.png"
   }
 ]
