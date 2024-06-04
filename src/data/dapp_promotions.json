@@ -54,12 +54,7 @@
     "img": "images/dapp_promotions/moonfit.png"
   },
   {
-    "name": "Archisinal",
-    "shortDescription": "Pioneering Real-World-Assets in the built environment",
-    "link": "https://www.archisinal.io/",
-    "img": "images/dapp_promotions/Archisinal.png"
-  },
-  {
+
     "name": "Ledger - dApp Staking V3",
     "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
     "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
