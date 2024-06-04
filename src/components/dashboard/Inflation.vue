@@ -85,7 +85,9 @@ export default defineComponent({
     const pieSectors = ref<Sector[]>([]);
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
-    const numberFromPercentage = (value?: number): number | string => (value ? value * 100 : '--');
+    const numberFromPercentage = (value?: number): number | string =>
+      value !== undefined ? value * 100 : '--';
+
     const adjustableStakersPercentage = computed<number>(() =>
       Number(
         (
