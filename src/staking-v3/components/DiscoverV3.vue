@@ -16,19 +16,15 @@
       >
         <div class="container--dapps-data__inner">
           <div class="row--dapps-data-header">
-            <toggle-buttons
-              :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
-              @button-selected="toggleDapps"
-            />
+            <div></div>
             <input
-              v-if="displayIndex === 0"
               v-model="searchText"
               type="text"
               :placeholder="$t('stakingV3.searchDapps')"
               class="input--search"
             />
           </div>
-          <div v-if="displayIndex === 0" class="dapps">
+          <div class="dapps">
             <dapps category="defi" :search="searchText" />
             <dapps category="nft" :search="searchText" />
             <dapps category="tooling" :search="searchText" />
@@ -36,7 +32,7 @@
             <dapps category="others" :search="searchText" />
             <dapps category="unstoppable-grants" :search="searchText" />
           </div>
-          <data-list v-if="displayIndex === 1" />
+          <data-list />
         </div>
       </div>
     </div>
@@ -53,7 +49,6 @@ import { useI18n } from 'vue-i18n';
 import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
-import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
@@ -68,21 +63,15 @@ export default defineComponent({
     LeaderboardVote,
     DataList,
     DynamicAdsArea,
-    ToggleButtons,
     PeriodInfoVote,
     PeriodInfoBuild,
     VotingWizard,
   },
   setup() {
-    const displayIndex = ref<number>(0);
     const { warnIfLedger } = useDappStaking();
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
     const { t } = useI18n();
     const store = useStore();
-
-    const toggleDapps = (index: number): void => {
-      displayIndex.value = index;
-    };
 
     const searchText = ref<string>('');
 
@@ -105,7 +94,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { displayIndex, searchText, toggleDapps };
+    return { searchText };
   },
 });
 </script>
