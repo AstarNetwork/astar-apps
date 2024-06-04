@@ -1002,6 +1002,8 @@ export default {
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
       'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+    newPeriodWarning:
+      'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
