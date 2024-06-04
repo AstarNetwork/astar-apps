@@ -54,7 +54,6 @@
     "img": "images/dapp_promotions/moonfit.png"
   },
   {
-
     "name": "Ledger - dApp Staking V3",
     "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
     "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
