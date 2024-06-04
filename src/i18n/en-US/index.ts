@@ -695,6 +695,7 @@ export default {
       currentInflationRate: 'Current inflation rate',
       maximumInflation: 'Maximum inflation ({rate}%)',
       realizedInflation: 'Realized inflation',
+      wrongNetwork: 'Period 1 start block is not defined for the current network {network}.',
     },
   },
   chart: {
