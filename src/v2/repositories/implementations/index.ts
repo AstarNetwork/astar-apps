@@ -1,4 +1,3 @@
-export * from './DappStakingRepository';
 export * from './MetadataRepository';
 export * from './SystemRepository';
 export * from './EthCallRepository';

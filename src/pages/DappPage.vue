@@ -1,14 +1,12 @@
 <template>
   <div v-if="isReady">
-    <dapp-v3 v-if="isDappStakingV3" />
-    <div v-else class="dapp-top"><dapp /></div>
+    <dapp-v3 />
   </div>
   <div v-else />
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import Dapp from 'src/components/dapp-staking/dapp/Dapp.vue';
 import DappV3 from 'src/staking-v3/components/dapp/DappV3.vue';
 import { generateMeta } from 'src/config/metadata';
 import { usePageReady } from 'src/hooks';
@@ -18,7 +16,6 @@ import { useDappStaking } from 'src/staking-v3';
 
 export default defineComponent({
   components: {
-    Dapp,
     DappV3,
   },
   setup() {

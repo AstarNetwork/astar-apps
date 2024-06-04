@@ -10,7 +10,6 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
-  InflationParam,
   PeriodEndInfo,
   ProtocolState,
   SingularStakingInfo,
@@ -32,9 +31,10 @@ export interface IDappStakingRepository {
    * Gets dapp data for the given network and dapp address.
    * @param network Network name
    * @param dappAddress dApp address
+   * @param forEdit Flag to indicate if dapp data should be fetched with encoded images.
    * @returns A promise that resolves to a dapp data.
    */
-  getDapp(network: string, dappAddress: string): Promise<Dapp>;
+  getDapp(network: string, dappAddress: string, forEdit?: boolean): Promise<Dapp>;
 
   /**
    * Gets protocol state for the given network.

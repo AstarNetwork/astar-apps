@@ -29,10 +29,10 @@
 </template>
 
 <script lang="ts">
-import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive, watch } from 'vue';
 import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
+import { NewDappItem } from 'src/staking-v3';
 
 export default defineComponent({
   components: {

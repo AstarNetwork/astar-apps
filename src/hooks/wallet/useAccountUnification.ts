@@ -1,8 +1,6 @@
 import {
   ExtrinsicPayload,
   PayloadWithWeight,
-  getIndividualClaimTxs,
-  wait,
   checkSumEvmAddress,
 } from '@astar-network/astar-sdk-core';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -13,7 +11,6 @@ import { ethers } from 'ethers';
 import { get } from 'lodash-es';
 import ABI from 'src/config/abi/ERC20.json';
 import { setupNetwork } from 'src/config/web3';
-import { MyStakeInfo, useCurrentEra } from 'src/hooks';
 import { useAccount } from 'src/hooks/useAccount';
 import { getEvmExplorerUrl } from 'src/links';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
@@ -23,8 +20,7 @@ import { XcmAssets } from 'src/store/assets/state';
 import { container } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IAccountUnificationService, IDappStakingService, IIdentityService } from 'src/v2/services';
+import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { WatchCallback, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -34,6 +30,7 @@ import { useNetworkInfo } from '../useNetworkInfo';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { UnifiedAccount } from 'src/store/general/state';
 import { getRawEvmTransaction } from 'src/modules/evm';
+import { useDappStaking, useDapps } from 'src/staking-v3';
 
 const provider = get(window, 'ethereum') as any;
 
@@ -62,10 +59,10 @@ export const useAccountUnification = () => {
   const store = useStore();
   const { currentAccount } = useAccount();
   const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
-  const { era } = useCurrentEra();
+  const { protocolState, rewards, stakerInfo, ledger } = useDappStaking();
+  const { allDapps } = useDapps();
   const { t } = useI18n();
 
-  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
 
   const unifiedAccount = computed<UnifiedAccount | undefined>(
@@ -117,75 +114,16 @@ export const useAccountUnification = () => {
   };
 
   const checkStakerInfo = async (): Promise<void> => {
-    if (!selectedEvmAddress.value || !era.value || !dapps.value) return;
-    const accountUnificationService = container.get<IAccountUnificationService>(
-      Symbols.AccountUnificationService
-    );
+    if (!selectedEvmAddress.value || !protocolState.value || !ledger.value) return;
+
     try {
-      isLoadingDappStaking.value = true;
-      let isPendingWithdrawal = false;
-      let stakingData: MyStakeInfo[] = [];
+      let isPendingWithdrawal =
+        rewards.value.bonus > BigInt(0) ||
+        rewards.value.dApp > BigInt(0) ||
+        rewards.value.staker.amount > BigInt(0);
 
-      const mappedSS58Address = await accountUnificationService.getConvertedNativeAddress(
-        selectedEvmAddress.value
-      );
-      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-
-      // Memo: check if there are any dapps staked
-      await Promise.all(
-        dapps.value.map(async (it: DappCombinedInfo) => {
-          const stakeData = await dappStakingService.getStakeInfo(
-            it.dapp?.address!,
-            mappedSS58Address
-          );
-          if (stakeData?.hasStake) {
-            stakingData.push({ ...stakeData, ...it.dapp });
-          }
-          return stakeData;
-        })
-      );
-
-      // Memo: check if there are any pending withdrawals
-      const ledger = await dappStakingService.getLedger(mappedSS58Address);
-      if (ledger.unbondingInfo.unlockingChunks) {
-        const pendingWithdrawals = ledger.unbondingInfo.unlockingChunks;
-        isPendingWithdrawal = pendingWithdrawals.length > 0;
-      }
-
-      // Memo: check if there are any rewards need to be claimed
-      const claimTransactions = await Promise.all(
-        dapps.value.map(async (it) => {
-          try {
-            const dappAddress = it.dapp ? it.dapp.address : it.contract.address;
-            if (dappAddress) {
-              const transactions = await getIndividualClaimTxs({
-                dappAddress,
-                api: $api!,
-                senderAddress: mappedSS58Address,
-                currentEra: era.value,
-              });
-              return transactions.length ? transactions : null;
-            } else {
-              return null;
-            }
-          } catch (error) {
-            console.error(error);
-            return null;
-          } finally {
-            // Memo: give some time to sync in modals UI
-            await wait(500);
-            isLoadingDappStaking.value = false;
-          }
-        })
-      );
-
-      const eraPendingRewards = claimTransactions.filter((it) => it !== null).flat();
-
-      if (isPendingWithdrawal || stakingData.length > 0 || eraPendingRewards.length > 0) {
-        isStaking.value = true;
-      } else {
-        isStaking.value = false;
-      }
+      isStaking.value =
+        isPendingWithdrawal || stakerInfo.value.size > 0 || ledger.value.unlocking?.length > 0;
     } catch (error) {
       console.error(error);
       isStaking.value = true;
@@ -377,7 +315,7 @@ export const useAccountUnification = () => {
   };
 
   watch([web3], updateEvmProvider);
-  watch([selectedEvmAddress, dapps, era], checkStakerInfo);
+  watch([selectedEvmAddress, stakerInfo, allDapps], checkStakerInfo);
   watch([xcmAssets, web3], setTransferXc20CallData);
 
   return {
