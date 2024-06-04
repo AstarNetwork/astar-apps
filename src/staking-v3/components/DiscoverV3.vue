@@ -36,6 +36,8 @@
             <dapps category="unstoppable-grants" :search="searchText" />
           </div>
           <data-list v-if="displayIndex === 1" />
+
+          <period-stats :period="1" />
         </div>
       </div>
     </div>
@@ -58,6 +60,7 @@ import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import VotingWizard from './vote/VotingWizard.vue';
+import PeriodStats from './PeriodStats.vue';
 
 export default defineComponent({
   components: {
@@ -69,6 +72,7 @@ export default defineComponent({
     DynamicAdsArea,
     ToggleButtons,
     VotingWizard,
+    PeriodStats,
   },
   setup() {
     const displayIndex = ref<number>(0);

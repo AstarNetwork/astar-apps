@@ -1021,6 +1021,7 @@ export default {
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
       'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+    stats: 'Stats',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
