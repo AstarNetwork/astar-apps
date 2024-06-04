@@ -6,7 +6,7 @@
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
       <!-- <under-maintenance-banner /> -->
-      <yoki-banner :network="currentNetworkIdx" />
+      <dapp-staking-banner />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
@@ -27,13 +27,13 @@ import { useQuasar } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import UnderMaintenanceBanner from 'src/components/header/UnderMaintenanceBanner.vue';
-import YokiBanner from 'src/components/header/YokiBanner.vue';
+import DappStakingBanner from 'src/components/header/DappStakingBanner.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
-    YokiBanner,
+    DappStakingBanner,
   },
   setup() {
     const store = useStore();

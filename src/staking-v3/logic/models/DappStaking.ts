@@ -1,5 +1,6 @@
+import { SocialIcon } from '@astar-network/astar-ui';
 import { DappInfo, DappState, ProtocolState } from './Node';
-import { Community } from '@astar-network/astar-sdk-core';
+import { Community, DappItem } from '@astar-network/astar-sdk-core';
 
 /**
  * Dapp model containing the basic information so dApps can be displayed on the homepage.
@@ -180,10 +181,14 @@ interface TierThreshold {
 }
 
 export interface InflationParam {
-  readonly maxInflationRate: string;
-  readonly adjustableStakersPart: string;
-  readonly baseStakersPart: string;
-  readonly idealStakingRate: string;
+  readonly maxInflationRate: number;
+  readonly treasuryPart: number;
+  readonly collatorsPart: number;
+  readonly dappsPart: number;
+  readonly baseStakersPart: number;
+  readonly adjustableStakersPart: number;
+  readonly bonusPart: number;
+  readonly idealStakingRate: number;
 }
 
 export enum TvlAmountType {
@@ -235,3 +240,36 @@ export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
   id: dapp.chain.id,
   mainCategory: dapp.basic.mainCategory,
 });
+
+export type DappRegistrationParameters = {
+  dapp: NewDappItem;
+  senderAddress: string;
+  signature: string;
+  network: string;
+};
+
+export interface NewDappItem extends DappItem {
+  iconFileName: string;
+  iconFile: string;
+  icon: File;
+  images: File[];
+  imagesContent: string[];
+  videoUrlInput: string;
+}
+
+export interface EditDappItem extends DappItem {
+  iconFile: FileInfo;
+  images: FileInfo[];
+}
+
+export type FileInfo = {
+  name: string;
+  base64content: string;
+  contentType: string;
+};
+
+export interface CommunityDefinition extends Community {
+  iconName: SocialIcon;
+  label: string;
+  validateHandle?: (v: string) => boolean | string;
+}

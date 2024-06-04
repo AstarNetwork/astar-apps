@@ -2,7 +2,7 @@
   <div v-if="xcmAssets.assets.length > 0 || !isLoading" class="wrapper--assets">
     <div class="container--assets">
       <div class="column--main">
-        <register-banner v-if="isDappStakingV3" />
+        <register-banner />
         <account
           :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
           :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
@@ -12,7 +12,7 @@
         />
 
         <anchor-links
-          v-if="isDappStakingV3 && !isZkEvm"
+          v-if="!isZkEvm"
           :native-section="nativeSection"
           :staking-section="stakingSection"
           :project-section="projectSection"
@@ -36,13 +36,13 @@
           </div>
         </template>
 
-        <template v-if="isDappStakingV3 && !isZkEvm">
+        <template v-if="!isZkEvm">
           <div ref="stakingSection">
             <staking :native-token-usd="nativeTokenUsd" />
           </div>
         </template>
 
-        <template v-if="isDappStakingV3 && !isZkEvm && isDappOwner">
+        <template v-if="!isZkEvm && isDappOwner">
           <div ref="projectSection">
             <your-project :own-dapps="ownDapps" />
           </div>
@@ -88,10 +88,10 @@ import ZkAstr from 'src/components/assets/ZkAstr.vue';
 import AstarDomains from 'src/components/header/mobile/AstarDomains.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { addressAstrZkEvm, addressVastrZkEvm } from 'src/modules/zk-evm-bridge';
-import { CombinedDappInfo, useDappStaking, useDapps } from 'src/staking-v3';
+import { CombinedDappInfo, useDapps } from 'src/staking-v3';
 import RegisterBanner from 'src/staking-v3/components/RegisterBanner.vue';
 import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
 import { useStore } from 'src/store';
@@ -118,7 +118,6 @@ export default defineComponent({
     const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
-    const { isDappStakingV3 } = useDappStaking();
 
     const store = useStore();
     const { currentAccount } = useAccount();
@@ -132,8 +131,6 @@ export default defineComponent({
       isAstarZkEvm,
       nativeTokenSymbol,
     } = useNetworkInfo();
-    // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
-    useDispatchGetDapps();
     const { nativeTokenUsd } = usePrice();
 
     const evmNetworkId = computed(() => {
@@ -276,7 +273,6 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
-      isDappStakingV3,
       nativeTokenSymbol,
       isZkEvm,
       ownDapps,

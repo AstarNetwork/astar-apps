@@ -1,3 +1,5 @@
+import { treasury } from '@polkadot/types/interfaces/definitions';
+
 export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
@@ -44,14 +46,6 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
-  modals: {
-    yokiOrigins: {
-      introducing: 'Introducing a new experience on zkEVM',
-      experienceNow: 'Experience now',
-      learnMore: 'Learn more',
-      keep: 'Keep me on the Portal',
-    },
-  },
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -84,8 +78,6 @@ export default {
     ledgerUsers: 'Ledger Users',
     ledgerUsersImportantInformation:
       'Important information regarding the upcoming transition to dApp Staking V3. Check out the details',
-    yoki: 'Yoki Origins',
-    yokiSignUp: 'Yoki Origins is a user onboarding journey on Astar zkEVM. Experience now!',
     stakingNotSupportZkEvm:
       'dApps Staking is not supported on {networkNotSupport}, please switch to {networkSupport} and start staking!',
     connectedInvalidNetwork: 'Please connect to the correct network in your wallet',
@@ -690,6 +682,21 @@ export default {
     burn: {
       burn: 'Burn',
     },
+    inflation: {
+      adjustableInflation: 'Adjustable inflation',
+      treasury: 'Treasury',
+      collators: 'Collators',
+      baseStakers: 'Base stakers',
+      bonus: 'Bonus',
+      dAppRewards: 'dApp rewards',
+      adjustableStakers: 'Adjustable stakers',
+      adjustableStakersShort: 'Adj. stakers',
+      activeAdjustable: '{percentage}% is active',
+      currentInflationRate: 'Current inflation rate',
+      maximumInflation: 'Maximum inflation ({rate}%)',
+      realizedInflation: 'Realized inflation',
+      wrongNetwork: 'Period 1 start block is not defined for the current network {network}.',
+    },
   },
   chart: {
     tvl: {
@@ -974,13 +981,6 @@ export default {
     unbondFrom: 'Unbond from {name}',
     startUnbonding: 'Start unbonding',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
-    migrationSupport: {
-      actionRequired: 'Action Required',
-      yourTokensAreLocked:
-        'Your tokens are locked in dAppStaking V2. Please unbond and withdraw your tokens. dApp Staking V3 is temporally unavailable for those Ledger Astar Native App users, please move your funds to a soft wallet or a Ledger EVM account to be able to participate in dApp staking.',
-      migrateNow: 'Migrate Now',
-    },
-    ledgerNotSupported: 'Ledger native accounts are not supported for dApp staking V3 yet.',
     moreInfo: 'More info',
     unlockFrom: 'Unlock from {name}',
     startUnlocking: 'Start unlocking',
@@ -1017,10 +1017,17 @@ export default {
       yourAvailableBalance: 'Your available balance',
       moveFunds: 'Move funds',
     },
+    registration: {
+      success: 'You successfully registered dApp {name} to the store.',
+      error:
+        'An unexpected error occurred during dApp registration. Please screenshot this message and send to the Astar team. {error}',
+    },
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
       'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+    newPeriodWarning:
+      'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

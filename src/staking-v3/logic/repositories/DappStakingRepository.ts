@@ -13,7 +13,6 @@ import {
   EraInfo,
   EraLengths,
   EraRewardSpan,
-  InflationParam,
   PeriodEndInfo,
   PeriodType,
   ProtocolState,
@@ -66,10 +65,10 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getDapp(network: string, dappAddress: string): Promise<Dapp> {
+  public async getDapp(network: string, dappAddress: string, forEdit = false): Promise<Dapp> {
     Guard.ThrowIfUndefined(network, 'network');
     Guard.ThrowIfUndefined(dappAddress, 'dappAddress');
-    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${dappAddress}`;
+    const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${dappAddress}?forEdit=${forEdit}`;
     const response = await axios.get<Dapp>(url);
 
     return response.data;
