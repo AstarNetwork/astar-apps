@@ -1,4 +1,4 @@
-export * from './IPriceRepository';
+export * from './ITokenApiRepository';
 export * from './IMetadataRepository';
 export * from './ISystemRepository';
 export * from './IEthCallRepository';

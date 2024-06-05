@@ -37,7 +37,7 @@
           </div>
           <data-list v-if="displayIndex === 1" />
 
-          <period-stats :period="1" />
+          <period-stats :period="previousPeriod" />
         </div>
       </div>
     </div>
@@ -46,11 +46,11 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { defineComponent, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
@@ -77,12 +77,17 @@ export default defineComponent({
   setup() {
     const displayIndex = ref<number>(0);
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
+    const { protocolState } = useDappStaking();
     const { t } = useI18n();
     const store = useStore();
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;
     };
+
+    const previousPeriod = computed<number>(() =>
+      protocolState.value ? Math.max(1, protocolState.value.periodInfo.number - 1) : 1
+    );
 
     const searchText = ref<string>('');
 
@@ -101,7 +106,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { displayIndex, searchText, toggleDapps };
+    return { displayIndex, searchText, previousPeriod, toggleDapps };
   },
 });
 </script>

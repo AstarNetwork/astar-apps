@@ -33,7 +33,7 @@ import {
   IMetadataRepository,
   INftRepository,
   IPolkasafeRepository,
-  IPriceRepository,
+  ITokenApiRepository,
   ISystemRepository,
   IXcmRepository,
   IXvmRepository,
@@ -136,7 +136,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
     };
   });
 
-  container.addTransient<IPriceRepository>(TokenApiRepository, Symbols.PriceRepository);
+  container.addTransient<ITokenApiRepository>(TokenApiRepository, Symbols.TokenApiRepository);
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);

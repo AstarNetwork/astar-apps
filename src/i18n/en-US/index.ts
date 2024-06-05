@@ -1029,6 +1029,7 @@ export default {
     newPeriodWarning:
       'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
     stats: 'Stats',
+    dappEarner: 'dApp earner',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

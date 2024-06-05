@@ -1,16 +1,18 @@
 <template>
   <div class="v3-new-container">
-    <div>{{ period }} | {{ $t('stakingV3.stats') }}</div>
+    <div class="title">{{ period }} | {{ $t('stakingV3.stats') }}</div>
     <div class="stats-content">
-      <dapp-stats-panel title="Total Staked" :data="[]" />
-      <dapp-stats-panel title="AAAA" :data="[]" />
+      <dapp-stats-panel :title="$t('stakingV3.stakedAmount')" :data="stakesStats" />
+      <dapp-stats-panel :title="$t('stakingV3.dappEarner')" :data="rewardsStats" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import DappStatsPanel from './DappStatsPanel.vue';
+import { defineComponent, toRefs, computed } from 'vue';
+import DappStatsPanel, { PanelData } from './DappStatsPanel.vue';
+import { usePeriodStats } from '../hooks';
+import { sort } from 'src/v2/common';
 
 export default defineComponent({
   components: {
@@ -22,8 +24,31 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return {};
+  setup(props) {
+    const { period } = toRefs(props);
+    const { dappStatistics } = usePeriodStats(period);
+
+    const stakesStats = computed<PanelData[]>(() =>
+      dappStatistics.value
+        .map((x) => ({
+          name: x.name,
+          iconUrl: x.iconUrl,
+          amount: BigInt(x.stakeAmount),
+        }))
+        .sort((a, b) => sort(a.amount, b.amount))
+    );
+
+    const rewardsStats = computed<PanelData[]>(() =>
+      dappStatistics.value
+        .map((x) => ({
+          name: x.name,
+          iconUrl: x.iconUrl,
+          amount: x.rewardAmount,
+        }))
+        .sort((a, b) => sort(a.amount, b.amount))
+    );
+
+    return { stakesStats, rewardsStats };
   },
 });
 </script>
@@ -33,12 +58,19 @@ export default defineComponent({
 
 // TODO move to the common place
 .v3-new-container {
+  display: flex;
+  flex-direction: column;
   border-radius: 24px;
   border: 2px solid $navy-3;
   background: rgba(31, 47, 95, 0.2);
   box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(3px);
-  padding: 48px;
+  padding: 16px;
+  gap: 64px;
+
+  @media (min-width: $md) {
+    padding: 48px;
+  }
 }
 
 .stats-content {
@@ -46,12 +78,18 @@ export default defineComponent({
   flex-direction: column;
   gap: 8px;
 
-  div {
-    flex: 1;
-  }
-
   @media (min-width: $md) {
     flex-direction: row;
+
+    div {
+      width: 50%;
+    }
   }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: normal;
 }
 </style>

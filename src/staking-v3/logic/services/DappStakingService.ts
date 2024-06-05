@@ -18,7 +18,7 @@ import { ethers } from 'ethers';
 import { SignerService } from './SignerService';
 import { TvlModel } from 'src/v2/models';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
-import { IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
+import { IMetadataRepository, ITokenApiRepository } from 'src/v2/repositories';
 
 @injectable()
 export class DappStakingService extends SignerService implements IDappStakingService {
@@ -29,7 +29,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     protected tokenApiRepository: IDataProviderRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.MetadataRepository) protected metadataRepository: IMetadataRepository,
-    @inject(Symbols.PriceRepository) protected priceRepository: IPriceRepository
+    @inject(Symbols.TokenApiRepository) protected priceRepository: ITokenApiRepository
   ) {
     super(walletFactory);
   }
