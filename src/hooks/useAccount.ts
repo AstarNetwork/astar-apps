@@ -62,7 +62,6 @@ export const useAccount = () => {
       store.commit('general/setCurrentAddress', null);
       store.commit('general/setIsH160Formatted', false);
       store.commit('general/setIsEthWallet', false);
-      store.commit('dapps/setClaimedRewardsAmount', 0);
       store.commit('general/setCurrentWallet', '');
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: '',

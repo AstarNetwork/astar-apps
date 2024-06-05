@@ -48,8 +48,8 @@ import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
 import ItemsContainer from './ItemsContainer.vue';
 import ModalAddDeveloper from './ModalAddDeveloper.vue';
-import { NewDappItem } from 'src/store/dapp-staking/state';
 import { Developer } from '@astar-network/astar-sdk-core';
+import { NewDappItem } from 'src/staking-v3';
 
 export default defineComponent({
   components: {

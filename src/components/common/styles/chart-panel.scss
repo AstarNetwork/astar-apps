@@ -1,18 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-.container--chart {
-  box-shadow: $container-border-shadow-light;
-  background: $container-bg-white;
-  border-radius: 6px;
-  padding: 8px 16px;
-  @media (min-width: $md) {
-    padding: 8px 24px;
-  }
-  @media (min-width: $xxl) {
-    width: 560px;
-  }
-}
-
 .row {
   padding: 16px 8px 0px 8px;
 }
@@ -41,7 +28,6 @@
   border-radius: 6px;
   @media (min-width: $xxl) {
     height: 433px;
-    width: 560px;
   }
 }
 
@@ -72,12 +58,5 @@
   font-weight: 500;
   @media (min-width: $sm) {
     font-size: 26px;
-  }
-}
-
-.body--dark {
-  .container--chart {
-    box-shadow: $container-border-shadow-dark;
-    background-color: $container-bg-dark;
   }
 }

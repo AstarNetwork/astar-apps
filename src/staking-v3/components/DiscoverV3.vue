@@ -68,16 +68,12 @@ export default defineComponent({
     VotingWizard,
   },
   setup() {
-    const { warnIfLedger } = useDappStaking();
+    const displayIndex = ref<number>(0);
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
     const { t } = useI18n();
     const store = useStore();
 
     const searchText = ref<string>('');
-
-    onMounted(() => {
-      warnIfLedger();
-    });
 
     watch(
       [isZkEvm],

@@ -12,6 +12,7 @@ import {
   UnifiedAccount,
 } from './state';
 import { InflationConfiguration } from 'src/v2/models';
+import { InflationParam } from 'src/staking-v3';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
@@ -33,6 +34,7 @@ export interface GeneralMutations<S = State> {
   setCurrentBlock(state: S, blockNumber: number): void;
   setUnifiedAccount(state: S, unifiedAccount: UnifiedAccount): void;
   setActiveInflationConfiguration(state: S, inflationConfiguration: InflationConfiguration): void;
+  setInflationParameters(state: S, inflationParams: InflationParam): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -115,6 +117,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setActiveInflationConfiguration(state, inflationConfiguration) {
     state.activeInflationConfiguration = inflationConfiguration;
+  },
+  setInflationParameters(state, inflationParams) {
+    state.inflationParameters = inflationParams;
   },
 };
 

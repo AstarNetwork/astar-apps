@@ -16,6 +16,9 @@ import { IWalletService } from 'src/v2/services';
 import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { SignerService } from './SignerService';
+import { TvlModel } from 'src/v2/models';
+import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
+import { IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 
 @injectable()
 export class DappStakingService extends SignerService implements IDappStakingService {
@@ -24,7 +27,9 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     protected dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.TokenApiProviderRepository)
     protected tokenApiRepository: IDataProviderRepository,
-    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
+    @inject(Symbols.MetadataRepository) protected metadataRepository: IMetadataRepository,
+    @inject(Symbols.PriceRepository) protected priceRepository: IPriceRepository
   ) {
     super(walletFactory);
   }
@@ -659,6 +664,30 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     Guard.ThrowIfUndefined('address', address);
 
     await this.dappStakingRepository.startAccountLedgerSubscription(address);
+  }
+
+  public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
+    const allDapps = await this.dappStakingRepository.getChainDapps();
+    const dapp = allDapps.find((d) => d.owner === developerAddress);
+
+    return dapp?.address;
+  }
+
+  public async getTvl(): Promise<TvlModel> {
+    const metadata = await this.metadataRepository.getChainMetadata();
+    const [tvl, priceUsd] = await Promise.all([
+      (await this.dappStakingRepository.getCurrentEraInfo()).totalLocked.toString(),
+      this.priceRepository.getUsdPrice(metadata.token),
+    ]);
+
+    const tvlDefaultUnit = Number(
+      ethers.utils.formatUnits(BigInt(tvl.toString()), metadata.decimals)
+    );
+    const tvlUsd = astarMainnetNativeToken.includes(metadata.token as ASTAR_NATIVE_TOKEN)
+      ? tvlDefaultUnit * priceUsd
+      : 0;
+
+    return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
   }
 
   private async getStakerEraRange(senderAddress: string) {
