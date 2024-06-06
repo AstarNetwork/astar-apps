@@ -16,15 +16,19 @@
       >
         <div class="container--dapps-data__inner">
           <div class="row--dapps-data-header">
-            <div></div>
+            <toggle-buttons
+              :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+              @button-selected="toggleDapps"
+            />
             <input
+              v-if="displayIndex === 0"
               v-model="searchText"
               type="text"
               :placeholder="$t('stakingV3.searchDapps')"
               class="input--search"
             />
           </div>
-          <div class="dapps">
+          <div v-if="displayIndex === 0" class="dapps">
             <dapps category="defi" :search="searchText" />
             <dapps category="nft" :search="searchText" />
             <dapps category="tooling" :search="searchText" />
@@ -32,8 +36,10 @@
             <dapps category="others" :search="searchText" />
             <dapps category="unstoppable-grants" :search="searchText" />
           </div>
-          <data-list />
-          <period-stats :period="previousPeriod" />
+          <div v-if="displayIndex === 1">
+            <period-stats :period="previousPeriod" />
+            <data-list />
+          </div>
         </div>
       </div>
     </div>
@@ -57,6 +63,7 @@ import PeriodInfoVote from './PeriodInfoVote.vue';
 import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
 import PeriodStats from './PeriodStats.vue';
+import ToggleButtons from './ToggleButtons.vue';
 
 export default defineComponent({
   components: {
@@ -69,6 +76,7 @@ export default defineComponent({
     PeriodInfoBuild,
     VotingWizard,
     PeriodStats,
+    ToggleButtons,
   },
   setup() {
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
@@ -76,9 +84,15 @@ export default defineComponent({
     const { t } = useI18n();
     const store = useStore();
 
+    const displayIndex = ref<number>(0);
+
     const previousPeriod = computed<number>(() =>
       protocolState.value ? Math.max(1, protocolState.value.periodInfo.number - 1) : 1
     );
+
+    const toggleDapps = (index: number): void => {
+      displayIndex.value = index;
+    };
 
     const searchText = ref<string>('');
 
@@ -97,7 +111,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { searchText, previousPeriod };
+    return { searchText, previousPeriod, displayIndex, toggleDapps };
   },
 });
 </script>
