@@ -47,6 +47,7 @@ import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
 import { u8aToNumber } from '@polkadot/util';
+import { HttpCodes } from 'src/constants';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -65,13 +66,25 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getDapp(network: string, dappAddress: string, forEdit = false): Promise<Dapp> {
+  public async getDapp(
+    network: string,
+    dappAddress: string,
+    forEdit = false
+  ): Promise<Dapp | undefined> {
     Guard.ThrowIfUndefined(network, 'network');
     Guard.ThrowIfUndefined(dappAddress, 'dappAddress');
     const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${dappAddress}?forEdit=${forEdit}`;
-    const response = await axios.get<Dapp>(url);
 
-    return response.data;
+    try {
+      const response = await axios.get<Dapp>(url);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === HttpCodes.NotFound) {
+        return undefined;
+      }
+
+      throw error;
+    }
   }
 
   //* @inheritdoc
