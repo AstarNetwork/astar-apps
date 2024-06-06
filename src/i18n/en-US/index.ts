@@ -308,7 +308,7 @@ export default {
   myReward: {
     totalStaked: 'Total Staked',
     availableToClaim: 'Available to claim',
-    estimatedRewards: 'Estimated Rewards',
+    estimatedRewards: 'Estimated rewards',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake After Claiming',
@@ -794,6 +794,10 @@ export default {
       'Innovative way of staking, only at Astar. Where ecosystem grow together',
     successfullyStaked: 'You successfully staked to {contractAddress}',
     voteTitle: 'Vote!',
+    votingOpen: 'Voting open',
+    votingOpenText:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    stakeToday: 'Stake today, be entitled to big bonus!',
     voteText: 'I would like to vote my tokens with',
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
@@ -813,7 +817,7 @@ export default {
       'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
     rewardsWillBeClaimed: 'Your unclaimed rewards will be claimed.',
     basicRewards: 'Basic rewards',
-    bonusRewards: 'Bonus rewards',
+    estimatedBonus: 'Estimated bonus',
     bonus: 'Bonus',
     bonusTip: 'Bonus will be claimable in the next voting period',
     dAppRewards: 'dApp rewards',
@@ -838,6 +842,7 @@ export default {
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
     claimEstimatedRewards: 'Claim estimated Rewards',
+    basicPlusBonus: 'Basic rewards + Bonus',
     bonusEligible: 'Bonus Eligible',
     claimNow: 'Claim now',
     claim: 'Claim',
@@ -935,8 +940,6 @@ export default {
     unfilledSlot: 'Unfilled slot tokens',
     unfilledSlotDescription:
       'Total amount of tokens for slots that are not filled by the projects in the current era.',
-    ourDapps: 'Our dApps',
-    ourData: 'Our data',
     dapp: {
       voteAndStake: 'Vote & Stake',
       overview: 'Overview',
@@ -1026,6 +1029,10 @@ export default {
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
       'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+    remainingTime: 'Remaining time',
+    stakingAPR: 'Staking APR',
+    bonusAPR: 'Bonus APR',
+    manageStakingAssets: 'Manage staking assets',
     newPeriodWarning:
       'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
   },
