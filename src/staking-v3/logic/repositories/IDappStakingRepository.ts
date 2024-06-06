@@ -185,7 +185,7 @@ export interface IDappStakingRepository {
    * Gets the current era information.
    * @returns A promise that resolves to the era info.
    */
-  getCurrentEraInfo(): Promise<EraInfo>;
+  getCurrentEraInfo(block?: number): Promise<EraInfo>;
 
   /**
    * Gets the contract staking info.

@@ -13,3 +13,4 @@ export * from './INftRepository';
 export * from './IAccountUnificationRepository';
 export * from './IInflationRepository';
 export * from './ISubscanRepository';
+export * from './IBalancesRepository';

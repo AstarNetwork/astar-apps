@@ -22,3 +22,4 @@ export * from './NftRepository';
 export * from './AccountUnificationRepository';
 export * from './InflationRepository';
 export * from './SubscanRepository';
+export * from './BalancesRepository';

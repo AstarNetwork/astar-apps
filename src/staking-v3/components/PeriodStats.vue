@@ -2,6 +2,12 @@
   <div class="v3-new-container">
     <div class="title">{{ period }} | {{ $t('stakingV3.stats') }}</div>
     <div class="stats-content">
+      <div>
+        <div class="period-kpi-container">
+          <div>{{ $t('stakingV3.tvl') }}</div>
+          <div>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}%</div>
+        </div>
+      </div>
       <dapp-stats-panel :title="$t('stakingV3.stakedAmount')" :data="stakesStats" />
       <dapp-stats-panel :title="$t('stakingV3.dappEarner')" :data="rewardsStats" />
     </div>
@@ -26,7 +32,7 @@ export default defineComponent({
   },
   setup(props) {
     const { period } = toRefs(props);
-    const { dappStatistics } = usePeriodStats(period);
+    const { dappStatistics, tvlRatio } = usePeriodStats(period);
 
     const stakesStats = computed<PanelData[]>(() =>
       dappStatistics.value
@@ -48,7 +54,7 @@ export default defineComponent({
         .sort((a, b) => sort(a.amount, b.amount))
     );
 
-    return { stakesStats, rewardsStats };
+    return { stakesStats, rewardsStats, tvlRatio };
   },
 });
 </script>
@@ -81,8 +87,8 @@ export default defineComponent({
   @media (min-width: $md) {
     flex-direction: row;
 
-    div {
-      width: 50%;
+    > div {
+      width: 33%;
     }
   }
 }
@@ -91,5 +97,33 @@ export default defineComponent({
   font-size: 32px;
   font-weight: 900;
   line-height: normal;
+}
+
+.period-kpi-container {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(8, 16, 41, 0.3);
+
+  div {
+    padding: 8px 0;
+  }
+
+  div:first-child {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  div:nth-child(2) {
+    text-align: right;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: normal;
+    background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 </style>

@@ -113,7 +113,6 @@ export interface PalletDappStakingV3DAppTierRewards extends Struct {
 }
 
 export interface PalletDappStakingV3EraInfo extends Struct {
-  readonly activeEraLocked: Compact<u128>;
   readonly totalLocked: Compact<u128>;
   readonly unlocking: Compact<u128>;
   readonly currentStakeAmount: PalletDappStakingV3StakeAmount;
