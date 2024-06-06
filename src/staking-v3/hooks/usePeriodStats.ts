@@ -95,7 +95,6 @@ export function usePeriodStats(period: Ref<number>) {
           ]);
           periodData.value = stats;
           tvlRatio.value = 1 / Number(totalIssuance / periodInfo.totalLocked);
-          console.log('tvlRatio', tvlRatio.value);
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }
