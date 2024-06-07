@@ -7,15 +7,12 @@ import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 import { EraInfo, EraLengths, InflationParam } from '../logic';
 import { useDappStaking } from './useDappStaking';
+import { weiToToken } from 'src/token-utils';
 
 export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
-
-  const toAstr = (wei: bigint): number => {
-    return Number(ethers.utils.formatEther(String(wei)));
-  };
 
   const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
@@ -51,9 +48,9 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
 
     const cyclesPerYear = getCyclePerYear(eraLength);
     const currentStakeAmount = isVotingPeriod.value
-      ? toAstr(currentEraInfo!.nextStakeAmount!.voting)
-      : toAstr(currentEraInfo.currentStakeAmount.voting) +
-        toAstr(currentEraInfo.currentStakeAmount.buildAndEarn);
+      ? weiToToken(currentEraInfo!.nextStakeAmount!.voting)
+      : weiToToken(currentEraInfo.currentStakeAmount.voting) +
+        weiToToken(currentEraInfo.currentStakeAmount.buildAndEarn);
 
     const stakedPercent = currentStakeAmount / numTotalIssuance;
     const stakerRewardPercent =
@@ -61,6 +58,7 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
 
     const stakerApr =
       ((yearlyInflation * stakerRewardPercent) / stakedPercent) * cyclesPerYear * 100;
+
     return stakerApr;
   };
 
@@ -84,8 +82,8 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
 
     // Memo: equivalent to 'totalVpStake' in the runtime query
     const voteAmount = isVotingPeriod.value
-      ? toAstr(currentEraInfo.nextStakeAmount!.voting)
-      : toAstr(currentEraInfo.currentStakeAmount.voting);
+      ? weiToToken(currentEraInfo.nextStakeAmount!.voting)
+      : weiToToken(currentEraInfo.currentStakeAmount.voting);
 
     const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
     const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;

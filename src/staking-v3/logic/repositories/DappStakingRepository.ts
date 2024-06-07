@@ -272,9 +272,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getEraLengths(): Promise<EraLengths> {
+  public async getEraLengths(block?: number): Promise<EraLengths> {
     const getNumber = (bytes: Bytes): number => u8aToNumber(bytes.toU8a().slice(1, 4));
-    const api = await this.api.getApi();
+    const api = await this.api.getApi(block);
 
     const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
       api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),

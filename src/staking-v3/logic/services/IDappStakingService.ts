@@ -157,4 +157,17 @@ export interface IDappStakingService {
   getRegisteredContract(developerAddress: string): Promise<string | undefined>;
 
   getTvl(): Promise<TvlModel>;
+
+  /**
+   * Calculates staker APR for the given block or the current block APR if block number is not provided.
+   * @param block Block number or undefined
+   */
+  getStakerApr(block?: number): Promise<number>;
+
+  /**
+   * Calculates bonus APR for the given block or the current block APR if block number is not provided.
+   * @simulatedVoteAmount Amount of votes to calculate APR with.
+   * @param block Block number or undefined
+   */
+  getBonusApr(simulatedVoteAmount?: number, block?: number): Promise<number>;
 }

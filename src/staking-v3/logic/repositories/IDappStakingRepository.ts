@@ -205,7 +205,7 @@ export interface IDappStakingRepository {
 
   getTiersConfiguration(): Promise<TiersConfiguration>;
 
-  getEraLengths(): Promise<EraLengths>;
+  getEraLengths(block?: number): Promise<EraLengths>;
 
   getCleanupExpiredEntriesCall(): Promise<ExtrinsicPayload>;
 
