@@ -47,6 +47,7 @@ import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
 import { u8aToNumber } from '@polkadot/util';
+import { ApiDecoration } from '@polkadot/api/types';
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -399,13 +400,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     return calls.length === 1 ? calls[0] : api.tx.utility.batchAll(calls);
   }
 
-  public async getCurrentEraInfo(): Promise<EraInfo> {
-    const api = await this.api.getApi();
+  public async getCurrentEraInfo(block?: number): Promise<EraInfo> {
+    const api = await this.api.getApi(block);
     const info = await api.query.dappStaking.currentEraInfo<PalletDappStakingV3EraInfo>();
 
     return {
       totalLocked: info.totalLocked.toBigInt(),
-      activeEraLocked: info.activeEraLocked?.toBigInt(),
       unlocking: info.unlocking.toBigInt(),
       currentStakeAmount: this.mapStakeAmount(info.currentStakeAmount),
       nextStakeAmount: this.mapStakeAmount(info.nextStakeAmount),

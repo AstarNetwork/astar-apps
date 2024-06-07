@@ -940,6 +940,8 @@ export default {
     unfilledSlot: 'Unfilled slot tokens',
     unfilledSlotDescription:
       'Total amount of tokens for slots that are not filled by the projects in the current era.',
+    ourDapps: 'Our dApps',
+    ourData: 'Our data',
     dapp: {
       voteAndStake: 'Vote & Stake',
       overview: 'Overview',
@@ -1035,6 +1037,8 @@ export default {
     manageStakingAssets: 'Manage staking assets',
     newPeriodWarning:
       'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
+    stats: 'Stats',
+    dappEarner: 'dApp earner',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

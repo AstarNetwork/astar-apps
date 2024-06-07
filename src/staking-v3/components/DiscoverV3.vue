@@ -16,15 +16,19 @@
       >
         <div class="container--dapps-data__inner">
           <div class="row--dapps-data-header">
-            <div></div>
+            <toggle-buttons
+              :captions="[$t('stakingV3.ourDapps'), $t('stakingV3.ourData')]"
+              @button-selected="toggleDapps"
+            />
             <input
+              v-if="displayIndex === 0"
               v-model="searchText"
               type="text"
               :placeholder="$t('stakingV3.searchDapps')"
               class="input--search"
             />
           </div>
-          <div class="dapps">
+          <div v-if="displayIndex === 0" class="dapps">
             <dapps category="defi" :search="searchText" />
             <dapps category="nft" :search="searchText" />
             <dapps category="tooling" :search="searchText" />
@@ -32,7 +36,10 @@
             <dapps category="others" :search="searchText" />
             <dapps category="unstoppable-grants" :search="searchText" />
           </div>
-          <data-list />
+          <div v-if="displayIndex === 1">
+            <period-stats :period="previousPeriod" />
+            <data-list />
+          </div>
         </div>
       </div>
     </div>
@@ -41,11 +48,11 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { defineComponent, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
@@ -55,6 +62,8 @@ import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import PeriodInfoVote from './PeriodInfoVote.vue';
 import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
+import PeriodStats from './PeriodStats.vue';
+import ToggleButtons from './ToggleButtons.vue';
 
 export default defineComponent({
   components: {
@@ -66,12 +75,24 @@ export default defineComponent({
     PeriodInfoVote,
     PeriodInfoBuild,
     VotingWizard,
+    PeriodStats,
+    ToggleButtons,
   },
   setup() {
-    const displayIndex = ref<number>(0);
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
+    const { protocolState } = useDappStaking();
     const { t } = useI18n();
     const store = useStore();
+
+    const displayIndex = ref<number>(0);
+
+    const previousPeriod = computed<number>(() =>
+      protocolState.value ? Math.max(1, protocolState.value.periodInfo.number - 1) : 1
+    );
+
+    const toggleDapps = (index: number): void => {
+      displayIndex.value = index;
+    };
 
     const searchText = ref<string>('');
 
@@ -90,7 +111,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { searchText };
+    return { searchText, previousPeriod, displayIndex, toggleDapps };
   },
 });
 </script>

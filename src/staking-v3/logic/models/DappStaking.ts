@@ -153,7 +153,6 @@ export interface Rewards {
 }
 
 export interface EraInfo {
-  readonly activeEraLocked?: bigint;
   readonly totalLocked: bigint;
   readonly unlocking: bigint;
   readonly currentStakeAmount: StakeAmount;

@@ -9,7 +9,7 @@ import { evmPrecompiledContract } from 'src/modules/precompiled';
 import {
   IAccountUnificationRepository,
   IMetadataRepository,
-  IPriceRepository,
+  ITokenApiRepository,
 } from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
 
@@ -26,7 +26,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     @inject(Symbols.AccountUnificationRepository)
     private accountUnificationRepository: IAccountUnificationRepository,
     @inject(Symbols.MetadataRepository) metadataRepository: IMetadataRepository,
-    @inject(Symbols.PriceRepository) priceRepository: IPriceRepository
+    @inject(Symbols.TokenApiRepository) priceRepository: ITokenApiRepository
   ) {
     super(
       dappStakingRepository,

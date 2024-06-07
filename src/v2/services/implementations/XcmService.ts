@@ -14,7 +14,7 @@ import {
   isRelayChain,
   XcmChain,
 } from 'src/v2/models';
-import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
+import { ITokenApiRepository, IXcmRepository } from 'src/v2/repositories';
 import { MoonbeamXcmRepository } from 'src/v2/repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -31,7 +31,7 @@ export class XcmService implements IXcmService {
 
   constructor(
     @inject(Symbols.XcmRepository) private xcmRepository: IXcmRepository,
-    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
+    @inject(Symbols.TokenApiRepository) private priceRepository: ITokenApiRepository,
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,

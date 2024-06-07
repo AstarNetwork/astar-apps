@@ -27,11 +27,9 @@ export class InflationRepository implements IInflationRepository {
   }
 
   public async getInflationConfigurationAt(blockNumber: number): Promise<InflationConfiguration> {
-    const api = await this.api.getApi();
-    const blockHash = await api.rpc.chain.getBlockHash<BlockHash>(blockNumber);
-    const apiAtBlock = await api.at(blockHash);
+    const api = await this.api.getApi(blockNumber);
     const data =
-      await apiAtBlock.query.inflation.activeInflationConfig<PalletInflationActiveInflationConfig>();
+      await api.query.inflation.activeInflationConfig<PalletInflationActiveInflationConfig>();
 
     return this.mapInflationConfiguration(data);
   }
