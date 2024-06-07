@@ -69,6 +69,7 @@
   right: 0;
   min-height: 100vh;
   z-index: 0;
+  background-color: $white;
 }
 
 .dapps {
@@ -79,11 +80,12 @@
 }
 
 .wrapper--voting--wizard {
-  z-index: 99;
-  padding: 0 16px;
+  margin: auto;
   width: 100%;
+  max-width: $container-max-width;
+  padding: 0 8px 40px 8px;
 
   @media (min-width: $lg) {
-    padding: 40px 40px;
+    padding: 24px 0 100px 0;
   }
 }
