@@ -4,7 +4,7 @@ import { container } from 'src/v2/common';
 import { IBalancesRepository, ITokenApiRepository, PeriodData } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { useDapps } from './useDapps';
-import { DappState, IDappStakingRepository } from '../logic';
+import { DappState, IDappStakingRepository, IDappStakingService } from '../logic';
 import { PERIOD1_START_BLOCKS } from 'src/consts';
 import { useDappStaking } from './useDappStaking';
 
@@ -66,6 +66,22 @@ export function usePeriodStats(period: Ref<number>) {
     );
   };
 
+  const calculateTvlRatio = async (block: number): Promise<void> => {
+    const repository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
+    const balancesRepository = container.get<IBalancesRepository>(Symbols.BalancesRepository);
+    const dappStakingRepository = container.get<IDappStakingRepository>(
+      Symbols.DappStakingRepositoryV3
+    );
+
+    const [stats, totalIssuance, periodInfo] = await Promise.all([
+      repository.getStakingPeriodStatistics(currentNetworkName.value.toLowerCase(), period.value),
+      balancesRepository.getTotalIssuance(block),
+      dappStakingRepository.getCurrentEraInfo(block),
+    ]);
+    periodData.value = stats;
+    tvlRatio.value = 1 / Number(totalIssuance / periodInfo.totalLocked);
+  };
+
   watch(
     [period, currentNetworkName, protocolState, eraLengths],
     async () => {
@@ -75,26 +91,22 @@ export function usePeriodStats(period: Ref<number>) {
         protocolState.value &&
         eraLengths.value.standardEraLength
       ) {
-        const repository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
-        const balancesRepository = container.get<IBalancesRepository>(Symbols.BalancesRepository);
-        const dappStakingRepository = container.get<IDappStakingRepository>(
-          Symbols.DappStakingRepositoryV3
-        );
         try {
           const periodEndBlock = getPeriodEndBlock(
             period.value,
             protocolState.value?.periodInfo.number ?? period.value
           );
-          const [stats, totalIssuance, periodInfo] = await Promise.all([
-            repository.getStakingPeriodStatistics(
-              currentNetworkName.value.toLowerCase(),
-              period.value
-            ),
-            balancesRepository.getTotalIssuance(periodEndBlock),
-            dappStakingRepository.getCurrentEraInfo(periodEndBlock),
+          const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+
+          const [, stakerApr, bonusApr] = await Promise.all([
+            calculateTvlRatio(periodEndBlock),
+            // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
+            // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
+            stakingService.getStakerApr(periodEndBlock - 1),
+            stakingService.getBonusApr(undefined, periodEndBlock - 1),
           ]);
-          periodData.value = stats;
-          tvlRatio.value = 1 / Number(totalIssuance / periodInfo.totalLocked);
+
+          console.log('stakerApr', stakerApr, bonusApr);
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }

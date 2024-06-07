@@ -724,7 +724,10 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   // @inheritdoc
-  public async getBonusApr(simulatedVoteAmount: number = 1000, block?: number): Promise<number> {
+  public async getBonusApr(
+    simulatedVoteAmount: number = 1000,
+    block?: number
+  ): Promise<{ value: number; simulatedBonusPerPeriod: number }> {
     const [inflationConfiguration, eraLengths, eraInfo] = await Promise.all([
       this.inflationRepository.getInflationConfiguration(block),
       this.dappStakingRepository.getEraLengths(block),
@@ -743,7 +746,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
     const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;
 
-    return bonusApr;
+    return { value: bonusApr, simulatedBonusPerPeriod };
   }
 
   private getCyclesPerYear(eraLength: EraLengths): number {

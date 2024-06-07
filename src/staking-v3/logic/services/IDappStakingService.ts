@@ -169,5 +169,8 @@ export interface IDappStakingService {
    * @simulatedVoteAmount Amount of votes to calculate APR with.
    * @param block Block number or undefined
    */
-  getBonusApr(simulatedVoteAmount?: number, block?: number): Promise<number>;
+  getBonusApr(
+    simulatedVoteAmount?: number,
+    block?: number
+  ): Promise<{ value: number; simulatedBonusPerPeriod: number }>;
 }
