@@ -7,29 +7,32 @@
     }"
   >
     <div class="wrapper--leaderboard__inner">
-      <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
+      <div class="title">
+        <span>002</span>
+        <span>{{ $t('stakingV3.votes') }}</span>
+      </div>
 
       <div class="container--boards">
         <swiper
           class="swiper--leaderboard"
-          :slides-per-view="1.25"
+          :slides-per-view="1"
           :slides-per-group="1"
           :space-between="8"
           :navigation="true"
           :modules="modules"
           :breakpoints="{
             '768': {
-              slidesPerView: 2.5,
+              slidesPerView: 2.2,
               slidesPerGroup: 2,
               spaceBetween: 8,
             },
             '1024': {
-              slidesPerView: 2.5,
+              slidesPerView: 2.2,
               slidesPerGroup: 2,
               spaceBetween: 8,
             },
             '1280': {
-              slidesPerView: 3.5,
+              slidesPerView: 3.2,
               slidesPerGroup: 3,
               spaceBetween: 8,
             },
@@ -77,11 +80,11 @@ export default defineComponent({
 .swiper--leaderboard {
   > .swiper-button-prev,
   > .swiper-button-next {
-    color: white;
+    color: $navy-1;
     width: 40px;
     height: 40px;
     border-radius: 20px;
-    background-color: $navy-1;
+    background-color: $white;
     &::after {
       font-size: 12px;
       font-weight: 600;
@@ -89,9 +92,17 @@ export default defineComponent({
   }
   > .swiper-button-prev {
     padding-right: 2px;
+    left: -8px;
+    @media (min-width: $lg) {
+      left: -24px;
+    }
   }
   > .swiper-button-next {
     padding-left: 2px;
+    right: -8px;
+    @media (min-width: $lg) {
+      right: -24px;
+    }
   }
   > .swiper-button-disabled {
     display: none;

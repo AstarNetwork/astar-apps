@@ -829,12 +829,12 @@ export default {
     voteNow: 'Vote now',
     voteStakeToday: 'Vote / Stake today',
     vote: 'Vote',
+    votes: 'Votes',
     VoteDescription:
       'Stakes are reset to 0, and users become eligible for bonus rewards by re-staking.',
     voteToday: 'Be entitled to bonus pool today',
     stakeOn: 'Stake on {name}',
     tier: 'Tier',
-    tierLeaderboard: 'Tier Leaderboard',
     projectLeaderboards: 'Project Leaderboards',
     rewardPerDay: 'Rewards per era',
     myStaking: 'My Staking',
