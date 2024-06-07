@@ -1,6 +1,8 @@
 <template>
-  <div class="v3-new-container">
-    <div class="title">{{ period }} | {{ $t('stakingV3.stats') }}</div>
+  <div class="wrapper--period-stats">
+    <div class="title">
+      <span>001</span><span>{{ $t('stakingV3.stats') }}</span>
+    </div>
     <div class="stats-content">
       <div>
         <div class="period-kpi-container">
@@ -62,20 +64,16 @@ export default defineComponent({
 <style scoped lang="scss">
 @import 'src/css/quasar.variables.scss';
 
-// TODO move to the common place
-.v3-new-container {
-  display: flex;
-  flex-direction: column;
+.wrapper--period-stats {
+  border: solid 1px $navy-1;
+  background-color: $white;
+  margin-bottom: 40px;
   border-radius: 24px;
-  border: 2px solid $navy-3;
-  background: rgba(31, 47, 95, 0.2);
-  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(3px);
-  padding: 16px;
-  gap: 64px;
+  padding: 48px 16px;
 
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     padding: 48px;
+    margin-bottom: 100px;
   }
 }
 
@@ -96,14 +94,23 @@ export default defineComponent({
 .title {
   font-size: 32px;
   font-weight: 900;
-  line-height: normal;
+  line-height: 1.25;
+  color: $navy-1;
+  margin-bottom: 64px;
+
+  span:first-child {
+    border-right: solid 2px $navy-1;
+    padding-right: 16px;
+    margin-right: 16px;
+  }
 }
 
 .period-kpi-container {
   width: 100%;
   padding: 16px;
   border-radius: 16px;
-  background: rgba(8, 16, 41, 0.3);
+  background-color: $navy-1;
+  color: $white;
 
   div {
     padding: 8px 0;
