@@ -2,6 +2,8 @@
 
 .wizard-container {
   z-index: 100;
+  max-width: $container-max-width;
+  margin: auto;
   width: 100%;
   padding: 16px;
   border-radius: 24px;

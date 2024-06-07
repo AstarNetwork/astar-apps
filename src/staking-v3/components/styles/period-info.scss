@@ -1,21 +1,27 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper-info {
-  margin: auto;
   width: 100%;
-  max-width: $container-max-width;
-  padding: 40px 8px 0 8px;
+  padding: 0 8px;
+
   @media (min-width: $lg) {
-    padding: 100px 0 0 0;
+    padding: 0 40px;
   }
 }
 
 .wrapper-info-inner {
+  max-width: $container-max-width;
+  margin: auto;
   width: 100%;
   color: $white;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-top: 40px;
+  
+  @media (min-width: $lg) {
+    padding-top: 100px;
+  }
 
   @media (min-width: $md) {
     flex-direction: row;

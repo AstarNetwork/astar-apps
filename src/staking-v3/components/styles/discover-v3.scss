@@ -80,12 +80,10 @@
 }
 
 .wrapper--voting--wizard {
-  margin: auto;
   width: 100%;
-  max-width: $container-max-width;
-  padding: 0 8px 40px 8px;
+  padding: 24px 8px 40px 8px;
 
   @media (min-width: $lg) {
-    padding: 24px 0 100px 0;
+    padding: 24px 40px 100px 40px;
   }
 }
