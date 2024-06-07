@@ -28,7 +28,7 @@
 .container--dapps-data__inner {
   margin: auto;
   max-width: $container-max-width;
-  padding: 0 16px;
+  padding: 0 8px;
 
   @media (min-width: $lg) {
     padding: 0;
@@ -76,7 +76,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  row-gap: 24px;
+  row-gap: 40px;
 }
 
 .wrapper--voting--wizard {
