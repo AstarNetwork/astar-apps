@@ -62,19 +62,13 @@
 }
 
 .bg--discover {
-  background-color: white;
+  background-size: 100% auto;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   min-height: 100vh;
   z-index: 0;
-}
-
-.body--dark {
-  .wrapper--discover {
-    color: $navy-1;
-  }
 }
 
 .dapps {

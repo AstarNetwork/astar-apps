@@ -1,5 +1,11 @@
 <template>
-  <div v-if="!isLeaderboardEmpty" class="wrapper--leaderboard">
+  <div
+    v-if="!isLeaderboardEmpty"
+    class="wrapper--leaderboard"
+    :style="{
+      backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_leaderboard_bg.webp')})`,
+    }"
+  >
     <div class="wrapper--leaderboard__inner">
       <div class="title">{{ $t('stakingV3.tierLeaderboard') }}</div>
 
@@ -34,9 +40,6 @@
           </swiper-slide>
         </swiper>
       </div>
-    </div>
-    <div class="bg--leaderboard">
-      <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
     </div>
   </div>
 </template>
