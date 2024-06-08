@@ -101,6 +101,7 @@
   align-items: center;
   height: 28px;
   span{
+    white-space: nowrap;
     display: flex;
     align-items: center;
     .icon--stakers{
