@@ -7,6 +7,7 @@ import { useDapps } from './useDapps';
 import { DappState, IDappStakingRepository, IDappStakingService } from '../logic';
 import { PERIOD1_START_BLOCKS } from 'src/consts';
 import { useDappStaking } from './useDappStaking';
+import { useDataCalculations } from './useDataCalculations';
 
 export type DappStatistics = {
   name: string;
@@ -18,6 +19,7 @@ export type DappStatistics = {
 export function usePeriodStats(period: Ref<number>) {
   const { currentNetworkName } = useNetworkInfo();
   const { eraLengths, protocolState, currentBlock } = useDappStaking();
+  const { calculateTotalTokensToBeBurned } = useDataCalculations();
   const { getDapp } = useDapps();
 
   const periodData = ref<PeriodData[]>([]);
@@ -98,15 +100,16 @@ export function usePeriodStats(period: Ref<number>) {
           );
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
-          const [, stakerApr, bonusApr] = await Promise.all([
+          const [, stakerApr, bonusApr, tokensToBeBurned] = await Promise.all([
             calculateTvlRatio(periodEndBlock),
             // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
             // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
             stakingService.getStakerApr(periodEndBlock - 1),
             stakingService.getBonusApr(undefined, periodEndBlock - 1),
+            calculateTotalTokensToBeBurned(periodEndBlock - 1),
           ]);
 
-          console.log('stakerApr', stakerApr, bonusApr);
+          console.log('stakerApr', stakerApr, bonusApr, tokensToBeBurned);
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }

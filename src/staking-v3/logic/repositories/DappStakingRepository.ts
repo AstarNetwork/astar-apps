@@ -105,8 +105,8 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getProtocolState(): Promise<ProtocolState> {
-    const api = await this.api.getApi();
+  public async getProtocolState(block?: number): Promise<ProtocolState> {
+    const api = await this.api.getApi(block);
     const state =
       await api.query.dappStaking.activeProtocolState<PalletDappStakingV3ProtocolState>();
 

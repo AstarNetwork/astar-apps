@@ -56,13 +56,21 @@ export function useDataCalculations() {
 
   const tokensToBeBurned = ref<bigint>();
 
-  const calculateTotalTokensToBeBurned = async (): Promise<void> => {
-    if (protocolState.value) {
+  const calculateTotalTokensToBeBurned = async (block?: number): Promise<bigint | undefined> => {
+    let protocolStateForCalculation = protocolState.value;
+    if (block) {
+      const dappStakingRepository = container.get<IDappStakingRepository>(
+        Symbols.DappStakingRepositoryV3
+      );
+      protocolStateForCalculation = await dappStakingRepository.getProtocolState(block);
+    }
+
+    if (protocolStateForCalculation) {
       try {
         // Determine current period boundaries so we can fetch dApp tiers.
-        const lastPeriodEra = protocolState.value.periodInfo.nextSubperiodStartEra - 1;
+        const lastPeriodEra = protocolStateForCalculation.periodInfo.nextSubperiodStartEra - 1;
         const firstPeriodEra = lastPeriodEra - eraLengths.value.standardErasPerBuildAndEarnPeriod;
-        const currentEra = protocolState.value.era;
+        const currentEra = protocolStateForCalculation.era;
 
         const leaderboardRequests = [];
         const dappStakingRepository = container.get<IDappStakingRepository>(
@@ -97,6 +105,7 @@ export function useDataCalculations() {
         }
 
         tokensToBeBurned.value = result;
+        return result;
       } catch (error) {
         console.error('Error calculating non-allocated rewards:', error);
       }
@@ -141,5 +150,6 @@ export function useDataCalculations() {
     bonusEligibleTokens,
     numberOfStakersAndLockers,
     tokensToBeBurned,
+    calculateTotalTokensToBeBurned,
   };
 }
