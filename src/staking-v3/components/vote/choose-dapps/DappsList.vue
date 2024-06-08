@@ -1,19 +1,34 @@
 <template>
   <div>
-    <swiper class="swiper--dapps" :navigation="true" :modules="modules">
-      <swiper-slide v-for="(page, pageIndex) in pagedItems" :key="`page-${pageIndex}`">
-        <div class="container--dapps">
-          <div
-            v-for="(dapp, index) in page"
-            :key="`page-${index}`"
-            class="container--item"
-            @click="handleItemSelected(itemIndex(pageIndex, index))"
-          >
-            <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
-            <div>{{ dapp.name }}</div>
-            <div v-if="isItemSelected(itemIndex(pageIndex, index))" class="item--selected">
-              {{ getSelectionOrder(itemIndex(pageIndex, index)) }}
-            </div>
+    <swiper
+      class="swiper--voting-dapps"
+      :slides-per-view="1"
+      :slides-per-group="3"
+      :space-between="8"
+      :navigation="true"
+      :grid="{
+        rows: 3,
+      }"
+      :breakpoints="{
+        '768': {
+          slidesPerView: 3,
+          slidesPerGroup: 32,
+          grid: {
+            rows: 3,
+          },
+        },
+      }"
+      :modules="modules"
+    >
+      <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
+        <div
+          :class="`container--item ${isItemSelected(index) ? 'is-selected' : ''}`"
+          @click="handleItemSelected(index)"
+        >
+          <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
+          <div>{{ dapp.name }}</div>
+          <div v-if="isItemSelected(index)" class="item--selected">
+            {{ getSelectionOrder(index) }}
           </div>
         </div>
       </swiper-slide>
@@ -25,13 +40,14 @@
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useDappStaking, usePaging } from 'src/staking-v3/hooks';
 import DappIcon from '../DappIcon.vue';
+import { DappVote } from '../../../logic';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
+import 'swiper/css/grid';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
-import { DappVote } from '../../../logic';
+import { Grid, Navigation } from 'swiper/modules';
 
 export default defineComponent({
   components: {
@@ -60,7 +76,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const itemsPerPage = 12;
     const { constants } = useDappStaking();
 
     const filteredDapps = computed<DappVote[]>(() => {
@@ -84,15 +99,11 @@ export default defineComponent({
       }
     });
 
-    const { pagedItems } = usePaging(filteredDapps, itemsPerPage);
     const selectedIndexes = ref<number[]>([]);
 
     const maxDappsToSelect = computed<number>(
       () => constants.value?.maxNumberOfStakedContracts ?? 0
     );
-
-    const itemIndex = (pageIndex: number, index: number): number =>
-      pageIndex * itemsPerPage + index;
 
     const handleItemSelected = (index: number): void => {
       const indexToRemove = selectedIndexes.value.indexOf(index);
@@ -103,7 +114,6 @@ export default defineComponent({
           selectedIndexes.value.push(index);
         }
       }
-
       if (props.onDappsSelected) {
         props.onDappsSelected(
           selectedIndexes.value.map((selectedIndex) => filteredDapps.value[selectedIndex])
@@ -120,11 +130,8 @@ export default defineComponent({
     const isItemSelected = (index: number): boolean => selectedIndexes.value.includes(index);
 
     return {
-      modules: [Navigation],
-      pagedItems,
-      itemsPerPage,
+      modules: [Grid, Navigation],
       filteredDapps,
-      itemIndex,
       handleItemSelected,
       isItemSelected,
       getSelectionOrder,
@@ -135,4 +142,37 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/staking-v3/components/vote/styles/choose-dapps.scss';
+</style>
+
+<style lang="scss">
+.swiper--voting-dapps {
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: $navy-1;
+    &::after {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .swiper-button-prev {
+    padding-right: 2px;
+    left: auto;
+    @media (min-width: $lg) {
+      top: -34px;
+      right: 372px;
+    }
+  }
+  .swiper-button-next {
+    padding-left: 2px;
+    right: 0;
+    @media (min-width: $lg) {
+      top: -34px;
+      right: 316px;
+    }
+  }
+}
 </style>

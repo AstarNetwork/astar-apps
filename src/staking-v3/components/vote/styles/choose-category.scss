@@ -27,6 +27,7 @@
   cursor: pointer;
   display: flex;
   align-items: flex-end;
+  transition: all 0.3s ease;
 }
 
 .category-name {
@@ -40,6 +41,17 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.category-container:hover {
+  background: var(--Linear, linear-gradient(90deg, #0047FF 0%, #00D4FF 97.65%));
+
+  .category-name-gradient {
+    -webkit-text-fill-color: $white;
+    background: none;
+    background-clip: none;
+  }
 }
 
 .text {

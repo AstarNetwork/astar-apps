@@ -57,6 +57,7 @@ export default defineComponent({
   font-size: 40px;
   font-weight: 800;
   line-height: 40px;
+  line-break: anywhere;
 }
 
 .unit {

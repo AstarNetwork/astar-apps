@@ -127,6 +127,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/staking-v3/components/vote/styles/vote-common.scss';
 
+.main-container {
+  overflow: hidden;
+}
+
 .buttons {
   display: flex;
   justify-content: flex-end;

@@ -4,15 +4,18 @@
     class="wizard-step-container"
     :class="{ 'wizard-step-selected': isSelected }"
   >
-    <div class="wizard-step-header">
-      <div class="wizard-step-number" :class="{ 'wizard-step-number-selected': isSelected }">
-        {{ step.number }}
+    <div class="wizard-step-container-inner">
+      <div class="wizard-step-header">
+        <div class="wizard-step-number" :class="{ 'wizard-step-number-selected': isSelected }">
+          {{ step.number }}
+        </div>
+        <div v-if="isCompleted" class="wizard-step-completed"><astar-icon-check /></div>
       </div>
-      <div v-if="isCompleted" class="wizard-step-completed"><astar-icon-check /></div>
+      <div class="wizard-step-title">{{ step.title }}</div>
+      <div>{{ step.description }}</div>
+      <div :id="`step${step.number}`"></div>
     </div>
-    <div class="wizard-step-title">{{ step.title }}</div>
-    <div>{{ step.description }}</div>
-    <div :id="`step${step.number}`"></div>
+    <vote-stake-button-bg />
   </div>
 </template>
 
@@ -20,8 +23,12 @@
 import { defineComponent, PropType, computed } from 'vue';
 import { WizardItem } from './types';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
 
 export default defineComponent({
+  components: {
+    VoteStakeButtonBg,
+  },
   props: {
     step: {
       type: Object as PropType<WizardItem>,
