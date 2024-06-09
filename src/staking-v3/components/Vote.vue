@@ -58,7 +58,9 @@
     </div>
     <div
       class="bg--vote"
-      :style="{ backgroundImage: `url(${require('/src/staking-v3/assets/vote_bg.webp')})` }"
+      :style="{
+        backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_bg.webp')})`,
+      }"
     />
   </div>
 </template>
