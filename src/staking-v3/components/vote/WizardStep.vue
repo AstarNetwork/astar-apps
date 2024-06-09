@@ -1,10 +1,6 @@
 <template>
-  <div
-    v-if="showStep"
-    class="wizard-step-container"
-    :class="{ 'wizard-step-selected': isSelected }"
-  >
-    <div class="wizard-step-container-inner">
+  <div class="wizard-step-container" :class="{ 'wizard-step-selected': isSelected }">
+    <div :class="`wizard-step-container-inner ${stepStarted && 'step-started'}`">
       <div class="wizard-step-header">
         <div class="wizard-step-number" :class="{ 'wizard-step-number-selected': isSelected }">
           {{ step.number }}
@@ -12,7 +8,7 @@
         <div v-if="isCompleted" class="wizard-step-completed"><astar-icon-check /></div>
       </div>
       <div class="wizard-step-title">{{ step.title }}</div>
-      <div>{{ step.description }}</div>
+      <div class="wizard-step-description">{{ step.description }}</div>
       <div :id="`step${step.number}`"></div>
     </div>
     <vote-stake-button-bg />
@@ -22,7 +18,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { WizardItem } from './types';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
 import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
 
 export default defineComponent({
@@ -43,16 +38,18 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    selectedStepIndex: {
+      type: Number,
+      required: true,
+      default: -1,
+    },
   },
   setup(props) {
-    // On mobile devices show only the selected step. Show first step initially (if not completed)
-    const showStep = computed<boolean>(() =>
-      isMobileDevice ?? false
-        ? props.isSelected || (props.step.number === 1 && !props.isCompleted)
-        : true
-    );
+    const stepStarted = computed<boolean>(() => props.selectedStepIndex !== -1);
 
-    return { showStep };
+    return {
+      stepStarted,
+    };
   },
 });
 </script>

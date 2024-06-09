@@ -2,12 +2,12 @@
   <div>
     <swiper
       class="swiper--voting-dapps"
-      :slides-per-view="1"
-      :slides-per-group="3"
+      :slides-per-view="2"
+      :slides-per-group="4"
       :space-between="8"
       :navigation="true"
       :grid="{
-        rows: 3,
+        rows: 2,
       }"
       :breakpoints="{
         '768': {
@@ -25,8 +25,12 @@
           :class="`container--item ${isItemSelected(index) ? 'is-selected' : ''}`"
           @click="handleItemSelected(index)"
         >
-          <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
-          <div>{{ dapp.name }}</div>
+          <div class="dapp-name-icon">
+            <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
+            <div class="dapp-name">{{ dapp.name }}</div>
+          </div>
+          <!-- TODO: add totalStake amount -->
+          <div>-</div>
           <div v-if="isItemSelected(index)" class="item--selected">
             {{ getSelectionOrder(index) }}
           </div>
@@ -146,6 +150,15 @@ export default defineComponent({
 
 <style lang="scss">
 .swiper--voting-dapps {
+  height: 342px;
+  overflow: visible;
+  margin-bottom: 88px;
+
+  @media (min-width: $lg) {
+    height: 232px;
+    margin-bottom: 0;
+  }
+
   .swiper-button-prev,
   .swiper-button-next {
     color: white;
@@ -160,18 +173,27 @@ export default defineComponent({
   }
   .swiper-button-prev {
     padding-right: 2px;
-    left: auto;
+    left: calc(50% - 48px);
+    top: auto;
+    bottom: -64px;
+
     @media (min-width: $lg) {
       top: -34px;
       right: 372px;
+      bottom: auto;
+      left: auto;
     }
   }
   .swiper-button-next {
     padding-left: 2px;
-    right: 0;
+    right: calc(50% - 48px);
+    top: auto;
+    bottom: -64px;
+
     @media (min-width: $lg) {
       top: -34px;
       right: 316px;
+      bottom: auto;
     }
   }
 }

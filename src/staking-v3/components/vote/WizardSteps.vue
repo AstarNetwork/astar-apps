@@ -1,15 +1,28 @@
 <template>
-  <div class="wizard-steps-container">
-    <wizard-step
-      v-for="(step, index) in steps"
-      :key="index"
-      :step="step"
-      :is-selected="isStepSelected(index)"
-      :is-completed="isStepCompleted(index)"
-      :class="{ 'not-selectable': !isStepSelectable(index) }"
-      @click="handleStepSelected(index)"
-    />
-  </div>
+  <swiper
+    class="swiper--wizard-steps"
+    :slides-per-view="1.4"
+    :slides-per-group="1"
+    :space-between="8"
+    :breakpoints="{
+      '768': {
+        slidesPerView: 3,
+        slidesPerGroup: 3,
+        spaceBetween: 8,
+      },
+    }"
+  >
+    <swiper-slide v-for="(step, index) in steps" :key="index">
+      <wizard-step
+        :step="step"
+        :is-selected="isStepSelected(index)"
+        :is-completed="isStepCompleted(index)"
+        :selected-step-index="selectedStepIndex"
+        :class="{ 'not-selectable': !isStepSelectable(index) }"
+        @click="handleStepSelected(index)"
+      />
+    </swiper-slide>
+  </swiper>
 </template>
 
 <script lang="ts">
@@ -17,9 +30,15 @@ import { defineComponent, PropType } from 'vue';
 import { WizardItem } from './types';
 import WizardStep from './WizardStep.vue';
 
+// Import Swiper
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+
 export default defineComponent({
   components: {
     WizardStep,
+    Swiper,
+    SwiperSlide,
   },
   props: {
     steps: {
@@ -63,5 +82,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .not-selectable {
   cursor: default;
+}
+</style>
+
+<style lang="scss">
+.swiper--wizard-steps {
+  overflow: visible;
+
+  .swiper-slide {
+    height: auto;
+  }
 }
 </style>

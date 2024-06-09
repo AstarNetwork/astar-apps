@@ -2,15 +2,12 @@
 
 .categories-container {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 
-  @media (min-width: 768px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  @media (min-width: $lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .selected {
@@ -20,7 +17,7 @@
 
 .category-container {
   width: 100%;
-  height: 200px;
+  height: 160px;
   background-color: $navy-1;
   padding: 24px 16px;
   border-radius: 16px;
@@ -28,12 +25,17 @@
   display: flex;
   align-items: flex-end;
   transition: all 0.3s ease;
+
+  @media (min-width: $lg) {
+    height: 200px;
+  }
 }
 
 .category-name {
   color: $white;
   font-size: 24px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .category-name-gradient {

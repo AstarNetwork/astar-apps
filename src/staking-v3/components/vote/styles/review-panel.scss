@@ -63,3 +63,23 @@
   font-weight: 700;
   text-align: left;
 }
+
+.rewards-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.container-2-columns.header {
+  @media (min-width: $lg) {
+    align-items: center;
+  }
+}
+
+.balance-alternate-size {
+  align-self: flex-end;
+
+  @media (min-width: $lg) {
+    align-self: center;
+  }
+}

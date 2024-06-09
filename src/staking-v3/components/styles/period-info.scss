@@ -21,9 +21,6 @@
   
   @media (min-width: $lg) {
     padding-top: 100px;
-  }
-
-  @media (min-width: $md) {
     flex-direction: row;
   }
 }
@@ -63,31 +60,23 @@
 }
 
 .header {
-  font-size: 24px;
-  font-weight: 600;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start !important;
 
-  div:last-child {
-    text-align: right;
-  }
-
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     flex-direction: row;
-    font-size: 32px;
-    font-weight: 900;
-  }
-
-  div {
-    flex: 1;
+    align-items: center !important;
   }
 }
 
 .title {
-  span:last-child {
-    padding-left: 16px;
-  }
+  font-size: 32px;
+    font-weight: 900;
+    line-height: 1.25;
+  display: flex;
+  gap: 16px;
 
   span:first-child {
     border-right: 2px solid $white;

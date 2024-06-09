@@ -20,7 +20,7 @@
           <div>{{ $t('stakingV3.voting.yourUnclaimedRewards') }}</div>
           <balance-alternate-size :balance="totalStakerRewards" />
         </div>
-        <div class="container-2-columns rewards-container">
+        <div class="rewards-container">
           <div class="reward">
             <div>{{ $t('stakingV3.basicRewards') }}</div>
             <token-balance-native :balance="rewards.staker.amount.toString()" />
@@ -33,6 +33,7 @@
       </div>
     </div>
     <div class="button-container">
+      <!-- TODO: add go back button -->
       <astar-button class="submit-button" @click="onConfirm">{{ $t('confirm') }}</astar-button>
     </div>
   </div>

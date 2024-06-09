@@ -134,11 +134,17 @@ export default defineComponent({
 .buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 8px;
   margin-top: 20px;
 
   button {
     height: 40px;
+    width: calc(50% - 4px);
+
+    @media (min-width: $lg) {
+      width: auto;
+      min-width: 160px;
+    }
   }
 }
 </style>
