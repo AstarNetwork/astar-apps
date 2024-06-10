@@ -1043,6 +1043,7 @@ export default {
     unmintedTokens: 'Unminted tokens',
     basicApr: 'Basic APR',
     moreInfoFor: 'More info for',
+    bonusRewards: 'Bonus Rewards',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

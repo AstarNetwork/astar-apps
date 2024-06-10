@@ -90,7 +90,7 @@ export default defineComponent({
   overflow: visible;
 
   .swiper-slide {
-    height: auto;
+    height: auto !important;
   }
 }
 </style>
