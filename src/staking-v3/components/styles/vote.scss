@@ -1,13 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-ul {
-  padding-left: 20px;
-}
-
-li {
-  list-style-type: disc;
-}
-
 .bg--vote {
   background-size: 100% auto;
   position: fixed;
@@ -56,24 +48,6 @@ li {
   }
 }
 
-.column--help {
-  order: 1;
-  gap: 8px;
-  display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(3px);
-  padding: 16px;
-  border-radius: 24px;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
-}
-
 .title {
   color: $navy-1;
   font-size: 32px;
@@ -88,16 +62,6 @@ li {
   margin-bottom: 16px;
 }
 
-.note {
-  flex: 1;
-  padding: 16px;
-  gap: 8px;
-  align-self: stretch;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
 .warning {
   background-color: rgba(230, 0, 122, 0.05);
   border: 1px solid $astar-pink;
@@ -107,11 +71,6 @@ li {
 
 .warning--text {
   color: $astar-pink;
-}
-
-.note--row {
-  display: flex;
-  justify-content: space-between;
 }
 
 .amount {
@@ -211,12 +170,4 @@ li {
   color: $white;
   font-size: 14px;
   font-weight: 500;
-}
-
-.link--learn {
-  color: $astar-blue;
-  transition: all 0.2s ease;
-  &:hover {
-    color: $astar-blue-dark;
-  }
 }

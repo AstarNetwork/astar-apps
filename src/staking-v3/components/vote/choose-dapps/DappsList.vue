@@ -30,7 +30,7 @@
             <div class="dapp-name">{{ dapp.name }}</div>
           </div>
           <!-- TODO: add totalStake amount -->
-          <div>-</div>
+          <div>--</div>
           <div v-if="isItemSelected(index)" class="item--selected">
             {{ getSelectionOrder(index) }}
           </div>
