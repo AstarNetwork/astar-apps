@@ -1,15 +1,18 @@
 <template>
   <div class="panel-wrapper">
     <div class="panel-title">{{ title }}</div>
-    <div class="wrapper-stats">
-      <swiper class="swiper-stats" :navigation="true" :modules="modules">
+    <div class="wrapper--stats">
+      <swiper class="swiper--stats" :navigation="true" :modules="modules">
         <swiper-slide v-for="(dapps, page) in pages" :key="page">
           <div class="container-dapps">
             <div v-for="(dapp, index) in dapps" :key="index">
               <div class="dapp">
                 <div>{{ index + 1 + page * itemsPerPage }}</div>
-                <dapp-icon :icon-url="dapp.iconUrl" :alt-text="dapp.name" />
-                <div>{{ dapp.name }}</div>
+                <!-- TODO: add link to dapp page -->
+                <div class="dapp-button">
+                  <div class="dapp-icon"><img :src="dapp.iconUrl" :alt="dapp.name" /></div>
+                  <div class="dapp-name">{{ dapp.name }}</div>
+                </div>
                 <token-balance-native :balance="dapp.amount.toString() ?? '0'" />
               </div>
             </div>
@@ -23,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import DappIcon from './vote/DappIcon.vue';
+
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
@@ -41,7 +44,6 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
     TokenBalanceNative,
-    DappIcon,
   },
   props: {
     title: {
@@ -71,4 +73,27 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import './styles/dapp-stats-panel.scss';
+</style>
+
+<style lang="scss">
+.swiper--stats {
+  > .swiper-button-prev,
+  > .swiper-button-next {
+    margin: 0;
+    margin-right: 6px;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: block;
+    text-align: center;
+    left: 0;
+    right: 0;
+
+    &::after {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 24px;
+    }
+  }
+}
 </style>

@@ -1039,6 +1039,10 @@ export default {
       'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
     stats: 'Stats',
     dappEarner: 'dApp earner',
+    userRewardsApr: 'User Rewards APR (AVR)',
+    unmintedTokens: 'Unminted tokens',
+    basicApr: 'Basic APR',
+    moreInfoFor: 'More info for',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

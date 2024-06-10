@@ -4,15 +4,14 @@
   border-radius: 16px;
   background-color: $navy-1;
   padding: 16px;
-  width: 100%;
 }
 
 .panel-title {
   color: $white;
   font-size: 24px;
   font-weight: 700;
-  line-height: normal;
-  margin-bottom: 32px;
+  padding: 8px;
+  margin-bottom: 16px;
 }
 
 .swiper-stats {
@@ -39,26 +38,69 @@
   overflow: hidden;
 }
 
-.dapp {
+.container-dapps {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+}
+
+.dapp {
+  padding: 0 8px 0 0px;
+  display: flex;
+  gap: 8px;
   align-items: center;
-  font-size: 14px;
   font-weight: 600;
-  line-height: normal;
+  color: $white;
+  height: 64px;
 
   > span:last-child {
     margin-left: auto;
+    text-align: right;
   }
 
   div:first-child {
     width: 24px;
     text-align: right;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 }
 
-.container-dapps {
+.dapp-button{
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
-  gap: 32px;
-  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(white, 0.1);
+  }
+}
+
+.dapp-icon {
+  flex-shrink: 0;
+  img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: 4.8px;
+  }
+}
+
+.dapp-name {
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.swiper--stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
