@@ -12,13 +12,13 @@
             <div class="apr-basic">
               <div class="apr-title">{{ $t('stakingV3.basicApr') }}</div>
               <div class="value-unit">
-                <span>11.2<small>%</small></span>
+                <span>--<small>%</small></span>
               </div>
             </div>
             <div class="apr-bonus">
               <div class="apr-title">{{ $t('stakingV3.bonusAPR') }}</div>
               <div class="value-unit">
-                <span>5.2<small>%</small></span>
+                <span>--<small>%</small></span>
               </div>
             </div>
           </div>
@@ -32,7 +32,7 @@
         <div class="period-kpi-container">
           <div class="kpi-title">{{ $t('stakingV3.unmintedTokens') }}</div>
           <div>
-            <div class="value-unit"><span>321,321</span></div>
+            <div class="value-unit"><span>--</span></div>
             <div class="more-info">
               <router-link :to="RoutePath.Dashboard">
                 {{ $t('stakingV3.moreInfoFor') }} {{ `\$${nativeTokenSymbol.toUpperCase()}`
