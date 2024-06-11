@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper--period-stats">
     <div class="title">
-      <span>001</span><span>{{ $t('stakingV3.stats') }}</span>
+      <span>{{ period.toString().padStart(3, '0') }}</span>
+      <span>{{ $t('stakingV3.stats') }}</span>
     </div>
 
     <div class="stats-content">
