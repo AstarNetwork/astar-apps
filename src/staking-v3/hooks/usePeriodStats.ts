@@ -105,16 +105,16 @@ export function usePeriodStats(period: Ref<number>) {
           );
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
+          const block = Math.min(periodEndBlock, currentBlock.value) - 1;
           const [, sApr, bApr, burned] = await Promise.all([
-            calculateTvlRatio(periodEndBlock),
+            calculateTvlRatio(block),
             // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
             // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
-            stakingService.getStakerApr(periodEndBlock - 1),
-            stakingService.getBonusApr(undefined, periodEndBlock - 1),
-            calculateTotalTokensToBeBurned(periodEndBlock - 1),
+            stakingService.getStakerApr(block),
+            stakingService.getBonusApr(undefined, block),
+            calculateTotalTokensToBeBurned(block),
           ]);
 
-          // console.log('stakerApr', stakerApr, bonusApr, tokensToBeBurned);
           stakerApr.value = sApr;
           bonusApr.value = bApr.value;
           tokensToBeBurned.value = burned;
