@@ -41,7 +41,8 @@ export default defineComponent({
 .add-container {
   background-color: $white;
   background-image: url('assets/dapp_staking_period002_bg.webp');
-  background-position: 40% 10%;
+  background-position: center bottom;
+  background-size: 180% auto;
   border-radius: 16px;
   padding: 8px;
   color: $navy-1;
@@ -50,7 +51,7 @@ export default defineComponent({
 .top-text {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   padding: 24px;
   line-height: normal;
 
