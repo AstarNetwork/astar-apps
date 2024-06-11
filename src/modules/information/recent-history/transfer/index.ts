@@ -218,9 +218,7 @@ export const getZkEVMTxHistories = async ({
     formattedTxs.map(async (it) => {
       const { hash } = it;
       try {
-        console.log(it);
         const tx = await fetchTransferDetails({ hash, network });
-        console.log(tx);
         return castZkEVMTransferHistory({ tx, hash });
       } catch (error) {
         console.error(error);
