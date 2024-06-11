@@ -8,8 +8,7 @@
             <div v-for="(dapp, index) in dapps" :key="index">
               <div class="dapp">
                 <div>{{ index + 1 + page * itemsPerPage }}</div>
-                <!-- TODO: add link to dapp page -->
-                <div class="dapp-button">
+                <div class="dapp-button" @click="navigateDappPage(dapp.address)">
                   <div class="dapp-icon"><img :src="dapp.iconUrl" :alt="dapp.name" /></div>
                   <div class="dapp-name">{{ dapp.name }}</div>
                 </div>
@@ -32,11 +31,13 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import { useDappStakingNavigation } from '../hooks';
 
 export type PanelData = {
   name: string;
   iconUrl: string;
   amount: bigint;
+  address: string;
 };
 
 export default defineComponent({
@@ -57,6 +58,7 @@ export default defineComponent({
   },
   setup(props) {
     const itemsPerPage = 5;
+    const { navigateDappPage } = useDappStakingNavigation();
 
     const pages = computed<PanelData[][]>(() => {
       const pages = [];
@@ -66,7 +68,7 @@ export default defineComponent({
       return pages;
     });
 
-    return { modules: [Navigation], itemsPerPage, pages };
+    return { modules: [Navigation], itemsPerPage, pages, navigateDappPage };
   },
 });
 </script>

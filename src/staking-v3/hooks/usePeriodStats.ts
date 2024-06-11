@@ -13,6 +13,7 @@ export type DappStatistics = {
   iconUrl: string;
   stakeAmount: bigint;
   rewardAmount: bigint;
+  address: string;
 };
 
 export function usePeriodStats(period: Ref<number>) {
@@ -32,6 +33,7 @@ export function usePeriodStats(period: Ref<number>) {
           iconUrl: dApp.basic.iconUrl,
           stakeAmount: data.stakeAmount,
           rewardAmount: data.rewardAmount,
+          address: dApp.chain.address,
         };
       }
     });

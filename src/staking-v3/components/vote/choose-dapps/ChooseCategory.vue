@@ -14,7 +14,7 @@
         >
           {{ category.label }}
         </div>
-        <div class="category-description">Some text ...</div>
+        <div class="category-description"></div>
       </div>
       <div class="icon"><astar-icon-arrow-right /></div>
     </div>

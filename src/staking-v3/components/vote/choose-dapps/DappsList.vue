@@ -29,8 +29,7 @@
             <dapp-icon :icon-url="dapp.logoUrl" :alt-text="dapp.name" />
             <div class="dapp-name">{{ dapp.name }}</div>
           </div>
-          <!-- TODO: add totalStake amount -->
-          <div>--</div>
+          <div><format-balance :balance="dapp.stakeAmount?.toString() ?? '0'" /></div>
           <div v-if="isItemSelected(index)" class="item--selected">
             {{ getSelectionOrder(index) }}
           </div>
@@ -42,9 +41,10 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from 'vue';
-import { useDappStaking, usePaging } from 'src/staking-v3/hooks';
+import { useDappStaking } from 'src/staking-v3/hooks';
 import DappIcon from '../DappIcon.vue';
 import { DappVote } from '../../../logic';
+import FormatBalance from 'src/components/common/FormatBalance.vue';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -58,6 +58,7 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
     DappIcon,
+    FormatBalance,
   },
   props: {
     dapps: {
@@ -114,7 +115,7 @@ export default defineComponent({
       if (indexToRemove >= 0) {
         selectedIndexes.value.splice(indexToRemove, 1);
       } else {
-        if (selectedIndexes.value.length < maxDappsToSelect.value) {
+        if (selectedIndexes.value.length <= maxDappsToSelect.value) {
           selectedIndexes.value.push(index);
         }
       }

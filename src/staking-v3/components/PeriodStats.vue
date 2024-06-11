@@ -79,6 +79,7 @@ export default defineComponent({
           name: x.name,
           iconUrl: x.iconUrl,
           amount: BigInt(x.stakeAmount),
+          address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
     );
@@ -89,6 +90,7 @@ export default defineComponent({
           name: x.name,
           iconUrl: x.iconUrl,
           amount: x.rewardAmount,
+          address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
     );
