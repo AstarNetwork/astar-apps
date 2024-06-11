@@ -75,6 +75,23 @@ export const castTransferHistory = ({
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
+export const castZkEVMTransferHistory = ({
+  tx,
+  hash,
+}: {
+  tx: TransferDetail;
+  hash: string;
+}): RecentHistory => {
+  const { amount, symbol, to } = tx;
+  const timestamp = String(tx.timestamp);
+  const txType = HistoryTxType.Transfer;
+  const note = `To ${getShortenAddress(to)}`;
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const blockscount = providerEndpoints[Number(networkIdx)].blockscout;
+  const explorerUrl = `${blockscount}/tx/${hash}`;
+  return { timestamp, txType, amount, symbol, note, explorerUrl };
+};
+
 const castXvmHistory = async (tx: XvmAssetsTransferHistory): Promise<RecentHistory> => {
   const txType = HistoryTxType.Xvm;
   const note = `To ${getShortenAddress(tx.destination)}`;
@@ -174,4 +191,42 @@ export const getLzTxHistories = async ({
     })
   );
   return parsedTxs.filter((it) => it !== undefined) as RecentLzHistory[];
+};
+
+export const getZkEVMTxHistories = async ({
+  address,
+  network,
+}: {
+  address: string;
+  network: string;
+}): Promise<RecentHistory[]> => {
+  const txs: TxHistory[] = [];
+  const histories = [XVM_TX_HISTORIES, XCM_TX_HISTORIES, TX_HISTORIES];
+
+  histories.forEach((storageKey) => {
+    const transactions = getAccountHistories({
+      storageKey,
+      address,
+      network,
+    });
+    transactions.forEach((it) => txs.push(it));
+  });
+
+  const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
+
+  const parsedTxs = await Promise.all(
+    formattedTxs.map(async (it) => {
+      const { hash } = it;
+      try {
+        console.log(it);
+        const tx = await fetchTransferDetails({ hash, network });
+        console.log(tx);
+        return castZkEVMTransferHistory({ tx, hash });
+      } catch (error) {
+        console.error(error);
+        return undefined;
+      }
+    })
+  );
+  return parsedTxs.filter((it) => it !== undefined) as RecentHistory[];
 };
