@@ -102,10 +102,15 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+    step: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
   },
   setup(props) {
     const { t } = useI18n();
-    const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent();
+    const { selectedComponentIndex, handleSelectComponent } = useSelectableComponent(props.step);
     const { registeredDapps, getDapp } = useDapps();
     const { nativeTokenImg } = useNetworkInfo();
     const selectedDapps = ref<DappVote[]>([]);

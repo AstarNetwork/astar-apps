@@ -4,6 +4,7 @@ import {
   DappInfo,
   DappStakeInfo,
   DappState,
+  EraLengths,
   SingularStakingInfo,
   StakeAmount,
   StakerRewards,
@@ -18,7 +19,13 @@ import { ethers } from 'ethers';
 import { SignerService } from './SignerService';
 import { TvlModel } from 'src/v2/models';
 import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
-import { IMetadataRepository, ITokenApiRepository } from 'src/v2/repositories';
+import {
+  IBalancesRepository,
+  IInflationRepository,
+  IMetadataRepository,
+  ITokenApiRepository,
+} from 'src/v2/repositories';
+import { weiToToken } from 'src/token-utils';
 
 @injectable()
 export class DappStakingService extends SignerService implements IDappStakingService {
@@ -29,7 +36,9 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     protected tokenApiRepository: IDataProviderRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.MetadataRepository) protected metadataRepository: IMetadataRepository,
-    @inject(Symbols.TokenApiRepository) protected priceRepository: ITokenApiRepository
+    @inject(Symbols.TokenApiRepository) protected priceRepository: ITokenApiRepository,
+    @inject(Symbols.BalancesRepository) protected balancesRepository: IBalancesRepository,
+    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository
   ) {
     super(walletFactory);
   }
@@ -688,6 +697,70 @@ export class DappStakingService extends SignerService implements IDappStakingSer
       : 0;
 
     return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
+  }
+
+  // @inheritdoc
+  public async getStakerApr(block?: number): Promise<number> {
+    const [totalIssuance, inflationParams, eraLengths, eraInfo] = await Promise.all([
+      this.balancesRepository.getTotalIssuance(block),
+      this.inflationRepository.getInflationParams(block),
+      this.dappStakingRepository.getEraLengths(block),
+      this.dappStakingRepository.getCurrentEraInfo(block),
+    ]);
+
+    const cyclesPerYear = this.getCyclesPerYear(eraLengths);
+    const currentStakeAmount = weiToToken(eraInfo.currentStakeAmount.totalStake);
+
+    const stakedPercent = currentStakeAmount / weiToToken(totalIssuance);
+    const { baseStakersPart, adjustableStakersPart, idealStakingRate, maxInflationRate } =
+      inflationParams;
+
+    const stakerRewardPercent =
+      baseStakersPart + adjustableStakersPart * Math.min(1, stakedPercent / idealStakingRate);
+    const stakerApr =
+      ((maxInflationRate * stakerRewardPercent) / stakedPercent) * cyclesPerYear * 100;
+
+    return stakerApr;
+  }
+
+  // @inheritdoc
+  public async getBonusApr(
+    simulatedVoteAmount: number = 1000,
+    block?: number
+  ): Promise<{ value: number; simulatedBonusPerPeriod: number }> {
+    const [inflationConfiguration, eraLengths, eraInfo] = await Promise.all([
+      this.inflationRepository.getInflationConfiguration(block),
+      this.dappStakingRepository.getEraLengths(block),
+      this.dappStakingRepository.getCurrentEraInfo(block),
+    ]);
+
+    const cyclesPerYear = this.getCyclesPerYear(eraLengths);
+
+    const formattedBonusRewardsPoolPerPeriod = weiToToken(
+      inflationConfiguration.bonusRewardPoolPerPeriod
+    );
+    const voteAmount = weiToToken(eraInfo.currentStakeAmount.voting);
+    const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
+    const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
+    const periodsPerYear = eraLengths.periodsPerCycle * cyclesPerYear;
+    const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
+    const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;
+
+    return { value: bonusApr, simulatedBonusPerPeriod };
+  }
+
+  private getCyclesPerYear(eraLength: EraLengths): number {
+    // TODO read from chain
+    const secBlockProductionRate = 12;
+    const secsOneYear = 365 * 24 * 60 * 60;
+    const periodLength =
+      eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
+
+    const eraPerCycle = periodLength * eraLength.periodsPerCycle;
+    const blocksStandardEraLength = eraLength.standardEraLength;
+    const blockPerCycle = blocksStandardEraLength * eraPerCycle;
+    const cyclePerYear = secsOneYear / secBlockProductionRate / blockPerCycle;
+    return cyclePerYear;
   }
 
   private async getStakerEraRange(senderAddress: string) {

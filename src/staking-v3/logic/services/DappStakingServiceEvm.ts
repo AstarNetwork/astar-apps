@@ -8,6 +8,8 @@ import { Symbols } from 'src/v2/symbols';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import {
   IAccountUnificationRepository,
+  IBalancesRepository,
+  IInflationRepository,
   IMetadataRepository,
   ITokenApiRepository,
 } from 'src/v2/repositories';
@@ -26,14 +28,18 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     @inject(Symbols.AccountUnificationRepository)
     private accountUnificationRepository: IAccountUnificationRepository,
     @inject(Symbols.MetadataRepository) metadataRepository: IMetadataRepository,
-    @inject(Symbols.TokenApiRepository) priceRepository: ITokenApiRepository
+    @inject(Symbols.TokenApiRepository) priceRepository: ITokenApiRepository,
+    @inject(Symbols.BalancesRepository) protected balancesRepository: IBalancesRepository,
+    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository
   ) {
     super(
       dappStakingRepository,
       tokenApiRepository,
       walletFactory,
       metadataRepository,
-      priceRepository
+      priceRepository,
+      balancesRepository,
+      inflationRepository
     );
     this.wallet = walletFactory();
   }

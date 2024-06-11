@@ -798,6 +798,7 @@ export default {
     votingOpenText:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     stakeToday: 'Stake today, be entitled to big bonus!',
+    stakeTodayFormatted: 'Stake today,<br/>be entitled to<br/>bonus!',
     voteText: 'I would like to vote my tokens with',
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
@@ -1039,6 +1040,8 @@ export default {
       'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
     stats: 'Stats',
     dappEarner: 'dApp earner',
+    newVotingPeriod: 'New voting period',
+    bonusPeriodEnds: 'Bonus period ends in {eras} days',
     userRewardsApr: 'User Rewards APR (AVR)',
     unmintedTokens: 'Unminted tokens',
     basicApr: 'Basic APR',

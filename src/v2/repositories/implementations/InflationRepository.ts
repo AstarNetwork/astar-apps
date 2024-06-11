@@ -18,8 +18,8 @@ const quntilToNumber = (value: Compact<Perquintill>): number =>
 export class InflationRepository implements IInflationRepository {
   constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
-  public async getInflationConfiguration(): Promise<InflationConfiguration> {
-    const api = await this.api.getApi();
+  public async getInflationConfiguration(block?: number): Promise<InflationConfiguration> {
+    const api = await this.api.getApi(block);
     const data =
       await api.query.inflation.activeInflationConfig<PalletInflationActiveInflationConfig>();
 
@@ -34,8 +34,8 @@ export class InflationRepository implements IInflationRepository {
     return this.mapInflationConfiguration(data);
   }
 
-  public async getInflationParams(): Promise<InflationParam> {
-    const api = await this.api.getApi();
+  public async getInflationParams(block?: number): Promise<InflationParam> {
+    const api = await this.api.getApi(block);
     const data = await api.query.inflation.inflationParams<PalletInflationInflationParameters>();
 
     return {

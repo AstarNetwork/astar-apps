@@ -47,7 +47,36 @@ import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
 import { u8aToNumber } from '@polkadot/util';
-import { ApiDecoration } from '@polkadot/api/types';
+
+const ERA_LENGTHS = new Map<string, EraLengths>([
+  [
+    'Shibuya Testnet',
+    {
+      standardErasPerBuildAndEarnPeriod: 20,
+      standardErasPerVotingPeriod: 8,
+      standardEraLength: 1800,
+      periodsPerCycle: 2,
+    },
+  ],
+  [
+    'Shiden',
+    {
+      standardErasPerBuildAndEarnPeriod: 55,
+      standardErasPerVotingPeriod: 6,
+      standardEraLength: 7200,
+      periodsPerCycle: 6,
+    },
+  ],
+  [
+    'Astar',
+    {
+      standardErasPerBuildAndEarnPeriod: 111,
+      standardErasPerVotingPeriod: 11,
+      standardEraLength: 7200,
+      periodsPerCycle: 3,
+    },
+  ],
+]);
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -76,8 +105,8 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getProtocolState(): Promise<ProtocolState> {
-    const api = await this.api.getApi();
+  public async getProtocolState(block?: number): Promise<ProtocolState> {
+    const api = await this.api.getApi(block);
     const state =
       await api.query.dappStaking.activeProtocolState<PalletDappStakingV3ProtocolState>();
 
@@ -272,23 +301,38 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getEraLengths(): Promise<EraLengths> {
+  public async getEraLengths(block?: number): Promise<EraLengths> {
     const getNumber = (bytes: Bytes): number => u8aToNumber(bytes.toU8a().slice(1, 4));
-    const api = await this.api.getApi();
+    const api = await this.api.getApi(block);
 
-    const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
-      api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
-      api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
-      api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
-      api.rpc.state.call('DappStakingApi_periods_per_cycle', ''),
-    ]);
+    if (api.rpc) {
+      const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
+        api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
+        api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
+        api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
+        api.rpc.state.call('DappStakingApi_periods_per_cycle', ''),
+      ]);
 
-    return {
-      standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
-      standardErasPerVotingPeriod: getNumber(erasPerVoting),
-      standardEraLength: getNumber(eraLength),
-      periodsPerCycle: getNumber(periodsPerCycle),
-    };
+      return {
+        standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
+        standardErasPerVotingPeriod: getNumber(erasPerVoting),
+        standardEraLength: getNumber(eraLength),
+        periodsPerCycle: getNumber(periodsPerCycle),
+      };
+    } else {
+      // Can't use api.rpc for past blocks
+      // Using constants should be fine, because era lengths are not expected to change
+      // in near future.
+      const currentApi = await this.api.getApi();
+      const network = currentApi.runtimeChain.toHuman();
+      const eraLen = ERA_LENGTHS.get(network);
+
+      if (eraLen) {
+        return eraLen;
+      } else {
+        throw new Error(`Era lengths are not defined for this network: ${network}`);
+      }
+    }
   }
 
   //* @inheritdoc

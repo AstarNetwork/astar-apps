@@ -13,13 +13,13 @@
             <div class="apr-basic">
               <div class="apr-title">{{ $t('stakingV3.basicApr') }}</div>
               <div class="value-unit">
-                <span>--<small>%</small></span>
+                <span>{{ stakerApr ? stakerApr.toFixed(2) : '--' }}<small>%</small></span>
               </div>
             </div>
             <div class="apr-bonus">
               <div class="apr-title">{{ $t('stakingV3.bonusAPR') }}</div>
               <div class="value-unit">
-                <span>--<small>%</small></span>
+                <span>{{ bonusApr ? bonusApr.toFixed(2) : '--' }}<small>%</small></span>
               </div>
             </div>
           </div>
@@ -33,7 +33,12 @@
         <div class="period-kpi-container">
           <div class="kpi-title">{{ $t('stakingV3.unmintedTokens') }}</div>
           <div>
-            <div class="value-unit"><span>--</span></div>
+            <div class="value-unit">
+              <token-balance-native
+                :balance="tokensToBeBurned?.toString() ?? '0'"
+                :show-token-symbol="false"
+              />
+            </div>
             <div class="more-info">
               <router-link :to="RoutePath.Dashboard">
                 {{ $t('stakingV3.moreInfoFor') }} {{ `\$${nativeTokenSymbol.toUpperCase()}`
@@ -59,10 +64,12 @@ import { usePeriodStats } from '../hooks';
 import { sort } from 'src/v2/common';
 import { Path as RoutePath } from 'src/router/routes';
 import { useNetworkInfo } from 'src/hooks';
+import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
 export default defineComponent({
   components: {
     DappStatsPanel,
+    TokenBalanceNative,
   },
   props: {
     period: {
@@ -72,7 +79,8 @@ export default defineComponent({
   },
   setup(props) {
     const { period } = toRefs(props);
-    const { dappStatistics, tvlRatio } = usePeriodStats(period);
+    const { dappStatistics, tvlRatio, stakerApr, bonusApr, tokensToBeBurned } =
+      usePeriodStats(period);
 
     const stakesStats = computed<PanelData[]>(() =>
       dappStatistics.value
@@ -98,7 +106,16 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    return { stakesStats, rewardsStats, tvlRatio, RoutePath, nativeTokenSymbol };
+    return {
+      stakesStats,
+      rewardsStats,
+      tvlRatio,
+      RoutePath,
+      nativeTokenSymbol,
+      stakerApr,
+      bonusApr,
+      tokensToBeBurned,
+    };
   },
 });
 </script>
