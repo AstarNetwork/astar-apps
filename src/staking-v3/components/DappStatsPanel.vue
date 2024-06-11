@@ -1,15 +1,17 @@
 <template>
   <div class="panel-wrapper">
     <div class="panel-title">{{ title }}</div>
-    <div class="wrapper-stats">
-      <swiper class="swiper-stats" :navigation="true" :modules="modules">
+    <div class="wrapper--stats">
+      <swiper class="swiper--stats" :navigation="true" :modules="modules">
         <swiper-slide v-for="(dapps, page) in pages" :key="page">
           <div class="container-dapps">
             <div v-for="(dapp, index) in dapps" :key="index">
               <div class="dapp">
                 <div>{{ index + 1 + page * itemsPerPage }}</div>
-                <dapp-icon :icon-url="dapp.iconUrl" :alt-text="dapp.name" />
-                <div>{{ dapp.name }}</div>
+                <div class="dapp-button" @click="navigateDappPage(dapp.address)">
+                  <div class="dapp-icon"><img :src="dapp.iconUrl" :alt="dapp.name" /></div>
+                  <div class="dapp-name">{{ dapp.name }}</div>
+                </div>
                 <token-balance-native :balance="dapp.amount.toString() ?? '0'" />
               </div>
             </div>
@@ -23,17 +25,19 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import DappIcon from './vote/DappIcon.vue';
+
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import { useDappStakingNavigation } from '../hooks';
 
 export type PanelData = {
   name: string;
   iconUrl: string;
   amount: bigint;
+  address: string;
 };
 
 export default defineComponent({
@@ -41,7 +45,6 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
     TokenBalanceNative,
-    DappIcon,
   },
   props: {
     title: {
@@ -55,6 +58,7 @@ export default defineComponent({
   },
   setup(props) {
     const itemsPerPage = 5;
+    const { navigateDappPage } = useDappStakingNavigation();
 
     const pages = computed<PanelData[][]>(() => {
       const pages = [];
@@ -64,11 +68,34 @@ export default defineComponent({
       return pages;
     });
 
-    return { modules: [Navigation], itemsPerPage, pages };
+    return { modules: [Navigation], itemsPerPage, pages, navigateDappPage };
   },
 });
 </script>
 
 <style scoped lang="scss">
 @import './styles/dapp-stats-panel.scss';
+</style>
+
+<style lang="scss">
+.swiper--stats {
+  > .swiper-button-prev,
+  > .swiper-button-next {
+    margin: 0;
+    margin-right: 6px;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: block;
+    text-align: center;
+    left: 0;
+    right: 0;
+
+    &::after {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 24px;
+    }
+  }
+}
 </style>

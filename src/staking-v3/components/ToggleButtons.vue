@@ -57,6 +57,7 @@ export default defineComponent({
   cursor: pointer;
   display: flex;
   align-items: center;
+  color: $navy-1;
   &:hover {
     background-color: $gray-1;
   }

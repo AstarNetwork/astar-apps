@@ -43,7 +43,12 @@
         </div>
       </div>
     </div>
-    <div class="bg--discover" />
+    <div
+      class="bg--discover"
+      :style="{
+        backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_bg.webp')})`,
+      }"
+    />
   </div>
 </template>
 

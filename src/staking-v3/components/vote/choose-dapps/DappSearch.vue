@@ -47,8 +47,9 @@ export default defineComponent({
   justify-content: space-between;
   width: 100%;
   padding: 16px 0;
+  gap: 16px;
 
-  @media (min-width: 768px) {
+  @media (min-width: $lg) {
     flex-direction: row;
   }
 }
@@ -68,7 +69,11 @@ export default defineComponent({
   border-radius: 16px;
   border: 1px solid $navy-1;
   height: 40px;
-  width: 300px;
   outline: none;
+  width: 100%;
+
+  @media (min-width: $lg) {
+    width: 300px;
+  }
 }
 </style>

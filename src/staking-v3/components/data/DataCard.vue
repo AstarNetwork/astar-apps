@@ -99,7 +99,8 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   gap: 8px;
-  background-color: white;
+  background-color: $white;
+  color: $navy-1;
 }
 
 .card--top {

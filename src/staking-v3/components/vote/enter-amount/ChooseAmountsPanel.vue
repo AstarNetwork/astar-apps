@@ -1,6 +1,7 @@
 <template>
   <div class="choose-amount-container">
     <div class="panel-title">{{ $t('stakingV3.voting.addAmounts') }}</div>
+    <voting-note />
     <div class="vote-common-container">
       <div v-for="dapp of dapps" :key="`dapp-${dapp.id}`" class="item-wrapper">
         <div class="name-and-icon">
@@ -59,6 +60,7 @@ import Amount from './Amount.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import ErrorPanel from '../../ErrorPanel.vue';
 import GoBackButton from '../GoBackButton.vue';
+import VotingNote from '../VotingNote.vue';
 
 export type StakeInfo = {
   totalStakedAmount: bigint;
@@ -75,6 +77,7 @@ export default defineComponent({
     TokenBalanceNative,
     ErrorPanel,
     GoBackButton,
+    VotingNote,
   },
   props: {
     dapps: {

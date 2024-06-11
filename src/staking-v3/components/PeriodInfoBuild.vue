@@ -38,9 +38,11 @@
         </div>
         <div class="rewards">
           <div class="rewards-row">
-            <div>{{ $t('stakingV3.estimatedRewards') }}</div>
-            <div>
-              <token-balance-native :balance="rewards?.staker.amount.toString() ?? ''" />
+            <div class="rewards-row__left">
+              <div>{{ $t('stakingV3.estimatedRewards') }}</div>
+              <div class="rewards-row__amount">
+                <token-balance-native :balance="rewards?.staker.amount.toString() ?? ''" />
+              </div>
             </div>
             <div>
               <astar-button
@@ -53,8 +55,12 @@
             </div>
           </div>
           <div class="rewards-row">
-            <div>{{ $t('stakingV3.estimatedBonus') }}</div>
-            <div><token-balance-native :balance="bonusToDisplay?.toString() ?? ''" /></div>
+            <div class="rewards-row__left">
+              <div>{{ $t('stakingV3.estimatedBonus') }}</div>
+              <div class="rewards-row__amount">
+                <token-balance-native :balance="bonusToDisplay?.toString() ?? ''" />
+              </div>
+            </div>
             <div>
               <astar-button
                 :disabled="!hasBonusRewards"
@@ -169,21 +175,24 @@ export default defineComponent({
 .rewards-row {
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: space-between;
   font-size: 14px;
+  gap: 16px;
 
-  div {
+  .rewards-row__left {
     flex: 1;
+
+    @media (min-width: $lg) {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
   }
 
-  div:nth-child(2) {
+  .rewards-row__amount {
     font-size: 16px;
     font-weight: 800;
-    text-align: right;
-  }
-
-  div:nth-child(3) {
-    text-align: right;
   }
 }
 </style>

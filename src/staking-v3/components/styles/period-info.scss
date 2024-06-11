@@ -2,7 +2,7 @@
 
 .wrapper-info {
   width: 100%;
-  padding: 0 16px;
+  padding: 0 8px;
 
   @media (min-width: $lg) {
     padding: 0 40px;
@@ -10,14 +10,17 @@
 }
 
 .wrapper-info-inner {
+  max-width: $container-max-width;
+  margin: auto;
   width: 100%;
   color: $white;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  margin-top: 32px;
+  gap: 24px;
+  padding-top: 40px;
 
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
+    padding-top: 100px;
     flex-direction: row;
   }
 }
@@ -34,6 +37,9 @@
 
 .right-panel {
   min-width: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   div:first-child {
     color: $white;
@@ -46,6 +52,11 @@
   }
 }
 
+.estimated-rewards {
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
 .panel {
   border-radius: 24px;
   background-color: $navy-1;
@@ -53,31 +64,23 @@
 }
 
 .header {
-  font-size: 24px;
-  font-weight: 600;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start !important;
 
-  div:last-child {
-    text-align: right;
-  }
-
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     flex-direction: row;
-    font-size: 32px;
-    font-weight: 900;
-  }
-
-  div {
-    flex: 1;
+    align-items: center !important;
   }
 }
 
 .title {
-  span:last-child {
-    padding-left: 16px;
-  }
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.25;
+  display: flex;
+  gap: 16px;
 
   span:first-child {
     border-right: 2px solid $white;
@@ -101,21 +104,22 @@
 }
 
 .percentage {
-  background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   text-align: right;
+  line-height: 1;
   padding-top: 16px;
 
-  span:first-child {
+  span {
+    background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: 48px;
     font-weight: 800;
-  }
 
-  span:last-child {
-    font-size: 32px;
-    font-weight: 400;
+    small {
+      font-size: 32px;
+      font-weight: 400;
+    }
   }
 }
 

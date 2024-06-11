@@ -56,6 +56,7 @@
         :dapps="selectedDapps.filter((dapp) => dapp.amount > 0)"
         :total-stake-amount="stakeInfo.totalStakedAmount"
         :on-confirm="handleConfirm"
+        :on-go-back="handleGoBackToAmount"
       />
     </div>
   </div>
@@ -213,6 +214,10 @@ export default defineComponent({
       selectedComponentIndex.value = Steps.ChooseDapps;
     };
 
+    const handleGoBackToAmount = (): void => {
+      selectedComponentIndex.value = Steps.AddAmount;
+    };
+
     watch(
       [registeredDapps],
       () => {
@@ -253,6 +258,7 @@ export default defineComponent({
       handleConfirm,
       handleRemoveDapp,
       handleGoBackToDapps,
+      handleGoBackToAmount,
       scrollToWizardTop,
     };
   },
