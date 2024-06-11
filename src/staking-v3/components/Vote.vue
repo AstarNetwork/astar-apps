@@ -5,6 +5,7 @@
       <voting-wizard
         :stake-to-address="selectedDappAddress"
         :move-from-address="dAppToMoveFromAddress"
+        :step="0"
       />
     </div>
     <div

@@ -25,6 +25,9 @@ export function usePeriodStats(period: Ref<number>) {
 
   const periodData = ref<PeriodData[]>([]);
   const tvlRatio = ref<number>();
+  const stakerApr = ref<number>();
+  const bonusApr = ref<number>();
+  const tokensToBeBurned = ref<bigint>();
 
   const dappStatistics = computed<DappStatistics[]>(() => {
     const combinedData = periodData.value.map((data) => {
@@ -102,7 +105,7 @@ export function usePeriodStats(period: Ref<number>) {
           );
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
-          const [, stakerApr, bonusApr, tokensToBeBurned] = await Promise.all([
+          const [, sApr, bApr, burned] = await Promise.all([
             calculateTvlRatio(periodEndBlock),
             // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
             // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
@@ -111,7 +114,10 @@ export function usePeriodStats(period: Ref<number>) {
             calculateTotalTokensToBeBurned(periodEndBlock - 1),
           ]);
 
-          console.log('stakerApr', stakerApr, bonusApr, tokensToBeBurned);
+          // console.log('stakerApr', stakerApr, bonusApr, tokensToBeBurned);
+          stakerApr.value = sApr;
+          bonusApr.value = bApr.value;
+          tokensToBeBurned.value = burned;
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }
@@ -120,5 +126,5 @@ export function usePeriodStats(period: Ref<number>) {
     { immediate: true }
   );
 
-  return { dappStatistics, tvlRatio };
+  return { dappStatistics, tvlRatio, stakerApr, bonusApr, tokensToBeBurned };
 }
