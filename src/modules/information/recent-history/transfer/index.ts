@@ -201,16 +201,14 @@ export const getZkEVMTxHistories = async ({
   network: string;
 }): Promise<RecentHistory[]> => {
   const txs: TxHistory[] = [];
-  const histories = [XVM_TX_HISTORIES, XCM_TX_HISTORIES, TX_HISTORIES];
+  const storageKey = TX_HISTORIES;
 
-  histories.forEach((storageKey) => {
-    const transactions = getAccountHistories({
-      storageKey,
-      address,
-      network,
-    });
-    transactions.forEach((it) => txs.push(it));
+  const transactions = getAccountHistories({
+    storageKey,
+    address,
+    network,
   });
+  transactions.forEach((it) => txs.push(it));
 
   const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
 
