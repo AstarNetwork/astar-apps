@@ -20,7 +20,7 @@
           <div>{{ $t('stakingV3.voting.yourUnclaimedRewards') }}</div>
           <balance-alternate-size :balance="totalStakerRewards" />
         </div>
-        <div class="container-2-columns rewards-container">
+        <div class="rewards-container">
           <div class="reward">
             <div>{{ $t('stakingV3.basicRewards') }}</div>
             <token-balance-native :balance="rewards.staker.amount.toString()" />
@@ -33,6 +33,9 @@
       </div>
     </div>
     <div class="button-container">
+      <go-back-button v-if="onGoBack" @click="onGoBack && onGoBack()">
+        {{ $t('stakingV3.voting.backToCategory') }}
+      </go-back-button>
       <astar-button class="submit-button" @click="onConfirm">{{ $t('confirm') }}</astar-button>
     </div>
   </div>
@@ -46,12 +49,14 @@ import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import DappIcon from '../DappIcon.vue';
 import { useDappStaking } from 'src/staking-v3/hooks';
 import { DappVote } from 'src/staking-v3/logic';
+import GoBackButton from '../GoBackButton.vue';
 
 export default defineComponent({
   components: {
     BalanceAlternateSize,
     TokenBalanceNative,
     DappIcon,
+    GoBackButton,
   },
   props: {
     dapps: {
@@ -65,6 +70,11 @@ export default defineComponent({
     onConfirm: {
       type: Function as PropType<() => void>,
       required: true,
+    },
+    onGoBack: {
+      type: Function as PropType<() => void>,
+      required: false,
+      default: undefined,
     },
   },
   setup() {

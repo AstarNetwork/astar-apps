@@ -6,59 +6,12 @@
         :stake-to-address="selectedDappAddress"
         :move-from-address="dAppToMoveFromAddress"
       />
-      <div class="column--help">
-        <div class="note">
-          <b>{{ $t('stakingV3.voting.note') }}</b>
-          <ul>
-            <li>
-              {{
-                $t('stakingV3.voting.minimumStakingAmount', {
-                  amount: constants?.minStakeAmountToken,
-                  symbol: nativeTokenSymbol,
-                })
-              }}
-            </li>
-            <li>
-              {{
-                $t('stakingV3.voting.minBalanceAfterStaking', {
-                  amount: constants?.minBalanceAfterStaking,
-                  symbol: nativeTokenSymbol,
-                })
-              }}
-            </li>
-          </ul>
-        </div>
-
-        <div class="note">
-          <b>{{ $t('stakingV3.voting.learn') }}</b>
-          <ul>
-            <li>
-              <a
-                :href="docsUrl.learnDappStaking"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link--learn"
-              >
-                {{ $t('stakingV3.voting.whatIsDappStaking') }}
-              </a>
-            </li>
-            <li>
-              <a
-                :href="docsUrl.dappStakingForStakers"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link--learn"
-              >
-                {{ $t('stakingV3.voting.howToParticipate') }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
     <div
       class="bg--vote"
-      :style="{ backgroundImage: `url(${require('/src/staking-v3/assets/vote_bg.webp')})` }"
+      :style="{
+        backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_bg.webp')})`,
+      }"
     />
   </div>
 </template>

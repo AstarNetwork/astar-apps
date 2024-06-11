@@ -229,6 +229,7 @@ export type DappVote = {
   amount: number;
   id: number;
   mainCategory?: string;
+  stakeAmount?: bigint;
 };
 
 export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
@@ -238,6 +239,7 @@ export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
   amount: 0,
   id: dapp.chain.id,
   mainCategory: dapp.basic.mainCategory,
+  stakeAmount: dapp.chain.totalStake,
 });
 
 export type DappRegistrationParameters = {

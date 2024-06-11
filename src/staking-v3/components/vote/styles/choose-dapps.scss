@@ -1,10 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-.main-container {
-  display: flex;
-  gap: 8px;
-}
-
 .dapp-filter-container {
   display: flex;
   gap: 8px;
@@ -23,30 +18,52 @@
   color: $white;
 }
 
-.container--dapps {
-  width: 100%;
+.container--item {
+  height: 100%;
+  position: relative;
+  background-color: $white;
+  border-radius: 16px;
   display: flex;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  outline: solid 1px $white;
+  outline-offset: -1px;
+  transition: all 0.2s ease;
+  justify-content: space-between;
   flex-direction: column;
-  gap: 8px;
 
-  .container--item {
-    position: relative;
-    background-color: $white;
-    border-radius: 16px;
-    display: flex;
+  @media (min-width: $lg) {
+    flex-direction: row;
     align-items: center;
-    gap: 16px;
-    height: 72px;
-    padding: 16px 24px;
-    cursor: pointer;
-    font-weight: 600;
   }
 
-  @media (min-width: 768px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  &:hover,
+  &.is-selected {
+  outline-color: $astar-blue;
   }
+}
+
+.dapp-name-icon{
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: $lg) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.dapp-name{
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .item--selected {
@@ -62,24 +79,4 @@
   position: absolute;
   top: 0;
   right: 0;
-}
-
-.swiper--dapps {
-  > .swiper-button-prev,
-  > .swiper-button-next {
-    margin: 0;
-    margin-right: 6px;
-    position: relative;
-    width: 24px;
-    height: 24px;
-    display: block;
-    text-align: center;
-    left: 0;
-    right: 0;
-    &::after {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 24px;
-    }
-  }
 }

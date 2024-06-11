@@ -33,8 +33,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .kpi-wrapper {
   display: flex;
-  flex-direction: column;
   gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (min-width: $lg) {
+    flex-direction: column;
+  }
 }
 
 .kpi-title {
@@ -57,6 +62,7 @@ export default defineComponent({
   font-size: 40px;
   font-weight: 800;
   line-height: 40px;
+  line-break: anywhere;
 }
 
 .unit {

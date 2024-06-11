@@ -1,15 +1,53 @@
 <template>
-  <div class="v3-new-container">
-    <div class="title">{{ period }} | {{ $t('stakingV3.stats') }}</div>
+  <div class="wrapper--period-stats">
+    <div class="title">
+      <span>{{ period.toString().padStart(3, '0') }}</span>
+      <span>{{ $t('stakingV3.stats') }}</span>
+    </div>
+
     <div class="stats-content">
-      <div>
+      <div class="stats-content__left">
         <div class="period-kpi-container">
-          <div>{{ $t('stakingV3.tvl') }}</div>
-          <div>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}%</div>
+          <div class="kpi-title">{{ $t('stakingV3.userRewardsApr') }}</div>
+          <div class="apr-container">
+            <div class="apr-basic">
+              <div class="apr-title">{{ $t('stakingV3.basicApr') }}</div>
+              <div class="value-unit">
+                <span>--<small>%</small></span>
+              </div>
+            </div>
+            <div class="apr-bonus">
+              <div class="apr-title">{{ $t('stakingV3.bonusAPR') }}</div>
+              <div class="value-unit">
+                <span>--<small>%</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="period-kpi-container">
+          <div class="kpi-title">{{ $t('stakingV3.tvl') }}</div>
+          <div class="value-unit">
+            <span>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}<small>%</small></span>
+          </div>
+        </div>
+        <div class="period-kpi-container">
+          <div class="kpi-title">{{ $t('stakingV3.unmintedTokens') }}</div>
+          <div>
+            <div class="value-unit"><span>--</span></div>
+            <div class="more-info">
+              <router-link :to="RoutePath.Dashboard">
+                {{ $t('stakingV3.moreInfoFor') }} {{ `\$${nativeTokenSymbol.toUpperCase()}`
+                }}<astar-icon-arrow-right />
+              </router-link>
+            </div>
+          </div>
         </div>
       </div>
-      <dapp-stats-panel :title="$t('stakingV3.stakedAmount')" :data="stakesStats" />
-      <dapp-stats-panel :title="$t('stakingV3.dappEarner')" :data="rewardsStats" />
+
+      <div class="stats-content__right">
+        <dapp-stats-panel :title="$t('stakingV3.stakedAmount')" :data="stakesStats" />
+        <dapp-stats-panel :title="$t('stakingV3.dappEarner')" :data="rewardsStats" />
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +57,8 @@ import { defineComponent, toRefs, computed } from 'vue';
 import DappStatsPanel, { PanelData } from './DappStatsPanel.vue';
 import { usePeriodStats } from '../hooks';
 import { sort } from 'src/v2/common';
+import { Path as RoutePath } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -40,6 +80,7 @@ export default defineComponent({
           name: x.name,
           iconUrl: x.iconUrl,
           amount: BigInt(x.stakeAmount),
+          address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
     );
@@ -50,80 +91,18 @@ export default defineComponent({
           name: x.name,
           iconUrl: x.iconUrl,
           amount: x.rewardAmount,
+          address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
     );
 
-    return { stakesStats, rewardsStats, tvlRatio };
+    const { nativeTokenSymbol } = useNetworkInfo();
+
+    return { stakesStats, rewardsStats, tvlRatio, RoutePath, nativeTokenSymbol };
   },
 });
 </script>
 
 <style scoped lang="scss">
-@import 'src/css/quasar.variables.scss';
-
-// TODO move to the common place
-.v3-new-container {
-  display: flex;
-  flex-direction: column;
-  border-radius: 24px;
-  border: 2px solid $navy-3;
-  background: rgba(31, 47, 95, 0.2);
-  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(3px);
-  padding: 16px;
-  gap: 64px;
-
-  @media (min-width: $md) {
-    padding: 48px;
-  }
-}
-
-.stats-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  @media (min-width: $md) {
-    flex-direction: row;
-
-    > div {
-      width: 33%;
-    }
-  }
-}
-
-.title {
-  font-size: 32px;
-  font-weight: 900;
-  line-height: normal;
-}
-
-.period-kpi-container {
-  width: 100%;
-  padding: 16px;
-  border-radius: 16px;
-  background: rgba(8, 16, 41, 0.3);
-
-  div {
-    padding: 8px 0;
-  }
-
-  div:first-child {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: normal;
-  }
-
-  div:nth-child(2) {
-    text-align: right;
-    font-size: 32px;
-    font-weight: 800;
-    line-height: normal;
-    background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-}
+@import './styles/period-stats.scss';
 </style>
