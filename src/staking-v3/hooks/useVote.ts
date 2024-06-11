@@ -1,17 +1,17 @@
 import { Ref, computed, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
 import { CombinedDappInfo, DappStakeInfo, DappVote } from '../logic';
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
 import { useDappStaking } from './useDappStaking';
 import { abs, max } from 'src/v2/common';
 import { useDapps } from './useDapps';
+import { useDappStakingNavigation } from './useDappStakingNavigation';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
   const { useableBalance } = useBalance(currentAccount);
-  const route = useRoute();
   const { ledger, totalStake, canStake, getStakerInfo, claimLockAndStake } = useDappStaking();
+  const { navigateToAssets } = useDappStakingNavigation();
   const { getDapp } = useDapps();
 
   const dAppToMoveFromAddress = ref<string>(dappToMoveTokensFromAddress ?? '');
@@ -110,7 +110,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       amountToUnstake.value
     );
 
-    // navigateToAssets();
+    navigateToAssets();
   };
 
   watch(

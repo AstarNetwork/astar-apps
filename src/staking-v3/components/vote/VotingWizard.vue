@@ -30,7 +30,7 @@
     </div>
     <wizard-steps
       :steps="wizardSteps"
-      :selected-step-index="marksStepAsSelected ? selectedStepIndex : -1"
+      :selected-step-index="selectedStepIndex"
       :completed-steps="completedSteps"
       :on-step-selected="handleStepSelected"
     />
@@ -149,11 +149,6 @@ export default defineComponent({
       props.moveFromAddress ? t('stakingV3.voting.moveFunds') : t('stakingV3.voting.startStaking')
     );
 
-    // When user stakes to a single preselected dApp we don't want to mark add amount step as selected.
-    const markStepAsSelected = computed<boolean>(
-      () => !(selectedComponentIndex.value === Steps.AddAmount && props.stakeToAddress)
-    );
-
     const wizardSteps: WizardItem[] = [
       {
         title: t('stakingV3.voting.chooseDapps'),
@@ -253,7 +248,6 @@ export default defineComponent({
       dappToMoveTokensFrom,
       availableToMoveFrom,
       nativeTokenImg,
-      marksStepAsSelected: markStepAsSelected,
       canVote,
       vote,
       handleStepSelected: handleSelectComponent,
