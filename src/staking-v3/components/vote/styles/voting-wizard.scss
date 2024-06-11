@@ -12,6 +12,7 @@
   box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(3px);
   overflow: hidden;
+  color: $navy-1;
 
   @media (min-width: $lg) {
     padding: 48px;
@@ -128,7 +129,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    opacity: 0.8;
+    filter: brightness(1.2);
   }
 }
 
