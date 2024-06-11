@@ -1047,6 +1047,7 @@ export default {
     basicApr: 'Basic APR',
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
+    threshold: 'Threshold',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

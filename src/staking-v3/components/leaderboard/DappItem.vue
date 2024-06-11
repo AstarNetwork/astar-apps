@@ -8,7 +8,7 @@
       <div>{{ dapp.basic.name }}</div>
     </div>
     <div class="amount">
-      <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" />
+      <token-balance-native :balance="dapp.chain.totalStake?.toString() ?? '0'" :decimals="0" />
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const { navigateDappPage } = useDappStakingNavigation();
 
     return {
