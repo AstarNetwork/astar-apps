@@ -18,7 +18,7 @@
   flex-direction: column;
   gap: 24px;
   padding-top: 40px;
-  
+
   @media (min-width: $lg) {
     padding-top: 100px;
     flex-direction: row;
@@ -37,6 +37,9 @@
 
 .right-panel {
   min-width: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   div:first-child {
     color: $white;
@@ -49,8 +52,9 @@
   }
 }
 
-.estimated-rewards{
-  line-height: 1.25%;
+.estimated-rewards {
+  line-height: 1.25;
+  margin-bottom: 8px;
 }
 
 .panel {
@@ -73,8 +77,8 @@
 
 .title {
   font-size: 32px;
-    font-weight: 900;
-    line-height: 1.25;
+  font-weight: 900;
+  line-height: 1.25;
   display: flex;
   gap: 16px;
 
@@ -100,21 +104,22 @@
 }
 
 .percentage {
-  background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   text-align: right;
+  line-height: 1;
   padding-top: 16px;
 
-  span:first-child {
+  span {
+    background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: 48px;
     font-weight: 800;
-  }
 
-  span:last-child {
-    font-size: 32px;
-    font-weight: 400;
+    small {
+      font-size: 32px;
+      font-weight: 400;
+    }
   }
 }
 

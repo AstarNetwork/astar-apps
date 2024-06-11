@@ -18,8 +18,7 @@
         <div class="estimated-rewards">{{ $t('stakingV3.estimatedRewards') }}</div>
         <div>{{ $t('stakingV3.basicPlusBonus') }}</div>
         <div class="percentage">
-          <span>15</span>
-          <span>% +</span>
+          <span>15<small>%+</small></span>
         </div>
       </div>
     </div>
