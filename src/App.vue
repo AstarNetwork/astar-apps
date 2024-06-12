@@ -119,16 +119,19 @@ export default defineComponent({
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
       console.log('Status message', m);
-      const message = m as ExtrinsicStatusMessage;
-      store.dispatch(
-        'general/showAlertMsg',
-        {
-          msg: message.getMessage(),
-          alertType: message.isSuccess() ? 'success' : 'error',
-          explorerUrl: message.getExplorerUrl() || '',
-        },
-        { root: true }
-      );
+
+      if (m instanceof ExtrinsicStatusMessage) {
+        const message = m as ExtrinsicStatusMessage;
+        store.dispatch(
+          'general/showAlertMsg',
+          {
+            msg: message.getMessage(),
+            alertType: message.isSuccess() ? 'success' : 'error',
+            explorerUrl: message.getExplorerUrl() || '',
+          },
+          { root: true }
+        );
+      }
     });
 
     eventAggregator.subscribe(BusyMessage.name, (m) => {
