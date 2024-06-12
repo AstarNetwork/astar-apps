@@ -28,6 +28,7 @@
 }
 
 .column--reward {
+  width: 50%;
   font-weight: 600;
   line-height: 1.4;
   .text--reward {
@@ -50,7 +51,7 @@
 }
 
 .dapp {
-  padding: 12px;
+  padding: 8px;
   display: flex;
   align-items: center;
   font-weight: 600;

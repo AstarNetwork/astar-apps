@@ -8,7 +8,7 @@
   >
     <div class="wrapper--leaderboard__inner">
       <div class="title">
-        <span>002</span>
+        <span>{{ protocolState?.periodInfo.number.toString().padStart(3, '0') }}</span>
         <span>{{ $t('stakingV3.votes') }}</span>
       </div>
 
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useLeaderboard } from 'src/staking-v3/hooks';
+import { useDappStaking, useLeaderboard } from 'src/staking-v3/hooks';
 import Tier from './Tier.vue';
 
 // Import Swiper
@@ -66,8 +66,15 @@ export default defineComponent({
   },
   setup() {
     const { leaderBoards, isLeaderboardEmpty, getDailyReward } = useLeaderboard();
+    const { protocolState } = useDappStaking();
 
-    return { leaderBoards, isLeaderboardEmpty, getDailyReward, modules: [Navigation] };
+    return {
+      leaderBoards,
+      isLeaderboardEmpty,
+      protocolState,
+      getDailyReward,
+      modules: [Navigation],
+    };
   },
 });
 </script>
