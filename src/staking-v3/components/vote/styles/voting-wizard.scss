@@ -115,6 +115,7 @@
 .wizard-step-container:not(.not-selectable) {
   color: $white;
   box-shadow: 0px 0px 6.88px 1.376px rgba(0, 0, 0, 0.3);
+  background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%)); // for mobile
 
   .wizard-step-number {
     border-color: $white;
