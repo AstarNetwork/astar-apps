@@ -331,6 +331,7 @@ export class DappStakingRepository implements IDappStakingRepository {
       period: tiers.period.toNumber(),
       dapps,
       rewards: tiers.rewards.map((reward) => reward.toBigInt()),
+      rankRewards: tiers.rankRewards?.map((reward) => reward.toBigInt()) ?? [0, 0, 0, 0], // for backward compatibility in case when not deployed on all networks
     };
   }
 

@@ -139,6 +139,7 @@ export interface DAppTierRewards {
   readonly dapps: DAppTier[];
   readonly rewards: bigint[];
   readonly period: number;
+  readonly rankRewards: bigint[];
 }
 
 export interface DAppTier {

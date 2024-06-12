@@ -68,6 +68,7 @@ export const initialDappTiersConfiguration: DAppTierRewards = {
   dapps: [],
   rewards: [],
   period: 0,
+  rankRewards: [],
 };
 
 export const initialEraLengths: EraLengths = {
