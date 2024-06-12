@@ -66,7 +66,9 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
       if (!stakedBonusEligible) return 0;
 
       const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
-      const { simulatedBonusPerPeriod } = await stakingService.getBonusApr();
+      const { simulatedBonusPerPeriod } = await stakingService.getBonusApr(
+        Number(ethers.utils.formatEther(stakedBonusEligible))
+      );
 
       return simulatedBonusPerPeriod;
     } catch (error) {
