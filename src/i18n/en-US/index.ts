@@ -796,7 +796,7 @@ export default {
     voteTitle: 'Vote!',
     votingOpen: 'Voting open',
     votingOpenText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      'Experience dApp Staking, the unique staking mechanism exclusive to Astar, where communities can back their favorite teams by staking ASTR tokens and earn substantial rewards. The voting period has just started, offering users an opportunity to earn additional bonuses. Stake now to secure your rewards and be entitled to your bonus!',
     stakeToday: 'Stake today, be entitled to big bonus!',
     stakeTodayFormatted: 'Stake today,<br/>be entitled to<br/>bonus!',
     voteText: 'I would like to vote my tokens with',
@@ -848,7 +848,7 @@ export default {
     claimNow: 'Claim now',
     claim: 'Claim',
     dApp: 'dApp',
-    stakedAmount: 'Staked amount',
+    stakedAmount: 'Staked Amount',
     stakedAmountTooltip:
       'Staked amount means that the tokens are locked and staked. Rewards are distributed every era (day) during Build&Earn Subperiod.',
     lockedAmount: 'Locked amount',
@@ -928,8 +928,7 @@ export default {
     builderRewards: 'Builder Rewards',
     stakerRewards: 'Staker Rewards',
     stakedToLockedRatio: 'Staked to Locked Ratio',
-    tvvDescription:
-      'Total Volume of Vote is the rate that shows how much is staked within dApp Staking TVL.',
+    tvvDescription: 'Staked to Locked Ratio indicates how much of the dApp staking TVL is staked.',
     loyaltyStake: 'Loyalty Stake',
     bonusEligibleTokensDescription:
       'Real time amount of tokens that are entitled to receive bonus rewards.',
@@ -939,8 +938,7 @@ export default {
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',
     unfilledSlot: 'Unfilled slot tokens',
-    unfilledSlotDescription:
-      'Total amount of tokens for slots that are not filled by the projects in the current era.',
+    unfilledSlotDescription: 'The number of tier slots without projects in the current era.',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
     dapp: {
@@ -1002,11 +1000,12 @@ export default {
       startStaking: 'Start staking',
       chooseDapps: 'Choose dApps',
       chooseDappsDescription:
-        'Choose dApps you want to support, Network reward will be distributed to those who are chosen.',
+        'Choose dApps you want to support; network rewards will be distributed to those you select.',
       addAmount: 'Add amount you wish',
       addAmountDescription: 'Simple as it is, just decide how much you would like to stake.',
       allDone: 'All done!',
-      allDoneDescription: 'Enjoy your rewards, also you can check how much the dApps are earning.',
+      allDoneDescription:
+        'Enjoy your rewards, and check how much your selected dApps are receiving.',
       category: 'Category',
       lastTVL: 'Last TVL',
       newbies: 'Newbies',
@@ -1031,23 +1030,24 @@ export default {
     inflation: 'Inflation',
     estimatedRealizedInflation: 'Estimated realized inflation',
     estimatedRealizedInflationDescription:
-      'Estimated realized inflation rate at the end of teh current inflation cycle. Check our',
+      'Estimated realized inflation rate at the end of the current inflation cycle. Check our',
     remainingTime: 'Remaining time',
     stakingAPR: 'Staking APR',
     bonusAPR: 'Bonus APR',
     manageStakingAssets: 'Manage staking assets',
     newPeriodWarning:
-      'New period starting in {days} days. Don’t forget to stake during the period and get entitled to bonus!',
+      'New period begins in {days} days! Remember to stake during the voting period to qualify for bonus rewards!',
     stats: 'Stats',
-    dappEarner: 'dApp earner',
+    dappEarner: 'Total Rewards Earned',
     newVotingPeriod: 'New voting period',
     bonusPeriodEnds: 'Bonus period ends in {eras} days',
-    userRewardsApr: 'User Rewards APR (AVR)',
-    unmintedTokens: 'Unminted tokens',
+    userRewardsApr: 'User Rewards APR',
+    unmintedTokens: 'Unminted Tokens',
     basicApr: 'Basic APR',
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
+    percentageStaked: 'Percentage of Supply Staked',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
