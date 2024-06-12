@@ -69,26 +69,16 @@ export const castTransferHistory = ({
   const timestamp = String(tx.timestamp);
   const txType = HistoryTxType.Transfer;
   const note = `To ${getShortenAddress(to)}`;
-  const networkIdx = localStorage.getItem(NETWORK_IDX);
-  const subscan = providerEndpoints[Number(networkIdx)].subscan;
-  const explorerUrl = `${subscan}/extrinsic/${hash}`;
-  return { timestamp, txType, amount, symbol, note, explorerUrl };
-};
+  const networkIdx = Number(localStorage.getItem(NETWORK_IDX));
+  let explorerUrl: string = '';
 
-export const castZkEVMTransferHistory = ({
-  tx,
-  hash,
-}: {
-  tx: TransferDetail;
-  hash: string;
-}): RecentHistory => {
-  const { amount, symbol, to } = tx;
-  const timestamp = String(tx.timestamp);
-  const txType = HistoryTxType.Transfer;
-  const note = `To ${getShortenAddress(to)}`;
-  const networkIdx = localStorage.getItem(NETWORK_IDX);
-  const blockscount = providerEndpoints[Number(networkIdx)].blockscout;
-  const explorerUrl = `${blockscount}/tx/${hash}`;
+  if (networkIdx === endpointKey.ASTAR_ZKEVM || networkIdx === endpointKey.ZKYOTO) {
+    const blockscount = providerEndpoints[networkIdx].blockscout;
+    explorerUrl = `${blockscount}/tx/${hash}`;
+  } else {
+    const subscan = providerEndpoints[networkIdx].subscan;
+    explorerUrl = `${subscan}/extrinsic/${hash}`;
+  }
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
@@ -191,38 +181,4 @@ export const getLzTxHistories = async ({
     })
   );
   return parsedTxs.filter((it) => it !== undefined) as RecentLzHistory[];
-};
-
-export const getZkEVMTxHistories = async ({
-  address,
-  network,
-}: {
-  address: string;
-  network: string;
-}): Promise<RecentHistory[]> => {
-  const txs: TxHistory[] = [];
-  const storageKey = TX_HISTORIES;
-
-  const transactions = getAccountHistories({
-    storageKey,
-    address,
-    network,
-  });
-  transactions.forEach((it) => txs.push(it));
-
-  const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
-
-  const parsedTxs = await Promise.all(
-    formattedTxs.map(async (it) => {
-      const { hash } = it;
-      try {
-        const tx = await fetchTransferDetails({ hash, network });
-        return castZkEVMTransferHistory({ tx, hash });
-      } catch (error) {
-        console.error(error);
-        return undefined;
-      }
-    })
-  );
-  return parsedTxs.filter((it) => it !== undefined) as RecentHistory[];
 };

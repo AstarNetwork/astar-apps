@@ -100,10 +100,7 @@ import { getXvmAssetsTransferHistories } from 'src/modules/information/recent-hi
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect, onUnmounted } from 'vue';
 import { RecentLzHistory } from '../../../modules/information/index';
-import {
-  getLzTxHistories,
-  getZkEVMTxHistories,
-} from '../../../modules/information/recent-history/transfer/index';
+import { getLzTxHistories } from '../../../modules/information/recent-history/transfer/index';
 import { LOCAL_STORAGE } from '../../../config/localStorage';
 import { endpointKey, providerEndpoints } from '../../../config/chainEndpoints';
 
@@ -159,11 +156,6 @@ export default defineComponent({
       } else if (props.transferType === HistoryTxType.LZ_BRIDGE) {
         lztTxHistories.value = await getLzTxHistories({
           address: currentAccount.value,
-          network,
-        });
-      } else if (props.transferType === HistoryTxType.ZK_ETHEREUM_BRIDGE) {
-        txHistories.value = await getZkEVMTxHistories({
-          address: isH160.value ? currentAccount.value : senderSs58Account.value,
           network,
         });
       } else {
