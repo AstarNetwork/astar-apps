@@ -12,7 +12,11 @@
                   <div class="dapp-icon"><img :src="dapp.iconUrl" :alt="dapp.name" /></div>
                   <div class="dapp-name">{{ dapp.name }}</div>
                 </div>
-                <token-balance-native :balance="dapp.amount.toString() ?? '0'" />
+                <token-balance-native
+                  :balance="dapp.amount.toString() ?? '0'"
+                  :decimals="0"
+                  :show-token-symbol="false"
+                />
               </div>
             </div>
           </div>

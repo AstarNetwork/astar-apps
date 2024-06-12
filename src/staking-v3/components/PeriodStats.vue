@@ -37,6 +37,7 @@
               <token-balance-native
                 :balance="tokensToBeBurned?.toString() ?? '0'"
                 :show-token-symbol="false"
+                :decimals="0"
               />
             </div>
             <div class="more-info">
