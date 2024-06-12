@@ -28,7 +28,7 @@ import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
 import GoBackButton from '../GoBackButton.vue';
-import { CombinedDappInfo, DappVote, mapToDappVote } from '../../../logic';
+import { DappVote, mapToDappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 import { useI18n } from 'vue-i18n';
 
@@ -103,6 +103,7 @@ export default defineComponent({
 
     const goBackToCategories = (): void => {
       currentView.value = View.Category;
+      currentCategory.value = undefined;
       props.scrollToTop();
     };
 
