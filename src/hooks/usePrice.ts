@@ -1,5 +1,5 @@
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
 import { getUsdBySymbol } from '@astar-network/astar-sdk-core';
 
@@ -13,7 +13,7 @@ export function usePrice() {
 
   const { isMainnet, isAstarZkEvm } = useNetworkInfo();
 
-  watchEffect(async () => {
+  watch([tokenSymbol], async () => {
     const tokenSymbolRef = tokenSymbol.value;
     if (!tokenSymbolRef) return;
     try {
