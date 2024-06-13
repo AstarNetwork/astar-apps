@@ -1,6 +1,7 @@
 import { watch, ref, computed } from 'vue';
 import { CombinedDappInfo, PeriodType, useDappStaking, useDapps } from '..';
 import { useStore } from 'src/store';
+import { sort } from 'src/v2/common';
 
 export function useLeaderboard() {
   const store = useStore();
@@ -28,14 +29,7 @@ export function useLeaderboard() {
       const valueA = a.chain?.totalStake ?? BigInt(0);
       const valueB = b.chain?.totalStake ?? BigInt(0);
 
-      // memo couldn't do return valueB - valueA because it's a bigint.
-      if (valueA < valueB) {
-        return 1;
-      } else if (valueA > valueB) {
-        return -1;
-      } else {
-        return 0;
-      }
+      return sort(valueA, valueB);
     })
   );
 

@@ -25,7 +25,8 @@
         :title="$t('stakingV3.stakingAndLockingAccounts')"
         :description="$t('stakingV3.numberOfStakersAndLockersDescription')"
       >
-        {{ numberOfStakersAndLockers.stakersCount }} / {{ numberOfStakersAndLockers.lockersCount }}
+        {{ numberOfStakersAndLockers?.stakersCount }} /
+        {{ numberOfStakersAndLockers?.lockersCount }}
       </data-card>
     </div>
 
@@ -93,7 +94,7 @@
         :link-label="$t('stakingV3.tokenomics')"
       >
         <format-balance
-          :balance="activeInflationConfiguration.bonusRewardPoolPerPeriod.toString() ?? ''"
+          :balance="activeInflationConfiguration?.bonusRewardPoolPerPeriod.toString() ?? ''"
         />
       </data-card>
       <data-card

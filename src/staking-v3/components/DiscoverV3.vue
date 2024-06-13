@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="wrapper--discover">
-      <feature-dapp />
+      <period-info-vote />
+      <period-info-build />
+      <div class="wrapper--voting--wizard">
+        <voting-wizard />
+      </div>
       <leaderboard />
       <leaderboard-vote />
       <dynamic-ads-area />
@@ -32,44 +36,64 @@
             <dapps category="others" :search="searchText" />
             <dapps category="unstoppable-grants" :search="searchText" />
           </div>
-          <data-list v-if="displayIndex === 1" />
+          <div v-if="displayIndex === 1">
+            <period-stats :period="previousPeriod" />
+            <data-list />
+          </div>
         </div>
       </div>
     </div>
-    <div class="bg--discover" />
+    <div
+      class="bg--discover"
+      :style="{
+        backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_bg.webp')})`,
+      }"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, watch, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { defineComponent, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useDappStaking } from '../hooks';
 import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
-import FeatureDapp from './FeatureDapp.vue';
-import ToggleButtons from './ToggleButtons.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
 import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
+import PeriodInfoVote from './PeriodInfoVote.vue';
+import PeriodInfoBuild from './PeriodInfoBuild.vue';
+import VotingWizard from './vote/VotingWizard.vue';
+import PeriodStats from './PeriodStats.vue';
+import ToggleButtons from './ToggleButtons.vue';
 
 export default defineComponent({
   components: {
-    FeatureDapp,
     Dapps,
     Leaderboard,
     LeaderboardVote,
     DataList,
     DynamicAdsArea,
+    PeriodInfoVote,
+    PeriodInfoBuild,
+    VotingWizard,
+    PeriodStats,
     ToggleButtons,
   },
   setup() {
-    const displayIndex = ref<number>(0);
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
+    const { protocolState } = useDappStaking();
     const { t } = useI18n();
     const store = useStore();
+
+    const displayIndex = ref<number>(0);
+
+    const previousPeriod = computed<number>(() =>
+      protocolState.value ? Math.max(1, protocolState.value.periodInfo.number - 1) : 1
+    );
 
     const toggleDapps = (index: number): void => {
       displayIndex.value = index;
@@ -92,7 +116,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { displayIndex, searchText, toggleDapps };
+    return { searchText, previousPeriod, displayIndex, toggleDapps };
   },
 });
 </script>

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { injectable } from 'inversify';
-import { IPriceRepository } from '../IPriceRepository';
+import { ITokenApiRepository, PeriodData } from '../ITokenApiRepository';
 
 @injectable()
-export class TokenApiRepository implements IPriceRepository {
+export class TokenApiRepository implements ITokenApiRepository {
   public static BaseUrl = 'https://api.astar.network/api';
 
   public async getUsdPrice(symbol: string): Promise<number> {
@@ -13,6 +13,16 @@ export class TokenApiRepository implements IPriceRepository {
       return response.data;
     } catch (error) {
       return 0;
+    }
+  }
+
+  public async getStakingPeriodStatistics(network: string, period: number): Promise<PeriodData[]> {
+    try {
+      const url = `${TokenApiRepository.BaseUrl}/v3/${network}/dapps-staking/period-aggregated/${period}`;
+      const response = await axios.get<PeriodData[]>(url);
+      return response.data;
+    } catch (error) {
+      return [];
     }
   }
 }

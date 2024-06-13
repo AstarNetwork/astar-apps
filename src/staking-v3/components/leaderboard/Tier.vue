@@ -2,10 +2,21 @@
   <div class="wrapper--tier">
     <div class="row--tier-header">
       <div class="text--title">{{ $t('stakingV3.tier') }} {{ tier }}</div>
-      <div class="column--reward">
-        <div class="text--reward">{{ $t('stakingV3.rewardPerDay') }}</div>
-        <div class="text--amount">
-          <token-balance-native :balance="dailyReward?.toString() ?? '0'" />
+      <div class="rewards">
+        <div class="column--reward">
+          <div class="text--reward">{{ $t('stakingV3.rewardPerDay') }}</div>
+          <div class="text--amount">
+            <token-balance-native :balance="dailyReward?.toString() ?? '0'" :decimals="0" />
+          </div>
+        </div>
+        <div class="column--reward">
+          <div class="text--reward">{{ $t('stakingV3.threshold') }}</div>
+          <div class="text--amount">
+            <token-balance-native
+              :balance="tiersConfiguration?.tierThresholds[tier - 1]?.amount?.toString() ?? '0'"
+              :decimals="0"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -94,6 +105,7 @@ export default defineComponent({
       modules: [Navigation],
       itemsPerPage,
       pages,
+      tiersConfiguration,
       navigateDappPage,
     };
   },
