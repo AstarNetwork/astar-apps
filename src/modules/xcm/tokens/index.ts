@@ -165,6 +165,16 @@ export const xcmToken = {
       originChain: Chain.ASSET_HUB,
       minBridgeAmount: '1',
     },
+    {
+      symbol: 'HDX',
+      isNativeToken: true,
+      assetId: '18446744073709551630',
+      originAssetId: 'HDX',
+      logo: require('/src/assets/img/token/hdx.png'),
+      isXcmCompatible: true,
+      originChain: Chain.HYDRATION,
+      minBridgeAmount: '5',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
