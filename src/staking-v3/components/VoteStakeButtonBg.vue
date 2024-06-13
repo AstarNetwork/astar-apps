@@ -191,7 +191,7 @@ void main() {
       precision: 'highp',
       powerPreference: 'high-performance',
     });
-    renderer.setSize(1024, 1024);
+    renderer.setSize(512, 512);
 
     const geometry = new THREE.PlaneGeometry(1024, 1024);
     const meterial = new THREE.ShaderMaterial({
