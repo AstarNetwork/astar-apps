@@ -15,7 +15,7 @@
       <div class="container--boards">
         <swiper
           class="swiper--leaderboard"
-          :slides-per-view="1"
+          :slides-per-view="1.25"
           :slides-per-group="1"
           :space-between="8"
           :navigation="true"
