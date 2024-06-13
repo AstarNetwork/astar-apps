@@ -34,7 +34,7 @@ export interface IDappStakingRepository {
    * @param forEdit Flag to indicate if dapp data should be fetched with encoded images.
    * @returns A promise that resolves to a dapp data.
    */
-  getDapp(network: string, dappAddress: string, forEdit?: boolean): Promise<Dapp>;
+  getDapp(network: string, dappAddress: string, forEdit?: boolean): Promise<Dapp | undefined>;
 
   /**
    * Gets protocol state for the given network.
