@@ -28,7 +28,8 @@
 .container--dapps-data__inner {
   margin: auto;
   max-width: $container-max-width;
-  padding: 0 16px;
+  padding: 0 8px;
+
   @media (min-width: $lg) {
     padding: 0;
   }
@@ -61,24 +62,28 @@
 }
 
 .bg--discover {
-  background-color: white;
+  background-size: 100% auto;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   min-height: 100vh;
   z-index: 0;
-}
-
-.body--dark {
-  .wrapper--discover {
-    color: $navy-1;
-  }
+  background-color: $white;
 }
 
 .dapps {
   display: flex;
   flex-direction: column;
   width: 100%;
-  row-gap: 24px;
+  row-gap: 40px;
+}
+
+.wrapper--voting--wizard {
+  width: 100%;
+  padding: 24px 8px 40px 8px;
+
+  @media (min-width: $lg) {
+    padding: 24px 40px 100px 40px;
+  }
 }

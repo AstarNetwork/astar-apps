@@ -2,43 +2,29 @@
 
 .wrapper--leaderboard {
   width: 100%;
-  padding: 100px 0 20px 0;
+  padding: 40px 8px 24px 8px;
   position: relative;
   background-color: $navy-1;
+  background-size: 100% auto;
+  background-position: top left;
+  background-repeat: no-repeat;
   @media (min-width: $lg) {
-    padding-right: 40px;
-    padding-left: 40px;
+    padding: 100px 40px 80px 40px;
   }
 }
 
 .wrapper--leaderboard__inner {
   margin: auto;
   max-width: $container-max-width;
-  padding: 0 16px;
+  padding: 48px 16px;
+  border-radius: 24px;
+  border: 2px solid $navy-3;
+  background: rgba($navy-1, 0.3);
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  
   @media (min-width: $lg) {
-    padding: 0;
-  }
-}
-
-@keyframes parallax-small-anim {
-  from {
-    transform: translateY(0px);
-  }
-  to {
-    transform: translateY(-3000px);
-  }
-}
-
-.bg--leaderboard {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 0;
-  animation: parallax-small-anim linear;
-  animation-timeline: scroll() !important;
-  img {
-    width: 100%;
+    padding: 48px;
   }
 }
 
@@ -46,43 +32,28 @@
   font-size: 32px;
   font-weight: 900;
   line-height: 1.25;
-  position: relative;
-  z-index: 1;
-  color: white;
-  font-style: italic;
-  @media (min-width: $xxxl) {
-    padding-top: 80px;
+  color: $white;
+
+  span:first-child {
+    border-right: solid 2px $white;
+    padding-right: 16px;
+    margin-right: 16px;
   }
 }
 
 .container--boards {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  position: relative;
-  z-index: 1;
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 16px,
-    black calc(100% - 16px),
-    transparent
-  );
+  overflow: hidden;
+  padding-top: 24px;
   margin-left: -16px;
   margin-right: -16px;
   padding-left: 16px;
   padding-right: 16px;
   @media (min-width: $md) {
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 40px,
-      black calc(100% - 40px),
-      transparent
-    );
-    margin-left: -40px;
-    margin-right: -40px;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-top: 64px;
+    margin-left: -48px;
+    margin-right: -48px;
+    padding-left: 48px;
+    padding-right: 48px;
   }
 }
 

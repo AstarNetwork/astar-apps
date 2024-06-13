@@ -9,4 +9,14 @@ const min = (a: bigint, b: bigint): bigint => (a < b ? a : b);
 
 const max = (a: bigint, b: bigint): bigint => (a > b ? a : b);
 
-export { wait, abs, min, max };
+const sort = (a: bigint, b: bigint): number => {
+  if (a < b) {
+    return 1;
+  } else if (a > b) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
+
+export { wait, abs, min, max, sort };

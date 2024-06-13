@@ -1,44 +1,29 @@
 @import 'src/css/quasar.variables.scss';
 
-ul {
-  padding-left: 20px;
-}
-
-li {
-  list-style-type: disc;
-}
-
 .bg--vote {
-  background-color: white;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 100% auto;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   min-height: 100vh;
   z-index: 0;
+  background-color: $white;
 }
 
 .wrapper--vote {
   position: relative;
   z-index: 1;
-  max-width: 880px;
-  min-height: calc(100vh - 64px);
   margin: auto;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
-  padding: 0 16px 120px 16px;
-  margin: 0 auto -120px auto;
-  overflow-y: auto;
-  @media (min-width: $sm) {
-    padding: 0 40px 40px 40px;
-  }
+  max-width: $container-max-width;
+  padding-right: 8px;
+  padding-left: 8px;
+  padding-bottom: 80px;
+
   @media (min-width: $lg) {
-    margin-top: -36px;
+    padding-left: 0;
+    padding-right: 0;
     padding-top: 36px;
-    min-height: calc(100vh - 96px);
   }
 }
 
@@ -63,17 +48,6 @@ li {
   }
 }
 
-.column--help {
-  order: 1;
-  gap: 8px;
-  display: flex;
-  flex-direction: column;
-  @media (min-width: $sm) {
-    width: 320px;
-    order: 2;
-  }
-}
-
 .title {
   color: $navy-1;
   font-size: 32px;
@@ -88,17 +62,6 @@ li {
   margin-bottom: 16px;
 }
 
-.note {
-  padding: 16px;
-  gap: 8px;
-  align-self: stretch;
-  border-radius: 16px;
-  background-color: $gray-1;
-  display: flex;
-  flex-direction: column;
-  border: solid 1px $gray-2;
-}
-
 .warning {
   background-color: rgba(230, 0, 122, 0.05);
   border: 1px solid $astar-pink;
@@ -108,11 +71,6 @@ li {
 
 .warning--text {
   color: $astar-pink;
-}
-
-.note--row {
-  display: flex;
-  justify-content: space-between;
 }
 
 .amount {
@@ -195,23 +153,6 @@ li {
   }
 }
 
-.move--from {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  gap: 16px;
-  border-radius: 16px;
-  background-color: $gray-1;
-  border: solid 1px $gray-2;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: normal;
-
-  img {
-    width: 24px;
-  }
-}
-
 .stake--on {
   margin-top: 16px;
   margin-bottom: 0px;
@@ -229,12 +170,4 @@ li {
   color: $white;
   font-size: 14px;
   font-weight: 500;
-}
-
-.link--learn {
-  color: $astar-blue;
-  transition: all 0.2s ease;
-  &:hover {
-    color: $astar-blue-dark;
-  }
 }

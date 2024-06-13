@@ -68,6 +68,7 @@
       </div>
 
       <div class="column--links">
+        <voting-period-side-add />
         <side-ads />
         <astar-domains />
       </div>
@@ -75,6 +76,7 @@
   </div>
 </template>
 <script lang="ts">
+import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import Account from 'src/components/assets/Account.vue';
 import AnchorLinks from 'src/components/assets/AnchorLinks.vue';
@@ -97,7 +99,7 @@ import Staking from 'src/staking-v3/components/my-staking/Staking.vue';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
+import VotingPeriodSideAdd from 'src/staking-v3/components/VotingPeriodSideAdd.vue';
 
 export default defineComponent({
   components: {
@@ -113,6 +115,7 @@ export default defineComponent({
     ZkAstr,
     AnchorLinks,
     RegisterBanner,
+    VotingPeriodSideAdd,
   },
   setup() {
     const token = ref<Asset | null>(null);

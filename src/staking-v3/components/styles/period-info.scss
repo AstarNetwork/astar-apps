@@ -1,0 +1,128 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper-info {
+  width: 100%;
+  padding: 0 8px;
+
+  @media (min-width: $lg) {
+    padding: 0 40px;
+  }
+}
+
+.wrapper-info-inner {
+  max-width: $container-max-width;
+  margin: auto;
+  width: 100%;
+  color: $white;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 40px;
+
+  @media (min-width: $lg) {
+    padding-top: 100px;
+    flex-direction: row;
+  }
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  > :last-child {
+    margin-top: auto;
+  }
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  div:first-child {
+    color: $white;
+    font-size: 32px;
+    font-weight: 900;
+  }
+
+  > :last-child {
+    margin-top: auto;
+  }
+}
+
+.estimated-rewards {
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.panel {
+  border-radius: 24px;
+  background-color: $navy-1;
+  padding: 48px 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.25;
+  display: flex;
+  gap: 16px;
+
+  span:first-child {
+    border-right: 2px solid $white;
+    padding-right: 16px;
+  }
+}
+
+.subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  @media (min-width: $lg) {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+.time-left {
+  color: $white;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.percentage {
+  text-align: right;
+  line-height: 1;
+  padding-top: 16px;
+
+  span {
+    background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 0%;
+
+    small {
+      font-size: 32px;
+      font-weight: 400;
+    }
+  }
+}
+
+.build-panel {
+  display: flex;
+  flex: 1;
+}

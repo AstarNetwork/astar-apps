@@ -3,17 +3,18 @@
 .wrapper--ads-area {
   background-color: $navy-1;
   width: 100%;
-  padding: 40px 0 80px 0;
+  padding-bottom: 40px;
   @media (min-width: $lg) {
     padding-right: 40px;
     padding-left: 40px;
+    padding-bottom: 100px;
   }
 }
 
 .wrapper--ads-area__inner {
   margin: auto;
   max-width: $container-max-width;
-  padding: 0 16px;
+  padding: 0 8px;
   @media (min-width: $lg) {
     padding: 0;
   }
