@@ -30,7 +30,7 @@
       <div class="panel build-panel">
         <div class="header">
           <div class="title no-separator">
-            {{ $t('stakingV3.yourRewards') }}
+            {{ $t('stakingV3.rewards') }}
           </div>
           <div @click="navigateToAssets()">
             {{ $t('stakingV3.manageStakingAssets') }} <astar-icon-arrow-right />

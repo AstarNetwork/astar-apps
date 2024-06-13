@@ -796,7 +796,7 @@ export default {
     voteTitle: 'Vote!',
     votingOpen: 'Voting open',
     votingOpenText:
-      'Experience dApp Staking, the unique staking mechanism exclusive to Astar, where communities can back their favorite teams by staking ASTR tokens and earn substantial rewards. The voting period has just started, offering users an opportunity to earn additional bonuses. Stake now to secure your rewards and be entitled to your bonus!',
+      'Experience dApp Staking, the unique staking mechanism exclusive to Astar, where communities can back their favorite teams by staking ASTR tokens and earn substantial rewards.',
     stakeToday: 'Stake today, be entitled to big bonus!',
     stakeTodayFormatted: 'Stake today,<br/>be entitled to<br/>bonus!',
     voteText: 'I would like to vote my tokens with',
@@ -843,7 +843,6 @@ export default {
     unbonding: 'Unbonding',
     totalEstimatedRewards: 'Total estimated rewards',
     claimEstimatedRewards: 'Claim estimated Rewards',
-    basicPlusBonus: 'Basic rewards + Bonus',
     bonusEligible: 'Bonus Eligible',
     claimNow: 'Claim now',
     claim: 'Claim',
@@ -937,7 +936,7 @@ export default {
     dAppsSlots: 'dApps slots',
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',
-    unfilledSlot: 'Unfilled slot tokens',
+    unfilledSlot: 'Unfilled slots',
     unfilledSlotDescription: 'The number of tier slots without projects in the current era.',
     ourDapps: 'Our dApps',
     ourData: 'Our data',
@@ -1049,6 +1048,9 @@ export default {
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
     percentageStaked: 'Percentage of Supply Staked',
+    unclaimedRewards: 'Unclaimed rewards',
+    rewardsClaimedOnStake: 'Rewards will be claimed when stake',
+    ifYouStakeNow: 'If you stake now',
   },
   bridge: {
     selectBridge: 'Select a Bridge',

@@ -36,14 +36,13 @@
 }
 
 .right-panel {
-  min-width: 210px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   div:first-child {
     color: $white;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 900;
   }
 
@@ -65,14 +64,8 @@
 
 .header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start !important;
-
-  @media (min-width: $lg) {
-    flex-direction: row;
-    align-items: center !important;
-  }
 }
 
 .title {
@@ -89,12 +82,17 @@
 }
 
 .subtitle {
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 24px;
+  font-weight: 500;
   background: var(--Linear, linear-gradient(90deg, #0047ff 0%, #00d4ff 97.65%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  @media (min-width: $lg) {
+    font-size: 16px;
+    font-weight: 400;
+  }
 }
 
 .time-left {
@@ -115,6 +113,7 @@
     -webkit-text-fill-color: transparent;
     font-size: 48px;
     font-weight: 800;
+    line-height: 0%;
 
     small {
       font-size: 32px;
