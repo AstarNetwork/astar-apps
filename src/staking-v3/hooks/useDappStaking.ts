@@ -223,7 +223,10 @@ export function useDappStaking() {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
-    await stakingService.claimStakerRewards(currentAccount.value, 'success');
+    await stakingService.claimStakerRewards(
+      currentAccount.value,
+      t('stakingV3.claimRewardSuccess')
+    );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
@@ -263,7 +266,10 @@ export function useDappStaking() {
       Symbols.DappStakingServiceFactoryV3
     )();
 
-    await stakingService.claimBonusRewards(currentAccount.value, 'success');
+    await stakingService.claimBonusRewards(
+      currentAccount.value,
+      t('stakingV3.claimBonusRewardSuccess')
+    );
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
@@ -273,7 +279,11 @@ export function useDappStaking() {
       Symbols.DappStakingServiceFactoryV3
     )();
     if (contractAddress) {
-      await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
+      await stakingService.claimDappRewards(
+        contractAddress,
+        currentAccount.value,
+        t('stakingV3.claimRewardSuccess')
+      );
       const dApp = await stakingService.getDappRewards(contractAddress);
       store.commit('stakingV3/setRewards', { ...rewards.value, dApp });
     } else {

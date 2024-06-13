@@ -951,6 +951,7 @@ export default {
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
     claimRewardSuccess: 'You successfully claimed your rewards.',
+    claimBonusRewardSuccess: 'You successfully claimed your bonus rewards.',
     withdrawSuccess: 'You successfully withdrew your locked tokens.',
     relockSuccess: 'You successfully re-locked your tokens.',
     unlockSuccess: 'You successfully unlocked your tokens.',
