@@ -21,6 +21,7 @@ export enum Chain {
   BIFROST_KUSAMA = 'Bifrost',
   EQUILIBRIUM = 'Equilibrium',
   UNIQUE = 'Unique',
+  PENDULUM = 'Pendulum'
 }
 
 export enum parachainIds {
@@ -41,6 +42,7 @@ export enum parachainIds {
   BIFROST_KUSAMA = 2001,
   EQUILIBRIUM = 2011,
   UNIQUE = 2037,
+  PENDULUM = 2094
 }
 
 export interface XcmChain {
