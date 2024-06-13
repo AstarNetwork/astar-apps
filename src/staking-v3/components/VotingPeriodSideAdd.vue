@@ -90,7 +90,7 @@ export default defineComponent({
     position: relative;
     z-index: 1;
   }
-  iframe {
+  #iframe {
     position: absolute;
     z-index: 0;
     transform-origin: top left;
