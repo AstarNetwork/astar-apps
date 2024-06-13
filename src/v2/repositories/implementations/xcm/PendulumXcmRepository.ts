@@ -12,7 +12,7 @@ import { TokensAccounts } from 'src/v2/repositories/implementations/xcm/AcalaXcm
  * Used to transfer assets from Pendulum
  */
 
-export class BifrostXcmRepository extends XcmRepository {
+export class PendulumXcmRepository extends XcmRepository {
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
     const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
