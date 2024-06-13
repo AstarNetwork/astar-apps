@@ -1,7 +1,5 @@
 <template>
-  <div id="iframe" class="wrapper--vote-stake">
-    <div ref="target" class="nt-embed"></div>
-  </div>
+  <div id="iframe" ref="target" class="vote-stake-button-bg" />
 </template>
 
 <script lang="ts">
@@ -179,11 +177,11 @@ void main() {
       u_frequency: { value: 0.831 },
       u_time: { value: 0 },
       u_mouse: { value: [0, 0] },
-      u_resolution: { value: [512, 512] },
+      u_resolution: { value: [1024, 1024] },
     };
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, 512 / 512, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, 1024 / 1024, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
@@ -193,7 +191,7 @@ void main() {
       precision: 'highp',
       powerPreference: 'high-performance',
     });
-    renderer.setSize(512, 512);
+    renderer.setSize(1024, 1024);
 
     const geometry = new THREE.PlaneGeometry(1024, 1024);
     const meterial = new THREE.ShaderMaterial({
@@ -234,7 +232,7 @@ void main() {
 });
 </script>
 <style lang="scss" scoped>
-.button-wrapper {
+.vote-stake-button-bg {
   border: 0;
   margin: 0;
   width: 512px;
