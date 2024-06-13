@@ -350,17 +350,15 @@ export let xcmChainObj: XcmChainObj = {
     subscan: 'https://unique.subscan.io',
     isAstarNativeToken: false,
   },
-  [Chain.PENDULUM] : {
+  [Chain.PENDULUM]: {
     name: Chain.PENDULUM,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/token/pen.png'),
     parachainId: parachainIds.PENDULUM,
-    endpoints:[
-      'wss://rpc-pendulum.prd.pendulumchain.tech:443'
-    ],
+    endpoints: ['wss://rpc-pendulum.prd.pendulumchain.tech:443'],
     subscan: 'https://pendulum.subscan.io/',
-    isAstarNativeToken: false
-  }
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

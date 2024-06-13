@@ -9,7 +9,8 @@ import {
   PhalaXcmRepository,
   BifrostXcmRepository,
   EquilibriumXcmRepository,
-  UniqueXcmRepository, PendulumXcmRepository
+  UniqueXcmRepository,
+  PendulumXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';

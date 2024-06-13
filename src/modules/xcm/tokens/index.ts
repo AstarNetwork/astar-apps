@@ -175,7 +175,6 @@ export const xcmToken = {
       originChain: Chain.PENDULUM,
       minBridgeAmount: '0.1',
     },
-
   ],
   [endpointKey.SHIDEN]: [
     {

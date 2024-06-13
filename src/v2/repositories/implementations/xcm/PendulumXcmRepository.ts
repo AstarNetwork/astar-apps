@@ -46,10 +46,10 @@ export class PendulumXcmRepository extends XcmRepository {
               Parachain: to.parachainId,
             },
             {
-              PalletInstance: instance
-            }
-          ]
-        }
+              PalletInstance: instance,
+            },
+          ],
+        },
       },
     };
 
@@ -78,16 +78,14 @@ export class PendulumXcmRepository extends XcmRepository {
     const api = await this.apiFactory.get(endpoint);
 
     try {
-      const bal = await api.query.tokens.accounts<TokensAccounts>(address,{
-        Token: token.originAssetId
+      const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
+        Token: token.originAssetId,
       });
 
-      return bal.free.toString()
+      return bal.free.toString();
     } catch (e) {
       console.error(e);
       return '0';
     }
   }
 }
-
-
