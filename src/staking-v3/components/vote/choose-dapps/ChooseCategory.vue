@@ -14,7 +14,9 @@
         >
           {{ category.label }}
         </div>
-        <div class="category-description"></div>
+        <div class="category-description">
+          {{ $t(`stakingV3["${category.value}Description"]`) }}
+        </div>
       </div>
       <div class="icon"><astar-icon-arrow-right /></div>
     </div>
