@@ -99,7 +99,7 @@ export default defineComponent({
         .map((x) => ({
           name: x.name,
           iconUrl: x.iconUrl,
-          amount: x.rewardAmount,
+          amount: BigInt(x.rewardAmount),
           address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
