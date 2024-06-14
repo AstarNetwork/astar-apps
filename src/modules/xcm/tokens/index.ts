@@ -169,7 +169,7 @@ export const xcmToken = {
       symbol: 'PEN',
       isNativeToken: true,
       assetId: '18446744073709551634',
-      originAssetId: 'PEN',
+      originAssetId: '0',
       logo: require('/src/assets/img/token/pen.png'),
       isXcmCompatible: true,
       originChain: Chain.PENDULUM,

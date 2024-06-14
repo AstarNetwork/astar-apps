@@ -7,10 +7,13 @@ import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 import { XcmChain } from 'src/v2/models/XcmModels';
 import { TokensAccounts } from 'src/v2/repositories/implementations/xcm/AcalaXcmRepository';
+import { decodeAddress } from '@polkadot/util-crypto';
 
 /**
  * Used to transfer assets from Pendulum
  */
+
+const PEN = 'Native';
 
 export class PendulumXcmRepository extends XcmRepository {
   constructor() {
@@ -34,9 +37,7 @@ export class PendulumXcmRepository extends XcmRepository {
     if (token.id !== '18446744073709551634') {
       throw 'Token must be PEN';
     }
-    const tokenData = { Token: token.originAssetId };
-
-    const instance = 10;
+    let tokenData = PEN;
     const destination = {
       V3: {
         parents: '1',
@@ -46,7 +47,9 @@ export class PendulumXcmRepository extends XcmRepository {
               Parachain: to.parachainId,
             },
             {
-              PalletInstance: instance,
+              AccountId32: {
+                id: decodeAddress(recipientAddress),
+              },
             },
           ],
         },
@@ -74,11 +77,11 @@ export class PendulumXcmRepository extends XcmRepository {
     isNativeToken: boolean,
     endpoint: string
   ): Promise<string> {
-    const symbol = token.metadata.symbol;
     const api = await this.apiFactory.get(endpoint);
 
     try {
-      if (token.originAssetId == 'PEN') {
+      // PEN
+      if (token.originAssetId == '0') {
         return (await this.getNativeBalance(address, chain, endpoint)).toString();
       } else {
         let asset_id = token.originAssetId;
