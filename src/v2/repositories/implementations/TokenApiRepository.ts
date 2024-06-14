@@ -20,7 +20,13 @@ export class TokenApiRepository implements ITokenApiRepository {
     try {
       const url = `${TokenApiRepository.BaseUrl}/v3/${network}/dapps-staking/period-aggregated/${period}`;
       const response = await axios.get<PeriodData[]>(url);
-      return response.data;
+      return response.data.map((data) => {
+        return {
+          dappAddress: data.dappAddress,
+          stakeAmount: BigInt(data.stakeAmount),
+          rewardAmount: BigInt(data.rewardAmount),
+        };
+      });
     } catch (error) {
       return [];
     }

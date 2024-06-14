@@ -1,5 +1,5 @@
 <template>
-  <div v-if="false" class="wrapper--period-stats">
+  <div class="wrapper--period-stats">
     <div class="title">
       <span>{{ period.toString().padStart(3, '0') }}</span>
       <span>{{ $t('stakingV3.stats') }}</span>
@@ -88,7 +88,7 @@ export default defineComponent({
         .map((x) => ({
           name: x.name,
           iconUrl: x.iconUrl,
-          amount: BigInt(x.stakeAmount),
+          amount: x.stakeAmount,
           address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
@@ -99,7 +99,7 @@ export default defineComponent({
         .map((x) => ({
           name: x.name,
           iconUrl: x.iconUrl,
-          amount: BigInt(x.rewardAmount),
+          amount: x.rewardAmount,
           address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))
