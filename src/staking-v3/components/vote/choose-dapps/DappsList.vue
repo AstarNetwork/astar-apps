@@ -3,7 +3,7 @@
     <swiper
       class="swiper--voting-dapps"
       :slides-per-view="2"
-      :slides-per-group="4"
+      :slides-per-group="2"
       :space-between="8"
       :navigation="true"
       :grid="{
@@ -12,7 +12,7 @@
       :breakpoints="{
         '768': {
           slidesPerView: 3,
-          slidesPerGroup: 32,
+          slidesPerGroup: 3,
           grid: {
             rows: 3,
           },
