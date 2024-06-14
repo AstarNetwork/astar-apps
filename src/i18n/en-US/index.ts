@@ -1047,7 +1047,7 @@ export default {
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
-    percentageStaked: 'Percentage of Supply Staked',
+    percentageLocked: 'Percentage of Supply Locked',
     unclaimedRewards: 'Unclaimed rewards',
     rewardsClaimedOnStake: 'Rewards will be claimed when stake',
     ifYouStakeNow: 'If you stake now',
