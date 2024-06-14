@@ -76,13 +76,16 @@ export class PendulumXcmRepository extends XcmRepository {
   ): Promise<string> {
     const symbol = token.metadata.symbol;
     const api = await this.apiFactory.get(endpoint);
+    console.log('THE SYMBOL: ', symbol);
 
     try {
-      const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
-        Token: token.originAssetId,
-      });
-
-      return bal.free.toString();
+      if (token.originAssetId == 'PEN') {
+        return (await this.getNativeBalance(address, chain, endpoint)).toString();
+      } else {
+        let asset_id = token.originAssetId;
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, asset_id);
+        return bal.free.toString();
+      }
     } catch (e) {
       console.error(e);
       return '0';

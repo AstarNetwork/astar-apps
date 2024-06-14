@@ -167,7 +167,7 @@ export const xcmToken = {
     },
     {
       symbol: 'PEN',
-      isNativeToken: false,
+      isNativeToken: true,
       assetId: '18446744073709551634',
       originAssetId: 'PEN',
       logo: require('/src/assets/img/token/pen.png'),
