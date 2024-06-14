@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--period-stats">
+  <div v-if="false" class="wrapper--period-stats">
     <div class="title">
       <span>{{ period.toString().padStart(3, '0') }}</span>
       <span>{{ $t('stakingV3.stats') }}</span>
