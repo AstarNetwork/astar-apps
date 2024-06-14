@@ -8,6 +8,7 @@ import { DappState, IDappStakingRepository, IDappStakingService } from '../logic
 import { PERIOD1_START_BLOCKS } from 'src/consts';
 import { useDappStaking } from './useDappStaking';
 import { useDataCalculations } from './useDataCalculations';
+import { ethers } from 'ethers';
 
 export type DappStatistics = {
   name: string;
@@ -86,7 +87,9 @@ export function usePeriodStats(period: Ref<number>) {
       dappStakingRepository.getCurrentEraInfo(block),
     ]);
     periodData.value = stats;
-    tvlRatio.value = 1 / Number(totalIssuance / periodInfo.totalLocked);
+    const issuance = Number(ethers.utils.formatEther(totalIssuance));
+    const locked = Number(ethers.utils.formatEther(periodInfo.totalLocked));
+    tvlRatio.value = locked / issuance;
   };
 
   watch(

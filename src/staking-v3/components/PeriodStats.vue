@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="period-kpi-container">
-          <div class="kpi-title">{{ $t('stakingV3.percentageStaked') }}</div>
+          <div class="kpi-title">{{ $t('stakingV3.percentageLocked') }}</div>
           <div class="value-unit">
             <span>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}<small>%</small></span>
           </div>
