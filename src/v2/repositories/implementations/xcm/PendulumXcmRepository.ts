@@ -76,7 +76,6 @@ export class PendulumXcmRepository extends XcmRepository {
   ): Promise<string> {
     const symbol = token.metadata.symbol;
     const api = await this.apiFactory.get(endpoint);
-    console.log('THE SYMBOL: ', symbol);
 
     try {
       if (token.originAssetId == 'PEN') {
