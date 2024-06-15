@@ -1,5 +1,11 @@
 [
   {
+    "name": "NEET",
+    "shortDescription": "Join the first ecosystem on Astar, powered by Raffles, Dispatcher DEX, and more...",
+    "link": "https://https://x.com/NEETLabz",
+    "img": "images/dapp_promotions/NEET dApp Staking.png"
+  },
+  {
     "name": "Ledger - dApp Staking V3",
     "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
     "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
