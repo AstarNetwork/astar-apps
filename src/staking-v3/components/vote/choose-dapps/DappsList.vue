@@ -87,13 +87,16 @@ export default defineComponent({
       if (props.category && props.filter) {
         return props.dapps.filter(
           (dapp) =>
-            dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() &&
+            (dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() ||
+              dapp.mainCategory === undefined) &&
             dapp.name.toLowerCase().includes(props.filter.toLowerCase())
         );
       }
       if (props.category) {
         return props.dapps.filter(
-          (dapp) => dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase()
+          (dapp) =>
+            dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() ||
+            dapp.mainCategory === undefined
         );
       } else if (props.filter) {
         return props.dapps.filter((dapp) =>
