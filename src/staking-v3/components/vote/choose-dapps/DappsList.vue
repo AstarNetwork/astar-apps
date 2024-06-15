@@ -83,21 +83,20 @@ export default defineComponent({
   setup(props) {
     const { constants } = useDappStaking();
 
+    const categoryFilter = (dapp: DappVote, category?: string): boolean =>
+      dapp.mainCategory?.toLowerCase() === category?.toLowerCase() ||
+      (dapp.mainCategory === undefined && category?.toLowerCase() === 'others');
+
     const filteredDapps = computed<DappVote[]>(() => {
       if (props.category && props.filter) {
         return props.dapps.filter(
           (dapp) =>
-            (dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() ||
-              dapp.mainCategory === undefined) &&
+            categoryFilter(dapp, props.category) &&
             dapp.name.toLowerCase().includes(props.filter.toLowerCase())
         );
       }
       if (props.category) {
-        return props.dapps.filter(
-          (dapp) =>
-            dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() ||
-            dapp.mainCategory === undefined
-        );
+        return props.dapps.filter((dapp) => categoryFilter(dapp, props.category));
       } else if (props.filter) {
         return props.dapps.filter((dapp) =>
           dapp.name.toLowerCase().includes(props.filter.toLowerCase())
