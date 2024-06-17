@@ -380,11 +380,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     const tiers = tiersWrapped.unwrap();
     const dapps: DAppTier[] = [];
     tiers.dapps.forEach((value, key) =>
-      dapps.push({
-        dappId: key.toNumber(),
-        tierId: value.toNumber() & 0xf,
-        rank: value.toNumber() >> 4,
-      })
+      dapps.push(this.mapDappTier(key.toNumber(), value.toNumber()))
     );
     return {
       period: tiers.period.toNumber(),
@@ -395,7 +391,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getLeaderboard(): Promise<Map<number, number>> {
+  public async getLeaderboard(): Promise<Map<number, DAppTier>> {
     const api = await this.api.getApi();
     const tierAssignmentsBytes = await api.rpc.state.call(
       'DappStakingApi_get_dapp_tier_assignment',
@@ -403,8 +399,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     );
     const tierAssignment = api.createType('BTreeMap<u16, u8>', tierAssignmentsBytes);
 
-    const result = new Map<number, number>();
-    tierAssignment.forEach((value, key) => result.set(key.toNumber(), value.toNumber()));
+    const result = new Map<number, DAppTier>();
+    tierAssignment.forEach((value, key) =>
+      result.set(key.toNumber(), this.mapDappTier(key.toNumber(), value.toNumber()))
+    );
 
     return result;
   }
@@ -628,5 +626,13 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     console.log('Staker info size: ' + result.size);
     return result;
+  }
+
+  private mapDappTier(dappId: number, rankTier: number): DAppTier {
+    return {
+      dappId: dappId,
+      tierId: rankTier & 0xf,
+      rank: rankTier >> 4,
+    };
   }
 }
