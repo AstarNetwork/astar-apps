@@ -44,11 +44,11 @@ export class PendulumXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
     var tokenData;
-    if (token.originAssetId == 'PEN') {
+    if (token.originAssetId === 'PEN') {
       tokenData = PEN;
-    } else if (token.originAssetId == 'XLM') {
+    } else if (token.originAssetId === 'XLM') {
       tokenData = XLM;
-    } else if (token.originAssetId == 'EURC') {
+    } else if (token.originAssetId === 'EURC') {
       tokenData = EURC;
     }
     const destination = {
