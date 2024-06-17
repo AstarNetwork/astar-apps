@@ -353,7 +353,7 @@ export let xcmChainObj: XcmChainObj = {
   [Chain.PENDULUM]: {
     name: Chain.PENDULUM,
     relayChain: Chain.POLKADOT,
-    img: require('/src/assets/img/token/pen.png'),
+    img: require('/src/assets/img/token/PEN.svg'),
     parachainId: parachainIds.PENDULUM,
     endpoints: ['wss://rpc-pendulum.prd.pendulumchain.tech:443'],
     subscan: 'https://pendulum.subscan.io/',

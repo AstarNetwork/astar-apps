@@ -14,6 +14,15 @@ import { decodeAddress } from '@polkadot/util-crypto';
  */
 
 const PEN = 'Native';
+const XLM = { Stellar: 'StellarNative' };
+const EURC = {
+  Stellar: {
+    AlphaNum4: {
+      code: 'EURC',
+      issuer: 'GAQRF3UGHBT6JYQZ7YSUYCIYWAF4T2SAA5237Q5LIQYJOHHFAWDXZ7NM',
+    },
+  },
+};
 
 export class PendulumXcmRepository extends XcmRepository {
   constructor() {
@@ -34,10 +43,14 @@ export class PendulumXcmRepository extends XcmRepository {
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
     }
-    if (token.id !== '18446744073709551634') {
-      throw 'Token must be PEN';
+    var tokenData;
+    if (token.originAssetId == 'PEN') {
+      tokenData = PEN;
+    } else if (token.originAssetId == 'XLM') {
+      tokenData = XLM;
+    } else if (token.originAssetId == 'EURC') {
+      tokenData = EURC;
     }
-    let tokenData = PEN;
     const destination = {
       V3: {
         parents: '1',
@@ -80,12 +93,10 @@ export class PendulumXcmRepository extends XcmRepository {
     const api = await this.apiFactory.get(endpoint);
 
     try {
-      // PEN
-      if (token.originAssetId == '0') {
+      if (isNativeToken) {
         return (await this.getNativeBalance(address, chain, endpoint)).toString();
       } else {
-        let asset_id = token.originAssetId;
-        const bal = await api.query.tokens.accounts<TokensAccounts>(address, asset_id);
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, token.originAssetId);
         return bal.free.toString();
       }
     } catch (e) {

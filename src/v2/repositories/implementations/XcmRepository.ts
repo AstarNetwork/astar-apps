@@ -275,6 +275,7 @@ export class XcmRepository implements IXcmRepository {
   ): Promise<ExtrinsicPayload> {
     const api = await this.apiFactory.get(endpoint);
     const call = api.tx[extrinsic][method](...args);
+    console.log('build call: ', call.toHex(false));
     if (call) {
       return call;
     }
