@@ -10,6 +10,7 @@ import {
   BifrostXcmRepository,
   EquilibriumXcmRepository,
   UniqueXcmRepository,
+  HydrationXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
@@ -34,6 +35,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.BIFROST_KUSAMA]: BifrostXcmRepository,
   [Chain.EQUILIBRIUM]: EquilibriumXcmRepository,
   [Chain.UNIQUE]: UniqueXcmRepository,
+  [Chain.HYDRATION]: HydrationXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

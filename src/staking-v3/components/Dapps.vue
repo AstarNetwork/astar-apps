@@ -1,15 +1,12 @@
 <template>
   <div v-if="filteredDapps.length > 0" class="wrapper--dapps">
-    <div
-      class="container--category"
-      :style="{ backgroundImage: `url(${categoryBackgroundImages[category]})` }"
-    >
+    <div class="container--category">
       <div class="title--category">{{ categoryTitle }}</div>
     </div>
     <div class="container--dapps">
       <swiper
         class="swiper--dapps"
-        :slides-per-view="1.5"
+        :slides-per-view="1.2"
         :slides-per-group="1"
         :space-between="8"
         :navigation="true"
@@ -24,9 +21,16 @@
               rows: 2,
             },
           },
-          '1440': {
+          '1280': {
             slidesPerView: 3.5,
             slidesPerGroup: 3,
+            grid: {
+              rows: 2,
+            },
+          },
+          '1440': {
+            slidesPerView: 4.5,
+            slidesPerGroup: 4,
             grid: {
               rows: 2,
             },
@@ -128,19 +132,9 @@ export default defineComponent({
       return result;
     });
 
-    const categoryBackgroundImages = {
-      defi: require('/src/staking-v3/assets/category_pink.webp'),
-      nft: require('/src/staking-v3/assets/category_purple.webp'),
-      tooling: require('/src/staking-v3/assets/category_blue.webp'),
-      utility: require('/src/staking-v3/assets/category_sky.webp'),
-      others: require('/src/staking-v3/assets/category_green.webp'),
-      'unstoppable-grants': require('/src/staking-v3/assets/category_unstoppable.webp'),
-    };
-
     return {
       modules: [Grid, Navigation],
       filteredDapps,
-      categoryBackgroundImages,
       categoryTitle,
       getDappTier,
       getDappPageUrl,
@@ -169,9 +163,17 @@ export default defineComponent({
   }
   .swiper-button-prev {
     padding-right: 2px;
+    left: 0;
+    @media (min-width: $lg) {
+      left: 0;
+    }
   }
   .swiper-button-next {
     padding-left: 2px;
+    right: 0;
+    @media (min-width: $lg) {
+      right: 0;
+    }
   }
   .swiper-button-disabled {
     display: none;

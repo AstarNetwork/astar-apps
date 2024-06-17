@@ -1,0 +1,121 @@
+@import 'src/css/quasar.variables.scss';
+@import 'src/staking-v3/components/vote/styles/vote-common.scss';
+
+.panel-title {
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.item-wrapper {
+  padding: 16px;
+  border-radius: 16px;
+  background-color: $white;
+  position: relative;
+}
+
+.item-wrapper:hover .remove {
+  visibility: visible;
+  opacity: 0.5;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid $gray-3;
+  color: $gray-2;
+  margin-top: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+  visibility: visible;
+  opacity: 0.5;
+  transition: opacity 0.5s ease-in-out;
+
+  @media (min-width: 768px) {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.amount {
+  display: flex;
+  padding: 24px 24px 24px 18px;
+  border-radius: 16px;
+  background-color: $gray-1;
+  border: 1px solid transparent;
+}
+
+.amount:hover {
+  border: 1px solid $astar-blue;
+}
+
+.name-and-icon {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-weight: 600;
+  padding: 16px 16px 16px 8px;
+}
+
+.amount {
+  flex: 1;
+}
+
+.staking-balances {
+  flex: 1;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: $white;
+
+  span {
+    font-weight: 600;
+    font-size: 16px;
+    text-align: right;
+  }
+}
+
+.remaining-balance {
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid $astar-pink-1;
+  margin-top: 16px;
+
+  .pink {
+    color: $astar-pink-1;
+  }
+
+  .vote {
+    font-size: 13px;
+    margin-top: 16px;
+  }
+}
+
+.choose-amount-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: -8px;
+
+  @media (min-width: 768px) {
+    margin: 0px;
+  }
+}
+
+.container-2-columns {
+  div {
+    flex: 1;
+  }
+
+  flex: {
+    span: 1;
+  }
+}

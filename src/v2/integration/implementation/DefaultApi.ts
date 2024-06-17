@@ -20,7 +20,12 @@ export class DefaultApi implements IApi {
     }
   }
 
-  public async getApi(): Promise<ApiPromise> {
+  public async getApi(blockNumber?: number): Promise<ApiPromise> {
+    if (blockNumber !== undefined) {
+      const hash = await this._api.rpc.chain.getBlockHash(blockNumber);
+      return this._api.at(hash) as unknown as ApiPromise;
+    }
     return this._api;
+    // return this._api;
   }
 }

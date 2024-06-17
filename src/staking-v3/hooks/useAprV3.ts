@@ -5,17 +5,14 @@ import { container } from 'src/v2/common';
 import { IInflationRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { EraInfo, EraLengths, InflationParam } from '../logic';
+import { EraInfo, EraLengths, IDappStakingService, InflationParam } from '../logic';
 import { useDappStaking } from './useDappStaking';
+import { weiToToken } from 'src/token-utils';
 
 export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
-
-  const toAstr = (wei: bigint): number => {
-    return Number(ethers.utils.formatEther(String(wei)));
-  };
 
   const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
@@ -32,105 +29,15 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
     return cyclePerYear;
   };
 
-  const getStakerApr = ({
-    totalIssuance,
-    inflationParams,
-    currentEraInfo,
-    eraLength,
-  }: {
-    totalIssuance: u128;
-    inflationParams: InflationParam;
-    currentEraInfo: EraInfo;
-    eraLength: EraLengths;
-  }): number => {
-    const numTotalIssuance = Number(ethers.utils.formatEther(totalIssuance.toString()));
-    const yearlyInflation = inflationParams.maxInflationRate;
-    const baseStakersPart = inflationParams.baseStakersPart;
-    const adjustableStakersPart = inflationParams.adjustableStakersPart;
-    const idealStakingRate = inflationParams.idealStakingRate;
-
-    const cyclesPerYear = getCyclePerYear(eraLength);
-    const currentStakeAmount = isVotingPeriod.value
-      ? toAstr(currentEraInfo!.nextStakeAmount!.voting)
-      : toAstr(currentEraInfo.currentStakeAmount.voting) +
-        toAstr(currentEraInfo.currentStakeAmount.buildAndEarn);
-
-    const stakedPercent = currentStakeAmount / numTotalIssuance;
-    const stakerRewardPercent =
-      baseStakersPart + adjustableStakersPart * Math.min(1, stakedPercent / idealStakingRate);
-
-    const stakerApr =
-      ((yearlyInflation * stakerRewardPercent) / stakedPercent) * cyclesPerYear * 100;
-    return stakerApr;
-  };
-
-  const getBonusApr = ({
-    currentEraInfo,
-    eraLength,
-    bonusRewardsPoolPerPeriod,
-    // Memo: Any amount can be simulated for calculating APR
-    simulatedVoteAmount = 1000,
-  }: {
-    currentEraInfo: EraInfo;
-    eraLength: EraLengths;
-    bonusRewardsPoolPerPeriod: string;
-    simulatedVoteAmount?: number;
-  }): { bonusApr: number; simulatedBonusPerPeriod: number } => {
-    const cyclesPerYear = getCyclePerYear(eraLength);
-
-    const formattedBonusRewardsPoolPerPeriod = Number(
-      ethers.utils.formatEther(bonusRewardsPoolPerPeriod)
-    );
-
-    // Memo: equivalent to 'totalVpStake' in the runtime query
-    const voteAmount = isVotingPeriod.value
-      ? toAstr(currentEraInfo.nextStakeAmount!.voting)
-      : toAstr(currentEraInfo.currentStakeAmount.voting);
-
-    const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
-    const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
-    const periodsPerYear = periodsPerCycle.value * cyclesPerYear;
-    const simulatedBonusAmountPerYear = simulatedBonusPerPeriod * periodsPerYear;
-    const bonusApr = (simulatedBonusAmountPerYear / simulatedVoteAmount) * 100;
-    return { bonusApr, simulatedBonusPerPeriod };
-  };
-
   const getApr = async (): Promise<{ stakerApr: number; bonusApr: number }> => {
     try {
-      const apiRef = $api!;
-      const eraLengthRef = eraLengths.value;
-      const currentEraInfoRef = currentEraInfo.value;
-      if (
-        !eraLengthRef.standardEraLength ||
-        !currentEraInfoRef ||
-        !currentEraInfoRef.nextStakeAmount
-      ) {
-        return { stakerApr: 0, bonusApr: 0 };
-      }
-
-      const inflationRepo = container.get<IInflationRepository>(Symbols.InflationRepository);
-      const [inflationParams, inflationConfiguration, totalIssuanceRaw] = await Promise.all([
-        inflationRepo.getInflationParams(),
-        inflationRepo.getInflationConfiguration(),
-        apiRef.query.balances.totalIssuance(),
+      const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+      const [stakerApr, bonusApr] = await Promise.all([
+        stakingService.getStakerApr(),
+        stakingService.getBonusApr(),
       ]);
 
-      const bonusRewardsPoolPerPeriod = inflationConfiguration.bonusRewardPoolPerPeriod.toString();
-
-      const stakerApr = getStakerApr({
-        totalIssuance: totalIssuanceRaw,
-        inflationParams,
-        currentEraInfo: currentEraInfoRef,
-        eraLength: eraLengthRef,
-      });
-
-      const { bonusApr } = getBonusApr({
-        currentEraInfo: currentEraInfoRef,
-        eraLength: eraLengthRef,
-        bonusRewardsPoolPerPeriod,
-      });
-
-      return { stakerApr, bonusApr };
+      return { stakerApr, bonusApr: bonusApr.value };
     } catch (error) {
       return { stakerApr: 0, bonusApr: 0 };
     }
@@ -158,16 +65,10 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
 
       if (!stakedBonusEligible) return 0;
 
-      const inflationRepo = container.get<IInflationRepository>(Symbols.InflationRepository);
-      const inflationConfiguration = await inflationRepo.getInflationConfiguration();
-      const bonusRewardsPoolPerPeriod = inflationConfiguration.bonusRewardPoolPerPeriod.toString();
-
-      const { simulatedBonusPerPeriod } = getBonusApr({
-        currentEraInfo: currentEraInfoRef,
-        eraLength: eraLengthRef,
-        bonusRewardsPoolPerPeriod,
-        simulatedVoteAmount: Number(ethers.utils.formatEther(stakedBonusEligible)),
-      });
+      const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
+      const { simulatedBonusPerPeriod } = await stakingService.getBonusApr(
+        Number(ethers.utils.formatEther(stakedBonusEligible))
+      );
 
       return simulatedBonusPerPeriod;
     } catch (error) {

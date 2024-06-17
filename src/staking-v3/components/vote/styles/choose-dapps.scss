@@ -1,0 +1,82 @@
+@import 'src/css/quasar.variables.scss';
+
+.dapp-filter-container {
+  display: flex;
+  gap: 8px;
+}
+
+.dapp-filter {
+  padding: 8px 24px;
+  background-color: $white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dapp-filter-selected {
+  background-color: $navy-1;
+  color: $white;
+}
+
+.container--item {
+  height: 100%;
+  position: relative;
+  background-color: $white;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  outline: solid 1px $white;
+  outline-offset: -1px;
+  transition: all 0.2s ease;
+  justify-content: space-between;
+  flex-direction: column;
+
+  @media (min-width: $lg) {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &:hover,
+  &.is-selected {
+  outline-color: $astar-blue;
+  }
+}
+
+.dapp-name-icon{
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: $lg) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.dapp-name{
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.item--selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  border-radius: 50%;
+  background-color: $astar-blue;
+  color: $white;
+  position: absolute;
+  top: 0;
+  right: 0;
+}

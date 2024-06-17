@@ -34,13 +34,13 @@ export interface IDappStakingRepository {
    * @param forEdit Flag to indicate if dapp data should be fetched with encoded images.
    * @returns A promise that resolves to a dapp data.
    */
-  getDapp(network: string, dappAddress: string, forEdit?: boolean): Promise<Dapp>;
+  getDapp(network: string, dappAddress: string, forEdit?: boolean): Promise<Dapp | undefined>;
 
   /**
    * Gets protocol state for the given network.
    * @param network The network to get protocol state for.
    */
-  getProtocolState(): Promise<ProtocolState>;
+  getProtocolState(block?: number): Promise<ProtocolState>;
 
   /**
    * Starts subscription to protocol state, so UI gets automatically updated when it changes.
@@ -185,7 +185,7 @@ export interface IDappStakingRepository {
    * Gets the current era information.
    * @returns A promise that resolves to the era info.
    */
-  getCurrentEraInfo(): Promise<EraInfo>;
+  getCurrentEraInfo(block?: number): Promise<EraInfo>;
 
   /**
    * Gets the contract staking info.
@@ -205,7 +205,7 @@ export interface IDappStakingRepository {
 
   getTiersConfiguration(): Promise<TiersConfiguration>;
 
-  getEraLengths(): Promise<EraLengths>;
+  getEraLengths(block?: number): Promise<EraLengths>;
 
   getCleanupExpiredEntriesCall(): Promise<ExtrinsicPayload>;
 
