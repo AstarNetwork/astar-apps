@@ -382,7 +382,8 @@ export class DappStakingRepository implements IDappStakingRepository {
     tiers.dapps.forEach((value, key) =>
       dapps.push({
         dappId: key.toNumber(),
-        tierId: value.toNumber(),
+        tierId: value.toNumber() & 0xf,
+        rank: value.toNumber() >> 4,
       })
     );
     return {

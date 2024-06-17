@@ -144,7 +144,8 @@ export interface DAppTierRewards {
 
 export interface DAppTier {
   readonly dappId: number;
-  readonly tierId: number | undefined;
+  readonly tierId: number;
+  readonly rank: number;
 }
 
 export interface Rewards {
