@@ -1,5 +1,65 @@
 [
   {
+    "name": "Ledger - dApp Staking V3",
+    "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
+    "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
+    "img": "images/dapp_promotions/ledger_dApp_Staking_v3.png"
+  },
+  {
+    "name": "Archisinal",
+    "shortDescription": "Pioneering Real-World-Assets in the built environment",
+    "link": "https://www.archisinal.io/",
+    "img": "images/dapp_promotions/Archisinal.png"
+  },
+  {
+    "name": "DeStore",
+    "shortDescription": "Web3 Shopify Powered by Astar",
+    "link": "https://twitter.com/DeStore_Network",
+    "img": "images/dapp_promotions/destore.jpg"
+  },
+  {
+    "name": "Lucky - No-loss lottery",
+    "shortDescription": "The more you stake, the more chance you have to win a raffle!",
+    "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=zsv1gvepvmwfdshmwgczs4zyvmmwesbjwqjn4wdpuefrrpy",
+    "img": "images/dapp_promotions/lucky.png"
+  },
+  {
+    "name": "Neurolanche - Stake & Earn",
+    "shortDescription": "Join our staking and earn soulbound 'Rewarding' NFT.",
+    "link": "https://twitter.com/neurolanche/status/1722222206204399642?s=52&t=ISh07fvjMqpmUg40w5HqBg/",
+    "img": "images/dapp_promotions/neurolanche.jpeg"
+  },
+  {
+    "name": "apeXchimpz (AXC)",
+    "shortDescription": "Stake for FREE #modularNFTs, guaranteed! We take NFTs further...",
+    "link": "https://www.apexchimpz.com/dapp-on-astar",
+    "img": "images/dapp_promotions/apeXchimpz.jpg"
+  },
+  {
+    "name": "Age Of Chronos",
+    "shortDescription": "Stake and earn FREE $Astr and nfts! Play and craft NFTs 2.0!",
+    "link": "https://twitter.com/SFY_Labs",
+    "img": "images/dapp_promotions/age_of_chronos.png"
+  },
+  {
+    "name": "Algem - Liquid Staking",
+    "shortDescription": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
+    "link": "https://www.algem.io/",
+    "img": "images/dapp_promotions/algem.jpg"
+  },
+  {
+    "name": "ASTR token, value and utility",
+    "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
+    "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
+    "img": "images/dapp_promotions/astr_token.png"
+  },
+  {
+    "name": "MoonFit",
+    "shortDescription": "#1 Cross-chain Social Fitness App on iOS & Android, Apple Watch",
+    "link": "https://app.moonfit.xyz/astar-reward",
+    "img": "images/dapp_promotions/moonfit.png"
+  },
+  {
     "name": "PINKY",
     "shortDescription": "Stake PINKY and earn a top fixed reward rate of 46% in both PINKY and ASTAR.",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=0xae1bb2090fb748dd28e82cb632206836d9ef3c85",
