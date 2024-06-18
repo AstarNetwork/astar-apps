@@ -1,9 +1,8 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
-import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
-import { Asset, AssetMetadata } from 'src/v2/models';
+import { Asset, AssetMetadata, PalletAssetsAssetAccount } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
 import { injectable, inject } from 'inversify';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';

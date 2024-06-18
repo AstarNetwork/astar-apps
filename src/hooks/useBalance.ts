@@ -1,15 +1,15 @@
 import { ETHEREUM_EXTENSION } from 'src/modules/account';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
-import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
+import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from 'src/v2/models';
 import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested, isValidEvmAddress } from '@astar-network/astar-sdk-core';
-import { useDappStaking, useDapps } from 'src/staking-v3';
+import { useDapps } from 'src/staking-v3';
+import { Option, Vec, u32 } from '@polkadot/types';
 
 function useCall(addressRef: Ref<string>) {
   const { allDapps } = useDapps();
@@ -59,13 +59,13 @@ function useCall(addressRef: Ref<string>) {
 
     const results = await Promise.all([
       api.query.system.account<SystemAccount>(address),
-      api.query.vesting.vesting(address),
-      api.query.system.number(),
+      api.query.vesting.vesting<Option<Vec<PalletVestingVestingInfo>>>(address),
+      api.query.system.number<u32>(),
       api.derive.balances?.all(address),
     ]);
 
     const accountInfo = results[0];
-    const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
+    const vesting = results[1].unwrapOr(undefined)?.toArray() || [];
     const currentBlock = results[2];
     const vestedClaimable = results[3].vestedClaimable;
     const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
@@ -78,8 +78,8 @@ function useCall(addressRef: Ref<string>) {
       const vested = getVested({
         currentBlock: currentBlock.toBn(),
         startBlock: v.startingBlock.toBn() || new BN(0),
-        perBlock: v.perBlock || new BN(0),
-        locked: v.locked,
+        perBlock: v.perBlock.toBn() || new BN(0),
+        locked: v.locked.toBn(),
       });
       vestedRef.value = vestedRef.value.add(vested);
       remainingVests.value = remainingVests.value.add(v.locked.sub(vested));
