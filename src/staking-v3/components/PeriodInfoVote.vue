@@ -41,7 +41,7 @@
         </div>
         <div class="reward-info">
           <div class="reward-label">
-            <div>{{ $t('stakingV3.estimatedRewards') }}</div>
+            <div>{{ $t('stakingV3.basicAprPlusBonus') }}</div>
             <div>{{ $t('stakingV3.ifYouStakeNow') }}</div>
           </div>
           <div class="percentage">
