@@ -1,4 +1,5 @@
 import { Data, Enum, Null, Option, Struct, U8aFixed, Vec, u128, u32 } from '@polkadot/types';
+import { AccountId32 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 
 export interface PalletBalancesBalanceLock extends Struct {
