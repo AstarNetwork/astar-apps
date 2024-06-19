@@ -2,7 +2,12 @@ import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
-import { Asset, AssetMetadata, PalletAssetsAssetAccount } from 'src/v2/models';
+import {
+  Asset,
+  AssetMetadata,
+  PalletAssetsAssetAccount,
+  PalletAssetsAssetMetadata,
+} from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
 import { injectable, inject } from 'inversify';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
@@ -60,7 +65,8 @@ export class XcmRepository implements IXcmRepository {
 
     let result: Asset[] = [];
     if (metadata.length > 0) {
-      metadata.forEach(([key, value]) => {
+      metadata.forEach(([key, v]) => {
+        const value = <PalletAssetsAssetMetadata>v;
         const id = key.args.map((x) => x.toString())[0];
         const deposit = value.deposit.toString();
         const name = u8aToString(value.name);

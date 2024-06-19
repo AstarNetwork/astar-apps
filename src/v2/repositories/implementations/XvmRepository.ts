@@ -83,7 +83,7 @@ export class XvmRepository implements IXvmRepository {
       : { WASM: recipientAddress };
 
     const contract = new ContractPromise(api, ABI_XVM_ERC20, String(contractAddress));
-    const initialGasLimit = contract.registry.createType('WeightV2', {
+    const initialGasLimit = contract.registry.createType<WeightV2>('WeightV2', {
       proofSize: PROOF_SIZE,
       refTime: WASM_GAS_LIMIT,
     });

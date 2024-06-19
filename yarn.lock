@@ -6780,9 +6780,9 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-"bip32-ed25519@git+https://github.com/Zondax/bip32-ed25519.git":
+"bip32-ed25519@https://github.com/Zondax/bip32-ed25519":
   version "0.0.4"
-  resolved "git+https://github.com/Zondax/bip32-ed25519.git#0949df01b5c93885339bc28116690292088f6134"
+  resolved "https://github.com/Zondax/bip32-ed25519#0949df01b5c93885339bc28116690292088f6134"
   dependencies:
     bn.js "^5.1.1"
     elliptic "^6.4.1"
@@ -14887,10 +14887,10 @@ pngjs@^5.0.0:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
   integrity sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==
 
-polkasafe@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/polkasafe/-/polkasafe-1.1.10.tgz#f02c6540ba3ec6df06f52187d1fe228398687240"
-  integrity sha512-ND3qp3E0os/5ArIh3E8mrPyIa4sgJ8A70bvxq6Fi8vpSh3ijNJ6b89jEq8C17wufITkGrojGbpUY+BX1L0Le6w==
+polkasafe@^1.1.15:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/polkasafe/-/polkasafe-1.1.15.tgz#0469fc24b96f5ed86d4111fc991b7091d14ff3c5"
+  integrity sha512-WFFd32VXWDS/3+eU7b/FfUXSTLnvgzPThIQGtEVQWN0NARCIkiTq0gUf50N+CzpiCg6nY8QaYwiS3YOecWMNVg==
   dependencies:
     "@polkadot/api" "^10.6.1"
     "@polkadot/api-augment" "^10.7.3"

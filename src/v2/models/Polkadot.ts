@@ -1,4 +1,17 @@
-import { Data, Enum, Null, Option, Struct, U8aFixed, Vec, u128, u32 } from '@polkadot/types';
+import {
+  Bytes,
+  Data,
+  Enum,
+  Null,
+  Option,
+  Struct,
+  U8aFixed,
+  Vec,
+  u128,
+  u32,
+  u8,
+} from '@polkadot/types';
+import { bool } from '@polkadot/types/primitive';
 import { AccountId32 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 
@@ -82,4 +95,12 @@ interface PalletAssetsExistenceReason extends Enum {
   readonly isDepositFrom: boolean;
   readonly asDepositFrom: ITuple<[AccountId32, u128]>;
   readonly type: 'Consumer' | 'Sufficient' | 'DepositHeld' | 'DepositRefunded' | 'DepositFrom';
+}
+
+export interface PalletAssetsAssetMetadata extends Struct {
+  readonly deposit: u128;
+  readonly name: Bytes;
+  readonly symbol: Bytes;
+  readonly decimals: u8;
+  readonly isFrozen: bool;
 }
