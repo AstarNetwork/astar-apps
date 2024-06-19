@@ -14887,7 +14887,7 @@ pngjs@^5.0.0:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
   integrity sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==
 
-polkasafe@^1.1.15:
+polkasafe@^1.1.10:
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/polkasafe/-/polkasafe-1.1.15.tgz#0469fc24b96f5ed86d4111fc991b7091d14ff3c5"
   integrity sha512-WFFd32VXWDS/3+eU7b/FfUXSTLnvgzPThIQGtEVQWN0NARCIkiTq0gUf50N+CzpiCg6nY8QaYwiS3YOecWMNVg==

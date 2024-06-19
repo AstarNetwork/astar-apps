@@ -7,9 +7,30 @@ import { $api, $web3 } from 'boot/api';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useDapps } from 'src/staking-v3';
 import { Option, Vec, u32 } from '@polkadot/types';
+
+// Temporarily moved here until uplift polkadot js for astar.js
+export const getVested = ({
+  currentBlock,
+  startBlock,
+  perBlock,
+  locked,
+}: {
+  currentBlock: BN;
+  startBlock: BN;
+  perBlock: BN;
+  locked: BN;
+}): BN => {
+  if (currentBlock.lt(startBlock)) {
+    return new BN(0);
+  }
+
+  const blockHasPast = currentBlock.sub(startBlock);
+  const vested = BN.min(locked, blockHasPast.mul(perBlock));
+  return vested;
+};
 
 function useCall(addressRef: Ref<string>) {
   const { allDapps } = useDapps();
