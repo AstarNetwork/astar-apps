@@ -1064,6 +1064,7 @@ export default {
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     thirdPartyBridge: '3rd Party Bridge',
+    bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
     ethereumBridge: {
       title: 'Native Bridge',
       tag: 'ERC20',
