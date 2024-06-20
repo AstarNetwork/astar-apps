@@ -579,7 +579,9 @@ export class DappStakingService extends SignerService implements IDappStakingSer
         if (tierReward) {
           const dApp = tierReward?.dapps.find((d) => d.dappId === dapp.id);
           if (dApp && dApp.tierId !== undefined) {
-            result.rewards += tierReward.rewards[dApp.tierId];
+            result.rewards +=
+              tierReward.rewards[dApp.tierId] +
+              BigInt(dApp.rank) * tierReward.rankRewards[dApp.tierId];
             result.erasToClaim.push(firstEra + index);
           }
         }
