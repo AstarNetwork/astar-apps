@@ -27,8 +27,8 @@ async function run(nodeName, networkInfo, args) {
 
   // register dApp
   console.info('Registering dApps with sender: ', sender.address);
-  const tx4 = api.tx.dappsStaking.register(sender.address, { Evm: TEST_DAPP_ADDRESS });
-  const tx5 = api.tx.dappsStaking.register(bob.address, { Evm: TEST_DAPP_ADDRESS_2 });
+  const tx4 = api.tx.dappStaking.register(sender.address, { Evm: TEST_DAPP_ADDRESS });
+  const tx5 = api.tx.dappStaking.register(bob.address, { Evm: TEST_DAPP_ADDRESS_2 });
   await sendTransaction(api.tx.sudo.sudo(tx4), sender);
   await sendTransaction(api.tx.sudo.sudo(tx5), sender);
 

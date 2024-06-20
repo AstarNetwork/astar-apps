@@ -36,6 +36,7 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await clickDisclaimerButton(page);
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
+  await page.getByTestId('Polkadot.js').click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
@@ -63,7 +64,7 @@ test.describe('account panel', () => {
     page.getByTestId('transfer-link-button').click();
     const faucetAmount = BigInt(200);
     await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(faucetAmount.toString());
+    await page.getByPlaceholder('0').fill(faucetAmount.toString());
     await page.locator('.box--warning label').check();
     await page.getByRole('button', { name: 'Confirm' }).click();
     await signTransaction(context);
