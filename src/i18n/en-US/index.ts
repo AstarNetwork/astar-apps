@@ -1047,10 +1047,20 @@ export default {
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
-    percentageStaked: 'Percentage of Supply Staked',
+    percentageLocked: 'Percentage of Supply Locked',
     unclaimedRewards: 'Unclaimed rewards',
     rewardsClaimedOnStake: 'Rewards will be claimed when stake',
     ifYouStakeNow: 'If you stake now',
+    defiDescription: 'Discover the world of decentralized finance solutions on Astar.',
+    'unstoppable-grantsDescription':
+      'Support projects in the Unstoppable Community Grants program, powered by dApp staking.',
+    nftDescription: 'Find and support creative communities with Astar’s NFT dApps.',
+    toolingDescription:
+      'Support powerful tools and frameworks designed to accelerate network growth.',
+    utilityDescription:
+      'Stake to essential projects that enhance the productivity and functionality of Web3.',
+    othersDescription: 'Explore a diverse set of blockchain dApps.',
+    basicAprPlusBonus: 'Basic APR + Bonus',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
