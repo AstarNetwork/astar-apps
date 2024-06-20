@@ -1050,7 +1050,7 @@ export default {
     percentageLocked: 'Percentage of Supply Locked',
     unclaimedRewards: 'Unclaimed rewards',
     rewardsClaimedOnStake: 'Rewards will be claimed when stake',
-    ifYouStakeNow: 'If you stake now',
+    ifYouStakeNow: 'Basic APR + Bonus (If you stake now)',
     defiDescription: 'Discover the world of decentralized finance solutions on Astar.',
     'unstoppable-grantsDescription':
       'Support projects in the Unstoppable Community Grants program, powered by dApp staking.',
