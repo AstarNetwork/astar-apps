@@ -1060,6 +1060,7 @@ export default {
     utilityDescription:
       'Stake to essential projects that enhance the productivity and functionality of Web3.',
     othersDescription: 'Explore a diverse set of blockchain dApps.',
+    basicAprPlusBonus: 'Basic APR + Bonus',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
