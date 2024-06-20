@@ -15,11 +15,11 @@ import { decodeAddress } from '@polkadot/util-crypto';
 
 const PEN = 'Native';
 const XLM = { Stellar: 'StellarNative' };
-const EURC = {
+const StellarEURCMykobo = {
   Stellar: {
     AlphaNum4: {
       code: 'EURC',
-      issuer: 'GAQRF3UGHBT6JYQZ7YSUYCIYWAF4T2SAA5237Q5LIQYJOHHFAWDXZ7NM',
+      issuer: '0x2112ee863867e4e219fe254c0918b00bc9ea400775bfc3ab4430971ce505877c',
     },
   },
 };
@@ -46,10 +46,10 @@ export class PendulumXcmRepository extends XcmRepository {
     var tokenData;
     if (token.originAssetId === 'PEN') {
       tokenData = PEN;
-    } else if (token.originAssetId === 'XLM') {
+    } else if (token.originAssetId === 'XLM.s') {
       tokenData = XLM;
-    } else if (token.originAssetId === 'EURC') {
-      tokenData = EURC;
+    } else if (token.originAssetId === 'mEURC.s') {
+      tokenData = StellarEURCMykobo;
     }
     const destination = {
       V3: {
@@ -95,10 +95,18 @@ export class PendulumXcmRepository extends XcmRepository {
     try {
       if (isNativeToken) {
         return (await this.getNativeBalance(address, chain, endpoint)).toString();
-      } else {
-        const bal = await api.query.tokens.accounts<TokensAccounts>(address, token.originAssetId);
-        return bal.free.toString();
       }
+      let currencyId;
+      if (token.originAssetId === 'XLM.s') {
+        currencyId = XLM;
+      } else if (token.originAssetId === 'mEURC.s') {
+        currencyId = StellarEURCMykobo;
+      } else {
+        console.error('Unsupported token: ', token.originAssetId);
+        return '0';
+      }
+      const bal = await api.query.tokens.accounts<TokensAccounts>(address, currencyId);
+      return bal.free.toString();
     } catch (e) {
       console.error(e);
       return '0';
