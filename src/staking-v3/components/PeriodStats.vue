@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--period-stats">
+  <div v-if="false" class="wrapper--period-stats">
     <div class="title">
       <span>{{ period.toString().padStart(3, '0') }}</span>
       <span>{{ $t('stakingV3.stats') }}</span>
@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="period-kpi-container">
-          <div class="kpi-title">{{ $t('stakingV3.percentageStaked') }}</div>
+          <div class="kpi-title">{{ $t('stakingV3.percentageLocked') }}</div>
           <div class="value-unit">
             <span>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}<small>%</small></span>
           </div>
@@ -88,7 +88,7 @@ export default defineComponent({
         .map((x) => ({
           name: x.name,
           iconUrl: x.iconUrl,
-          amount: BigInt(x.stakeAmount),
+          amount: x.stakeAmount,
           address: x.address,
         }))
         .sort((a, b) => sort(a.amount, b.amount))

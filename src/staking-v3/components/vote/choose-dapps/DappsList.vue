@@ -3,7 +3,7 @@
     <swiper
       class="swiper--voting-dapps"
       :slides-per-view="2"
-      :slides-per-group="4"
+      :slides-per-group="2"
       :space-between="8"
       :navigation="true"
       :grid="{
@@ -12,7 +12,7 @@
       :breakpoints="{
         '768': {
           slidesPerView: 3,
-          slidesPerGroup: 32,
+          slidesPerGroup: 3,
           grid: {
             rows: 3,
           },
@@ -83,18 +83,20 @@ export default defineComponent({
   setup(props) {
     const { constants } = useDappStaking();
 
+    const categoryFilter = (dapp: DappVote, category?: string): boolean =>
+      dapp.mainCategory?.toLowerCase() === category?.toLowerCase() ||
+      (dapp.mainCategory === undefined && category?.toLowerCase() === 'others');
+
     const filteredDapps = computed<DappVote[]>(() => {
       if (props.category && props.filter) {
         return props.dapps.filter(
           (dapp) =>
-            dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase() &&
+            categoryFilter(dapp, props.category) &&
             dapp.name.toLowerCase().includes(props.filter.toLowerCase())
         );
       }
       if (props.category) {
-        return props.dapps.filter(
-          (dapp) => dapp.mainCategory?.toLowerCase() === props.category?.toLowerCase()
-        );
+        return props.dapps.filter((dapp) => categoryFilter(dapp, props.category));
       } else if (props.filter) {
         return props.dapps.filter((dapp) =>
           dapp.name.toLowerCase().includes(props.filter.toLowerCase())

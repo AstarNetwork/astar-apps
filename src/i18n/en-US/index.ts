@@ -1047,10 +1047,20 @@ export default {
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
-    percentageStaked: 'Percentage of Supply Staked',
+    percentageLocked: 'Percentage of Supply Locked',
     unclaimedRewards: 'Unclaimed rewards',
     rewardsClaimedOnStake: 'Rewards will be claimed when stake',
-    ifYouStakeNow: 'If you stake now',
+    ifYouStakeNow: 'Basic APR + Bonus (If you stake now)',
+    defiDescription: 'Discover the world of decentralized finance solutions on Astar.',
+    'unstoppable-grantsDescription':
+      'Support projects in the Unstoppable Community Grants program, powered by dApp staking.',
+    nftDescription: 'Find and support creative communities with Astar’s NFT dApps.',
+    toolingDescription:
+      'Support powerful tools and frameworks designed to accelerate network growth.',
+    utilityDescription:
+      'Stake to essential projects that enhance the productivity and functionality of Web3.',
+    othersDescription: 'Explore a diverse set of blockchain dApps.',
+    basicAprPlusBonus: 'Basic APR + Bonus',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
@@ -1064,6 +1074,7 @@ export default {
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     thirdPartyBridge: '3rd Party Bridge',
+    bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
     ethereumBridge: {
       title: 'Native Bridge',
       tag: 'ERC20',

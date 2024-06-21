@@ -1,5 +1,11 @@
 [
   {
+    "name": "AirLyft Stake Campaign",
+    "shortDescription": "Stake on AirLyft and get a chance to share extra reward!",
+    "link": "https://airlyft.one/community/astar-stake-on-airlyft",
+    "img": "images/dapp_promotions/airlyft_stake_campaign.png"
+  },
+  {
     "name": "Ledger - dApp Staking V3",
     "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
     "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
