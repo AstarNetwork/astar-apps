@@ -5,6 +5,7 @@ import {
   AccountLedger,
   CombinedDappInfo,
   Constants,
+  DAppTier,
   DAppTierRewards,
   DappStakeInfo,
   EraInfo,
@@ -141,7 +142,7 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getTiersConfiguration'] ?? initialTiersConfiguration
   );
 
-  const leaderboard = computed<Map<number, number>>(
+  const leaderboard = computed<Map<number, DAppTier>>(
     () => store.getters['stakingV3/getLeaderboard']
   );
 
@@ -574,7 +575,7 @@ export function useDappStaking() {
 
   const getDappTier = (dappId: number): number | undefined => {
     const tier = leaderboard.value?.get(dappId);
-    return tier !== undefined ? tier + 1 : undefined;
+    return tier !== undefined ? tier.tierId + 1 : undefined;
   };
 
   const fetchStakerInfoToStore = async (): Promise<void> => {
