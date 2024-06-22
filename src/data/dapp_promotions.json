@@ -70,5 +70,11 @@
     "shortDescription": "Stake on PINKY and earn a fixed 46% reward in PINKY and ASTAR.",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=0xae1bb2090fb748dd28e82cb632206836d9ef3c85",
     "img": "images/dapp_promotions/pinky.jpg"
+  },
+  {
+    "name": "Bandit Network",
+    "shortDescription": "Boost Engagement With All New Bandit's Web3 Campaign Builder Dashboard.",
+    "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=0xfbc8cc3a9078037efe8531e9236dc6d6234da118",
+    "img": "images/dapp_promotions/bandit_network.png"
   }
 ]
