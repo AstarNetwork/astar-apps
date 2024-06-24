@@ -798,7 +798,7 @@ export default {
     votingOpenText:
       'Experience dApp Staking, the unique staking mechanism exclusive to Astar, where communities can back their favorite teams by staking ASTR tokens and earn substantial rewards.',
     stakeToday: 'Stake today, be entitled to big bonus!',
-    stakeTodayFormatted: 'Stake today,<br/>be entitled to<br/>bonus!',
+    stakeTodayFormatted: 'Stake today,\nbe entitled to\nbonus!',
     voteText: 'I would like to vote my tokens with',
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
