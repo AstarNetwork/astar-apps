@@ -1,15 +1,12 @@
 import {
   ASTAR_SS58_FORMAT,
   SUBSTRATE_SS58_FORMAT,
-  getEvmGasCost,
   getShortenAddress,
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
-  sampleEvmWalletAddress,
 } from '@astar-network/astar-sdk-core';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
-import ABI from 'src/config/abi/ERC20.json';
 import { getTokenBal } from 'src/config/web3';
 import { useAccount, useBalance, useGasPrice, useNetworkInfo } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
@@ -19,12 +16,12 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { IAccountUnificationService, IAssetsService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { Ref, computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { AbiItem } from 'web3-utils';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -239,7 +236,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const apiRef = $api;
     if (!apiRef || !address || !web3Ref) return 0;
     if (isValidAddressPolkadotAddress(address)) {
-      const { data } = await apiRef.query.system.account(address);
+      const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(address);
       const transferableBalance = data.free.sub(data.frozen);
       return Number(ethers.utils.formatEther(transferableBalance.toString()));
     }

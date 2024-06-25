@@ -145,7 +145,7 @@
 </template>
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, wait } from '@astar-network/astar-sdk-core';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';

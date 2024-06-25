@@ -5,6 +5,7 @@ import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { wait } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
+import { u64 } from '@polkadot/types';
 
 export const useAvgBlockTime = (path: string) => {
   const { blockPerEra, era, progress, nextEraStartingBlock } = useCurrentEra();
@@ -57,7 +58,7 @@ export const useAvgBlockTime = (path: string) => {
   }): Promise<number> => {
     if (!$api) return 0;
     const block = await $api?.at(hash);
-    const tsBlockTimeAgo = await block.query.timestamp.now();
+    const tsBlockTimeAgo = await block.query.timestamp.now<u64>();
     const spentSecs = (tsNow - tsBlockTimeAgo.toNumber()) / 1000;
     return spentSecs / (blockHeight - blockErasAgo);
   };
@@ -78,7 +79,7 @@ export const useAvgBlockTime = (path: string) => {
       const block30EraAgo = blockHeight - block30Eras;
 
       const [tsNow, hashBlock1EraAgo, hashBlock7ErasAgo, hashBlock30ErasAgo] = await Promise.all([
-        apiRef.query.timestamp.now(),
+        apiRef.query.timestamp.now<u64>(),
         apiRef.rpc.chain.getBlockHash(block1EraAgo),
         apiRef.rpc.chain.getBlockHash(block7ErasAgo),
         apiRef.rpc.chain.getBlockHash(block30EraAgo),

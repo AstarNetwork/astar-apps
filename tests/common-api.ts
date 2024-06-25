@@ -5,7 +5,7 @@ import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { RewardDestination } from 'src/v2/models';
+import { PalletAssetsAssetAccount, RewardDestination } from 'src/v2/models';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -29,7 +29,10 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
   let balance = BigInt(0);
 
   if (assetId) {
-    const balanceObj = await api.query.assets.account(assetId, address);
+    const balanceObj = await api.query.assets.account<Option<PalletAssetsAssetAccount>>(
+      assetId,
+      address
+    );
     balance = BigInt(balanceObj.unwrap().balance.toBigInt());
   } else {
     const balanceObj = (await api.query.system.account(address)) as FrameSystemAccountInfo;
