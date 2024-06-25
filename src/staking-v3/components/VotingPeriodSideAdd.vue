@@ -7,7 +7,7 @@
     </div>
     <div>
       <button :disabled="isZkEvm" class="button--vote-stake" @click="navigateToVote()">
-        <span class="card--stake-today">
+        <span>
           {{ $t('stakingV3.stakeTodayFormatted') }}
         </span>
         <vote-stake-button-bg />
@@ -87,10 +87,14 @@ export default defineComponent({
   &:hover {
     filter: brightness(1.2);
   }
+
   span {
     position: relative;
+    display: block;
     z-index: 1;
+    white-space: pre;
   }
+
   #iframe {
     position: absolute;
     z-index: 0;
@@ -102,10 +106,5 @@ export default defineComponent({
       scale: 50%;
     }
   }
-}
-
-.card--stake-today {
-  white-space: pre;
-  min-height: 100%;
 }
 </style>
