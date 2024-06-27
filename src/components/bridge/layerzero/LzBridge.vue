@@ -138,7 +138,7 @@
         </ul>
       </div>
 
-      <div v-if="isOnMaintenance" class="row--box-error">
+      <div v-if="isBridgeMaintenanceMode" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.underMaintenance') }}
         </span>
@@ -147,14 +147,18 @@
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isDisabledBridge || isHandling || isLoading || isOnMaintenance"
+          :disabled="
+            isApproved || isDisabledBridge || isHandling || isLoading || isBridgeMaintenanceMode
+          "
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading || isOnMaintenance"
+          :disabled="
+            !isApproved || isDisabledBridge || isHandling || isLoading || isBridgeMaintenanceMode
+          "
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -168,7 +172,7 @@
 import { truncate } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
@@ -256,6 +260,7 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
+    const { isBridgeMaintenanceMode } = useNetworkInfo();
     const nativeTokenSymbol = computed<string>(() => {
       return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
     });
@@ -270,9 +275,6 @@ export default defineComponent({
         props.selectedToken.symbol === 'ASTR'
       );
     });
-    const isOnMaintenance = computed<boolean>(() =>
-      [props.fromChainName, props.toChainName].includes(EthBridgeNetworkName.AstarZk)
-    );
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
@@ -319,7 +321,7 @@ export default defineComponent({
       truncate,
       bridge,
       approve,
-      isOnMaintenance,
+      isBridgeMaintenanceMode,
     };
   },
 });
