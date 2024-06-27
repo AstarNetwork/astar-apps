@@ -1114,6 +1114,8 @@ export default {
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
+    underMaintenance:
+      'Astar zkEVM is currently under the maintenance. We apologize for any inconvenience.',
     modals: {
       highTraffic: {
         text1:
