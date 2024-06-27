@@ -138,17 +138,23 @@
         </ul>
       </div>
 
+      <div v-if="isOnMaintenance" class="row--box-error">
+        <span class="color--white">
+          {{ $t('bridge.underMaintenance') }}
+        </span>
+      </div>
+
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="isApproved || isDisabledBridge || isHandling || isLoading || isOnMaintenance"
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading || isOnMaintenance"
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -264,6 +270,9 @@ export default defineComponent({
         props.selectedToken.symbol === 'ASTR'
       );
     });
+    const isOnMaintenance = computed<boolean>(() =>
+      [props.fromChainName, props.toChainName].includes(EthBridgeNetworkName.AstarZk)
+    );
 
     const bridge = async (): Promise<void> => {
       isHandling.value = true;
@@ -310,6 +319,7 @@ export default defineComponent({
       truncate,
       bridge,
       approve,
+      isOnMaintenance,
     };
   },
 });
