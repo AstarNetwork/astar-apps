@@ -260,7 +260,6 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { isBridgeMaintenanceMode } = useNetworkInfo();
     const nativeTokenSymbol = computed<string>(() => {
       return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
     });
@@ -268,6 +267,9 @@ export default defineComponent({
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
+    const isBridgeMaintenanceMode = computed<boolean>(() =>
+      [props.fromChainName, props.toChainName].includes(EthBridgeNetworkName.AstarZk)
+    );
 
     const isNativeToken = computed<boolean>(() => {
       return (
