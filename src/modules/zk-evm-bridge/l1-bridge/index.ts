@@ -5,7 +5,7 @@ export const ZK_EVM_AGGREGATED_BRIDGE_ABI = ABI_ZK_EVM_AGGREGATED_BRIDGE;
 
 export const zkEvmApi = {
   testnet: 'https://zkyoto-bridge-api.astar.network',
-  mainnet: 'https://bridge-api.astar-zkevm.gelato.digital',
+  mainnet: 'https://bridge-api.mainnet-astar.com',
 };
 
 export enum EthBridgeNetworkName {
