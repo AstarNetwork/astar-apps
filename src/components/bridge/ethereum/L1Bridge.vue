@@ -279,9 +279,7 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
-    const isWarningHighTraffic = computed<boolean>(
-      () => props.fromChainName === EthBridgeNetworkName.AstarZk
-    );
+    const isWarningHighTraffic = computed<boolean>(() => false);
 
     const setHighTrafficModalOpen = (value: boolean): void => {
       isHighTrafficModalOpen.value = value;
