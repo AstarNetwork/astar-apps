@@ -841,12 +841,12 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   private getVoteAmount(protocolState: ProtocolState, eraInfo: EraInfo): number {
-    const currentStakeAmount = weiToToken(
+    const currentVoteAmount = weiToToken(
       protocolState.periodInfo.subperiod === PeriodType.Voting
         ? eraInfo.nextStakeAmount?.voting ?? BigInt(0)
         : eraInfo.currentStakeAmount.voting
     );
 
-    return currentStakeAmount;
+    return currentVoteAmount;
   }
 }
