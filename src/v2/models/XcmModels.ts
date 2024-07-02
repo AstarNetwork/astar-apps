@@ -22,6 +22,7 @@ export enum Chain {
   EQUILIBRIUM = 'Equilibrium',
   UNIQUE = 'Unique',
   HYDRATION = 'Hydration',
+  PENDULUM = 'Pendulum',
 }
 
 export enum parachainIds {
@@ -43,6 +44,7 @@ export enum parachainIds {
   EQUILIBRIUM = 2011,
   UNIQUE = 2037,
   HYDRATION = 2034,
+  PENDULUM = 2094,
 }
 
 export interface XcmChain {
