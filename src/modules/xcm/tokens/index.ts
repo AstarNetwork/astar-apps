@@ -165,6 +165,26 @@ export const xcmToken = {
       originChain: Chain.ASSET_HUB,
       minBridgeAmount: '1',
     },
+    {
+      symbol: 'PEN',
+      isNativeToken: true,
+      assetId: '18446744073709551634',
+      originAssetId: 'PEN',
+      logo: require('/src/assets/img/token/PEN.svg'),
+      isXcmCompatible: true,
+      originChain: Chain.PENDULUM,
+      minBridgeAmount: '0.1',
+    },
+    {
+      symbol: 'XLM.s',
+      isNativeToken: false,
+      assetId: '18446744073709551635',
+      originAssetId: 'XLM.s',
+      logo: require('/src/assets/img/token/XLM.svg'),
+      isXcmCompatible: true,
+      originChain: Chain.PENDULUM,
+      minBridgeAmount: '0.1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
