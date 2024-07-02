@@ -5,6 +5,7 @@ import {
   AccountLedger,
   CombinedDappInfo,
   Constants,
+  DAppTier,
   DAppTierRewards,
   DappStakeInfo,
   EraInfo,
@@ -80,13 +81,17 @@ export function useDappStaking() {
     return (
       rewards ?? {
         dApp: BigInt(0),
-        staker: BigInt(0),
+        staker: {
+          amount: BigInt(0),
+          eraCount: 0,
+          period: 0,
+        },
         bonus: BigInt(0),
       }
     );
   });
 
-  const totalStakerRewards = computed<BigInt>(
+  const totalStakerRewards = computed<bigint>(
     () => rewards.value.staker.amount + rewards.value.bonus
   );
 
@@ -137,7 +142,7 @@ export function useDappStaking() {
     () => store.getters['stakingV3/getTiersConfiguration'] ?? initialTiersConfiguration
   );
 
-  const leaderboard = computed<Map<number, number>>(
+  const leaderboard = computed<Map<number, DAppTier>>(
     () => store.getters['stakingV3/getLeaderboard']
   );
 
@@ -219,7 +224,10 @@ export function useDappStaking() {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
-    await stakingService.claimStakerRewards(currentAccount.value, 'success');
+    await stakingService.claimStakerRewards(
+      currentAccount.value,
+      t('stakingV3.claimRewardSuccess')
+    );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, staker });
   };
@@ -259,7 +267,10 @@ export function useDappStaking() {
       Symbols.DappStakingServiceFactoryV3
     )();
 
-    await stakingService.claimBonusRewards(currentAccount.value, 'success');
+    await stakingService.claimBonusRewards(
+      currentAccount.value,
+      t('stakingV3.claimBonusRewardSuccess')
+    );
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
     store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
   };
@@ -269,7 +280,11 @@ export function useDappStaking() {
       Symbols.DappStakingServiceFactoryV3
     )();
     if (contractAddress) {
-      await stakingService.claimDappRewards(contractAddress, currentAccount.value, 'success');
+      await stakingService.claimDappRewards(
+        contractAddress,
+        currentAccount.value,
+        t('stakingV3.claimRewardSuccess')
+      );
       const dApp = await stakingService.getDappRewards(contractAddress);
       store.commit('stakingV3/setRewards', { ...rewards.value, dApp });
     } else {
@@ -560,7 +575,7 @@ export function useDappStaking() {
 
   const getDappTier = (dappId: number): number | undefined => {
     const tier = leaderboard.value?.get(dappId);
-    return tier !== undefined ? tier + 1 : undefined;
+    return tier !== undefined ? tier.tierId + 1 : undefined;
   };
 
   const fetchStakerInfoToStore = async (): Promise<void> => {

@@ -47,6 +47,37 @@ import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
 import { AnyTuple, Codec } from '@polkadot/types/types';
 import { u8aToNumber } from '@polkadot/util';
+import { HttpCodes } from 'src/constants';
+
+const ERA_LENGTHS = new Map<string, EraLengths>([
+  [
+    'Shibuya Testnet',
+    {
+      standardErasPerBuildAndEarnPeriod: 20,
+      standardErasPerVotingPeriod: 8,
+      standardEraLength: 1800,
+      periodsPerCycle: 2,
+    },
+  ],
+  [
+    'Shiden',
+    {
+      standardErasPerBuildAndEarnPeriod: 55,
+      standardErasPerVotingPeriod: 6,
+      standardEraLength: 7200,
+      periodsPerCycle: 6,
+    },
+  ],
+  [
+    'Astar',
+    {
+      standardErasPerBuildAndEarnPeriod: 111,
+      standardErasPerVotingPeriod: 11,
+      standardEraLength: 7200,
+      periodsPerCycle: 3,
+    },
+  ],
+]);
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
@@ -65,18 +96,30 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getDapp(network: string, dappAddress: string, forEdit = false): Promise<Dapp> {
+  public async getDapp(
+    network: string,
+    dappAddress: string,
+    forEdit = false
+  ): Promise<Dapp | undefined> {
     Guard.ThrowIfUndefined(network, 'network');
     Guard.ThrowIfUndefined(dappAddress, 'dappAddress');
     const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${dappAddress}?forEdit=${forEdit}`;
-    const response = await axios.get<Dapp>(url);
 
-    return response.data;
+    try {
+      const response = await axios.get<Dapp>(url);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === HttpCodes.NotFound) {
+        return undefined;
+      }
+
+      throw error;
+    }
   }
 
   //* @inheritdoc
-  public async getProtocolState(): Promise<ProtocolState> {
-    const api = await this.api.getApi();
+  public async getProtocolState(block?: number): Promise<ProtocolState> {
+    const api = await this.api.getApi(block);
     const state =
       await api.query.dappStaking.activeProtocolState<PalletDappStakingV3ProtocolState>();
 
@@ -271,23 +314,38 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getEraLengths(): Promise<EraLengths> {
+  public async getEraLengths(block?: number): Promise<EraLengths> {
     const getNumber = (bytes: Bytes): number => u8aToNumber(bytes.toU8a().slice(1, 4));
-    const api = await this.api.getApi();
+    const api = await this.api.getApi(block);
 
-    const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
-      api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
-      api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
-      api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
-      api.rpc.state.call('DappStakingApi_periods_per_cycle', ''),
-    ]);
+    if (api.rpc) {
+      const [erasPerBuildAndEarn, erasPerVoting, eraLength, periodsPerCycle] = await Promise.all([
+        api.rpc.state.call('DappStakingApi_eras_per_build_and_earn_subperiod', ''),
+        api.rpc.state.call('DappStakingApi_eras_per_voting_subperiod', ''),
+        api.rpc.state.call('DappStakingApi_blocks_per_era', ''),
+        api.rpc.state.call('DappStakingApi_periods_per_cycle', ''),
+      ]);
 
-    return {
-      standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
-      standardErasPerVotingPeriod: getNumber(erasPerVoting),
-      standardEraLength: getNumber(eraLength),
-      periodsPerCycle: getNumber(periodsPerCycle),
-    };
+      return {
+        standardErasPerBuildAndEarnPeriod: getNumber(erasPerBuildAndEarn),
+        standardErasPerVotingPeriod: getNumber(erasPerVoting),
+        standardEraLength: getNumber(eraLength),
+        periodsPerCycle: getNumber(periodsPerCycle),
+      };
+    } else {
+      // Can't use api.rpc for past blocks
+      // Using constants should be fine, because era lengths are not expected to change
+      // in near future.
+      const currentApi = await this.api.getApi();
+      const network = currentApi.runtimeChain.toHuman();
+      const eraLen = ERA_LENGTHS.get(network);
+
+      if (eraLen) {
+        return eraLen;
+      } else {
+        throw new Error(`Era lengths are not defined for this network: ${network}`);
+      }
+    }
   }
 
   //* @inheritdoc
@@ -322,20 +380,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     const tiers = tiersWrapped.unwrap();
     const dapps: DAppTier[] = [];
     tiers.dapps.forEach((value, key) =>
-      dapps.push({
-        dappId: key.toNumber(),
-        tierId: value.toNumber(),
-      })
+      dapps.push(this.mapDappTier(key.toNumber(), value.toNumber()))
     );
     return {
       period: tiers.period.toNumber(),
       dapps,
       rewards: tiers.rewards.map((reward) => reward.toBigInt()),
+      rankRewards: tiers.rankRewards?.map((reward) => reward.toBigInt()) ?? [
+        BigInt(0),
+        BigInt(0),
+        BigInt(0),
+        BigInt(0),
+      ], // for backward compatibility in case when not deployed on all networks
     };
   }
 
   //* @inheritdoc
-  public async getLeaderboard(): Promise<Map<number, number>> {
+  public async getLeaderboard(): Promise<Map<number, DAppTier>> {
     const api = await this.api.getApi();
     const tierAssignmentsBytes = await api.rpc.state.call(
       'DappStakingApi_get_dapp_tier_assignment',
@@ -343,8 +404,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     );
     const tierAssignment = api.createType('BTreeMap<u16, u8>', tierAssignmentsBytes);
 
-    const result = new Map<number, number>();
-    tierAssignment.forEach((value, key) => result.set(key.toNumber(), value.toNumber()));
+    const result = new Map<number, DAppTier>();
+    tierAssignment.forEach((value, key) =>
+      result.set(key.toNumber(), this.mapDappTier(key.toNumber(), value.toNumber()))
+    );
 
     return result;
   }
@@ -399,13 +462,12 @@ export class DappStakingRepository implements IDappStakingRepository {
     return calls.length === 1 ? calls[0] : api.tx.utility.batchAll(calls);
   }
 
-  public async getCurrentEraInfo(): Promise<EraInfo> {
-    const api = await this.api.getApi();
+  public async getCurrentEraInfo(block?: number): Promise<EraInfo> {
+    const api = await this.api.getApi(block);
     const info = await api.query.dappStaking.currentEraInfo<PalletDappStakingV3EraInfo>();
 
     return {
       totalLocked: info.totalLocked.toBigInt(),
-      activeEraLocked: info.activeEraLocked?.toBigInt(),
       unlocking: info.unlocking.toBigInt(),
       currentStakeAmount: this.mapStakeAmount(info.currentStakeAmount),
       nextStakeAmount: this.mapStakeAmount(info.nextStakeAmount),
@@ -569,5 +631,13 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     console.log('Staker info size: ' + result.size);
     return result;
+  }
+
+  private mapDappTier(dappId: number, rankTier: number): DAppTier {
+    return {
+      dappId: dappId,
+      tierId: rankTier & 0xf,
+      rank: rankTier >> 4,
+    };
   }
 }

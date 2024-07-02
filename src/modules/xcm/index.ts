@@ -350,6 +350,20 @@ export let xcmChainObj: XcmChainObj = {
     subscan: 'https://unique.subscan.io',
     isAstarNativeToken: false,
   },
+  [Chain.HYDRATION]: {
+    name: Chain.HYDRATION,
+    relayChain: Chain.POLKADOT,
+    img: require('/src/assets/img/token/hdx.png'),
+    parachainId: parachainIds.HYDRATION,
+    endpoints: [
+      'wss://hydradx-rpc.dwellir.com',
+      'wss://rpc.hydradx.cloud',
+      'wss://hydradx.paras.ibp.network',
+      'wss://rpc.helikon.io/hydradx',
+    ],
+    subscan: 'https://hydration.subscan.io',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

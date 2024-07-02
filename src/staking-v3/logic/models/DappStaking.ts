@@ -139,11 +139,13 @@ export interface DAppTierRewards {
   readonly dapps: DAppTier[];
   readonly rewards: bigint[];
   readonly period: number;
+  readonly rankRewards: bigint[];
 }
 
 export interface DAppTier {
   readonly dappId: number;
-  readonly tierId: number | undefined;
+  readonly tierId: number;
+  readonly rank: number;
 }
 
 export interface Rewards {
@@ -153,7 +155,6 @@ export interface Rewards {
 }
 
 export interface EraInfo {
-  readonly activeEraLocked?: bigint;
   readonly totalLocked: bigint;
   readonly unlocking: bigint;
   readonly currentStakeAmount: StakeAmount;
@@ -222,6 +223,26 @@ export interface StakerRewards {
   period: number;
   eraCount: number;
 }
+
+export type DappVote = {
+  name: string;
+  address: string;
+  logoUrl: string;
+  amount: number;
+  id: number;
+  mainCategory?: string;
+  stakeAmount?: bigint;
+};
+
+export const mapToDappVote = (dapp: CombinedDappInfo): DappVote => ({
+  name: dapp.basic.name,
+  address: dapp.chain.address,
+  logoUrl: dapp.basic.iconUrl,
+  amount: 0,
+  id: dapp.chain.id,
+  mainCategory: dapp.basic.mainCategory,
+  stakeAmount: dapp.chain.totalStake,
+});
 
 export type DappRegistrationParameters = {
   dapp: NewDappItem;

@@ -1,6 +1,7 @@
 import { watch, ref, computed } from 'vue';
-import { CombinedDappInfo, PeriodType, useDappStaking, useDapps } from '..';
+import { CombinedDappInfo, DAppTier, PeriodType, useDappStaking, useDapps } from '..';
 import { useStore } from 'src/store';
+import { sort } from 'src/v2/common';
 
 export function useLeaderboard() {
   const store = useStore();
@@ -8,7 +9,7 @@ export function useLeaderboard() {
   const { dAppTiers, protocolState, eraLengths } = useDappStaking();
   // Map key is a dApp tier.
   const leaderBoards = ref<Map<number, CombinedDappInfo[]>>(new Map());
-  const leaderboard = computed<Map<number, number>>(
+  const leaderboard = computed<Map<number, DAppTier>>(
     () => store.getters['stakingV3/getLeaderboard']
   );
 
@@ -28,14 +29,7 @@ export function useLeaderboard() {
       const valueA = a.chain?.totalStake ?? BigInt(0);
       const valueB = b.chain?.totalStake ?? BigInt(0);
 
-      // memo couldn't do return valueB - valueA because it's a bigint.
-      if (valueA < valueB) {
-        return 1;
-      } else if (valueA > valueB) {
-        return -1;
-      } else {
-        return 0;
-      }
+      return sort(valueA, valueB);
     })
   );
 
@@ -49,8 +43,8 @@ export function useLeaderboard() {
     ]);
 
     sortedDapps.value.forEach((dapp) => {
-      const tier = leaderboard.value.get(dapp.chain.id);
-      tier !== undefined && leaderBoards.value.get(tier + 1)?.push(dapp);
+      const dappTier = leaderboard.value.get(dapp.chain.id);
+      dappTier !== undefined && leaderBoards.value.get(dappTier.tierId + 1)?.push(dapp);
     });
   };
 

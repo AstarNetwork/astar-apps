@@ -69,9 +69,16 @@ export const castTransferHistory = ({
   const timestamp = String(tx.timestamp);
   const txType = HistoryTxType.Transfer;
   const note = `To ${getShortenAddress(to)}`;
-  const networkIdx = localStorage.getItem(NETWORK_IDX);
-  const subscan = providerEndpoints[Number(networkIdx)].subscan;
-  const explorerUrl = `${subscan}/extrinsic/${hash}`;
+  const networkIdx = Number(localStorage.getItem(NETWORK_IDX));
+  let explorerUrl: string = '';
+
+  if (networkIdx === endpointKey.ASTAR_ZKEVM || networkIdx === endpointKey.ZKYOTO) {
+    const blockscount = providerEndpoints[networkIdx].blockscout;
+    explorerUrl = `${blockscount}/tx/${hash}`;
+  } else {
+    const subscan = providerEndpoints[networkIdx].subscan;
+    explorerUrl = `${subscan}/extrinsic/${hash}`;
+  }
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 

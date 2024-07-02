@@ -21,6 +21,7 @@ export enum Chain {
   BIFROST_KUSAMA = 'Bifrost',
   EQUILIBRIUM = 'Equilibrium',
   UNIQUE = 'Unique',
+  HYDRATION = 'Hydration',
 }
 
 export enum parachainIds {
@@ -41,6 +42,7 @@ export enum parachainIds {
   BIFROST_KUSAMA = 2001,
   EQUILIBRIUM = 2011,
   UNIQUE = 2037,
+  HYDRATION = 2034,
 }
 
 export interface XcmChain {

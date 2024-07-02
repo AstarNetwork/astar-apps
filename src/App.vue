@@ -118,16 +118,18 @@ export default defineComponent({
     // Handle busy and extrinsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
-      const message = m as ExtrinsicStatusMessage;
-      store.dispatch(
-        'general/showAlertMsg',
-        {
-          msg: message.getMessage(),
-          alertType: message.isSuccess() ? 'success' : 'error',
-          explorerUrl: message.getExplorerUrl() || '',
-        },
-        { root: true }
-      );
+      if (m instanceof ExtrinsicStatusMessage) {
+        const message = m as ExtrinsicStatusMessage;
+        store.dispatch(
+          'general/showAlertMsg',
+          {
+            msg: message.getMessage(),
+            alertType: message.isSuccess() ? 'success' : 'error',
+            explorerUrl: message.getExplorerUrl() || '',
+          },
+          { root: true }
+        );
+      }
     });
 
     eventAggregator.subscribe(BusyMessage.name, (m) => {

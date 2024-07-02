@@ -1,16 +1,241 @@
 <template>
-  <iframe
-    src="data:text/html;base64,PGh0bWw+CjxoZWFkPgogICAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xIj4KICAgIDxzdHlsZT4KICAgICAgICBodG1sLCBib2R5ewogICAgICAgICAgICBtYXJnaW46IDA7CiAgICAgICAgICAgIHBhZGRpbmc6IDA7CiAgICAgICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgICAgICBoZWlnaHQ6IDEwMCU7CiAgICAgICAgICAgIGJvcmRlcjogMDsKICAgICAgICB9CiAgICAgICAgLm50LWVtYmVkewogICAgICAgICAgICB3aWR0aDogNTEycHg7CiAgICAgICAgICAgIGhlaWdodDogNTEycHg7CiAgICAgICAgfQogICAgICAgIC5udC1lbWJlZCBkaXYsCiAgICAgICAgLm50LWVtYmVkIGRpdiBjYW52YXN7CiAgICAgICAgICAgIHdpZHRoOiAxMDAlICFpbXBvcnRhbnQ7CiAgICAgICAgICAgIGhlaWdodDogMTAwJSAhaW1wb3J0YW50OwogICAgICAgIH0KICAgIDwvc3R5bGU+CiAgICA8c2NyaXB0IHR5cGU9ImltcG9ydG1hcCI+CnsKICAgICJpbXBvcnRzIjogewogICAgICAgICJyZWFjdCI6ICJodHRwczovL2Nkbi5za3lwYWNrLmRldi9yZWFjdEAxOC4wLjIiLAogICAgICAgICJyZWFjdC1kb20iOiAiaHR0cHM6Ly9jZG4uc2t5cGFjay5kZXYvcmVhY3QtZG9tQDE4LjAuMiIsCiAgICAgICAgInRocmVlIjogImh0dHBzOi8vY2RuLnNreXBhY2suZGV2L3RocmVlQDAuMTQ4LjAiLAogICAgICAgICJyZWFjdC10aHJlZS9maWJlciI6ICJodHRwczovL2Nkbi5za3lwYWNrLmRldi9AcmVhY3QtdGhyZWUvZmliZXJANy4wLjI0IgogICAgfQp9Cjwvc2NyaXB0Pgo8c3R5bGU+CiAgICBodG1sLCBib2R5ewogICAgICAgIG1hcmdpbjogMDsKICAgICAgICBwYWRkaW5nOiAwOwogICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgIGhlaWdodDogMTAwJTsKICAgICAgICBib3JkZXI6IDA7CiAgICB9CiAgICAubnQtZW1iZWR7CiAgICAgICAgd2lkdGg6IDEwMCU7CiAgICAgICAgaGVpZ2h0OiAxMDAlOwogICAgfQogICAgLm50LWVtYmVkIGNhbnZhc3sKICAgICAgICB3aWR0aDogMTAwJTsKICAgICAgICBoZWlnaHQ6IDEwMCU7CiAgICB9Cjwvc3R5bGU+CjxzY3JpcHQgdHlwZT0ibW9kdWxlIj4KICAgIGltcG9ydCBSZWFjdCwge3VzZVJlZn0gZnJvbSAncmVhY3QnOwogICAgaW1wb3J0IFJlYWN0RE9NIGZyb20gJ3JlYWN0LWRvbSc7CiAgICBpbXBvcnQgKiBhcyBUSFJFRSBmcm9tICd0aHJlZSc7CiAgICBpbXBvcnQge0NhbnZhcywgdXNlRnJhbWV9IGZyb20gJ3JlYWN0LXRocmVlL2ZpYmVyJzsKCiAgICBsZXQgZW1iZWRSb290ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2JykKICAgIGVtYmVkUm9vdC5jbGFzc05hbWUgPSAibnQtZW1iZWQiCiAgICBkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGVtYmVkUm9vdCkKCiAgICBjb25zdCBUZXh0dXJlTWVzaCA9ICgpID0+IHsKICAgICAgICBjb25zdCBtZXNoID0gdXNlUmVmKG51bGwpCiAgICAgICAgdXNlRnJhbWUoc3RhdGUgPT4gewogICAgICAgICAgICBjb25zdCB7IGNsb2NrLCBtb3VzZSwgZ2wsIHNjZW5lLCBjYW1lcmEgfSA9IHN0YXRlCiAgICAgICAgICAgIGlmKG1lc2guY3VycmVudCl7CiAgICAgICAgICAgICAgICBtZXNoLmN1cnJlbnQubWF0ZXJpYWwudW5pZm9ybXMudV9tb3VzZS52YWx1ZSA9IFttb3VzZS54LCBtb3VzZS55XQogICAgICAgICAgICAgICAgbWVzaC5jdXJyZW50Lm1hdGVyaWFsLnVuaWZvcm1zLnVfdGltZS52YWx1ZSA9IGNsb2NrLmdldEVsYXBzZWRUaW1lKCkKICAgICAgICAgICAgfQogICAgICAgIH0pCiAgICAgICAgCiAgICAgICAgcmV0dXJuIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21lc2gnLAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICByZWY6bWVzaCwKICAgICAgICAgICAgICAgIHBvc2l0aW9uOiBbMCwwLDBdLAogICAgICAgICAgICAgICAgc2NhbGU6IDEsCiAgICAgICAgICAgICAgICByb3RhdGlvbjogWzAsMCwwXQogICAgICAgICAgICB9LAogICAgICAgICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdwbGFuZUdlb21ldHJ5Jyx7YXJnczpbMTAyNCwxMDI0XX0pLCAKICAgICAgICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnc2hhZGVyTWF0ZXJpYWwnLHsKICAgICAgICAgICAgICAgIGZyYWdtZW50U2hhZGVyOiBgLy8gRnJhZ21lbnQgc2hhZGVyCgovLyBVbmlmb3Jtcwp1bmlmb3JtIHZlYzIgdV9yZXNvbHV0aW9uOwp1bmlmb3JtIHZlYzIgdV9tb3VzZTsKdW5pZm9ybSBmbG9hdCB1X3RpbWU7CnVuaWZvcm0gdmVjNCB1X2NvbG9yc1s0XTsKdW5pZm9ybSBmbG9hdCB1X2JsdXI7IAp1bmlmb3JtIGJvb2wgdV9hbmltYXRlOwp1bmlmb3JtIGZsb2F0IHVfYW5pbWF0ZV9zcGVlZDsKdW5pZm9ybSBmbG9hdCB1X2ZyZXF1ZW5jeTsKICAgIAojZGVmaW5lIFMoYSxiLHQpIHNtb290aHN0ZXAoYSxiLHQpCi8qCm9yaWdpbmFsX2F1dGhvcjogUGF0cmljaW8gR29uemFsZXogVml2byAgCmRlc2NyaXB0aW9uOiBzUkdCIHRvIGxpbmVhciBSR0IgY29udmVyc2lvbi4KdXNlOiA8ZmxvYXR8dmVjMwtlYzQ+IHNyZ2IycmdiKDxmbG9hdHx2ZWMzfHZlYzQ+IHNyZ2IpCiovCgojaWZuZGVmIFNSR0JfRVBTSUxPTiAKI2RlZmluZSBTUkdCX0VQU0lMT04gMC4wMDAwMDAwMQojZW5kaWYKCiNpZm5kZWYgRk5DX1NSR0IyUkdCCiNkZWZpbmUgRk5DX1NSR0IyUkdCCgovLyAxLjAgLyAxMi45MiA9IDAuMDc3Mzk5MzgwOAovLyAxLjAgLyAoMS4wICsgMC4wNTUpID0gMC45NDc4NjcyOTg1NzgxOTkKCmZsb2F0IHNyZ2IycmdiKGZsb2F0IGNoYW5uZWwpIHsKICAgIHJldHVybiAoY2hhbm5lbCA8IDAuMDQwNDUpID8gY2hhbm5lbCAqIDAuMDc3Mzk5MzgwOCA6IHBvdygoY2hhbm5lbCArIDAuMDU1KSAqIDAuOTQ3ODY3Mjk4NTc4MTk5LCAyLjQpOwp9Cgp2ZWMzIHNyZ2IycmdiKHZlYzMgc3JnYikgewogICAgcmV0dXJuIHZlYzMoc3JnYjJyZ2Ioc3JnYi5yICsgU1JHQl9FUFNJTE9OKSwgCiAgICAgICAgICAgICAgICBzcmdiMnJnYihzcmdiLmcgKyBTUkdCX0VQU0lMT04pLCAgICAgICAgICAgICAgICAgc3JnYjJyZ2Ioc3JnYi5iICsgU1JHQl9FUFNJTE9OKSk7Cn0KCnZlYzQgc3JnYjJyZ2IodmVjNCBzcmdiKSB7CiAgICByZXR1cm4gdmVjNChzcmdiMnJnYihzcmdiLnJnYiksIHNyZ2IuYSk7Cn0KCiNlbmRpZgovKgpvcmlnaW5hbF9hdXRob3I6IFBhdHJpY2lvIEdvbnphbGV6IFZpdm8KZGVzY3JpcHRpb246IGNsYW1wIGEgdmFsdWUgYmV0d2VlbiAwIGFuZCAxCnVzZTogc2F0dXJhdGlvbig8ZmxvYXR8dmVjMnx2ZWMzfHZlYzQ+IHZhbHVlKQoqLwoKI2lmICFkZWZpbmVkKEZOQ19TQVRVUkFURSkgJiYgIWRlZmluZWQoc2F0dXJhdGUpCiNkZWZpbmUgRk5DX1NBVFVSQVRFCiNkZWZpbmUgc2F0dXJhdGUoeCkgY2xhbXAoeCwgMC4wLCAxLjApCiNlbmRpZgoKLyoKb3JpZ2luYWxfYXV0aG9yOiBQYXRyaWNpbyBHb256YWxleiBWaXZvICAKZGVzY3JpcHRpb246IENvbnZlcnRzIGEgbGluZWFyIFJHQiBjb2xvciB0byBzUkdCLgp1c2U6IDxmbG9hdHx2ZWMzC2VjND4gcmdiMnNyZ2IoPGZsb2F0fHZlYzN8dmVjND4gc3JnYikKKi8KCiNpZm5kZWYgU1JHQl9FUFNJTE9OIAojZGVmaW5lIFNSR0JfRVBTSUxPTiAwLjAwMDAwMDAxCiNlbmRpZgoKI2lmbmRlZiBGTkNfUkdCMlNSR0IKI2RlZmluZSBGTkNfUkdCMlNSR0IKCi8vIDEuMCAvIDIuNCA9IDAuNDE2NjY2NjY2NjY2NjY2NyAKZmxvYXQgcmdiMnNyZ2IoZmxvYXQgY2hhbm5lbCkgewogICAgcmV0dXJuIChjaGFubmVsIDwgMC4wMDMxMzA4KSA/IGNoYW5uZWwgKiAxMi45MiA6IDEuMDU1ICogcG93KGNoYW5uZWwsIDAuNDE2NjY2NjY2NjY2NjY2NykgLSAwLjA1NTsKfQoKdmVjMyByZ2Iyc3JnYih2ZWMzIHJnYikgewogICAgcmV0dXJuIHNhdHVyYXRlKHZlYzMocmdiMnNyZ2IocmdiLnIgLSBTUkdCX0VQU0lMT04pLCByZ2Iyc3JnYihyZ2IuZyAtIFNSR0JfRVBTSUxPTiksIHJnYjJzcmdiKHJnYi5iIC0gU1JHQl9FUFNJTE9OKSkpOwp9Cgp2ZWM0IHJnYjJzcmdiKHZlYzQgcmdiKSB7CiAgICByZXR1cm4gdmVjNChyZ2Iyc3JnYihyZ2IucmdiKSwgcmdiLmEpOwp9CgojZW5kaWYKCi8qCm9yaWdpbmFsX2F1dGhvcjogQmpvcm4gT3R0b3Nzb24gKEBiam9ybm9ybm9ybiksIEluaWdvIFF1aWxlcwpkZXNjcmlwdGlvbjogfAogICAgTWl4IGZ1bmN0aW9uIGJ5IEluaWdvIFF1aWxlcyAoaHR0cHM6Ly93d3cuc2hhZGVydG95LmNvbS92aWV3L3R0Y3lSUykgCiAgICB1dGlsaXppbmcgQmpvcm4gT3R0b3NzbydzIE9rTGFiIGNvbG9yIHNwYWNlLCB3aGljaCBpcyBwcm92aWRlIHNtb290aCBzdHJhbnNpdGlvbnMgCiAgICBMZWFybiBtb3JlIGFib3V0IGl0IFtoaXMgYXJ0aWNsZV0oaHR0cHM6Ly9ib3R0b3Nzb24uZ2l0aHViLmlvL3Bvc3RzL29rbGFiLykKdXNlOiA8dmVjMwtlYzQ+IG1peE9rbGFiKDx2ZWMzfHZlYzQ+IGNvbG9yQSwgPHZlYzN8dmVjND4gY29sb3JCLCBmbG9hdCBwY3QpCm9wdGlvbnM6CiAgICAtIE1JWE9LTEFCX0NPTE9SU1BBQ0VfU1JHQjogYnkgZGVmYXVsdCBjb2xBIGFuZCBjb2xCIHVzZSBsaW5lYXIgUkdCLiBJZiB5b3Ugd2FudCB0byB1c2Ugc1JHQiBkZWZpbmUgdGhpcyBmbGFnCmV4YW1wbGVzOgogICAgLSAvc2hhZGVycy9jb2xvcl9taXguZnJhZwoqLwoKI2lmbmRlZiBGTkNfTUlYT0tMQUIKI2RlZmluZSBGTkNfTUlYT0tMQUIKdmVjMyBtaXhPa2xhYiggdmVjMyBjb2xBLCB2ZWMzIGNvbEIsIGZsb2F0IGggKSB7CgogICAgI2lmZGVmIE1JWE9LTEFCX0NPTE9SU1BBQ0VfU1JHQgogICAgY29sQSA9IHNyZ2IycmdiKGNvbEEpOwogICAgY29sQiA9IHNyZ2IycmdiKGNvbEIpOwogICAgI2VuZGlmCgogICAgLy8gaHR0cHM6Ly9ib3R0b3Nzb24uZ2l0aHViLmlvL3Bvc3RzL29rbGFiCiAgICBjb25zdCBtYXQzIGtDT05FdG9MTVMgPSBtYXQzKCAgICAgICAgICAgICAgICAKICAgICAgICAgMC40MTIxNjU2MTIwLCAgMC4yMTE4NTkxMDcwLCAgMC4wODgzMDk3OTQ3LAogICAgICAgICAwLjUzNjI3NTIwODAsICAwLjY4MDcxODk1ODQsICAwLjI4MTg0NzQxNzQsCiAgICAgICAgIDAuMDUxNDU3NTY1MywgIDAuMTA3NDA2NTc5MCwgIDAuNjMwMjYxMzYxNik7CiAgICBjb25zdCBtYXQzIGtMTVN0b0NPTkUgPSBtYXQzKAogICAgICAgICA0LjA3NjcyNDUyOTMsIC0xLjI2ODE0Mzc3MzEsIC0wLjAwNDExMTk4ODUsCiAgICAgICAgLTMuMzA3MjE2ODgyNywgIDIuNjA5MzMyMzIzMSwgLTAuNzAzNDc2MzA5OCwKICAgICAgICAgMC4yMzA3NTkwNTQ0LCAtMC4zNDExMzQ0MjkwLCAgMS43MDY4NjI1Njg5KTsKICAgICAgICAgICAgICAgICAgICAKICAgIC8vIHJnYiB0byBjb25lIChhcmcgb2YgcG93IGNhbid0IGJlIG5lZ2F0aXZlKQogICAgdmVjMyBsbXNBID0gcG93KCBrQ09ORXRvTE1TICogY29sQSwgdmVjMygxLjAvMy4wKSApOwogICAgdmVjMyBsbXNCID0gcG93KCBrQ09ORXRvTE1TICogY29sQiwgdmVjMygxLjAvMy4wKSApOwogICAgLy8gbGVycAogICAgdmVjMyBsbXMgPSBtaXgoIGxtc0EsIGxtc0IsIGggKTsKICAgIAogICAgLy8gY29uZSB0byByZ2IKICAgIHZlYzMgcmdiID0ga0xNU3RvQ09ORSoobG1zKmxtcypsbXMpOwoKICAgICNpZmRlZiBNSVhPS0xBQl9DT0xPUlNQQUNFX1NSR0IKICAgIHJldHVybiByZ2Iyc3JnYihyZ2IpOwogICAgI2Vsc2UKICAgIHJldHVybiByZ2I7CiAgICAjZW5kaWYKfQoKdmVjNCBtaXhPa2xhYiggdmVjNCBjb2xBLCB2ZWM0IGNvbEIsIGZsb2F0IGggKSB7CiAgICByZXR1cm4gdmVjNCggbWl4T2tsYWIoY29sQS5yZ2IsIGNvbEIucmdiLCBoKSwgbWl4KGNvbEEuYSwgY29sQi5hLCBoKSApOwp9CiNlbmRpZgptYXQyIFJvdChmbG9hdCBhKQp7CiAgICBmbG9hdCBzID0gc2luKGEpOwogICAgZmxvYXQgYyA9IGNvcyhhKTsKICAgIHJldHVybiBtYXQyKGMsIC1zLCBzLCBjKTsKfQoKCi8vIENyZWF0ZWQgYnkgaW5pZ28gcXVpbGV6IC0gaXEvMjAxNAovLyBMaWNlbnNlIENyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24tTm9uQ29tbWVyY2lhbC1TaGFyZUFsaWtlIDMuMCBVbnBvcnRlZCBMaWNlbnNlLgp2ZWMyIGhhc2goIHZlYzIgcCApCnsKICAgIHAgPSB2ZWMyKCBkb3QocCx2ZWMyKDIxMjcuMSw4MS4xNykpLCBkb3QocCx2ZWMyKDEyNjkuNSwyODMuMzcpKSApOwoJcmV0dXJuIGZyYWN0KHNpbihwKSo0Mzc1OC41NDUzKTsKfQoKZmxvYXQgbm9pc2UoIGluIHZlYzIgcCApCnsKICAgIHZlYzIgaSA9IGZsb29yKCBwICk7CiAgICB2ZWMyIGYgPSBmcmFjdCggcCApOwoJCgl2ZWMyIHUgPSBmKmYqKDMuMC0yLjAqZik7CgogICAgZmxvYXQgbiA9IG1peCggbWl4KCBkb3QoIC0xLjArMi4wKmhhc2goIGkgKyB2ZWMyKDAuMCwwLjApICksIGYgLSB2ZWMyKDAuMCwwLjApICksIAogICAgICAgICAgICAgICAgICAgICAgICBkb3QoIC0xLjArMi4wKmhhc2goIGkgKyB2ZWMyKDEuMCwwLjApICksIGYgLSB2ZWMyKDEuMCwwLjApICksIHUueCksCiAgICAgICAgICAgICAgICAgICBtaXgoIGRvdCggLTEuMCsyLjAqaGFzaCggaSArIHZlYzIoMC4wLDEuMCkgKSwgZiAtIHZlYzIoMC4wLDEuMCkgKSwgCiAgICAgICAgICAgICAgICAgICAgICAgIGRvdCggLTEuMCsyLjAqaGFzaCggaSArIHZlYzIoMS4wLDEuMCkgKSwgZiAtIHZlYzIoMS4wLDEuMCkgKSwgdS54KSwgdS55KTsKCXJldHVybiAwLjUgKyAwLjUqbjsKfQoKdm9pZCBtYWluKCl7CiAgCiAgICB2ZWMyIHV2ID0gZ2xfRnJhZ0Nvb3JkLnh5L3VfcmVzb2x1dGlvbi54eTsKICAgIGZsb2F0IHJhdGlvID0gdV9yZXNvbHV0aW9uLnggLyB1X3Jlc29sdXRpb24ueTsKCiAgICB2ZWMyIHR1diA9IHV2OwogICAgdHV2IC09IC41OwogICAgCiAgICAvL2FuaW1hdGlvbgogICAgZmxvYXQgc3BlZWQgPSB1X3RpbWUgKiAxMC4gKiB1X2FuaW1hdGVfc3BlZWQ7CiAgICBpZih1X2FuaW1hdGUgPT0gZmFsc2UpewogICAgICBzcGVlZCA9IDAuMDsKICAgIH0KCiAgICAvLyByb3RhdGUgd2l0aCBOb2lzZQogICAgZmxvYXQgZGVncmVlID0gbm9pc2UodmVjMihzcGVlZC8xMDAuMCwgdHV2LngqdHV2LnkpKTsKCiAgICB0dXYueSAqPSAxLi9yYXRpbzsKICAgIHR1diAqPSBSb3QocmFkaWFucygoZGVncmVlLS41KSo3MjAuKzE4MC4pKTsKCXR1di55ICo9IHJhdGlvOwogICAgCiAgICAvLyBXYXZlIHdhcnAgd2l0aCBzaW4KICAgIGZsb2F0IGZyZXF1ZW5jeSA9IDIwLiAqIHVfZnJlcXVlbmN5OwogICAgZmxvYXQgYW1wbGl0dWRlID0gMzAuICogKDEwLiooMC4wMSt1X2JsdXIpKTsKICAgIAogICAgdHV2LnggKz0gc2luKHR1di55KmZyZXF1ZW5jeStzcGVlZCkvYW1wbGl0dWRlOwogICAJdHV2LnkgKz0gc2luKHR1di54KmZyZXF1ZW5jeSoxLjUrc3BlZWQpLyhhbXBsaXR1ZGUqLjUpOwogICAgCiAgICAKICAgIC8vIGRyYXcgdGhlIGltYWdlCiAgICB2ZWM0IGxheWVyMSA9IG1peE9rbGFiKHVfY29sb3JzWzBdLCB1X2NvbG9yc1sxXSwgUygtLjMsIC4yLCAodHV2KlJvdChyYWRpYW5zKC01LikpKS54KSk7CiAgICB2ZWM0IGxheWVyMiA9IG1peE9rbGFiKHVfY29sb3JzWzJdLCB1X2NvbG9yc1szXSwgUygtLjMsIC4yLCAodHV2KlJvdChyYWRpYW5zKC01LikpKS54KSk7CiAgICAKICAgIHZlYzQgZmluYWxDb21wID0gbWl4T2tsYWIobGF5ZXIxLCBsYXllcjIsIFMoLjUsIC0uMywgdHV2LnkpKTsKICAgIAogICAgCiAgICBnbF9GcmFnQ29sb3IgPSBmaW5hbENvbXA7CiAgICAKfQpgLAogICAgICAgICAgICAgICAgdmVydGV4U2hhZGVyOiBgLy8gVmVydGV4IHNoYWRlcgoKdm9pZCBtYWluKCkgewogIGdsX1Bvc2l0aW9uID0gcHJvamVjdGlvbk1hdHJpeCAqIG1vZGVsVmlld01hdHJpeCAqIHZlYzQocG9zaXRpb24sIDEuMCk7Cn1gLAogICAgICAgICAgICAgICAgdW5pZm9ybXM6IHt1X2NvbG9yczoge3ZhbHVlOiBbbmV3IFRIUkVFLlZlY3RvcjQoMCwwLjI4MjM1Mjk0MTE3NjQ3MDYsMC45MDE5NjA3ODQzMTM3MjU1LDEpLG5ldyBUSFJFRS5WZWN0b3I0KDAsMC42ODYyNzQ1MDk4MDM5MjE2LDEsMSksbmV3IFRIUkVFLlZlY3RvcjQoMC40MjM1Mjk0MTE3NjQ3MDU5LDAuOTI5NDExNzY0NzA1ODgyNCwxLDEpLG5ldyBUSFJFRS5WZWN0b3I0KDAsMC4xNjg2Mjc0NTA5ODAzOTIxNywwLjkwMTk2MDc4NDMxMzcyNTUsMSldfSx1X2JsdXI6IHt2YWx1ZTogMC44M30sdV9hbmltYXRlOiB7dmFsdWU6IHRydWV9LHVfYW5pbWF0ZV9zcGVlZDoge3ZhbHVlOiAxfSx1X2ZyZXF1ZW5jeToge3ZhbHVlOiAwLjgzMX0sdV90aW1lOiB7dmFsdWU6IDB9LHVfbW91c2U6IHt2YWx1ZTogWzAsMF19LHVfcmVzb2x1dGlvbjoge3ZhbHVlOiBbMTAyNCwxMDI0XX19LAogICAgICAgICAgICAgICAgd2lyZWZyYW1lOiBmYWxzZSwgCiAgICAgICAgICAgICAgICB3aXJlZnJhbWVMaW5ld2lkdGg6IDAsCiAgICAgICAgICAgICAgICBkaXRoZXJpbmc6IGZhbHNlLAogICAgICAgICAgICAgICAgZmxhdFNoYWRpbmc6IHRydWUsCiAgICAgICAgICAgICAgICBkb3VibGVTaWRlZDogdHJ1ZSwKICAgICAgICAgICAgICAgIGdsc2xWZXJzaW9uOiAiMTAwIgogICAgICAgICAgICB9KQogICAgICAgICk7ICAKICAgIH0KCiAgICBSZWFjdERPTS5yZW5kZXIoUmVhY3QuY3JlYXRlRWxlbWVudChDYW52YXMsewogICAgICAgICAgICBnbDogewogICAgICAgICAgICAgICAgcHJlc2VydmVEcmF3aW5nQnVmZmVyOiB0cnVlLAogICAgICAgICAgICAgICAgcHJlbXVsdGlwbGllZEFscGhhOiBmYWxzZSwKICAgICAgICAgICAgICAgIGFscGhhOiB0cnVlLAogICAgICAgICAgICAgICAgdHJhbnNwYXJlbnQ6IHRydWUsCiAgICAgICAgICAgICAgICBhbnRpYWxpYXM6IHRydWUsCiAgICAgICAgICAgICAgICBwcmVjaXNpb246ICJoaWdocCIsCiAgICAgICAgICAgICAgICBwb3dlclByZWZlcmVuY2U6ICJoaWdoLXBlcmZvcm1hbmNlIgogICAgICAgICAgICB9LAogICAgICAgICAgICBkcHI6IFsyLDJdLAogICAgICAgICAgICBjYW1lcmE6IHsKICAgICAgICAgICAgICAgIGZvdjogNzUsCiAgICAgICAgICAgICAgICBuZWFyOiAwLjEsCiAgICAgICAgICAgICAgICBmYXI6IDEwMDAsCiAgICAgICAgICAgICAgICBwb3NpdGlvbjogWzAsMCw1XQogICAgICAgICAgICB9LAogICAgICAgICAgICBzdHlsZTp7IGhlaWdodDogIjEwMCUiLCB3aWR0aDogIjEwMCUiIH0KICAgICAgICB9LAogICAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoVGV4dHVyZU1lc2gpICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICApLCBlbWJlZFJvb3QpOwo8L3NjcmlwdD4KPC9oZWFkPgo8Ym9keT4KPCEtLSBBU1NFVCBOT1QgSU5MSU5FRDogYXNzZXRzL2FkZC5hNTUyNDBkZC5zdmcgLS0+Cgo8IS0tIEFTU0VUIE5PVCBJTkxJTkVEOiBhc3NldHMvYm9vay41ZmIxMWI4ZC5zdmcgLS0+Cgo8IS0tIEFTU0VUIE5PVCBJTkxJTkVEOiBhc3NldHMvbHlnaWEuZjc0OTA1OTQuc3ZnIC0tPgoKPCEtLSBBU1NFVCBOT1QgSU5MSU5FRDogYXNzZXRzL292ZXJmbG93LjhkNTA0MTVkLnN2ZyAtLT4KCjwhLS0gQVNTRVQgTk9UIElOTElORUQ6IGFzc2V0cy9jbG9zZS42NGI4MGQwMC5zdmcgLS0+Cgo8IS0tIEFTU0VUIE5PVCBJTkxJTkVEOiBhc3NldHMvc2lnLjg1MGE4NWU3LnN2ZyAtLT4KCjwhLS0gQVNTRVQgTk9UIElOTElORUQ6IGFzc2V0cy90cmFzaC41MjRkYmNkMy5zdmcgLS0+CjwvYm9keT4KPC9odG1sPg=="
-    style="border: 0; margin: 0; width: 512px; height: 512px"
-  />
+  <div id="iframe" ref="target" class="vote-stake-button-bg" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
+import * as THREE from 'three';
+
 export default defineComponent({
   setup() {
-    return {};
+    const target = ref();
+
+    const fragmentShader = `
+// Fragment shader
+// Uniforms
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform vec4 u_colors[4];
+uniform float u_blur; 
+uniform bool u_animate;
+uniform float u_animate_speed;
+uniform float u_frequency;
+
+#define S(a,b,t) smoothstep(a,b,t)
+/*
+original_author: Patricio Gonzalez Vivo  
+description: sRGB to linear RGB conversion.
+use: <float|vec3|vec4> srgb2rgb(<float|vec3|vec4> srgb)
+*/
+#ifndef SRGB_EPSILON 
+#define SRGB_EPSILON 0.00000001
+#endif
+#ifndef FNC_SRGB2RGB
+#define FNC_SRGB2RGB
+float srgb2rgb(float channel) {
+    return (channel < 0.04045) ? channel * 0.0773993808 : pow((channel + 0.055) * 0.947867298578199, 2.4);
+}
+vec3 srgb2rgb(vec3 srgb) {
+    return vec3(srgb2rgb(srgb.r + SRGB_EPSILON), 
+                srgb2rgb(srgb.g + SRGB_EPSILON), 
+                srgb2rgb(srgb.b + SRGB_EPSILON));
+}
+vec4 srgb2rgb(vec4 srgb) {
+    return vec4(srgb2rgb(srgb.rgb), srgb.a);
+}
+#endif
+/*
+original_author: Patricio Gonzalez Vivo
+description: clamp a value between 0 and 1
+use: saturation(<float|vec2|vec3|vec4> value)
+*/
+#if !defined(FNC_SATURATE) && !defined(saturate)
+#define FNC_SATURATE
+#define saturate(x) clamp(x, 0.0, 1.0)
+#endif
+/*
+original_author: Patricio Gonzalez Vivo  
+description: Converts a linear RGB color to sRGB.
+use: <float|vec3|vec4> rgb2srgb(<float|vec3|vec4> srgb)
+*/
+#ifndef FNC_RGB2SRGB
+#define FNC_RGB2SRGB
+float rgb2srgb(float channel) {
+    return (channel < 0.0031308) ? channel * 12.92 : 1.055 * pow(channel, 0.4166666666666667) - 0.055;
+}
+vec3 rgb2srgb(vec3 rgb) {
+    return saturate(vec3(rgb2srgb(rgb.r - SRGB_EPSILON), rgb2srgb(rgb.g - SRGB_EPSILON), rgb2srgb(rgb.b - SRGB_EPSILON)));
+}
+vec4 rgb2srgb(vec4 rgb) {
+    return vec4(rgb2srgb(rgb.rgb), rgb.a);
+}
+#endif
+/*
+original_author: Bjorn Ottosson (@bjornornorn), Inigo Quiles
+description: |
+    Mix function by Inigo Quiles (https://www.shadertoy.com/view/ttcyRS) 
+    utilizing Bjorn Ottosso's OkLab color space, which is provide smooth stransitions 
+    Learn more about it [his article](https://bottosson.github.io/posts/oklab/)
+use: <vec3|vec4> mixOklab(<vec3|vec4> colorA, <vec3|vec4> colorB, float pct)
+options:
+    - MIXOKLAB_COLORSPACE_SRGB: by default colA and colB use linear RGB. If you want to use sRGB define this flag
+examples:
+    - /shaders/color_mix.frag
+*/
+#ifndef FNC_MIXOKLAB
+#define FNC_MIXOKLAB
+vec3 mixOklab(vec3 colA, vec3 colB, float h) {
+    #ifdef MIXOKLAB_COLORSPACE_SRGB
+    colA = srgb2rgb(colA);
+    colB = srgb2rgb(colB);
+    #endif
+    const mat3 kCONEtoLMS = mat3(
+          0.4121656120,  0.2118591070,  0.0883097947,
+          0.5362752080,  0.6807189584,  0.2818474174,
+          0.0514575653,  0.1074065790,  0.6302613616);
+    const mat3 kLMStoCONE = mat3(
+          4.0767245293, -1.2681437731, -0.0041119885,
+        -3.3072168827,  2.6093323231, -0.7034763098,
+          0.2307590544, -0.3411344290,  1.7068625689);
+    vec3 lmsA = pow(kCONEtoLMS * colA, vec3(1.0 / 3.0));
+    vec3 lmsB = pow(kCONEtoLMS * colB, vec3(1.0 / 3.0));
+    vec3 lms = mix(lmsA, lmsB, h);
+    vec3 rgb = kLMStoCONE * (lms * lms * lms);
+    #ifdef MIXOKLAB_COLORSPACE_SRGB
+    return rgb2srgb(rgb);
+    #else
+    return rgb;
+    #endif
+}
+vec4 mixOklab(vec4 colA, vec4 colB, float h) {
+    return vec4(mixOklab(colA.rgb, colB.rgb, h), mix(colA.a, colB.a, h));
+}
+#endif
+mat2 Rot(float a) {
+    float s = sin(a);
+    float c = cos(a);
+    return mat2(c, -s, s, c);
+}
+vec2 hash(vec2 p) {
+    p = vec2(dot(p, vec2(2127.1, 81.17)), dot(p, vec2(1269.5, 283.37)));
+    return fract(sin(p) * 43758.5453);
+}
+float noise(in vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    float n = mix(mix(dot(-1.0 + 2.0 * hash(i + vec2(0.0, 0.0)), f - vec2(0.0, 0.0)),
+                        dot(-1.0 + 2.+ hash(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
+mix(dot(-1.0 + 2.0 * hash(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
+    dot(-1.0 + 2.0 * hash(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x), u.y);
+    return 0.5 + 0.5 * n;
+}
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    float ratio = u_resolution.x / u_resolution.y;
+    vec2 tuv = uv;
+    tuv -= .5;
+    float speed = u_time * 10.0 * u_animate_speed;
+    if (u_animate == false) {
+        speed = 0.0;
+    }
+    float degree = noise(vec2(speed / 100.0, tuv.x * tuv.y));
+    tuv.y *= 1.0 / ratio;
+    tuv *= Rot(radians((degree - .5) * 720.0 + 180.0));
+    tuv.y *= ratio;
+    float frequency = 20.0 * u_frequency;
+    float amplitude = 30.0 * (10.0 * (0.01 + u_blur));
+    tuv.x += sin(tuv.y * frequency + speed) / amplitude;
+    tuv.y += sin(tuv.x * frequency * 1.5 + speed) / (amplitude * .5);
+    vec4 layer1 = mixOklab(u_colors[0], u_colors[1], S(-.3, .2, (tuv * Rot(radians(-5.0))).x));
+    vec4 layer2 = mixOklab(u_colors[2], u_colors[3], S(-.3, .2, (tuv * Rot(radians(-5.0))).x));
+    vec4 finalComp = mixOklab(layer1, layer2, S(.5, -.3, tuv.y));
+    gl_FragColor = finalComp;
+}
+`;
+
+    const vertexShader = `
+// Vertex shader
+void main() {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+    const uniforms = {
+      u_colors: {
+        value: [
+          new THREE.Vector4(0, 0.2823529411764706, 0.9019607843137255, 1),
+          new THREE.Vector4(0, 0.6862745098039216, 1, 1),
+          new THREE.Vector4(0.4235294117647059, 0.9294117647058824, 1, 1),
+          new THREE.Vector4(0, 0.16862745098039217, 0.9019607843137255, 1),
+        ],
+      },
+      u_blur: { value: 0.83 },
+      u_animate: { value: true },
+      u_animate_speed: { value: 1 },
+      u_frequency: { value: 0.831 },
+      u_time: { value: 0 },
+      u_mouse: { value: [0, 0] },
+      u_resolution: { value: [1024, 1024] },
+    };
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1024 / 1024, 0.1, 1000);
+
+    const renderer = new THREE.WebGLRenderer({
+      preserveDrawingBuffer: true,
+      premultipliedAlpha: false,
+      alpha: true,
+      antialias: true,
+      precision: 'highp',
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(512, 512);
+
+    const geometry = new THREE.PlaneGeometry(1024, 1024);
+    const meterial = new THREE.ShaderMaterial({
+      fragmentShader,
+      vertexShader,
+      uniforms,
+      wireframe: false,
+      wireframeLinewidth: 0,
+      dithering: false,
+      // flatShading: true,
+      side: THREE.DoubleSide,
+      glslVersion: '100',
+    });
+    const mesh = new THREE.Mesh(geometry, meterial);
+    scene.add(mesh);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (mesh) {
+        uniforms.u_time.value += 0.05;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    onMounted(() => {
+      target.value.appendChild(renderer.domElement);
+      animate();
+    });
+
+    return {
+      target,
+    };
   },
 });
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.vote-stake-button-bg {
+  border: 0;
+  margin: 0;
+  width: 512px;
+  height: 512px;
+}
+</style>

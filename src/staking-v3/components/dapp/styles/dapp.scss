@@ -12,13 +12,12 @@
 .container--dapp-top {
   max-width: $container-max-width;
   margin: auto;
-  padding-right: 16px;
+  padding-bottom: 80px;
   padding-left: 16px;
-  padding-bottom: 40px;
-  @media (min-width: $sm) {
-    padding-bottom: 80px;
-  }
+  padding-right: 16px;
+
   @media (min-width: $lg) {
+    padding-top: 36px;
     padding-right: 40px;
     padding-left: 40px;
   }
