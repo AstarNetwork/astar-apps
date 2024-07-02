@@ -185,16 +185,6 @@ export const xcmToken = {
       originChain: Chain.PENDULUM,
       minBridgeAmount: '0.1',
     },
-    {
-      symbol: 'mEURC.s',
-      isNativeToken: false,
-      assetId: '18446744073709551636',
-      originAssetId: 'mEURC.s',
-      logo: require('/src/assets/img/token/EURC.svg'),
-      isXcmCompatible: true,
-      originChain: Chain.PENDULUM,
-      minBridgeAmount: '0.1',
-    },
   ],
   [endpointKey.SHIDEN]: [
     {

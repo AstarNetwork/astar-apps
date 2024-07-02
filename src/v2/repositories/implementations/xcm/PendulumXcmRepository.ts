@@ -15,14 +15,6 @@ import { decodeAddress } from '@polkadot/util-crypto';
 
 const PEN = 'Native';
 const XLM = { Stellar: 'StellarNative' };
-const StellarEURCMykobo = {
-  Stellar: {
-    AlphaNum4: {
-      code: 'EURC',
-      issuer: '0x2112ee863867e4e219fe254c0918b00bc9ea400775bfc3ab4430971ce505877c',
-    },
-  },
-};
 
 export class PendulumXcmRepository extends XcmRepository {
   constructor() {
@@ -48,8 +40,6 @@ export class PendulumXcmRepository extends XcmRepository {
       tokenData = PEN;
     } else if (token.originAssetId === 'XLM.s') {
       tokenData = XLM;
-    } else if (token.originAssetId === 'mEURC.s') {
-      tokenData = StellarEURCMykobo;
     }
     const destination = {
       V3: {
@@ -99,8 +89,6 @@ export class PendulumXcmRepository extends XcmRepository {
       let currencyId;
       if (token.originAssetId === 'XLM.s') {
         currencyId = XLM;
-      } else if (token.originAssetId === 'mEURC.s') {
-        currencyId = StellarEURCMykobo;
       } else {
         console.error('Unsupported token: ', token.originAssetId);
         return '0';
