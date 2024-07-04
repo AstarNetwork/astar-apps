@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
 import { Guard, container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { Polkasafe } from 'polkasafe';
 import { IPolkasafeRepository, MultisigTransactionParam } from 'src/v2/repositories';
 import { BN } from '@polkadot/util';
+import { PolkasafeWrapper } from 'src/types/polkasafe';
 @injectable()
 export class PolkasafeRepository implements IPolkasafeRepository {
   constructor() {}
@@ -17,7 +17,7 @@ export class PolkasafeRepository implements IPolkasafeRepository {
     Guard.ThrowIfUndefined('multisigAddress', multisigAddress);
     Guard.ThrowIfUndefined('transaction', transaction);
 
-    const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
+    const polkasafeClient = container.get<PolkasafeWrapper>(Symbols.PolkasafeClient);
     const { data, error } = await polkasafeClient.customTransactionAsMulti(
       multisigAddress,
       transaction,
