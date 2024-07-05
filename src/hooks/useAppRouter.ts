@@ -125,31 +125,36 @@ export function useAppRouter() {
     const delay = 2000;
     await wait(delay);
     const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
-    if (!multisigStored) return;
-    // Memo: PolkaSafe supports Astar only
-    if (currentNetworkIdx.value !== endpointKey.ASTAR) {
+    if (multisigStored) {
       handleResetAccount();
-      return;
     }
-    const multisig = JSON.parse(multisigStored);
-    const client = new PolkasafeWrapper();
-    const substratePrefix = 42;
-    const signatory = encodeAddress(multisig.signatory.address, substratePrefix);
-    const extensions = await web3Enable('AstarNetwork/astar-apps');
-    const signer = extensions.find((it) => {
-      return it.name === multisig.signatory.source;
-    });
-    try {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('toast.enablePolkasafe'),
-        alertType: 'info',
-      });
-      await client.connect('astar', signatory, signer as any);
-      container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
-    } catch (error) {
-      console.error(error);
-      await disconnectAccount();
-    }
+
+    // Memo: disable the auto login feature as it causes `Error: invalid BigNumber string` error in usePrice
+    // if (!multisigStored) return;
+    // // Memo: PolkaSafe supports Astar only
+    // if (currentNetworkIdx.value !== endpointKey.ASTAR) {
+    //   handleResetAccount();
+    //   return;
+    // }
+    // const multisig = JSON.parse(multisigStored);
+    // const client = new PolkasafeWrapper();
+    // const substratePrefix = 42;
+    // const signatory = encodeAddress(multisig.signatory.address, substratePrefix);
+    // const extensions = await web3Enable('AstarNetwork/astar-apps');
+    // const signer = extensions.find((it) => {
+    //   return it.name === multisig.signatory.source;
+    // });
+    // try {
+    //   store.dispatch('general/showAlertMsg', {
+    //     msg: t('toast.enablePolkasafe'),
+    //     alertType: 'info',
+    //   });
+    //   await client.connect('astar', signatory, signer as any);
+    //   container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
+    // } catch (error) {
+    //   console.error(error);
+    //   await disconnectAccount();
+    // }
   };
 
   const handleI18Constant = (): void => {
