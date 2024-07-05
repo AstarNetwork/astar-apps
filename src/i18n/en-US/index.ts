@@ -798,7 +798,7 @@ export default {
     votingOpenText:
       'Experience dApp Staking, the unique staking mechanism exclusive to Astar, where communities can back their favorite teams by staking ASTR tokens and earn substantial rewards.',
     stakeToday: 'Stake today, be entitled to big bonus!',
-    stakeTodayFormatted: 'Stake today,<br/>be entitled to<br/>bonus!',
+    stakeTodayFormatted: 'Stake today,\nbe entitled to\nbonus!',
     voteText: 'I would like to vote my tokens with',
     transferText: 'I would like to move my funds from',
     stakeVoteOn: 'And vote/stake on',
@@ -1047,10 +1047,20 @@ export default {
     moreInfoFor: 'More info for',
     bonusRewards: 'Bonus Rewards',
     threshold: 'Threshold',
-    percentageStaked: 'Percentage of Supply Staked',
+    percentageLocked: 'Percentage of Supply Locked',
     unclaimedRewards: 'Unclaimed rewards',
     rewardsClaimedOnStake: 'Rewards will be claimed when stake',
-    ifYouStakeNow: 'If you stake now',
+    ifYouStakeNow: 'Basic APR + Bonus (If you stake now)',
+    defiDescription: 'Discover the world of decentralized finance solutions on Astar.',
+    'unstoppable-grantsDescription':
+      'Support projects in the Unstoppable Community Grants program, powered by dApp staking.',
+    nftDescription: 'Find and support creative communities with Astar’s NFT dApps.',
+    toolingDescription:
+      'Support powerful tools and frameworks designed to accelerate network growth.',
+    utilityDescription:
+      'Stake to essential projects that enhance the productivity and functionality of Web3.',
+    othersDescription: 'Explore a diverse set of blockchain dApps.',
+    basicAprPlusBonus: 'Basic APR + Bonus',
   },
   bridge: {
     selectBridge: 'Select a Bridge',
@@ -1064,6 +1074,7 @@ export default {
     approvalMaxAmount: 'Approve Max Amount (option)',
     disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
     thirdPartyBridge: '3rd Party Bridge',
+    bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
     ethereumBridge: {
       title: 'Native Bridge',
       tag: 'ERC20',

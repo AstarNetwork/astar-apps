@@ -45,7 +45,7 @@
             <div>{{ $t('stakingV3.ifYouStakeNow') }}</div>
           </div>
           <div class="percentage">
-            <span>15<small>%+</small></span>
+            <span>{{ totalApr.toFixed(1) }}<small>%</small></span>
           </div>
         </div>
       </div>
@@ -54,8 +54,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useDappStaking, useDappStakingNavigation, useVotingCountdown } from '../hooks';
+import { defineComponent, computed } from 'vue';
+import { useAprV3, useDappStaking, useDappStakingNavigation, useVotingCountdown } from '../hooks';
 import { PeriodType } from 'src/staking-v3/logic';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 
@@ -67,12 +67,16 @@ export default defineComponent({
     const { protocolState, totalStakerRewards, claimStakerAndBonusRewards } = useDappStaking();
     const { navigateToAssets } = useDappStakingNavigation();
     const { timeLeftFormatted } = useVotingCountdown();
+    const { stakerApr, bonusApr } = useAprV3({ isWatch: true });
+
+    const totalApr = computed<number>(() => stakerApr.value + bonusApr.value);
 
     return {
       protocolState,
       timeLeftFormatted,
       PeriodType,
       totalStakerRewards,
+      totalApr,
       navigateToAssets,
       claimStakerAndBonusRewards,
     };

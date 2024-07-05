@@ -58,12 +58,21 @@
 
 .text {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .category-description {
+  height: 40px;
   font-size: 12px;
   font-weight: 400;
   color: $white;
+  display: none;
+
+  @media (min-width: $lg) {
+    display: block;
+  }
 }
 
 .icon {

@@ -4,7 +4,10 @@ import {
   DappInfo,
   DappStakeInfo,
   DappState,
+  EraInfo,
   EraLengths,
+  PeriodType,
+  ProtocolState,
   SingularStakingInfo,
   StakeAmount,
   StakerRewards,
@@ -576,7 +579,9 @@ export class DappStakingService extends SignerService implements IDappStakingSer
         if (tierReward) {
           const dApp = tierReward?.dapps.find((d) => d.dappId === dapp.id);
           if (dApp && dApp.tierId !== undefined) {
-            result.rewards += tierReward.rewards[dApp.tierId];
+            result.rewards +=
+              tierReward.rewards[dApp.tierId] +
+              BigInt(dApp.rank) * tierReward.rankRewards[dApp.tierId];
             result.erasToClaim.push(firstEra + index);
           }
         }
@@ -701,15 +706,16 @@ export class DappStakingService extends SignerService implements IDappStakingSer
 
   // @inheritdoc
   public async getStakerApr(block?: number): Promise<number> {
-    const [totalIssuance, inflationParams, eraLengths, eraInfo] = await Promise.all([
+    const [totalIssuance, inflationParams, eraLengths, eraInfo, protocolState] = await Promise.all([
       this.balancesRepository.getTotalIssuance(block),
       this.inflationRepository.getInflationParams(block),
       this.dappStakingRepository.getEraLengths(block),
       this.dappStakingRepository.getCurrentEraInfo(block),
+      this.dappStakingRepository.getProtocolState(block),
     ]);
 
     const cyclesPerYear = this.getCyclesPerYear(eraLengths);
-    const currentStakeAmount = weiToToken(eraInfo.currentStakeAmount.totalStake);
+    const currentStakeAmount = this.getStakeAmount(protocolState, eraInfo);
 
     const stakedPercent = currentStakeAmount / weiToToken(totalIssuance);
     const { baseStakersPart, adjustableStakersPart, idealStakingRate, maxInflationRate } =
@@ -728,10 +734,11 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     simulatedVoteAmount: number = 1000,
     block?: number
   ): Promise<{ value: number; simulatedBonusPerPeriod: number }> {
-    const [inflationConfiguration, eraLengths, eraInfo] = await Promise.all([
+    const [inflationConfiguration, eraLengths, eraInfo, protocolState] = await Promise.all([
       this.inflationRepository.getInflationConfiguration(block),
       this.dappStakingRepository.getEraLengths(block),
       this.dappStakingRepository.getCurrentEraInfo(block),
+      this.dappStakingRepository.getProtocolState(block),
     ]);
 
     const cyclesPerYear = this.getCyclesPerYear(eraLengths);
@@ -739,7 +746,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const formattedBonusRewardsPoolPerPeriod = weiToToken(
       inflationConfiguration.bonusRewardPoolPerPeriod
     );
-    const voteAmount = weiToToken(eraInfo.currentStakeAmount.voting);
+    const voteAmount = this.getStakeAmount(protocolState, eraInfo);
     const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
     const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
     const periodsPerYear = eraLengths.periodsPerCycle * cyclesPerYear;
@@ -821,5 +828,15 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     rewardRetentionInPeriods: number
   ): boolean {
     return stakedPeriod < currentPeriod - rewardRetentionInPeriods;
+  }
+
+  private getStakeAmount(protocolState: ProtocolState, eraInfo: EraInfo): number {
+    const currentStakeAmount = weiToToken(
+      protocolState.periodInfo.subperiod === PeriodType.Voting
+        ? eraInfo.nextStakeAmount?.totalStake ?? BigInt(0)
+        : eraInfo.currentStakeAmount.totalStake
+    );
+
+    return currentStakeAmount;
   }
 }
