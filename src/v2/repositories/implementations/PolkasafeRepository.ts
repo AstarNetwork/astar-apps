@@ -20,10 +20,10 @@ export class PolkasafeRepository implements IPolkasafeRepository {
     const polkasafeClient = container.get<PolkasafeWrapper>(Symbols.PolkasafeClient);
     const { data, error } = await polkasafeClient.customTransactionAsMulti(
       multisigAddress,
-      transaction,
+      transaction as any,
       undefined,
       isProxyAccount,
-      new BN(tip)
+      new BN(tip) as any
     );
     if (error) {
       console.error('error', error);
