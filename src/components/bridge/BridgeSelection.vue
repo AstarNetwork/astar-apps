@@ -6,9 +6,9 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button :disabled="!isEnableEthBridge">
+          <button :disabled="!isEnableEthBridge || isBridgeMaintenanceMode">
             <component
-              :is="isEnableEthBridge ? 'router-link' : 'div'"
+              :is="isEnableEthBridge && !isBridgeMaintenanceMode ? 'router-link' : 'div'"
               :to="buildEthereumBridgePageLink()"
               class="button--bridge"
             >
@@ -38,6 +38,9 @@
           </button>
           <p v-if="!isEnableEthBridge" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.text2') }}
+          </p>
+          <p v-if="isBridgeMaintenanceMode" class="text--bridge-details">
+            {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
 
@@ -201,8 +204,16 @@ export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, networkNameSubstrate, isMainnet, isZkyoto, isAstarZkEvm, isAstar, isH160 } =
-      useNetworkInfo();
+    const {
+      isZkEvm,
+      networkNameSubstrate,
+      isMainnet,
+      isZkyoto,
+      isAstarZkEvm,
+      isAstar,
+      isH160,
+      isBridgeMaintenanceMode,
+    } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
       return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
@@ -241,6 +252,7 @@ export default defineComponent({
       zKatanaBridgeUrl,
       isZkyoto,
       isEnableLzBridge,
+      isBridgeMaintenanceMode,
     };
   },
 });

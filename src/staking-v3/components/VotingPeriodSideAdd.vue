@@ -7,8 +7,9 @@
     </div>
     <div>
       <button :disabled="isZkEvm" class="button--vote-stake" @click="navigateToVote()">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <span v-html="$t('stakingV3.stakeTodayFormatted')"></span>
+        <span>
+          {{ $t('stakingV3.stakeTodayFormatted') }}
+        </span>
         <vote-stake-button-bg />
       </button>
     </div>
@@ -86,10 +87,14 @@ export default defineComponent({
   &:hover {
     filter: brightness(1.2);
   }
+
   span {
     position: relative;
+    display: block;
     z-index: 1;
+    white-space: pre;
   }
+
   #iframe {
     position: absolute;
     z-index: 0;

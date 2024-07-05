@@ -3,7 +3,7 @@ import { debounce } from 'lodash-es';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { Erc20Token } from 'src/modules/token';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import {
@@ -17,10 +17,12 @@ import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { IZkBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { WatchCallback, computed, onUnmounted, ref, watch } from 'vue';
+import { WatchCallback, computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
+import { Path } from 'src/router';
+import { useRouter } from 'vue-router';
 
 const eth = {
   symbol: 'ETH',
@@ -77,6 +79,8 @@ export const useL1Bridge = () => {
   const { t } = useI18n();
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
+  const router = useRouter();
+  const { isBridgeMaintenanceMode } = useNetworkInfo();
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const fromChainId = computed<number>(
@@ -416,6 +420,13 @@ export const useL1Bridge = () => {
     },
     isApproving.value ? 5 : 30 * 1000
   );
+
+  // Memo: the app goes to assets page if users access to the bridge page by inputting URL directly
+  watchEffect(() => {
+    if (isBridgeMaintenanceMode.value) {
+      router.push(Path.Assets);
+    }
+  });
 
   onUnmounted(() => {
     clearInterval(autoFetchAllowanceHandler);

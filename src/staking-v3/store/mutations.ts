@@ -15,6 +15,7 @@ import {
   TiersConfiguration,
   EraLengths,
   ProviderDappData,
+  DAppTier,
 } from '../logic';
 
 export interface DappStakingMutations<S = DappStakingState> {
@@ -37,7 +38,7 @@ export interface DappStakingMutations<S = DappStakingState> {
   setDappTiers(state: DappStakingState, dAppTiers: DAppTierRewards): void;
   setTiersConfiguration(state: DappStakingState, tiersConfiguration: TiersConfiguration): void;
   setEraLengths(state: DappStakingState, eraLengths: EraLengths): void;
-  setLeaderboard(state: DappStakingState, leaderboard: Map<number, number>): void;
+  setLeaderboard(state: DappStakingState, leaderboard: Map<number, DAppTier>): void;
 }
 
 const updateDapp = <T>(

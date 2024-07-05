@@ -3,6 +3,7 @@ import {
   AccountLedger,
   Constants,
   ContractStakeAmount,
+  DAppTier,
   DAppTierRewards,
   Dapp,
   DappBase,
@@ -212,7 +213,7 @@ export interface IDappStakingRepository {
   /**
    * Gets dApps tier assignment map.
    */
-  getLeaderboard(): Promise<Map<number, number>>;
+  getLeaderboard(): Promise<Map<number, DAppTier>>;
 
   /**
    * Gets a call to the legacy code to support v2 ledger stakers to unlock their funds.
