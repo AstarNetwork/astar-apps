@@ -167,7 +167,9 @@ export class XcmRepository implements IXcmRepository {
           },
           id: {
             Concrete: {
-              interior: 'Here',
+              interior: {
+                Here: null,
+              },
               parents: new BN(0),
             },
           },
