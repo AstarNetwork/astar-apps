@@ -22,7 +22,7 @@ export function usePeriodStats(period: Ref<number>) {
   const { currentNetworkName } = useNetworkInfo();
   const { eraLengths, protocolState, currentBlock } = useDappStaking();
   const { calculateTotalTokensToBeBurned } = useDataCalculations();
-  const { getDapp } = useDapps();
+  const { allDapps, getDapp } = useDapps();
 
   const periodData = ref<PeriodData[]>([]);
   const tvlRatio = ref<number>();
@@ -81,11 +81,31 @@ export function usePeriodStats(period: Ref<number>) {
       Symbols.DappStakingRepositoryV3
     );
 
-    const [stats, totalIssuance, periodInfo] = await Promise.all([
+    const allDappsId = allDapps.value.map((dapp) => dapp.chain.id);
+    const [stats, totalIssuance, periodInfo, stakes] = await Promise.all([
       repository.getStakingPeriodStatistics(currentNetworkName.value.toLowerCase(), period.value),
       balancesRepository.getTotalIssuance(block),
       dappStakingRepository.getCurrentEraInfo(block),
+      dappStakingRepository.getContractsStake(
+        allDappsId,
+        getPeriodEndBlock(period.value, protocolState.value?.periodInfo.number ?? period.value)
+      ),
     ]);
+
+    // Update skates receiver from indexer although the indexer data is correct, we are using on chain data
+    // This discrepancy is caused by runtime bug.
+    stats.forEach((stat) => {
+      const dapp = getDapp(stat.dappAddress);
+      if (dapp) {
+        const stake = stakes.get(dapp.chain.id);
+        if (stake) {
+          stat.stakeAmount = stake.staked.totalStake;
+        }
+      } else {
+        console.warn(`Dapp ${stat.dappAddress} not found in dapps list`);
+      }
+    });
+
     periodData.value = stats;
     const issuance = Number(ethers.utils.formatEther(totalIssuance));
     const locked = Number(ethers.utils.formatEther(periodInfo.totalLocked));
