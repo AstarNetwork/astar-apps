@@ -377,7 +377,7 @@ export function useTransferRouter() {
     }
 
     const isDisabledXcmChain = Boolean(
-      disabledXcmChains && disabledXcmChains.find((it) => it === currentNetworkIdx.value)
+      disabledXcmChains && disabledXcmChains.some((it) => it === currentNetworkIdx.value)
     );
     const originChain = token.value?.originChain || '';
     return checkIsDisabledToken(originChain) || isDisabledXcmChain;
