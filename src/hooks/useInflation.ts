@@ -76,7 +76,9 @@ export function useInflation(): UseInflation {
       }
 
       const balancesRepository = container.get<IBalancesRepository>(Symbols.BalancesRepository);
-      const initialTotalIssuance = await balancesRepository.getTotalIssuance(period1StartBlock - 1);
+      const initialTotalIssuance =
+        (await balancesRepository.getTotalIssuance(period1StartBlock - 1)) -
+        BigInt('350000000000000000000000000'); // Quick fox for token burning event. TODO make a proper solution
       const realizedTotalIssuance = await balancesRepository.getTotalIssuance();
 
       const {
