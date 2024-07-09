@@ -1,6 +1,6 @@
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { getUsdBySymbol, wait } from '@astar-network/astar-sdk-core';
 
 export function usePrice() {
@@ -12,10 +12,12 @@ export function usePrice() {
   });
 
   const { isMainnet, isAstarZkEvm } = useNetworkInfo();
+  const { currentAccount } = useAccount();
 
   watch(
-    [tokenSymbol],
+    [tokenSymbol, currentAccount, isMainnet],
     async () => {
+      if (!currentAccount.value || !isMainnet.value) return;
       // Memo: hacky way to fix the 'invalid BigNumber string' error
       await wait(500);
       const tokenSymbolRef = tokenSymbol.value;
@@ -29,7 +31,7 @@ export function usePrice() {
         console.error(error.message);
       }
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   return {

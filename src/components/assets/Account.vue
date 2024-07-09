@@ -72,7 +72,7 @@
                 width="24"
                 :src="iconWallet"
                 alt="wallet-icon"
-                :class="multisig && 'img--polkasafe'"
+                :class="multisig && 'img--polkasafe-account'"
               />
             </div>
 
