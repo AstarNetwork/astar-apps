@@ -45,9 +45,9 @@
         </div>
 
         <div class="column--selection">
-          <button :disabled="!isEnableLzBridge">
+          <button :disabled="!isEnableLzBridge || isBridgeMaintenanceMode">
             <component
-              :is="isEnableLzBridge ? 'router-link' : 'div'"
+              :is="isEnableLzBridge && !isBridgeMaintenanceMode ? 'router-link' : 'div'"
               :to="buildLzBridgePageLink()"
               class="button--bridge"
             >
@@ -77,6 +77,9 @@
           </button>
           <p v-if="!isEnableLzBridge" class="text--bridge-details">
             {{ $t('bridge.astarBridge.text2') }}
+          </p>
+          <p v-if="isBridgeMaintenanceMode" class="text--bridge-details">
+            {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
         <div v-if="isZkyoto" class="column--selection">

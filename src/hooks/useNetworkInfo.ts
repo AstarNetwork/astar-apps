@@ -113,7 +113,7 @@ export function useNetworkInfo() {
   });
 
   const isBridgeMaintenanceMode = computed<boolean>(() => {
-    return isZkyoto.value;
+    return false;
   });
 
   return {
