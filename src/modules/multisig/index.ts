@@ -25,22 +25,28 @@ export interface Signatory {
 
 export const addProxyAccounts = (input: MultisigAddress[]): MultisigAddress[] => {
   const output: MultisigAddress[] = [];
+  const uniqueAddresses = new Set();
 
   for (let account of input) {
-    // Memo: Normal account
-    output.push({
-      ...account,
-      isProxyAccount: false,
-    });
+    if (!uniqueAddresses.has(account.address)) {
+      uniqueAddresses.add(account.address);
 
-    // Memo: add Proxy account into the output array
-    if (account.proxy) {
-      const proxyAccount = {
+      // Memo: Normal account
+      output.push({
         ...account,
-        address: account.proxy,
-        isProxyAccount: true,
-      };
-      output.push(proxyAccount);
+        isProxyAccount: false,
+      });
+
+      // Memo: add Proxy account into the output array
+      if (account.proxy && !uniqueAddresses.has(account.proxy)) {
+        uniqueAddresses.add(account.proxy);
+        const proxyAccount = {
+          ...account,
+          address: account.proxy,
+          isProxyAccount: true,
+        };
+        output.push(proxyAccount);
+      }
     }
   }
 

@@ -158,13 +158,13 @@ import { hasProperty, isValidAddressPolkadotAddress } from '@astar-network/astar
 import { web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { encodeAddress } from '@polkadot/util-crypto';
-import { Polkasafe } from 'polkasafe';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { polkasafeUrl } from 'src/links';
 import { Multisig, addProxyAccounts } from 'src/modules/multisig';
 import { container } from 'src/v2/common';
 import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
 import { Symbols } from 'src/v2/symbols';
+import { PolkasafeWrapper } from 'src/types/polkasafe';
 
 export default defineComponent({
   components: {
@@ -285,7 +285,7 @@ export default defineComponent({
       return truncate(ethers.utils.formatEther(balance || '0'));
     };
 
-    const setMultisigAccounts = async (c: Polkasafe, signatory: string): Promise<void> => {
+    const setMultisigAccounts = async (c: PolkasafeWrapper, signatory: string): Promise<void> => {
       const { data, error } = await c.connectAddress(signatory);
       if (error) throw Error(error);
       if (!hasProperty(data, 'multisigAddresses')) {
@@ -314,9 +314,9 @@ export default defineComponent({
     };
 
     const handleInitializePolkasafe = async (signatory: string, injector: any): Promise<void> => {
-      const client = new Polkasafe();
+      const client = new PolkasafeWrapper();
       await client.connect('astar', signatory, injector);
-      container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+      container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
       await setMultisigAccounts(client, signatory);
     };
 
@@ -340,8 +340,8 @@ export default defineComponent({
         const signatory = encodeAddress(selectedSignatory.value.address, substratePrefix);
 
         try {
-          const polkasafeClient = container.get<Polkasafe>(Symbols.PolkasafeClient);
-          const isSigned = polkasafeClient && polkasafeClient.address === signatory;
+          const polkasafeClient = container.get<PolkasafeWrapper>(Symbols.PolkasafeClient);
+          const isSigned = polkasafeClient && polkasafeClient.getAddress() === signatory;
           if (isSigned) {
             await setMultisigAccounts(polkasafeClient, signatory);
           } else {
