@@ -244,9 +244,7 @@ export default defineComponent({
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
     });
 
-    const isEnableCelerBridge = computed<boolean>(() => {
-      return false;
-    });
+    const isEnableCelerBridge = computed<boolean>(() => false);
 
     return {
       currentAccount,
@@ -263,6 +261,7 @@ export default defineComponent({
       isZkyoto,
       isEnableLzBridge,
       isBridgeMaintenanceMode,
+      isEnableCelerBridge,
     };
   },
 });
