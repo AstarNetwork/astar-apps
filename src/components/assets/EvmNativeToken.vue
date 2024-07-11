@@ -64,13 +64,22 @@
         </router-link>
 
         <!-- Only SDN is able to bridge via cBridge at this moment -->
-        <a
+        <!-- <a
           v-if="nativeTokenSymbol === 'SDN'"
           :href="cbridgeAppLink"
           target="_blank"
           rel="noopener noreferrer"
         >
           <button class="btn btn--icon">
+            <astar-icon-bridge />
+          </button>
+          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+          </q-tooltip>
+        </a> -->
+        <a v-if="nativeTokenSymbol === 'SDN'">
+          <button class="btn btn--icon" disabled>
             <astar-icon-bridge />
           </button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
