@@ -151,7 +151,7 @@
           </button>
         </div>
         <div class="column--selection">
-          <button>
+          <button :disabled="!isEnableCelerBridge">
             <a
               :href="cbridgeAppLink"
               target="_blank"
@@ -186,6 +186,9 @@
               </div>
             </a>
           </button>
+          <p v-if="!isEnableCelerBridge" class="text--bridge-details">
+            {{ $t('bridge.celerBridge.warning') }}
+          </p>
         </div>
       </div>
     </div>
@@ -241,6 +244,8 @@ export default defineComponent({
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
     });
 
+    const isEnableCelerBridge = computed<boolean>(() => false);
+
     return {
       currentAccount,
       cbridgeAppLink,
@@ -256,6 +261,7 @@ export default defineComponent({
       isZkyoto,
       isEnableLzBridge,
       isBridgeMaintenanceMode,
+      isEnableCelerBridge,
     };
   },
 });
