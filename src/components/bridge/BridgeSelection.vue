@@ -152,12 +152,13 @@
         </div>
         <div class="column--selection">
           <button :disabled="!isEnableCelerBridge">
-            <a
+            <!-- <a
               :href="cbridgeAppLink"
               target="_blank"
               rel="noopener noreferrer"
               class="button--bridge"
-            >
+            > -->
+            <a target="_blank" rel="noopener noreferrer" class="button--bridge">
               <div class="row--logo-bg">
                 <div class="img--logo-bg">
                   <img
