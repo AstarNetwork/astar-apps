@@ -14,25 +14,25 @@ export function usePrice() {
   const { isMainnet, isAstarZkEvm } = useNetworkInfo();
   const { currentAccount } = useAccount();
 
-  const fetchPrice = async () => {
-    if (!currentAccount.value || !isMainnet.value) return;
-    // Memo: hacky way to fix the 'invalid BigNumber string' error
-    await wait(500);
-    const tokenSymbolRef = tokenSymbol.value;
-    if (!tokenSymbolRef) return;
-    try {
-      if (isMainnet.value) {
-        const nativeToken = isAstarZkEvm.value ? 'ETH' : tokenSymbolRef;
-        nativeTokenUsd.value = await getUsdBySymbol(nativeToken);
+  watch(
+    [tokenSymbol, currentAccount, isMainnet],
+    async () => {
+      if (!currentAccount.value || !isMainnet.value) return;
+      // Memo: hacky way to fix the 'invalid BigNumber string' error
+      await wait(500);
+      const tokenSymbolRef = tokenSymbol.value;
+      if (!tokenSymbolRef) return;
+      try {
+        if (isMainnet.value) {
+          const nativeToken = isAstarZkEvm.value ? 'ETH' : tokenSymbolRef;
+          nativeTokenUsd.value = await getUsdBySymbol(nativeToken);
+        }
+      } catch (error: any) {
+        console.error(error.message);
       }
-    } catch (error: any) {
-      console.error(error.message);
-    }
-  };
-
-  fetchPrice();
-
-  watch([tokenSymbol, currentAccount, isMainnet], fetchPrice, { immediate: false });
+    },
+    { immediate: true }
+  );
 
   return {
     nativeTokenUsd,
