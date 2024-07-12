@@ -10,6 +10,7 @@ export function usePrice() {
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   const { isMainnet, isAstarZkEvm } = useNetworkInfo();
   const { currentAccount } = useAccount();
@@ -31,7 +32,7 @@ export function usePrice() {
         console.error(error.message);
       }
     },
-    { immediate: true }
+    { immediate: isH160.value }
   );
 
   return {
