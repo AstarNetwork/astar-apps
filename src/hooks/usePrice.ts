@@ -31,7 +31,7 @@ export function usePrice() {
         console.error(error.message);
       }
     },
-    { immediate: false }
+    { immediate: true }
   );
 
   return {
