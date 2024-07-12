@@ -28,7 +28,7 @@ export function usePeriodStats(period: Ref<number>) {
   const tvlRatio = ref<number>();
   const stakerApr = ref<number>();
   const bonusApr = ref<number>();
-  const tokensToBeBurned = ref<bigint>();
+  const tokensToBeBurned = ref<bigint | undefined>();
 
   const dappStatistics = computed<DappStatistics[]>(() => {
     const combinedData = periodData.value.map((data) => {
@@ -112,6 +112,10 @@ export function usePeriodStats(period: Ref<number>) {
     tvlRatio.value = locked / issuance;
   };
 
+  const setTokensToBeBurned = async (block: number): Promise<void> => {
+    tokensToBeBurned.value = await calculateTotalTokensToBeBurned(block);
+  };
+
   watch(
     [period, currentNetworkName, protocolState, eraLengths],
     async () => {
@@ -129,18 +133,17 @@ export function usePeriodStats(period: Ref<number>) {
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
           const block = Math.min(periodEndBlock, currentBlock.value) - 1;
-          const [, sApr, bApr, burned] = await Promise.all([
-            calculateTvlRatio(block),
+          calculateTvlRatio(block);
+          setTokensToBeBurned(block);
+          const [sApr, bApr] = await Promise.all([
             // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
             // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
             stakingService.getStakerApr(block),
             stakingService.getBonusApr(undefined, block),
-            calculateTotalTokensToBeBurned(block),
           ]);
 
           stakerApr.value = sApr;
           bonusApr.value = bApr.value;
-          tokensToBeBurned.value = burned;
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }
