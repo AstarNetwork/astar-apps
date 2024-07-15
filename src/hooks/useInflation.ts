@@ -3,10 +3,10 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import {
+  BurnEvent,
   IBalancesRepository,
   IInflationRepository,
-  ISubscanRepository,
-  SubscanEventResponse,
+  ITokenApiRepository,
 } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { InflationConfiguration } from 'src/v2/models';
@@ -14,11 +14,6 @@ import { InflationParam, useDappStaking } from 'src/staking-v3';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from './useNetworkInfo';
 import { PERIOD1_START_BLOCKS } from 'src/consts';
-
-type BurnData = {
-  block: number;
-  amount: bigint;
-};
 
 type UseInflation = {
   activeInflationConfiguration: ComputedRef<InflationConfiguration>;
@@ -68,28 +63,16 @@ export function useInflation(): UseInflation {
     return await inflationRepository.getInflationParams();
   };
 
-  const getBurnEvents = async (): Promise<BurnData[]> => {
+  const getBurnEvents = async (): Promise<BurnEvent[]> => {
     // Ignore burn events with less than 1M ASTAR. They are not impacting charts a lot small burn amounts
     // could be a spam.
     const minBurn = BigInt('1000000000000000000000000');
-    // const subscanRepository = container.get<ISubscanRepository>(Symbols.SubscanRepository);
-    // const result = await subscanRepository.getEvents(
-    //   networkNameSubstrate.value.toLocaleLowerCase(),
-    //   'balances',
-    //   'Burned'
-    // );
+    const tokenApiRepository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
+    const burnEvents = await tokenApiRepository.getBurnEvents(
+      networkNameSubstrate.value.toLowerCase()
+    );
 
-    // Temp data for astar
-    return [
-      {
-        block: 6531556,
-        amount: BigInt('2000000000000000000'),
-      },
-      {
-        block: 6557078,
-        amount: BigInt('350000000000000000000000000'),
-      },
-    ].filter((item) => item.amount >= minBurn);
+    return burnEvents.filter((item) => item.amount >= minBurn);
   };
 
   /**
@@ -116,8 +99,18 @@ export function useInflation(): UseInflation {
 
       const burnEvents = await getBurnEvents();
       // Add first and last block so charts can be easily drawn.
-      burnEvents.splice(0, 0, { block: period1StartBlock, amount: BigInt(0) });
-      burnEvents.push({ block: currentBlock.value, amount: BigInt(0) });
+      burnEvents.splice(0, 0, {
+        blockNumber: period1StartBlock,
+        amount: BigInt(0),
+        user: '',
+        timestamp: 0,
+      });
+      burnEvents.push({
+        blockNumber: currentBlock.value,
+        amount: BigInt(0),
+        user: '',
+        timestamp: 0,
+      });
 
       const totalBurn = burnEvents.reduce((acc, item) => acc + item.amount, BigInt(0));
       // Used to calculate inflation rate.
@@ -193,7 +186,7 @@ export function useInflation(): UseInflation {
     cycleLengthInBlocks: number,
     maxInflation: number,
     eraLength: number,
-    burnEvents: BurnData[]
+    burnEvents: BurnEvent[]
   ): void => {
     const result: [number, number][] = [];
     const inflation = BigInt(Math.floor(maxInflation * 100)) * BigInt('10000000000000000');
@@ -202,7 +195,11 @@ export function useInflation(): UseInflation {
 
     // One sample per era.
     for (let j = 0; j < burnEvents.length - 1; j++) {
-      for (let i = burnEvents[j].block; i <= burnEvents[j + 1].block + eraLength; i += eraLength) {
+      for (
+        let i = burnEvents[j].blockNumber;
+        i <= burnEvents[j + 1].blockNumber + eraLength;
+        i += eraLength
+      ) {
         const inflation =
           (cycleProgression * BigInt(i - firstBlock)) / cycleLength +
           firstBlockIssuance -
@@ -221,12 +218,16 @@ export function useInflation(): UseInflation {
     slope: bigint,
     eraLength: number,
     firstBlockIssuance: bigint,
-    burnEvents: BurnData[]
+    burnEvents: BurnEvent[]
   ): void => {
     const result: [number, number][] = [];
 
     for (let j = 0; j < burnEvents.length - 1; j++) {
-      for (let i = burnEvents[j].block; i <= burnEvents[j + 1].block + eraLength; i += eraLength) {
+      for (
+        let i = burnEvents[j].blockNumber;
+        i <= burnEvents[j + 1].blockNumber + eraLength;
+        i += eraLength
+      ) {
         const currentBlockIssuance = Number(
           ethers.utils.formatEther(
             slope * BigInt(i - firstBlock) + firstBlockIssuance - burnEvents[j].amount

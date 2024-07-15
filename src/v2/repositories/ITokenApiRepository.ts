@@ -4,6 +4,13 @@ export type PeriodData = {
   stakeAmount: bigint;
 };
 
+export type BurnEvent = {
+  blockNumber: number;
+  timestamp: number;
+  amount: bigint;
+  user: string;
+};
+
 /**
  * Definition of repository for access token price.
  */
@@ -20,4 +27,10 @@ export interface ITokenApiRepository {
    * @param period Period number.
    */
   getStakingPeriodStatistics(network: string, period: number): Promise<PeriodData[]>;
+
+  /**
+   * Gets burn events for the given network.
+   * @param network Network name.
+   */
+  getBurnEvents(network: string): Promise<BurnEvent[]>;
 }
