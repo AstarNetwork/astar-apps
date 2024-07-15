@@ -25,8 +25,7 @@ export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
-// e.g.: endpointKey.SHIDEN;
-const disabledXcmChain: endpointKey | undefined = undefined;
+const disabledXcmChains: endpointKey[] = [];
 
 export interface NetworkFromTo {
   from: string;
@@ -298,7 +297,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
-      const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
+      const isAstarEvm = Boolean(from.value?.includes(pathEvm) || to.value?.includes(pathEvm));
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
@@ -376,7 +375,8 @@ export function useTransferRouter() {
       return false;
     }
 
-    const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
+    const isDisabledXcmChain = disabledXcmChains.some((it) => it === currentNetworkIdx.value);
+
     const originChain = token.value?.originChain || '';
     return checkIsDisabledToken(originChain) || isDisabledXcmChain;
   });

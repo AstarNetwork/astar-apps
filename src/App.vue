@@ -28,28 +28,10 @@
     </transition>
     <notification-stack />
 
-    <!-- <modal-onboarding
-      v-if="showOnboardingModal"
-      :set-is-open="setShowOnboardingModal"
-      :show="showOnboardingModal"
-    /> -->
-
-    <modal-yoki-origins
-      v-if="showYokiOriginsModal"
-      :set-is-open="setYokiOriginsModal"
-      :show="showYokiOriginsModal"
-    />
-
     <modal-disclaimer
       v-if="showDisclaimerModal"
       :set-is-open="setShowDisclaimerModal"
       :show="showDisclaimerModal"
-    />
-
-    <modal-decommission
-      v-if="showDecommissionModal"
-      :show="showDecommissionModal"
-      :set-is-open="setShowDecommissionModal"
     />
   </div>
 </template>
@@ -62,7 +44,6 @@ import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
-import ModalYokiOrigins from 'components/common/ModalYokiOrigins.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
 import ModalDisclaimer from 'components/common/ModalDisclaimer.vue';
@@ -74,12 +55,12 @@ import {
   ExtrinsicStatusMessage,
   IEventAggregator,
   NewBlockMessage,
-  NewEraMessage,
 } from 'src/v2/messaging';
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { ETHEREUM_EXTENSION, useAccount, useAppRouter, useDecommission } from 'src/hooks';
+import { useAccount, useAppRouter } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   AccountLedgerChangedMessage,
@@ -89,7 +70,6 @@ import {
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 import { useInflation } from 'src/hooks/useInflation';
-import ModalDecommission from './components/dapp-staking/ModalDecommission.vue';
 
 export default defineComponent({
   name: 'App',
@@ -98,11 +78,9 @@ export default defineComponent({
     ModalLoading,
     AlertBox,
     CookiePolicy,
-    ModalYokiOrigins,
     ModalDisclaimer,
     NotificationStack,
     ModalOnboarding,
-    ModalDecommission,
   },
   setup() {
     useAppRouter();
@@ -119,20 +97,12 @@ export default defineComponent({
       isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
-    const { fetchActiveConfigurationToStore } = useInflation();
-    const {
-      decommissionStarted,
-      isInLocalStorage,
-      fetchDecommissionStatusToStore,
-      setToLocalStorage,
-    } = useDecommission();
-
+    const { fetchActiveConfigurationToStore, fetchInflationParamsToStore } = useInflation();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const showDecommissionModal = ref<boolean>(false);
 
     const showDisclaimerModal = ref<boolean>(false);
     if (!localStorage.getItem(LOCAL_STORAGE.CONFIRM_COOKIE_POLICY)) {
@@ -145,50 +115,21 @@ export default defineComponent({
       showDisclaimerModal.value = isOpen;
     };
 
-    // dApp staking onboarding modal
-    // const showOnboardingModal = ref<boolean>(false);
-    // if (
-    //   !localStorage.getItem(LOCAL_STORAGE.CLOSE_DAPP_STAKING_V3_ONBOARDING) &&
-    //   isDappStakingV3.value
-    // ) {
-    //   setTimeout(() => {
-    //     showOnboardingModal.value = true;
-    //   }, 2000);
-    // }
-
-    // const setShowOnboardingModal = (isOpen: boolean): void => {
-    //   showOnboardingModal.value = isOpen;
-    // };
-
-    // Yoki Origins modal
-    const showYokiOriginsModal = ref<boolean>(false);
-    if (!localStorage.getItem(LOCAL_STORAGE.CLOSE_YOKI_ORIGINS_MODAL)) {
-      setTimeout(() => {
-        showYokiOriginsModal.value = true;
-      }, 2000);
-    }
-
-    const setYokiOriginsModal = (isOpen: boolean): void => {
-      showYokiOriginsModal.value = isOpen;
-    };
-
-    const setShowDecommissionModal = (isOpen: boolean): void => {
-      showDecommissionModal.value = isOpen;
-    };
-
     // Handle busy and extrinsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
-      const message = m as ExtrinsicStatusMessage;
-      store.dispatch(
-        'general/showAlertMsg',
-        {
-          msg: message.getMessage(),
-          alertType: message.isSuccess() ? 'success' : 'error',
-          explorerUrl: message.getExplorerUrl() || '',
-        },
-        { root: true }
-      );
+      if (m instanceof ExtrinsicStatusMessage) {
+        const message = m as ExtrinsicStatusMessage;
+        store.dispatch(
+          'general/showAlertMsg',
+          {
+            msg: message.getMessage(),
+            alertType: message.isSuccess() ? 'success' : 'error',
+            explorerUrl: message.getExplorerUrl() || '',
+          },
+          { root: true }
+        );
+      }
     });
 
     eventAggregator.subscribe(BusyMessage.name, (m) => {
@@ -201,11 +142,6 @@ export default defineComponent({
       store.commit('general/setCurrentBlock', message.blockNumber, { root: true });
     });
 
-    eventAggregator.subscribe(NewEraMessage.name, (m) => {
-      const message = m as NewEraMessage;
-      store.commit('dapps/setCurrentEra', message.era, { root: true });
-    });
-
     // **** dApp staking v3
     // dApp staking v3 data changed subscriptions.
     onMounted(() => {
@@ -214,8 +150,6 @@ export default defineComponent({
           .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
           .startProtocolStateSubscription();
       }
-
-      fetchDecommissionStatusToStore();
     });
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
@@ -233,6 +167,7 @@ export default defineComponent({
           fetchStakerInfoToStore(),
           fetchEraLengthsToStore(),
           fetchActiveConfigurationToStore(),
+          fetchInflationParamsToStore(),
         ]);
       }
     });
@@ -271,19 +206,6 @@ export default defineComponent({
       }
     });
 
-    watch(
-      [decommissionStarted],
-      () => {
-        if (decommissionStarted.value && !isDappStakingV3.value && !isInLocalStorage.value) {
-          setTimeout(() => {
-            showDecommissionModal.value = true;
-            setToLocalStorage(true);
-          }, 2000);
-        }
-      },
-      { immediate: true }
-    );
-
     const removeSplashScreen = () => {
       var elem = document.getElementById('splash');
       elem?.remove();
@@ -295,11 +217,7 @@ export default defineComponent({
       isLoading,
       showAlert,
       showDisclaimerModal,
-      showDecommissionModal,
-      showYokiOriginsModal,
-      setYokiOriginsModal,
       setShowDisclaimerModal,
-      setShowDecommissionModal,
     };
   },
 });

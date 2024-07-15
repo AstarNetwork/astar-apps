@@ -1,5 +1,4 @@
-export * from './IDappStakingRepository';
-export * from './IPriceRepository';
+export * from './ITokenApiRepository';
 export * from './IMetadataRepository';
 export * from './ISystemRepository';
 export * from './IEthCallRepository';
@@ -13,3 +12,5 @@ export * from './IIdentityRepository';
 export * from './INftRepository';
 export * from './IAccountUnificationRepository';
 export * from './IInflationRepository';
+export * from './ISubscanRepository';
+export * from './IBalancesRepository';

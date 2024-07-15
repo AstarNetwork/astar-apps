@@ -1,0 +1,80 @@
+@import 'src/css/quasar.variables.scss';
+
+.categories-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+
+  @media (min-width: $lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .selected {
+    background: var(--Linear, linear-gradient(90deg, #0047FF 0%, #00D4FF 97.65%));
+  }
+}
+
+.category-container {
+  width: 100%;
+  height: 160px;
+  background-color: $navy-1;
+  padding: 24px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  transition: all 0.3s ease;
+
+  @media (min-width: $lg) {
+    height: 200px;
+  }
+}
+
+.category-name {
+  color: $white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.category-name-gradient {
+  background: var(--Linear, linear-gradient(90deg, #0047FF 0%, #00D4FF 97.65%));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.category-container:hover {
+  background: var(--Linear, linear-gradient(90deg, #0047FF 0%, #00D4FF 97.65%));
+
+  .category-name-gradient {
+    -webkit-text-fill-color: $white;
+    background: none;
+    background-clip: none;
+  }
+}
+
+.text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-description {
+  height: 40px;
+  font-size: 12px;
+  font-weight: 400;
+  color: $white;
+  display: none;
+
+  @media (min-width: $lg) {
+    display: block;
+  }
+}
+
+.icon {
+  color: $white;
+}

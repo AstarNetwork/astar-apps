@@ -33,9 +33,6 @@
         </div>
       </div>
     </div>
-    <div class="bg--leaderboard">
-      <img :src="require('/src/staking-v3/assets/leaderboard_bg.webp')" alt="" />
-    </div>
   </div>
 </template>
 

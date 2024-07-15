@@ -1,40 +1,11 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dapps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  @media (min-width: $sm) {
-    flex-direction: row;
-  }
 }
 
 .container--dapps {
   flex: 1;
   height: 368px;
-  @media (min-width: $sm) {
-    width: calc(100% - 228px);
-  }
-  @media (min-width: $xl) {
-    width: calc(100% - 288px);
-  }
-
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 16px,
-    black calc(100% - 16px),
-    transparent
-  );
-  margin-left: -16px;
-  margin-right: -16px;
-  padding-left: 16px;
-  padding-right: 16px;
-  @media (min-width: $md) {
-    mask-image: linear-gradient(to right, black, black calc(100% - 40px), transparent);
-    margin-right: -40px;
-    padding-right: 40px;
-  }
 
   .swiper--dapps {
     height: 368px;
@@ -51,16 +22,18 @@
 }
 
 .card--dapp {
-  background-color: white;
-  border: 1px solid $navy-1;
+  background-color: $white;
+  border: 2px solid $white;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   transition: all 0.2s ease;
   overflow: hidden;
   height: 180px;
-  &:hover {
-    box-shadow: 0px 4px 8px 0px rgba(8, 16, 41, 0.2);
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
+
+  &:hover{
+    border-color: $astar-blue;
   }
 }
 
@@ -128,6 +101,7 @@
   align-items: center;
   height: 28px;
   span{
+    white-space: nowrap;
     display: flex;
     align-items: center;
     .icon--stakers{
@@ -143,39 +117,17 @@
   }
 }
 
-.card--dapp:hover {
-  .card__bottom {
-    background: linear-gradient(90deg, #081029 0%, rgba(31, 47, 95, 0.79) 50%, #081029 100%);
-    .box--dapp-card {
-      border-color: white;
-      color: white;
-    }
-  }
-}
-
 .container--category {
-  background-size: cover;
-  background-color: $navy-1;
-  border-radius: 16px;
-  min-width: 220px;
-  min-height: 220px;
-  overflow: hidden;
-  display: flex;
-  position: relative;
-  z-index: 1;
-  @media (min-width: $xl) {
-    min-width: 280px;
+  margin-bottom: 20px;
+
+  @media (min-width: $lg) {
+    margin-bottom: 40px;
   }
 }
 
 .title--category {
-  width: 60%;
-  backdrop-filter: blur(20px);
-  padding: 18px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: white;
-  font-size: 24px;
-  font-style: italic;
+  color: $navy-1;
+  font-size: 32px;
   font-weight: 800;
 }
 

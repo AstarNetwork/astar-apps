@@ -5,7 +5,7 @@ import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';
 import { ISystemRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { Struct, u32 } from '@polkadot/types';
+import { Struct, u128, u32 } from '@polkadot/types';
 import { EventAggregator, NewBlockMessage } from 'src/v2/messaging';
 import { BlockHash } from '@polkadot/types/interfaces';
 
@@ -14,7 +14,14 @@ export interface FrameSystemAccountInfo extends Struct {
   readonly consumers: u32;
   readonly providers: u32;
   readonly sufficients: u32;
-  readonly data: any;
+  readonly data: PalletBalancesAccountData;
+}
+
+export interface PalletBalancesAccountData extends Struct {
+  readonly free: u128;
+  readonly reserved: u128;
+  readonly frozen: u128;
+  readonly flags: u128;
 }
 
 @injectable()

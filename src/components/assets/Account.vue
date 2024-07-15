@@ -72,7 +72,7 @@
                 width="24"
                 :src="iconWallet"
                 alt="wallet-icon"
-                :class="multisig && 'img--polkasafe'"
+                :class="multisig && 'img--polkasafe-account'"
               />
             </div>
 
@@ -145,7 +145,7 @@
 </template>
 <script lang="ts">
 import { getShortenAddress, isValidEvmAddress, wait } from '@astar-network/astar-sdk-core';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
@@ -154,7 +154,6 @@ import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue'
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import {
-  ETHEREUM_EXTENSION,
   useAccount,
   useAccountUnification,
   useBalance,
@@ -162,6 +161,7 @@ import {
   useNetworkInfo,
   useWalletIcon,
 } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useDappStaking } from 'src/staking-v3';

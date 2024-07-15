@@ -7,6 +7,7 @@ import {
 } from 'src/config/chain';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
+import { getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 
@@ -33,6 +34,7 @@ export function useNetworkInfo() {
   const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -93,6 +95,10 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
+  const nativeTokenImg = computed<string>(() =>
+    getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
+  );
+
   const isSupportAuTransfer = computed<boolean>(() => {
     return !isMainnet.value && !isZkEvm.value;
   });
@@ -104,6 +110,10 @@ export function useNetworkInfo() {
       : currentNetworkIdx.value === endpointKey.SHIDEN
       ? shiden
       : shibuya;
+  });
+
+  const isBridgeMaintenanceMode = computed<boolean>(() => {
+    return false;
   });
 
   return {
@@ -121,5 +131,8 @@ export function useNetworkInfo() {
     isAstarZkEvm,
     isAstar,
     dappStakingCurrency,
+    isH160,
+    nativeTokenImg,
+    isBridgeMaintenanceMode,
   };
 }

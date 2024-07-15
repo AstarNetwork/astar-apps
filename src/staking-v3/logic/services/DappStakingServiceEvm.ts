@@ -6,7 +6,13 @@ import { IWalletService } from '../../../v2/services/IWalletService';
 import { IDappStakingRepository, IDataProviderRepository } from '../repositories';
 import { Symbols } from 'src/v2/symbols';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
-import { IAccountUnificationRepository } from 'src/v2/repositories';
+import {
+  IAccountUnificationRepository,
+  IBalancesRepository,
+  IInflationRepository,
+  IMetadataRepository,
+  ITokenApiRepository,
+} from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
 
 const { dispatch } = evmPrecompiledContract;
@@ -20,9 +26,21 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     @inject(Symbols.TokenApiProviderRepository) tokenApiRepository: IDataProviderRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.AccountUnificationRepository)
-    private accountUnificationRepository: IAccountUnificationRepository
+    private accountUnificationRepository: IAccountUnificationRepository,
+    @inject(Symbols.MetadataRepository) metadataRepository: IMetadataRepository,
+    @inject(Symbols.TokenApiRepository) priceRepository: ITokenApiRepository,
+    @inject(Symbols.BalancesRepository) protected balancesRepository: IBalancesRepository,
+    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository
   ) {
-    super(dappStakingRepository, tokenApiRepository, walletFactory);
+    super(
+      dappStakingRepository,
+      tokenApiRepository,
+      walletFactory,
+      metadataRepository,
+      priceRepository,
+      balancesRepository,
+      inflationRepository
+    );
     this.wallet = walletFactory();
   }
 

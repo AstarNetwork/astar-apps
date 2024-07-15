@@ -109,6 +109,7 @@
               placeholder="0"
               class="input--amount input--no-spin"
               @input="(e) => inputHandler(e)"
+              @wheel="(e) => e.preventDefault()"
             />
           </div>
         </div>
@@ -278,9 +279,7 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
-    const isWarningHighTraffic = computed<boolean>(
-      () => props.fromChainName === EthBridgeNetworkName.AstarZk
-    );
+    const isWarningHighTraffic = computed<boolean>(() => false);
 
     const setHighTrafficModalOpen = (value: boolean): void => {
       isHighTrafficModalOpen.value = value;

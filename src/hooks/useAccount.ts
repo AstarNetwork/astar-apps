@@ -16,8 +16,7 @@ import { computed, ref, watch } from 'vue';
 import { getWcProvider } from './helper/wallet';
 import { useNetworkInfo } from './useNetworkInfo';
 import { useNft } from './useNft';
-
-export const ETHEREUM_EXTENSION = 'Ethereum Extension';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 
 // Memo: Gives some time for syncing
 const DELAY = 100;
@@ -63,7 +62,6 @@ export const useAccount = () => {
       store.commit('general/setCurrentAddress', null);
       store.commit('general/setIsH160Formatted', false);
       store.commit('general/setIsEthWallet', false);
-      store.commit('dapps/setClaimedRewardsAmount', 0);
       store.commit('general/setCurrentWallet', '');
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: '',

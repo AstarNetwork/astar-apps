@@ -22,8 +22,6 @@
 
       <div class="separator" />
 
-      <migration-support />
-
       <tab-component
         :tabs="tabs"
         :tab-selected="(tabIndex) => (currentTabIndex = tabIndex)"
@@ -48,7 +46,6 @@ import MyStaking from './MyStaking.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import MyDapps from './MyDapps.vue';
 import Unlocking from './Unlocking.vue';
-import MigrationSupport from './MigrationSupport.vue';
 import { ethers } from 'ethers';
 import { truncate } from '@astar-network/astar-sdk-core';
 
@@ -59,7 +56,6 @@ export default defineComponent({
     MyStaking,
     MyDapps,
     Unlocking,
-    MigrationSupport,
   },
   props: {
     nativeTokenUsd: {

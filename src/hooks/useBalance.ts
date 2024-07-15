@@ -1,16 +1,39 @@
-import { ETHEREUM_EXTENSION } from 'src/hooks';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
-import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
+import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from 'src/v2/models';
 import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested, isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import { useDapps } from 'src/staking-v3';
+import { Option, Vec, u32 } from '@polkadot/types';
+
+// Temporarily moved here until uplift polkadot js for astar.js
+export const getVested = ({
+  currentBlock,
+  startBlock,
+  perBlock,
+  locked,
+}: {
+  currentBlock: BN;
+  startBlock: BN;
+  perBlock: BN;
+  locked: BN;
+}): BN => {
+  if (currentBlock.lt(startBlock)) {
+    return new BN(0);
+  }
+
+  const blockHasPast = currentBlock.sub(startBlock);
+  const vested = BN.min(locked, blockHasPast.mul(perBlock));
+  return vested;
+};
 
 function useCall(addressRef: Ref<string>) {
+  const { allDapps } = useDapps();
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const remainingVests = ref(new BN(0));
@@ -19,7 +42,6 @@ function useCall(addressRef: Ref<string>) {
   const isLoadingAccount = ref<boolean>(true);
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
 
@@ -58,13 +80,13 @@ function useCall(addressRef: Ref<string>) {
 
     const results = await Promise.all([
       api.query.system.account<SystemAccount>(address),
-      api.query.vesting.vesting(address),
-      api.query.system.number(),
+      api.query.vesting.vesting<Option<Vec<PalletVestingVestingInfo>>>(address),
+      api.query.system.number<u32>(),
       api.derive.balances?.all(address),
     ]);
 
     const accountInfo = results[0];
-    const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
+    const vesting = results[1].unwrapOr(undefined)?.toArray() || [];
     const currentBlock = results[2];
     const vestedClaimable = results[3].vestedClaimable;
     const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
@@ -77,8 +99,8 @@ function useCall(addressRef: Ref<string>) {
       const vested = getVested({
         currentBlock: currentBlock.toBn(),
         startBlock: v.startingBlock.toBn() || new BN(0),
-        perBlock: v.perBlock || new BN(0),
-        locked: v.locked,
+        perBlock: v.perBlock.toBn() || new BN(0),
+        locked: v.locked.toBn(),
       });
       vestedRef.value = vestedRef.value.add(vested);
       remainingVests.value = remainingVests.value.add(v.locked.sub(vested));
@@ -116,7 +138,7 @@ function useCall(addressRef: Ref<string>) {
   }, 12000);
 
   watch(
-    [addressRef, isLoading, dapps],
+    [addressRef, isLoading, allDapps],
     () => {
       isLoadingAccount.value = true;
       updateAccountBalance();

@@ -1,13 +1,11 @@
 import { GeneralStakerInfo, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option, u32 } from '@polkadot/types';
-import { AccountLedger } from 'src/hooks';
-import { ContractStakeInfo, FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
+import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
 import { sendTransaction } from './chopsticks/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';
-import { RewardDestination } from 'src/v2/models';
+import { PalletAssetsAssetAccount, RewardDestination } from 'src/v2/models';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -31,7 +29,10 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
   let balance = BigInt(0);
 
   if (assetId) {
-    const balanceObj = await api.query.assets.account(assetId, address);
+    const balanceObj = await api.query.assets.account<Option<PalletAssetsAssetAccount>>(
+      assetId,
+      address
+    );
     balance = BigInt(balanceObj.unwrap().balance.toBigInt());
   } else {
     const balanceObj = (await api.query.system.account(address)) as FrameSystemAccountInfo;
@@ -41,16 +42,16 @@ export const getBalance = async (address: string, assetId?: string): Promise<big
   return balance;
 };
 
-export const getStakedAmount = async (address: string): Promise<bigint> => {
-  const api = await getApi();
-  const era = await api.query.dappsStaking.currentEra();
-  const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
-    getAddress(address),
-    era
-  );
+// export const getStakedAmount = async (address: string): Promise<bigint> => {
+//   const api = await getApi();
+//   const era = await api.query.dappsStaking.currentEra();
+//   const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
+//     getAddress(address),
+//     era
+//   );
 
-  return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
-};
+//   return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
+// };
 
 export const fetchAccountStakingAmount = async (
   currentAccount: string,
@@ -71,13 +72,6 @@ export const fetchMinimumStakingAmount = async (): Promise<string> => {
   return String(api.consts.dappsStaking.minimumStakingAmount);
 };
 
-export const getAccountLedger = async (address: string): Promise<AccountLedger> => {
-  const api = await getApi();
-  const ledger = await api.query.dappsStaking.ledger<AccountLedger>(address);
-
-  return ledger;
-};
-
 const getSigner = async (): Promise<KeyringPair> => {
   await cryptoWaitReady();
   const keyring = new Keyring({ type: 'sr25519' });
@@ -91,18 +85,6 @@ export const forceNewEra = async (): Promise<void> => {
   const signer = await getSigner();
 
   await sendTransaction(sudo, signer);
-};
-
-export const getContractEraStake = async (
-  address: string,
-  era: number
-): Promise<EraStakingPointsIndividualClaim | undefined> => {
-  const api = await getApi();
-  const eraStake = await api.query.dappsStaking.contractEraStake<
-    Option<EraStakingPointsIndividualClaim>
-  >({ Evm: address }, era);
-
-  return eraStake.unwrapOrDefault();
 };
 
 export const getCurrentEra = async (): Promise<number> => {

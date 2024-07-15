@@ -110,10 +110,10 @@ export interface PalletDappStakingV3DAppTierRewards extends Struct {
   readonly dapps: BTreeMap<Compact<u16>, Compact<u8>>;
   readonly rewards: Vec<u128>;
   readonly period: Compact<u32>;
+  readonly rankRewards: Vec<u128>;
 }
 
 export interface PalletDappStakingV3EraInfo extends Struct {
-  readonly activeEraLocked: Compact<u128>;
   readonly totalLocked: Compact<u128>;
   readonly unlocking: Compact<u128>;
   readonly currentStakeAmount: PalletDappStakingV3StakeAmount;

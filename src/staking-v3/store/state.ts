@@ -11,6 +11,7 @@ import {
   TiersConfiguration,
   EraLengths,
   DappInfo,
+  DAppTier,
 } from '../logic';
 
 export interface DappStakingState {
@@ -27,12 +28,12 @@ export interface DappStakingState {
   dAppTiers: DAppTierRewards;
   tiersConfiguration: TiersConfiguration;
   eraLengths: EraLengths;
-  leaderboard: Map<number, number>;
+  leaderboard: Map<number, DAppTier>;
 }
 
 function state(): DappStakingState {
   return {
-    version: '3.0.0',
+    version: '3.1.1',
     dapps: [],
     newDapps: [],
     numberOfStakersAndLockers: initialNumberOfStakersAndLockers,
@@ -45,7 +46,7 @@ function state(): DappStakingState {
     dAppTiers: initialDappTiersConfiguration,
     tiersConfiguration: initialTiersConfiguration,
     eraLengths: initialEraLengths,
-    leaderboard: new Map<number, number>(),
+    leaderboard: new Map<number, DAppTier>(),
   };
 }
 
@@ -68,6 +69,7 @@ export const initialDappTiersConfiguration: DAppTierRewards = {
   dapps: [],
   rewards: [],
   period: 0,
+  rankRewards: [],
 };
 
 export const initialEraLengths: EraLengths = {

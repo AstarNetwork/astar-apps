@@ -9,6 +9,7 @@ export const docsUrl = {
   troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
   createPromotion: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
+  inflation: 'https://docs.astar.network/docs/learn/tokenomics2/Inflation/',
   faqLedger:
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do',
   learnDappStaking: 'https://docs.astar.network/docs/learn/dapp-staking/',
@@ -38,11 +39,11 @@ export const deepLink = {
 };
 
 // Memo: use for debugging
-// export const devOrigin = 'http://localhost:8080';
+export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
-export const productionOrigin = 'https://portal.astar.network';
+// export const productionOrigin = 'https://portal.astar.network';
 // Memo: for debugging
-// export const productionOrigin = devOrigin;
+export const productionOrigin = devOrigin;
 
 export const polkasafeUrl = 'https://app.polkasafe.xyz';
 
@@ -51,13 +52,6 @@ export const polkadotJsUrl = {
     astar: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#',
     shiden: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#',
     shibuya: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#',
-  },
-};
-
-export const modals = {
-  yokiOrigins: {
-    learnMore: 'https://astar.network/blog/84017',
-    experienceNow: 'https://yoki.astar.network/',
   },
 };
 

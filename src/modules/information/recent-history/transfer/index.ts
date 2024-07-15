@@ -1,20 +1,21 @@
-import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
-import { HistoryTxType } from 'src/modules/account';
-import { castChainName } from 'src/modules/xcm/utils';
-import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
-import { RecentHistory } from 'src/modules/information';
-import { TxHistory } from 'src/modules/account';
-import { xcmChainObj } from 'src/modules/xcm';
-import { providerEndpoints } from 'src/config/chainEndpoints';
 import {
-  fetchXvmAssetsTransferHistories,
-  fetchTransferDetails,
   TransferDetail,
   XvmAssetsTransferHistory,
+  fetchTransferDetails,
+  fetchXvmAssetsTransferHistories,
   getShortenAddress,
 } from '@astar-network/astar-sdk-core';
-import { getTokenDetails } from 'src/config/web3';
 import { ethers } from 'ethers';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE, getAccountHistories } from 'src/config/localStorage';
+import { EVM, getTokenDetails } from 'src/config/web3';
+import { HistoryTxType, TxHistory } from 'src/modules/account';
+import { LayerZeroStatus, RecentHistory, RecentLzHistory } from 'src/modules/information';
+import { xcmChainObj } from 'src/modules/xcm';
+import { castChainName } from 'src/modules/xcm/utils';
+import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
+import { createClient } from '@layerzerolabs/scan-client';
+import { urlLayerZeroScan } from 'src/modules/zk-evm-bridge';
 
 const { NETWORK_IDX, XVM_TX_HISTORIES, XCM_TX_HISTORIES, TX_HISTORIES } = LOCAL_STORAGE;
 const NumberOfHistories = 5;
@@ -31,6 +32,32 @@ export const castXcmHistory = (tx: TxHistory): RecentHistory => {
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
+export const castLzHistory = async (tx: TxHistory): Promise<RecentLzHistory> => {
+  const timestamp = String(tx.timestamp);
+  const amount = tx.data.amount as string;
+  const symbol = tx.data.symbol as string;
+  const fromChainId = tx.data.fromChainId as number;
+  const fromChain = fromChainId === EVM.ASTAR_MAINNET ? 'Astar EVM' : 'Astar zkEVM';
+  const toChain = fromChainId === EVM.ASTAR_MAINNET ? 'Astar zkEVM' : 'Astar EVM';
+  const fromChainIndexId =
+    fromChainId === EVM.ASTAR_MAINNET ? endpointKey.ASTAR : endpointKey.ASTAR_ZKEVM;
+  const note = `${fromChain} to ${toChain}`;
+
+  let explorerUrl = providerEndpoints[fromChainIndexId].blockscout + `/tx/${tx.hash}`;
+  let status = 'SENT';
+
+  try {
+    const client = createClient('mainnet');
+    const { messages } = await client.getMessagesBySrcTxHash(tx.hash);
+    if (messages.length > 0) {
+      status = messages[0].status as LayerZeroStatus;
+      explorerUrl = urlLayerZeroScan + `/tx/${tx.hash}`;
+    }
+  } catch (error) {}
+
+  return { timestamp, amount, symbol, note, explorerUrl, status };
+};
+
 export const castTransferHistory = ({
   tx,
   hash,
@@ -42,9 +69,16 @@ export const castTransferHistory = ({
   const timestamp = String(tx.timestamp);
   const txType = HistoryTxType.Transfer;
   const note = `To ${getShortenAddress(to)}`;
-  const networkIdx = localStorage.getItem(NETWORK_IDX);
-  const subscan = providerEndpoints[Number(networkIdx)].subscan;
-  const explorerUrl = `${subscan}/extrinsic/${hash}`;
+  const networkIdx = Number(localStorage.getItem(NETWORK_IDX));
+  let explorerUrl: string = '';
+
+  if (networkIdx === endpointKey.ASTAR_ZKEVM || networkIdx === endpointKey.ZKYOTO) {
+    const blockscount = providerEndpoints[networkIdx].blockscout;
+    explorerUrl = `${blockscount}/tx/${hash}`;
+  } else {
+    const subscan = providerEndpoints[networkIdx].subscan;
+    explorerUrl = `${subscan}/extrinsic/${hash}`;
+  }
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
@@ -117,4 +151,34 @@ export const getTxHistories = async ({
     })
   );
   return parsedTxs.filter((it) => it !== undefined) as RecentHistory[];
+};
+
+export const getLzTxHistories = async ({
+  address,
+  network,
+}: {
+  address: string;
+  network: string;
+}): Promise<RecentLzHistory[]> => {
+  const txs: TxHistory[] = [];
+
+  const transactions = getAccountHistories({
+    storageKey: TX_HISTORIES,
+    address,
+    network,
+  });
+  transactions.forEach((it) => txs.push(it));
+
+  const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
+  const parsedTxs = await Promise.all(
+    formattedTxs.map(async (it) => {
+      try {
+        return await castLzHistory(it);
+      } catch (error) {
+        console.error(error);
+        return undefined;
+      }
+    })
+  );
+  return parsedTxs.filter((it) => it !== undefined) as RecentLzHistory[];
 };

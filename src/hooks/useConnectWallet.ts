@@ -15,8 +15,9 @@ import {
   supportEvmWalletObj,
   supportWalletObj,
 } from 'src/config/wallets';
-import { getChainId, handleCheckProviderChainId, setupNetwork } from 'src/config/web3';
-import { ETHEREUM_EXTENSION, useAccount, useNetworkInfo } from 'src/hooks';
+import { handleCheckProviderChainId } from 'src/config/web3';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
   castMobileSource,
