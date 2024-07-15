@@ -1,7 +1,8 @@
 <template>
   <div class="panel-wrapper">
     <div class="panel-title">{{ title }}</div>
-    <div class="wrapper--stats">
+    <q-skeleton v-if="!pages.length" class="skeleton-dapp-stats" />
+    <div v-else class="wrapper--stats">
       <swiper class="swiper--stats" :navigation="true" :modules="modules">
         <swiper-slide v-for="(dapps, page) in pages" :key="page">
           <div class="container-dapps">

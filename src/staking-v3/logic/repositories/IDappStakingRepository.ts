@@ -195,6 +195,13 @@ export interface IDappStakingRepository {
   getContractStake(dappId: number): Promise<ContractStakeAmount>;
 
   /**
+   * Gets the contract staking info for multiple dapps.
+   * @param dappIds Dapp id to get staking info for.
+   * @param block Block number to get the data for or undefined to get data for the current block.
+   */
+  getContractsStake(dappIds: number[], block?: number): Promise<Map<number, ContractStakeAmount>>;
+
+  /**
    * Gets a call to claim all fully unlocked chunks.
    */
   getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload>;

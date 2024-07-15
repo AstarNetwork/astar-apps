@@ -1,5 +1,5 @@
 <template>
-  <div v-if="false" class="wrapper--period-stats">
+  <div class="wrapper--period-stats">
     <div class="title">
       <span>{{ period.toString().padStart(3, '0') }}</span>
       <span>{{ $t('stakingV3.stats') }}</span>
@@ -13,13 +13,15 @@
             <div class="apr-basic">
               <div class="apr-title">{{ $t('stakingV3.basicApr') }}</div>
               <div class="value-unit">
-                <span>{{ stakerApr ? stakerApr.toFixed(2) : '--' }}<small>%</small></span>
+                <q-skeleton v-if="!stakerApr" class="skeleton-number" />
+                <span v-else>{{ stakerApr ? stakerApr.toFixed(2) : '--' }}<small>%</small></span>
               </div>
             </div>
             <div class="apr-bonus">
               <div class="apr-title">{{ $t('stakingV3.bonusAPR') }}</div>
               <div class="value-unit">
-                <span>{{ bonusApr ? bonusApr.toFixed(2) : '--' }}<small>%</small></span>
+                <q-skeleton v-if="!bonusApr" class="skeleton-number" />
+                <span v-else>{{ bonusApr ? bonusApr.toFixed(2) : '--' }}<small>%</small></span>
               </div>
             </div>
           </div>
@@ -27,14 +29,17 @@
         <div class="period-kpi-container">
           <div class="kpi-title">{{ $t('stakingV3.percentageLocked') }}</div>
           <div class="value-unit">
-            <span>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}<small>%</small></span>
+            <q-skeleton v-if="!tvlRatio" class="skeleton-number" />
+            <span v-else>{{ tvlRatio ? (tvlRatio * 100).toFixed(1) : '--' }}<small>%</small></span>
           </div>
         </div>
         <div class="period-kpi-container">
           <div class="kpi-title">{{ $t('stakingV3.unmintedTokens') }}</div>
           <div>
             <div class="value-unit">
+              <q-skeleton v-if="!tokensToBeBurned" class="skeleton-number" />
               <token-balance-native
+                v-else
                 :balance="tokensToBeBurned?.toString() ?? '0'"
                 :show-token-symbol="false"
                 :decimals="0"

@@ -22,13 +22,13 @@ export function usePeriodStats(period: Ref<number>) {
   const { currentNetworkName } = useNetworkInfo();
   const { eraLengths, protocolState, currentBlock } = useDappStaking();
   const { calculateTotalTokensToBeBurned } = useDataCalculations();
-  const { getDapp } = useDapps();
+  const { allDapps, getDapp } = useDapps();
 
   const periodData = ref<PeriodData[]>([]);
   const tvlRatio = ref<number>();
   const stakerApr = ref<number>();
   const bonusApr = ref<number>();
-  const tokensToBeBurned = ref<bigint>();
+  const tokensToBeBurned = ref<bigint | undefined>();
 
   const dappStatistics = computed<DappStatistics[]>(() => {
     const combinedData = periodData.value.map((data) => {
@@ -81,15 +81,39 @@ export function usePeriodStats(period: Ref<number>) {
       Symbols.DappStakingRepositoryV3
     );
 
-    const [stats, totalIssuance, periodInfo] = await Promise.all([
+    const allDappsId = allDapps.value.map((dapp) => dapp.chain.id);
+    const [stats, totalIssuance, periodInfo, stakes] = await Promise.all([
       repository.getStakingPeriodStatistics(currentNetworkName.value.toLowerCase(), period.value),
       balancesRepository.getTotalIssuance(block),
       dappStakingRepository.getCurrentEraInfo(block),
+      dappStakingRepository.getContractsStake(
+        allDappsId,
+        getPeriodEndBlock(period.value, protocolState.value?.periodInfo.number ?? period.value)
+      ),
     ]);
+
+    // Update skates receiver from indexer although the indexer data is correct, we are using on chain data
+    // This discrepancy is caused by runtime bug.
+    stats.forEach((stat) => {
+      const dapp = getDapp(stat.dappAddress);
+      if (dapp) {
+        const stake = stakes.get(dapp.chain.id);
+        if (stake) {
+          stat.stakeAmount = stake.staked.totalStake;
+        }
+      } else {
+        console.warn(`Dapp ${stat.dappAddress} not found in dapps list`);
+      }
+    });
+
     periodData.value = stats;
     const issuance = Number(ethers.utils.formatEther(totalIssuance));
     const locked = Number(ethers.utils.formatEther(periodInfo.totalLocked));
     tvlRatio.value = locked / issuance;
+  };
+
+  const setTokensToBeBurned = async (block: number): Promise<void> => {
+    tokensToBeBurned.value = await calculateTotalTokensToBeBurned(block);
   };
 
   watch(
@@ -109,18 +133,17 @@ export function usePeriodStats(period: Ref<number>) {
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
           const block = Math.min(periodEndBlock, currentBlock.value) - 1;
-          const [, sApr, bApr, burned] = await Promise.all([
-            calculateTvlRatio(block),
+          calculateTvlRatio(block);
+          setTokensToBeBurned(block);
+          const [sApr, bApr] = await Promise.all([
             // Passing periodEndBlock - 1 to APR calculations is because in the last block of the period
             // everything is unstaked and all stakes are set to 0 and with 0 stake APR can't be calculated
             stakingService.getStakerApr(block),
             stakingService.getBonusApr(undefined, block),
-            calculateTotalTokensToBeBurned(block),
           ]);
 
           stakerApr.value = sApr;
           bonusApr.value = bApr.value;
-          tokensToBeBurned.value = burned;
         } catch (error) {
           console.error('Failed to get staking period statistics', error);
         }

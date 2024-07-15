@@ -482,6 +482,24 @@ export class DappStakingRepository implements IDappStakingRepository {
     return this.mapContractStakeAmount(contractStake);
   }
 
+  public async getContractsStake(
+    dappIds: number[],
+    block?: number
+  ): Promise<Map<number, ContractStakeAmount>> {
+    const api = await this.api.getApi(block);
+    const contractStakes =
+      await api.query.dappStaking.contractStake.multi<PalletDappStakingV3ContractStakeAmount>(
+        dappIds
+      );
+
+    return new Map<number, ContractStakeAmount>(
+      contractStakes.map((contractStake, index) => [
+        dappIds[index],
+        this.mapContractStakeAmount(contractStake),
+      ])
+    );
+  }
+
   //* @inheritdoc
   public async getClaimUnlockedTokensCall(): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
