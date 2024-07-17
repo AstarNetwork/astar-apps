@@ -48,7 +48,7 @@ export class AccountLedgerChangedMessage {
 export interface DappStakeInfo {
   id: number;
   address: string;
-  amount: number;
+  amount: bigint;
 }
 
 /**
