@@ -1,4 +1,4 @@
-import { Data, Option, u128 } from '@polkadot/types';
+import { Data, Option, Tuple, u128 } from '@polkadot/types';
 import { PalletIdentityIdentityInfo, PalletIdentityRegistration } from 'src/v2/models';
 import { IdentityInfoAdditional } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
@@ -35,14 +35,14 @@ export class IdentityRepository implements IIdentityRepository {
     if (!api.query.identity) {
       return undefined;
     }
-
-    const result = await api.query.identity.identityOf<Option<PalletIdentityRegistration>>(address);
+    const result = await api.query.identity.identityOf<Option<Tuple>>(address);
 
     if (result.isNone) {
       return undefined;
     }
 
-    const identity = result.unwrapOrDefault();
+    const unwrappedResult = result.unwrapOrDefault();
+    const identity = <PalletIdentityRegistration>unwrappedResult[0];
     const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
     identity.info.additional.forEach((x) => {
       // Seems dirty. The problem here is that some raw data is treated as ASCII and some as bytes
