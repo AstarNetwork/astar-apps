@@ -176,7 +176,7 @@ export const xcmToken = {
       minBridgeAmount: '5',
     },
     {
-      symbol: 'PEN',
+      symbol: 'xcPEN',
       isNativeToken: true,
       assetId: '18446744073709551634',
       originAssetId: 'PEN',
