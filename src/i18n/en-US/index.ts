@@ -1068,7 +1068,7 @@ export default {
       restakeConfirmation: 'Yes re-stake my rewards',
       restakeCancelation: 'No I would not wish to re-stake my rewards',
       rewardDistribution:
-        'All rewards will be proportionally distributed to the dApps you are currently staking.',
+        'All rewards will be proportionally distributed to the dApps you are currently staking on.',
     },
   },
   bridge: {
