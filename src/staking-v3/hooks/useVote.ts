@@ -122,37 +122,6 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       }
     });
 
-    // let totalStake = BigInt(0);
-    // stakerInfo.value.forEach((info) => {
-    //   totalStake += info.staked.totalStake;
-    // });
-
-    // stakerInfo.value.forEach((info, address) => {
-    //   const stake = stakeInfo.value.find(
-    //     (stake) => stake.address.toLowerCase() === address.toLowerCase()
-    //   );
-    //   const restakeAmount = (totalStakerRewards.value * info.staked.totalStake) / totalStake;
-
-    //   if (stake) {
-    //     // Users stakes on the same dApp. Add reward portion to stake amount.
-    //     stake.amount += restakeAmount;
-    //   } else {
-    //     // Create a new stake with reward portion.
-    //     const dApp = getDapp(address);
-
-    //     if (dApp) {
-    //       restakeInfo.push({
-    //         id: dApp.chain.id,
-    //         address: address,
-    //         amount: restakeAmount,
-    //       });
-    //     } else {
-    //       // This shouldn't happen
-    //       console.warn(`Dapp not found for address ${address}`);
-    //     }
-    //   }
-    // });
-
     // Add stakes to new dapps
     stakeInfo.value.forEach((info) => {
       const restake = restakeInfo.find(
