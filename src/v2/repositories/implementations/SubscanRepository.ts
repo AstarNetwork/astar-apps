@@ -20,7 +20,7 @@ export class SubscanRepository implements ISubscanRepository {
 
     const payload = {
       module,
-      event: eventName,
+      event_id: eventName,
       page,
       row: pageSize,
     };

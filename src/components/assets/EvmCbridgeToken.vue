@@ -49,8 +49,17 @@
             </q-tooltip>
           </router-link>
 
-          <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
+          <!-- <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
             <button class="btn btn--icon">
+              <astar-icon-bridge class="icon--bridge" />
+            </button>
+            <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+            </q-tooltip>
+          </a> -->
+          <a>
+            <button class="btn btn--icon" disabled>
               <astar-icon-bridge class="icon--bridge" />
             </button>
             <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>

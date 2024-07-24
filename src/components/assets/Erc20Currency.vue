@@ -53,7 +53,7 @@
           </router-link>
 
           <div v-if="token.isWrappedToken && !token.isXC20">
-            <a :href="token.bridgeUrl" target="_blank" rel="noopener noreferrer">
+            <a :href="token.bridgeUrl ?? undefined" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--icon">
                 <astar-icon-bridge class="icon--bridge" />
               </button>

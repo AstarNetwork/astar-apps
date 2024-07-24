@@ -1106,6 +1106,7 @@ export default {
       title: 'Celer Bridge',
       tag: 'ERC20',
       text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
+      warning: 'Celer Team announced to not access to cbridge, please do not use it.',
     },
     layerSwap: {
       title: 'Layerswap',
