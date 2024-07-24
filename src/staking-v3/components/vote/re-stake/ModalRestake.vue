@@ -124,6 +124,7 @@ export default defineComponent({
 .dont-restake {
   background-color: transparent;
   background: none;
-  border: 1px solid $white;
+  border: 1px solid $gray-4;
+  color: $gray-4;
 }
 </style>
