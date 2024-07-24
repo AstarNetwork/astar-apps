@@ -43,7 +43,11 @@
           </q-tooltip>
         </router-link>
 
-        <router-link v-if="isAstar" :to="buildLzBridgePageLink()">
+        <router-link
+          v-if="isAstar"
+          :to="buildLzBridgePageLink()"
+          :disabled="!layerZeroBridgeEnabled"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -53,7 +57,11 @@
           </q-tooltip>
         </router-link>
 
-        <router-link v-if="isZkEvm" :to="buildEthereumBridgePageLink()">
+        <router-link
+          v-if="isZkEvm"
+          :to="buildEthereumBridgePageLink()"
+          :disabled="!nativeBridgeEnabled"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -129,6 +137,7 @@ import {
 } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { nativeBridgeEnabled, layerZeroBridgeEnabled } from 'src/features';
 
 export default defineComponent({
   components: { ModalFaucet },
@@ -208,6 +217,8 @@ export default defineComponent({
       screenSize,
       isTruncate,
       isAstar,
+      nativeBridgeEnabled,
+      layerZeroBridgeEnabled,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,
