@@ -43,33 +43,29 @@
           </q-tooltip>
         </router-link>
 
-        <router-link
+        <custom-router-link
           v-if="isAstar"
           :to="buildLzBridgePageLink()"
-          :disabled="!layerZeroBridgeEnabled"
+          :is-disabled="!layerZeroBridgeEnabled"
         >
-          <button class="btn btn--icon">
-            <astar-icon-bridge />
-          </button>
+          <button class="btn btn--icon"><astar-icon-bridge /></button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
-        </router-link>
+        </custom-router-link>
 
-        <router-link
+        <custom-router-link
           v-if="isZkEvm"
           :to="buildEthereumBridgePageLink()"
-          :disabled="!nativeBridgeEnabled"
+          :is-disabled="!nativeBridgeEnabled"
         >
-          <button class="btn btn--icon">
-            <astar-icon-bridge />
-          </button>
+          <button class="btn btn--icon"><astar-icon-bridge /></button>
           <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
-        </router-link>
+        </custom-router-link>
 
         <!-- Only SDN is able to bridge via cBridge at this moment -->
         <!-- <a
@@ -138,9 +134,10 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { nativeBridgeEnabled, layerZeroBridgeEnabled } from 'src/features';
+import CustomRouterLink from '../common/CustomRouterLink.vue';
 
 export default defineComponent({
-  components: { ModalFaucet },
+  components: { ModalFaucet, CustomRouterLink },
   props: {
     nativeTokenUsd: {
       type: Number,

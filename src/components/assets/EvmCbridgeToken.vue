@@ -39,15 +39,13 @@
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <router-link :to="buildTransferPageLink(token.symbol)">
-            <button class="btn btn--icon">
-              <astar-icon-transfer />
-            </button>
+          <custom-router-link :to="buildTransferPageLink(token.symbol)">
+            <button class="btn btn--icon"><astar-icon-transfer /></button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </router-link>
+          </custom-router-link>
 
           <div>
             <button
@@ -125,10 +123,12 @@ import Jazzicon from 'vue3-jazzicon/src/components';
 import { truncate } from '@astar-network/astar-sdk-core';
 import { celerBridgeEnabled } from 'src/features';
 import { navigateInNewTab } from 'src/util-general';
+import CustomRouterLink from '../common/CustomRouterLink.vue';
 
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
+    CustomRouterLink,
   },
   props: {
     token: {
