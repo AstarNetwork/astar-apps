@@ -183,7 +183,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/PEN.svg'),
       isXcmCompatible: true,
       originChain: Chain.PENDULUM,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '2',
     },
     {
       symbol: 'XLM.s',
@@ -193,7 +193,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/XLM.svg'),
       isXcmCompatible: true,
       originChain: Chain.PENDULUM,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '1',
     },
   ],
   [endpointKey.SHIDEN]: [
