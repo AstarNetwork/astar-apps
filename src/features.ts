@@ -10,13 +10,13 @@ export const arthSwapBridgeEnabled = true;
 
 export const isBridgeEnabled = (bridgeUrl?: string): boolean => {
   switch (true) {
-    case bridgeUrl?.includes('stargate.finance'):
+    case bridgeUrl?.includes('https://stargate.finance'):
       return stargateBridgeEnabled;
-    case bridgeUrl?.includes('stakestone.io'):
+    case bridgeUrl?.includes('https://app.stakestone.io'):
       return stakeStoneBridgeEnabled;
-    case bridgeUrl?.includes('arthswap.org'):
+    case bridgeUrl?.includes('https://app.arthswap.org'):
       return arthSwapBridgeEnabled;
-    case bridgeUrl?.includes('cbridge.celer'):
+    case bridgeUrl?.includes('https://cbridge.celer.network'):
       return celerBridgeEnabled;
     default:
       return false;
