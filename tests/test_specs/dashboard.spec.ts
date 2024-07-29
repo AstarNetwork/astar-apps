@@ -44,8 +44,13 @@ test.describe('on dashboard screen', () => {
     await expect(ui).toBeVisible();
   });
 
-  test('display collators panel', async ({ page }) => {
-    const ui = page.getByTestId('collators-panel');
+  test('display inflation rate chart', async ({ page }) => {
+    const ui = page.getByTestId('inflation-rate-chart');
+    await expect(ui).toBeVisible();
+  });
+
+  test('display inflation rate panel', async ({ page }) => {
+    const ui = page.getByTestId('inflation-panel');
     await expect(ui).toBeVisible();
   });
 });

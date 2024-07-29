@@ -2,7 +2,7 @@
   <div v-if="pieSectors.length === 0">
     <q-skeleton class="skeleton--value-panel" />
   </div>
-  <div v-else class="wrapper--value">
+  <div v-else class="wrapper--value" data-testid="inflation-panel">
     <div class="container container--chart">
       <div class="row--title">
         <span class="text--accent container--title--color">{{

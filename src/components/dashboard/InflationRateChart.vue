@@ -2,7 +2,7 @@
   <div v-if="!hasData">
     <q-skeleton class="skeleton--chart inflation--skeleton" />
   </div>
-  <div v-else>
+  <div v-else data-testid="inflation-rate-chart">
     <div class="container--component">
       <div class="row">
         <span class="text--accent container--title--color">{{

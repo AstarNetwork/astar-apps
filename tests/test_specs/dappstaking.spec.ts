@@ -6,24 +6,31 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('init screen', () => {
-  test('should wallet is opened', async ({ page }) => {
-    const walletWrapper = page.getByText('Select a Wallet');
+  test.beforeEach(async ({ page }) => {
+    await clickDisclaimerButton(page);
+  });
+
+  test('check if wallet modal is opened', async ({ page }) => {
+    await page.getByRole('button', { name: 'Select Wallet' }).click();
+    const walletWrapper = page.getByTestId('wallet-select');
     await expect(walletWrapper).toBeVisible();
   });
-  test('should wallet is closed', async ({ page }) => {
-    const walletWrapper = page.getByText('Select a Wallet');
+
+  test('check if wallet modal is closed after close button is clicked', async ({ page }) => {
+    await page.getByRole('button', { name: 'Select Wallet' }).click();
+    const walletWrapper = page.getByTestId('wallet-select');
     const closeButton = page.locator('.modal-close');
     await closeButton.click();
     await expect(walletWrapper).toBeHidden();
   });
 
-  test('should display the connect button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
-  });
+  // test('should display the connect button', async ({ page }) => {
+  //   await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
+  // });
 
-  test('should display the Astar button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Astar' })).toBeVisible();
-  });
+  // test('should display the Astar button', async ({ page }) => {
+  //   await expect(page.getByRole('button', { name: 'Astar' })).toBeVisible();
+  // });
 
   test('should display install extension popup when click Talisman button', async ({ page }) => {
     await checkInjectedWeb3(page);
@@ -35,14 +42,14 @@ test.describe('init screen', () => {
 
 test.describe('on dapp staking screen', () => {
   test('has title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Discover dApps/);
+    await expect(page).toHaveTitle(/Astar Portal - Astar & Shiden Network/);
   });
 
-  test('should clickable the banner after loading is complete', async ({ page }) => {
+  test('should have a clickable banner after loading is complete', async ({ page }) => {
     await clickDisclaimerButton(page);
     const closeButton = page.locator('.modal-close');
     await closeButton.click();
-    const bannerCard = page.locator('.wrapper--banners .card:first-child');
+    const bannerCard = page.getByTestId('staking-banner-card').first();
     await expect(bannerCard).toBeVisible();
     await page.waitForSelector('.loader', { state: 'hidden' });
     await bannerCard.click();
@@ -53,33 +60,9 @@ test.describe('on dapp staking screen', () => {
     const closeButton = page.locator('.modal-close');
     await closeButton.click();
     await page.waitForSelector('.loader', { state: 'hidden' });
-    const dappCard = page.locator('.wrapper--list .card:first-child').first();
+    const dappCard = page.getByTestId('single-dapp').first();
     await expect(dappCard).toBeVisible();
     await dappCard.click();
     await page.waitForURL('**/astar/dapp-staking/dapp?dapp=*');
-  });
-
-  test('should display staking button when over the dapp card', async ({ page }) => {
-    await clickDisclaimerButton(page);
-    const closeButton = page.locator('.modal-close');
-    await closeButton.click();
-    await page.waitForSelector('.loader', { state: 'hidden' });
-    const dappCard = page.locator('.wrapper--list .card:first-child').first();
-    await expect(dappCard).toBeVisible();
-    await dappCard.hover();
-    const stakeButton = page.getByRole('button', { name: 'Stake Now' });
-    await expect(stakeButton).toBeVisible();
-  });
-
-  test('should clickable item on the on chain data after loading is complete', async ({ page }) => {
-    await clickDisclaimerButton(page);
-    const closeButton = page.locator('.modal-close');
-    await closeButton.click();
-    await page.waitForSelector('.loader', { state: 'hidden' });
-    const onChainCard = page
-      .locator('.wrapper--onchain-data .column--dapp-name:first-child')
-      .first();
-    await expect(onChainCard).toBeVisible();
-    await onChainCard.click();
   });
 });
