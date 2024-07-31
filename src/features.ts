@@ -1,12 +1,12 @@
 // Bridges
-export const nativeBridgeEnabled = true;
-export const layerZeroBridgeEnabled = true;
-export const layerSwapBridgeEnabled = true;
-export const celerBridgeEnabled = true;
+export const nativeBridgeEnabled = false;
+export const layerZeroBridgeEnabled = false;
+export const layerSwapBridgeEnabled = false;
+export const celerBridgeEnabled = false;
 export const omniBridgeEnabled = true;
-export const stargateBridgeEnabled = true;
-export const stakeStoneBridgeEnabled = true;
-export const arthSwapBridgeEnabled = true;
+const stargateBridgeEnabled = true;
+const stakeStoneBridgeEnabled = true;
+const arthSwapBridgeEnabled = true;
 
 export const isBridgeEnabled = (bridgeUrl?: string): boolean => {
   switch (true) {
