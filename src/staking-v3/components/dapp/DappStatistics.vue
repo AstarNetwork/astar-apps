@@ -14,7 +14,8 @@
         <format-balance :balance="dapp.chain.totalStake?.toString() || '0'" />
       </kpi-card>
       <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
-        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
+        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span> /
+        <span>{{ getDappRank(dapp.chain.id) ?? '--' }}</span>
       </kpi-card>
       <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')">
         <span>{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
@@ -49,11 +50,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { getDappTier } = useDappStaking();
+    const { getDappTier, getDappRank } = useDappStaking();
     const { isZkEvm } = useNetworkInfo();
     const { navigateToVote } = useDappStakingNavigation();
 
-    return { getDappTier, navigateToVote, isZkEvm };
+    return { getDappTier, getDappRank, navigateToVote, isZkEvm };
   },
 });
 </script>

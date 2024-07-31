@@ -578,6 +578,11 @@ export function useDappStaking() {
     return tier !== undefined ? tier.tierId + 1 : undefined;
   };
 
+  const getDappRank = (dappId: number): number | undefined => {
+    const tier = leaderboard.value?.get(dappId);
+    return tier?.rank;
+  };
+
   const fetchStakerInfoToStore = async (): Promise<void> => {
     if (!currentAccount.value) {
       return;
@@ -675,6 +680,7 @@ export function useDappStaking() {
     getCurrentEraInfo,
     getDappTiers,
     getDappTier,
+    getDappRank,
     fetchStakerInfoToStore,
     fetchTiersConfigurationToStore,
     withdraw,

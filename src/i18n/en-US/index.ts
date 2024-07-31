@@ -869,7 +869,7 @@ export default {
     unlockingAmount: 'Unlocking amount',
     withdraw: 'Withdraw',
     relock: 'Re-lock',
-    currentTier: 'Current Tier',
+    currentTier: 'Current Tier / Rank',
     numberOfStakers: 'Number of stakers',
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
