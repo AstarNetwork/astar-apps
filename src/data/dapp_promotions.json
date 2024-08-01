@@ -1,5 +1,11 @@
 [
   {
+    "name": "NEET - PerkPath",
+    "shortDescription": "NEET PerkPath: The most affordable token/NFT bulk sender with certification.",
+    "link": "https://neet.gg/perkpath",
+    "img": "images/dapp_promotions/NEET_PerkPath.png"
+  },
+  {
     "name": "Ledger - dApp Staking V3",
     "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
     "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
