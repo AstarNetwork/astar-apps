@@ -43,7 +43,7 @@
   </div>
 </template>
 <script lang="ts">
-import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
+import { checkIsCbridgeToken } from 'src/c-bridge';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
@@ -141,7 +141,6 @@ export default defineComponent({
       isSearch,
       search,
       filteredTokens,
-      cbridgeAppLink,
       isHideSmallBalances,
       isDarkTheme,
       icon_img,

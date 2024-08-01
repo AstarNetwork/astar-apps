@@ -13,7 +13,7 @@ import { InflationConfiguration } from 'src/v2/models';
 import { InflationParam, useDappStaking } from 'src/staking-v3';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from './useNetworkInfo';
-import { PERIOD1_START_BLOCKS } from 'src/consts';
+import { PERIOD1_START_BLOCKS } from 'src/constants';
 
 type UseInflation = {
   activeInflationConfiguration: ComputedRef<InflationConfiguration>;

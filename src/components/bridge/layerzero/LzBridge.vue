@@ -138,7 +138,7 @@
         </ul>
       </div>
 
-      <div v-if="isBridgeMaintenanceMode" class="row--box-error">
+      <div v-if="!layerZeroBridgeEnabled" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.underMaintenance') }}
         </span>
@@ -148,7 +148,7 @@
         <astar-button
           class="button--confirm"
           :disabled="
-            isApproved || isDisabledBridge || isHandling || isLoading || isBridgeMaintenanceMode
+            isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
           "
           @click="approve"
         >
@@ -157,7 +157,7 @@
         <astar-button
           class="button--confirm"
           :disabled="
-            !isApproved || isDisabledBridge || isHandling || isLoading || isBridgeMaintenanceMode
+            !isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
           "
           @click="bridge"
         >
@@ -172,12 +172,13 @@
 import { truncate } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount } from 'src/hooks';
 import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
+import { layerZeroBridgeEnabled } from 'src/features';
 
 export default defineComponent({
   components: {
@@ -260,7 +261,6 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { isBridgeMaintenanceMode } = useNetworkInfo();
     const nativeTokenSymbol = computed<string>(() => {
       return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
     });
@@ -318,10 +318,10 @@ export default defineComponent({
       isEnabledWithdrawal,
       LayerZeroSlippage,
       nativeTokenSymbol,
+      layerZeroBridgeEnabled,
       truncate,
       bridge,
       approve,
-      isBridgeMaintenanceMode,
     };
   },
 });
