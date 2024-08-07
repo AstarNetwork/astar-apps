@@ -1,5 +1,4 @@
-import { Page, expect } from '@playwright/test';
-import { ApiPromise } from '@polkadot/api';
+import { expect } from '@playwright/test';
 import { clickDisclaimerButton } from 'src/modules/playwright';
 import {
   changeNetworkOnEVM,
@@ -7,17 +6,7 @@ import {
   createMetamaskAccount,
   signInMetamask,
 } from '../common';
-import { getApi } from '../common-api';
-import { getWindow, test } from '../fixtures';
-
-let api: ApiPromise;
-test.beforeAll(async () => {
-  api = await getApi();
-});
-
-test.afterAll(async () => {
-  await api.disconnect();
-});
+import { test } from '../fixtures';
 
 test.beforeEach(async ({ page, context, browser }) => {
   await page.goto('/astar/assets');
