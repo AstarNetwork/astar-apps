@@ -1061,6 +1061,15 @@ export default {
       'Stake to essential projects that enhance the productivity and functionality of Web3.',
     othersDescription: 'Explore a diverse set of blockchain dApps.',
     basicAprPlusBonus: 'Basic APR + Bonus',
+    restake: {
+      title: 'Re-stake your rewards',
+      description:
+        'Would you like to re-stake your rewards today? This will increase your daily staking rewards.',
+      restakeConfirmation: 'Yes re-stake my rewards',
+      restakeCancelation: 'No I would not wish to re-stake my rewards',
+      rewardDistribution:
+        'All rewards will be proportionally distributed to the dApps you are currently staking on.',
+    },
   },
   bridge: {
     selectBridge: 'Select a Bridge',

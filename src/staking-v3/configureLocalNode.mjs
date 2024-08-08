@@ -41,7 +41,10 @@ const dappsRegistered = await promiseToRegisterDapps;
 if (dappsRegistered) {
   // Send some test tokens
   api.tx.balances
-    .transfer('XmSTidw9qbJJdC4ntotpzwCkR7iAgkMUnLv6rg29Qa3aoQa', BigInt('1000000000000000000000'))
+    .transferKeepAlive(
+      'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS',
+      BigInt('1000000000000000000000')
+    )
     .signAndSend(alice, (result) => {
       console.log(result.status.toHuman());
     });

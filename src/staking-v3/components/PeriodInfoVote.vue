@@ -30,13 +30,7 @@
           </div>
           <div class="reward-options">
             <token-balance-native class="balance" :balance="totalStakerRewards.toString()" />
-            <astar-button
-              :disabled="totalStakerRewards === BigInt(0)"
-              :height="32"
-              :width="100"
-              @click="claimStakerAndBonusRewards()"
-              >{{ $t('stakingV3.claim') }}</astar-button
-            >
+            <claim-and-restake-button :claim-type="ClaimType.Both" />
           </div>
         </div>
         <div class="reward-info">
@@ -56,15 +50,17 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useAprV3, useDappStaking, useDappStakingNavigation, useVotingCountdown } from '../hooks';
-import { PeriodType } from 'src/staking-v3/logic';
+import { PeriodType, ClaimType } from 'src/staking-v3/logic';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
+import ClaimAndRestakeButton from './ClaimAndRestakeButton.vue';
 
 export default defineComponent({
   components: {
     TokenBalanceNative,
+    ClaimAndRestakeButton,
   },
   setup() {
-    const { protocolState, totalStakerRewards, claimStakerAndBonusRewards } = useDappStaking();
+    const { protocolState, totalStakerRewards } = useDappStaking();
     const { navigateToAssets } = useDappStakingNavigation();
     const { timeLeftFormatted } = useVotingCountdown();
     const { stakerApr, bonusApr } = useAprV3({ isWatch: true });
@@ -72,13 +68,13 @@ export default defineComponent({
     const totalApr = computed<number>(() => stakerApr.value + bonusApr.value);
 
     return {
+      PeriodType,
+      ClaimType,
       protocolState,
       timeLeftFormatted,
-      PeriodType,
       totalStakerRewards,
       totalApr,
       navigateToAssets,
-      claimStakerAndBonusRewards,
     };
   },
 });
