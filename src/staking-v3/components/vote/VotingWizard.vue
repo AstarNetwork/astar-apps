@@ -149,7 +149,7 @@ export default defineComponent({
         ])
     );
 
-    const { totalStakerRewards } = useDappStaking();
+    const { totalStakerRewards, stakerInfo } = useDappStaking();
 
     const stakeInfo = computed<StakeInfo>(() => ({
       totalStakedAmount: totalStakeAmount.value,
@@ -211,7 +211,7 @@ export default defineComponent({
     };
 
     const handleConfirmAndRestake = async (): Promise<void> => {
-      if (totalStakerRewards.value > BigInt(0)) {
+      if (totalStakerRewards.value > BigInt(0) && stakerInfo.value.size > 0) {
         setShowRestakeModal(true);
       } else {
         await handleConfirm(false);
