@@ -281,3 +281,9 @@ export interface CommunityDefinition extends Community {
   label: string;
   validateHandle?: (v: string) => boolean | string;
 }
+
+export enum ClaimType {
+  Staker,
+  Bonus,
+  Both,
+}
