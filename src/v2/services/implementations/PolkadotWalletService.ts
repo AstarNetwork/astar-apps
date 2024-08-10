@@ -117,8 +117,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 signer: await this.getSigner(senderAddress),
                 nonce: -1,
                 tip,
-                mode: 1,
-                metadataHash: hash,
+                withSignedTransaction: true,
               },
               (result) => {
                 try {
