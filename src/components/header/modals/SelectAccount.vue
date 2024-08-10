@@ -312,7 +312,7 @@ export default defineComponent({
           console.error(error);
           const idLedgerLocked = '0x5515';
           const idNotRunningApp = '28161';
-          let errMsg = '';
+          let errMsg = error.message;
 
           if (error.message.includes(idLedgerLocked)) {
             errMsg = error.message;
