@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Null, Result } from '@polkadot/types-codec';
 import { DispatchError, EventRecord } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';

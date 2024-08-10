@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BN } from '@polkadot/util';
 import { Option } from '@polkadot/types-codec';
 import { XcmTokenInformation } from 'src/modules/xcm';

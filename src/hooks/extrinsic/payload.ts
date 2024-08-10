@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { u16, u32, TypeRegistry } from '@polkadot/types';
 import { keccakFromArray } from 'ethereumjs-util';

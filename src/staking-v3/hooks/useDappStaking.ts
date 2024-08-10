@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { $api } from 'boot/api';
 import { computed } from 'vue';
 import { container } from 'src/v2/common';

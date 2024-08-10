@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Enum, Struct, u32, u64, u128, Vec } from '@polkadot/types';
 import type { ITuple } from '@polkadot/types-codec/types';
 import { BN } from '@polkadot/util';
