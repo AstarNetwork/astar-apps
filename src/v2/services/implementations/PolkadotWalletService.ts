@@ -27,7 +27,6 @@ import { WalletService } from './WalletService';
 import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
 import { IApi } from 'src/v2/integration';
 import { SupportWallet } from 'src/config/wallets';
-import { $api } from 'src/boot/api';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -110,7 +109,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           }
         } else {
           try {
-            const hash = $api?.registry.metadata.hash.toHex() ?? '';
             const unsub = await extrinsic.signAndSend(
               senderAddress,
               {
@@ -118,6 +116,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 nonce: -1,
                 tip,
                 withSignedTransaction: true,
+                mode: 1,
+                metadataHash: $api?.registry.metadata.hash.toHex(),
               },
               (result) => {
                 try {
