@@ -23,7 +23,6 @@ export * from './chain/useAvgBlockTime';
 export * from './dapps-staking/useSignPayload';
 export * from './dapps-staking/useCampaign';
 export * from './wallet/useWalletIcon';
-export * from './wallet/useLedger';
 export * from './wallet/useAccountUnification';
 export * from './xcm/useXcmBridge';
 export * from './transfer/useTokenTransfer';

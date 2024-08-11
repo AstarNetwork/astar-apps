@@ -73,16 +73,8 @@
       </fieldset>
     </div>
     <div class="wrapper__row--button">
-      <div v-if="currentNetworkChain === astarChain.ASTAR" class="row--ledger-check">
-        <span class="text--is-ledger">
-          {{ $t('wallet.isLedgerAccount') }}
-        </span>
-        <div class="toggle--custom">
-          <q-toggle v-model="toggleIsLedger" color="#0085ff" />
-        </div>
-      </div>
       <astar-button
-        :disabled="(substrateAccounts.length > 0 && !selAccount) || (isLedger && !isLedgerReady)"
+        :disabled="substrateAccounts.length > 0 && !selAccount"
         class="btn--connect"
         @click="selectAccount(selAccount)"
       >
@@ -146,8 +138,6 @@ export default defineComponent({
   setup(props) {
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
-    const toggleIsLedger = ref<boolean>(false);
-    const isLedgerReady = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
     const isClosing = ref<boolean>(false);
@@ -289,67 +279,6 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
-      localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
-      store.commit('general/setIsLedger', isLedger);
-      if (isLedger) {
-        try {
-          // Memo: send a popup request for permission(first time only)
-          const ledgerData = new Ledger('hid', 'astar');
-          if (process.env.DEV) {
-            console.info('ledgerData', ledgerData);
-          }
-
-          const { address } = await ledgerData.getAddress();
-          if (address) {
-            isLedgerReady.value = true;
-            const transport = (ledgerData as any).__internal__app.transport;
-            transport.close();
-            localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
-            store.commit('general/setIsLedger', isLedger);
-          }
-        } catch (error: any) {
-          console.error(error);
-          const idLedgerLocked = '0x5515';
-          const idNotRunningApp = '28161';
-          let errMsg = error.message;
-
-          if (error.message.includes(idLedgerLocked)) {
-            errMsg = error.message;
-          } else if (error.message.includes(idNotRunningApp)) {
-            errMsg = t('warning.ledgerNotOpened');
-          }
-
-          if (errMsg) {
-            store.dispatch('general/showAlertMsg', {
-              msg: errMsg,
-              alertType: 'error',
-            });
-          }
-        }
-      } else {
-        isLedgerReady.value = false;
-      }
-    };
-
-    watch([selAccount], () => {
-      toggleIsLedger.value = false;
-    });
-
-    watch(
-      [isLedger],
-      () => {
-        toggleIsLedger.value = isLedger.value;
-      },
-      {
-        immediate: true,
-      }
-    );
-
-    watch([toggleIsLedger], async () => {
-      await updateIsLedgerAccount(toggleIsLedger.value);
-    });
-
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);
     });
@@ -371,11 +300,9 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
-      toggleIsLedger,
       isShowBalance,
       currentNetworkChain,
       astarChain,
-      isLedgerReady,
       isLedger,
       displayBalance,
       backModal,
