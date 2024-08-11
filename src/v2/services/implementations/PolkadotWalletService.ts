@@ -116,8 +116,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 nonce: -1,
                 tip,
                 withSignedTransaction: true,
-                mode: 1,
-                metadataHash: $api?.registry.metadata.hash.toHex(),
               },
               (result) => {
                 try {
