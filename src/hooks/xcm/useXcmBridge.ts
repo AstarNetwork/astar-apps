@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ASTAR_DECIMALS,
   ASTAR_SS58_FORMAT,

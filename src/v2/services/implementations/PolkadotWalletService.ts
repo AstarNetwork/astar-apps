@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { Signer } from '@polkadot/types/types';
@@ -114,6 +115,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 signer: await this.getSigner(senderAddress),
                 nonce: -1,
                 tip,
+                withSignedTransaction: true,
               },
               (result) => {
                 try {

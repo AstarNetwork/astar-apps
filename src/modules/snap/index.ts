@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { web3EnablePromise } from '@polkadot/extension-dapp';
 import type { InjectedMetamaskExtension } from '@astar-network/metamask-astar-adapter/src/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';

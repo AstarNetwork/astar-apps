@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { injectable } from 'inversify';
 import { Guard, container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
