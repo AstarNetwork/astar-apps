@@ -1,7 +1,6 @@
 import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { encodeAddress } from '@polkadot/util-crypto';
-import { Polkasafe } from 'polkasafe';
 import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
 import { ASTAR_CHAIN } from 'src/config/chain';
 import {
@@ -24,6 +23,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/index';
 import { useAccount } from './useAccount';
 import { checkIsNativeWallet } from './helper/wallet';
+import { PolkasafeWrapper } from 'src/types/polkasafe';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -125,6 +125,7 @@ export function useAppRouter() {
     const delay = 2000;
     await wait(delay);
     const multisigStored = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
+
     if (!multisigStored) return;
     // Memo: PolkaSafe supports Astar only
     if (currentNetworkIdx.value !== endpointKey.ASTAR) {
@@ -132,7 +133,7 @@ export function useAppRouter() {
       return;
     }
     const multisig = JSON.parse(multisigStored);
-    const client = new Polkasafe();
+    const client = new PolkasafeWrapper();
     const substratePrefix = 42;
     const signatory = encodeAddress(multisig.signatory.address, substratePrefix);
     const extensions = await web3Enable('AstarNetwork/astar-apps');
@@ -145,7 +146,7 @@ export function useAppRouter() {
         alertType: 'info',
       });
       await client.connect('astar', signatory, signer as any);
-      container.addConstant<Polkasafe>(Symbols.PolkasafeClient, client);
+      container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
     } catch (error) {
       console.error(error);
       await disconnectAccount();

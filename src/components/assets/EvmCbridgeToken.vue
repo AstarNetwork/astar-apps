@@ -39,25 +39,27 @@
 
       <q-slide-transition :duration="150">
         <div v-show="isExpand || width >= screenSize.sm" class="row__right">
-          <router-link :to="buildTransferPageLink(token.symbol)">
-            <button class="btn btn--icon">
-              <astar-icon-transfer />
-            </button>
+          <custom-router-link :to="buildTransferPageLink(token.symbol)">
+            <button class="btn btn--icon"><astar-icon-transfer /></button>
             <span class="text--expand-menu">{{ $t('assets.send') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.send') }}</span>
             </q-tooltip>
-          </router-link>
+          </custom-router-link>
 
-          <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
-            <button class="btn btn--icon">
+          <div>
+            <button
+              class="btn btn--icon"
+              :disabled="!celerBridgeEnabled"
+              @click="navigateInNewTab(cbridgeAppLink)"
+            >
               <astar-icon-bridge class="icon--bridge" />
             </button>
             <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
             <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
             </q-tooltip>
-          </a>
+          </div>
 
           <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
             <button class="btn btn--icon">
@@ -118,12 +120,15 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useNetworkInfo, useBreakpoints } from 'src/hooks';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { truncate } from '@astar-network/astar-sdk-core';
+import { celerBridgeEnabled } from 'src/features';
+import { navigateInNewTab } from 'src/util-general';
+import CustomRouterLink from '../common/CustomRouterLink.vue';
 
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
+    CustomRouterLink,
   },
   props: {
     token: {
@@ -176,10 +181,12 @@ export default defineComponent({
       isExpand,
       isTruncate,
       isFavorite,
+      celerBridgeEnabled,
       truncate,
       buildTransferPageLink,
       formatTokenName,
       addToEvmProvider,
+      navigateInNewTab,
     };
   },
 });

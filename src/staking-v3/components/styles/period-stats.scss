@@ -91,6 +91,10 @@
         font-weight: 400;
       }
     }
+
+    .q-skeleton {
+      margin-left: auto;
+    }
   }
 
   .more-info {
@@ -129,4 +133,10 @@
       color: $white;
     }
   }
+}
+
+.skeleton-number {
+  width: 110px;
+  height: 38px;
+  border-radius: 8px;
 }

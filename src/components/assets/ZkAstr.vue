@@ -42,7 +42,12 @@
           </q-tooltip>
         </router-link>
 
-        <router-link v-if="t.symbol === 'ASTR'" :to="buildLzBridgePageLink()" class="box--icon">
+        <custom-router-link
+          v-if="t.symbol === 'ASTR'"
+          :to="buildLzBridgePageLink()"
+          :is-disabled="!layerZeroBridgeEnabled"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -50,9 +55,14 @@
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
           </q-tooltip>
-        </router-link>
+        </custom-router-link>
 
-        <a v-else :href="vAstrOmniLink" target="_blank" rel="noopener noreferrer" class="box--icon">
+        <custom-router-link
+          v-else
+          :to="vAstrOmniLink"
+          :is-disabled="!omniBridgeEnabled"
+          class="box--icon"
+        >
           <button class="btn btn--icon">
             <astar-icon-bridge />
           </button>
@@ -60,7 +70,7 @@
           <q-tooltip>
             <span class="text--tooltip">{{ $t('assets.swap') }}</span>
           </q-tooltip>
-        </a>
+        </custom-router-link>
 
         <a
           :href="getExplorerLink(t.address)"
@@ -115,9 +125,11 @@ import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { buildTransferPageLink, buildLzBridgePageLink } from 'src/router/routes';
 import { PropType, defineComponent } from 'vue';
 import { vAstrOmniLink } from '../../modules/zk-evm-bridge';
+import CustomRouterLink from 'src/components/common/CustomRouterLink.vue';
+import { layerZeroBridgeEnabled, omniBridgeEnabled } from 'src/features';
 
 export default defineComponent({
-  components: {},
+  components: { CustomRouterLink },
   props: {
     astrTokens: {
       type: Array as PropType<Erc20Token[]>,
@@ -140,6 +152,8 @@ export default defineComponent({
       addToEvmProvider,
       buildTransferPageLink,
       getExplorerLink,
+      layerZeroBridgeEnabled,
+      omniBridgeEnabled,
     };
   },
 });

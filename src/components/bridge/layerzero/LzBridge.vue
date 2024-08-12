@@ -138,17 +138,27 @@
         </ul>
       </div>
 
+      <div v-if="!layerZeroBridgeEnabled" class="row--box-error">
+        <span class="color--white">
+          {{ $t('bridge.underMaintenance') }}
+        </span>
+      </div>
+
       <div class="row--buttons">
         <astar-button
           class="button--confirm"
-          :disabled="isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="
+            isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
+          "
           @click="approve"
         >
           {{ $t('approve') }}
         </astar-button>
         <astar-button
           class="button--confirm"
-          :disabled="!isApproved || isDisabledBridge || isHandling || isLoading"
+          :disabled="
+            !isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
+          "
           @click="bridge"
         >
           {{ $t('bridge.bridge') }}
@@ -168,6 +178,7 @@ import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
+import { layerZeroBridgeEnabled } from 'src/features';
 
 export default defineComponent({
   components: {
@@ -307,6 +318,7 @@ export default defineComponent({
       isEnabledWithdrawal,
       LayerZeroSlippage,
       nativeTokenSymbol,
+      layerZeroBridgeEnabled,
       truncate,
       bridge,
       approve,
