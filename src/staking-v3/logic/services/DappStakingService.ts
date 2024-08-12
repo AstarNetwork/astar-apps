@@ -746,7 +746,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const formattedBonusRewardsPoolPerPeriod = weiToToken(
       inflationConfiguration.bonusRewardPoolPerPeriod
     );
-    const voteAmount = this.getStakeAmount(protocolState, eraInfo);
+    const voteAmount = this.getVoteAmount(protocolState, eraInfo);
     const bonusPercentPerPeriod = formattedBonusRewardsPoolPerPeriod / voteAmount;
     const simulatedBonusPerPeriod = simulatedVoteAmount * bonusPercentPerPeriod;
     const periodsPerYear = eraLengths.periodsPerCycle * cyclesPerYear;
@@ -838,5 +838,15 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     );
 
     return currentStakeAmount;
+  }
+
+  private getVoteAmount(protocolState: ProtocolState, eraInfo: EraInfo): number {
+    const currentVoteAmount = weiToToken(
+      protocolState.periodInfo.subperiod === PeriodType.Voting
+        ? eraInfo.nextStakeAmount?.voting ?? BigInt(0)
+        : eraInfo.currentStakeAmount.voting
+    );
+
+    return currentVoteAmount;
   }
 }

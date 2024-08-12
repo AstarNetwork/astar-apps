@@ -6,9 +6,9 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button :disabled="!isEnableEthBridge || isBridgeMaintenanceMode">
+          <button :disabled="!isEnableEthBridge">
             <component
-              :is="isEnableEthBridge && !isBridgeMaintenanceMode ? 'router-link' : 'div'"
+              :is="isEnableEthBridge ? 'router-link' : 'div'"
               :to="buildEthereumBridgePageLink()"
               class="button--bridge"
             >
@@ -36,18 +36,18 @@
               </div>
             </component>
           </button>
-          <p v-if="!isEnableEthBridge" class="text--bridge-details">
+          <p v-if="!isZkEvm" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.text2') }}
           </p>
-          <p v-if="isBridgeMaintenanceMode" class="text--bridge-details">
+          <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
             {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
 
         <div class="column--selection">
-          <button :disabled="!isEnableLzBridge">
+          <button :disabled="!isEnableLzBridge || !layerZeroBridgeEnabled">
             <component
-              :is="isEnableLzBridge ? 'router-link' : 'div'"
+              :is="isEnableLzBridge && layerZeroBridgeEnabled ? 'router-link' : 'div'"
               :to="buildLzBridgePageLink()"
               class="button--bridge"
             >
@@ -77,6 +77,9 @@
           </button>
           <p v-if="!isEnableLzBridge" class="text--bridge-details">
             {{ $t('bridge.astarBridge.text2') }}
+          </p>
+          <p v-if="!layerZeroBridgeEnabled" class="text--bridge-details">
+            {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
         <div v-if="isZkyoto" class="column--selection">
@@ -115,74 +118,71 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button>
-            <a
-              :href="layerSwapLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/layerswap_logo.svg')"
-                    alt="layer-swap"
-                  />
-                </div>
+          <button
+            :disabled="!layerSwapBridgeEnabled"
+            class="button--bridge"
+            @click="navigateInNewTab(layerSwapLink)"
+          >
+            <div class="row--logo-bg">
+              <div class="img--logo-bg">
+                <img
+                  class="img--logo"
+                  :src="require('src/assets/img/layerswap_logo.svg')"
+                  alt="layer-swap"
+                />
               </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.layerSwap.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.layerSwap.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.layerSwap.text') }}
-                  </span>
-                </div>
+            </div>
+            <div class="row--bridge-title">
+              <div class="text--bridge-tag">
+                <q-chip outline>
+                  {{ $t('bridge.layerSwap.tag') }}
+                </q-chip>
               </div>
-            </a>
+              <span class="text--bridge-title">{{ $t('bridge.layerSwap.title') }}</span>
+              <div class="box--text-bridge">
+                <span class="text--bridge">
+                  {{ $t('bridge.layerSwap.text') }}
+                </span>
+              </div>
+            </div>
           </button>
         </div>
         <div class="column--selection">
-          <button>
-            <a
-              :href="cbridgeAppLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/cbridge_logo.svg')"
-                    alt="cbridge"
-                  />
-                </div>
+          <button
+            :disabled="!celerBridgeEnabled"
+            class="button--bridge"
+            @click="navigateInNewTab(cbridgeAppLink)"
+          >
+            <div class="row--logo-bg">
+              <div class="img--logo-bg">
+                <img
+                  class="img--logo"
+                  :src="require('src/assets/img/cbridge_logo.svg')"
+                  alt="cbridge"
+                />
               </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.celerBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{
-                      $t('bridge.celerBridge.text', {
-                        cbridgeNetworkName,
-                      })
-                    }}
-                  </span>
-                </div>
+            </div>
+            <div class="row--bridge-title">
+              <div class="text--bridge-tag">
+                <q-chip outline>
+                  {{ $t('bridge.celerBridge.tag') }}
+                </q-chip>
               </div>
-            </a>
+              <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
+              <div class="box--text-bridge">
+                <span class="text--bridge">
+                  {{
+                    $t('bridge.celerBridge.text', {
+                      cbridgeNetworkName,
+                    })
+                  }}
+                </span>
+              </div>
+            </div>
           </button>
+          <p v-if="!celerBridgeEnabled" class="text--bridge-details">
+            {{ $t('bridge.celerBridge.warning') }}
+          </p>
         </div>
       </div>
     </div>
@@ -199,21 +199,20 @@ import {
 } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
 import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
+import {
+  celerBridgeEnabled,
+  layerSwapBridgeEnabled,
+  nativeBridgeEnabled,
+  layerZeroBridgeEnabled,
+} from 'src/features';
+import { navigateInNewTab } from 'src/util-general';
 
 export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const {
-      isZkEvm,
-      networkNameSubstrate,
-      isMainnet,
-      isZkyoto,
-      isAstarZkEvm,
-      isAstar,
-      isH160,
-      isBridgeMaintenanceMode,
-    } = useNetworkInfo();
+    const { isZkEvm, networkNameSubstrate, isMainnet, isZkyoto, isAstarZkEvm, isAstar, isH160 } =
+      useNetworkInfo();
 
     const l1Name = computed<string>(() => {
       return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
@@ -227,12 +226,7 @@ export default defineComponent({
       return !isZkEvm.value && isMainnet.value ? networkNameSubstrate.value : 'Astar';
     });
 
-    const isEnableEthBridge = computed<boolean>(() => {
-      if (!isZkEvm.value) {
-        return false;
-      }
-      return true;
-    });
+    const isEnableEthBridge = computed<boolean>(() => isZkEvm.value && nativeBridgeEnabled);
 
     const isEnableLzBridge = computed<boolean>(() => {
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
@@ -243,16 +237,21 @@ export default defineComponent({
       cbridgeAppLink,
       RoutePath,
       isEnableEthBridge,
+      isZkEvm,
       l1Name,
       l2Name,
       cbridgeNetworkName,
-      buildEthereumBridgePageLink,
-      buildLzBridgePageLink,
       layerSwapLink,
       zKatanaBridgeUrl,
       isZkyoto,
       isEnableLzBridge,
-      isBridgeMaintenanceMode,
+      celerBridgeEnabled,
+      layerSwapBridgeEnabled,
+      nativeBridgeEnabled,
+      layerZeroBridgeEnabled,
+      buildEthereumBridgePageLink,
+      buildLzBridgePageLink,
+      navigateInNewTab,
     };
   },
 });

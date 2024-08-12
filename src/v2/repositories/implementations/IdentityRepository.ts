@@ -1,5 +1,5 @@
-import { Data, Option } from '@polkadot/types';
-import { PalletIdentityIdentityInfo, PalletIdentityRegistration } from '@polkadot/types/lookup';
+import { Data, Option, Tuple, u128 } from '@polkadot/types';
+import { PalletIdentityIdentityInfo, PalletIdentityRegistration } from 'src/v2/models';
 import { IdentityInfoAdditional } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
@@ -18,8 +18,8 @@ export class IdentityRepository implements IIdentityRepository {
     const api = await this.api.getApi();
 
     const [basic, field] = await Promise.all([
-      api.consts.identity.basicDeposit.toBigInt(),
-      api.consts.identity.fieldDeposit.toBigInt(),
+      (<u128>api.consts.identity.basicDeposit).toBigInt(),
+      (<u128>api.consts.identity.fieldDeposit).toBigInt(),
     ]);
 
     return {
@@ -35,14 +35,14 @@ export class IdentityRepository implements IIdentityRepository {
     if (!api.query.identity) {
       return undefined;
     }
-
-    const result = await api.query.identity.identityOf<Option<PalletIdentityRegistration>>(address);
+    const result = await api.query.identity.identityOf<Option<Tuple>>(address);
 
     if (result.isNone) {
       return undefined;
     }
 
-    const identity = result.unwrapOrDefault();
+    const unwrappedResult = result.unwrapOrDefault();
+    const identity = <PalletIdentityRegistration>unwrappedResult[0];
     const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
     identity.info.additional.forEach((x) => {
       // Seems dirty. The problem here is that some raw data is treated as ASCII and some as bytes

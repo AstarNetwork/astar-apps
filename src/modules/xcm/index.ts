@@ -393,6 +393,11 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: true,
       isRestrictedFromEvm: true,
     },
+    {
+      chain: Chain.BIFROST_POLKADOT,
+      isRestrictedFromNative: true,
+      isRestrictedFromEvm: true,
+    },
   ],
   [astarChain.SHIDEN]: [
     {

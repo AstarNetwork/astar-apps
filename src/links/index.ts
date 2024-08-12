@@ -39,11 +39,11 @@ export const deepLink = {
 };
 
 // Memo: use for debugging
-// export const devOrigin = 'http://localhost:8080';
+export const devOrigin = 'http://localhost:8080';
 export const stagingOrigin = 'https://staging.portal.astar.network';
-export const productionOrigin = 'https://portal.astar.network';
+// export const productionOrigin = 'https://portal.astar.network';
 // Memo: for debugging
-// export const productionOrigin = devOrigin;
+export const productionOrigin = devOrigin;
 
 export const polkasafeUrl = 'https://app.polkasafe.xyz';
 

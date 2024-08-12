@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { injectable } from 'inversify';
-import { ITokenApiRepository, PeriodData } from '../ITokenApiRepository';
+import { BurnEvent, ITokenApiRepository, PeriodData } from '../ITokenApiRepository';
 
 @injectable()
 export class TokenApiRepository implements ITokenApiRepository {
@@ -25,6 +25,23 @@ export class TokenApiRepository implements ITokenApiRepository {
           dappAddress: data.dappAddress,
           stakeAmount: BigInt(data.stakeAmount),
           rewardAmount: BigInt(data.rewardAmount),
+        };
+      });
+    } catch (error) {
+      return [];
+    }
+  }
+
+  public async getBurnEvents(network: string): Promise<BurnEvent[]> {
+    try {
+      const url = `${TokenApiRepository.BaseUrl}/v1/${network}/burn/events`;
+      const response = await axios.get<BurnEvent[]>(url);
+      return response.data.map((data) => {
+        return {
+          blockNumber: data.blockNumber,
+          timestamp: data.timestamp,
+          amount: BigInt(data.amount),
+          user: data.user,
         };
       });
     } catch (error) {

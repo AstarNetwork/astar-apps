@@ -88,12 +88,12 @@ export default defineComponent({
     const numberFromPercentage = (value?: number): number | string =>
       value !== undefined ? value * 100 : '--';
 
-    const adjustableStakersPercentage = computed<number>(() =>
-      Number(
-        (
-          realizedAdjustableStakersPart.value / inflationParameters.value.adjustableStakersPart
-        ).toFixed(3)
-      )
+    const adjustableStakersPercentage = computed<number>(
+      () =>
+        Math.round(
+          (realizedAdjustableStakersPart.value / inflationParameters.value.adjustableStakersPart) *
+            100
+        ) / 100
     );
 
     watch(

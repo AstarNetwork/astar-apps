@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import { titleFormatter, seriesFormatter } from 'src/modules/token-api';
@@ -43,11 +43,16 @@ export default defineComponent({
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
     const { t } = useI18n();
-    const { maximumInflationData, realizedInflationData, estimatedInflation, inflationParameters } =
-      useInflation();
+    const {
+      maximumInflationData,
+      realizedInflationData,
+      estimatedInflation,
+      inflationParameters,
+      estimateRealizedInflation,
+    } = useInflation();
 
     const maximumInflationRate = computed<string>(() =>
-      (inflationParameters.value.maxInflationRate * 100).toFixed(1)
+      ((inflationParameters.value?.maxInflationRate ?? 0) * 100).toFixed(1)
     );
 
     Highcharts.setOptions({
@@ -152,6 +157,10 @@ export default defineComponent({
       } else {
         hasData.value = false;
       }
+    });
+
+    onMounted(() => {
+      estimateRealizedInflation();
     });
 
     return {
