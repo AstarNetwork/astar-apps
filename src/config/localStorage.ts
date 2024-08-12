@@ -22,6 +22,7 @@ export enum LOCAL_STORAGE {
   MULTISIG = 'multisig',
   CLOSE_DAPP_STAKING_V3_ONBOARDING = 'closeDappStakingV3Onboarding',
   DECOMMISSION = 'decommission',
+  HAS_RAW_METADATA_V15 = 'hasRawMetadataV15',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser
