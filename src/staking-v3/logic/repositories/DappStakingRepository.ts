@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,

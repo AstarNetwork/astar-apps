@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   ASTAR_DECIMALS,
   ASTAR_SS58_FORMAT,
@@ -493,7 +492,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
       const selectedEndpointStored = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT));
       const selectedEndpoint = JSON.parse(selectedEndpointStored);
-      const astarEndpoint = selectedEndpoint && Object.values(selectedEndpoint)[0];
+      const astarEndpoint = (selectedEndpoint && Object.values(selectedEndpoint)[0]) as string;
       const isAstarChains =
         srcChain.value.name.toLowerCase().includes('astar') ||
         srcChain.value.name.toLowerCase().includes('shiden');

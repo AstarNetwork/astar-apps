@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { Signer } from '@polkadot/types/types';
