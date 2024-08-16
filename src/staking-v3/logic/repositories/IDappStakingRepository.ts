@@ -84,7 +84,7 @@ export interface IDappStakingRepository {
    * @param contractAddress Address of the contract to be staked to.
    * @param amount Staking amount.
    */
-  getStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
+  getStakeCall(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload>;
 
   /**
    * Gets unstake call.

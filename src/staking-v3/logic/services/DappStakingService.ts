@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import {
+  BonusRewards,
   CombinedDappInfo,
   DappInfo,
   DappStakeInfo,
@@ -323,10 +324,10 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   // @inheritdoc
-  public async getBonusRewards(senderAddress: string): Promise<bigint> {
+  public async getBonusRewards(senderAddress: string): Promise<BonusRewards> {
     const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
 
-    return result.rewards;
+    return result;
   }
 
   public async claimBonusRewards(senderAddress: string, successMessage: string): Promise<void> {
@@ -378,11 +379,13 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   ): Promise<ExtrinsicPayload[] | undefined> {
     const result = await this.getBonusRewardsAndContractsToClaim(senderAddress);
 
-    if (result.contractsToClaim.length === 0) {
+    if (result.contractsToClaim.size === 0) {
       return undefined;
     }
 
-    return await this.dappStakingRepository.getClaimBonusRewardsCalls(result.contractsToClaim);
+    return await this.dappStakingRepository.getClaimBonusRewardsCalls([
+      ...result.contractsToClaim.keys(),
+    ]);
   }
 
   // @inheritdoc
@@ -489,10 +492,8 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     return expiredEntries > 0;
   }
 
-  private async getBonusRewardsAndContractsToClaim(
-    senderAddress: string
-  ): Promise<{ rewards: bigint; contractsToClaim: string[] }> {
-    let result = { rewards: BigInt(0), contractsToClaim: Array<string>() };
+  private async getBonusRewardsAndContractsToClaim(senderAddress: string): Promise<BonusRewards> {
+    let result = { amount: BigInt(0), contractsToClaim: new Map<string, bigint>() };
     const [stakerInfo, protocolState, constants] = await Promise.all([
       this.dappStakingRepository.getStakerInfo(senderAddress, true),
       this.dappStakingRepository.getProtocolState(),
@@ -511,9 +512,10 @@ export class DappStakingService extends SignerService implements IDappStakingSer
       ) {
         const periodEndInfo = await this.dappStakingRepository.getPeriodEndInfo(info.staked.period);
         if (periodEndInfo) {
-          result.rewards +=
+          const reward =
             (info.staked.voting * periodEndInfo.bonusRewardPool) / periodEndInfo.totalVpStake;
-          result.contractsToClaim.push(contract);
+          result.amount += reward;
+          result.contractsToClaim.set(contract, reward);
         } else {
           throw `Period end info not found for period ${info.staked.period}.`;
         }

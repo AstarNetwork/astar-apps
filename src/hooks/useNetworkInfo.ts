@@ -112,10 +112,6 @@ export function useNetworkInfo() {
       : shibuya;
   });
 
-  const isBridgeMaintenanceMode = computed<boolean>(() => {
-    return false;
-  });
-
   return {
     isMainnet,
     currentNetworkChain,
@@ -133,6 +129,5 @@ export function useNetworkInfo() {
     dappStakingCurrency,
     isH160,
     nativeTokenImg,
-    isBridgeMaintenanceMode,
   };
 }

@@ -1,5 +1,5 @@
 import type { Enum, Struct, u32, u64, u128, Vec } from '@polkadot/types';
-import type { ITuple } from '@polkadot/types-codec/types';
+import type { ITuple } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { XcmTokenInformation } from 'src/modules/xcm';
