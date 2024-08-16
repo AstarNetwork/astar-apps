@@ -48,7 +48,7 @@ export class AccountLedgerChangedMessage {
 export interface DappStakeInfo {
   id: number;
   address: string;
-  amount: number;
+  amount: bigint;
 }
 
 /**
@@ -224,6 +224,11 @@ export interface StakerRewards {
   eraCount: number;
 }
 
+export type BonusRewards = {
+  amount: bigint;
+  contractsToClaim: Map<string, bigint>;
+};
+
 export type DappVote = {
   name: string;
   address: string;
@@ -275,4 +280,10 @@ export interface CommunityDefinition extends Community {
   iconName: SocialIcon;
   label: string;
   validateHandle?: (v: string) => boolean | string;
+}
+
+export enum ClaimType {
+  Staker,
+  Bonus,
+  Both,
 }

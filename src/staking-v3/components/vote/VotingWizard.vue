@@ -55,10 +55,19 @@
         v-if="selectedStepIndex === Steps.Review"
         :dapps="selectedDapps.filter((dapp) => dapp.amount > 0)"
         :total-stake-amount="stakeInfo.totalStakedAmount"
-        :on-confirm="handleConfirm"
+        :on-confirm="handleConfirmAndRestake"
         :on-go-back="handleGoBackToAmount"
       />
     </div>
+
+    <Teleport to="#app--main">
+      <modal-restake
+        :show="showRestakeModal"
+        :set-is-open="setShowRestakeModal"
+        :rewards="totalStakerRewards"
+        :on-confirm="handleRestakeConfirm"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -67,13 +76,14 @@ import { defineComponent, ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { WizardItem } from './types';
 import { DappVote, mapToDappVote } from '../../logic';
-import { useSelectableComponent, useVote, useDapps } from 'src/staking-v3/hooks';
+import { useSelectableComponent, useVote, useDapps, useDappStaking } from 'src/staking-v3/hooks';
 import ChooseAmountsPanel, { StakeInfo } from './enter-amount/ChooseAmountsPanel.vue';
 import ReviewPanel from './review/ReviewPanel.vue';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import WizardSteps from './WizardSteps.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
 import DappIcon from './DappIcon.vue';
+import ModalRestake from './re-stake/ModalRestake.vue';
 import { useNetworkInfo } from 'src/hooks';
 
 enum Steps {
@@ -90,6 +100,7 @@ export default defineComponent({
     ReviewPanel,
     TokenBalanceNative,
     DappIcon,
+    ModalRestake,
   },
   props: {
     stakeToAddress: {
@@ -116,6 +127,7 @@ export default defineComponent({
     const selectedDapps = ref<DappVote[]>([]);
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
+    const showRestakeModal = ref<boolean>(false);
     const wizard = ref();
     const {
       totalStakeAmount,
@@ -136,6 +148,8 @@ export default defineComponent({
           [Steps.Review, isConfirmed.value],
         ])
     );
+
+    const { totalStakerRewards, stakerInfo } = useDappStaking();
 
     const stakeInfo = computed<StakeInfo>(() => ({
       totalStakedAmount: totalStakeAmount.value,
@@ -167,6 +181,10 @@ export default defineComponent({
       },
     ];
 
+    const setShowRestakeModal = (isOpen: boolean): void => {
+      showRestakeModal.value = isOpen;
+    };
+
     const scrollToWizardTop = (): void => {
       if (wizard.value) {
         wizard.value.scrollIntoView({ behavior: 'smooth' });
@@ -192,11 +210,23 @@ export default defineComponent({
       isConfirmed.value = false;
     };
 
-    const handleConfirm = async (): Promise<void> => {
+    const handleConfirmAndRestake = async (): Promise<void> => {
+      if (totalStakerRewards.value > BigInt(0) && stakerInfo.value.size > 0) {
+        setShowRestakeModal(true);
+      } else {
+        await handleConfirm(false);
+      }
+    };
+
+    const handleConfirm = async (restake: boolean): Promise<void> => {
       scrollToWizardTop();
       isConfirmed.value = true;
-      await vote();
+      await vote(restake);
       reset();
+    };
+
+    const handleRestakeConfirm = async (restake: boolean): Promise<void> => {
+      await handleConfirm(restake);
     };
 
     const handleVoteAmountChanged = (dapp: DappVote, amount: number): void => {
@@ -248,17 +278,21 @@ export default defineComponent({
       dappToMoveTokensFrom,
       availableToMoveFrom,
       nativeTokenImg,
+      showRestakeModal,
+      totalStakerRewards,
       canVote,
       vote,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
       handleVoteAmountChanged,
       handleAmountsEntered,
-      handleConfirm,
+      handleConfirmAndRestake,
       handleRemoveDapp,
       handleGoBackToDapps,
       handleGoBackToAmount,
       scrollToWizardTop,
+      setShowRestakeModal,
+      handleRestakeConfirm,
     };
   },
 });

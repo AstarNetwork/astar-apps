@@ -364,7 +364,8 @@ export function useDappStaking() {
 
     if (currentAccount.value) {
       staker = await stakingV3service.getStakerRewards(currentAccount.value);
-      bonus = await stakingV3service.getBonusRewards(currentAccount.value);
+      const bonusRewards = await stakingV3service.getBonusRewards(currentAccount.value);
+      bonus = bonusRewards.amount;
 
       if (ownedContracts.length > 0) {
         for await (const ownedContractAddress of ownedContracts) {
@@ -436,8 +437,8 @@ export function useDappStaking() {
     let stakeSum = BigInt(0);
 
     for (const stake of stakes) {
-      const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
-      stakeSum += stakeAmount;
+      // const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
+      stakeSum += stake.amount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
       } else if (isZkEvm.value) {

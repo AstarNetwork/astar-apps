@@ -45,13 +45,7 @@
               </div>
             </div>
             <div>
-              <astar-button
-                :disabled="!hasStakerRewards"
-                :height="32"
-                :width="100"
-                @click="claimStakerRewards()"
-                >{{ $t('stakingV3.claim') }}</astar-button
-              >
+              <claim-and-restake-button :claim-type="ClaimType.Staker" />
             </div>
           </div>
           <div class="rewards-row">
@@ -62,13 +56,7 @@
               </div>
             </div>
             <div>
-              <astar-button
-                :disabled="!hasBonusRewards"
-                :height="32"
-                :width="100"
-                @click="claimBonusRewards()"
-                >{{ $t('stakingV3.claim') }}</astar-button
-              >
+              <claim-and-restake-button :claim-type="ClaimType.Bonus" />
             </div>
           </div>
         </div>
@@ -79,24 +67,18 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from 'vue';
+import { ethers } from 'ethers';
 import { truncate } from '@astar-network/astar-sdk-core';
-import { PeriodType } from 'src/staking-v3/logic';
+import { PeriodType, ClaimType } from 'src/staking-v3/logic';
 import { useAprV3, useDappStaking, useDappStakingNavigation, usePeriod } from '../hooks';
 import GradientKpi from './GradientKpi.vue';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import { ethers } from 'ethers';
+import ClaimAndRestakeButton from './ClaimAndRestakeButton.vue';
 
 export default defineComponent({
-  components: { GradientKpi, TokenBalanceNative },
+  components: { GradientKpi, TokenBalanceNative, ClaimAndRestakeButton },
   setup() {
-    const {
-      protocolState,
-      rewards,
-      hasStakerRewards,
-      hasBonusRewards,
-      claimStakerRewards,
-      claimBonusRewards,
-    } = useDappStaking();
+    const { protocolState, rewards } = useDappStaking();
     const { navigateToAssets } = useDappStakingNavigation();
     const { remainingEras } = usePeriod();
     const { stakerApr, bonusApr, getEstimatedBonus } = useAprV3({ isWatch: true });
@@ -119,17 +101,14 @@ export default defineComponent({
 
     return {
       PeriodType,
+      ClaimType,
       protocolState,
       remainingEras,
       stakerApr,
       bonusApr,
       rewards,
       bonusToDisplay,
-      hasStakerRewards,
-      hasBonusRewards,
       formatApr,
-      claimStakerRewards,
-      claimBonusRewards,
       navigateToAssets,
     };
   },
@@ -175,7 +154,7 @@ export default defineComponent({
 .rewards-row {
   display: flex;
   width: 100%;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   font-size: 14px;
   gap: 16px;
