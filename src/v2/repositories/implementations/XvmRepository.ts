@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { BN, u8aToHex } from '@polkadot/util';

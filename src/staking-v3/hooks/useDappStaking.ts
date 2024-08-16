@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { $api } from 'boot/api';
 import { computed } from 'vue';
 import { container } from 'src/v2/common';
@@ -417,7 +416,7 @@ export function useDappStaking() {
     const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
     const constants = await stakingRepo.getConstants();
     constants.minStakeAmountToken = Number(
-      (constants.minStakeAmount ?? 0) / BigInt(10 ** decimal.value)
+      (constants.minStakeAmount ?? BigInt(0)) / BigInt(10 ** decimal.value)
     );
     store.commit('stakingV3/setConstants', constants);
   };

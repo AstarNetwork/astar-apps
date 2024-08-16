@@ -89,7 +89,7 @@ function useCall(addressRef: Ref<string>) {
     const vesting = results[1].unwrapOr(undefined)?.toArray() || [];
     const currentBlock = results[2];
     const vestedClaimable = results[3].vestedClaimable;
-    const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
+    const locks = <(PalletBalancesBalanceLock | BalanceLockTo212)[]>results[3].lockedBreakdown;
 
     const extendedVesting: ExtendedVestingInfo[] = [];
     vestedRef.value = new BN(0);
