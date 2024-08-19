@@ -933,6 +933,7 @@ export default {
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
     bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our ',
+    dappTierDescription: 'dApp tier and rank. Check our ',
     dAppsSlots: 'dApps slots',
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',
