@@ -215,12 +215,11 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getStakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
+  public async getStakeCall(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
-    const amountFormatted = this.getFormattedAmount(amount);
 
-    return api.tx.dappStaking.stake(getDappAddressEnum(contractAddress), amountFormatted);
+    return api.tx.dappStaking.stake(getDappAddressEnum(contractAddress), amount);
   }
 
   //* @inheritdoc

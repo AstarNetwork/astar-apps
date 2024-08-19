@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import '@polkadot/api-augment';
 import { Guard } from 'src/v2/common';
 import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';

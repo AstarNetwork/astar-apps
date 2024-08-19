@@ -5,7 +5,7 @@ import { IBalancesRepository, ITokenApiRepository, PeriodData } from 'src/v2/rep
 import { Symbols } from 'src/v2/symbols';
 import { useDapps } from './useDapps';
 import { DappState, IDappStakingRepository, IDappStakingService } from '../logic';
-import { PERIOD1_START_BLOCKS } from 'src/consts';
+import { PERIOD1_START_BLOCKS } from 'src/constants';
 import { useDappStaking } from './useDappStaking';
 import { useDataCalculations } from './useDataCalculations';
 import { ethers } from 'ethers';

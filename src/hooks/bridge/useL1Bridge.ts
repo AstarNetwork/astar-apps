@@ -23,6 +23,7 @@ import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
 import { Path } from 'src/router';
 import { useRouter } from 'vue-router';
+import { nativeBridgeEnabled } from 'src/features';
 
 const eth = {
   symbol: 'ETH',
@@ -80,7 +81,6 @@ export const useL1Bridge = () => {
   const { currentAccount } = useAccount();
   const { web3Provider, ethProvider } = useEthProvider();
   const router = useRouter();
-  const { isBridgeMaintenanceMode } = useNetworkInfo();
 
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const fromChainId = computed<number>(
@@ -423,7 +423,7 @@ export const useL1Bridge = () => {
 
   // Memo: the app goes to assets page if users access to the bridge page by inputting URL directly
   watchEffect(() => {
-    if (isBridgeMaintenanceMode.value) {
+    if (!nativeBridgeEnabled) {
       router.push(Path.Assets);
     }
   });

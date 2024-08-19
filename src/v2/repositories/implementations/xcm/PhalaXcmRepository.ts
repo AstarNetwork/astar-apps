@@ -1,5 +1,5 @@
 import { BN } from '@polkadot/util';
-import { Option } from '@polkadot/types-codec';
+import { Option } from '@polkadot/types';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';

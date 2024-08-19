@@ -6,6 +6,7 @@ import type {
   InjectedMetadataKnown,
   MetadataDef,
 } from '@polkadot/extension-inject/types';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 interface ExtensionKnown {
   extension: InjectedExtension;
@@ -75,6 +76,7 @@ function filterAll(api: ApiPromise, all: ExtensionKnown[]): Extensions {
       // Memo: Talisman and Mathwallet return null
       const current = info.known.find(({ genesisHash }) => api.genesisHash.eq(genesisHash)) || null;
       const isUpgradable =
+        !Boolean(localStorage.getItem(LOCAL_STORAGE.HAS_RAW_METADATA_V15)) ||
         (current && api.runtimeVersion.specVersion.gtn(current.specVersion)) ||
         !hasCurrentProperties(api, info);
 
@@ -112,6 +114,8 @@ async function getExtensionInfo(
           if (isOk) {
             saveProperties(api, extension);
           }
+
+          localStorage.setItem(LOCAL_STORAGE.HAS_RAW_METADATA_V15, 'true');
         } catch (error) {
           // ignore
           console.error('e', error);
