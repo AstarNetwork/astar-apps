@@ -127,13 +127,12 @@ export interface PalletDappStakingV3ContractStakeAmount extends Struct {
 }
 
 export interface PalletDappStakingV3TiersConfiguration extends Struct {
-  readonly numberOfSlots: Compact<u16>;
   readonly slotsPerTier: Vec<u16>;
   readonly rewardPortion: Vec<Permill>;
-  readonly tierThresholds: Vec<PalletDappStakingV3TierThreshold>;
+  readonly tierThresholds: Vec<PalletDappStakingV3TierThreshold> | Vec<u128>;
 }
 
-interface PalletDappStakingV3TierThreshold extends Enum {
+export interface PalletDappStakingV3TierThreshold extends Enum {
   readonly isFixedTvlAmount: boolean;
   readonly asFixedTvlAmount: {
     readonly amount: u128;

@@ -1,4 +1,9 @@
-import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
+import {
+  TOKEN_API_URL,
+  ExtrinsicPayload,
+  getDappAddressEnum,
+  hasProperty,
+} from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
   AccountLedgerChangedMessage,
@@ -38,6 +43,7 @@ import {
   PalletDappStakingV3SingularStakingInfo,
   PalletDappStakingV3StakeAmount,
   PalletDappStakingV3TiersConfiguration,
+  PalletDappStakingV3TierThreshold,
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
@@ -517,21 +523,22 @@ export class DappStakingRepository implements IDappStakingRepository {
       await api.query.dappStaking.tierConfig<PalletDappStakingV3TiersConfiguration>();
 
     return {
-      numberOfSlots: configuration.numberOfSlots.toNumber(),
+      numberOfSlots: configuration.slotsPerTier.reduce((acc, val) => acc + val.toNumber(), 0),
       slotsPerTier: configuration.slotsPerTier.map((slot) => slot.toNumber()),
       rewardPortion: configuration.rewardPortion.map((portion) => portion.toNumber() / 1_000_000),
-      tierThresholds: configuration.tierThresholds.map((threshold) =>
-        threshold.isDynamicTvlAmount
-          ? {
-              type: TvlAmountType.DynamicTvlAmount,
-              amount: threshold.asDynamicTvlAmount.amount.toBigInt(),
-              minimumAmount: threshold.asDynamicTvlAmount.minimumAmount.toBigInt(),
-            }
-          : {
-              type: TvlAmountType.FixedTvlAmount,
-              amount: threshold.asFixedTvlAmount.amount.toBigInt(),
-            }
-      ),
+      tierThresholds: configuration.tierThresholds.map((threshold) => {
+        if (!hasProperty(threshold, 'isUnsigned')) {
+          const t = <PalletDappStakingV3TierThreshold>threshold;
+          if (t.isDynamicTvlAmount) {
+            return t.asDynamicTvlAmount.amount.toBigInt();
+          } else {
+            return t.asFixedTvlAmount.amount.toBigInt();
+          }
+        } else {
+          const t = <u128>threshold;
+          return t.toBigInt();
+        }
+      }),
     };
   }
 
