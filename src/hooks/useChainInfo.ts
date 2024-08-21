@@ -53,9 +53,10 @@ export function useChainInfo(api: ApiPromise) {
     const specName: string = api.runtimeVersion.specName.toString();
     const systemChain: string = ((await api.rpc.system.chain()) || '<unknown>').toString();
     let info = createInfo(api, systemChain, specName);
+    chainInfo.value = info;
+
     const metadata = await api.call.metadata.metadataAtVersion(15);
     info.rawMetadata = metadata.toHex();
-
     chainInfo.value = info;
   });
 
