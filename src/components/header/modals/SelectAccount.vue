@@ -91,7 +91,6 @@ import {
   wait,
 } from '@astar-network/astar-sdk-core';
 import { ApiPromise } from '@polkadot/api';
-import { Ledger } from '@polkadot/hw-ledger';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
@@ -172,8 +171,6 @@ export default defineComponent({
     const substrateAccountsAll = computed<SubstrateAccount[]>(
       () => store.getters['general/substrateAccounts']
     );
-
-    const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
     const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -303,7 +300,6 @@ export default defineComponent({
       isShowBalance,
       currentNetworkChain,
       astarChain,
-      isLedger,
       displayBalance,
       backModal,
       isClosing,

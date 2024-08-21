@@ -59,7 +59,6 @@ export interface GeneralStateInterface {
   currentNetworkIdx: number;
   isEthWallet: boolean;
   isH160Formatted: boolean;
-  isLedger: boolean;
   currentEcdsaAccount: EcdsaAccount;
   currentAddress: string;
   currentTheme: Theme;
@@ -93,7 +92,6 @@ function state(): GeneralStateInterface {
     currentNetworkIdx: endpointKey.ASTAR,
     isEthWallet: false,
     isH160Formatted: false,
-    isLedger: localStorage.getItem(LOCAL_STORAGE.IS_LEDGER) === 'true',
     currentEcdsaAccount: {
       ethereum: '',
       ss58: '',

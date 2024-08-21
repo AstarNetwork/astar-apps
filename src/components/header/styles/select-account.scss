@@ -35,18 +35,6 @@
   justify-content: flex-end;
 }
 
-.text--is-ledger {
-  font-weight: 600;
-  font-size: 13px;
-  color: $gray-5;
-}
-
-.row--ledger-check {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .box--account {
   width: 100%;
   display: flex;
@@ -279,10 +267,6 @@
 
   .row--back {
     color: $gray-3;
-  }
-
-  .text--is-ledger {
-    color: $gray-1;
   }
 
   .wrapper--account-detail {
