@@ -51,7 +51,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   public async getDapps(
     network: string
   ): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }> {
-    Guard.ThrowIfUndefined(network, 'network');
+    Guard.ThrowIfUndefined('network', network);
 
     const [storeDapps, chainDapps, tokenApiDapps] = await Promise.all([
       this.dappStakingRepository.getDapps(network.toLowerCase()),
