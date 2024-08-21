@@ -527,6 +527,9 @@ export class DappStakingRepository implements IDappStakingRepository {
       slotsPerTier: configuration.slotsPerTier.map((slot) => slot.toNumber()),
       rewardPortion: configuration.rewardPortion.map((portion) => portion.toNumber() / 1_000_000),
       tierThresholds: configuration.tierThresholds.map((threshold) => {
+        // Support both u128 and PalletDappStakingV3TierThreshold.
+        // If threshold has isUnsigned property it's u128.
+        // memo: remove isUnsigned check when u128 is used for all thresholds. Most likely in Astar period 003.
         if (!hasProperty(threshold, 'isUnsigned')) {
           const t = <PalletDappStakingV3TierThreshold>threshold;
           if (t.isDynamicTvlAmount) {
