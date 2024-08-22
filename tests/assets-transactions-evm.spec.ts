@@ -4,7 +4,6 @@ import { test } from './fixtures';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
-  ALICE_ADDRESS,
   ALICE_EVM_ADDRESS,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
@@ -20,7 +19,7 @@ import {
   changeNetworkOnEVM,
 } from './common';
 import { ApiPromise } from '@polkadot/api';
-import { chainDecimals, getApi, getBalance } from './common-api';
+import { getApi, getBalance } from './common-api';
 
 let api: ApiPromise;
 test.beforeAll(async () => {
@@ -36,6 +35,7 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await clickDisclaimerButton(page);
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
+  await page.getByTestId('Polkadot.js').click();
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
@@ -63,7 +63,7 @@ test.describe('account panel', () => {
     page.getByTestId('transfer-link-button').click();
     const faucetAmount = BigInt(200);
     await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(faucetAmount.toString());
+    await page.getByPlaceholder('0').fill(faucetAmount.toString());
     await page.locator('.box--warning label').check();
     await page.getByRole('button', { name: 'Confirm' }).click();
     await signTransaction(context);
@@ -90,18 +90,18 @@ test.describe('account panel', () => {
     const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
     const overTransferAmount = bobBalanceBeforeTransaction + baseTransferAmount;
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(overTransferAmount.toString());
+    await page.getByPlaceholder('0').fill(overTransferAmount.toString());
     await expect(page.getByText('the funds will likely be lost')).toBeVisible();
     await expect(page.getByText('Insufficient')).toBeVisible();
 
     // Invalid destination address
     await page.getByPlaceholder('Destination Address').fill('invalid address');
-    await page.getByPlaceholder('0.0').fill('0');
+    await page.getByPlaceholder('0').fill('0');
     await expect(page.getByText('Inputted invalid destination address')).toBeVisible();
 
     // transfer alice_evm to native
     await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
-    await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
+    await page.getByPlaceholder('0').fill(baseTransferAmount.toString());
     await page.locator('.box--warning label').check();
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled();
 
