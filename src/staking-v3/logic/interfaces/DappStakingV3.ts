@@ -1,5 +1,5 @@
 import { Balance } from '@astar-network/metamask-astar-types';
-import { AccountId32, Permill } from '@polkadot/types/interfaces';
+import { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces';
 import {
   BTreeMap,
   Compact,
@@ -126,10 +126,16 @@ export interface PalletDappStakingV3ContractStakeAmount extends Struct {
   readonly tierLabel: Option<PalletDappStakingV3TierLabel>;
 }
 
-export interface PalletDappStakingV3TiersConfiguration extends Struct {
+export interface PalletDappStakingV3TiersConfigurationLegacy extends Struct {
   readonly slotsPerTier: Vec<u16>;
   readonly rewardPortion: Vec<Permill>;
-  readonly tierThresholds: Vec<PalletDappStakingV3TierThreshold> | Vec<u128>;
+  readonly tierThresholds: Vec<PalletDappStakingV3TierThreshold>;
+}
+
+export interface PalletDappStakingV3TiersConfiguration extends Struct {
+  readonly slotsPerTier: Vec<u16>;
+  readonly rewardPortion: Vec<Perbill>;
+  readonly tierThresholds: Vec<u128>;
 }
 
 export interface PalletDappStakingV3TierThreshold extends Enum {

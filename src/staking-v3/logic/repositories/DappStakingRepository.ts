@@ -1,9 +1,4 @@
-import {
-  TOKEN_API_URL,
-  ExtrinsicPayload,
-  getDappAddressEnum,
-  hasProperty,
-} from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import {
   AccountLedger,
   AccountLedgerChangedMessage,
@@ -25,7 +20,6 @@ import {
   SingularStakingInfo,
   StakeAmount,
   TiersConfiguration,
-  TvlAmountType,
 } from '../models';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
@@ -43,11 +37,12 @@ import {
   PalletDappStakingV3SingularStakingInfo,
   PalletDappStakingV3StakeAmount,
   PalletDappStakingV3TiersConfiguration,
+  PalletDappStakingV3TiersConfigurationLegacy,
   PalletDappStakingV3TierThreshold,
   SmartContractAddress,
 } from '../interfaces';
 import { IEventAggregator } from 'src/v2/messaging';
-import { Option, StorageKey, u32, u128, Bytes } from '@polkadot/types';
+import { Option, StorageKey, u32, u128, Bytes, u16 } from '@polkadot/types';
 import { IDappStakingRepository } from './IDappStakingRepository';
 import { Guard } from 'src/v2/common';
 import { ethers } from 'ethers';
@@ -518,9 +513,20 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   public async getTiersConfiguration(): Promise<TiersConfiguration> {
+    const TIER_DERIVATION_PALLET_VERSION = 8;
     const api = await this.api.getApi();
-    const configuration =
-      await api.query.dappStaking.tierConfig<PalletDappStakingV3TiersConfiguration>();
+    const palletVersion = (await api.query.dappStaking.palletVersion<u16>()).toNumber();
+    let configuration:
+      | PalletDappStakingV3TiersConfiguration
+      | PalletDappStakingV3TiersConfigurationLegacy;
+
+    if (palletVersion >= TIER_DERIVATION_PALLET_VERSION) {
+      configuration =
+        await api.query.dappStaking.tierConfig<PalletDappStakingV3TiersConfiguration>();
+    } else {
+      configuration =
+        await api.query.dappStaking.tierConfig<PalletDappStakingV3TiersConfigurationLegacy>();
+    }
 
     return {
       numberOfSlots: configuration.slotsPerTier.reduce((acc, val) => acc + val.toNumber(), 0),
@@ -529,8 +535,8 @@ export class DappStakingRepository implements IDappStakingRepository {
       tierThresholds: configuration.tierThresholds.map((threshold) => {
         // Support both u128 and PalletDappStakingV3TierThreshold.
         // If threshold has isUnsigned property it's u128.
-        // memo: remove isUnsigned check when u128 is used for all thresholds. Most likely in Astar period 003.
-        if (!hasProperty(threshold, 'isUnsigned')) {
+        // TODO: remove palletVersion check when u128 is used for all thresholds. Most likely in Astar period 003.
+        if (palletVersion < TIER_DERIVATION_PALLET_VERSION) {
           const t = <PalletDappStakingV3TierThreshold>threshold;
           if (t.isDynamicTvlAmount) {
             return t.asDynamicTvlAmount.amount.toBigInt();
