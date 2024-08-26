@@ -67,8 +67,6 @@ export default {
     insufficientExistentialDeposit:
       '{network} ネットワークにある残高が existential depositi 以下です。',
     withdrawalNotSupport: '現在のところ {chain} への送金はサポートされていません。',
-    ledgerNotOpened:
-      'LedgerがAstarアプリを開いていません。アプリを開き、このページを更新してください。',
     claimRewards:
       'DApp ステーキング V3 は 2024 年初頭に登場します! 必ず報酬を受け取り、リリース日を楽しみにお待ちください。',
   },
@@ -167,7 +165,6 @@ export default {
         'Math Walletの拡張機能であなたのネットワークをShidenに切り替え、このページを更新してください。',
     },
     showBalance: '{token}の残高を表示する',
-    isLedgerAccount: 'これはLedgerアカウントです。Ledgerを接続し、Astar appが動いています。',
     multisig: {
       initPolkasafe: '署名要求のためにPolkaSafe SDKを初期化しています。しばらく時間がかかります。',
       noAccounts: 'マルチシグアカウントが見つかりません。',
@@ -282,14 +279,6 @@ export default {
     availableToClaimTip2:
       'ここに表示されているERA数はdAppごとのものです。未請求のERAが多すぎる場合は、複数回請求する必要があるかもしれません。',
     restakeTip: 'オンにすることで、クレーム時に報酬が自動的に再ステークされます。',
-    claimable: {
-      limitation: '1回の取引で請求できるERA数には制限があります。',
-      nativeWallets: 'Native wallets: ≒56 eras',
-      ledgerX: 'Ledger Nano X: 6 eras',
-      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
-      ledgerS: 'Ledger Nano S: 2 eras',
-      dcentWallet: "D'CENT Wallet: ≒28 eras",
-    },
     dappsOwners:
       'dAppsオーナー！私たちはあなたのキャンペーンを促進するお手伝いをします。ご確認ください。',
     dappsOwnersLink: '詳細はこちら',
@@ -538,8 +527,6 @@ export default {
       notSendToEvmExchanges:
         '私は取引所のEVM depositアドレスにトークンを送っていません。それをすると、資金が失われる可能性が高いことを理解しているからです。',
       understandWarning: 'その場合、資金が失われる可能性が高いことを理解しています。',
-      notDestIsLedgerAccount:
-        '宛先のアドレスは、Ledgerネイティブアカウントでも取引所アドレスでもありません。そうであったとすると、資金が失われる可能性が高いことを理解しているからです。',
       notDestIsExchangeAddress: '宛先アドレスが取引所アドレスではありません。',
       youWillReceive: 'あなたは受け取るでしょう。',
       faucetNextRequest: '次のリクエストまでの残り時間',

@@ -70,7 +70,6 @@ export default {
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
     withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
-    ledgerNotOpened: 'Ledger has not opened Astar App. Please open it and refresh this page.',
     claimRewards:
       'DApp Staking V3 is coming early 2024! Make sure to claim your rewards and stay tuned for the release date.',
     underDevelopmentShibuyaWarning:
@@ -202,7 +201,6 @@ export default {
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
     showBalance: 'Show {token} balance',
-    isLedgerAccount: 'This is a Ledger account, connected and running Astar app',
     switchWalletConnectNetwork: 'Please switch to {network} network in your wallet',
     multisig: {
       initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
@@ -320,15 +318,6 @@ export default {
       'The number of eras that is shown here is per dApp. You may need to claim multiple times if you have too many unclaimed eras.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
-    claimable: {
-      limitation:
-        'There is a limitation on the number of eras that can be claimed in one transaction.',
-      nativeWallets: 'Native wallets: ≒56 eras',
-      ledgerX: 'Ledger Nano X: 6 eras',
-      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
-      ledgerS: 'Ledger Nano S: 2 eras',
-      dcentWallet: "D'CENT Wallet: ≒28 eras",
-    },
     dappsOwners: 'DApps owners! We can now help to promote your campaign. Please check',
     dappsOwnersLink: 'the details.',
   },
@@ -580,8 +569,6 @@ export default {
       notSendToEvmExchanges:
         "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
       understandWarning: 'I understand that if I do so, the funds will likely be lost',
-      notDestIsLedgerAccount:
-        'The destination address is neither a ledger native account nor an exchange address. I understand that if I do so, the funds will likely be lost.',
       notDestIsExchangeAddress: 'Destination address is not an Exchange address',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
