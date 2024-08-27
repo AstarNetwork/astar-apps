@@ -26,7 +26,7 @@ test.beforeEach(async ({ page, context }) => {
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
   await page.goto('/astar/assets');
   await connectToNetwork(page);
-  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  await selectAccount(page, ALICE_ACCOUNT_NAME, context);
 });
 
 test.describe('Test case: XCM006', () => {

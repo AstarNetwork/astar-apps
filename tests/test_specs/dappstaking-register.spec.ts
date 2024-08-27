@@ -2,6 +2,8 @@ import { clickDisclaimerButton } from 'src/modules/playwright';
 import { BrowserContext, Page, expect } from '@playwright/test';
 import { test } from '../fixtures';
 import {
+  ALICE_ACCOUNT_NAME,
+  ALICE_ACCOUNT_SEED,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
   closePolkadotWelcomePopup,
@@ -21,11 +23,12 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   await polkadotJsButton.click();
 
   await closePolkadotWelcomePopup(context);
+  await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
   await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
   await page.goto('/astar/assets');
   await connectToNetwork(page);
   await page.waitForSelector('.four', { state: 'hidden' }); // Wait for the page to load
-  await selectAccount(page, BOB_ACCOUNT_NAME);
+  await selectAccount(page, BOB_ACCOUNT_NAME, context);
 });
 
 test.describe('register dApp page', () => {

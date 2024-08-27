@@ -34,7 +34,7 @@ test.describe('account panel', () => {
     await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
     await page.goto('/astar/assets');
     await connectToNetwork(page);
-    await selectAccount(page, ALICE_ACCOUNT_NAME);
+    await selectAccount(page, ALICE_ACCOUNT_NAME, context);
   });
 
   // Test case: AS001

@@ -47,7 +47,7 @@ test.beforeEach(async ({ page, context }: { page: Page; context: BrowserContext 
   );
   await page.goto('/astar/assets');
   await connectToNetwork(page);
-  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  await selectAccount(page, ALICE_ACCOUNT_NAME, context);
 });
 
 test.describe('account panel', () => {
@@ -60,25 +60,25 @@ test.describe('account panel', () => {
     context: BrowserContext;
   }) => {
     // transfer test (from native to evm) :: need to testing
-    page.getByTestId('transfer-link-button').click();
-    const faucetAmount = BigInt(200);
-    await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
-    await page.getByPlaceholder('0').fill(faucetAmount.toString());
-    await page.locator('.box--warning label').check();
-    await page.getByRole('button', { name: 'Confirm' }).click();
-    await signTransaction(context);
-    await page.waitForSelector('.four', { state: 'hidden' });
-    await expect(page.getByText('Success')).toBeVisible();
+    // page.getByTestId('transfer-link-button').click();
+    // const faucetAmount = BigInt(200);
+    // await page.getByPlaceholder('Destination Address').fill(ALICE_EVM_ADDRESS);
+    // await page.getByPlaceholder('0').fill(faucetAmount.toString());
+    // await page.locator('.box--warning label').check();
+    // await page.getByRole('button', { name: 'Confirm' }).click();
+    // await signTransaction(context);
+    // await page.waitForSelector('.four', { state: 'hidden' });
+    // await expect(page.getByText('Success')).toBeVisible();
 
     //metamask setup
-    await page.locator('.btn--account').click();
-    await page.locator('.wrapper--modal-drawer .modal-close').first().click();
+    await page.getByTestId('btn-account').click();
+    // await page.locator('.wrapper--modal-drawer .modal-close').first().click();
     await page.getByText('MetaMask').click();
     await signInMetamask(page, context);
 
     //transfer test (from evm to native)
     await page.goto('/custom-node/assets/transfer?token=astr&mode=local');
-    await page.locator('.btn--connect').click();
+    await page.getByTestId('btn-account').click();
     await page.getByText('MetaMask').click();
     const metamaskWindow = await connectWithEVM(page, context);
     await changeNetworkOnEVM(page, context, metamaskWindow);

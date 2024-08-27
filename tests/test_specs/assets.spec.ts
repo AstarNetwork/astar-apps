@@ -28,7 +28,7 @@ test.beforeEach(async ({ page, context }) => {
   await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
   await page.goto('/astar/assets');
   await connectToNetwork(page);
-  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  await selectAccount(page, ALICE_ACCOUNT_NAME, context);
 });
 
 test.describe('account panel', () => {
