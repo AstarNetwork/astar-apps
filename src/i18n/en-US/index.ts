@@ -856,7 +856,7 @@ export default {
     unlockingAmount: 'Unlocking amount',
     withdraw: 'Withdraw',
     relock: 'Re-lock',
-    currentTier: 'Current Tier',
+    currentTier: 'Current Tier / Rank',
     numberOfStakers: 'Number of stakers',
     totalEarned: 'Total Earned',
     yourDashboard: 'Your Dashboard',
@@ -920,6 +920,7 @@ export default {
       'Real time amount of tokens that are entitled to receive bonus rewards.',
     bonusPool: 'Bonus pool',
     bonusPoolDescription: 'Fixed bonus allocation from block rewards. Check our ',
+    dappTierDescription: 'dApp tier and rank. Check our ',
     dAppsSlots: 'dApps slots',
     dAppsSlotsDescription:
       'Number of project rewards for the slots filled by projects in the current era.',
