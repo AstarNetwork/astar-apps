@@ -1,5 +1,5 @@
 <template>
-  <div :class="`wrapper--kpi-card ${description !== '' ? 'flip' : ''}`">
+  <div :class="`wrapper--kpi-card ${description !== '' || $slots.description ? 'flip' : ''}`">
     <div class="card--inner">
       <div class="card--front">
         <div class="card__top">
@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="card--back">
-        <div>{{ description }}</div>
+        <slot name="description">{{ description }}</slot>
       </div>
     </div>
   </div>

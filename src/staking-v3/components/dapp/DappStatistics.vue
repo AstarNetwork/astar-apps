@@ -11,10 +11,27 @@
       </button>
 
       <kpi-card v-if="!small" :title="$t('dappStaking.dappPage.totalStaked')">
-        <format-balance :balance="dapp.chain.totalStake?.toString() || '0'" />
+        <format-balance
+          :balance="dapp.chain.totalStake?.toString() || '0'"
+          :show-token-unit="false"
+        />
+        <span class="unit">{{ defaultUnitToken }}</span>
       </kpi-card>
       <kpi-card v-if="!small" :title="$t('stakingV3.currentTier')">
-        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span>
+        <span>{{ getDappTier(dapp.chain.id) ?? '--' }}</span> /
+        <span>{{ getDappRank(dapp.chain.id) ?? '--' }}</span>
+        <template #description>
+          <span>
+            {{ $t('stakingV3.dappTierDescription') }}
+            <a
+              href="https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-protocol#tier-system"
+              target="_blank"
+              class="text--link"
+              rel="noopener noreferrer"
+              >{{ $t('common.docs') }}</a
+            >
+          </span>
+        </template>
       </kpi-card>
       <kpi-card v-if="!small" :title="$t('stakingV3.numberOfStakers')">
         <span>{{ dapp.dappDetails?.stakersCount ?? '--' }}</span>
@@ -29,7 +46,7 @@ import { defineComponent, PropType } from 'vue';
 import KpiCard from '../KpiCard.vue';
 import VoteStakeButtonBg from '../VoteStakeButtonBg.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
-import { useNetworkInfo } from 'src/hooks';
+import { useChainMetadata, useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -49,11 +66,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { getDappTier } = useDappStaking();
+    const { getDappTier, getDappRank } = useDappStaking();
     const { isZkEvm } = useNetworkInfo();
     const { navigateToVote } = useDappStakingNavigation();
+    const { defaultUnitToken } = useChainMetadata();
 
-    return { getDappTier, navigateToVote, isZkEvm };
+    return { getDappTier, getDappRank, navigateToVote, defaultUnitToken, isZkEvm };
   },
 });
 </script>
