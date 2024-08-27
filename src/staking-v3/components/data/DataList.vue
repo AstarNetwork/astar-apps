@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, onMounted } from 'vue';
 import { useDataCalculations } from 'src/staking-v3/hooks';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
@@ -154,7 +154,8 @@ export default defineComponent({
       numberOfStakersAndLockers,
       tokensToBeBurned,
     } = useDataCalculations();
-    const { activeInflationConfiguration, estimatedInflation } = useInflation();
+    const { activeInflationConfiguration, estimatedInflation, estimateRealizedInflation } =
+      useInflation();
 
     const totalDapps = computed<number>(() => registeredDapps.value?.length ?? 0);
     const tvl = computed<string>(() => (currentEraInfo.value?.totalLocked ?? BigInt(0)).toString());
@@ -181,6 +182,10 @@ export default defineComponent({
     const estimatedInflationFormatted = computed<string>(() =>
       estimatedInflation.value ? `${estimatedInflation.value.toFixed(2)} %` : '--'
     );
+
+    onMounted(() => {
+      estimateRealizedInflation();
+    });
 
     return {
       protocolState,
