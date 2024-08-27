@@ -172,13 +172,7 @@ export interface TiersConfiguration {
   readonly numberOfSlots: number;
   readonly slotsPerTier: number[];
   readonly rewardPortion: number[];
-  readonly tierThresholds: TierThreshold[];
-}
-
-interface TierThreshold {
-  readonly amount: BigInt;
-  readonly minimumAmount?: BigInt;
-  readonly type: TvlAmountType;
+  readonly tierThresholds: bigint[];
 }
 
 export interface InflationParam {

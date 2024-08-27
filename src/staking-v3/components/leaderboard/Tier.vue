@@ -13,7 +13,7 @@
           <div class="text--reward">{{ $t('stakingV3.threshold') }}</div>
           <div class="text--amount">
             <token-balance-native
-              :balance="tiersConfiguration?.tierThresholds[tier - 1]?.amount?.toString() ?? '0'"
+              :balance="tiersConfiguration?.tierThresholds[tier - 1]?.toString() ?? '0'"
               :decimals="0"
             />
           </div>
