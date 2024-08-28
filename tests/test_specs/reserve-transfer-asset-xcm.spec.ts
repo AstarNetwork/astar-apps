@@ -5,6 +5,8 @@ import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
   ALICE_ADDRESS,
+  BOB_ACCOUNT_NAME,
+  BOB_ACCOUNT_SEED,
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
@@ -12,6 +14,7 @@ import {
   signTransaction,
 } from '../common';
 import { chainDecimals, getBalance, roundUpAndTruncateBigInt } from '../common-api';
+import { wait } from '@astar-network/astar-sdk-core';
 
 test.beforeEach(async ({ page, context }) => {
   // TODO consider moving this into beforeAll
@@ -24,6 +27,7 @@ test.beforeEach(async ({ page, context }) => {
 
   await closePolkadotWelcomePopup(context);
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
+  await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
   await page.goto('/astar/assets');
   await connectToNetwork(page);
   await selectAccount(page, ALICE_ACCOUNT_NAME, context);
@@ -54,7 +58,7 @@ test.describe('Test case: XCM006', () => {
 
 test.describe('Test case: XCM003', () => {
   test('should transfer Alice ASTR tokens from Acala to Astar', async ({ page, context }) => {
-    const transferAmount = BigInt(900);
+    const transferAmount = BigInt(9);
     const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
 
     await page.getByTestId('transfer-link-button').click();
@@ -69,6 +73,8 @@ test.describe('Test case: XCM003', () => {
     await page.waitForSelector('.four', { state: 'hidden' });
 
     await expect(page.getByText('Success')).toBeVisible();
+    // getBalance happens to early.
+    await wait(2000);
     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
     const difference = await roundUpAndTruncateBigInt(
       aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction,
@@ -81,7 +87,7 @@ test.describe('Test case: XCM003', () => {
 test.describe('Test case: XCM004', () => {
   test('should transfer Alice ACA tokens from Astar to Acala', async ({ page, context }) => {
     const assetId = '18446744073709551616';
-    const transferAmount = BigInt(1000);
+    const transferAmount = BigInt(10);
     await page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
@@ -112,7 +118,7 @@ test.describe('Test case: XCM004', () => {
 test.describe('Test case: XCM001', () => {
   test('should transfer Alice ACA tokens from Acala to Astar', async ({ page, context }) => {
     const assetId = '18446744073709551616';
-    const transferAmount = BigInt(900);
+    const transferAmount = BigInt(9);
     await page.getByTestId('transfer-link-button').click();
     await page.getByText('Cross-chain Transfer').click();
 
@@ -130,6 +136,8 @@ test.describe('Test case: XCM001', () => {
     await page.waitForSelector('.four', { state: 'hidden' });
 
     await expect(page.getByText('Success')).toBeVisible();
+    // getBalance happens to early.
+    await wait(2000);
     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS, assetId);
     const difference = await roundUpAndTruncateBigInt(
       aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction,

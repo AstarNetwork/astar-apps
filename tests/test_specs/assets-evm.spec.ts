@@ -8,7 +8,7 @@ import {
 } from '../common';
 import { test } from '../fixtures';
 
-test.beforeEach(async ({ page, context, browser }) => {
+test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
 
   // memo Metamask tabs gots focus, switch to the portal tab

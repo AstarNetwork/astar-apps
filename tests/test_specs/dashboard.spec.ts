@@ -18,12 +18,12 @@ test.describe('on dashboard screen', () => {
     await expect(page).toHaveTitle(/Dashboard/);
   });
   test('DocsBot AI answers inputted questions', async ({ page }) => {
-    const widget = page.locator('.docsbot-chat-container');
+    const widget = page.locator('.docsbot-chat-message-container');
     const botButton = page.locator('.floating-button');
     await botButton.click();
-    await page.getByPlaceholder('Send a message...').fill('What is the decimals of ASTR token?');
+    await page.getByPlaceholder('Send a message...').fill('What is your name?');
     await page.locator('.docsbot-chat-btn-send').click();
-    await expect(widget.getByText('18')).toBeVisible();
+    await expect(widget.getByText('Astari')).toBeVisible();
   });
   test('Endpoint has been selected randomly', async ({ page }) => {
     const selectedEndpointObj: string = (await page.evaluate(() => {
