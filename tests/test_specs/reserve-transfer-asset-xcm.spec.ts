@@ -74,7 +74,7 @@ test.describe('Test case: XCM003', () => {
 
     await expect(page.getByText('Success')).toBeVisible();
     // getBalance happens to early.
-    await wait(2000);
+    await wait(5000);
     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS);
     const difference = await roundUpAndTruncateBigInt(
       aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction,
@@ -137,7 +137,7 @@ test.describe('Test case: XCM001', () => {
 
     await expect(page.getByText('Success')).toBeVisible();
     // getBalance happens to early.
-    await wait(2000);
+    await wait(5000);
     const aliceBalanceAfterTransaction = await getBalance(ALICE_ADDRESS, assetId);
     const difference = await roundUpAndTruncateBigInt(
       aliceBalanceAfterTransaction - aliceBalanceBeforeTransaction,
