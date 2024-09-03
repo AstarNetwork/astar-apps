@@ -5,7 +5,7 @@
         <div class="icon"><logo /></div>
       </template>
       <div v-if="!currentAccount">
-        <connect-button @click="clickAccountBtn" data-testid="select-account">
+        <connect-button data-testid="select-account" @click="clickAccountBtn">
           <astar-icon-wallet />
         </connect-button>
         <q-tooltip>
@@ -15,8 +15,8 @@
       <template v-else>
         <account-button
           :account="currentAccount"
-          @click="clickAccountBtn"
           data-testid="select-account"
+          @click="clickAccountBtn"
         />
       </template>
       <network-button @show-network="clickNetworkBtn" />

@@ -1,3 +1,5 @@
+const core = require('@actions/core');
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const spawn = (cmd) =>
   new Promise((resolve, reject) => {
@@ -38,10 +40,15 @@ async function run(nodeName, networkInfo, args) {
 
   // MEMO: for debugging specific test case
   // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' HEADLESS='true' npx playwright test test_specs/assets-evm.spec.ts --project=chromium`
   // );
 
-  return result?.includes('failed') || result?.includes('flaky') ? 1 : 0;
+  const runResult = result?.includes('failed') || result?.includes('flaky') ? 1 : 0;
+  if (runResult !== 0) {
+    core.setFailed('One or more playwright tests failed.');
+  }
+
+  return runResult;
 }
 
 module.exports = { run };
