@@ -6,7 +6,7 @@ const spawn = (cmd) =>
     const stdout = [];
     cp.stdout.on('data', (data) => {
       stdout.push(data.toString());
-      console.info(data.toString())
+      console.info(data.toString());
 
       if (data.toString().includes('Ctrl+C')) {
         cp.kill(9);
@@ -41,7 +41,7 @@ async function run(nodeName, networkInfo, args) {
   //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
   // );
 
-  return result?.includes('failed') ? 0 : 1;
+  return result?.includes('failed') || result?.includes('flaky') ? 1 : 0;
 }
 
 module.exports = { run };
