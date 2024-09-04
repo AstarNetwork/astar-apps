@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { checkPolicyInLocalStorage } from 'src/modules/playwright';
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-});
-
 test.describe('init screen', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
   test('should disclaimer is opened unless agreed', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
 

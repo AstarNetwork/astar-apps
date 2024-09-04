@@ -40,7 +40,7 @@ async function run(nodeName, networkInfo, args) {
 
   // MEMO: for debugging specific test case
   // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' HEADLESS='true' npx playwright test test_specs/assets-evm.spec.ts --project=chromium`
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' HEADLESS='true' npx playwright test test_specs/assets-transactions.spec.ts --project=chromium`
   // );
 
   const runResult = result?.includes('failed') || result?.includes('flaky') ? 1 : 0;
