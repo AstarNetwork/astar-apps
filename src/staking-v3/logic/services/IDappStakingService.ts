@@ -17,7 +17,7 @@ export interface IDappStakingService {
    * Gets the dapps for the given network.
    * @returns A map containing full dapps info (chain and firebase data) and chain info (only for new dapps not stored in firebase yet).
    */
-  getDapps(): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }>;
+  getDapps(network: string): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }>;
 
   /**
    * Invokes claim staker rewards, unstake and unlock calls.

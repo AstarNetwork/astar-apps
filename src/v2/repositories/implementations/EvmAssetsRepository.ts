@@ -56,6 +56,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     isFetchUsd: boolean;
   }): Promise<Erc20Token[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
+    const numberOfRetries = 2;
 
     if (
       String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId ||
@@ -67,43 +68,48 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
       return [];
     }
 
-    const data = await getTransferConfigs(currentNetworkIdx);
-    if (!data || !data.tokens) {
-      throw Error('Cannot fetch from cBridge API');
+    for (let i = 0; i < numberOfRetries; i++) {
+      const data = await getTransferConfigs(currentNetworkIdx);
+      if (!data || !data.tokens) {
+        continue;
+      }
+
+      const seen = new Set();
+      // Todo: use srcChain and destChainID to re-define token information for bridging (ex: PKEX)
+
+      const tokens = (await Promise.all(
+        objToArray(data.tokens[srcChainId as EvmChain])
+          .flat()
+          .map(async (token: CbridgeToken) => {
+            const t = getSelectedToken({ srcChainId, token });
+            if (!t) return undefined;
+            const formattedToken = castCbridgeToErc20({ srcChainId, token: t });
+            const isDuplicated = seen.has(formattedToken.address);
+            seen.add(formattedToken.address);
+            // Memo: Remove the duplicated contract address (ex: PKEX)
+            if (isDuplicated) return undefined;
+
+            const { balUsd, userBalance } = await this.updateTokenBalanceHandler({
+              userAddress: currentAccount,
+              token: formattedToken,
+              isFetchUsd,
+              srcChainId,
+            });
+            const tokenWithBalance = {
+              ...formattedToken,
+              userBalance,
+              userBalanceUsd: String(balUsd),
+            };
+            return castCbridgeTokenData(tokenWithBalance);
+          })
+      )) as Erc20Token[];
+
+      return tokens.filter((token) => {
+        return token !== undefined;
+      });
     }
-    const seen = new Set();
-    // Todo: use srcChain and destChainID to re-define token information for bridging (ex: PKEX)
 
-    const tokens = (await Promise.all(
-      objToArray(data.tokens[srcChainId as EvmChain])
-        .flat()
-        .map(async (token: CbridgeToken) => {
-          const t = getSelectedToken({ srcChainId, token });
-          if (!t) return undefined;
-          const formattedToken = castCbridgeToErc20({ srcChainId, token: t });
-          const isDuplicated = seen.has(formattedToken.address);
-          seen.add(formattedToken.address);
-          // Memo: Remove the duplicated contract address (ex: PKEX)
-          if (isDuplicated) return undefined;
-
-          const { balUsd, userBalance } = await this.updateTokenBalanceHandler({
-            userAddress: currentAccount,
-            token: formattedToken,
-            isFetchUsd,
-            srcChainId,
-          });
-          const tokenWithBalance = {
-            ...formattedToken,
-            userBalance,
-            userBalanceUsd: String(balUsd),
-          };
-          return castCbridgeTokenData(tokenWithBalance);
-        })
-    )) as Erc20Token[];
-
-    return tokens.filter((token) => {
-      return token !== undefined;
-    });
+    throw Error('Cannot fetch from cBridge API');
   }
 
   public async fetchRegisteredAssets({

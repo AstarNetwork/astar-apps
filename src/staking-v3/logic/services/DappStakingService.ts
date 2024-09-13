@@ -48,13 +48,15 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   // @inheritdoc
-  public async getDapps(): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }> {
-    const metadata = await this.metadataRepository.getChainMetadata();
-    const chain = metadata.chain.toLowerCase();
+  public async getDapps(
+    network: string
+  ): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }> {
+    Guard.ThrowIfUndefined('network', network);
+
     const [storeDapps, chainDapps, tokenApiDapps] = await Promise.all([
-      this.dappStakingRepository.getDapps(chain),
+      this.dappStakingRepository.getDapps(network.toLowerCase()),
       this.dappStakingRepository.getChainDapps(),
-      this.tokenApiRepository.getDapps(chain),
+      this.tokenApiRepository.getDapps(network.toLowerCase()),
     ]);
 
     // Map on chain and in store dApps (registered only)
