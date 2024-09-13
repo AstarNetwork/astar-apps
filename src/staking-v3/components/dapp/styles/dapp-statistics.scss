@@ -65,3 +65,15 @@
     }
   }
 }
+
+.unit {
+  font-size: 16px;
+}
+
+.text--link {
+  color: $astar-blue-dark;
+  text-transform: lowercase;
+  &:hover {
+    color: lighten($astar-blue-dark, 15%);
+  }
+}

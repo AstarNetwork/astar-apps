@@ -63,8 +63,6 @@ export default {
     insufficientExistentialDeposit:
       'Saldos da conta na rede {network} está abaixo do valor do depósito existencial',
     withdrawalNotSupport: 'O portal não suporta o saque para {chain} neste momento',
-    ledgerNotOpened:
-      'Ledger não abriu o aplicativo Astar. Por favor, abra-o e atualize esta página.',
   },
   toast: {
     transactionFailed: 'Transação falhou com erro: {message}',
@@ -158,7 +156,6 @@ export default {
       switchNetwork: "Mude sua rede para 'Shiden' na extensão Math Wallet e atualize esta página",
     },
     showBalance: 'Mostrar saldo {token}',
-    isLedgerAccount: 'Essa é uma conta Ledger, conecatada e executando Astar app',
     multisig: {
       initPolkasafe: 'Iniciando PolkaSafe SDK para assinatura; poderá levar um tempo',
       noAccounts: 'Contas multisig não encontradas',
@@ -279,14 +276,6 @@ export default {
       'O número de eras mostrado aqui é por dApp. Você pode precisar clamar várias vezes se tiver muitas eras não clamadas.',
     restakeTip:
       'Ao ativar, suas recompensas serão colocadas em stake automaticamente quando você clamar.',
-    claimable: {
-      limitation: 'Há uma limitação no número de eras que podem ser clamadas em uma transação.',
-      nativeWallets: 'Carteiras nativas: ≒56 eras',
-      ledgerX: 'Ledger Nano X: 6 eras',
-      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
-      ledgerS: 'Ledger Nano S: 2 eras',
-      dcentWallet: "D'CENT Wallet: ≒28 eras",
-    },
     dappsOwners: 'DApps owners! We can now help to promote your campaign. Please check',
     dappsOwnersLink: 'the details.',
   },
@@ -520,8 +509,6 @@ export default {
       notSendToEvmExchanges:
         'NÃO estou enviando tokens para endereços de depósito EVM de Corretora. Entendo que, se fizer isso, os fundos provavelmente serão perdidos.',
       understandWarning: 'Entendo que se o fizer, os fundos provavelmente serão perdidos',
-      notDestIsLedgerAccount:
-        'O endereço de destino não é uma conta Ledger nativa nem um endereço de Corretora. Entendo que se eu fizer isso, os fundos provavelmente serão perdidos.',
       notDestIsExchangeAddress: 'Endereço de destino não é um endereço de Corretora',
       youWillReceive: 'Você receberá',
       faucetNextRequest: 'Tempo restante até a próxima solicitação',

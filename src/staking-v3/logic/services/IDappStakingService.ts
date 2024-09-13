@@ -15,7 +15,6 @@ import {
 export interface IDappStakingService {
   /**
    * Gets the dapps for the given network.
-   * @param network Name of the network to get dapps for.
    * @returns A map containing full dapps info (chain and firebase data) and chain info (only for new dapps not stored in firebase yet).
    */
   getDapps(network: string): Promise<{ fullInfo: CombinedDappInfo[]; chainInfo: DappInfo[] }>;

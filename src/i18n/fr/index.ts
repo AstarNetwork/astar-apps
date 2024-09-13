@@ -69,7 +69,6 @@ export default {
       'Le solde sur le réseau {network} est inférieur au montant du dépôt existentiel',
     withdrawalNotSupport:
       'Le portail ne prend pas en charge le retrait vers {chain} pour le moment',
-    ledgerNotOpened: "Ledger n'a pas ouvert l'App Astar. Ouvrez là et rafraichissez la page.",
   },
   toast: {
     transactionFailed: "La transaction a échoué avec l'erreur: {message}",
@@ -170,7 +169,6 @@ export default {
         "Basculez vers le réseau 'Shiden' dans l'extension Math Wallet et rafraîchissez la page",
     },
     showBalance: 'Afficher le solde des {token}',
-    isLedgerAccount: "Ceci est un compte Ledger, connecté et en cours d'exécution sur l'app Astar",
     multisig: {
       initPolkasafe:
         'Initialisation du SDK PolkaSafe pour une demande de signature; Ceci peut prendre un moment ',
@@ -287,15 +285,6 @@ export default {
       "Le nombre d'ères affiché ici est par dApp. Vous devrez peut-être réclamer plusieurs fois si vous avez trop d'ères non réclamées.",
     restakeTip:
       'En activant, vos récompenses seront automatiquement re-investies lorsque vous les récupérer.',
-    claimable: {
-      limitation:
-        "Il existe une limite au nombre d'ères pouvant être réclamées en une seule transaction.",
-      nativeWallets: 'Portefeuilles natifs: ≒56 ères',
-      ledgerX: 'Ledger Nano X: 6 ères',
-      ledgerSPlus: 'Ledger Nano S Plus: 6 ères',
-      ledgerS: 'Ledger Nano S: 2 ères',
-      dcentWallet: "D'CENT Wallet: ≒28 ères",
-    },
     dappsOwners:
       "Propriétaires de DApps! Nous pouvons désormais vous aider à promouvoir votre campagne. Vérifiez s'il vous plaît",
     dappsOwnersLink: 'les détails.',
@@ -539,8 +528,6 @@ export default {
       notSendToEvmExchanges:
         "Je n'envoie PAS de jetons aux adresses de dépôt EVM sur un Exchange. Je comprends que si je le fais, les fonds seront probablement perdus.",
       understandWarning: 'Je comprends que si je le fais, les fonds seront probablement perdus',
-      notDestIsLedgerAccount:
-        "L'adresse de destination n'est ni un compte natif Ledger ni une adresse d'Exchange. Je comprends que si je le fais, les fonds seront probablement perdus.",
       notDestIsExchangeAddress: "L'adresse de destination n'est pas l'adresse d'un Exchange",
       youWillReceive: 'Vous allez recevoir',
       faucetNextRequest: 'Temps restant avant la prochaine demande',

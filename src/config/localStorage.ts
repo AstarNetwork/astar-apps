@@ -18,7 +18,6 @@ export enum LOCAL_STORAGE {
   XVM_TX_HISTORIES = 'xvmTxHistories',
   BALLOON_NATIVE_TOKEN = 'balloonNativeToken',
   THEME_COLOR = 'themeColor',
-  IS_LEDGER = 'isLedger',
   MULTISIG = 'multisig',
   CLOSE_DAPP_STAKING_V3_ONBOARDING = 'closeDappStakingV3Onboarding',
   DECOMMISSION = 'decommission',

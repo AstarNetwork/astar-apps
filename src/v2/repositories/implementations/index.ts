@@ -19,6 +19,7 @@ export * from './xcm/BifrostXcmRepository';
 export * from './xcm/EquilibriumXcmRepository';
 export * from './xcm/UniqueXcmRepository';
 export * from './xcm/HydrationXcmRepository';
+export * from './xcm/PendulumXcmRepository';
 export * from './NftRepository';
 export * from './AccountUnificationRepository';
 export * from './InflationRepository';

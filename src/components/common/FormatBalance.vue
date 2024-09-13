@@ -1,8 +1,8 @@
 <template>
-  <balance :balance="balance" :decimals="decimal" :unit="defaultUnitToken" />
+  <balance :balance="balance" :decimals="decimal" :unit="tokenUnit" />
 </template>
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useChainMetadata } from 'src/hooks';
 import { BN } from '@polkadot/util';
 
@@ -15,14 +15,19 @@ export default defineComponent({
       type: [BN, String],
       required: true,
     },
+    showTokenUnit: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   setup(props) {
     const { defaultUnitToken, decimal } = useChainMetadata();
+    const tokenUnit = computed<string>(() => (props.showTokenUnit ? defaultUnitToken.value : ''));
 
     return {
-      defaultUnitToken,
       decimal,
-      ...toRefs(props),
+      tokenUnit,
     };
   },
   methods: {},
