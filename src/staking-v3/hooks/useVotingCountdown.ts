@@ -11,6 +11,7 @@ export function useVotingCountdown() {
     if (
       protocolState.value === undefined ||
       currentBlock.value === undefined ||
+      blockTimeInSeconds.value === undefined ||
       protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn
     ) {
       return 0;

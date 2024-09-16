@@ -2,29 +2,15 @@ import { ethers } from 'ethers';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { EraLengths, IDappStakingService } from '../logic';
+import { IDappStakingService } from '../logic';
 import { useDappStaking } from './useDappStaking';
-import { useBlockTime } from 'src/hooks';
 
 export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
-  const { blockTimeInSeconds } = useBlockTime();
 
   const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
-
-  const getCyclePerYear = (eraLength: EraLengths): number => {
-    const secsOneYear = 365 * 24 * 60 * 60;
-    const periodLength =
-      eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
-
-    const eraPerCycle = periodLength * periodsPerCycle.value;
-    const blocksStandardEraLength = eraLength.standardEraLength;
-    const blockPerCycle = blocksStandardEraLength * eraPerCycle;
-    const cyclePerYear = secsOneYear / blockTimeInSeconds.value / blockPerCycle;
-    return cyclePerYear;
-  };
 
   const getApr = async (): Promise<{ stakerApr: number; bonusApr: number }> => {
     try {

@@ -37,7 +37,7 @@ export interface GeneralGetters {
   getUnifiedAccount(state: State): UnifiedAccount | undefined;
   getActiveInflationConfiguration(state: State): InflationConfiguration | undefined;
   getInflationParameters(state: State): InflationParam | undefined;
-  getBlockTimeInSeconds(state: State): number;
+  getBlockTimeInSeconds(state: State): number | undefined;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {

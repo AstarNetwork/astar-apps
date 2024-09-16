@@ -774,7 +774,6 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const blocksStandardEraLength = eraLength.standardEraLength;
     const blockPerCycle = blocksStandardEraLength * eraPerCycle;
     const cyclePerYear = secsOneYear / blockTimeInSeconds / blockPerCycle;
-    console.log('cyclePerYear', cyclePerYear);
 
     return cyclePerYear;
   }

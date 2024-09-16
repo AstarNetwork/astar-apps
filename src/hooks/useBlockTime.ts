@@ -6,7 +6,9 @@ import { Symbols } from 'src/v2/symbols';
 
 export function useBlockTime() {
   const store = useStore();
-  const blockTimeInSeconds = computed<number>(() => store.getters['general/getBlockTimeInSeconds']);
+  const blockTimeInSeconds = computed<number | undefined>(
+    () => store.getters['general/getBlockTimeInSeconds']
+  );
 
   const fetchBlockTimeToStore = async () => {
     const systemRepository = container.get<ISystemRepository>(Symbols.SystemRepository);
