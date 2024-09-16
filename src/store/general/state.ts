@@ -69,6 +69,7 @@ export interface GeneralStateInterface {
   unifiedAccount?: UnifiedAccount;
   activeInflationConfiguration: InflationConfiguration | undefined;
   inflationParameters: InflationParam | undefined;
+  blockTimeInSeconds: number;
 }
 
 function state(): GeneralStateInterface {
@@ -111,6 +112,7 @@ function state(): GeneralStateInterface {
     currentBlock: 0,
     activeInflationConfiguration: undefined,
     inflationParameters: undefined,
+    blockTimeInSeconds: 12,
   };
 }
 

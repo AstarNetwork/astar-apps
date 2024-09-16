@@ -4,7 +4,7 @@ import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';
 import { ISystemRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { Struct, u128, u32 } from '@polkadot/types';
+import { Struct, u128, u32, U64, u64 } from '@polkadot/types';
 import { EventAggregator, NewBlockMessage } from 'src/v2/messaging';
 import { BlockHash } from '@polkadot/types/interfaces';
 
@@ -78,5 +78,12 @@ export class SystemRepository implements ISystemRepository {
     const blockHash = await api.rpc.chain.getBlockHash<BlockHash>(blockNumber);
 
     return blockHash;
+  }
+
+  public async getBlockTime(): Promise<number> {
+    const api = await this.api.getApi();
+    const blockTime = <U64>api.consts.aura.slotDuration;
+
+    return blockTime.toNumber();
   }
 }
