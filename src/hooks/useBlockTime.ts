@@ -10,8 +10,8 @@ export function useBlockTime() {
 
   const fetchBlockTimeToStore = async () => {
     const systemRepository = container.get<ISystemRepository>(Symbols.SystemRepository);
-    const blockTime = await systemRepository.getBlockTime();
-    store.commit('general/setBlockTime', blockTime / 1000);
+    const blockTime = await systemRepository.getBlockTimeInSeconds();
+    store.commit('general/setBlockTime', blockTime);
   };
 
   return { blockTimeInSeconds, fetchBlockTimeToStore };

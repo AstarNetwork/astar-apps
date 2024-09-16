@@ -80,10 +80,10 @@ export class SystemRepository implements ISystemRepository {
     return blockHash;
   }
 
-  public async getBlockTime(): Promise<number> {
+  public async getBlockTimeInSeconds(): Promise<number> {
     const api = await this.api.getApi();
     const blockTime = <U64>api.consts.aura.slotDuration;
 
-    return blockTime.toNumber();
+    return blockTime.toNumber() / 1000;
   }
 }

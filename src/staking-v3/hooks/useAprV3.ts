@@ -1,23 +1,20 @@
-import { u128 } from '@polkadot/types';
-import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { container } from 'src/v2/common';
-import { IInflationRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { EraInfo, EraLengths, IDappStakingService, InflationParam } from '../logic';
+import { EraLengths, IDappStakingService } from '../logic';
 import { useDappStaking } from './useDappStaking';
-import { weiToToken } from 'src/token-utils';
+import { useBlockTime } from 'src/hooks';
 
 export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
   const stakerApr = ref<number>(0);
   const bonusApr = ref<number>(0);
   const { eraLengths, isVotingPeriod, currentEraInfo, stakerInfo } = useDappStaking();
+  const { blockTimeInSeconds } = useBlockTime();
 
   const periodsPerCycle = computed<number>(() => eraLengths.value.periodsPerCycle);
 
   const getCyclePerYear = (eraLength: EraLengths): number => {
-    const secBlockProductionRate = 12;
     const secsOneYear = 365 * 24 * 60 * 60;
     const periodLength =
       eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
@@ -25,7 +22,7 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
     const eraPerCycle = periodLength * periodsPerCycle.value;
     const blocksStandardEraLength = eraLength.standardEraLength;
     const blockPerCycle = blocksStandardEraLength * eraPerCycle;
-    const cyclePerYear = secsOneYear / secBlockProductionRate / blockPerCycle;
+    const cyclePerYear = secsOneYear / blockTimeInSeconds.value / blockPerCycle;
     return cyclePerYear;
   };
 

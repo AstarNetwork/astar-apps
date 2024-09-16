@@ -26,5 +26,5 @@ export interface ISystemRepository {
   /**
    * Gets block time.
    */
-  getBlockTime(): Promise<number>;
+  getBlockTimeInSeconds(): Promise<number>;
 }
