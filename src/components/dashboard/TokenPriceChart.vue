@@ -18,7 +18,7 @@ import { ChartData } from 'src/components/dashboard/ChartData';
 import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
 import { textChart } from 'src/modules/token-api';
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 
 export default defineComponent({
   components: {

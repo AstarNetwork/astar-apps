@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { IDataProviderRepository } from './IDataProviderRepository';
 import { ProviderDappData, NumberOfStakersAndLockers } from '../models';
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 import { Guard } from 'src/v2/common';
 import axios from 'axios';
 

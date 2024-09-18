@@ -1,4 +1,5 @@
-import { TOKEN_API_URL, ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
+import { ExtrinsicPayload, getDappAddressEnum } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 import {
   AccountLedger,
   AccountLedgerChangedMessage,

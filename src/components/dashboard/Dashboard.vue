@@ -69,7 +69,7 @@ import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
 import { textChart } from 'src/modules/token-api';
 import { defineComponent, ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 
 export default defineComponent({
   components: {

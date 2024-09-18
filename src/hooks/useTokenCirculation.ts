@@ -1,4 +1,5 @@
-import { TOKEN_API_URL, formatNumber } from '@astar-network/astar-sdk-core';
+import { formatNumber } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 import axios from 'axios';
 import { ref, watch } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';

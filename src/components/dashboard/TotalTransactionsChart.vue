@@ -17,7 +17,8 @@ import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import { textChart } from 'src/modules/token-api';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
-import { TOKEN_API_URL, formatNumber } from '@astar-network/astar-sdk-core';
+import { formatNumber } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 
 export default defineComponent({
   components: {

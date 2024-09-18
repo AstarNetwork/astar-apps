@@ -1,4 +1,4 @@
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { TOKEN_API_URL } from 'src/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { DappCombinedInfo } from 'src/v2/models';
