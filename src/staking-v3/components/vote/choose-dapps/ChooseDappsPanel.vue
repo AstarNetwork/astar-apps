@@ -23,18 +23,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from 'vue';
+import { defineComponent, computed, ref, type PropType } from 'vue';
 import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
 import GoBackButton from '../GoBackButton.vue';
-import { DappVote, mapToDappVote } from '../../../logic';
+import { type DappVote, mapToDappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 import { useI18n } from 'vue-i18n';
 
 enum View {
-  Category,
-  Dapps,
+  Category = 0,
+  Dapps = 1,
 }
 
 export default defineComponent({
