@@ -2,11 +2,11 @@
   <div class="main-container">
     <dapp-search :title="title" :search-term="searchTerm" :on-search="handleSearch" />
     <choose-category
-      v-if="currentView === View.Category"
+      v-show="currentView === View.Category"
       :on-category-selected="handleCategorySelected"
     />
     <dapps-list
-      v-if="currentView === View.Dapps"
+      v-show="currentView === View.Dapps"
       :dapps="dapps"
       :category="currentCategory"
       :filter="searchTerm"
