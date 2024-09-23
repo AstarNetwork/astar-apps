@@ -59,7 +59,7 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAccount, useAppRouter } from 'src/hooks';
+import { useAccount, useAppRouter, useBlockTime } from 'src/hooks';
 import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
@@ -98,6 +98,7 @@ export default defineComponent({
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore, fetchInflationParamsToStore } = useInflation();
+    const { fetchBlockTimeToStore } = useBlockTime();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
@@ -150,6 +151,8 @@ export default defineComponent({
           .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
           .startProtocolStateSubscription();
       }
+
+      fetchBlockTimeToStore();
     });
 
     eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {

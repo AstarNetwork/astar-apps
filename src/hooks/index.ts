@@ -38,3 +38,4 @@ export * from './bridge/useLayerZeroBridge';
 export * from './useTokenDistribution';
 export * from './useTokenCirculation';
 export * from './useInflation';
+export * from './useBlockTime';
