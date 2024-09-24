@@ -85,7 +85,7 @@ export class SystemRepository implements ISystemRepository {
     const api = await this.api.getApi(blockNumber);
 
     if (api.consts.aura) {
-      const blockTime = <u64>api.consts.aura?.slotDuration;
+      const blockTime = <u64>api.consts.aura.slotDuration;
       return blockTime.toNumber() / 1000;
     }
 
