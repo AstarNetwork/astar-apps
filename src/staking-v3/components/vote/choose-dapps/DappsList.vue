@@ -40,10 +40,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, type PropType, ref, computed } from 'vue';
 import { useDappStaking } from 'src/staking-v3/hooks';
 import DappIcon from '../DappIcon.vue';
-import { DappVote } from '../../../logic';
+import type { DappVote } from '../../../logic';
 import FormatBalance from 'src/components/common/FormatBalance.vue';
 
 // Import Swiper
@@ -97,13 +97,16 @@ export default defineComponent({
       }
       if (props.category) {
         return props.dapps.filter((dapp) => categoryFilter(dapp, props.category));
-      } else if (props.filter) {
+      }
+
+      if (props.filter) {
         return props.dapps.filter((dapp) =>
           dapp.name.toLowerCase().includes(props.filter.toLowerCase())
         );
-      } else {
-        return props.dapps;
       }
+
+      return props.dapps;
+
     });
 
     const selectedIndexes = ref<number[]>([]);
@@ -112,29 +115,33 @@ export default defineComponent({
       () => constants.value?.maxNumberOfStakedContracts ?? 0
     );
 
+    const globalDappIndex = (filteredIndex: number): number =>
+      props.dapps.findIndex((dapp) => dapp === filteredDapps.value[filteredIndex]);
+
     const handleItemSelected = (index: number): void => {
-      const indexToRemove = selectedIndexes.value.indexOf(index);
+      const dappIndex = globalDappIndex(index);
+      const indexToRemove = selectedIndexes.value.indexOf(dappIndex);
       if (indexToRemove >= 0) {
         selectedIndexes.value.splice(indexToRemove, 1);
       } else {
         if (selectedIndexes.value.length <= maxDappsToSelect.value) {
-          selectedIndexes.value.push(index);
+          selectedIndexes.value.push(dappIndex);
         }
       }
+
       if (props.onDappsSelected) {
         props.onDappsSelected(
-          selectedIndexes.value.map((selectedIndex) => filteredDapps.value[selectedIndex])
+          selectedIndexes.value.map((selectedIndex) => props.dapps[selectedIndex])
         );
       }
     };
 
     const getSelectionOrder = (index: number): number | undefined => {
-      const number = selectedIndexes.value.indexOf(index) + 1;
-
+      const number = selectedIndexes.value.indexOf(globalDappIndex(index)) + 1;
       return number === 0 ? undefined : number;
     };
 
-    const isItemSelected = (index: number): boolean => selectedIndexes.value.includes(index);
+    const isItemSelected = (index: number): boolean => selectedIndexes.value.includes(globalDappIndex(index));
 
     return {
       modules: [Grid, Navigation],
