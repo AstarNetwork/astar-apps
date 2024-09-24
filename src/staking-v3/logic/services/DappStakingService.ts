@@ -717,7 +717,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
         this.dappStakingRepository.getEraLengths(block),
         this.dappStakingRepository.getCurrentEraInfo(block),
         this.dappStakingRepository.getProtocolState(block),
-        this.systemRepository.getBlockTimeInSeconds(),
+        this.systemRepository.getBlockTimeInSeconds(block),
       ]);
 
     const cyclesPerYear = this.getCyclesPerYear(eraLengths, blockTime);
@@ -746,7 +746,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
         this.dappStakingRepository.getEraLengths(block),
         this.dappStakingRepository.getCurrentEraInfo(block),
         this.dappStakingRepository.getProtocolState(block),
-        this.systemRepository.getBlockTimeInSeconds(),
+        this.systemRepository.getBlockTimeInSeconds(block),
       ]);
 
     const cyclesPerYear = this.getCyclesPerYear(eraLengths, blockTime);

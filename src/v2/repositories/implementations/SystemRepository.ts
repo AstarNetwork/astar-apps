@@ -7,6 +7,7 @@ import { Symbols } from 'src/v2/symbols';
 import { Struct, u128, u32, u64 } from '@polkadot/types';
 import { EventAggregator, NewBlockMessage } from 'src/v2/messaging';
 import { BlockHash } from '@polkadot/types/interfaces';
+import { ORIGINAL_BLOCK_TIME } from 'src/constants';
 
 export interface FrameSystemAccountInfo extends Struct {
   readonly nonce: u32;
@@ -80,10 +81,14 @@ export class SystemRepository implements ISystemRepository {
     return blockHash;
   }
 
-  public async getBlockTimeInSeconds(): Promise<number> {
-    const api = await this.api.getApi();
-    const blockTime = <u64>api.consts.aura.slotDuration;
+  public async getBlockTimeInSeconds(blockNumber?: number): Promise<number> {
+    const api = await this.api.getApi(blockNumber);
 
-    return blockTime.toNumber() / 1000;
+    if (api.consts.aura) {
+      const blockTime = <u64>api.consts.aura?.slotDuration;
+      return blockTime.toNumber() / 1000;
+    }
+
+    return ORIGINAL_BLOCK_TIME;
   }
 }
