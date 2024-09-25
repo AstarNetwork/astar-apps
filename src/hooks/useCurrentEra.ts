@@ -10,7 +10,7 @@ export function useCurrentEra() {
   const interval = ref<number>(0);
   const nextEraStartingBlock = ref<number>(0);
 
-  const { eraLengths, protocolState, isDappStakingV3 } = useDappStaking();
+  const { eraLengths, protocolState } = useDappStaking();
 
   // Todo: Refactor here after the dApp staking V3 has been implemented on Astar
   const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
@@ -21,26 +21,14 @@ export function useCurrentEra() {
     let blockHeight;
     let nextEraStartingBlockHeight;
 
-    if (isDappStakingV3.value) {
-      if (!protocolState.value || !eraLengths.value) return;
-      era = Number(protocolState.value.era);
-      blockAmtPerEra =
-        protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn
-          ? eraLengths.value.standardEraLength
-          : eraLengths.value.standardEraLength * eraLengths.value.standardErasPerVotingPeriod;
-      blockHeight = apiRef.derive.chain.bestNumber;
-      nextEraStartingBlock.value = Number(protocolState.value?.nextEraStart);
-    } else {
-      let currentEra;
-      [currentEra, blockAmtPerEra, blockHeight, nextEraStartingBlockHeight] = await Promise.all([
-        apiRef.query.dappsStaking.currentEra(),
-        apiRef.consts.dappsStaking.blockPerEra,
-        apiRef.derive.chain.bestNumber,
-        apiRef.query.dappsStaking.nextEraStartingBlock(),
-      ]);
-      era = Number(currentEra.toString());
-      nextEraStartingBlock.value = Number(nextEraStartingBlockHeight.toString());
-    }
+    if (!protocolState.value || !eraLengths.value) return;
+    era = Number(protocolState.value.era);
+    blockAmtPerEra =
+      protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn
+        ? eraLengths.value.standardEraLength
+        : eraLengths.value.standardEraLength * eraLengths.value.standardErasPerVotingPeriod;
+    blockHeight = apiRef.derive.chain.bestNumber;
+    nextEraStartingBlock.value = Number(protocolState.value?.nextEraStart);
 
     const blockPerEra = Number(blockAmtPerEra.toString());
     const handleBestNumber = blockHeight;

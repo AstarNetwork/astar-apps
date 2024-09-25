@@ -94,7 +94,6 @@ export default defineComponent({
       fetchStakerInfoToStore,
       fetchTiersConfigurationToStore,
       fetchEraLengthsToStore,
-      isDappStakingV3,
     } = useDappStaking();
     const { fetchStakeAmountsToStore, fetchDappsToStore } = useDapps();
     const { fetchActiveConfigurationToStore, fetchInflationParamsToStore } = useInflation();
@@ -146,11 +145,9 @@ export default defineComponent({
     // **** dApp staking v3
     // dApp staking v3 data changed subscriptions.
     onMounted(() => {
-      if (isDappStakingV3.value) {
-        container
-          .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
-          .startProtocolStateSubscription();
-      }
+      container
+        .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
+        .startProtocolStateSubscription();
 
       fetchBlockTimeToStore();
     });
@@ -189,9 +186,6 @@ export default defineComponent({
     watch([isEthWallet, currentWallet, isH160, currentAccountName], async () => {
       const isLockdropAccount = !isH160.value && currentAccountName.value === ETHEREUM_EXTENSION;
       setCurrentWallet(isEthWallet.value, currentWallet.value, isLockdropAccount);
-
-      // Subscribe to an account specific dApp staking v3 data.
-      if (!isDappStakingV3.value) return;
 
       // Memo: Can't use senderSs58Account here because unified account is not stored to vuex yet
       // and senderSs58Account contains evm mapped address which is incorrect for unified account.

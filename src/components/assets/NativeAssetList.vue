@@ -322,7 +322,7 @@ export default defineComponent({
     const { numEvmDeposit } = useEvmDeposit();
     const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
     const { faucetBalRequirement } = useFaucet();
-    const { isDappStakingV3, ledger } = useDappStaking();
+    const { ledger } = useDappStaking();
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
     const nativeTokenImg = computed(() =>
@@ -385,7 +385,7 @@ export default defineComponent({
       if (dappStake) {
         const amount = String(dappStake.amount);
         lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
-      } else if (isDappStakingV3.value && ledger.value) {
+      } else if (ledger.value) {
         lockInDappStaking.value = Number(ethers.utils.formatEther(ledger.value.locked));
       }
 

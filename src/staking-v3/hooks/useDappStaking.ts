@@ -31,8 +31,6 @@ import { useDapps } from './useDapps';
 import { ethers } from 'ethers';
 
 import { initialDappTiersConfiguration, initialTiersConfiguration } from '../store/state';
-import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
-import { ApiPromise } from '@polkadot/api';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { docsUrl } from 'src/links';
 
@@ -57,10 +55,6 @@ export function useDappStaking() {
   );
 
   const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
-
-  const isDappStakingV3 = computed<boolean>(() => {
-    return checkIsDappStakingV3($api as ApiPromise);
-  });
 
   const protocolState = computed<ProtocolState | undefined>(
     () => store.getters['stakingV3/getProtocolState']
@@ -659,7 +653,6 @@ export function useDappStaking() {
     currentEraInfo,
     dAppTiers,
     isVotingPeriod,
-    isDappStakingV3,
     stakerInfo,
     tiersConfiguration,
     totalStakerRewards,
