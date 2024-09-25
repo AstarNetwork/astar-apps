@@ -177,15 +177,20 @@ export class XcmRepository implements IXcmRepository {
       ],
     };
 
+    const weightLimit = {
+      Unlimited: null,
+    };
+
     return await this.buildTxCall(
       from,
       endpoint,
       'xcmPallet',
-      'reserveTransferAssets',
+      'limitedReserveTransferAssets',
       destination,
       beneficiary,
       assets,
-      new BN(0)
+      new BN(0),
+      weightLimit
     );
   }
 
