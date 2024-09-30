@@ -124,7 +124,6 @@ import { IDappStakingService } from 'src/staking-v3/logic/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
 import { useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { Path } from 'src/router';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
@@ -162,7 +161,6 @@ export default defineComponent({
     const { registerDapp } = useDapps();
     const { signPayload } = useSignPayload();
     const { selectedTip } = useGasPrice();
-    const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
     const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
