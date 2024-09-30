@@ -19,8 +19,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import ModalRestake from './vote/re-stake/ModalRestake.vue';
-import { useDappStaking, useVote } from '../hooks';
-import { ClaimType } from '../logic';
+import { useDappStaking, useVote, useDapps } from '../hooks';
+import { ClaimType, type SingularStakingInfo } from '../logic';
 
 export default defineComponent({
   components: {
@@ -53,22 +53,41 @@ export default defineComponent({
       claimStakerAndBonusRewards,
     } = useDappStaking();
     const { vote } = useVote(ref([]));
+    const { getDapp } = useDapps();
     const showRestakeModal = ref<boolean>(false);
+
+    // Staker info containing registered dApps only.
+    // Rewards can't be re-staked for unregistered dApps.
+    const stakerInfoRegisteredDapps =
+      computed<Map<string, SingularStakingInfo>>(() => {
+        const result = new Map<string, SingularStakingInfo>();
+
+        stakerInfo.value.forEach((value, key) => {
+          const dapp = getDapp(key);
+          if (dapp) {
+            result.set(key, value);
+          }
+        });
+
+        return result;
+      });
 
     const amountToClaim = computed<bigint>(() => {
       if (props.claimType === ClaimType.Staker) {
         return rewards.value.staker.amount;
-      } else if (props.claimType === ClaimType.Bonus) {
-        return rewards.value.bonus;
-      } else {
-        return totalStakerRewards.value;
       }
+
+      if (props.claimType === ClaimType.Bonus) {
+        return rewards.value.bonus;
+      }
+
+      return totalStakerRewards.value;
     });
 
     const setShowRestakeModal = async (value: boolean) => {
       // Idea is to restake proportionally to already staked dApps.
       // At the beginning of a period all stakes are reset so user will be able to claim rewards only.
-      if (value && stakerInfo.value.size === 0) {
+      if (value && stakerInfoRegisteredDapps.value.size === 0) {
         await handleRestakeConfirm(false);
       } else {
         showRestakeModal.value = value;
@@ -76,7 +95,7 @@ export default defineComponent({
     };
 
     const handleRestakeConfirm = async (restake: boolean): Promise<void> => {
-      if (restake && stakerInfo.value.size > 0) {
+      if (restake && stakerInfoRegisteredDapps.value.size > 0) {
         await vote(restake);
       } else {
         if (props.claimType === ClaimType.Staker) {

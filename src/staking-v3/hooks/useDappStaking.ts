@@ -192,7 +192,7 @@ export function useDappStaking() {
     );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
-    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus: bonus.amount });
     getCurrentEraInfo();
     fetchStakeAmountsToStore();
     await fetchStakerInfoToStore();
@@ -214,7 +214,7 @@ export function useDappStaking() {
       stakingService.getBonusRewards(currentAccount.value),
       stakingService.getDappRewards(dappAddress),
     ]);
-    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus, dApp });
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus: bonus.amount, dApp });
     fetchStakerInfoToStore();
     getCurrentEraInfo();
     fetchStakeAmountsToStore();
@@ -272,7 +272,7 @@ export function useDappStaking() {
       t('stakingV3.claimBonusRewardSuccess')
     );
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
-    store.commit('stakingV3/setRewards', { ...rewards.value, bonus });
+    store.commit('stakingV3/setRewards', { ...rewards.value, bonus: bonus.amount });
   };
 
   const claimDappRewards = async (contractAddress: string): Promise<void> => {
@@ -303,7 +303,7 @@ export function useDappStaking() {
     );
     const staker = await stakingService.getStakerRewards(currentAccount.value);
     const bonus = await stakingService.getBonusRewards(currentAccount.value);
-    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus });
+    store.commit('stakingV3/setRewards', { ...rewards.value, staker, bonus: bonus.amount });
   };
 
   const withdraw = async (): Promise<void> => {
