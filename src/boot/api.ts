@@ -24,6 +24,7 @@ import Web3 from 'web3';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
+import { initApi } from '@astar-network/dapp-staking-v3';
 
 let $api: ApiPromise | undefined;
 const $web3 = ref<Web3>();
@@ -93,6 +94,7 @@ export default boot(async ({ store }) => {
   });
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
+  initApi(api);
 
   const seen = new Set();
   const accountMap: SubstrateAccount[] = [];

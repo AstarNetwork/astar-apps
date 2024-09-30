@@ -1,5 +1,5 @@
-import { $api } from 'boot/api';
 import { computed } from 'vue';
+import { getCurrentEraInfo as getEra } from '@astar-network/dapp-staking-v3';
 import { container } from 'src/v2/common';
 import {
   AccountLedger,
@@ -417,9 +417,7 @@ export function useDappStaking() {
   };
 
   const getCurrentEraInfo = async (): Promise<void> => {
-    const stakingRepo = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const eraInfo = await stakingRepo.getCurrentEraInfo();
-
+    const eraInfo = await getEra();
     store.commit('stakingV3/setCurrentEraInfo', eraInfo);
   };
 
@@ -431,7 +429,6 @@ export function useDappStaking() {
     let stakeSum = BigInt(0);
 
     for (const stake of stakes) {
-      // const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
       stakeSum += stake.amount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];

@@ -1,7 +1,6 @@
 import {
   AccountLedger,
   CombinedDappInfo,
-  ProtocolState,
   SingularStakingInfo,
   NumberOfStakersAndLockers,
   Rewards,
@@ -13,6 +12,7 @@ import {
   DappInfo,
   DAppTier,
 } from '../logic';
+import { ProtocolState } from '@astar-network/dapp-staking-v3';
 
 export interface DappStakingState {
   version: string;

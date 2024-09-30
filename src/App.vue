@@ -40,7 +40,7 @@
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
 import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed, ref, watch, onMounted } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
@@ -70,6 +70,7 @@ import {
 import { useDappStaking, useDapps } from './staking-v3/hooks';
 import { IDappStakingRepository as IDappStakingRepositoryV3 } from 'src/staking-v3/logic/repositories';
 import { useInflation } from 'src/hooks/useInflation';
+import { ProtocolState, subscribeToProtocolStateChanges } from '@astar-network/dapp-staking-v3';
 
 export default defineComponent({
   name: 'App',
@@ -144,25 +145,25 @@ export default defineComponent({
 
     // **** dApp staking v3
     // dApp staking v3 data changed subscriptions.
-    onMounted(() => {
-      container
-        .get<IDappStakingRepositoryV3>(Symbols.DappStakingRepositoryV3)
-        .startProtocolStateSubscription();
-
+    let unsubscribeProtocolStateChanges: (() => void) | undefined;
+    onMounted(async () => {
+      unsubscribeProtocolStateChanges = await subscribeToProtocolStateChanges(handleProtocolChange);
       fetchBlockTimeToStore();
     });
 
-    eventAggregator.subscribe(ProtocolStateChangedMessage.name, async (m) => {
-      const message = m as ProtocolStateChangedMessage;
+    onUnmounted(() => {
+      unsubscribeProtocolStateChanges && unsubscribeProtocolStateChanges();
+    });
 
-      if (message.state) {
-        console.log('protocol state', message.state);
-        store.commit('stakingV3/setProtocolState', message.state, { root: true });
+    const handleProtocolChange = async (state: ProtocolState) => {
+      if (state) {
+        console.log('protocol state', state);
+        store.commit('stakingV3/setProtocolState', state, { root: true });
         await fetchDappsToStore();
         await Promise.all([
           getAllRewards(),
           getCurrentEraInfo(),
-          getDappTiers(message.state.era - 1),
+          getDappTiers(state.era - 1),
           fetchStakeAmountsToStore(),
           fetchStakerInfoToStore(),
           fetchEraLengthsToStore(),
@@ -170,7 +171,7 @@ export default defineComponent({
           fetchInflationParamsToStore(),
         ]);
       }
-    });
+    };
 
     eventAggregator.subscribe(AccountLedgerChangedMessage.name, (m) => {
       const message = m as AccountLedgerChangedMessage;

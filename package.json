@@ -27,6 +27,7 @@
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.8",
     "@astar-network/astar-ui": "^0.0.140",
+    "@astar-network/dapp-staking-v3": "/Users/bobo/astar/dapp-staking/packages/astar-dapp-staking-v3/astar-network-dapp-staking-v3-0.0.2.tgz",
     "@astar-network/metamask-astar-adapter": "^0.5.4",
     "@astar-network/metamask-astar-types": "^0.6.1",
     "@ethersproject/bignumber": "^5.5.0",

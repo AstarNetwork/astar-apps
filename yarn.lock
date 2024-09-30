@@ -55,6 +55,10 @@
     "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"
 
+"@astar-network/dapp-staking-v3@/Users/bobo/astar/dapp-staking/packages/astar-dapp-staking-v3/astar-network-dapp-staking-v3-0.0.2.tgz":
+  version "0.0.2"
+  resolved "/Users/bobo/astar/dapp-staking/packages/astar-dapp-staking-v3/astar-network-dapp-staking-v3-0.0.2.tgz#feb316283a76e36de8ff42eea129a72d4ecce82d"
+
 "@astar-network/metamask-astar-adapter@^0.5.4":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@astar-network/metamask-astar-adapter/-/metamask-astar-adapter-0.5.4.tgz#41529d6a8a0af4d7f75401db36b30f153a903d41"
