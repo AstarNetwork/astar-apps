@@ -11,6 +11,7 @@ import {
   IBalancesRepository,
   IInflationRepository,
   IMetadataRepository,
+  ISystemRepository,
   ITokenApiRepository,
 } from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
@@ -30,7 +31,8 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     @inject(Symbols.MetadataRepository) metadataRepository: IMetadataRepository,
     @inject(Symbols.TokenApiRepository) priceRepository: ITokenApiRepository,
     @inject(Symbols.BalancesRepository) protected balancesRepository: IBalancesRepository,
-    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository
+    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository,
+    @inject(Symbols.SystemRepository) protected systemRepository: ISystemRepository
   ) {
     super(
       dappStakingRepository,
@@ -39,7 +41,8 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
       metadataRepository,
       priceRepository,
       balancesRepository,
-      inflationRepository
+      inflationRepository,
+      systemRepository
     );
     this.wallet = walletFactory();
   }

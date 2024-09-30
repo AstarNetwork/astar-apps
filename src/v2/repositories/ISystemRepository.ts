@@ -22,4 +22,9 @@ export interface ISystemRepository {
    * @param blockNumber Block number
    */
   getBlockHash(blockNumber: number): Promise<BlockHash>;
+
+  /**
+   * Gets block time.
+   */
+  getBlockTimeInSeconds(blockNumber?: number): Promise<number>;
 }

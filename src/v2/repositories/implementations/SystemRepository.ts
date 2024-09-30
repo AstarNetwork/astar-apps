@@ -4,9 +4,10 @@ import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';
 import { ISystemRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { Struct, u128, u32 } from '@polkadot/types';
+import { Struct, u128, u32, u64 } from '@polkadot/types';
 import { EventAggregator, NewBlockMessage } from 'src/v2/messaging';
 import { BlockHash } from '@polkadot/types/interfaces';
+import { ORIGINAL_BLOCK_TIME } from 'src/constants';
 
 export interface FrameSystemAccountInfo extends Struct {
   readonly nonce: u32;
@@ -78,5 +79,16 @@ export class SystemRepository implements ISystemRepository {
     const blockHash = await api.rpc.chain.getBlockHash<BlockHash>(blockNumber);
 
     return blockHash;
+  }
+
+  public async getBlockTimeInSeconds(blockNumber?: number): Promise<number> {
+    const api = await this.api.getApi(blockNumber);
+
+    if (api.consts.aura) {
+      const blockTime = <u64>api.consts.aura.slotDuration;
+      return blockTime.toNumber() / 1000;
+    }
+
+    return ORIGINAL_BLOCK_TIME;
   }
 }

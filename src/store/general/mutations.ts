@@ -35,6 +35,7 @@ export interface GeneralMutations<S = State> {
   setUnifiedAccount(state: S, unifiedAccount: UnifiedAccount): void;
   setActiveInflationConfiguration(state: S, inflationConfiguration: InflationConfiguration): void;
   setInflationParameters(state: S, inflationParams: InflationParam): void;
+  setBlockTime(state: S, blockTime: number): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -117,6 +118,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setInflationParameters(state, inflationParams) {
     state.inflationParameters = inflationParams;
+  },
+  setBlockTime(state, blockTime) {
+    state.blockTimeInSeconds = blockTime;
   },
 };
 

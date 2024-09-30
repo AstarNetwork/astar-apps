@@ -1,21 +1,23 @@
 import { computed } from 'vue';
 import { useDappStaking } from './useDappStaking';
 import { PeriodType } from '../logic';
+import { useBlockTime } from 'src/hooks';
 
 export function useVotingCountdown() {
   const { protocolState, currentBlock } = useDappStaking();
-  const blockTimeInSeconds = 12;
+  const { blockTimeInSeconds } = useBlockTime();
 
   const secondsLeft = computed<number>(() => {
     if (
       protocolState.value === undefined ||
       currentBlock.value === undefined ||
+      blockTimeInSeconds.value === undefined ||
       protocolState.value.periodInfo.subperiod === PeriodType.BuildAndEarn
     ) {
       return 0;
     }
 
-    return (protocolState.value.nextEraStart - currentBlock.value) * blockTimeInSeconds;
+    return (protocolState.value.nextEraStart - currentBlock.value) * blockTimeInSeconds.value;
   });
 
   const timeLeftFormatted = computed<string>(() => {

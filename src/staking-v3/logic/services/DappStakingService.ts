@@ -27,6 +27,7 @@ import {
   IBalancesRepository,
   IInflationRepository,
   IMetadataRepository,
+  ISystemRepository,
   ITokenApiRepository,
 } from 'src/v2/repositories';
 import { weiToToken } from 'src/token-utils';
@@ -42,7 +43,8 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     @inject(Symbols.MetadataRepository) protected metadataRepository: IMetadataRepository,
     @inject(Symbols.TokenApiRepository) protected priceRepository: ITokenApiRepository,
     @inject(Symbols.BalancesRepository) protected balancesRepository: IBalancesRepository,
-    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository
+    @inject(Symbols.InflationRepository) protected inflationRepository: IInflationRepository,
+    @inject(Symbols.SystemRepository) protected systemRepository: ISystemRepository
   ) {
     super(walletFactory);
   }
@@ -708,15 +710,17 @@ export class DappStakingService extends SignerService implements IDappStakingSer
 
   // @inheritdoc
   public async getStakerApr(block?: number): Promise<number> {
-    const [totalIssuance, inflationParams, eraLengths, eraInfo, protocolState] = await Promise.all([
-      this.balancesRepository.getTotalIssuance(block),
-      this.inflationRepository.getInflationParams(block),
-      this.dappStakingRepository.getEraLengths(block),
-      this.dappStakingRepository.getCurrentEraInfo(block),
-      this.dappStakingRepository.getProtocolState(block),
-    ]);
+    const [totalIssuance, inflationParams, eraLengths, eraInfo, protocolState, blockTime] =
+      await Promise.all([
+        this.balancesRepository.getTotalIssuance(block),
+        this.inflationRepository.getInflationParams(block),
+        this.dappStakingRepository.getEraLengths(block),
+        this.dappStakingRepository.getCurrentEraInfo(block),
+        this.dappStakingRepository.getProtocolState(block),
+        this.systemRepository.getBlockTimeInSeconds(block),
+      ]);
 
-    const cyclesPerYear = this.getCyclesPerYear(eraLengths);
+    const cyclesPerYear = this.getCyclesPerYear(eraLengths, blockTime);
     const currentStakeAmount = this.getStakeAmount(protocolState, eraInfo);
 
     const stakedPercent = currentStakeAmount / weiToToken(totalIssuance);
@@ -736,14 +740,16 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     simulatedVoteAmount: number = 1000,
     block?: number
   ): Promise<{ value: number; simulatedBonusPerPeriod: number }> {
-    const [inflationConfiguration, eraLengths, eraInfo, protocolState] = await Promise.all([
-      this.inflationRepository.getInflationConfiguration(block),
-      this.dappStakingRepository.getEraLengths(block),
-      this.dappStakingRepository.getCurrentEraInfo(block),
-      this.dappStakingRepository.getProtocolState(block),
-    ]);
+    const [inflationConfiguration, eraLengths, eraInfo, protocolState, blockTime] =
+      await Promise.all([
+        this.inflationRepository.getInflationConfiguration(block),
+        this.dappStakingRepository.getEraLengths(block),
+        this.dappStakingRepository.getCurrentEraInfo(block),
+        this.dappStakingRepository.getProtocolState(block),
+        this.systemRepository.getBlockTimeInSeconds(block),
+      ]);
 
-    const cyclesPerYear = this.getCyclesPerYear(eraLengths);
+    const cyclesPerYear = this.getCyclesPerYear(eraLengths, blockTime);
 
     const formattedBonusRewardsPoolPerPeriod = weiToToken(
       inflationConfiguration.bonusRewardPoolPerPeriod
@@ -758,9 +764,8 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     return { value: bonusApr, simulatedBonusPerPeriod };
   }
 
-  private getCyclesPerYear(eraLength: EraLengths): number {
+  private getCyclesPerYear(eraLength: EraLengths, blockTimeInSeconds: number): number {
     // TODO read from chain
-    const secBlockProductionRate = 12;
     const secsOneYear = 365 * 24 * 60 * 60;
     const periodLength =
       eraLength.standardErasPerBuildAndEarnPeriod + eraLength.standardErasPerVotingPeriod;
@@ -768,7 +773,8 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const eraPerCycle = periodLength * eraLength.periodsPerCycle;
     const blocksStandardEraLength = eraLength.standardEraLength;
     const blockPerCycle = blocksStandardEraLength * eraPerCycle;
-    const cyclePerYear = secsOneYear / secBlockProductionRate / blockPerCycle;
+    const cyclePerYear = secsOneYear / blockTimeInSeconds / blockPerCycle;
+
     return cyclePerYear;
   }
 

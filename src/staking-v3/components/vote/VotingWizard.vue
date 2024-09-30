@@ -74,10 +74,10 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { WizardItem } from './types';
-import { DappVote, mapToDappVote } from '../../logic';
+import type { WizardItem } from './types';
+import { type DappVote, mapToDappVote } from '../../logic';
 import { useSelectableComponent, useVote, useDapps, useDappStaking } from 'src/staking-v3/hooks';
-import ChooseAmountsPanel, { StakeInfo } from './enter-amount/ChooseAmountsPanel.vue';
+import ChooseAmountsPanel, { type StakeInfo } from './enter-amount/ChooseAmountsPanel.vue';
 import ReviewPanel from './review/ReviewPanel.vue';
 import ChooseDappsPanel from './choose-dapps/ChooseDappsPanel.vue';
 import WizardSteps from './WizardSteps.vue';
@@ -87,9 +87,9 @@ import ModalRestake from './re-stake/ModalRestake.vue';
 import { useNetworkInfo } from 'src/hooks';
 
 enum Steps {
-  ChooseDapps,
-  AddAmount,
-  Review,
+  ChooseDapps = 0,
+  AddAmount = 1,
+  Review = 2,
 }
 
 export default defineComponent({
