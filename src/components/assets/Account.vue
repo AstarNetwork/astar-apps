@@ -144,15 +144,13 @@
   </div>
 </template>
 <script lang="ts">
-import { getShortenAddress, isValidEvmAddress, wait } from '@astar-network/astar-sdk-core';
-import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
-import { $api } from 'src/boot/api';
-import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
-import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { getShortenAddress, isValidEvmAddress, wait } from "@astar-network/astar-sdk-core";
+import copy from "copy-to-clipboard";
+import { $api } from "src/boot/api";
+import ModalLockdropWarning from "src/components/assets/modals/ModalLockdropWarning.vue";
+import AuIcon from "src/components/header/modals/account-unification/AuIcon.vue";
+import { endpointKey, providerEndpoints } from "src/config/chainEndpoints";
+import { SupportWallet, supportWalletObj } from "src/config/wallets";
 import {
   useAccount,
   useAccountUnification,
@@ -160,14 +158,16 @@ import {
   useConnectWallet,
   useNetworkInfo,
   useWalletIcon,
-} from 'src/hooks';
-import { ETHEREUM_EXTENSION } from 'src/modules/account';
-import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
-import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
-import { useDappStaking } from 'src/staking-v3';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
+} from "src/hooks";
+import { useEvmAccount } from "src/hooks/custom-signature/useEvmAccount";
+import { getEvmMappedSs58Address, setAddressMapping } from "src/hooks/helper/addressUtils";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { ETHEREUM_EXTENSION } from "src/modules/account";
+import { useDappStaking } from "src/staking-v3";
+import { useStore } from "src/store";
+import type { FrameSystemAccountInfo } from "src/v2/repositories/implementations";
+import { computed, defineComponent, ref, watch, watchEffect } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   components: {
@@ -213,24 +213,24 @@ export default defineComponent({
 
     const store = useStore();
     const { t } = useI18n();
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const isDarkTheme = computed<boolean>(() => store.getters["general/theme"] === "DARK");
 
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
+    const isH160 = computed<boolean>(() => store.getters["general/isH160Formatted"]);
+    const isEthWallet = computed<boolean>(() => store.getters["general/isEthWallet"]);
 
     const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
 
     const isWalletConnect = computed<boolean>(() => {
-      const currentWallet = store.getters['general/currentWallet'];
+      const currentWallet = store.getters["general/currentWallet"];
       return currentWallet === SupportWallet.WalletConnect;
     });
 
     const blockscout = computed<string>(
       () =>
-        `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
+        `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`,
     );
     const subScan = computed<string>(
-      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`,
     );
 
     const totalBal = computed<number>(() => {
@@ -240,14 +240,14 @@ export default defineComponent({
 
     const signatoryIconWallet = computed<string>(() => {
       // @ts-ignore
-      return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
+      return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : "";
     });
 
     const copyAddress = () => {
       copy(currentAccount.value);
-      store.dispatch('general/showAlertMsg', {
-        msg: t('toast.copyAddressSuccessfully'),
-        alertType: 'copied',
+      store.dispatch("general/showAlertMsg", {
+        msg: t("toast.copyAddressSuccessfully"),
+        alertType: "copied",
       });
     };
 
@@ -265,15 +265,14 @@ export default defineComponent({
       () => {
         balUsd.value = null;
         const h160LockedBal =
-          isZkEvm.value || !isH160.value ? '0' : String(ledger?.value?.locked.toString());
+          isZkEvm.value || !isH160.value ? "0" : String(ledger?.value?.locked.toString());
         if (!balance.value || !props.nativeTokenUsd) return;
 
         const bal =
-          Number(ethers.utils.formatEther(balance.value.toString())) +
-          Number(ethers.utils.formatEther(h160LockedBal));
+          formatEtherAsNumber(balance.value.toString()) + formatEtherAsNumber(h160LockedBal);
         balUsd.value = props.nativeTokenUsd * bal;
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     watchEffect(async () => {
@@ -321,17 +320,17 @@ export default defineComponent({
           isLockdropAccount.value = false;
         }
       },
-      { immediate: false }
+      { immediate: false },
     );
 
     const bg_img = {
-      native: require('/src/assets/img/account_bg_native.webp'),
-      shiden: require('/src/assets/img/account_bg_shiden.webp'),
-      testnet: require('/src/assets/img/account_bg_testnet.webp'),
-      zk: require('/src/assets/img/account_bg_zk.webp'),
+      native: require("/src/assets/img/account_bg_native.webp"),
+      shiden: require("/src/assets/img/account_bg_shiden.webp"),
+      testnet: require("/src/assets/img/account_bg_testnet.webp"),
+      zk: require("/src/assets/img/account_bg_zk.webp"),
     };
 
-    const bg = computed<String>(() => {
+    const bg = computed<string>(() => {
       if (currentNetworkIdx.value === endpointKey.ASTAR) {
         return bg_img.native;
       } else if (currentNetworkIdx.value === endpointKey.SHIDEN) {

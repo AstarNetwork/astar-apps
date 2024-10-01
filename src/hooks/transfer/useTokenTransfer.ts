@@ -5,21 +5,22 @@ import {
   isValidAddressPolkadotAddress,
   isValidEvmAddress,
 } from '@astar-network/astar-sdk-core';
-import { $api, $web3 } from 'boot/api';
-import { ethers } from 'ethers';
+import { $api, $web3 } from "boot/api";
 import { getTokenBal } from 'src/config/web3';
 import { useAccount, useBalance, useGasPrice, useNetworkInfo } from 'src/hooks';
+import { formatEtherAsNumber, formatEtherAsString } from "src/lib/formatters";
 import { HistoryTxType } from 'src/modules/account';
 import { addTxHistories } from 'src/modules/account/utils/index';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { Asset } from 'src/v2/models';
-import { FrameSystemAccountInfo } from 'src/v2/repositories/implementations';
-import { IAccountUnificationService, IAssetsService } from 'src/v2/services';
+import type { Asset } from "src/v2/models";
+import type { FrameSystemAccountInfo } from "src/v2/repositories/implementations";
+import type { IAccountUnificationService, IAssetsService } from "src/v2/services";
 import { Symbols } from 'src/v2/symbols';
-import { Ref, computed, ref, watch, watchEffect } from 'vue';
+import { isAddress, parseUnits } from "viem";
+import { type Ref, computed, ref, watch, watchEffect } from "vue";
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -37,8 +38,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const transferableBalance = computed<number>(() => {
     const balance = accountData.value
-      ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
-      : '0';
+      ? formatEtherAsString(accountData.value.getUsableTransactionBalance())
+      : "0";
     return Number(balance);
   });
   const { selectedTip, nativeTipPrice, setSelectedTip, isEnableSpeedConfiguration } = useGasPrice();
@@ -177,7 +178,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
 
     const decimals = Number(selectedToken.value.metadata.decimals);
-    const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
+    const amount = parseUnits(String(transferAmt), decimals).toString();
 
     try {
       const assetsService = container.get<IAssetsService>(Symbols.AssetsService);
@@ -238,11 +239,11 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isValidAddressPolkadotAddress(address)) {
       const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(address);
       const transferableBalance = data.free.sub(data.frozen);
-      return Number(ethers.utils.formatEther(transferableBalance.toString()));
+      return formatEtherAsNumber(transferableBalance);
     }
-    if (ethers.utils.isAddress(address)) {
+    if (isAddress(address)) {
       const balance = await web3Ref.eth.getBalance(address);
-      return Number(ethers.utils.formatEther(balance));
+      return formatEtherAsNumber(balance);
     }
     return 0;
   };

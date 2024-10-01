@@ -1,9 +1,9 @@
-import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { handleCheckProviderChainId } from 'src/config/web3';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { formatEtherAsNumber } from 'src/lib/formatters';
 import {
   AlertMsg,
   REQUIRED_MINIMUM_BALANCE,
@@ -11,16 +11,16 @@ import {
 } from 'src/modules/toast/index';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
-import { IEventAggregator } from 'src/v2/messaging';
-import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
-import { IAssetsService, IWalletService } from 'src/v2/services';
-import {
+import type { IEventAggregator } from 'src/v2/messaging';
+import type { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
+import type { IAssetsService, IWalletService } from 'src/v2/services';
+import type {
   ParamAssetTransfer,
   ParamEvmTransfer,
   ParamEvmWithdraw,
 } from 'src/v2/services/IAssetsService';
 import { Symbols } from 'src/v2/symbols';
-import { ComposerTranslation } from 'vue-i18n';
+import type { ComposerTranslation } from 'vue-i18n';
 import Web3 from 'web3';
 
 @injectable()
@@ -40,8 +40,8 @@ export class AssetsService implements IAssetsService {
   public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
     const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
     const isBalanceEnough =
-      Number(ethers.utils.formatEther(useableBalance)) -
-        Number(ethers.utils.formatEther(param.amount)) >
+      formatEtherAsNumber(useableBalance) -
+        formatEtherAsNumber(param.amount) >
       REQUIRED_MINIMUM_BALANCE;
 
     if (isBalanceEnough) {
@@ -68,7 +68,7 @@ export class AssetsService implements IAssetsService {
     }
 
     const balWei = await web3.eth.getBalance(param.senderAddress);
-    const useableBalance = Number(ethers.utils.formatEther(balWei));
+    const useableBalance = formatEtherAsNumber(balWei);
     const amount = param.contractAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
     const networkIdxStore = String(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
 

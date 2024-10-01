@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
+import { formatEtherAsNumber } from "src/lib/formatters";
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { IDappStakingService } from '../logic';
+import type { IDappStakingService } from "../logic";
 import { useDappStaking } from './useDappStaking';
 
 export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
@@ -50,7 +51,7 @@ export const useAprV3 = ({ isWatch }: { isWatch: boolean }) => {
 
       const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
       const { simulatedBonusPerPeriod } = await stakingService.getBonusApr(
-        Number(ethers.utils.formatEther(stakedBonusEligible))
+        formatEtherAsNumber(stakedBonusEligible),
       );
 
       return simulatedBonusPerPeriod;

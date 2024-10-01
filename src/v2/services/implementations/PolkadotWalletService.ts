@@ -1,31 +1,32 @@
+import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
+import type { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { Signer } from '@polkadot/types/types';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import type { Signer } from '@polkadot/types/types';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
-import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { formatEtherAsNumber } from 'src/lib/formatters';
 import { getSubscanExtrinsic, polkasafeUrl } from 'src/links';
 import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast/index';
 import { Guard, wait } from 'src/v2/common';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import type { IApi } from 'src/v2/integration';
+import { BusyMessage, ExtrinsicStatusMessage, type IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
-import {
+import type { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
+import type { PolkasafeRepository } from 'src/v2/repositories/implementations';
+import type {
   IGasPriceProvider,
   IWalletService,
   ParamSendEvmTransaction,
   ParamSendMultisigTransaction,
   ParamSignAndSend,
 } from 'src/v2/services';
-import { PolkasafeRepository } from 'src/v2/repositories/implementations';
-import { IAssetsRepository, IMetadataRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { WalletService } from './WalletService';
-import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
-import { IApi } from 'src/v2/integration';
-import { SupportWallet } from 'src/config/wallets';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -63,14 +64,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
     const isDetectExtensionsAction = this.checkIsDetectableWallet();
 
-    let result: string | null = null;
+    const result: string | null = null;
     try {
       return new Promise<string>(async (resolve, reject) => {
         isDetectExtensionsAction && this.detectExtensionsAction(true);
 
         const useableBalance = await this.assetsRepository.getNativeBalance(senderAddress);
         const isBalanceEnough =
-          Number(ethers.utils.formatEther(useableBalance)) > REQUIRED_MINIMUM_BALANCE;
+          formatEtherAsNumber(useableBalance) > REQUIRED_MINIMUM_BALANCE;
         if (!isBalanceEnough) {
           this.eventAggregator.publish(
             new ExtrinsicStatusMessage({ success: false, message: AlertMsg.MINIMUM_BALANCE })

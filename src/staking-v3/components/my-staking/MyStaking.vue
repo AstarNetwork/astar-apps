@@ -148,7 +148,7 @@
           <span class="text--label">{{ $t('stakingV3.claimEstimatedRewards') }}</span>
           <span class="text--balance">
             <span class="text--amount">
-              {{ $n(truncate(ethers.utils.formatEther(totalStakerRewards.toString()) ?? '0', 2)) }}
+              {{ $n(truncate(formatEtherAsString(totalStakerRewards.toString()) ?? '0', 2)) }}
             </span>
             <div class="text--symbol">{{ nativeTokenSymbol }}</div>
           </span>
@@ -165,18 +165,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watchEffect } from 'vue';
-import { useAprV3, useDappStaking, useDappStakingNavigation } from '../../hooks';
-import MyStakingCard from './MyStakingCard.vue';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import { PeriodType } from 'src/staking-v3/logic';
-import { ethers } from 'ethers';
-import { useNetworkInfo, useBreakpoints } from 'src/hooks';
-import { truncate } from '@astar-network/astar-sdk-core';
-import Balloon from 'src/components/common/Balloon.vue';
-import ModalUnlockTokens from './ModalUnlockTokens.vue';
-import ClaimAndRestakeButton from '../ClaimAndRestakeButton.vue';
-import { ClaimType } from 'src/staking-v3/logic';
+import { truncate } from "@astar-network/astar-sdk-core";
+import Balloon from "src/components/common/Balloon.vue";
+import TokenBalanceNative from "src/components/common/TokenBalanceNative.vue";
+import { useBreakpoints, useNetworkInfo } from "src/hooks";
+import { formatEtherAsString } from "src/lib/formatters";
+import { PeriodType } from "src/staking-v3/logic";
+import { ClaimType } from "src/staking-v3/logic";
+import { parseEther } from "viem";
+import { type PropType, computed, defineComponent, ref, watchEffect } from "vue";
+import { useAprV3, useDappStaking, useDappStakingNavigation } from "../../hooks";
+import ClaimAndRestakeButton from "../ClaimAndRestakeButton.vue";
+import ModalUnlockTokens from "./ModalUnlockTokens.vue";
+import MyStakingCard from "./MyStakingCard.vue";
 
 export default defineComponent({
   components: {
@@ -206,7 +207,7 @@ export default defineComponent({
       formatPeriod,
     } = useDappStaking();
 
-    const bonus = ref<BigInt>(BigInt(0));
+    const bonus = ref<bigint>(BigInt(0));
     const { getEstimatedBonus } = useAprV3({ isWatch: false });
 
     const { navigateToVote } = useDappStakingNavigation();
@@ -234,7 +235,7 @@ export default defineComponent({
         bonus.value = rewards.value?.bonus;
       } else {
         const amount = String(await getEstimatedBonus());
-        bonus.value = BigInt(String(ethers.utils.parseEther(amount)));
+        bonus.value = BigInt(String(parseEther(amount)));
       }
     };
 
@@ -272,7 +273,7 @@ export default defineComponent({
       lockedButUnstaked,
       totalStake,
       protocolState,
-      ethers,
+      formatEtherAsString,
       nativeTokenSymbol,
       isLockedBalloon,
       isStakedBalloon,

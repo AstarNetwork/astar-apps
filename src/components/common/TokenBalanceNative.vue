@@ -1,6 +1,6 @@
 <template>
   <token-balance
-    :balance="ethers.utils.formatEther(balance)"
+    :balance="formatEtherAsString(balance)"
     :text="text"
     :decimals="decimals"
     :symbol="showTokenSymbol ? dappStakingCurrency : ''"
@@ -8,10 +8,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { ethers } from 'ethers';
-import TokenBalance from './TokenBalance.vue';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo } from "src/hooks";
+import { formatEtherAsString } from "src/lib/formatters";
+import { defineComponent } from "vue";
+import TokenBalance from "./TokenBalance.vue";
 
 export default defineComponent({
   components: {
@@ -25,7 +25,7 @@ export default defineComponent({
     text: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     decimals: {
       type: Number,
@@ -41,7 +41,7 @@ export default defineComponent({
   setup() {
     const { dappStakingCurrency } = useNetworkInfo();
 
-    return { dappStakingCurrency, ethers };
+    return { dappStakingCurrency, formatEtherAsString };
   },
 });
 </script>

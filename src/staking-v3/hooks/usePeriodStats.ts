@@ -1,14 +1,14 @@
-import { Ref, watch, ref, computed } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
-import { container } from 'src/v2/common';
-import { IBalancesRepository, ITokenApiRepository, PeriodData } from 'src/v2/repositories';
-import { Symbols } from 'src/v2/symbols';
-import { useDapps } from './useDapps';
-import { DappState, IDappStakingRepository, IDappStakingService } from '../logic';
-import { PERIOD1_START_BLOCKS } from 'src/constants';
-import { useDappStaking } from './useDappStaking';
-import { useDataCalculations } from './useDataCalculations';
-import { ethers } from 'ethers';
+import { PERIOD1_START_BLOCKS } from "src/constants";
+import { useNetworkInfo } from "src/hooks";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { container } from "src/v2/common";
+import type { IBalancesRepository, ITokenApiRepository, PeriodData } from "src/v2/repositories";
+import { Symbols } from "src/v2/symbols";
+import { type Ref, computed, ref, watch } from "vue";
+import { DappState, type IDappStakingRepository, type IDappStakingService } from "../logic";
+import { useDappStaking } from "./useDappStaking";
+import { useDapps } from "./useDapps";
+import { useDataCalculations } from "./useDataCalculations";
 
 export type DappStatistics = {
   name: string;
@@ -70,7 +70,7 @@ export function usePeriodStats(period: Ref<number>) {
     }
 
     throw new Error(
-      `Can't determine dApp staking start block for network ${currentNetworkName.value}`
+      `Can't determine dApp staking start block for network ${currentNetworkName.value}`,
     );
   };
 
@@ -78,7 +78,7 @@ export function usePeriodStats(period: Ref<number>) {
     const repository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
     const balancesRepository = container.get<IBalancesRepository>(Symbols.BalancesRepository);
     const dappStakingRepository = container.get<IDappStakingRepository>(
-      Symbols.DappStakingRepositoryV3
+      Symbols.DappStakingRepositoryV3,
     );
 
     const allDappsId = allDapps.value.map((dapp) => dapp.chain.id);
@@ -88,7 +88,7 @@ export function usePeriodStats(period: Ref<number>) {
       dappStakingRepository.getCurrentEraInfo(block),
       dappStakingRepository.getContractsStake(
         allDappsId,
-        getPeriodEndBlock(period.value, protocolState.value?.periodInfo.number ?? period.value)
+        getPeriodEndBlock(period.value, protocolState.value?.periodInfo.number ?? period.value),
       ),
     ]);
 
@@ -107,8 +107,8 @@ export function usePeriodStats(period: Ref<number>) {
     });
 
     periodData.value = stats;
-    const issuance = Number(ethers.utils.formatEther(totalIssuance));
-    const locked = Number(ethers.utils.formatEther(periodInfo.totalLocked));
+    const issuance = formatEtherAsNumber(totalIssuance);
+    const locked = formatEtherAsNumber(periodInfo.totalLocked);
     tvlRatio.value = locked / issuance;
   };
 
@@ -128,7 +128,7 @@ export function usePeriodStats(period: Ref<number>) {
         try {
           const periodEndBlock = getPeriodEndBlock(
             period.value,
-            protocolState.value?.periodInfo.number ?? period.value
+            protocolState.value?.periodInfo.number ?? period.value,
           );
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
@@ -145,11 +145,11 @@ export function usePeriodStats(period: Ref<number>) {
           stakerApr.value = sApr;
           bonusApr.value = bApr.value;
         } catch (error) {
-          console.error('Failed to get staking period statistics', error);
+          console.error("Failed to get staking period statistics", error);
         }
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   return { dappStatistics, tvlRatio, stakerApr, bonusApr, tokensToBeBurned };

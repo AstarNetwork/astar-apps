@@ -273,12 +273,12 @@
 </template>
 <script lang="ts">
 import { checkIsNullOrUndefined, truncate } from '@astar-network/astar-sdk-core';
-import { u8aToString } from '@polkadot/util';
-import { ethers } from 'ethers';
+import { u8aToString } from "@polkadot/util";
 import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { useBalance, useBreakpoints, useEvmDeposit, useFaucet, useNetworkInfo } from 'src/hooks';
+import { formatEtherAsNumber, formatEtherAsString } from "src/lib/formatters";
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { Path } from 'src/router';
@@ -330,9 +330,8 @@ export default defineComponent({
     );
 
     const transferableBalance = computed<string>(() => {
-      return accountData.value
-        ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
-        : '0';
+      const accountValue = accountData.value?.getUsableTransactionBalance().toString();
+      return accountValue ? formatEtherAsString(accountValue) : "0";
     });
 
     const isSkeleton = computed<boolean>(() => {
@@ -353,9 +352,10 @@ export default defineComponent({
       const tokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
-        bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
-        isShibuya.value = tokenSymbolRef === 'SBY';
-        isRocstar.value = tokenSymbolRef === 'RSTR';
+        const balValue = balance.value.toString();
+        bal.value = formatEtherAsNumber(balValue);
+        isShibuya.value = tokenSymbolRef === "SBY";
+        isRocstar.value = tokenSymbolRef === "RSTR";
         isFaucet.value = isRocstar.value
           ? false
           : isShibuya.value || faucetBalRequirement.value > bal.value;
@@ -379,19 +379,16 @@ export default defineComponent({
       const dappStake = accountDataRef.locks.find((it) => u8aToString(it.id) === 'dapstake');
       const reserved = accountDataRef.reserved;
       if (vesting) {
-        const amount = String(vesting.amount);
-        vestingTtl.value = Number(ethers.utils.formatEther(amount));
+        vestingTtl.value = formatEtherAsNumber(vesting.amount.toString());
       }
       if (dappStake) {
-        const amount = String(dappStake.amount);
-        lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
+        lockInDappStaking.value = formatEtherAsNumber(dappStake.amount.toString());
       } else if (isDappStakingV3.value && ledger.value) {
-        lockInDappStaking.value = Number(ethers.utils.formatEther(ledger.value.locked));
+        lockInDappStaking.value = formatEtherAsNumber(ledger.value.locked);
       }
 
       if (reserved) {
-        const amount = reserved.toString();
-        reservedTtl.value = Number(ethers.utils.formatEther(amount));
+        reservedTtl.value = formatEtherAsNumber(reserved.toString());
       }
     });
 

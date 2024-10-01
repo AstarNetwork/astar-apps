@@ -118,22 +118,22 @@
   </div>
 </template>
 <script lang="ts">
-import { truncate } from '@astar-network/astar-sdk-core';
-import { ethers } from 'ethers';
+import { truncate } from "@astar-network/astar-sdk-core";
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
+import { layerZeroBridgeEnabled, nativeBridgeEnabled } from "src/features";
 import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks';
+import { formatEtherAsNumber } from "src/lib/formatters";
 import { faucetSethLink } from 'src/links';
 import { getTokenImage } from 'src/modules/token';
 import {
   buildEthereumBridgePageLink,
-  buildTransferPageLink,
   buildLzBridgePageLink,
-} from 'src/router/routes';
+  buildTransferPageLink,
+} from "src/router/routes";
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import { nativeBridgeEnabled, layerZeroBridgeEnabled } from 'src/features';
+import { computed, defineComponent, ref, watchEffect } from "vue";
 import CustomRouterLink from '../common/CustomRouterLink.vue';
 
 export default defineComponent({
@@ -172,7 +172,7 @@ export default defineComponent({
       if (isLoading.value || !nativeTokenSymbol.value || !isH160.value || !$web3.value) return;
       try {
         const balWei = await $web3.value!.eth.getBalance(currentAccount.value);
-        bal.value = Number(ethers.utils.formatEther(balWei));
+        bal.value = formatEtherAsNumber(balWei);
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
         isRocstar.value = nativeTokenSymbol.value === 'RSTR';
         isFaucet.value = isRocstar.value

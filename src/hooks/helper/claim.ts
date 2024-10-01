@@ -1,7 +1,8 @@
-import { EventRecord } from '@polkadot/types/interfaces';
+import type { EventRecord } from "@polkadot/types/interfaces";
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { formatEtherAsNumber } from "src/lib/formatters";
 
 export const calculateClaimedStaker = ({
   events,
@@ -22,7 +23,7 @@ export const calculateClaimedStaker = ({
       }
     }
   });
-  const claimedAmount = Number(ethers.utils.formatEther(totalClaimStaker.toString()).toString());
+  const claimedAmount = formatEtherAsNumber(totalClaimStaker);
   const formattedAmount = balanceFormatter(totalClaimStaker);
   return { claimedAmount, formattedAmount };
 };

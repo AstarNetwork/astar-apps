@@ -1,14 +1,14 @@
-import { astarNativeTokenErcAddr } from './../../../modules/xcm/tokens/index';
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { EthBridgeChainId, ZkChainId, getChainIdFromNetId } from 'src/modules/zk-evm-bridge';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { IZkBridgeRepository } from 'src/v2/repositories/IZkBridgeRepository';
-import { IWalletService, IZkBridgeService, ParamBridgeAsset, ParamClaim } from 'src/v2/services';
+import { formatEtherAsNumber } from 'src/lib/formatters';
+import { getRawEvmTransaction } from 'src/modules/evm';
+import { EthBridgeChainId, type ZkChainId, getChainIdFromNetId } from 'src/modules/zk-evm-bridge';
+import { ExtrinsicStatusMessage, type IEventAggregator } from 'src/v2/messaging';
+import type { IZkBridgeRepository } from 'src/v2/repositories/IZkBridgeRepository';
+import type { IWalletService, IZkBridgeService, ParamBridgeAsset, ParamClaim } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { ethers } from 'ethers';
-import { getRawEvmTransaction } from 'src/modules/evm';
+import { astarNativeTokenErcAddr } from './../../../modules/xcm/tokens/index';
 
 @injectable()
 export class ZkBridgeService implements IZkBridgeService {
@@ -39,7 +39,7 @@ export class ZkBridgeService implements IZkBridgeService {
     return;
   }
 
-  public async approve(param: ParamBridgeAsset): Promise<String> {
+  public async approve(param: ParamBridgeAsset): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 
@@ -85,10 +85,10 @@ export class ZkBridgeService implements IZkBridgeService {
       // Memo: double the transaction fee here because MetaMask estimates higher gas fee than 'getGasPrice'
       // Fixme: find a way to duplicate how MetaMask works with fee calculation
       const feeAdj = 2;
-      const gasPrice = Number(ethers.utils.formatEther(gasPriceWei.toString())) * feeAdj;
+      const gasPrice = formatEtherAsNumber(gasPriceWei) * feeAdj;
       const estimatedGas = await web3.eth.estimateGas({ ...tx });
       const txFee = gasPrice * Number(estimatedGas);
-      const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
+      const accountBalance = formatEtherAsNumber(accountBalanceWei);
       const sendingEth = param.tokenAddress === astarNativeTokenErcAddr ? Number(param.amount) : 0;
       const result = accountBalance - sendingEth - txFee > 0;
       return result;
@@ -97,7 +97,7 @@ export class ZkBridgeService implements IZkBridgeService {
     }
   }
 
-  public async bridgeAsset(param: ParamBridgeAsset): Promise<String> {
+  public async bridgeAsset(param: ParamBridgeAsset): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 
@@ -117,7 +117,7 @@ export class ZkBridgeService implements IZkBridgeService {
     return transactionHash;
   }
 
-  public async claimAsset(param: ParamClaim): Promise<String> {
+  public async claimAsset(param: ParamClaim): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
 

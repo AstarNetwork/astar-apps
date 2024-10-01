@@ -1,16 +1,17 @@
+import { ethers } from "ethers";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import type { IDappStakingService } from "src/staking-v3";
+import { container } from "src/v2/common";
 // Provides an information about tokens allocation
 // Total supply, circulating supply, locked tokens, treasury tokens, etc....
-import { TvlModel } from 'src/v2/models';
-import { ref, watchEffect } from 'vue';
-import { useTokenCirculation } from './useTokenCirculation';
-import { container } from 'src/v2/common';
-import { Symbols } from 'src/v2/symbols';
-import { useBalance } from './useBalance';
-import { ethers } from 'ethers';
-import { IDappStakingService } from 'src/staking-v3';
+import type { TvlModel } from "src/v2/models";
+import { Symbols } from "src/v2/symbols";
+import { ref, watchEffect } from "vue";
+import { useBalance } from "./useBalance";
+import { useTokenCirculation } from "./useTokenCirculation";
 
 export function useTokenDistribution() {
-  const treasuryAddress = ref<string>('YQnbw3oWxBnCUarnbePrjFcrSgVPP2jqTZYzWcccmN8fXhd');
+  const treasuryAddress = ref<string>("YQnbw3oWxBnCUarnbePrjFcrSgVPP2jqTZYzWcccmN8fXhd");
   const tvlModel = ref<TvlModel>();
   const { formatNumber, totalSupply, currentCirculating } = useTokenCirculation();
   const { balance: treasuryBalance } = useBalance(treasuryAddress);
@@ -30,7 +31,7 @@ export function useTokenDistribution() {
   watchEffect(() => {
     if (tvlModel?.value && treasuryBalance?.value && totalSupply?.value) {
       const tvlUnrounded = tvlModel?.value?.tvlDefaultUnit ?? 0;
-      const treasuryUnrounded = Number(ethers.utils.formatEther(treasuryBalance.value.toString()));
+      const treasuryUnrounded = formatEtherAsNumber(treasuryBalance.value);
 
       tvl.value = Math.round(tvlUnrounded);
       treasury.value = Math.round(treasuryUnrounded);

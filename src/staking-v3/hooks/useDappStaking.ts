@@ -1,40 +1,41 @@
 import { $api } from 'boot/api';
-import { computed } from 'vue';
+import { useAccount, useChainMetadata, useNetworkInfo } from "src/hooks";
+import { ETHEREUM_EXTENSION } from "src/modules/account";
+import { useStore } from "src/store";
 import { container } from 'src/v2/common';
+import { ExtrinsicStatusMessage, type IEventAggregator } from "src/v2/messaging";
+import { Symbols } from "src/v2/symbols";
+import { computed } from "vue";
 import {
-  AccountLedger,
-  CombinedDappInfo,
-  Constants,
-  DAppTier,
-  DAppTierRewards,
-  DappStakeInfo,
-  EraInfo,
-  EraLengths,
-  IDappStakingRepository,
-  IDappStakingService,
-  IDappStakingServiceV2Ledger,
+  type AccountLedger,
+  type CombinedDappInfo,
+  type Constants,
+  type DAppTier,
+  type DAppTierRewards,
+  type DappStakeInfo,
+  type EraInfo,
+  type EraLengths,
+  type IDappStakingRepository,
+  type IDappStakingService,
+  type IDappStakingServiceV2Ledger,
   PeriodType,
-  ProtocolState,
-  Rewards,
-  SingularStakingInfo,
-  StakerRewards,
-  TiersConfiguration,
-} from '../logic';
-import { Symbols } from 'src/v2/symbols';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { useStore } from 'src/store';
-import { useAccount, useChainMetadata, useNetworkInfo } from 'src/hooks';
-import { ETHEREUM_EXTENSION } from 'src/modules/account';
+  type ProtocolState,
+  type Rewards,
+  type SingularStakingInfo,
+  type StakerRewards,
+  type TiersConfiguration,
+} from "../logic";
 
 import { useI18n } from 'vue-i18n';
-import { useDapps } from './useDapps';
-import { ethers } from 'ethers';
+import { useDapps } from "./useDapps";
 
-import { initialDappTiersConfiguration, initialTiersConfiguration } from '../store/state';
-import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
-import { ApiPromise } from '@polkadot/api';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
+import type { ApiPromise } from "@polkadot/api";
+import { formatEtherAsNumber, formatEtherAsString } from "src/lib/formatters";
 import { docsUrl } from 'src/links';
+import { checkIsDappStakingV3 } from "src/modules/dapp-staking";
+import { parseEther } from "viem";
+import { initialDappTiersConfiguration, initialTiersConfiguration } from "../store/state";
 
 export interface RewardsPerPeriod {
   period: number;
@@ -343,8 +344,8 @@ export function useDappStaking() {
       )();
       await stakingService.unlockTokens(
         currentAccount.value,
-        Number(ethers.utils.formatEther(amount)),
-        t('stakingV3.unlockSuccess')
+        formatEtherAsNumber(amount),
+        t("stakingV3.unlockSuccess"),
       );
     }
   };
@@ -472,24 +473,24 @@ export function useDappStaking() {
         return [false, t('stakingV3.dappStaking.UnavailableStakeFunds'), ''];
       } else if (
         constants.value &&
-        ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
+        parseEther(constants.value.minBalanceAfterStaking.toString()) >
           availableTokensBalance - stakeSum
       ) {
         return [
           false,
-          t('stakingV3.voting.minBalanceAfterStaking', {
+          t("stakingV3.voting.minBalanceAfterStaking", {
             amount: constants.value.minBalanceAfterStaking,
             symbol: nativeTokenSymbol.value,
           }),
-          '',
+          "",
         ];
       } else if (
         protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
         protocolState.value.periodInfo.nextSubperiodStartEra <= protocolState.value.era + 1
       ) {
-        return [false, t('stakingV3.dappStaking.PeriodEndsNextEra'), ''];
-      } else if (getDapp(stake.address)?.chain?.state === 'Unregistered') {
-        return [false, t('stakingV3.dappStaking.NotOperatedDApp'), ''];
+        return [false, t("stakingV3.dappStaking.PeriodEndsNextEra"), ""];
+      } else if (getDapp(stake.address)?.chain?.state === "Unregistered") {
+        return [false, t("stakingV3.dappStaking.NotOperatedDApp"), ""];
       }
     }
 
@@ -497,7 +498,7 @@ export function useDappStaking() {
   };
 
   const canUnStake = (dappAddress: string, amount: number): [boolean, string] => {
-    const unstakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
+    const unstakeAmount = parseEther(amount.toString());
     const dappInfo = getStakerInfo(dappAddress);
     const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
     const stakeInfo = getStakerInfo(dappAddress);
@@ -533,10 +534,10 @@ export function useDappStaking() {
       // Handle possibility to lose bonus rewards.
       const message =
         stakeInfo.staked.buildAndEarn > BigInt(0)
-          ? t('stakingV3.loyalStakerWarningAmount', {
-              amount: ethers.utils.formatEther(stakeInfo.staked.buildAndEarn),
+          ? t("stakingV3.loyalStakerWarningAmount", {
+              amount: formatEtherAsString(stakeInfo.staked.buildAndEarn),
             })
-          : t('stakingV3.loyalStakerWarning');
+          : t("stakingV3.loyalStakerWarning");
 
       return [true, message];
     }

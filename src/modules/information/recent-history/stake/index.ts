@@ -1,8 +1,8 @@
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 import axios from 'axios';
-import { ethers } from 'ethers';
-import { DappCombinedInfo } from 'src/v2/models';
-import { RecentHistory, RecentHistoryTxType } from './../../index';
+import { formatEtherAsString } from "src/lib/formatters";
+import type { DappCombinedInfo } from "src/v2/models";
+import type { RecentHistory, RecentHistoryTxType } from "./../../index";
 
 interface UserStakeHistory {
   timestamp: string;
@@ -63,7 +63,7 @@ export const getStakeTxHistories = async ({
       const note = dapp && dapp.dapp ? dapp.dapp.name : '';
       const explorerUrl = subScan + '/extrinsic/' + it.transactionHash;
       return {
-        amount: ethers.utils.formatEther(it.amount),
+        amount: formatEtherAsString(it.amount),
         timestamp: String(Number(it.timestamp) / 1000),
         txType: it.transaction as RecentHistoryTxType,
         explorerUrl,

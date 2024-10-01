@@ -1,19 +1,20 @@
-import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
+import type { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { handleCheckProviderChainId } from 'src/config/web3';
 import lockdropDispatchAbi from 'src/config/web3/abi/dispatch-lockdrop.json';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import type { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import { formatEtherAsNumber } from 'src/lib/formatters';
 import { getEvmExplorerUrl } from 'src/links';
 import { getRawEvmTransaction } from 'src/modules/evm';
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AlertMsg, REQUIRED_MINIMUM_BALANCE } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
-import {
+import { BusyMessage, ExtrinsicStatusMessage, type IEventAggregator } from 'src/v2/messaging';
+import type { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
+import type {
   IGasPriceProvider,
   IWalletService,
   ParamSendEvmTransaction,
@@ -22,7 +23,7 @@ import {
 import { WalletService } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
+import type { AbiItem } from 'web3-utils';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -87,7 +88,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         const h160Address = accounts[0];
 
         const balWei = await web3.eth.getBalance(h160Address);
-        const useableBalance = Number(ethers.utils.formatEther(balWei));
+        const useableBalance = formatEtherAsNumber(balWei);
         const isBalanceEnough = useableBalance > REQUIRED_MINIMUM_BALANCE;
         if (!isBalanceEnough) {
           this.eventAggregator.publish(
