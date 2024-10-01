@@ -1,5 +1,5 @@
 import { Ref, computed, ref, watch } from 'vue';
-import { CombinedDappInfo, DappStakeInfo, DappVote } from '../logic';
+import type { CombinedDappInfo, DappStakeInfo, DappVote } from '../logic';
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
 import { useDappStaking } from './useDappStaking';
