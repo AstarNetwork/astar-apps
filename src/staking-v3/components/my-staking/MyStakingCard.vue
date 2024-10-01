@@ -30,7 +30,7 @@
     </div>
     <div class="card--balance">
       <div class="card--amount">
-        {{ $n(truncate(ethers.utils.formatEther(amount.toString()) ?? '0', 2)) }}
+        {{ $n(truncate(formatEtherAsString(amount) ?? '0', 2)) }}
       </div>
       <div class="card--symbol">{{ nativeTokenSymbol }}</div>
     </div>
@@ -38,10 +38,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { ethers } from 'ethers';
-import { useNetworkInfo, useTooltip } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';
+import { useNetworkInfo, useTooltip } from "src/hooks";
+import { formatEtherAsString } from "src/lib/formatters";
+import { type PropType, defineComponent } from "vue";
 
 export default defineComponent({
   props: {
@@ -50,7 +50,7 @@ export default defineComponent({
       required: true,
     },
     amount: {
-      type: BigInt as unknown as PropType<BigInt>,
+      type: BigInt as unknown as PropType<bigint>,
       required: true,
     },
     eras: {
@@ -66,16 +66,16 @@ export default defineComponent({
     textToolTip: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip("icon");
 
     return {
       nativeTokenSymbol,
-      ethers,
+      formatEtherAsString,
       truncate,
       isDisplayTooltip,
       setIsMobileDisplayTooltip,

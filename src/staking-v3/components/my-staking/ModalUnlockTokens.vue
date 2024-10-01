@@ -61,16 +61,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, PropType } from 'vue';
-import { useNetworkInfo, useGasPrice } from 'src/hooks';
-import { getTokenImage } from 'src/modules/token';
 import { truncate } from '@astar-network/astar-sdk-core';
+import { wait } from "@astar-network/astar-sdk-core";
+import { fadeDuration } from "@astar-network/astar-ui";
 import { ethers } from 'ethers';
+import ModalWrapper from "src/components/common/ModalWrapper.vue";
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from '@astar-network/astar-sdk-core';
+import { useGasPrice, useNetworkInfo } from "src/hooks";
+import { formatEtherAsString } from "src/lib/formatters";
+import { getTokenImage } from "src/modules/token";
 import { useDappStaking } from 'src/staking-v3/hooks';
+import { type PropType, computed, defineComponent, ref } from "vue";
 import ErrorPanel from '../ErrorPanel.vue';
 
 export default defineComponent({
@@ -100,9 +101,7 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { unlock, canUnlock } = useDappStaking();
-    const maxAmount = computed<string>(() =>
-      ethers.utils.formatEther(props.maxUnlockAmount.toString())
-    );
+    const maxAmount = computed<string>(() => formatEtherAsString(props.maxUnlockAmount));
     const amount = ref<string | null>(null);
 
     const toMaxAmount = (): void => {

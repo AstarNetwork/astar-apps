@@ -90,9 +90,8 @@ import {
   truncate,
   wait,
 } from '@astar-network/astar-sdk-core';
-import { ApiPromise } from '@polkadot/api';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
+import type { ApiPromise } from "@polkadot/api";
+import copy from "copy-to-clipboard";
 import { $api } from 'src/boot/api';
 import { astarChain } from 'src/config/chain';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
@@ -100,9 +99,10 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
+import { formatEtherAsString } from "src/lib/formatters";
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
-import { PropType, computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import type { SubstrateAccount } from "src/store/general/state";
+import { type PropType, computed, defineComponent, onUnmounted, ref, watch } from "vue";
 import { useI18n } from 'vue-i18n';
 import Account from './Account.vue';
 import UnifiedAccount from './UnifiedAccount.vue';
@@ -233,7 +233,7 @@ export default defineComponent({
       if (!accountBalanceMap.value) return 0;
       const account = accountBalanceMap.value.find((it) => it.address === address);
       const balance = account ? account.balance : '0';
-      return truncate(ethers.utils.formatEther(balance || '0'));
+      return truncate(formatEtherAsString(balance || "0"));
     };
 
     const updateAccountMap = async (): Promise<void> => {

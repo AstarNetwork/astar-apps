@@ -69,19 +69,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
-import { useNetworkInfo, useGasPrice } from 'src/hooks';
-import { getTokenImage } from 'src/modules/token';
 import { truncate } from '@astar-network/astar-sdk-core';
+import { wait } from "@astar-network/astar-sdk-core";
+import { fadeDuration } from "@astar-network/astar-ui";
 import { ethers } from 'ethers';
+import ModalWrapper from "src/components/common/ModalWrapper.vue";
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from '@astar-network/astar-sdk-core';
-import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { useGasPrice, useNetworkInfo } from "src/hooks";
+import { formatEtherAsNumber, formatEtherAsString } from "src/lib/formatters";
+import { getTokenImage } from "src/modules/token";
 import { useDappStaking } from 'src/staking-v3/hooks';
-import RewardsPanel from '../RewardsPanel.vue';
-import ErrorPanel from '../ErrorPanel.vue';
+import type { CombinedDappInfo } from "src/staking-v3/logic";
+import { type PropType, computed, defineComponent, ref } from "vue";
+import ErrorPanel from "../ErrorPanel.vue";
+import RewardsPanel from "../RewardsPanel.vue";
 
 export default defineComponent({
   components: {
@@ -113,7 +114,7 @@ export default defineComponent({
     const { constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
 
     const minStakingAmount = computed<number>(() =>
-      Number(ethers.utils.formatEther(constants.value?.minStakeAmount ?? 0))
+      formatEtherAsNumber(constants.value?.minStakeAmount ?? "0"),
     );
 
     const isBelowThanMinStaking = computed<boolean>(() => {
@@ -122,9 +123,7 @@ export default defineComponent({
     const maxAmount = computed<string>(() => {
       const selectedDappStakes = getStakerInfo(props.dapp.chain.address);
 
-      return selectedDappStakes
-        ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
-        : '0';
+      return selectedDappStakes ? formatEtherAsString(selectedDappStakes.staked.totalStake) : "0";
     });
     const amount = ref<string | null>(null);
     const errorMessage = ref<string | undefined>();

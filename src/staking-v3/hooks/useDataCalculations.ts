@@ -1,12 +1,11 @@
-import { computed, onMounted, ref } from 'vue';
-import { useDappStaking } from './useDappStaking';
 import { useTokenCirculation } from 'src/hooks/useTokenCirculation';
-import { ethers } from 'ethers';
-import { useStore } from 'src/store';
-import { DAppTierRewards, IDappStakingRepository, NumberOfStakersAndLockers } from '../logic';
-import { useLeaderboard } from './useLeaderboard';
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { useStore } from "src/store";
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { computed, onMounted, ref } from "vue";
+import type { DAppTierRewards, IDappStakingRepository, NumberOfStakersAndLockers } from "../logic";
+import { useDappStaking } from "./useDappStaking";
 
 export function useDataCalculations() {
   const { totalSupply } = useTokenCirculation();
@@ -18,7 +17,7 @@ export function useDataCalculations() {
       return 0;
     }
 
-    const totalLocked = Number(ethers.utils.formatEther(currentEraInfo.value.totalLocked));
+    const totalLocked = formatEtherAsNumber(currentEraInfo.value.totalLocked);
 
     return (totalLocked / totalSupply.value) * 100;
   });
@@ -28,13 +27,11 @@ export function useDataCalculations() {
       return 0;
     }
 
-    const totalLocked = Number(ethers.utils.formatEther(currentEraInfo.value.totalLocked));
-    const totalStake = Number(
-      ethers.utils.formatEther(
-        currentEraInfo.value.nextStakeAmount
-          ? currentEraInfo.value.nextStakeAmount?.totalStake
-          : currentEraInfo.value.currentStakeAmount.totalStake
-      )
+    const totalLocked = formatEtherAsNumber(currentEraInfo.value.totalLocked);
+    const totalStake = formatEtherAsNumber(
+      currentEraInfo.value.nextStakeAmount
+        ? currentEraInfo.value.nextStakeAmount?.totalStake
+        : currentEraInfo.value.currentStakeAmount.totalStake,
     );
 
     return (totalStake / totalLocked) * 100;
@@ -88,7 +85,7 @@ export function useDataCalculations() {
         let result = BigInt(0);
 
         // Calculate non allocated rewards till the current era.
-        for (let dappTier of dappTiers) {
+        for (const dappTier of dappTiers) {
           if (dappTier) {
             result += calculateNonAllocatedRewardsForEra(dappTier);
           }
@@ -123,7 +120,7 @@ export function useDataCalculations() {
     ]);
 
     // Determine number of used dApp slots per tier.
-    for (let dapp of dappTierRewards.dapps) {
+    for (const dapp of dappTierRewards.dapps) {
       if (dapp.tierId) {
         const dappsInTier = slotsPerTier.get(dapp.tierId) ?? 0;
         slotsPerTier.set(dapp.tierId, dappsInTier + 1);
@@ -131,7 +128,7 @@ export function useDataCalculations() {
     }
 
     // Calculate non-allocated rewards.
-    for (let [key, value] of slotsPerTier) {
+    for (const [key, value] of slotsPerTier) {
       const slotsPerTier = tiersConfiguration.value.slotsPerTier[key];
       result += dappTierRewards.rewards[key] * BigInt(slotsPerTier - value);
     }

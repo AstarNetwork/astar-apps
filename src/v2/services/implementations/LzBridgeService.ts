@@ -1,16 +1,16 @@
-import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { formatEtherAsNumber } from 'src/lib/formatters';
 import { getRawEvmTransaction } from 'src/modules/evm';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
-import { LayerZeroChainId } from 'src/modules/zk-evm-bridge';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { ILzBridgeRepository } from 'src/v2/repositories/ILzBridgeRepository';
-import { IWalletService } from 'src/v2/services';
-import { ILzBridgeService } from 'src/v2/services/ILzBridgeService';
+import type { LayerZeroChainId } from 'src/modules/zk-evm-bridge';
+import { ExtrinsicStatusMessage, type IEventAggregator } from 'src/v2/messaging';
+import type { ILzBridgeRepository } from 'src/v2/repositories/ILzBridgeRepository';
+import type { IWalletService } from 'src/v2/services';
+import type { ILzBridgeService } from 'src/v2/services/ILzBridgeService';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { ParamApprove, ParamBridgeLzAsset } from '../ILzBridgeService';
+import type { ParamApprove, ParamBridgeLzAsset } from '../ILzBridgeService';
 
 @injectable()
 export class LzBridgeService implements ILzBridgeService {
@@ -104,10 +104,10 @@ export class LzBridgeService implements ILzBridgeService {
         txParam.value as string
       );
 
-      const gasPrice = Number(ethers.utils.formatEther(gasPriceWei.toString()));
+      const gasPrice = formatEtherAsNumber(gasPriceWei);
       const estimatedGas = await web3.eth.estimateGas({ ...tx });
       const gasFee = gasPrice * Number(estimatedGas);
-      const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
+      const accountBalance = formatEtherAsNumber(accountBalanceWei);
       const amountNativeToken =
         param.tokenAddress === astarNativeTokenErcAddr
           ? Number(param.amount) + nativeFee

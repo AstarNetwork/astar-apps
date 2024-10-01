@@ -1,30 +1,31 @@
-import { Erc20Token } from 'src/modules/token';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { ethers } from 'ethers';
-import { endpointKey } from 'src/config/chainEndpoints';
-import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
+import { capitalize } from "@astar-network/astar-sdk-core";
+import { ethers } from "ethers";
+import { providerEndpoints } from "src/config/chainEndpoints";
+import { endpointKey } from "src/config/chainEndpoints";
+import { useAccount, useBalance, useNetworkInfo } from "src/hooks";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { productionOrigin } from "src/links";
+import type { Erc20Token } from "src/modules/token";
 import {
   checkIsSupportAstarNativeToken,
   removeEvmName,
   restrictedXcmNetwork,
   xcmChains,
   xcmToken,
-} from 'src/modules/xcm';
-import { Chain, XcmChain } from 'src/v2/models/XcmModels';
-import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
-import { useStore } from 'src/store';
-import { Asset, astarChains } from 'src/v2/models';
-import { computed, ref, watch, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { EvmAssets, XcmAssets } from 'src/store/assets/state';
-import { capitalize } from '@astar-network/astar-sdk-core';
-import { Path } from 'src/router';
-import { productionOrigin } from 'src/links';
+} from "src/modules/xcm";
+import { generateAssetFromEvmToken, generateNativeAsset } from "src/modules/xcm/tokens";
+import { Path } from "src/router";
+import { useStore } from "src/store";
+import type { EvmAssets, XcmAssets } from "src/store/assets/state";
+import { type Asset, astarChains } from "src/v2/models";
+import { Chain, type XcmChain } from "src/v2/models/XcmModels";
+import { computed, ref, watch, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-export const pathEvm = '-evm';
-export type TransferMode = 'local' | 'xcm';
-export const astarNetworks = ['astar', 'shiden', 'shibuya'];
-export const astarNativeTokens = ['sdn', 'astr', 'sby'];
+export const pathEvm = "-evm";
+export type TransferMode = "local" | "xcm";
+export const astarNetworks = ["astar", "shiden", "shibuya"];
+export const astarNativeTokens = ["sdn", "astr", "sby"];
 const disabledXcmChains: endpointKey[] = [];
 
 export interface NetworkFromTo {
@@ -47,16 +48,16 @@ export function useTransferRouter() {
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
   const from = computed<string>(() => route.query.from as string);
   const to = computed<string>(() => route.query.to as string);
-  const isTransferPage = computed<boolean>(() => route.fullPath.includes('transfer'));
+  const isTransferPage = computed<boolean>(() => route.fullPath.includes("transfer"));
   const isEvmBridge = computed<boolean>(() => {
     if (!isTransferPage.value || isLocalTransfer.value) return false;
     return to.value.includes(pathEvm);
   });
   const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx, currentNetworkChain, isZkEvm } =
     useNetworkInfo();
-  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
-  const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
+  const isH160 = computed<boolean>(() => store.getters["general/isH160Formatted"]);
+  const xcmAssets = computed<XcmAssets>(() => store.getters["assets/getAllAssets"]);
+  const evmAssets = computed<EvmAssets>(() => store.getters["assets/getEvmAllAssets"]);
   const xcmOpponentChain = computed<Chain>(() => {
     const chain = astarChains.includes(capitalize(from.value) as Chain) ? to.value : from.value;
     return capitalize(chain) as Chain;
@@ -67,20 +68,20 @@ export function useTransferRouter() {
     if (restrictedNetworksArray.length === 0) return [];
     return restrictedNetworksArray
       .filter(({ isRestrictedFromEvm, isRestrictedFromNative }) =>
-        isH160.value ? isRestrictedFromEvm : isRestrictedFromNative
+        isH160.value ? isRestrictedFromEvm : isRestrictedFromNative,
       )
       .map(({ chain }) => chain);
   });
 
   const setNativeTokenBalance = (): void => {
-    nativeTokenBalance.value = Number(ethers.utils.formatEther(useableBalance.value));
+    nativeTokenBalance.value = formatEtherAsNumber(useableBalance.value);
   };
 
   const redirect = (): void => {
     const token = nativeTokenSymbol.value.toLowerCase();
     router.push({
       path: `/${network.value}/assets/transfer`,
-      query: { token, mode: 'local' },
+      query: { token, mode: "local" },
     });
   };
 
@@ -198,7 +199,7 @@ export function useTransferRouter() {
     originChain: string;
   }): void => {
     isLocalTransfer.value = isLocal;
-    const mode = isLocal ? 'local' : 'xcm';
+    const mode = isLocal ? "local" : "xcm";
     const isNativeAstarToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
 
     const opponentNetwork = isNativeAstarToken
@@ -218,7 +219,7 @@ export function useTransferRouter() {
   };
 
   const setToken = (t: Asset): void => {
-    const mode = isLocalTransfer.value ? 'local' : 'xcm';
+    const mode = isLocalTransfer.value ? "local" : "xcm";
     const token = t.metadata.symbol.toLowerCase();
     const baseQuery = { token, mode };
     const xcmQuery = {
@@ -256,7 +257,7 @@ export function useTransferRouter() {
     const token = isAstarEvm ? tokenSymbol.value : t.toLowerCase();
     router.replace({
       path: `/${network.value}/assets/transfer`,
-      query: { ...route.query, token, from, to, mode: 'xcm' },
+      query: { ...route.query, token, from, to, mode: "xcm" },
     });
   };
 
@@ -288,7 +289,7 @@ export function useTransferRouter() {
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
         selectableTokens = xcmAssets.value.assets;
         tokens = selectableTokens.filter(
-          ({ isXcmCompatible, userBalance }) => isXcmCompatible || userBalance
+          ({ isXcmCompatible, userBalance }) => isXcmCompatible || userBalance,
         );
         tokens.push(nativeTokenAsset);
       }
@@ -301,14 +302,14 @@ export function useTransferRouter() {
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
-          generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets)
+          generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets),
         );
         selectableTokens = filteredToken
           .filter(({ isXcmCompatible }) => isXcmCompatible)
           .filter((it) => it.originChain === selectedNetwork);
       } else {
         selectableTokens = xcmAssets.value.assets.filter(
-          (it) => it.originChain === selectedNetwork
+          (it) => it.originChain === selectedNetwork,
         );
       }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
@@ -326,7 +327,7 @@ export function useTransferRouter() {
     }
 
     const isCustomNetwork = network.value === providerEndpoints[endpointKey.CUSTOM].networkAlias;
-    isLocalTransfer.value = mode.value === 'local';
+    isLocalTransfer.value = mode.value === "local";
     const isRedirect =
       !isCustomNetwork &&
       !isZkEvm.value &&
@@ -339,7 +340,7 @@ export function useTransferRouter() {
     const nativeTokenAsset = { ...nativeToken, userBalance: nativeBal };
     token.value = nativeTokenAsset;
     token.value = tokens.value.find(
-      (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
+      (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase(),
     );
   };
 
@@ -357,7 +358,7 @@ export function useTransferRouter() {
     const isFetchedXcmAssets = xcmAssets.value.assets.length > 0;
     if (isFetchedXcmAssets && tokenSymbol.value) {
       const isFound = tokens.value.find(
-        (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
+        (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase(),
       );
       !isFound && redirect();
     }
@@ -377,7 +378,7 @@ export function useTransferRouter() {
 
     const isDisabledXcmChain = disabledXcmChains.some((it) => it === currentNetworkIdx.value);
 
-    const originChain = token.value?.originChain || '';
+    const originChain = token.value?.originChain || "";
     return checkIsDisabledToken(originChain) || isDisabledXcmChain;
   });
 
@@ -390,7 +391,7 @@ export function useTransferRouter() {
 
   // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
   const handleDisableXcmTransfer = (): void => {
-    if (checkIsDisabledXcmChain(from.value, to.value) && mode.value === 'xcm') {
+    if (checkIsDisabledXcmChain(from.value, to.value) && mode.value === "xcm") {
       router.push(Path.Assets);
     }
   };

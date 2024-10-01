@@ -38,16 +38,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useDappStaking } from '../../hooks';
-import TabComponent, { TabDefinition } from './TabComponent.vue';
-import MyStaking from './MyStaking.vue';
-import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
-import MyDapps from './MyDapps.vue';
-import Unlocking from './Unlocking.vue';
-import { ethers } from 'ethers';
-import { truncate } from '@astar-network/astar-sdk-core';
+import { truncate } from "@astar-network/astar-sdk-core";
+import { ethers } from "ethers";
+import TokenBalanceNative from "src/components/common/TokenBalanceNative.vue";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { computed, defineComponent, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { useDappStaking } from "../../hooks";
+import MyDapps from "./MyDapps.vue";
+import MyStaking from "./MyStaking.vue";
+import TabComponent, { type TabDefinition } from "./TabComponent.vue";
+import Unlocking from "./Unlocking.vue";
 
 export default defineComponent({
   components: {
@@ -71,9 +72,9 @@ export default defineComponent({
     const stakeUsd = ref<number | null>(null);
 
     const tabs = computed<TabDefinition[]>(() => [
-      { title: t('stakingV3.myStaking'), visible: true },
-      { title: t('stakingV3.myDapps'), visible: stakerInfo.value?.size > 0 },
-      { title: t('stakingV3.unlocking'), visible: !!ledger.value?.unlocking.length },
+      { title: t("stakingV3.myStaking"), visible: true },
+      { title: t("stakingV3.myDapps"), visible: stakerInfo.value?.size > 0 },
+      { title: t("stakingV3.unlocking"), visible: !!ledger.value?.unlocking.length },
     ]);
 
     watch(
@@ -83,10 +84,10 @@ export default defineComponent({
         const lockedBal = String(ledger?.value?.locked.toString());
         if (!lockedBal || !props.nativeTokenUsd) return;
 
-        const bal = Number(ethers.utils.formatEther(lockedBal));
+        const bal = formatEtherAsNumber(lockedBal);
         stakeUsd.value = props.nativeTokenUsd * bal;
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     return { currentTabIndex, totalStakerRewards, stakerInfo, tabs, ledger, stakeUsd, truncate };
