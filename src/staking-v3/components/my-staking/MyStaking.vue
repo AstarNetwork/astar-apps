@@ -206,7 +206,7 @@ export default defineComponent({
       formatPeriod,
     } = useDappStaking();
 
-    const bonus = ref<BigInt>(BigInt(0));
+    const bonus = ref<bigint>(BigInt(0));
     const { getEstimatedBonus } = useAprV3({ isWatch: false });
 
     const { navigateToVote } = useDappStakingNavigation();
