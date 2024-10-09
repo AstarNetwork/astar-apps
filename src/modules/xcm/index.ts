@@ -231,6 +231,7 @@ export let xcmChainObj: XcmChainObj = {
       'wss://statemint.api.onfinality.io/public-ws',
       'wss://statemint.public.curie.radiumblock.co/ws',
     ],
+    chopsticksEndpoint: 'ws://localhost:9956',
     subscan: 'https://assethub-polkadot.subscan.io',
     isAstarNativeToken: false,
   },

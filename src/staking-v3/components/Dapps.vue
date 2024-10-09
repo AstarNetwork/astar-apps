@@ -39,7 +39,12 @@
         :modules="modules"
       >
         <swiper-slide v-for="(dapp, index) in filteredDapps" :key="index">
-          <router-link v-if="dapp" class="card--dapp" :to="getDappPageUrl(dapp.basic.address)">
+          <router-link
+            v-if="dapp"
+            class="card--dapp"
+            :to="getDappPageUrl(dapp.basic.address)"
+            data-testid="single-dapp"
+          >
             <div class="card__top">
               <div class="icon--dapp">
                 <img :src="dapp.basic.iconUrl" alt="icon" />

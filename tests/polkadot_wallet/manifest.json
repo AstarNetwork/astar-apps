@@ -1,20 +1,23 @@
 {
-   "author": "polkadot.{js}",
-   "background": {
-      "persistent": true,
-      "scripts": [ "background.js" ]
-   },
-   "browser_action": {
+   "action": {
       "default_popup": "index.html",
       "default_title": "polkadot{.js}"
+   },
+   "author": "polkadot.{js}",
+   "background": {
+      "service_worker": "background.js",
+      "type": "module"
    },
    "content_scripts": [ {
       "js": [ "content.js" ],
       "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_start"
    } ],
-   "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'",
+   "content_security_policy": {
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+   },
    "description": "Manage your Polkadot accounts outside of dapps. Injects the accounts and allows signing transactions for a specific account.",
+   "differential_fingerprint": "1.76ff80b27f783efadcfda531f718b145005f35fff9e7fcf6de94b7b0aeaf5c0d",
    "homepage_url": "https://github.com/polkadot-js/extension",
    "icons": {
       "128": "images/icon-128.png",
@@ -24,11 +27,14 @@
       "64": "images/icon-64.png"
    },
    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxztbevtmoIYN2bACMJvUEXAhMI1CMMGXPt9UAH5xoOjZgBHhAXWf0F2pMyHygKlN498GxwSXNzD3NoZVkAbu7Vq70NMDpOoMkFPj9JT4ApJwkGTtsnWnOgOszLIUEYgLbJteV4v5dmNmx9rfLcQIqTe0pmh2RnSjllqGVz7E0hHv16PLRhptzrhXYq1mn5v/JlivbudT6WeLVDv/Xps3w71d2hQxXz3JWr4flZupnNxGijrIuULl9i7XSGUC5EcxR33TTJGsc787RAVYl1/xksOZeT/t65wGzGk3KIS9Oe3B7CpXHs6p5wkWFwV5aKT7tGJQe79fWCA8k92W5IA6nwIDAQAB",
-   "manifest_version": 2,
+   "manifest_version": 3,
    "name": "polkadot{.js} extension",
    "permissions": [ "storage", "tabs" ],
    "short_name": "polkadot{.js}",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "0.44.1",
-   "web_accessible_resources": [ "page.js" ]
+   "version": "0.52.2",
+   "web_accessible_resources": [ {
+      "matches": [ "*://*/*" ],
+      "resources": [ "page.js" ]
+   } ]
 }
