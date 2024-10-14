@@ -47,7 +47,9 @@
             </div>
           </router-link>
         </nav>
-
+        <a class="lfgm-mobile" :href="lfgmUrl">
+          <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
+        </a>
         <div class="gradient-bg">
           <astar-domains />
           <blog-posts />
@@ -84,10 +86,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useBreakpoints } from 'src/hooks';
-import { Path as RoutePath } from 'src/router/routes';
 import { useRouter } from 'vue-router';
-import { useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { Path as RoutePath } from 'src/router/routes';
+import { lfgmUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from './AstarDomains.vue';
@@ -117,6 +119,7 @@ export default defineComponent({
       RoutePath,
       network,
       isZkyoto,
+      lfgmUrl,
     };
   },
 });
@@ -202,5 +205,16 @@ export default defineComponent({
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   padding: 0 16px;
+}
+
+.lfgm-mobile {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0px;
+  img {
+    width: 100%;
+    height: 150px;
+    background: $navy-3;
+  }
 }
 </style>
