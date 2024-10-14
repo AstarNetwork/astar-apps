@@ -47,7 +47,7 @@
             </div>
           </router-link>
         </nav>
-        <a class="lfgm-mobile" :href="lfgmUrl">
+        <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
           <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
         </a>
         <div class="gradient-bg">

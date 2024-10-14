@@ -96,7 +96,7 @@
           </div>
         </a>
       </div>
-      <a class="lfgm" :href="lfgmUrl">
+      <a class="lfgm" :href="lfgmUrl" target="_blank">
         <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
       </a>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
