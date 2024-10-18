@@ -61,7 +61,7 @@ export default defineComponent({
       {
         title: 'Startale',
         img: icon_img.startale,
-        link: 'https://startale.org/',
+        link: 'https://startale.com/',
       },
     ];
 
