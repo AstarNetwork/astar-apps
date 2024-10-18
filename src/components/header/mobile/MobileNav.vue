@@ -52,7 +52,7 @@
         </a>
         <div class="gradient-bg">
           <astar-domains />
-          <blog-posts />
+          <!-- <blog-posts /> -->
         </div>
 
         <div class="gradient-bg">
@@ -94,12 +94,12 @@ import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from './AstarDomains.vue';
 import CommunityLinks from './CommunityLinks.vue';
-import BlogPosts from './BlogPosts.vue';
+// import BlogPosts from './BlogPosts.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import LightDarkMode from './LightDarkMode.vue';
 
 export default defineComponent({
-  components: { AstarDomains, CommunityLinks, BlogPosts, LocaleChanger, LightDarkMode },
+  components: { AstarDomains, CommunityLinks, LocaleChanger, LightDarkMode },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const showNav = ref<boolean>(false);
