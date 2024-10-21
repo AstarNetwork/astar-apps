@@ -1135,4 +1135,8 @@ export default {
       interactCarefully: 'Interact carefully with new or suspicious tokens',
     },
   },
+  governance: {
+    newProposals: 'New proposals',
+    ongoingReferenda: 'Ongoing referenda',
+  },
 };
