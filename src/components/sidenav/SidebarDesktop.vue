@@ -69,7 +69,7 @@
         </a>
       </div>
       <div v-if="isGovernanceEnabled">
-        <a class="link" :href="homepageUrl" target="_blank">
+        <a class="link" :href="governanceUrl" target="_blank">
           <astar-icon-base class="icon-add" icon-name="governance" style="stroke-width: 0.5px">
             <astar-icon-governance />
           </astar-icon-base>
@@ -118,7 +118,7 @@ export default defineComponent({
   setup() {
     const { isOpen } = useSidebar();
     const { isZkEvm, isZkyoto } = useNetworkInfo();
-    const { isEnabled: isGovernanceEnabled, homepageUrl } = useGovernance();
+    const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
@@ -154,7 +154,7 @@ export default defineComponent({
       socialUrl,
       isZkyoto,
       isGovernanceEnabled,
-      homepageUrl,
+      governanceUrl,
     };
   },
 });

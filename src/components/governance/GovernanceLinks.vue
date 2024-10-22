@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isEnabled" class="governance-links-container governance-container">
+  <div v-if="isGovernanceEnabled" class="governance-links-container governance-container">
     <div class="header"><astar-icon-governance />{{ $t('governance.newProposals') }}</div>
     <hr class="separator" />
     <div class="governance-container">
@@ -27,9 +27,9 @@ import GovernanceLink from './GovernanceLink.vue';
 export default defineComponent({
   components: { GovernanceLink },
   setup() {
-    const { isEnabled, proposals, ongoingReferenda } = useGovernance();
+    const { isGovernanceEnabled, proposals, ongoingReferenda } = useGovernance();
 
-    return { isEnabled, proposals, ongoingReferenda };
+    return { isGovernanceEnabled, proposals, ongoingReferenda };
   },
 });
 </script>

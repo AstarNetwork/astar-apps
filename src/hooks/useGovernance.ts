@@ -73,16 +73,16 @@ export function useGovernance() {
     return networkNameSubstrate.value.toLowerCase();
   });
 
-  const isEnabled = computed<boolean>(() => {
+  const isGovernanceEnabled = computed<boolean>(() => {
     return networkLowercase.value === 'shibuya';
   });
 
-  const homepageUrl = computed<string>(() => {
+  const governanceUrl = computed<string>(() => {
     return `https://${networkLowercase.value}.subsquare.io`;
   });
 
   onMounted(async () => {
-    if (isEnabled.value) {
+    if (isGovernanceEnabled.value) {
       if (proposals.value.length === 0) {
         proposals.value = await fetchProposals(networkLowercase.value);
       }
@@ -94,9 +94,9 @@ export function useGovernance() {
   });
 
   return {
-    isEnabled,
+    isGovernanceEnabled,
     proposals,
     ongoingReferenda,
-    homepageUrl,
+    governanceUrl,
   };
 }
