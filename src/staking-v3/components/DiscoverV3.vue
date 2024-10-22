@@ -7,7 +7,7 @@
         <voting-wizard />
       </div>
       <leaderboard />
-      <leaderboard-vote />
+      <!-- <leaderboard-vote /> -->
       <dynamic-ads-area />
 
       <div
@@ -63,7 +63,6 @@ import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
-import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import PeriodInfoVote from './PeriodInfoVote.vue';
 import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
@@ -74,7 +73,6 @@ export default defineComponent({
   components: {
     Dapps,
     Leaderboard,
-    LeaderboardVote,
     DataList,
     DynamicAdsArea,
     PeriodInfoVote,
