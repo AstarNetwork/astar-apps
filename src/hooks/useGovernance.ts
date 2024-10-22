@@ -77,6 +77,10 @@ export function useGovernance() {
     return networkLowercase.value === 'shibuya';
   });
 
+  const homepageUrl = computed<string>(() => {
+    return `https://${networkLowercase.value}.subsquare.io`;
+  });
+
   onMounted(async () => {
     if (isEnabled.value) {
       if (proposals.value.length === 0) {
@@ -93,5 +97,6 @@ export function useGovernance() {
     isEnabled,
     proposals,
     ongoingReferenda,
+    homepageUrl,
   };
 }

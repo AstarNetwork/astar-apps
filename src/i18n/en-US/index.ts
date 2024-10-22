@@ -161,6 +161,7 @@ export default {
     theme: 'Theme',
     close: 'Close',
     comingsoon: 'Something ink!redible coming soon',
+    governance: 'Governance',
   },
   drawer: {
     network: 'Network',

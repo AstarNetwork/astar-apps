@@ -1,6 +1,6 @@
 <template>
   <div v-if="isEnabled" class="governance-links-container governance-container">
-    <div class="header"><img :src="icon" />{{ $t('governance.newProposals') }}</div>
+    <div class="header"><astar-icon-governance />{{ $t('governance.newProposals') }}</div>
     <hr class="separator" />
     <div class="governance-container">
       <div v-for="proposal in proposals" :key="proposal.index">
@@ -8,7 +8,7 @@
       </div>
     </div>
     <div v-if="ongoingReferenda" class="governance-container">
-      <div class="header"><img :src="icon" />{{ $t('governance.ongoingReferenda') }}</div>
+      <div class="header"><astar-icon-governance />{{ $t('governance.ongoingReferenda') }}</div>
       <hr class="separator" />
       <governance-link
         :index="ongoingReferenda.index"
@@ -22,7 +22,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useGovernance } from 'src/hooks';
-import icon from 'src/components/governance/Governance.svg';
 import GovernanceLink from './GovernanceLink.vue';
 
 export default defineComponent({
@@ -30,7 +29,7 @@ export default defineComponent({
   setup() {
     const { isEnabled, proposals, ongoingReferenda } = useGovernance();
 
-    return { isEnabled, icon, proposals, ongoingReferenda };
+    return { isEnabled, proposals, ongoingReferenda };
   },
 });
 </script>
@@ -63,5 +62,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 4px 0 0 4px;
 }
 </style>
