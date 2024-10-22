@@ -34,9 +34,17 @@ export default defineComponent({
   color: $astar-blue;
   align-items: center;
   gap: 8px;
+  max-height: 80px;
 }
 
 a {
   color: $astar-blue;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.5em;
+  line-height: 1.5em;
 }
 </style>
