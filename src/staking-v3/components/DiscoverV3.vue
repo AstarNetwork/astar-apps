@@ -8,6 +8,7 @@
       </div>
       <leaderboard />
       <!-- <leaderboard-vote /> -->
+      <div v-if="isVotingPeriod" class="v-spacer"></div>
       <dynamic-ads-area />
 
       <div
@@ -83,7 +84,7 @@ export default defineComponent({
   },
   setup() {
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
-    const { protocolState } = useDappStaking();
+    const { protocolState, isVotingPeriod } = useDappStaking();
     const { t } = useI18n();
     const store = useStore();
 
@@ -114,11 +115,24 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { searchText, previousPeriod, displayIndex, toggleDapps };
+    return { searchText, previousPeriod, displayIndex, toggleDapps, isVotingPeriod };
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @use './styles/discover-v3.scss';
+
+.v-spacer {
+  width: 100%;
+  position: relative;
+  background-color: $navy-1;
+  background-size: 100% auto;
+  height: 40px;
+  margin-bottom: 0px;
+
+  @media (min-width: $lg) {
+    height: 100px;
+  }
+}
 </style>
