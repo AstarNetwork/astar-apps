@@ -46,13 +46,18 @@
               <span class="text--link">{{ $t('sidenavi.data') }}</span>
             </div>
           </router-link>
+          <a :href="socialUrl.forum" :class="['link']" target="_blank" @click="showNav = !showNav">
+            <div class="column--item column--item--dashboard">
+              <span class="text--link">{{ $t('sidenavi.forum') }}</span>
+            </div>
+          </a>
         </nav>
         <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
           <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
         </a>
         <div class="gradient-bg">
           <astar-domains />
-          <blog-posts />
+          <!-- <blog-posts /> -->
         </div>
 
         <div class="gradient-bg">
@@ -89,17 +94,17 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { Path as RoutePath } from 'src/router/routes';
-import { lfgmUrl } from 'src/links';
+import { lfgmUrl, socialUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from './AstarDomains.vue';
 import CommunityLinks from './CommunityLinks.vue';
-import BlogPosts from './BlogPosts.vue';
+// import BlogPosts from './BlogPosts.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import LightDarkMode from './LightDarkMode.vue';
 
 export default defineComponent({
-  components: { AstarDomains, CommunityLinks, BlogPosts, LocaleChanger, LightDarkMode },
+  components: { AstarDomains, CommunityLinks, LocaleChanger, LightDarkMode },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const showNav = ref<boolean>(false);
@@ -120,6 +125,7 @@ export default defineComponent({
       network,
       isZkyoto,
       lfgmUrl,
+      socialUrl,
     };
   },
 });
