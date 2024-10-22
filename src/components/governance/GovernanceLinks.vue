@@ -64,4 +64,12 @@ export default defineComponent({
   gap: 8px;
   padding: 4px 0 0 4px;
 }
+
+.body--dark {
+  .governance-links-container {
+    border-color: $navy-3;
+    background-color: $navy-1;
+    color: $white;
+  }
+}
 </style>
