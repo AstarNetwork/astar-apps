@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
-import { ExtendedVestingInfo, useBalance, useGasPrice } from 'src/hooks';
+import { type ExtendedVestingInfo, useBalance, useGasPrice } from "src/hooks";
+import { formatEtherAsNumber } from "src/lib/formatters";
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { IAssetsService } from 'src/v2/services';
+import type { IAssetsService } from "src/v2/services";
 import { Symbols } from 'src/v2/symbols';
 import { computed } from 'vue';
 
@@ -25,16 +26,14 @@ export const useVesting = () => {
       ],
     };
     try {
-      if (accountData.value && accountData.value.vesting.length) {
-        const claimableAmount = Number(
-          ethers.utils.formatEther(accountData.value.vestedClaimable.toString())
-        );
+      if (accountData.value?.vesting.length) {
+        const claimableAmount = formatEtherAsNumber(accountData.value.vestedClaimable.toString());
 
         const vestings = accountData.value.vesting.map((vesting: ExtendedVestingInfo) => {
           const { perBlock, locked, startingBlock } = vesting.basicInfo;
-          const vestedAmount = Number(ethers.utils.formatEther(vesting.vested.toString()));
-          const totalDistribution = Number(ethers.utils.formatEther(locked.toString()));
-          const unlockPerBlock = Number(ethers.utils.formatEther(perBlock.toString()));
+          const vestedAmount = formatEtherAsNumber(vesting.vested.toString());
+          const totalDistribution = formatEtherAsNumber(locked.toString());
+          const unlockPerBlock = formatEtherAsNumber(perBlock.toString());
           const block = locked.div(perBlock).add(startingBlock);
           const untilBlock = block.toNumber();
           return {

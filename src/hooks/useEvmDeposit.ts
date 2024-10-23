@@ -1,10 +1,10 @@
 import { buildEvmAddress } from '@astar-network/astar-sdk-core';
-import { $web3 } from 'boot/api';
-import { ethers } from 'ethers';
+import { $web3 } from "boot/api";
 import { useAccount, useGasPrice } from 'src/hooks';
+import { formatEtherAsNumber } from "src/lib/formatters";
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { IAssetsService } from 'src/v2/services';
+import type { IAssetsService } from "src/v2/services";
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
 
@@ -40,8 +40,8 @@ export function useEvmDeposit() {
         const h160Addr = buildEvmAddress(currentAccountRef);
         const deposit = await getData(h160Addr);
         evmDeposit.value = deposit;
-        numEvmDeposit.value = Number(ethers.utils.formatEther(deposit.toString()));
-        isEvmDeposit.value = deposit.toString() !== '0' && !isH160.value ? true : false;
+        numEvmDeposit.value = formatEtherAsNumber(deposit);
+        isEvmDeposit.value = deposit.toString() !== "0" && !isH160.value;
       }
     },
     { immediate: true }

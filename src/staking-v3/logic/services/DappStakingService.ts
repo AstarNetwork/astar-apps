@@ -1,36 +1,36 @@
-import { inject, injectable } from 'inversify';
-import {
-  BonusRewards,
-  CombinedDappInfo,
-  DappInfo,
-  DappStakeInfo,
-  DappState,
-  EraInfo,
-  EraLengths,
-  PeriodType,
-  ProtocolState,
-  SingularStakingInfo,
-  StakeAmount,
-  StakerRewards,
-} from '../models';
-import { IDappStakingService } from './IDappStakingService';
-import { Symbols } from 'src/v2/symbols';
-import { IDappStakingRepository, IDataProviderRepository } from '../repositories';
-import { Guard } from 'src/v2/common';
-import { IWalletService } from 'src/v2/services';
-import { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
+import type { ExtrinsicPayload } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
-import { SignerService } from './SignerService';
+import { inject, injectable } from 'inversify';
+import { type ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
+import { formatEtherAsNumber } from 'src/lib/formatters';
+import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { ASTAR_NATIVE_TOKEN, astarMainnetNativeToken } from 'src/config/chain';
-import {
+import type {
   IBalancesRepository,
   IInflationRepository,
   IMetadataRepository,
   ISystemRepository,
   ITokenApiRepository,
 } from 'src/v2/repositories';
-import { weiToToken } from 'src/token-utils';
+import type { IWalletService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import {
+  type BonusRewards,
+  type CombinedDappInfo,
+  type DappInfo,
+  type DappStakeInfo,
+  DappState,
+  type EraInfo,
+  type EraLengths,
+  PeriodType,
+  type ProtocolState,
+  type SingularStakingInfo,
+  type StakeAmount,
+  type StakerRewards,
+} from '../models';
+import type { IDappStakingRepository, IDataProviderRepository } from '../repositories';
+import type { IDappStakingService } from './IDappStakingService';
+import { SignerService } from './SignerService';
 
 @injectable()
 export class DappStakingService extends SignerService implements IDappStakingService {
@@ -231,7 +231,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
       lastStakedPeriod,
     } = await this.getStakerEraRange(senderAddress);
 
-    let result = {
+    const result = {
       amount: BigInt(0),
       period: lastStakedPeriod,
       eraCount: 0,
@@ -459,7 +459,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     if (unstakeAmount > BigInt(0)) {
       const unstakeCall = await this.dappStakingRepository.getUnstakeCall(
         unstakeFromAddress,
-        Number(ethers.utils.formatEther(unstakeAmount.toString()))
+        formatEtherAsNumber(unstakeAmount)
       );
       calls.push(unstakeCall);
     }
@@ -495,7 +495,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   }
 
   private async getBonusRewardsAndContractsToClaim(senderAddress: string): Promise<BonusRewards> {
-    let result = { amount: BigInt(0), contractsToClaim: new Map<string, bigint>() };
+    const result = { amount: BigInt(0), contractsToClaim: new Map<string, bigint>() };
     const [stakerInfo, protocolState, constants] = await Promise.all([
       this.dappStakingRepository.getStakerInfo(senderAddress, true),
       this.dappStakingRepository.getProtocolState(),
@@ -723,7 +723,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     const cyclesPerYear = this.getCyclesPerYear(eraLengths, blockTime);
     const currentStakeAmount = this.getStakeAmount(protocolState, eraInfo);
 
-    const stakedPercent = currentStakeAmount / weiToToken(totalIssuance);
+    const stakedPercent = currentStakeAmount / formatEtherAsNumber(totalIssuance);
     const { baseStakersPart, adjustableStakersPart, idealStakingRate, maxInflationRate } =
       inflationParams;
 
@@ -737,7 +737,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
 
   // @inheritdoc
   public async getBonusApr(
-    simulatedVoteAmount: number = 1000,
+    simulatedVoteAmount = 1000,
     block?: number
   ): Promise<{ value: number; simulatedBonusPerPeriod: number }> {
     const [inflationConfiguration, eraLengths, eraInfo, protocolState, blockTime] =
@@ -789,8 +789,8 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     // *** 1. Determine last claimable era.
     const currentPeriod = protocolState!.periodInfo.number;
     const firstStakedEra = Math.min(
-      ledger.staked.era > 0 ? ledger.staked.era : Infinity,
-      ledger.stakedFuture?.era ?? Infinity
+      ledger.staked.era > 0 ? ledger.staked.era : Number.POSITIVE_INFINITY,
+      ledger.stakedFuture?.era ?? Number.POSITIVE_INFINITY
     );
     const lastStakedPeriod = Math.max(ledger.staked.period, ledger.stakedFuture?.period ?? 0);
     let lastStakedEra = 0;

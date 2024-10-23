@@ -1,19 +1,20 @@
-import { computed, watch, ref, Ref, ComputedRef } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useStore } from 'src/store';
-import { container } from 'src/v2/common';
-import {
+import { ethers } from "ethers";
+import { PERIOD1_START_BLOCKS } from "src/constants";
+import { formatEtherAsNumber } from "src/lib/formatters";
+import { type InflationParam, useDappStaking } from "src/staking-v3";
+import { useStore } from "src/store";
+import { container } from "src/v2/common";
+import type { InflationConfiguration } from "src/v2/models";
+import type {
   BurnEvent,
   IBalancesRepository,
   IInflationRepository,
   ITokenApiRepository,
-} from 'src/v2/repositories';
-import { Symbols } from 'src/v2/symbols';
-import { InflationConfiguration } from 'src/v2/models';
-import { InflationParam, useDappStaking } from 'src/staking-v3';
-import { ethers } from 'ethers';
-import { useNetworkInfo } from './useNetworkInfo';
-import { PERIOD1_START_BLOCKS } from 'src/constants';
+} from "src/v2/repositories";
+import { Symbols } from "src/v2/symbols";
+import { type ComputedRef, type Ref, computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { useNetworkInfo } from "./useNetworkInfo";
 
 type UseInflation = {
   activeInflationConfiguration: ComputedRef<InflationConfiguration>;
@@ -39,23 +40,23 @@ export function useInflation(): UseInflation {
   const realizedAdjustableStakersPart = ref<number>(0);
 
   const activeInflationConfiguration = computed<InflationConfiguration>(
-    () => store.getters['general/getActiveInflationConfiguration']
+    () => store.getters["general/getActiveInflationConfiguration"],
   );
   const inflationParameters = computed<InflationParam>(
-    () => store.getters['general/getInflationParameters']
+    () => store.getters["general/getInflationParameters"],
   );
-  const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
+  const currentBlock = computed<number>(() => store.getters["general/getCurrentBlock"]);
 
   const fetchActiveConfigurationToStore = async (): Promise<void> => {
     const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
     const activeConfiguration = await inflationRepository.getInflationConfiguration();
-    store.commit('general/setActiveInflationConfiguration', activeConfiguration);
+    store.commit("general/setActiveInflationConfiguration", activeConfiguration);
   };
 
   const fetchInflationParamsToStore = async (): Promise<void> => {
     const inflationRepository = container.get<IInflationRepository>(Symbols.InflationRepository);
     const params = await inflationRepository.getInflationParams();
-    store.commit('general/setInflationParameters', params);
+    store.commit("general/setInflationParameters", params);
   };
 
   const getInflationParameters = async (): Promise<InflationParam> => {
@@ -66,10 +67,10 @@ export function useInflation(): UseInflation {
   const getBurnEvents = async (): Promise<BurnEvent[]> => {
     // Ignore burn events with less than 1M ASTAR. They are not impacting charts a lot small burn amounts
     // could be a spam.
-    const minBurn = BigInt('1000000000000000000000000');
+    const minBurn = BigInt("1000000000000000000000000");
     const tokenApiRepository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
     const burnEvents = await tokenApiRepository.getBurnEvents(
-      networkNameSubstrate.value.toLowerCase()
+      networkNameSubstrate.value.toLowerCase(),
     );
 
     return burnEvents.filter((item) => item.amount >= minBurn);
@@ -88,7 +89,7 @@ export function useInflation(): UseInflation {
 
       if (!period1StartBlock) {
         console.warn(
-          t('dashboard.inflation.wrongNetwork', { network: networkNameSubstrate.value })
+          t("dashboard.inflation.wrongNetwork", { network: networkNameSubstrate.value }),
         );
         return;
       }
@@ -102,13 +103,13 @@ export function useInflation(): UseInflation {
       burnEvents.splice(0, 0, {
         blockNumber: period1StartBlock,
         amount: BigInt(0),
-        user: '',
+        user: "",
         timestamp: 0,
       });
       burnEvents.push({
         blockNumber: currentBlock.value,
         amount: BigInt(0),
-        user: '',
+        user: "",
         timestamp: 0,
       });
 
@@ -133,17 +134,13 @@ export function useInflation(): UseInflation {
 
       // Estimate total issuance at the end of the current cycle.
       const endOfCycleBlock = period1StartBlock + cycleLengthInBlocks;
-      const endOfCycleTotalIssuance = Number(
-        ethers.utils.formatEther(
-          slope * BigInt(endOfCycleBlock - period1StartBlock) + initialTotalIssuanceWithoutBurn
-        )
+      const endOfCycleTotalIssuance = formatEtherAsNumber(
+        slope * BigInt(endOfCycleBlock - period1StartBlock) + initialTotalIssuanceWithoutBurn,
       );
 
       // Estimated inflation at the end of the current cycle.
       inflation =
-        (100 *
-          (endOfCycleTotalIssuance -
-            Number(ethers.utils.formatEther(initialTotalIssuanceWithoutBurn.toString())))) /
+        (100 * (endOfCycleTotalIssuance - formatEtherAsNumber(initialTotalIssuanceWithoutBurn))) /
         endOfCycleTotalIssuance;
 
       // Calculate maximum and realized inflation for each era in the cycle.
@@ -154,7 +151,7 @@ export function useInflation(): UseInflation {
         cycleLengthInBlocks,
         inflationParameters.value?.maxInflationRate ?? 0,
         eraLengths.value.standardEraLength,
-        burnEvents
+        burnEvents,
       );
 
       calculateRealizedInflationData(
@@ -163,17 +160,17 @@ export function useInflation(): UseInflation {
         slope,
         eraLengths.value.standardEraLength,
         initialTotalIssuance,
-        burnEvents
+        burnEvents,
       );
 
       calculateAdjustableStakerRewards(
         realizedTotalIssuance,
         currentEraInfo.value?.currentStakeAmount.totalStake ?? BigInt(0),
         inflationParameters.value.adjustableStakersPart,
-        inflationParameters.value.idealStakingRate
+        inflationParameters.value.idealStakingRate,
       );
     } catch (error) {
-      console.error('Error calculating realized inflation', error);
+      console.error("Error calculating realized inflation", error);
     }
 
     estimatedInflation.value = inflation;
@@ -186,11 +183,11 @@ export function useInflation(): UseInflation {
     cycleLengthInBlocks: number,
     maxInflation: number,
     eraLength: number,
-    burnEvents: BurnEvent[]
+    burnEvents: BurnEvent[],
   ): void => {
     const result: [number, number][] = [];
-    const inflation = BigInt(Math.floor(maxInflation * 100)) * BigInt('10000000000000000');
-    const cycleProgression = (firstBlockIssuance * inflation) / BigInt('1000000000000000000');
+    const inflation = BigInt(Math.floor(maxInflation * 100)) * BigInt("10000000000000000");
+    const cycleProgression = (firstBlockIssuance * inflation) / BigInt("1000000000000000000");
     const cycleLength = BigInt(cycleLengthInBlocks);
 
     // One sample per era.
@@ -205,7 +202,7 @@ export function useInflation(): UseInflation {
           firstBlockIssuance -
           burnEvents[j].amount;
 
-        result.push([i, Number(ethers.utils.formatEther(inflation.toString()))]);
+        result.push([i, formatEtherAsNumber(inflation)]);
       }
     }
 
@@ -218,7 +215,7 @@ export function useInflation(): UseInflation {
     slope: bigint,
     eraLength: number,
     firstBlockIssuance: bigint,
-    burnEvents: BurnEvent[]
+    burnEvents: BurnEvent[],
   ): void => {
     const result: [number, number][] = [];
 
@@ -228,10 +225,8 @@ export function useInflation(): UseInflation {
         i <= burnEvents[j + 1].blockNumber + eraLength;
         i += eraLength
       ) {
-        const currentBlockIssuance = Number(
-          ethers.utils.formatEther(
-            slope * BigInt(i - firstBlock) + firstBlockIssuance - burnEvents[j].amount
-          )
+        const currentBlockIssuance = formatEtherAsNumber(
+          slope * BigInt(i - firstBlock) + firstBlockIssuance - burnEvents[j].amount,
         );
 
         result.push([i, currentBlockIssuance]);
@@ -245,13 +240,13 @@ export function useInflation(): UseInflation {
     totalIssuance: bigint,
     totalStake: bigint,
     adjustableStakerPart: number,
-    idealStakingRate: number
+    idealStakingRate: number,
   ): void => {
     const stakeRate =
       totalStake <= BigInt(0)
         ? 0
-        : Number(ethers.utils.formatEther(totalStake.toString())) /
-          Number(ethers.utils.formatEther(totalIssuance.toString()));
+        : formatEtherAsNumber(totalStake.toString()) /
+          formatEtherAsNumber(totalIssuance.toString());
     const result = adjustableStakerPart * Math.min(1, stakeRate / idealStakingRate);
     realizedAdjustableStakersPart.value = Number(result.toFixed(3));
   };

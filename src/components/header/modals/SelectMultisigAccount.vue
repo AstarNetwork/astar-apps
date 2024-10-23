@@ -138,20 +138,27 @@ import {
   truncate,
   wait,
 } from '@astar-network/astar-sdk-core';
-import { ApiPromise } from '@polkadot/api';
-import copy from 'copy-to-clipboard';
-import { ethers } from 'ethers';
+import type { ApiPromise } from "@polkadot/api";
+import copy from "copy-to-clipboard";
 import { $api } from 'src/boot/api';
 import SelectSignatory from 'src/components/header/modals/SelectSignatory.vue';
 import { astarChain } from 'src/config/chain';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportMultisig, SupportWallet } from 'src/config/wallets';
+import { SupportMultisig, type SupportWallet } from "src/config/wallets";
 import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
-import { MultisigAddress } from 'src/modules/multisig';
+import type { MultisigAddress } from "src/modules/multisig";
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
-import { PropType, computed, defineComponent, onUnmounted, ref, watch, watchEffect } from 'vue';
+import type { SubstrateAccount } from "src/store/general/state";
+import {
+  type PropType,
+  computed,
+  defineComponent,
+  onUnmounted,
+  ref,
+  watch,
+  watchEffect,
+} from "vue";
 import { useI18n } from 'vue-i18n';
 
 import { hasProperty, isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
@@ -159,12 +166,13 @@ import { web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { useExtensions } from 'src/hooks/useExtensions';
+import { formatEtherAsString } from "src/lib/formatters";
 import { polkasafeUrl } from 'src/links';
-import { Multisig, addProxyAccounts } from 'src/modules/multisig';
+import { type Multisig, addProxyAccounts } from "src/modules/multisig";
+import { PolkasafeWrapper } from "src/types/polkasafe";
 import { container } from 'src/v2/common';
 import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
-import { Symbols } from 'src/v2/symbols';
-import { PolkasafeWrapper } from 'src/types/polkasafe';
+import { Symbols } from "src/v2/symbols";
 
 export default defineComponent({
   components: {
@@ -282,7 +290,7 @@ export default defineComponent({
     onHeightChange();
 
     const displayBalance = (balance: string): number => {
-      return truncate(ethers.utils.formatEther(balance || '0'));
+      return truncate(formatEtherAsString(balance || "0"));
     };
 
     const setMultisigAccounts = async (c: PolkasafeWrapper, signatory: string): Promise<void> => {
@@ -373,7 +381,7 @@ export default defineComponent({
 
     const setDefaultSelectedSignatory = (): void => {
       if (multisig.value) {
-        substrateAccounts.value.length === 0 && useExtensions($api!!, store);
+        substrateAccounts.value.length === 0 && useExtensions($api!, store);
         const account = substrateAccounts.value.find(
           (it) => it.address === multisig.value!.signatory.address
         );

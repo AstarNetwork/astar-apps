@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
-import { Erc20Token } from 'src/modules/token';
+import { formatEtherAsNumber } from "src/lib/formatters";
+import type { Erc20Token } from "src/modules/token";
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -34,7 +35,7 @@ export function useXvmTransferRouter() {
   });
 
   const setNativeTokenBalance = (): void => {
-    nativeTokenBalance.value = Number(ethers.utils.formatEther(useableBalance.value));
+    nativeTokenBalance.value = formatEtherAsNumber(useableBalance.value);
   };
 
   const redirect = (): void => {

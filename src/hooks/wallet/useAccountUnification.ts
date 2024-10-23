@@ -1,10 +1,10 @@
 import {
-  ExtrinsicPayload,
+  type ExtrinsicPayload,
   PayloadWithWeight,
   checkSumEvmAddress,
-} from '@astar-network/astar-sdk-core';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+} from "@astar-network/astar-sdk-core";
+import type { SubmittableExtrinsic } from "@polkadot/api/types";
+import type { ISubmittableResult } from "@polkadot/types/types";
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
@@ -12,25 +12,26 @@ import { get } from 'lodash-es';
 import ABI from 'src/config/abi/ERC20.json';
 import { setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks/useAccount';
+import { formatEtherAsString } from "src/lib/formatters";
 import { getEvmExplorerUrl } from 'src/links';
+import { getRawEvmTransaction } from "src/modules/evm";
 import { evmPrecompiledContract } from 'src/modules/precompiled';
 import { AlertMsg } from 'src/modules/toast';
+import { useDappStaking, useDapps } from "src/staking-v3";
 import { useStore } from 'src/store';
-import { XcmAssets } from 'src/store/assets/state';
+import type { XcmAssets } from "src/store/assets/state";
+import type { UnifiedAccount } from "src/store/general/state";
 import { container } from 'src/v2/common';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset } from 'src/v2/models';
-import { IAccountUnificationService, IIdentityService } from 'src/v2/services';
+import { ExtrinsicStatusMessage, type IEventAggregator } from "src/v2/messaging";
+import type { Asset } from "src/v2/models";
+import type { IAccountUnificationRepository, IIdentityRepository } from "src/v2/repositories";
+import type { IAccountUnificationService, IIdentityService } from "src/v2/services";
 import { Symbols } from 'src/v2/symbols';
-import { WatchCallback, computed, ref, watch } from 'vue';
+import { type WatchCallback, computed, ref, watch } from "vue";
 import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
-import { UnifiedAccount } from 'src/store/general/state';
-import { getRawEvmTransaction } from 'src/modules/evm';
-import { useDappStaking, useDapps } from 'src/staking-v3';
+import type { AbiItem } from "web3-utils";
+import { useNetworkInfo } from "../useNetworkInfo";
 
 const provider = get(window, 'ethereum') as any;
 
@@ -117,7 +118,7 @@ export const useAccountUnification = () => {
     if (!selectedEvmAddress.value || !protocolState.value || !ledger.value) return;
 
     try {
-      let isPendingWithdrawal =
+      const isPendingWithdrawal =
         rewards.value.bonus > BigInt(0) ||
         rewards.value.dApp > BigInt(0) ||
         rewards.value.staker.amount > BigInt(0);
@@ -311,7 +312,7 @@ export const useAccountUnification = () => {
     ]);
     const totalDeposit = depositInfo.basic + depositInfo.field * BigInt(TOTAL_FIELDS) + mappingFee;
 
-    return `${ethers.utils.formatEther(totalDeposit.toString())} ${nativeTokenSymbol.value}`;
+    return `${formatEtherAsString(totalDeposit)} ${nativeTokenSymbol.value}`;
   };
 
   watch([web3], updateEvmProvider);
