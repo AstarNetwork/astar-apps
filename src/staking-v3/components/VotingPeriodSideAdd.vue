@@ -47,6 +47,7 @@ export default defineComponent({
   border-radius: 16px;
   padding: 8px;
   color: $navy-1;
+  border: 1px solid $gray-2;
 }
 
 .top-text {

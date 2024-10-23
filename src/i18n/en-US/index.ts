@@ -161,6 +161,7 @@ export default {
     theme: 'Theme',
     close: 'Close',
     comingsoon: 'Something ink!redible coming soon',
+    governance: 'Governance',
   },
   drawer: {
     network: 'Network',
@@ -1026,7 +1027,7 @@ export default {
     newPeriodWarning:
       'New period begins in {days} days! Remember to stake during the voting period to qualify for bonus rewards!',
     stats: 'Stats',
-    dappEarner: 'Total Rewards Earned',
+    dappEarner: 'Total Rewards Claimed',
     newVotingPeriod: 'New voting period',
     bonusPeriodEnds: 'Bonus period ends in {eras} days',
     userRewardsApr: 'User Rewards APR',
@@ -1134,5 +1135,9 @@ export default {
       tokenNotSupported: "This token isn't supported bridging from {network}",
       interactCarefully: 'Interact carefully with new or suspicious tokens',
     },
+  },
+  governance: {
+    newProposals: 'New proposals',
+    ongoingReferenda: 'Ongoing referenda',
   },
 };

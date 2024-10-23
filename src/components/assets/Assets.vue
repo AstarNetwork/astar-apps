@@ -69,6 +69,7 @@
 
       <div class="column--links">
         <voting-period-side-add />
+        <governance-links />
         <side-ads />
         <astar-domains />
       </div>
@@ -100,6 +101,7 @@ import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import VotingPeriodSideAdd from 'src/staking-v3/components/VotingPeriodSideAdd.vue';
+import GovernanceLinks from '../governance/GovernanceLinks.vue';
 
 export default defineComponent({
   components: {
@@ -116,6 +118,7 @@ export default defineComponent({
     AnchorLinks,
     RegisterBanner,
     VotingPeriodSideAdd,
+    GovernanceLinks,
   },
   setup() {
     const token = ref<Asset | null>(null);
