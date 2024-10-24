@@ -763,7 +763,6 @@ export default {
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
         'Period ends in the next era. It is not possible to stake in the last era of a period.',
-      TooManyStakedContracts: 'There are too many contract stake entries for the account.',
       TooManyUnlockingChunks:
         'Contract has too many unlocking chunks. Withdraw the existing chunks if possible or wait for current chunks to complete unlocking process to withdraw them.',
       UnavailableStakeFunds:
