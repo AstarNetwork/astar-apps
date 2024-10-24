@@ -7,7 +7,6 @@
         <voting-wizard />
       </div>
       <leaderboard />
-      <!-- <leaderboard-vote /> -->
       <div v-if="isVotingPeriod" class="v-spacer"></div>
       <dynamic-ads-area />
 
@@ -43,6 +42,8 @@
           </div>
         </div>
       </div>
+
+      <leaderboard-vote />
     </div>
     <div
       class="bg--discover"
@@ -69,6 +70,7 @@ import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
 import PeriodStats from './PeriodStats.vue';
 import ToggleButtons from './ToggleButtons.vue';
+import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 
 export default defineComponent({
   components: {
@@ -81,6 +83,7 @@ export default defineComponent({
     VotingWizard,
     PeriodStats,
     ToggleButtons,
+    LeaderboardVote,
   },
   setup() {
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
