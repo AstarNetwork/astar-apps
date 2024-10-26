@@ -9,11 +9,7 @@
           :to="RoutePath.Assets"
           :class="['link', $route.path.split('/')[2] === 'assets' ? 'activeLink' : '']"
         >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
-            icon-name="assets"
-          >
+          <astar-icon-base class="iconbase" icon-color="currentColor" icon-name="assets">
             <astar-icon-assets />
           </astar-icon-base>
           <div class="row--item">
@@ -26,11 +22,7 @@
           :to="RoutePath.Dashboard"
           :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
         >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            icon-color="#0085FF"
-            icon-name="dashboard"
-          >
+          <astar-icon-base class="iconbase" icon-color="#0085FF" icon-name="dashboard">
             <astar-icon-dashboard />
           </astar-icon-base>
           <div class="row--item">
@@ -45,11 +37,7 @@
           data-testid="dapp-staking"
           :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
-            icon-name="staking"
-          >
+          <astar-icon-base class="iconbase" icon-color="currentColor" icon-name="staking">
             <astar-icon-dapp-staking />
           </astar-icon-base>
           <div class="row--item">
@@ -62,11 +50,7 @@
           :to="RoutePath.Bridge"
           :class="['link', $route.path.split('/')[2] === 'bridge' ? 'activeLink' : '']"
         >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
-            icon-name="bridge"
-          >
+          <astar-icon-base class="iconbase" icon-color="currentColor" icon-name="bridge">
             <astar-icon-bridge />
           </astar-icon-base>
           <div class="row--item">
@@ -76,23 +60,31 @@
       </div>
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
-          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">
+          <astar-icon-base class="icon-add" icon-name="ecosystem">
             <icon-ecosystem />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">
             <astar-text type="H4">{{ $t('common.ecosystem') }}</astar-text>
-            <astar-icon-external-link />
+          </div>
+        </a>
+      </div>
+      <div v-if="isGovernanceEnabled">
+        <a class="link" :href="governanceUrl" target="_blank">
+          <astar-icon-base class="icon-add" icon-name="governance" style="stroke-width: 0.5px">
+            <astar-icon-governance />
+          </astar-icon-base>
+          <div class="row--item row--item-ecosystem">
+            <astar-text type="H4">{{ $t('sidenavi.governance') }}</astar-text>
           </div>
         </a>
       </div>
       <div>
         <a :class="['link']" :href="socialUrl.forum" target="_blank">
-          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="forum">
+          <astar-icon-base class="icon-add" icon-name="forum">
             <astar-icon-forum />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">
             <astar-text type="H4">{{ $t('sidenavi.forum') }}</astar-text>
-            <astar-icon-external-link />
           </div>
         </a>
       </div>
@@ -108,8 +100,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
-import { useNetworkInfo, useSidebar } from 'src/hooks';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { useGovernance, useNetworkInfo, useSidebar } from 'src/hooks';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
@@ -126,12 +118,12 @@ export default defineComponent({
   setup() {
     const { isOpen } = useSidebar();
     const { isZkEvm, isZkyoto } = useNetworkInfo();
+    const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
 
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
-    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
@@ -154,7 +146,6 @@ export default defineComponent({
     return {
       isOpen,
       network,
-      isShiden,
       getIndicatorClass,
       isZkEvm,
       router,
@@ -162,6 +153,8 @@ export default defineComponent({
       RoutePath,
       socialUrl,
       isZkyoto,
+      isGovernanceEnabled,
+      governanceUrl,
     };
   },
 });

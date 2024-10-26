@@ -46,6 +46,7 @@
               <span class="text--link">{{ $t('sidenavi.data') }}</span>
             </div>
           </router-link>
+          <a href="" target="_blank">{{ $t('sidenavi.governance') }}</a>
         </nav>
 
         <div class="gradient-bg">
