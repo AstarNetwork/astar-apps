@@ -7,7 +7,8 @@
         <voting-wizard />
       </div>
       <leaderboard />
-      <leaderboard-vote />
+      <!-- <leaderboard-vote /> -->
+      <div v-if="isVotingPeriod" class="v-spacer"></div>
       <dynamic-ads-area />
 
       <div
@@ -63,7 +64,6 @@ import Dapps from './Dapps.vue';
 import DynamicAdsArea from './DynamicAdsArea.vue';
 import DataList from './data/DataList.vue';
 import Leaderboard from './leaderboard/Leaderboard.vue';
-import LeaderboardVote from './leaderboard/LeaderboardVote.vue';
 import PeriodInfoVote from './PeriodInfoVote.vue';
 import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
@@ -74,7 +74,6 @@ export default defineComponent({
   components: {
     Dapps,
     Leaderboard,
-    LeaderboardVote,
     DataList,
     DynamicAdsArea,
     PeriodInfoVote,
@@ -85,7 +84,7 @@ export default defineComponent({
   },
   setup() {
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();
-    const { protocolState } = useDappStaking();
+    const { protocolState, isVotingPeriod } = useDappStaking();
     const { t } = useI18n();
     const store = useStore();
 
@@ -116,11 +115,24 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { searchText, previousPeriod, displayIndex, toggleDapps };
+    return { searchText, previousPeriod, displayIndex, toggleDapps, isVotingPeriod };
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @use './styles/discover-v3.scss';
+
+.v-spacer {
+  width: 100%;
+  position: relative;
+  background-color: $navy-1;
+  background-size: 100% auto;
+  height: 40px;
+  margin-bottom: 0px;
+
+  @media (min-width: $lg) {
+    height: 100px;
+  }
+}
 </style>

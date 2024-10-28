@@ -37,7 +37,6 @@
 .menu {
   position: relative;
   margin-top: rem(32);
-  margin-left: 24px;
   flex-grow: 1;
 
   .row--item {
@@ -58,6 +57,7 @@
   height: 38px;
   padding: 8px;
   margin-bottom: 8px;
+  margin-left: 24px;
   border-radius: 6px;
   color: #fff;
   position: relative;
@@ -93,22 +93,24 @@
   border-radius: 6px;
   height: 38px;
   width: 176px;
+  margin-left: 24px;
 }
 
+// adding -120px to the margin-top to adjust the position because of the lgfm logo
 .menu__assets {
-  margin-top: -276px;
+  margin-top: calc(-276px - 120px);
 }
 
 .menu__dashboard {
-  margin-top: -230px;
+  margin-top: calc(-230px - 120px);
 }
 
 .menu__staking {
-  margin-top: -184px;
+  margin-top: calc(-184px - 120px);
 }
 
 .menu__bridge {
-  margin-top: -138px;
+  margin-top: calc(-138px - 120px);
 }
 
 .dummy-row {
@@ -132,4 +134,18 @@
   .activeLink:hover {
     background: transparent;
   }
+}
+
+.lfgm {
+  display: flex;
+  align-items: center;
+  width: 224px;
+  height: 112px;
+  margin-bottom: 8px;
+  color: #fff;
+  position: relative;
+  transition: all 0.3s ease 0s;
+}
+.lfgm:hover {
+  background: $navy-3;
 }

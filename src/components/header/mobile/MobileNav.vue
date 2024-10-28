@@ -46,12 +46,21 @@
               <span class="text--link">{{ $t('sidenavi.data') }}</span>
             </div>
           </router-link>
-          <a href="" target="_blank">{{ $t('sidenavi.governance') }}</a>
+          <a :href="socialUrl.forum" :class="['link']" target="_blank" @click="showNav = !showNav">
+            <div class="column--item column--item--dashboard">
+              <span class="text--link">{{ $t('sidenavi.forum') }}</span>
+            </div>
+          </a>
+          <a v-if="isGovernanceEnabled" :href="governanceUrl" target="_blank">{{
+            $t('sidenavi.governance')
+          }}</a>
         </nav>
-
+        <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
+          <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
+        </a>
         <div class="gradient-bg">
           <astar-domains />
-          <blog-posts />
+          <!-- <blog-posts /> -->
         </div>
 
         <div class="gradient-bg">
@@ -85,26 +94,27 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useBreakpoints } from 'src/hooks';
-import { Path as RoutePath } from 'src/router/routes';
 import { useRouter } from 'vue-router';
-import { useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useGovernance } from 'src/hooks';
+import { Path as RoutePath } from 'src/router/routes';
+import { lfgmUrl, socialUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from './AstarDomains.vue';
 import CommunityLinks from './CommunityLinks.vue';
-import BlogPosts from './BlogPosts.vue';
+// import BlogPosts from './BlogPosts.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import LightDarkMode from './LightDarkMode.vue';
 
 export default defineComponent({
-  components: { AstarDomains, CommunityLinks, BlogPosts, LocaleChanger, LightDarkMode },
+  components: { AstarDomains, CommunityLinks, LocaleChanger, LightDarkMode },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const showNav = ref<boolean>(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
     const { isZkyoto } = useNetworkInfo();
+    const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -118,6 +128,10 @@ export default defineComponent({
       RoutePath,
       network,
       isZkyoto,
+      lfgmUrl,
+      socialUrl,
+      isGovernanceEnabled,
+      governanceUrl,
     };
   },
 });
@@ -203,5 +217,16 @@ export default defineComponent({
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   padding: 0 16px;
+}
+
+.lfgm-mobile {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0px;
+  img {
+    width: 100%;
+    height: 150px;
+    background: $navy-3;
+  }
 }
 </style>

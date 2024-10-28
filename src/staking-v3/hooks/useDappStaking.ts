@@ -446,15 +446,6 @@ export function useDappStaking() {
       } else if (stake.amount <= 0) {
         return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (
-        constants.value &&
-        (ledger.value?.contractStakeCount ?? 0) >= constants.value.maxNumberOfStakedContracts
-      ) {
-        return [
-          false,
-          t('stakingV3.dappStaking.TooManyStakedContracts'),
-          docsUrl.dappStakingStaked16Dapps,
-        ];
-      } else if (
         constants.value?.minStakeAmountToken &&
         stake.amount < constants.value.minStakeAmountToken &&
         getStakerInfo(stake.address) === undefined
