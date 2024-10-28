@@ -51,6 +51,7 @@
               <span class="text--link">{{ $t('sidenavi.forum') }}</span>
             </div>
           </a>
+          <a href="" target="_blank">{{ $t('sidenavi.governance') }}</a>
         </nav>
         <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
           <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
