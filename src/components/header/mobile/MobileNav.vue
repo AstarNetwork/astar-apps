@@ -51,7 +51,9 @@
               <span class="text--link">{{ $t('sidenavi.forum') }}</span>
             </div>
           </a>
-          <a href="" target="_blank">{{ $t('sidenavi.governance') }}</a>
+          <a v-if="isGovernanceEnabled" :href="governanceUrl" target="_blank">{{
+            $t('sidenavi.governance')
+          }}</a>
         </nav>
         <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
           <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
@@ -93,7 +95,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useGovernance } from 'src/hooks';
 import { Path as RoutePath } from 'src/router/routes';
 import { lfgmUrl, socialUrl } from 'src/links';
 import { useStore } from 'src/store';
@@ -112,6 +114,7 @@ export default defineComponent({
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
     const { isZkyoto } = useNetworkInfo();
+    const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -127,6 +130,8 @@ export default defineComponent({
       isZkyoto,
       lfgmUrl,
       socialUrl,
+      isGovernanceEnabled,
+      governanceUrl,
     };
   },
 });
