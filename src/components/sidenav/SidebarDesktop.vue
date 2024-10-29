@@ -132,18 +132,20 @@ export default defineComponent({
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
     const getIndicatorClass = (path: string): string => {
-      switch (path) {
-        case 'dashboard':
-          return 'menu__dashboard';
-        case 'assets':
-          return 'menu__assets';
-        case 'dapp-staking':
-          return 'menu__staking';
-        case 'bridge':
-          return 'menu__bridge';
-        default:
-          return 'menu__staking';
+      let indicatorClassObject: Record<string, string> = {
+        dashboard: 'menu__dashboard',
+        assets: 'menu__assets',
+        'dapp-staking': 'menu__staking',
+        bridge: 'menu__bridge',
+      };
+
+      let indicatorClass = indicatorClassObject[path] ?? 'menu__staking';
+
+      if (isGovernanceEnabled.value) {
+        indicatorClass += ' governance_activated';
       }
+
+      return indicatorClass;
     };
 
     return {
