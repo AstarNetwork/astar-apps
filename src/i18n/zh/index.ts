@@ -51,7 +51,7 @@ export default {
     amountHightToLow: '金额：从高到低',
     amountLowToHigh: '金额：从低到高',
     alphabeticalAtoZ: '字母顺序：从 A 到 Z',
-    alphabeticalZtoA: '字母顺序：从 Z 到 A',    
+    alphabeticalZtoA: '字母顺序：从 Z 到 A',
   },
   warning: {
     warning: '警告',
@@ -62,27 +62,22 @@ export default {
     blankDestAddress: '目标地址为空',
     inputtedInvalidAddress: '输入的地址无效',
     selectedInvalidNetworkInWallet: '您的钱包中选择了无效的网络',
-    balanceNotEnough:
-      '您的账户中没有足够的 {symbol} 来支付交易手续费',
+    balanceNotEnough: '您的账户中没有足够的 {symbol} 来支付交易手续费',
     insufficientBridgeAmount: '最小转账金额为 {amount} {token}',
     insufficientOriginChainBalance: '{chain} 网络的最低余额为 {amount} {token}',
     insufficientOriginChainNativeBalance: '{chain} 网络的原生代币余额不足',
-    insufficientExistentialDeposit:
-      '{network} 网络的账户余额低于存在性存款要求',
+    insufficientExistentialDeposit: '{network} 网络的账户余额低于存在性存款要求',
     withdrawalNotSupport: '此门户暂时不支持提取到 {chain}',
-    claimRewards:
-      'DApp Staking V3 将于 2024 年初推出！确保领取您的奖励，并密切关注发布日期。',
+    claimRewards: 'DApp Staking V3 将于 2024 年初推出！确保领取您的奖励，并密切关注发布日期。',
     underDevelopmentShibuyaWarning:
       'DApp Staking V3 正在测试中。我们每天都在进行修复和改进，以为发布做准备。',
     ledgerUsers: 'Ledger 用户',
-    ledgerUsersImportantInformation:
-      '关于即将过渡到 dApp Staking V3 的重要信息。查看详细信息',
+    ledgerUsersImportantInformation: '关于即将过渡到 dApp Staking V3 的重要信息。查看详细信息',
     stakingNotSupportZkEvm:
       'dApps Staking 不支持 {networkNotSupport}，请切换到 {networkSupport} 开始质押！',
     connectedInvalidNetwork: '请在钱包中连接到正确的网络',
     attention: '注意',
-    testnetSwitchWarning:
-      '我们已将 zkEVM 测试网从 zKatana 切换到 zKyoto。zKatana 不再可用。',
+    testnetSwitchWarning: '我们已将 zkEVM 测试网从 zKatana 切换到 zKyoto。zKatana 不再可用。',
     xcmEvmTokenIsDisabled: '通过 EVM 钱包提取 {token} 暂时被禁用',
     notEnoughFeeToken: '您没有足够的 {token} 来支付提取手续费',
     zkevmUnderMaintenance:
@@ -103,8 +98,7 @@ export default {
     error: '错误',
     copied: '已复制',
     info: '信息',
-    enablePolkasafe:
-      '请在钱包扩展程序上签名以启用 PolkaSafe 功能；弹出窗口可能需要一段时间出现',
+    enablePolkasafe: '请在钱包扩展程序上签名以启用 PolkaSafe 功能；弹出窗口可能需要一段时间出现',
   },
   common: {
     updateMetadata: '更新元数据',
@@ -131,17 +125,17 @@ export default {
     comingSoon: '即将推出',
     checkHowToSolve: '查看如何解决此问题',
     speed: {
-        speed: '交易速度',
-        speedTip: '交易速度 (提示)',
-        average: '一般',
-        fast: '快速',
-        superFast: '超快',
-        tipHelp: '提示有助于加快交易速度',
+      speed: '交易速度',
+      speedTip: '交易速度 (提示)',
+      average: '一般',
+      fast: '快速',
+      superFast: '超快',
+      tipHelp: '提示有助于加快交易速度',
     },
     status: {
-        working: '运行中',
-        fixing: '修复中',
-        restricted: '受限',
+      working: '运行中',
+      fixing: '修复中',
+      restricted: '受限',
     },
   },
   sidenavi: {
@@ -184,8 +178,8 @@ export default {
     selectWallet: '选择钱包',
     changeNetwork: '更改网络',
     welcomeCard: {
-        title: '欢迎来到 {network} 网络',
-        text: '选择一个网络并连接您的钱包！',
+      title: '欢迎来到 {network} 网络',
+      text: '选择一个网络并连接您的钱包！',
     },
   },
   wallet: {
@@ -197,8 +191,7 @@ export default {
     accountUnification: '账户合并',
     math: {
       supportsNetwork: 'Math 钱包仅支持 Shiden 网络',
-      switchNetwork:
-        "请在 Math 钱包扩展中将您的网络切换到 'Shiden'，并刷新此页面",
+      switchNetwork: "请在 Math 钱包扩展中将您的网络切换到 'Shiden'，并刷新此页面",
     },
     showBalance: '显示 {token} 余额',
     switchWalletConnectNetwork: '请在您的钱包中切换到 {network} 网络',
@@ -225,32 +218,26 @@ export default {
         '如果您有自定义的 xcTokens 或任何未在 Astar EVM 门户中列出的 xcTokens，您必须先将它们转移到其他账户。我们将无法找到这些代币，因此无法将它们转移到新账户。',
       automaticallyTransferred:
         '所有其他已列出的 xcTokens 以及 ERC20 代币将自动转移到新的统一账户。',
-      override:
-        '如果您已经在 Polkadot.js 应用中创建了账户 ID，则该账户合并信息将覆盖。',
-      agreeToProceed:
-        '我已阅读所有内容，并希望继续创建统一账户。',
+      override: '如果您已经在 Polkadot.js 应用中创建了账户 ID，则该账户合并信息将覆盖。',
+      agreeToProceed: '我已阅读所有内容，并希望继续创建统一账户。',
       agreeToDeposit: '创建统一账户的费用为 {cost}',
       agreeToSubmit: '我理解一旦账户合并，将无法分开。',
       requirement:
         '要创建统一账户，需要同时拥有 Substrate 和 EVM 钱包扩展，目前无法通过移动应用进行操作。',
       haveAstarNative: '😎 我拥有 Astar 原生账户',
-      connectAstarNative:
-        '统一账户由 Astar 原生账户拥有。请连接所需地址并创建账户。',
+      connectAstarNative: '统一账户由 Astar 原生账户拥有。请连接所需地址并创建账户。',
       selectWallet: '选择钱包',
       notHaveAstarNative: '🥲 我没有 Astar 原生账户',
       withoutUnifying:
         '您可以在连接 EVM 账户时享受全部福利，无需合并。因此，如果您没有 Astar 原生账户，也不必担心。不过，可能有一些功能可以让统一账户受益，您随时可以创建一个账户。',
       howToCreate: '如何创建 Astar 原生账户',
-      findSubstrateWallets:
-        '您还可以找到可能更友好的基于 Substrate 的钱包。',
+      findSubstrateWallets: '您还可以找到可能更友好的基于 Substrate 的钱包。',
       checkNativeWallets: '查看我们的本地钱包。',
-      haveStakingBalance:
-        '您有一些质押余额。这些质押代币不会合并到统一账户。请先解除质押。',
+      haveStakingBalance: '您有一些质押余额。这些质押代币不会合并到统一账户。请先解除质押。',
       unifiedAccountName: '统一账户名称',
       accountIcon: '账户图标',
       balanceTransferred: '您的 EVM 账户余额将被转移。',
-      readyToUnify:
-        '现在 xcTokens 已发送，您准备好合并两个账户了！请在确认之前检查以下内容。',
+      readyToUnify: '现在 xcTokens 已发送，您准备好合并两个账户了！请在确认之前检查以下内容。',
       congrats: '恭喜！！\n您的账户已合并！\n\n不再需要 EVM 存款！',
       onlyShibuya: '此功能仅在 Shibuya 测试网可用。',
       userTutorials: '文档和教程',
@@ -259,13 +246,12 @@ export default {
       selectAvatar: '选择头像',
       save: '保存',
       noNfts:
-        "您目前没有铸造的 NFT。当您铸造一些时，您将能够使用 NFT 更新您的统一账户。目前将使用默认图标。",
+        '您目前没有铸造的 NFT。当您铸造一些时，您将能够使用 NFT 更新您的统一账户。目前将使用默认图标。',
     },
   },
   installWallet: {
     getWallet: '还没有获取 {value} 吗？',
-    installWallet:
-      "您需要安装 {value} 才能继续。安装后，请刷新此页面。",
+    installWallet: '您需要安装 {value} 才能继续。安装后，请刷新此页面。',
     install: '安装',
     learn: '了解更多',
     installSubstrateConnect: '安装 Substrate-connect',
@@ -280,7 +266,7 @@ export default {
     currentBlock: '当前区块',
     totalDapps: '总 dApp 数量',
     apr: '年利率',
-    apy: '年收益率'
+    apy: '年收益率',
   },
   myDapps: {
     index: '索引',
@@ -294,13 +280,11 @@ export default {
     manage: '管理',
     add: '添加',
     unbond: '解除质押',
-    rebondGuide:
-      '一旦重新质押，您的资金将返回到质押中。您需要 10 个Era才能再次解除质押。',
+    rebondGuide: '一旦重新质押，您的资金将返回到质押中。您需要 10 个Era才能再次解除质押。',
     rebondTitle: '您希望重新质押的金额',
     withdrawGuide: '您的资金可供提取。',
     withdrawTitle: '准备提取',
-    unregisteredAlert:
-      '该项目已取消注册。需要申领操作，您的资金将被退回。',
+    unregisteredAlert: '该项目已取消注册。需要申领操作，您的资金将被退回。',
     claimAndUnbond: '申领并解除质押',
   },
   myReward: {
@@ -312,12 +296,10 @@ export default {
     restake: '申领后重新质押',
     turnOff: '关闭',
     totalEarned: '总收入（历史）',
-    availableToClaimTip:
-      '未申领的奖励金额是估算的，显示的金额与您实际收到的金额可能会有小差异。',
+    availableToClaimTip: '未申领的奖励金额是估算的，显示的金额与您实际收到的金额可能会有小差异。',
     availableToClaimTip2:
       '这里显示的Era数量是每个 dApp 的。 如果您未申领的Era数量太多，您可能需要多次申领。',
-    restakeTip:
-      '通过开启此功能，您的奖励将在申领时自动重新质押。',
+    restakeTip: '通过开启此功能，您的奖励将在申领时自动重新质押。',
     dappsOwners: 'dApps 拥有者！我们现在可以帮助推广您的活动。请查看',
     dappsOwnersLink: '详细信息。',
   },
@@ -327,7 +309,7 @@ export default {
     unbonding: '解除质押',
     myDapps: '我的 dApps',
     dappRegistered: '恭喜！！您的合约已获批准。请提交详细信息',
-    welcomeBanner: 
+    welcomeBanner:
       '恭喜 🎉 请填写您的 dApp 信息，以便用户更好地了解您的应用。更新的数据将很快出现在 dApp 页面上。',
     desktopOnlyBanner: 'dApp 注册仅在桌面可用',
     registerNow: '立即注册',
@@ -341,8 +323,7 @@ export default {
     claim: '申领',
     withdraw: '提取',
     unbondingEra: '解除质押需要 {unbondingPeriod} 个era，才能提取',
-    willUnstakeAll: 
-      '这将撤回您所有的质押余额，因为最低质押金额为 {minStakingAmount} {symbol}',
+    willUnstakeAll: '这将撤回您所有的质押余额，因为最低质押金额为 {minStakingAmount} {symbol}',
     turnOn: '开启',
     turnOff: '关闭',
     on: '开启',
@@ -360,7 +341,7 @@ export default {
       '您不能在自动重新质押开启的情况下进行申领，因为自上次申领奖励以来已经过去一段时间。请关闭自动重新质押功能以便进行申领。申领后，您可以再次开启重新质押。用户界面团队正在修复此问题。',
     stakePage: {
       backToDappList: '返回 dApps 列表',
-      whereFundsFrom: '您希望从哪里带来资金？'
+      whereFundsFrom: '您希望从哪里带来资金？',
     },
     last30days: '(最近 30 天)',
     dappPage: {
@@ -379,7 +360,7 @@ export default {
       license: '许可证',
       community: '社区',
       wallets: '钱包',
-      stats: '统计'
+      stats: '统计',
     },
     modals: {
       contractAddress: '合约地址 {address}',
@@ -400,8 +381,8 @@ export default {
           accountRequired: '至少需要一个账户。',
           builderImageRequired: '需要构建者图像',
           buildersRequired: '至少需要两个构建者。',
-          builderUrlRequired: '至少需要一个账户 URL。'
-        }
+          builderUrlRequired: '至少需要一个账户 URL。',
+        },
       },
       builders: '构建者信息',
       communityLabel: '社区',
@@ -415,12 +396,11 @@ export default {
         youtubeAccount: 'YouTube 账号',
         instagramAccount: 'Instagram 账号',
         githubAccount: 'GitHub 账号',
-        communityRequired: '至少需要一个社区链接。'
+        communityRequired: '至少需要一个社区链接。',
       },
       introduction: {
         title: '还有一件事！',
-        promotionCard: 
-          '当您被列出时，将出现一个促销卡片，请在其中填写 65 字符内的描述。',
+        promotionCard: '当您被列出时，将出现一个促销卡片，请在其中填写 65 字符内的描述。',
         placeholder: '请添加您的介绍',
         characters: '{characters} / 65 字符',
       },
@@ -447,25 +427,20 @@ export default {
     toast: {
       successfullyClaimed: '成功领取{amount}',
       requiredClaimFirst: '请先领取奖励再进行交易',
-      requiredClaimFirstCompounding:
-        '{message}-禁用复利，领取奖励后再重新启用复利',
+      requiredClaimFirstCompounding: '{message}-禁用复利，领取奖励后再重新启用复利',
       successfullyWithdrawn: '余额成功提取',
       successfullySetRewardDest: '您成功设置了奖励目的地',
       successfullyStaked: '您成功质押到{contractAddress}',
       successfullyUnbond: '您成功启动了{contractAddress}的解绑过程',
-      successfullyNominationTransfer:
-        '您成功从{fromContractId}质押到{targetContractId}',
+      successfullyNominationTransfer: '您成功从{fromContractId}质押到{targetContractId}',
     },
     error: {
       onlySupportsSubstrate: 'dApp质押仅支持Substrate钱包',
       notSupportZkEvm: 'dApp质押不支持zkEVM网络',
-      notEnoughMinAmount:
-        '质押的代币数量必须大于{amount} {symbol}',
-      allFundsWillBeTransferred:
-        '所有资金将被转移，因为最低质押金额为{minStakingAmount} {symbol}',
-      invalidBalance:'您没有足够的代币来支付交易费用',
-      warningLeaveMinAmount:
-        '账户在质押后必须持有超过{amount}{symbol}的可转让金额',
+      notEnoughMinAmount: '质押的代币数量必须大于{amount} {symbol}',
+      allFundsWillBeTransferred: '所有资金将被转移，因为最低质押金额为{minStakingAmount} {symbol}',
+      invalidBalance: '您没有足够的代币来支付交易费用',
+      warningLeaveMinAmount: '账户在质押后必须持有超过{amount}{symbol}的可转让金额',
     },
     maintenance: {
       switching: '切换到',
@@ -536,8 +511,7 @@ export default {
     unifyAccounts: '统一账户',
     yourEstimatedRewards: '领取您的预估奖励',
     yourProject: '您的项目',
-    verifyWalletCompatibility:
-      '在交易前请验证钱包与{network}网络的兼容性以防止资金损失',
+    verifyWalletCompatibility: '在交易前请验证钱包与{network}网络的兼容性以防止资金损失',
     rewardsAvailable: '可用奖励',
     toast: {
       completedMessage: '您已向{toAddress}发送{transferAmt} {symbol}',
@@ -592,8 +566,7 @@ export default {
       depositToEvm: '存款到EVM',
       evmWalletAddress: 'EVM钱包地址',
       howToImportXvmTokens: '了解如何通过XVM导入ERC-20代币',
-      riskOfImportTokens:
-        '请注意，任何人都可以创建代币，包括创建现有代币的假版本。',
+      riskOfImportTokens: '请注意，任何人都可以创建代币，包括创建现有代币的假版本。',
       tokenContractAddress: '代币合约地址',
       erc20ContractAddress: 'ERC-20代币合约地址',
       tipDestAddressFormat: '我在哪里可以找到我的{chain}地址?',
@@ -608,8 +581,7 @@ export default {
         clearLocalStorage: '清除本地存储',
         clearLocalStorageTip: '这意味着您在此浏览器上的门户缓存将被清除',
         metaUpdate: '在Polkadot.js应用上更新元数据',
-        metaUpdateTip:
-          '确保您的钱包扩展是最新的，检查元数据选项卡并在提示时更新。',
+        metaUpdateTip: '确保您的钱包扩展是最新的，检查元数据选项卡并在提示时更新。',
         goToDocs: '去文档中的故障排除',
         goToDocsTip: '如果有其他问题，请查看文档。',
         askCommunity: '向我们的社区求助',
@@ -627,13 +599,12 @@ export default {
       lockdropWarning: {
         warning:
           '账户已关闭；此访问权限是临时的，将于2024年8月31日到期。您必须立即转移资金以避免任何资金损失。',
-    note: '请注意',
-        list1:
-          '此账户暂时仅允许发送代币、解除质押和从dApp质押中提取。',
-    list2: '请勿向交易所发送代币。',
-    list3: '请勿向另一个Lockdrop账户发送代币。',
-    list4: '在您有访问权限时发送所有代币。',
-    moveFundsNow: '立即转移资金',
+        note: '请注意',
+        list1: '此账户暂时仅允许发送代币、解除质押和从dApp质押中提取。',
+        list2: '请勿向交易所发送代币。',
+        list3: '请勿向另一个Lockdrop账户发送代币。',
+        list4: '在您有访问权限时发送所有代币。',
+        moveFundsNow: '立即转移资金',
       },
     },
   },
@@ -728,7 +699,8 @@ export default {
   },
   disclaimer: {
     disclaimer: '免责声明',
-    introduce1: `通过访问和使用 Astar 生态系统 dApp，您确认您有资格这样做并同意 Astar 基金会的条款。`,
+    introduce1:
+      '通过访问和使用 Astar 生态系统 dApp，您确认您有资格这样做并同意 Astar 基金会的条款。',
     introduce2: `. 您理解并接受您使用 dApp 的风险，它们是在“按现状”和“按可用性”基础上提供的，
     没有任何明示或暗示的担保。`,
     terms: '服务条款',
@@ -760,24 +732,20 @@ export default {
       NoExpiredEntries: '没有过期条目需要清理。',
       NoStakingInfo: '账户没有该合约的质押信息',
       NotOperatedDApp: 'dApp 是 dApp 质押的一部分，但不再活跃。',
-      PeriodEndsNextEra:
-        '周期将在下一个时代结束。在一个周期的最后一个时代无法质押。',
+      PeriodEndsNextEra: '周期将在下一个时代结束。在一个周期的最后一个时代无法质押。',
       TooManyStakedContracts: '该账户有过多的合约质押条目。',
       TooManyUnlockingChunks:
         '合约有过多的解锁块。如果可能，请提取现有块，或等待当前块完成解锁过程后再提取它们。',
-      UnavailableStakeFunds:
-        '质押金额超过当前可用于质押的余额。',
+      UnavailableStakeFunds: '质押金额超过当前可用于质押的余额。',
       UnclaimedRewards:
         '过去时代或周期中还有未领取的奖励。在再次尝试任何质押修改之前，应该先领取这些奖励。',
       UnstakeAmountTooLarge: '解除质押金额大于质押金额。',
-      UnstakeFromPastPeriod:
-        '由于过去的质押活动的周期已过，解除质押被拒绝。',
+      UnstakeFromPastPeriod: '由于过去的质押活动的周期已过，解除质押被拒绝。',
       ZeroAmount: '金额必须大于 0。',
       LockedAmountBelowThreshold: '每个 dApp 的最低质押金额为 {amount} 代币。',
       WrongNetworkZkEvm: '在 zkEVM 网络上无法进行 dApp 质押。',
     },
-    innovativeWayOfStaking:
-      '在 Astar 独特的质押方式，让生态系统共同成长',
+    innovativeWayOfStaking: '在 Astar 独特的质押方式，让生态系统共同成长',
     successfullyStaked: '您已成功质押至 {contractAddress}',
     voteTitle: '投票！',
     votingOpen: '投票开放',
@@ -800,8 +768,7 @@ export default {
     alreadyVoted: '已投票',
     alreadyStaked: '已质押',
     remainingLockedBalance: '剩余锁定余额',
-    voteLockedTokensWarning:
-      '请确保您在 dapp 上投票，否则这些代币不符合任何奖励的资格。',
+    voteLockedTokensWarning: '请确保您在 dapp 上投票，否则这些代币不符合任何奖励的资格。',
     rewardsWillBeClaimed: '您的未领取奖励将被领取。',
     basicRewards: '基本奖励',
     estimatedBonus: '预计奖金',
@@ -817,8 +784,7 @@ export default {
     voteStakeToday: '今天投票 / 质押',
     vote: '投票',
     votes: '票数',
-    VoteDescription:
-      '质押重置为 0，用户通过重新质押获得奖金奖励资格。',
+    VoteDescription: '质押重置为 0，用户通过重新质押获得奖金奖励资格。',
     voteToday: '今天享受奖金池资格',
     stakeOn: '在 {name} 上质押',
     tier: '层级',
@@ -860,8 +826,7 @@ export default {
     totalEarned: '总收入',
     yourDashboard: '您的仪表板',
     edit: '编辑',
-    periodDescription:
-      '在每个周期内，质押者获得基本奖励，项目获得层级奖励。',
+    periodDescription: '在每个周期内，质押者获得基本奖励，项目获得层级奖励。',
     basicRewardsDescription: '质押者和 dApps 在 B&E 子周期中获得的奖励。',
     bonusRewardsDescription: '质押者在投票子周期中可以获得的奖励。',
     editProjectPage: {
@@ -892,18 +857,15 @@ export default {
     blocks: '区块',
     back: '返回',
     era: 'Era',
-    eraDescription:
-      '1 个 Era 是 Astar 上的 7,200 个区块，约等于 24 小时。检查进度。',
+    eraDescription: '1 个 Era 是 Astar 上的 7,200 个区块，约等于 24 小时。检查进度。',
     duration: '持续时间',
     durationDescription: '当前周期的剩余天数。',
     numberOfDapps: 'dApp 数量',
-    numberOfDappsDescription:
-      '当前在 dApp 质押中列出的 dApp 总数。',
+    numberOfDappsDescription: '当前在 dApp 质押中列出的 dApp 总数。',
     stakingAndLockingAccounts: '质押和锁定账户',
     numberOfStakersAndLockersDescription: 'dApp 质押和锁定用户的总数。',
     tokensToBeBurned: '总待销毁代币',
-    tokensToBeBurnedDescription:
-      '此 Build&Earn 子周期中预计待销毁的代币总数。',
+    tokensToBeBurnedDescription: '此 Build&Earn 子周期中预计待销毁的代币总数。',
     tokenomics: '代币经济学',
     general: '一般',
     totalValueLocked: '锁定总值 ({token})',
@@ -915,14 +877,12 @@ export default {
     stakedToLockedRatio: '质押与锁定比率',
     tvvDescription: '质押与锁定比率表示 dApp 质押 TVL 中质押的部分。',
     loyaltyStake: '忠诚质押',
-    bonusEligibleTokensDescription:
-      '实时统计有资格获得奖金奖励的代币数量。',
+    bonusEligibleTokensDescription: '实时统计有资格获得奖金奖励的代币数量。',
     bonusPool: '奖金池',
-    bonusPoolDescription:'来自区块奖励的固定奖金分配。请查看我们的',
+    bonusPoolDescription: '来自区块奖励的固定奖金分配。请查看我们的',
     dappTierDescription: 'dApp 等级和排名。请查看我们的',
     dAppsSlots: 'dApps 槽位',
-    dAppsSlotsDescription:
-      '当前 Era 中由项目填充的项目奖励槽位数量。',
+    dAppsSlotsDescription: '当前 Era 中由项目填充的项目奖励槽位数量。',
     unfilledSlot: '未填充槽位',
     unfilledSlotDescription: '当前 Era 中没有项目的等级槽位数量。',
     ourDapps: '我们的 dApps',
@@ -947,11 +907,9 @@ export default {
     burn: '销毁',
     availableToWithdraw: '可提取',
     congrats: '恭喜！！',
-    dappRegistered:
-      '您的合约已在 dApp 质押中获得白名单。请提交详细信息，您将被列出。',
+    dappRegistered: '您的合约已在 dApp 质押中获得白名单。请提交详细信息，您将被列出。',
     registerNow: '立即注册',
-    willUnstakeAll:
-      '该操作将解除质押您所有质押的代币，因为最低质押金额为 {amount} 个代币。',
+    willUnstakeAll: '该操作将解除质押您所有质押的代币，因为最低质押金额为 {amount} 个代币。',
     onboarding: {
       introducing: '介绍',
       innovativeWayOfStaking: '创新的质押方式',
@@ -959,16 +917,14 @@ export default {
       earnBonusByVoting: '按时投票获得奖金',
       receiveBonusRrewards: '作为忠诚的质押者获得奖金奖励',
       remember: '记住',
-      stakingResetsEveryPeriod:
-        '质押在每个周期重置 - 每个周期都需要进行投票。',
+      stakingResetsEveryPeriod: '质押在每个周期重置 - 每个周期都需要进行投票。',
       goToDappStakingAndVoteToday: '今天去 dApp 质押并投票',
       whatIsDappStaking: '什么是 dApp 质押？',
       usersGuides: '用户指南',
     },
     loyalStakerWarningAmount:
       '如果您在当前周期结束前解除质押超过 {amount} 个代币，您将失去奖金奖励资格。',
-    loyalStakerWarning:
-      '如果您现在解除质押代币，您将失去奖金奖励资格。',
+    loyalStakerWarning: '如果您现在解除质押代币，您将失去奖金奖励资格。',
     unbondFrom: '从 {name} 解锁',
     startUnbonding: '开始解锁',
     unbondingEra: '解除质押需 {unbondingPeriod} 个 Era 才能提取',
@@ -979,20 +935,17 @@ export default {
     voting: {
       note: '注意',
       minimumStakingAmount: '最低质押金额为 {amount} {symbol}',
-      minBalanceAfterStaking:
-        '质押后账户必须持有超过 {amount} {symbol} 的可转移代币。',
+      minBalanceAfterStaking: '质押后账户必须持有超过 {amount} {symbol} 的可转移代币。',
       learn: '了解',
       whatIsDappStaking: '什么是 dApp 质押？',
       howToParticipate: '如何参与 dApp 质押？',
       startStaking: '开始质押',
       chooseDapps: '选择 dApps',
-      chooseDappsDescription:
-        '选择您希望支持的 dApps；网络奖励将分配给您选择的项目。',
+      chooseDappsDescription: '选择您希望支持的 dApps；网络奖励将分配给您选择的项目。',
       addAmount: '添加您希望的金额',
       addAmountDescription: '简单来说，就是决定您想质押多少。',
       allDone: '全部完成！',
-      allDoneDescription:
-        '享受您的奖励，并检查您选择的 dApps 收益多少。',
+      allDoneDescription: '享受您的奖励，并检查您选择的 dApps 收益多少。',
       category: '类别',
       lastTVL: '最近 TVL',
       newbies: '新手',
@@ -1004,15 +957,13 @@ export default {
       addAmounts: '请为每张卡添加金额。',
       review: '在确认之前检查所有内容是否正确。',
       availableAfterStaking: '质押后的可用金额',
-      beSureToVote:
-        '确保您在 dapps 上投票，否则这些代币将不符合任何奖励的资格。',
+      beSureToVote: '确保您在 dapps 上投票，否则这些代币将不符合任何奖励的资格。',
       yourAvailableBalance: '您的可用余额',
       moveFunds: '移动资金',
     },
     registration: {
       success: '您已成功将 dApp {name} 注册到商店。',
-      error:
-        '在 dApp 注册过程中发生了意外错误。请截屏此消息并发送给 Astar 团队。{error}',
+      error: '在 dApp 注册过程中发生了意外错误。请截屏此消息并发送给 Astar 团队。{error}',
     },
     inflation: '通货膨胀',
     estimatedRealizedInflation: '预计实现的通货膨胀',
@@ -1022,8 +973,7 @@ export default {
     stakingAPR: '质押年利率',
     bonusAPR: '奖金年利率',
     manageStakingAssets: '管理质押资产',
-    newPeriodWarning:
-      '新周期在{days}天内开始！记得在投票期间进行质押以获得奖金奖励！',
+    newPeriodWarning: '新周期在{days}天内开始！记得在投票期间进行质押以获得奖金奖励！',
     stats: '统计信息',
     dappEarner: '总奖励',
     newVotingPeriod: '新投票周期',
@@ -1039,23 +989,18 @@ export default {
     rewardsClaimedOnStake: '奖励将在质押时认领',
     ifYouStakeNow: '基础年利率 + 奖金（如果您现在质押）',
     defiDescription: '探索Astar上的去中心化金融解决方案的世界。',
-    'unstoppable-grantsDescription':
-      '支持在dApp质押下由不可阻挡社区资助的项目。',
+    'unstoppable-grantsDescription': '支持在dApp质押下由不可阻挡社区资助的项目。',
     nftDescription: '寻找并支持Astar的NFT dApps中的创意社区。',
-    toolingDescription:
-      '支持旨在加速网络增长的强大工具和框架。',
-    utilityDescription:
-      '质押必需项目，以增强Web3的生产力和功能性。',
+    toolingDescription: '支持旨在加速网络增长的强大工具和框架。',
+    utilityDescription: '质押必需项目，以增强Web3的生产力和功能性。',
     othersDescription: '探索多样化的区块链dApps。',
     basicAprPlusBonus: '基础年利率 + 奖金',
     restake: {
       title: '重新质押您的奖励',
-      description:
-        '您今天想重新质押您的奖励吗？这将增加您的每日质押奖励。',
+      description: '您今天想重新质押您的奖励吗？这将增加您的每日质押奖励。',
       restakeConfirmation: '是的，重新质押我的奖励',
       restakeCancelation: '不，我不想重新质押我的奖励',
-      rewardDistribution:
-        '所有奖励将按比例分配给您当前质押的dApps。',
+      rewardDistribution: '所有奖励将按比例分配给您当前质押的dApps。',
     },
   },
   bridge: {
@@ -1101,18 +1046,15 @@ export default {
       text: '第三方桥。在网络之间快速可靠地转移加密资产到Astar zkEVM。',
     },
     warning32blocks: '可能需要约10~20分钟或更长时间才能完成',
-    warningLzWithdrawal:
-      '从Astar zkEVM到Astar EVM的桥接交易可能需要大约6小时才能完成',
+    warningLzWithdrawal: '从Astar zkEVM到Astar EVM的桥接交易可能需要大约6小时才能完成',
     warning2steps:
       '桥接到L1（Ethereum）涉及2个步骤，用户需要在L1网络上进行认领（可在最近历史中找到）',
     slippage: '滑点：{percent}%',
     feeOnTransaction: '交易费用：{amount} {symbol}',
     gelatoApiError: '桥UI不可用，请稍后再试',
-    warningHighTraffic:
-      '桥的高流量可能会导致提款交易延迟最多5小时。感谢您的耐心。',
+    warningHighTraffic: '桥的高流量可能会导致提款交易延迟最多5小时。感谢您的耐心。',
     warningHighTrafficMore: '(了解更多)',
-    underMaintenance:
-      'Astar zkEVM目前正在维护中。对由此带来的不便我们深表歉意。',
+    underMaintenance: 'Astar zkEVM目前正在维护中。对由此带来的不便我们深表歉意。',
     modals: {
       highTraffic: {
         text1:
