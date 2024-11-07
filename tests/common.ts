@@ -36,10 +36,20 @@ export const connectToNetwork = async (page: Page): Promise<void> => {
   await page.waitForNavigation();
 };
 
-export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
+export const selectAccount = async (
+  page: Page,
+  accountName: string,
+  context: BrowserContext
+): Promise<void> => {
   const walletTab = page.getByTestId('select-wallet-tab');
   await walletTab.click();
   await page.getByTestId('Polkadot.js').click();
+
+  // Account selection popup
+  const extensionWindow = await getWindow('polkadot{.js}', context);
+  await extensionWindow.locator('label').filter({ hasText: 'Select all' }).locator('span').click();
+  await extensionWindow.getByRole('button', { name: 'Connect 2 account(s)' }).click();
+
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };
@@ -90,7 +100,7 @@ export const closePolkadotWelcomePopup = async (context: BrowserContext): Promis
   const extensionWindow = await getWindow('polkadot{.js}', context);
   const extensionAcceptButton = extensionWindow.getByText('Understood, let me continue');
   await extensionAcceptButton.click();
-  const extensionAcceptButton2 = extensionWindow.getByText('Yes, allow this application access');
+  const extensionAcceptButton2 = extensionWindow.getByText('Understood');
   await extensionAcceptButton2.click();
 };
 
@@ -143,15 +153,22 @@ export const signInMetamask = async (page: Page, context: BrowserContext): Promi
 
 export const connectWithEVM = async (page: Page, context: BrowserContext): Promise<Page> => {
   const extensionWindow = await getWindow('MetaMask Notification', context);
-  await extensionWindow.waitForLoadState('load');
-  await extensionWindow.waitForSelector('.permissions-connect-header__title', { state: 'visible' });
 
-  await extensionWindow
-    .locator('.permissions-connect-choose-account__bottom-buttons')
-    .getByRole('button', { name: 'Next' })
-    .click();
-
+  // connect account
+  // await extensionWindow.locator('button btn--rounded btn-primary').click();
+  await extensionWindow.getByRole('button', { name: 'Next' }).click();
   await extensionWindow.locator('data-testid=page-container-footer-next').click();
+  // ----------------------------
+
+  // await extensionWindow.waitForLoadState('load');
+  // await extensionWindow.waitForSelector('.permissions-connect-header__title', { state: 'visible' });
+
+  // await extensionWindow
+  //   .locator('.permissions-connect-choose-account__bottom-buttons')
+  //   .getByRole('button', { name: 'Next' })
+  //   .click();
+
+  // await extensionWindow.locator('data-testid=page-container-footer-next').click();
 
   return extensionWindow;
 };

@@ -13,7 +13,6 @@ export async function sendTransaction(transaction, sender) {
             unsubscribe();
           }
 
-          clearTimeout(timeout);
           resolve(true);
         }
       })
@@ -24,9 +23,5 @@ export async function sendTransaction(transaction, sender) {
         console.error(error);
         reject(error);
       });
-
-    timeout = setTimeout(() => {
-      reject(new Error('Transaction timeout'));
-    }, SPAWNING_TIME);
   });
 }
