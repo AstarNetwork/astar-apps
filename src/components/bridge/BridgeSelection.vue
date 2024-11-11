@@ -115,6 +115,43 @@
             </a>
           </button>
         </div>
+
+        <div class="column--selection">
+          <button :disabled="!isEnableMinatoBridge">
+            <a
+              :href="zKatanaBridgeUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo-astr"
+                    :src="require('src/assets/img/token/astr.png')"
+                    alt="astr"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.ccipMinatoBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.ccipMinatoBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.ccipMinatoBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </button>
+          <p v-if="!isShibuyaEvm" class="text--bridge-details">
+            {{ $t('bridge.ccipMinatoBridge.text2') }}
+          </p>
+        </div>
       </div>
       <div class="container--selection">
         <div class="column--selection">
@@ -204,6 +241,7 @@ import {
   layerSwapBridgeEnabled,
   nativeBridgeEnabled,
   layerZeroBridgeEnabled,
+  ccipMinatoBridgeEnabled,
 } from 'src/features';
 import { navigateInNewTab } from 'src/util-general';
 
@@ -211,8 +249,16 @@ export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const { isZkEvm, networkNameSubstrate, isMainnet, isZkyoto, isAstarZkEvm, isAstar, isH160 } =
-      useNetworkInfo();
+    const {
+      isZkEvm,
+      networkNameSubstrate,
+      isMainnet,
+      isZkyoto,
+      isAstarZkEvm,
+      isAstar,
+      isH160,
+      isShibuya,
+    } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
       return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
@@ -232,6 +278,14 @@ export default defineComponent({
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
     });
 
+    const isEnableMinatoBridge = computed<boolean>(() => {
+      return isH160.value && isShibuya.value && ccipMinatoBridgeEnabled;
+    });
+
+    const isShibuyaEvm = computed<boolean>(() => {
+      return isH160.value && isShibuya.value;
+    });
+
     return {
       currentAccount,
       cbridgeAppLink,
@@ -249,6 +303,8 @@ export default defineComponent({
       layerSwapBridgeEnabled,
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
+      isEnableMinatoBridge,
+      isShibuyaEvm,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,

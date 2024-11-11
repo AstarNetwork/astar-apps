@@ -1084,6 +1084,12 @@ export default {
       tag: 'ERC20',
       text: 'Transfer assets between Sepolia and zKatana testnet.',
     },
+    ccipMinatoBridge: {
+      title: 'Soneium Bridge',
+      tag: 'SBY',
+      text: 'Transfer assets between Shibuya EVM and Soneium Minato testnet.',
+      text2: 'Available on Shibuya EVM. Switch the network to use it.',
+    },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
