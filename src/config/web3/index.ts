@@ -48,6 +48,9 @@ export enum EVM {
   POLYGON = 137,
   MOONRIVER = 1285,
   MOONBEAM = 1284,
+  SONEIUM_MINATO = 1946,
+  // Todo: update
+  SONEIUM = 9999,
 }
 
 export const chainName = {
@@ -64,6 +67,8 @@ export const chainName = {
   [EVM.POLYGON]: 'Polygon Mainnet',
   [EVM.MOONRIVER]: 'Moonriver Mainnet',
   [EVM.MOONBEAM]: 'Moonbeam Mainnet',
+  [EVM.SONEIUM_MINATO]: 'Soneium Minato Testnet',
+  [EVM.SONEIUM]: 'Soneium Mainnet',
 };
 
 export const nativeCurrency = {
@@ -132,6 +137,16 @@ export const nativeCurrency = {
     symbol: 'GLMR',
     decimals: 18,
   },
+  [EVM.SONEIUM_MINATO]: {
+    name: 'ETH',
+    symbol: 'ETH',
+    decimals: 18,
+  },
+  [EVM.SONEIUM]: {
+    name: 'ETH',
+    symbol: 'ETH',
+    decimals: 18,
+  },
 };
 
 export const rpcUrls = {
@@ -150,6 +165,9 @@ export const rpcUrls = {
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
   [EVM.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
   [EVM.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
+  [EVM.SONEIUM_MINATO]: ['https://rpc.minato.soneium.org'],
+  // Todo: update
+  [EVM.SONEIUM]: ['https://rpc.minato.soneium.org'],
 };
 
 export const blockExplorerUrls = {
@@ -165,6 +183,9 @@ export const blockExplorerUrls = {
   [EVM.POLYGON]: ['https://explorer.matic.network'],
   [EVM.MOONRIVER]: ['https://moonriver.moonscan.io'],
   [EVM.MOONBEAM]: ['https://moonbeam.moonscan.io'],
+  [EVM.SONEIUM_MINATO]: ['https://soneium-minato.blockscout.com'],
+  // Todo: update
+  [EVM.SONEIUM]: ['https://soneium-minato.blockscout.com'],
 };
 
 export const CHAIN_INFORMATION = {

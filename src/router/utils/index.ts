@@ -30,6 +30,10 @@ export const buildEthereumBridgePageLink = (): string => {
   return networkParam + Path.Bridge + Path.Ethereum;
 };
 
+export const buildCcipBridgePageLink = (): string => {
+  return networkParam + Path.Bridge + Path.Ccip;
+};
+
 export const buildLzBridgePageLink = (): string => {
   return networkParam + Path.Bridge + Path.Layerzero;
 };
