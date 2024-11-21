@@ -63,7 +63,6 @@ export default defineComponent({
       toBridgeBalance,
       fromChainName,
       toChainName,
-      importTokenAddress,
       fromChainId,
       selectedToken,
       isApproved,
@@ -73,8 +72,6 @@ export default defineComponent({
       inputHandler,
       reverseChain,
       handleBridge,
-      inputImportTokenHandler,
-      setSelectedToken,
       handleApprove,
       setIsApproving,
     } = useCcipBridge();
@@ -98,19 +95,11 @@ export default defineComponent({
       const openClass = 'container--select-chain';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
         await setRightUi('information');
-        const mockBlankInputEvent = { target: { value: '' } };
-        inputImportTokenHandler(mockBlankInputEvent);
       }
     };
 
     const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectToken.value = isOpen;
-    };
-
-    const handleSetToken = async (t: LayerZeroToken): Promise<void> => {
-      setSelectedToken(t);
-      await setRightUi('information');
-      isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
     };
 
     return {
@@ -120,9 +109,7 @@ export default defineComponent({
       isModalSelectToken,
       rightUi,
       isHighlightRightUi,
-      // lzTokens,
       selectedToken,
-      importTokenAddress,
       bridgeAmt,
       errMsg,
       isDisabledBridge,
@@ -135,14 +122,11 @@ export default defineComponent({
       isApproving,
       isApproveMaxAmount,
       transactionFee,
-      inputImportTokenHandler,
       cancelHighlight,
-      handleSetToken,
       setRightUi,
       inputHandler,
       reverseChain,
       handleBridge,
-      setSelectedToken,
       handleApprove,
       setIsApproving,
       handleModalSelectToken,
