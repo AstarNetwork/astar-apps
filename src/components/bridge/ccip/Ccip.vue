@@ -2,7 +2,7 @@
   <div v-if="currentAccount" class="wrapper--bridge">
     <div class="container--bridge">
       <div class="wrapper-containers">
-        <lz-bridge
+        <ccip-bridge
           :selected-token="selectedToken"
           :set-right-ui="setRightUi"
           :bridge-amt="String(bridgeAmt)"
@@ -28,17 +28,6 @@
           :transfer-type="HistoryTxType.LZ_BRIDGE"
           :is-history="true"
         />
-        <!-- <select-token
-          v-if="rightUi === 'select-token'"
-          v-click-away="cancelHighlight"
-          :set-token="handleSetToken"
-          :tokens="lzTokens"
-          :input-import-token-handler="inputImportTokenHandler"
-          :import-token-address="importTokenAddress"
-          :from-chain-id="fromChainId"
-          :from-chain-name="fromChainName"
-          :to-chain-name="toChainName"
-        /> -->
       </div>
     </div>
   </div>
@@ -47,19 +36,17 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import Information from 'src/components/assets/transfer/Information.vue';
 import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
-import LzBridge from 'src/components/bridge/layerzero/LzBridge.vue';
-// import SelectToken from 'src/components/bridge/layerzero/SelectToken.vue';
+import CcipBridge from 'src/components/bridge/ccip/CcipBridge.vue';
 import { useAccount, useBreakpoints } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
 import { computed, defineComponent, ref } from 'vue';
-import { useLayerZeroBridge } from '../../../hooks/bridge/useLayerZeroBridge';
+import { useCcipBridge } from '../../../hooks/bridge/useCcipBridge';
 import { LayerZeroToken } from '../../../modules/zk-evm-bridge/layerzero/index';
 
 export default defineComponent({
   components: {
     Information,
-    LzBridge,
-    // SelectToken,
+    CcipBridge,
   },
   setup() {
     const isBridge = ref<boolean>(true);
@@ -76,9 +63,7 @@ export default defineComponent({
       toBridgeBalance,
       fromChainName,
       toChainName,
-      importTokenAddress,
       fromChainId,
-      lzTokens,
       selectedToken,
       isApproved,
       isApproving,
@@ -87,11 +72,9 @@ export default defineComponent({
       inputHandler,
       reverseChain,
       handleBridge,
-      inputImportTokenHandler,
-      setSelectedToken,
       handleApprove,
       setIsApproving,
-    } = useLayerZeroBridge();
+    } = useCcipBridge();
 
     const { currentAccount } = useAccount();
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
@@ -112,19 +95,11 @@ export default defineComponent({
       const openClass = 'container--select-chain';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
         await setRightUi('information');
-        const mockBlankInputEvent = { target: { value: '' } };
-        inputImportTokenHandler(mockBlankInputEvent);
       }
     };
 
     const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectToken.value = isOpen;
-    };
-
-    const handleSetToken = async (t: LayerZeroToken): Promise<void> => {
-      setSelectedToken(t);
-      await setRightUi('information');
-      isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
     };
 
     return {
@@ -134,9 +109,7 @@ export default defineComponent({
       isModalSelectToken,
       rightUi,
       isHighlightRightUi,
-      lzTokens,
       selectedToken,
-      importTokenAddress,
       bridgeAmt,
       errMsg,
       isDisabledBridge,
@@ -149,14 +122,11 @@ export default defineComponent({
       isApproving,
       isApproveMaxAmount,
       transactionFee,
-      inputImportTokenHandler,
       cancelHighlight,
-      handleSetToken,
       setRightUi,
       inputHandler,
       reverseChain,
       handleBridge,
-      setSelectedToken,
       handleApprove,
       setIsApproving,
       handleModalSelectToken,

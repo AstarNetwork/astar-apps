@@ -11,3 +11,4 @@ export * from './ZkBridgeService';
 export * from './AccountUnificationService';
 export * from './IdentityService';
 export * from './LzBridgeService';
+export * from './CcipBridgeService';

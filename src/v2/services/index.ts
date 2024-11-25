@@ -8,5 +8,6 @@ export * from './IEvmAssetsService';
 export * from './IAssetsService';
 export * from './IZkBridgeService';
 export * from './ILzBridgeService';
+export * from './ICcipBridgeService';
 export * from './IAccountUnificationService';
 export * from './IIdentityService';

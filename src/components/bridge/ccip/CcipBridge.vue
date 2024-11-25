@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="lzBridgeIcon[fromChainName]" alt="chain-icon" />
+          <img width="24" :src="ccipBridgeIcon[fromChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ fromChainName }}</span>
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="lzBridgeIcon[toChainName]" alt="chain-icon" />
+          <img width="24" :src="ccipBridgeIcon[toChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ toChainName }}</span>
@@ -122,7 +122,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
 
-      <div class="container--warning">
+      <!-- <div class="container--warning">
         <ul>
           <li>{{ $t('bridge.slippage', { percent: LayerZeroSlippage }) }}</li>
           <li>
@@ -136,7 +136,7 @@
           </li>
           <li>{{ $t('bridge.warningLzWithdrawal') }}</li>
         </ul>
-      </div>
+      </div> -->
 
       <div v-if="!layerZeroBridgeEnabled" class="row--box-error">
         <span class="color--white">
@@ -179,6 +179,7 @@ import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
 import { layerZeroBridgeEnabled } from 'src/features';
+import { ccipBridgeIcon, CCIP_TOKEN } from '../../../modules/ccip-bridge/index';
 
 export default defineComponent({
   components: {
@@ -191,7 +192,7 @@ export default defineComponent({
       required: true,
     },
     selectedToken: {
-      type: Object as PropType<LayerZeroToken>,
+      type: Object as PropType<CCIP_TOKEN>,
       required: true,
     },
     bridgeAmt: {
@@ -309,7 +310,7 @@ export default defineComponent({
     );
 
     return {
-      lzBridgeIcon,
+      ccipBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
       isHandling,

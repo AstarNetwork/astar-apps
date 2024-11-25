@@ -256,7 +256,7 @@ export default defineComponent({
       isAstarZkEvm,
       isAstar,
       isH160,
-      isShibuya,
+      isShibuyaEvm,
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
@@ -278,11 +278,7 @@ export default defineComponent({
     });
 
     const isEnableMinatoBridge = computed<boolean>(() => {
-      return isH160.value && isShibuya.value && ccipMinatoBridgeEnabled;
-    });
-
-    const isShibuyaEvm = computed<boolean>(() => {
-      return isH160.value && isShibuya.value;
+      return isShibuyaEvm.value && ccipMinatoBridgeEnabled;
     });
 
     return {
