@@ -7,6 +7,7 @@ import {
   CcipNetworkName,
   CCIP_TOKEN,
   CCIP_SBY,
+  ccipBridgeAddress,
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
@@ -17,12 +18,12 @@ import { EthereumProvider } from '../types/CustomSignature';
 import { container } from 'src/v2/common';
 import { ICcipBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { ethers, constants as ethersConstants } from 'ethers';
 
 export const useCcipBridge = () => {
   const { isShibuya } = useNetworkInfo();
 
   const selectedToken = ref<CCIP_TOKEN>(CCIP_SBY);
-  // const importTokenAddress = ref<string>('');
   const bridgeAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
   const fromBridgeBalance = ref<number>(0);
@@ -66,6 +67,10 @@ export const useCcipBridge = () => {
 
   const toChainId = computed<CcipChainId>(() => ccipChainId[toChainName.value as CcipNetworkName]);
 
+  const isToSoneium = computed<boolean>(() =>
+    Boolean(toChainId.value === CcipChainId.SoneiumMinato || CcipChainId.Soneium)
+  );
+
   const isDisabledBridge = computed<boolean>(() => {
     const isLessAmount =
       0 >= Number(bridgeAmt.value) || fromBridgeBalance.value < Number(bridgeAmt.value);
@@ -95,17 +100,18 @@ export const useCcipBridge = () => {
     }
     try {
       showLoading(store.dispatch, true);
+
       const [fromChainBalance, toChainBalance] = await Promise.all([
         getTokenBal({
           address: currentAccount.value,
           tokenAddress: selectedToken.value.tokenAddress[fromChainId.value] as string,
-          srcChainId: ccipChainId[fromChainName.value],
+          srcChainId: fromChainId.value,
           tokenSymbol: selectedToken.value.symbol,
         }),
         getTokenBal({
           address: currentAccount.value,
           tokenAddress: selectedToken.value.tokenAddress[toChainId.value] as string,
-          srcChainId: ccipChainId[toChainName.value],
+          srcChainId: toChainId.value,
           tokenSymbol: selectedToken.value.symbol,
         }),
       ]);
@@ -190,20 +196,18 @@ export const useCcipBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    // if (!bridgeAmt.value) return '';
-    // const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
-    // const amount = isApproveMaxAmount.value
-    //   ? ethersConstants.MaxUint256
-    //   : ethers.utils
-    //       .parseUnits(bridgeAmt.value, selectedToken.value.decimals[fromLzId.value])
-    //       .toString();
-    // return await lzBridgeService.approve({
-    //   amount: String(amount),
-    //   contractAddress: selectedToken.value.oftBridgeContract[fromLzId.value],
-    //   senderAddress: currentAccount.value,
-    //   tokenAddress: selectedToken.value.tokenAddress[fromLzId.value],
-    //   fromChainId: fromChainId.value,
-    // });
+    if (!bridgeAmt.value || !isToSoneium.value) return '';
+    const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
+    const amount = isApproveMaxAmount.value
+      ? ethersConstants.MaxUint256
+      : ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimals).toString();
+    return await ccipBridgeService.approve({
+      amount: String(amount),
+      contractAddress: ccipBridgeAddress[fromChainId.value],
+      senderAddress: currentAccount.value,
+      tokenAddress: selectedToken.value.tokenAddress[fromChainId.value] as string,
+      fromChainId: fromChainId.value,
+    });
     return '';
   };
 
