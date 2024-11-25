@@ -44,8 +44,6 @@ export const ccipBridgeAddress = {
   [CcipChainId.SoneiumMinato]: routerSoneiumMinato,
   // Todo: update
   [CcipChainId.Soneium]: routerSoneium,
-  // [CcipChainId.Sepolia]: etherSenderReceiverSepolia,
-  // [CcipChainId.OpSepolia]: routerOpSepolia,
 };
 
 export const ccipBridgeIcon = {

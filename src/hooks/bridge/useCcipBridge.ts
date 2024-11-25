@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es';
-import { getTokenBal, setupNetwork } from 'src/config/web3';
+import { checkAllowance, getTokenBal, setupNetwork } from 'src/config/web3';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import {
   ccipChainId,
@@ -19,6 +19,7 @@ import { container } from 'src/v2/common';
 import { ICcipBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers, constants as ethersConstants } from 'ethers';
+import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
 export const useCcipBridge = () => {
   const { isShibuya } = useNetworkInfo();
@@ -49,6 +50,7 @@ export const useCcipBridge = () => {
     fromBridgeBalance.value = 0;
     toBridgeBalance.value = 0;
     transactionFee.value = 0;
+    bridgeFee.value = 0;
     errMsg.value = '';
     isApproveMaxAmount.value = false;
     isApproving.value = false;
@@ -68,7 +70,9 @@ export const useCcipBridge = () => {
   const toChainId = computed<CcipChainId>(() => ccipChainId[toChainName.value as CcipNetworkName]);
 
   const isToSoneium = computed<boolean>(() =>
-    Boolean(toChainId.value === CcipChainId.SoneiumMinato || CcipChainId.Soneium)
+    Boolean(
+      toChainId.value === CcipChainId.SoneiumMinato || toChainId.value === CcipChainId.Soneium
+    )
   );
 
   const isDisabledBridge = computed<boolean>(() => {
@@ -82,8 +86,30 @@ export const useCcipBridge = () => {
   };
 
   const setIsApproved = async (): Promise<void> => {
-    try {
+    const senderAddress = currentAccount.value;
+    const fromChainIdRef = fromChainId.value;
+    const contractAddress = ccipBridgeAddress[fromChainIdRef];
+    const tokenAddress = selectedToken.value.tokenAddress[fromChainId.value] as string;
+    const decimals = selectedToken.value.decimals;
+    const amount = bridgeAmt.value ?? '0';
+
+    const isApprovalRequired = tokenAddress !== astarNativeTokenErcAddr;
+
+    if (!isApprovalRequired) {
       isApproved.value = true;
+      return;
+    }
+    if (!amount) return;
+    try {
+      const amountAllowance = await checkAllowance({
+        srcChainId: fromChainIdRef as number,
+        senderAddress,
+        contractAddress,
+        tokenAddress,
+      });
+      const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
+      console.info('allowance: ', formattedAllowance);
+      isApproved.value = Number(formattedAllowance) >= Number(amount);
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -215,7 +241,7 @@ export const useCcipBridge = () => {
     if (!bridgeAmt.value || !isApproved.value) return '';
     const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
     const amount = Number(bridgeAmt.value);
-    const fromNetworkId = ccipChainId[fromChainName.value];
+    const fromNetworkId = fromChainId.value;
 
     const hash = await ccipBridgeService.bridgeCcipAsset({
       senderAddress: currentAccount.value,
@@ -249,7 +275,8 @@ export const useCcipBridge = () => {
       if (errMsg.value || !currentAccount.value) return;
       isFetchingFee.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
-      const amount = Number(bridgeAmt.value);
+      const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
+      const fromNetworkId = fromChainId.value;
 
       const fee = await ccipBridgeService.fetchFee({
         senderAddress: currentAccount.value,
@@ -261,45 +288,24 @@ export const useCcipBridge = () => {
       });
 
       bridgeFee.value = Number(fee);
-      // transactionFee.value = fee;
-      // isGasPayable.value = resIsGasPayable;
+
+      const { isGasPayable: resIsGasPayable, fee: transferFee } =
+        await ccipBridgeService.dryRunBridgeAsset({
+          senderAddress: currentAccount.value,
+          amount,
+          fromNetworkId,
+          destNetworkId: ccipChainId[toChainName.value],
+          tokenAddress: selectedToken.value.tokenAddress[fromNetworkId] as string,
+          token: selectedToken.value,
+        });
+
+      transactionFee.value = transferFee;
+      isGasPayable.value = resIsGasPayable;
     } catch (error) {
       // Memo: can be ignore 'outOfFund' error due to the token balance is not enough because of hardcoding in amount variable above
       console.error(error);
     } finally {
       isFetchingFee.value = false;
-    }
-  };
-
-  const setIsGasPayable = async (): Promise<void> => {
-    try {
-      if (errMsg.value || !currentAccount.value) return;
-      // isLoadingGasPayable.value = true;
-      // const lzBridgeService = container.get<ILzBridgeService>(Symbols.LzBridgeService);
-      // const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.01;
-      // const isNativeToken =
-      //   fromChainName.value === LayerZeroNetworkName.AstarEvm &&
-      //   selectedToken.value.symbol === 'ASTR';
-
-      // const { isGasPayable: resIsGasPayable, fee } = await lzBridgeService.dryRunBridgeAsset({
-      //   senderAddress: currentAccount.value,
-      //   amount,
-      //   minAmount: calcMinAmount(amount),
-      //   fromNetworkId: fromLzId.value,
-      //   destNetworkId: toLzId.value,
-      //   tokenAddress: selectedToken.value.tokenAddress[fromLzId.value],
-      //   isNativeToken,
-      //   token: selectedToken.value,
-      //   fromChainId: fromChainId.value,
-      // });
-      // transactionFee.value = fee;
-      // isGasPayable.value = resIsGasPayable;
-      isGasPayable.value = true;
-    } catch (error) {
-      // Memo: can be ignore 'outOfFund' error due to the token balance is not enough because of hardcoding in amount variable above
-      console.error(error);
-    } finally {
-      isLoadingGasPayable.value = false;
     }
   };
 
@@ -309,28 +315,18 @@ export const useCcipBridge = () => {
   });
 
   watch([fromChainName, selectedToken, currentAccount], setBridgeBalance, {
-    immediate: false,
+    immediate: true,
   });
-  // watch([currentAccount, fromChainName], initLzTokens, { immediate: true });
 
   const debounceDelay = 500;
-  const debounceIsGasPayable = 1000;
   const debounceFetchFee = 2000;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
-  const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceIsGasPayable);
   const debouncedSetIsFetchFee = debounce(getBridgeFee, debounceFetchFee);
 
   watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
     immediate: true,
   });
 
-  watch(
-    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
-    debouncedSetIsGasPayable,
-    {
-      immediate: false,
-    }
-  );
   watch(
     [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
     debouncedSetIsFetchFee,
@@ -364,19 +360,16 @@ export const useCcipBridge = () => {
     toBridgeBalance,
     fromChainName,
     toChainName,
-    // importTokenAddress,
     fromChainId,
     toChainId,
-    // lzTokens,
     selectedToken,
     isApproved,
     isApproving,
     isApproveMaxAmount,
     transactionFee,
+    bridgeFee,
     setIsApproving,
-    // setSelectedToken,
     inputHandler,
-    // inputImportTokenHandler,
     resetStates,
     reverseChain,
     handleBridge,

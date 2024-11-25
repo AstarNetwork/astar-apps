@@ -119,7 +119,6 @@ export class CcipBridgeService implements ICcipBridgeService {
       const estimatedGas = await web3.eth.estimateGas({ ...tx });
       const gasFee = gasPrice * Number(estimatedGas);
       const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
-
       const amountNativeToken =
         param.tokenAddress === astarNativeTokenErcAddr
           ? Number(param.amount) + nativeFee

@@ -39,7 +39,9 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const defaultAbiCoder = ethers.utils.defaultAbiCoder;
 
     const destinationChainSelector = ccipChainSelector[destNetworkId];
-    const isToSoneium = destNetworkId === CcipChainId.SoneiumMinato || CcipChainId.Soneium;
+    const isToSoneium = Boolean(
+      destNetworkId === CcipChainId.SoneiumMinato || destNetworkId === CcipChainId.Soneium
+    );
 
     const receiverAddress = isToSoneium ? senderAddress : ccipBridgeAddress[fromNetworkId];
     const receiver = defaultAbiCoder.encode(['address'], [receiverAddress]);
@@ -83,8 +85,10 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     param: ParamBridgeCcipAsset;
     web3: Web3;
   }): Promise<{ txParam: TransactionConfig; nativeFee: number }> {
-    const isToSoneium = param.destNetworkId === CcipChainId.SoneiumMinato || CcipChainId.Soneium;
-
+    const isToSoneium = Boolean(
+      param.destNetworkId === CcipChainId.SoneiumMinato ||
+        param.destNetworkId === CcipChainId.Soneium
+    );
     const { message, destinationChainSelector } = this.getMessageArgs(param);
     const contractAddress = ccipBridgeAddress[param.fromNetworkId];
     const abi = ETHER_SENDER_RECEIVER_ABI;
@@ -95,9 +99,6 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const fee = await this.getFee({ param, web3 });
     const gasTokenBridge = ethers.utils.parseEther(isToSoneium ? String(param.amount) : '0');
     const value = (BigInt(gasTokenBridge.toString()) + BigInt(fee)).toString();
-
-    console.log('gasTokenBridge', gasTokenBridge.toString());
-    console.log('fee', fee);
 
     return {
       txParam: {

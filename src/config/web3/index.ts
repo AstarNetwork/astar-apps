@@ -51,7 +51,6 @@ export enum EVM {
   SONEIUM_MINATO_TESTNET = 1946,
   // Todo: update
   SONEIUM = 9999,
-  OP_SEPOLIA_TESTNET = 11155420,
 }
 
 export const chainName = {
@@ -70,7 +69,6 @@ export const chainName = {
   [EVM.MOONBEAM]: 'Moonbeam Mainnet',
   [EVM.SONEIUM_MINATO_TESTNET]: 'Soneium Minato Testnet',
   [EVM.SONEIUM]: 'Soneium Mainnet',
-  [EVM.OP_SEPOLIA_TESTNET]: 'OP Sepolia Testnet',
 };
 
 export const nativeCurrency = {
@@ -149,11 +147,6 @@ export const nativeCurrency = {
     symbol: 'ETH',
     decimals: 18,
   },
-  [EVM.OP_SEPOLIA_TESTNET]: {
-    name: 'ETH',
-    symbol: 'ETH',
-    decimals: 18,
-  },
 };
 
 export const rpcUrls = {
@@ -175,7 +168,6 @@ export const rpcUrls = {
   [EVM.SONEIUM_MINATO_TESTNET]: ['https://rpc.minato.soneium.org'],
   // Todo: update
   [EVM.SONEIUM]: ['https://rpc.minato.soneium.org'],
-  [EVM.OP_SEPOLIA_TESTNET]: ['https://sepolia.optimism.io'],
 };
 
 export const blockExplorerUrls = {
@@ -194,7 +186,6 @@ export const blockExplorerUrls = {
   [EVM.SONEIUM_MINATO_TESTNET]: ['https://soneium-minato.blockscout.com'],
   // Todo: update
   [EVM.SONEIUM]: ['https://soneium-minato.blockscout.com'],
-  [EVM.OP_SEPOLIA_TESTNET]: ['https://sepolia-optimism.etherscan.io'],
 };
 
 export const CHAIN_INFORMATION = {
