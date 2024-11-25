@@ -6,6 +6,41 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
+          <button :disabled="!isEnableMinatoBridge">
+            <component
+              :is="isEnableMinatoBridge ? 'router-link' : 'div'"
+              :to="buildCcipBridgePageLink()"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo-astr"
+                    :src="require('src/assets/img/token/astr.png')"
+                    alt="astr"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.ccipMinatoBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.ccipMinatoBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.ccipMinatoBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </component>
+          </button>
+          <p v-if="!isShibuyaEvm" class="text--bridge-details">
+            {{ $t('bridge.ccipMinatoBridge.text2') }}
+          </p>
+        </div>
+        <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
               :is="isEnableEthBridge ? 'router-link' : 'div'"
@@ -115,43 +150,6 @@
             </a>
           </button>
         </div>
-
-        <div class="column--selection">
-          <button :disabled="!isEnableMinatoBridge">
-            <a
-              :href="zKatanaBridgeUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo-astr"
-                    :src="require('src/assets/img/token/astr.png')"
-                    alt="astr"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.ccipMinatoBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.ccipMinatoBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.ccipMinatoBridge.text') }}
-                  </span>
-                </div>
-              </div>
-            </a>
-          </button>
-          <p v-if="!isShibuyaEvm" class="text--bridge-details">
-            {{ $t('bridge.ccipMinatoBridge.text2') }}
-          </p>
-        </div>
       </div>
       <div class="container--selection">
         <div class="column--selection">
@@ -233,6 +231,7 @@ import {
   Path as RoutePath,
   buildEthereumBridgePageLink,
   buildLzBridgePageLink,
+  buildCcipBridgePageLink,
 } from 'src/router/routes';
 import { computed, defineComponent } from 'vue';
 import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
@@ -308,6 +307,7 @@ export default defineComponent({
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,
+      buildCcipBridgePageLink,
     };
   },
 });
