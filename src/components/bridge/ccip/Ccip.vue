@@ -4,7 +4,6 @@
       <div class="wrapper-containers">
         <ccip-bridge
           :selected-token="selectedToken"
-          :set-right-ui="setRightUi"
           :bridge-amt="String(bridgeAmt)"
           :err-msg="errMsg"
           :is-disabled-bridge="isDisabledBridge"
@@ -20,28 +19,23 @@
           :handle-approve="handleApprove"
           :set-is-approving="setIsApproving"
           :is-approve-max-amount="isApproveMaxAmount"
-          :transaction-fee="transactionFee"
+          :bridge-fee="bridgeFee"
+          :is-to-soneium="isToSoneium"
+          :is-gas-payable="Boolean(isGasPayable)"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
-        <information
-          v-if="rightUi === 'information'"
-          :transfer-type="HistoryTxType.LZ_BRIDGE"
-          :is-history="true"
-        />
+        <information :transfer-type="HistoryTxType.LZ_BRIDGE" :is-history="true" />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { wait } from '@astar-network/astar-sdk-core';
 import Information from 'src/components/assets/transfer/Information.vue';
-import { RightUi } from 'src/components/assets/transfer/Transfer.vue';
 import CcipBridge from 'src/components/bridge/ccip/CcipBridge.vue';
-import { useAccount, useBreakpoints } from 'src/hooks';
+import { useAccount } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
-import { computed, defineComponent, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useCcipBridge } from '../../../hooks/bridge/useCcipBridge';
-import { LayerZeroToken } from '../../../modules/zk-evm-bridge/layerzero/index';
 
 export default defineComponent({
   components: {
@@ -50,10 +44,6 @@ export default defineComponent({
   },
   setup() {
     const isBridge = ref<boolean>(true);
-    const rightUi = ref<RightUi>('information');
-    const isModalSelectToken = ref<boolean>(false);
-
-    const { screenSize, width } = useBreakpoints();
 
     const {
       bridgeAmt,
@@ -68,7 +58,9 @@ export default defineComponent({
       isApproved,
       isApproving,
       isApproveMaxAmount,
-      transactionFee,
+      bridgeFee,
+      isToSoneium,
+      isGasPayable,
       inputHandler,
       reverseChain,
       handleBridge,
@@ -77,38 +69,11 @@ export default defineComponent({
     } = useCcipBridge();
 
     const { currentAccount } = useAccount();
-    const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
-
-    const setRightUi = async (ui: RightUi): Promise<void> => {
-      if (width.value > screenSize.md) {
-        // Memo: tricky way to work with `cancelHighlight` function
-        await wait(100);
-        rightUi.value = ui;
-      } else {
-        if (ui === 'select-token') {
-          isModalSelectToken.value = true;
-        }
-      }
-    };
-
-    const cancelHighlight = async (e: any): Promise<void> => {
-      const openClass = 'container--select-chain';
-      if (isHighlightRightUi.value && e.target.className !== openClass) {
-        await setRightUi('information');
-      }
-    };
-
-    const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
-      isModalSelectToken.value = isOpen;
-    };
 
     return {
       currentAccount,
       isBridge,
       HistoryTxType,
-      isModalSelectToken,
-      rightUi,
-      isHighlightRightUi,
       selectedToken,
       bridgeAmt,
       errMsg,
@@ -121,15 +86,14 @@ export default defineComponent({
       isApproved,
       isApproving,
       isApproveMaxAmount,
-      transactionFee,
-      cancelHighlight,
-      setRightUi,
+      bridgeFee,
+      isToSoneium,
+      isGasPayable,
       inputHandler,
       reverseChain,
       handleBridge,
       handleApprove,
       setIsApproving,
-      handleModalSelectToken,
     };
   },
 });

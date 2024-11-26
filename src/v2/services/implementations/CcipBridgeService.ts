@@ -63,7 +63,11 @@ export class CcipBridgeService implements ICcipBridgeService {
   public async fetchFee(param: ParamBridgeCcipAsset): Promise<string> {
     const provider = getEvmProvider(this.currentWallet as any);
     const web3 = new Web3(provider as any);
-    await this.checkConnectedNetwork(param.fromNetworkId, web3);
+    const connectedNetwork = await web3.eth.net.getId();
+
+    if (param.fromNetworkId !== connectedNetwork) {
+      return '0';
+    }
 
     return await this.CcipBridgeRepository.getFee({
       param,
@@ -118,14 +122,13 @@ export class CcipBridgeService implements ICcipBridgeService {
       const gasPrice = Number(ethers.utils.formatEther(gasPriceWei.toString()));
       const estimatedGas = await web3.eth.estimateGas({ ...tx });
       const gasFee = gasPrice * Number(estimatedGas);
-      const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei.toString()));
+      const accountBalance = Number(ethers.utils.formatEther(accountBalanceWei));
       const amountNativeToken =
         param.tokenAddress === astarNativeTokenErcAddr
           ? Number(param.amount) + nativeFee
           : nativeFee;
 
       const result = accountBalance - amountNativeToken - gasFee > 0;
-
       return { isGasPayable: result, fee: nativeFee };
     } catch (error) {
       console.error(error);

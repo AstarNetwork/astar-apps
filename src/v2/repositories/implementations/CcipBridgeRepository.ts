@@ -35,7 +35,7 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     destinationChainSelector: string;
     message: (string | (string | ethers.BigNumber)[][])[];
   } {
-    const { token, fromNetworkId, destNetworkId, senderAddress, amount, tokenAddress } = param;
+    const { destNetworkId, senderAddress, amount, tokenAddress } = param;
     const defaultAbiCoder = ethers.utils.defaultAbiCoder;
 
     const destinationChainSelector = ccipChainSelector[destNetworkId];
@@ -43,13 +43,12 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
       destNetworkId === CcipChainId.SoneiumMinato || destNetworkId === CcipChainId.Soneium
     );
 
-    const receiverAddress = isToSoneium ? senderAddress : ccipBridgeAddress[fromNetworkId];
+    const receiverAddress = isToSoneium ? senderAddress : ccipBridgeAddress[destNetworkId];
     const receiver = defaultAbiCoder.encode(['address'], [receiverAddress]);
 
     const data = isToSoneium ? '0x' : defaultAbiCoder.encode(['address'], [senderAddress]);
-    const decimal = token.decimals;
 
-    const amt = ethers.utils.parseUnits(String(amount), decimal);
+    const amt = ethers.utils.parseEther(String(amount)).toString();
     const tokenAmounts = [[tokenAddress, amt]];
     const feeToken = astarNativeTokenErcAddr;
     const functionSelector = ethers.utils.id('CCIP EVMExtraArgsV1').slice(0, 10);

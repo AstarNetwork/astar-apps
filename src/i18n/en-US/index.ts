@@ -1,5 +1,3 @@
-import { treasury } from '@polkadot/types/interfaces/definitions';
-
 export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
@@ -1110,10 +1108,12 @@ export default {
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:
       'It could take approximately 6 hours to finalize the bridge transaction from Astar zkEVM to Astar EVM',
+    warningCcipTime: 'It could take approximately {time} mins to finalize the bridge transaction',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     slippage: 'Slippage: {percent}%',
     feeOnTransaction: 'Transaction fee: {amount} {symbol}',
+    feeOnBridge: 'Bridge fee: {amount} {symbol}',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',

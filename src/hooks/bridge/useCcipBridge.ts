@@ -11,7 +11,7 @@ import {
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
-import { WatchCallback, computed, onUnmounted, ref, watch } from 'vue';
+import { WatchCallback, computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
@@ -22,7 +22,7 @@ import { ethers, constants as ethersConstants } from 'ethers';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 
 export const useCcipBridge = () => {
-  const { isShibuya } = useNetworkInfo();
+  const { isShibuya, nativeTokenSymbol } = useNetworkInfo();
 
   const selectedToken = ref<CCIP_TOKEN>(CCIP_SBY);
   const bridgeAmt = ref<string | null>(null);
@@ -153,7 +153,8 @@ export const useCcipBridge = () => {
 
   const setErrorMsg = (): void => {
     const isLoadingGasPayableRef = isLoadingGasPayable.value;
-    if (isLoading.value || isLoadingGasPayableRef) return;
+    const isFetchingFeeRef = isFetchingFee.value;
+    if (isLoading.value || isLoadingGasPayableRef || isFetchingFeeRef) return;
     const bridgeAmtRef = Number(bridgeAmt.value);
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
@@ -169,7 +170,7 @@ export const useCcipBridge = () => {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
       } else if (isBalanceNotEnough) {
         errMsg.value = t('warning.balanceNotEnough', {
-          symbol: isShibuya.value ? 'SBY' : 'ASTR',
+          symbol: nativeTokenSymbol.value,
         });
       } else {
         errMsg.value = '';
@@ -222,11 +223,11 @@ export const useCcipBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    if (!bridgeAmt.value || !isToSoneium.value) return '';
+    if (!bridgeAmt.value || isToSoneium.value) return '';
     const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
     const amount = isApproveMaxAmount.value
       ? ethersConstants.MaxUint256
-      : ethers.utils.parseUnits(bridgeAmt.value, selectedToken.value.decimals).toString();
+      : ethers.utils.parseEther(bridgeAmt.value).toString();
     return await ccipBridgeService.approve({
       amount: String(amount),
       contractAddress: ccipBridgeAddress[fromChainId.value],
@@ -234,7 +235,6 @@ export const useCcipBridge = () => {
       tokenAddress: selectedToken.value.tokenAddress[fromChainId.value] as string,
       fromChainId: fromChainId.value,
     });
-    return '';
   };
 
   const handleBridge = async (): Promise<String> => {
@@ -276,7 +276,6 @@ export const useCcipBridge = () => {
       isFetchingFee.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
       const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
-      const fromNetworkId = fromChainId.value;
 
       const fee = await ccipBridgeService.fetchFee({
         senderAddress: currentAccount.value,
@@ -287,7 +286,22 @@ export const useCcipBridge = () => {
         token: selectedToken.value,
       });
 
-      bridgeFee.value = Number(fee);
+      bridgeFee.value = Number(ethers.utils.formatEther(fee));
+    } catch (error) {
+      // Memo: can be ignore 'outOfFund' error due to the token balance is not enough because of hardcoding in amount variable above
+      console.error(error);
+    } finally {
+      isFetchingFee.value = false;
+    }
+  };
+
+  const setIsGasPayable = async (): Promise<void> => {
+    try {
+      if (!currentAccount.value) return;
+      isLoadingGasPayable.value = true;
+      const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
+      const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
+      const fromNetworkId = fromChainId.value;
 
       const { isGasPayable: resIsGasPayable, fee: transferFee } =
         await ccipBridgeService.dryRunBridgeAsset({
@@ -305,7 +319,7 @@ export const useCcipBridge = () => {
       // Memo: can be ignore 'outOfFund' error due to the token balance is not enough because of hardcoding in amount variable above
       console.error(error);
     } finally {
-      isFetchingFee.value = false;
+      isLoadingGasPayable.value = false;
     }
   };
 
@@ -319,9 +333,10 @@ export const useCcipBridge = () => {
   });
 
   const debounceDelay = 500;
-  const debounceFetchFee = 2000;
+  const debounceFetchFee = 1000;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
   const debouncedSetIsFetchFee = debounce(getBridgeFee, debounceFetchFee);
+  const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceFetchFee);
 
   watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
     immediate: true,
@@ -330,6 +345,14 @@ export const useCcipBridge = () => {
   watch(
     [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
     debouncedSetIsFetchFee,
+    {
+      immediate: false,
+    }
+  );
+
+  watch(
+    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    debouncedSetIsGasPayable,
     {
       immediate: false,
     }
@@ -368,6 +391,8 @@ export const useCcipBridge = () => {
     isApproveMaxAmount,
     transactionFee,
     bridgeFee,
+    isToSoneium,
+    isGasPayable,
     setIsApproving,
     inputHandler,
     resetStates,
