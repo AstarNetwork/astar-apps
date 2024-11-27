@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import {
-  BurnEvent,
   IBalancesRepository,
   IInflationRepository,
   ITokenApiRepository,
@@ -14,8 +13,6 @@ import { InflationParam, useDappStaking } from 'src/staking-v3';
 import { ethers } from 'ethers';
 import { useNetworkInfo } from './useNetworkInfo';
 import { PERIOD1_START_BLOCKS } from 'src/constants';
-import { wait } from '@astar-network/astar-sdk-core';
-import { DateTime } from 'luxon';
 
 type UseInflation = {
   activeInflationConfiguration: ComputedRef<InflationConfiguration>;
@@ -65,23 +62,6 @@ export function useInflation(): UseInflation {
     return await inflationRepository.getInflationParams();
   };
 
-  const getBurnEvents = async (): Promise<BurnEvent[]> => {
-    // Ignore burn events with less than 1M ASTAR. They are not impacting charts a lot small burn amounts
-    // could be a spam.
-    const minBurn = BigInt('1000000000000000000000000');
-    const tokenApiRepository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
-    const burnEvents = await tokenApiRepository.getBurnEvents(
-      networkNameSubstrate.value.toLowerCase()
-    );
-
-    return burnEvents.filter((item) => item.amount >= minBurn);
-  };
-
-  /**
-   * Estimates the realized inflation rate percentage based on the actual total issuance at the beginning
-   * and estimated total issuance at the end of the current cycle.
-   * According to the https://github.com/AstarNetwork/astar-apps/issues/1259
-   */
   const estimateRealizedInflation = async (): Promise<void> => {
     let inflation: number | undefined;
 
@@ -99,25 +79,6 @@ export function useInflation(): UseInflation {
       const initialTotalIssuance = await balancesRepository.getTotalIssuance(period1StartBlock - 1); // -
       const realizedTotalIssuance = await balancesRepository.getTotalIssuance();
 
-      const burnEvents = await getBurnEvents();
-      // Add first and last block so charts can be easily drawn.
-      burnEvents.splice(0, 0, {
-        blockNumber: period1StartBlock,
-        amount: BigInt(0),
-        user: '',
-        timestamp: 0,
-      });
-      burnEvents.push({
-        blockNumber: currentBlock.value,
-        amount: BigInt(0),
-        user: '',
-        timestamp: 0,
-      });
-
-      const totalBurn = burnEvents.reduce((acc, item) => acc + item.amount, BigInt(0));
-      // Used to calculate inflation rate.
-      const initialTotalIssuanceWithoutBurn = initialTotalIssuance - totalBurn;
-
       const {
         periodsPerCycle,
         standardEraLength,
@@ -128,25 +89,13 @@ export function useInflation(): UseInflation {
         standardEraLength *
         periodsPerCycle *
         (standardErasPerBuildAndEarnPeriod + standardErasPerVotingPeriod);
-      const blockDifference = BigInt(currentBlock.value - period1StartBlock);
-      const slope =
-        BigInt((realizedTotalIssuance - initialTotalIssuanceWithoutBurn).toString()) /
-        blockDifference;
 
       // Estimate total issuance at the end of the current cycle.
       const endOfCycleBlock = period1StartBlock + cycleLengthInBlocks;
-      const endOfCycleTotalIssuance = Number(
-        ethers.utils.formatEther(
-          slope * BigInt(endOfCycleBlock - period1StartBlock) + initialTotalIssuanceWithoutBurn
-        )
-      );
 
-      // Estimated inflation at the end of the current cycle.
+      // Calculate realized inflation.
       inflation =
-        (100 *
-          (endOfCycleTotalIssuance -
-            Number(ethers.utils.formatEther(initialTotalIssuanceWithoutBurn.toString())))) /
-        endOfCycleTotalIssuance;
+        100 * (Number(realizedTotalIssuance - initialTotalIssuance) / Number(initialTotalIssuance));
 
       // Calculate maximum and realized inflation for each era in the cycle.
       calculateMaximumInflationData(
