@@ -91,7 +91,7 @@ export function useInflation(): UseInflation {
         (standardErasPerBuildAndEarnPeriod + standardErasPerVotingPeriod);
 
       // Estimate total issuance at the end of the current cycle.
-      const endOfCycleBlock = period1StartBlock + cycleLengthInBlocks;
+      const endOfCycleBlock = Math.max(period1StartBlock + cycleLengthInBlocks, currentBlock.value);
 
       // Calculate realized inflation.
       inflation =
@@ -141,15 +141,10 @@ export function useInflation(): UseInflation {
 
     // One sample per era (take into consideration that voting era takes multiple standard era lengths).
     let era = 0;
-    const getEraLength = (era: number, block: number): number => {
-      const len =
-        era === 1 || era % (standardErasPerBuildAndEarnPeriod + 2) === 0
-          ? standardEraLength * standardErasPerVotingPeriod
-          : standardEraLength;
-
-      console.log(era, block, len);
-      return len;
-    };
+    const getEraLength = (era: number, block: number): number =>
+      era === 1 || era % (standardErasPerBuildAndEarnPeriod + 2) === 0
+        ? standardEraLength * standardErasPerVotingPeriod
+        : standardEraLength;
 
     for (let i = firstBlock - 1; i <= lastBlock; i += getEraLength(era, i)) {
       const inflation =
