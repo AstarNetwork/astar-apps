@@ -286,7 +286,8 @@ export const useCcipBridge = () => {
 
   const setIsGasPayable = async (): Promise<void> => {
     try {
-      if (!currentAccount.value) return;
+      if (!currentAccount.value || (!isToSoneium.value && !isApproved.value)) return;
+
       isLoadingGasPayable.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
       const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
