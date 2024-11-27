@@ -1085,7 +1085,7 @@ export default {
     ccipMinatoBridge: {
       title: 'Soneium Bridge',
       tag: 'SBY',
-      text: 'Transfer assets between Shibuya EVM and Soneium Minato testnet.',
+      text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
       text2: 'Available on Shibuya EVM. Switch the network to use it.',
     },
     astarBridge: {

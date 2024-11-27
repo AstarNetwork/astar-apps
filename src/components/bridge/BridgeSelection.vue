@@ -15,9 +15,9 @@
               <div class="row--logo-bg">
                 <div class="img--logo-bg">
                   <img
-                    class="img--logo-astr"
-                    :src="require('src/assets/img/token/astr.png')"
-                    alt="astr"
+                    class="img--logo-soneium"
+                    :src="require('src/assets/img/chain/soneium-color.svg')"
+                    alt="soneium"
                   />
                 </div>
               </div>

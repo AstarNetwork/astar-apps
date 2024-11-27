@@ -11,7 +11,7 @@ import {
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
-import { WatchCallback, computed, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { WatchCallback, computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
@@ -252,21 +252,10 @@ export const useCcipBridge = () => {
       token: selectedToken.value,
     });
 
-    // if (isHex(hash)) {
-    //   addLzHistories({
-    //     hash: hash,
-    //     type: HistoryTxType.LZ_BRIDGE,
-    //     address: currentAccount.value,
-    //     amount: bridgeAmt.value,
-    //     symbol: selectedToken.value.symbol,
-    //     fromChainId: fromChainId.value,
-    //     toChainId: toChainId.value,
-    //   });
-    // }
-
     await setIsApproved();
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
+    await setBridgeBalance();
     return hash;
   };
 

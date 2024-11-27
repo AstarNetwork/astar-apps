@@ -11,7 +11,7 @@
         <astar-icon-play size="24" />
       </div>
     </a>
-    <div id="faq" class="container--information">
+    <div v-if="transferType !== HistoryTxType.CCIP_BRIDGE" id="faq" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
         <span>{{ $t('assets.transferPage.faq') }}</span>
@@ -53,6 +53,33 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="transferType === HistoryTxType.CCIP_BRIDGE && !isHistory"
+      id="history"
+      class="container--information"
+    >
+      <div class="box--contents">
+        <div class="row--title">
+          <astar-icon-history size="20" />
+          <span>{{ $t('assets.transferPage.recentHistory') }}</span>
+        </div>
+        <div>
+          <a
+            :href="`${ccipExplorerUrl}/address/${currentAccount}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="container--hot-topics-contents"
+          >
+            <span class="text-topics-link"> Find your recent history on CCIP Explorer </span>
+            <div class="container--explorer-icon">
+              <astar-icon-external-link />
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
@@ -101,8 +128,8 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect, onUnmounted } from 'vue';
 import { RecentLzHistory } from '../../../modules/information/index';
 import { getLzTxHistories } from '../../../modules/information/recent-history/transfer/index';
-import { LOCAL_STORAGE } from '../../../config/localStorage';
 import { endpointKey, providerEndpoints } from '../../../config/chainEndpoints';
+import { ccipExplorerUrl } from 'src/links';
 
 export default defineComponent({
   components: { TransactionHistory, LzHistory },
@@ -124,7 +151,6 @@ export default defineComponent({
     const isLoadingTxHistories = ref<boolean>(true);
     const { senderSs58Account, isMultisig, currentAccount } = useAccount();
     const { currentNetworkName, isAstarZkEvm } = useNetworkInfo();
-
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const faqs = computed<Faq[]>(() => {
       if (props.transferType === HistoryTxType.Transfer) {
@@ -199,6 +225,9 @@ export default defineComponent({
       socialUrl,
       isMultisig,
       lztTxHistories,
+      HistoryTxType,
+      ccipExplorerUrl,
+      currentAccount,
     };
   },
 });

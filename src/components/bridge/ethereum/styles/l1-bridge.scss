@@ -135,7 +135,11 @@
   display: flex;
   justify-content: center;
   position: relative;
-  margin-top: 16px;
+  z-index: 10;
+}
+
+.row--reverse-bottom {
+  margin-top: -16px;
 }
 
 .icon--reverse {
@@ -150,7 +154,7 @@
   border: 1px solid $gray-4;
   cursor: pointer !important;
   margin-top: -24px;
-  background: transparent;
+  background: $white;
   transition: all 0.3s ease 0s;
   &:hover {
     border: 1px solid $astar-blue !important;
@@ -243,9 +247,14 @@
   input {
     color: white;
   }
-  .box--input-field,
-  .icon--reverse {
+
+  .box--input-field {
     background: transparent;
+    border: 1px solid $gray-3;
+  }
+
+  .icon--reverse {
+    background: $navy-4;
     border: 1px solid $gray-3;
   }
 

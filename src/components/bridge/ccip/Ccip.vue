@@ -24,7 +24,7 @@
           :is-gas-payable="Boolean(isGasPayable)"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
-        <information :transfer-type="HistoryTxType.LZ_BRIDGE" :is-history="true" />
+        <information :transfer-type="HistoryTxType.CCIP_BRIDGE" :is-history="false" />
       </div>
     </div>
   </div>

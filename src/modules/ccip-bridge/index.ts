@@ -49,7 +49,7 @@ export const ccipBridgeAddress = {
 export const ccipBridgeIcon = {
   [CcipNetworkName.ShibuyaEvm]: require('src/assets/img/chain/astar.png'),
   [CcipNetworkName.AstarEvm]: require('src/assets/img/chain/astar.png'),
-  [CcipNetworkName.SoneiumMinato]: require('src/assets/img/chain/astar.png'),
+  [CcipNetworkName.SoneiumMinato]: require('src/assets/img/chain/soneium-black.svg'),
   [CcipNetworkName.Soneium]: require('src/assets/img/chain/astar.png'),
 } as any;
 

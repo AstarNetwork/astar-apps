@@ -41,7 +41,7 @@
           </span>
         </q-tooltip>
       </div>
-      <div class="box--input-field">
+      <div class="box--input-field row--reverse-bottom">
         <div class="box__space-between">
           <span> {{ $t('to') }}</span>
           <div>
