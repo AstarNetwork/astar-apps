@@ -11,6 +11,7 @@
         <astar-icon-play size="24" />
       </div>
     </a>
+    <!-- Todo: remove the v-if once we have FAQ from CCIP Bridge -->
     <div v-if="transferType !== HistoryTxType.CCIP_BRIDGE" id="faq" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />

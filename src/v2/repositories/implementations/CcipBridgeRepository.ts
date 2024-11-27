@@ -1,12 +1,19 @@
 import { injectable } from 'inversify';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import ETHER_SENDER_RECEIVER_ABI from 'src/config/web3/abi/ccip/EtherSenderReceiver.json';
+import ROUTER_ABI from 'src/config/web3/abi/ccip/Router.json';
 import type { ParamApproveCcip, ParamBridgeCcipAsset } from 'src/v2/services/ICcipBridgeService';
 import type Web3 from 'web3';
 import type { TransactionConfig } from 'web3-eth';
 import type { AbiItem } from 'web3-utils';
 import type { ICcipBridgeRepository } from '../ICcipBridgeRepository';
-import { ccipBridgeAddress, CcipChainId, ccipChainSelector } from 'src/modules/ccip-bridge';
+import {
+  ccipBridgeAddress,
+  ccipChainId,
+  CcipChainId,
+  ccipChainSelector,
+  CcipNetworkName,
+} from 'src/modules/ccip-bridge';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ethers } from 'ethers';
 
@@ -69,7 +76,13 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     web3: Web3;
   }): Promise<string> {
     const contractAddress = ccipBridgeAddress[param.fromNetworkId];
-    const abi = ETHER_SENDER_RECEIVER_ABI;
+
+    const abi =
+      param.fromNetworkId === ccipChainId[CcipNetworkName.ShibuyaEvm] ||
+      param.fromNetworkId === ccipChainId[CcipNetworkName.AstarEvm]
+        ? ETHER_SENDER_RECEIVER_ABI
+        : ROUTER_ABI;
+
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
     const { destinationChainSelector, message } = this.getMessageArgs(param);
     const fee = await contract.methods.getFee(destinationChainSelector, message).call();
@@ -90,7 +103,12 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     );
     const { message, destinationChainSelector } = this.getMessageArgs(param);
     const contractAddress = ccipBridgeAddress[param.fromNetworkId];
-    const abi = ETHER_SENDER_RECEIVER_ABI;
+
+    const abi =
+      param.fromNetworkId === ccipChainId[CcipNetworkName.ShibuyaEvm] ||
+      param.fromNetworkId === ccipChainId[CcipNetworkName.AstarEvm]
+        ? ETHER_SENDER_RECEIVER_ABI
+        : ROUTER_ABI;
 
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
     const data = contract.methods.ccipSend(destinationChainSelector, message).encodeABI();

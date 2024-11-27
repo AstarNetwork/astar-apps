@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--l1-bridge">
+  <div class="wrapper--ccip-bridge">
     <div class="rows">
       <div class="box--input-field">
         <div class="box__space-between">
