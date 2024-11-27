@@ -1,4 +1,4 @@
-import { computed, ref, Ref, ComputedRef } from 'vue';
+import { computed, ref, Ref, ComputedRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
@@ -27,15 +27,20 @@ type UseInflation = {
   estimateRealizedInflation: () => Promise<void>;
 };
 
+const estimatedInflation = ref<number | undefined>(undefined);
+const maximumInflationData = ref<[number, number][]>([]);
+const realizedInflationData = ref<[number, number][]>([]);
+const realizedAdjustableStakersPart = ref<number>(0);
+
 export function useInflation(): UseInflation {
   const store = useStore();
   const { t } = useI18n();
   const { eraLengths, currentEraInfo } = useDappStaking();
   const { networkNameSubstrate } = useNetworkInfo();
-  const estimatedInflation = ref<number | undefined>(undefined);
-  const maximumInflationData = ref<[number, number][]>([]);
-  const realizedInflationData = ref<[number, number][]>([]);
-  const realizedAdjustableStakersPart = ref<number>(0);
+  // const estimatedInflation = ref<number | undefined>(undefined);
+  // const maximumInflationData = ref<[number, number][]>([]);
+  // const realizedInflationData = ref<[number, number][]>([]);
+  // const realizedAdjustableStakersPart = ref<number>(0);
 
   const activeInflationConfiguration = computed<InflationConfiguration>(
     () => store.getters['general/getActiveInflationConfiguration']
@@ -193,6 +198,15 @@ export function useInflation(): UseInflation {
     const result = adjustableStakerPart * Math.min(1, stakeRate / idealStakingRate);
     realizedAdjustableStakersPart.value = Number(result.toFixed(3));
   };
+
+  watch(eraLengths, async () => {
+    if (
+      (eraLengths.value && maximumInflationData.value.length === 0) ||
+      realizedInflationData.value.length === 0
+    ) {
+      estimateRealizedInflation();
+    }
+  });
 
   return {
     activeInflationConfiguration: activeInflationConfiguration,
