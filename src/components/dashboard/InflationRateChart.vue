@@ -11,7 +11,7 @@
       </div>
       <div class="row chart--value">
         <div>
-          <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(1) }}%</span>
+          <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(2) }}%</span>
         </div>
       </div>
       <div class="chart">
