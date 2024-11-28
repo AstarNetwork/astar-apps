@@ -55,11 +55,7 @@
       </div>
     </div>
 
-    <div
-      v-if="transferType === HistoryTxType.CCIP_BRIDGE && !isHistory"
-      id="history"
-      class="container--information"
-    >
+    <div v-if="isCcipHistory" id="history" class="container--information">
       <div class="box--contents">
         <div class="row--title">
           <astar-icon-history size="20" />
@@ -72,7 +68,7 @@
             rel="noopener noreferrer"
             class="container--hot-topics-contents"
           >
-            <span class="text-topics-link"> Find your recent history on CCIP Explorer </span>
+            <span class="text-topics-link"> {{ $t('assets.transferPage.ccipHistory') }}</span>
             <div class="container--explorer-icon">
               <astar-icon-external-link />
             </div>
@@ -153,6 +149,11 @@ export default defineComponent({
     const { senderSs58Account, isMultisig, currentAccount } = useAccount();
     const { currentNetworkName, isAstarZkEvm } = useNetworkInfo();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+    const isCcipHistory = computed<boolean>(() => {
+      return props.transferType === HistoryTxType.CCIP_BRIDGE && !props.isHistory;
+    });
+
     const faqs = computed<Faq[]>(() => {
       if (props.transferType === HistoryTxType.Transfer) {
         return isH160.value ? faqH160Transfer : faqSs58Transfer;
@@ -229,6 +230,7 @@ export default defineComponent({
       HistoryTxType,
       ccipExplorerUrl,
       currentAccount,
+      isCcipHistory,
     };
   },
 });

@@ -142,27 +142,10 @@
       </div>
 
       <div class="row--buttons">
-        <astar-button
-          class="button--confirm"
-          :disabled="
-            isApproved || isDisabledBridge || isHandling || isLoading || !ccipBridgeEnabled
-          "
-          @click="approve"
-        >
+        <astar-button class="button--confirm" :disabled="isApproveButtonDisabled" @click="approve">
           {{ $t('approve') }}
         </astar-button>
-        <astar-button
-          class="button--confirm"
-          :disabled="
-            !isApproved ||
-            isDisabledBridge ||
-            isHandling ||
-            isLoading ||
-            !ccipBridgeEnabled ||
-            !isGasPayable
-          "
-          @click="bridge"
-        >
+        <astar-button class="button--confirm" :disabled="isBridgeButtonDisabled" @click="bridge">
           {{ $t('bridge.bridge') }}
         </astar-button>
       </div>
@@ -278,6 +261,27 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
 
+    const isApproveButtonDisabled = computed<boolean>(() =>
+      Boolean(
+        props.isApproved ||
+          props.isDisabledBridge ||
+          isHandling.value ||
+          isLoading.value ||
+          !ccipBridgeEnabled.value
+      )
+    );
+
+    const isBridgeButtonDisabled = computed<boolean>(() =>
+      Boolean(
+        !props.isApproved ||
+          props.isDisabledBridge ||
+          isHandling.value ||
+          isLoading.value ||
+          !ccipBridgeEnabled.value ||
+          !props.isGasPayable
+      )
+    );
+
     const nativeToken = computed<string>(() => {
       if (
         props.fromChainName === CcipNetworkName.SoneiumMinato ||
@@ -341,6 +345,8 @@ export default defineComponent({
       nativeToken,
       ccipBridgeEnabled,
       ccipBridgeTime,
+      isApproveButtonDisabled,
+      isBridgeButtonDisabled,
       truncate,
       bridge,
       approve,

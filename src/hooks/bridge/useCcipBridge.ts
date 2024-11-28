@@ -116,7 +116,7 @@ export const useCcipBridge = () => {
     }
   };
 
-  const inputHandler = (event: any): void => {
+  const inputHandler = (event: { target: HTMLInputElement }): void => {
     bridgeAmt.value = event.target.value;
   };
 

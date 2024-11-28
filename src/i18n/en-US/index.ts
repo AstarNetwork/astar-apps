@@ -549,6 +549,7 @@ export default {
       xcm: '(XCM)',
       faq: 'FAQ',
       recentHistory: 'Recent History',
+      ccipHistory: 'Find your recent history on CCIP Explorer',
       hotTopic: 'Hot Topic',
       inputAddressManually: 'Input an address manually',
       goBack: 'Go back',
@@ -1075,7 +1076,7 @@ export default {
       title: 'Native Bridge',
       tag: 'ERC20',
       text: 'Transfer assets between {l1} and {l2}.',
-      text2: 'Available on Astar zkEVM. Switch the network to use it.',
+      remark: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
     },
     zKatanaBridge: {
@@ -1087,13 +1088,13 @@ export default {
       title: 'Soneium Bridge',
       tag: 'SBY',
       text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
-      text2: 'Available on Shibuya EVM. Switch the network to use it.',
+      remark: 'Available on Shibuya EVM. Switch the network to use it.',
     },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
       text: 'Transfer assets between Astar EVM and Astar zkEVM.',
-      text2: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
+      remark: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
     },
     celerBridge: {
       title: 'Celer Bridge',

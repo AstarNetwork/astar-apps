@@ -37,7 +37,7 @@
             </component>
           </button>
           <p v-if="!isShibuyaEvm" class="text--bridge-details">
-            {{ $t('bridge.ccipMinatoBridge.text2') }}
+            {{ $t('bridge.ccipMinatoBridge.remark') }}
           </p>
         </div>
         <div class="column--selection">
@@ -72,7 +72,7 @@
             </component>
           </button>
           <p v-if="!isZkEvm" class="text--bridge-details">
-            {{ $t('bridge.ethereumBridge.text2') }}
+            {{ $t('bridge.ethereumBridge.remark') }}
           </p>
           <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
             {{ $t('bridge.bridgeMaintenanceMode') }}
@@ -111,7 +111,7 @@
             </component>
           </button>
           <p v-if="!isEnableLzBridge" class="text--bridge-details">
-            {{ $t('bridge.astarBridge.text2') }}
+            {{ $t('bridge.astarBridge.remark') }}
           </p>
           <p v-if="!layerZeroBridgeEnabled" class="text--bridge-details">
             {{ $t('bridge.bridgeMaintenanceMode') }}
