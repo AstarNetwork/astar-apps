@@ -200,7 +200,7 @@ export const xcmToken = {
       isNativeToken: false,
       assetId: '18446744073709551641',
       originAssetId: '555',
-      logo: require('/src/assets/img/token/game.png'),
+      logo: require('/src/assets/img/token/game.svg'),
       isXcmCompatible: true,
       originChain: Chain.ASSET_HUB,
       minBridgeAmount: '0.5',
