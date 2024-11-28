@@ -12,7 +12,6 @@ import { ExtrinsicPayload, IApi } from 'src/v2/integration';
 import { IdentityData } from 'src/v2/models';
 import { IAccountUnificationRepository, IIdentityRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import e from 'express';
 
 @injectable()
 export class AccountUnificationRepository implements IAccountUnificationRepository {

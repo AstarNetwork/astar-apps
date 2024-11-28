@@ -11,6 +11,12 @@ export type BurnEvent = {
   user: string;
 };
 
+export type TokenIssuance = {
+  block: number;
+  timestamp: number;
+  balance: bigint;
+};
+
 /**
  * Definition of repository for access token price.
  */
@@ -33,4 +39,10 @@ export interface ITokenApiRepository {
    * @param network Network name.
    */
   getBurnEvents(network: string): Promise<BurnEvent[]>;
+
+  /**
+   * Gets token issuance history (one sample per dApp staking era) for the given network.
+   * @param network Network name.
+   */
+  getTokeIssuanceHistory(network: string): Promise<TokenIssuance[]>;
 }

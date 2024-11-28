@@ -11,7 +11,7 @@
       </div>
       <div class="row chart--value">
         <div>
-          <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(1) }}%</span>
+          <span class="text--value text-color--neon">{{ estimatedInflation?.toFixed(2) }}%</span>
         </div>
       </div>
       <div class="chart">
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import { titleFormatter, seriesFormatter } from 'src/modules/token-api';
@@ -150,18 +150,18 @@ export default defineComponent({
       chartOptions.value.xAxis.labels.style.color = getTextColor();
     });
 
-    watch([maximumInflationData], () => {
-      if (maximumInflationData.value && maximumInflationData.value.length > 0) {
-        hasData.value = true;
-        chartOptions.value.series[0].data = maximumInflationData.value;
-      } else {
-        hasData.value = false;
-      }
-    });
-
-    onMounted(() => {
-      estimateRealizedInflation();
-    });
+    watch(
+      [maximumInflationData],
+      () => {
+        if (maximumInflationData.value && maximumInflationData.value.length > 0) {
+          hasData.value = true;
+          chartOptions.value.series[0].data = maximumInflationData.value;
+        } else {
+          hasData.value = false;
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       estimatedInflation,
