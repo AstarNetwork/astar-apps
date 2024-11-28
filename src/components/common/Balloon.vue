@@ -10,7 +10,9 @@
         <div class="icon--check">
           <astar-icon-circle-check size="18" />
         </div>
-        <span class="text--ballon-title">{{ title }}</span>
+        <div class="row--text-title">
+          <span class="text--ballon-title">{{ title }}</span>
+        </div>
       </div>
       <button class="icon--close" @click="handleCloseBalloon">
         <astar-icon-circle-close size="20" />

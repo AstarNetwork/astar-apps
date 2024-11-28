@@ -129,7 +129,9 @@
               })
             }}
           </li>
-          <li>{{ $t('bridge.warningCcipTime', { time: isToSoneium ? '3' : '30' }) }}</li>
+          <li>
+            {{ $t('bridge.warningCcipTime', { time: ccipBridgeTime[fromChainName as CcipNetworkName] }) }}
+          </li>
         </ul>
       </div>
 
@@ -178,7 +180,12 @@ import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { ccipMinatoBridgeEnabled } from 'src/features';
-import { ccipBridgeIcon, CCIP_TOKEN, CcipNetworkName } from '../../../modules/ccip-bridge/index';
+import {
+  ccipBridgeIcon,
+  CCIP_TOKEN,
+  CcipNetworkName,
+  ccipBridgeTime,
+} from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: {
@@ -333,6 +340,7 @@ export default defineComponent({
       isEnabledWithdrawal,
       nativeToken,
       ccipBridgeEnabled,
+      ccipBridgeTime,
       truncate,
       bridge,
       approve,

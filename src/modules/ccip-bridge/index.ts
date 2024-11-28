@@ -71,3 +71,10 @@ export const CCIP_SBY: CCIP_TOKEN = {
   decimals: 18,
   image: require('/src/assets/img/token/astr.png'),
 };
+
+export const ccipBridgeTime = {
+  [CcipNetworkName.ShibuyaEvm]: 3,
+  [CcipNetworkName.AstarEvm]: 3,
+  [CcipNetworkName.SoneiumMinato]: 30,
+  [CcipNetworkName.Soneium]: 30,
+};

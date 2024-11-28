@@ -492,6 +492,7 @@ export default {
     syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    bridgeToSoneium: 'Bridge to Soneium',
     swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
