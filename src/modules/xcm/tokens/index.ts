@@ -195,6 +195,16 @@ export const xcmToken = {
       originChain: Chain.PENDULUM,
       minBridgeAmount: '1',
     },
+    {
+      symbol: 'GAME',
+      isNativeToken: false,
+      assetId: '18446744073709551641',
+      originAssetId: '555',
+      logo: require('/src/assets/img/token/game.png'),
+      isXcmCompatible: true,
+      originChain: Chain.ASSET_HUB,
+      minBridgeAmount: '0.5',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
