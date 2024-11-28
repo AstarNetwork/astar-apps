@@ -43,11 +43,7 @@
           </q-tooltip>
         </router-link>
 
-        <div
-          class="box--ccip"
-          @mouseover="isCcipBalloon = true"
-          @mouseleave="isCcipBalloon = false"
-        >
+        <div class="box--ccip">
           <custom-router-link
             v-if="isShibuyaEvm"
             :to="buildCcipBridgePageLink()"
@@ -61,9 +57,9 @@
               />
             </button>
             <span class="text--mobile-menu">{{ $t('assets.bridgeToSoneium') }}</span>
-            <!-- <q-tooltip>
+            <q-tooltip>
               <span class="text--tooltip">{{ $t('assets.bridgeToSoneium') }}</span>
-            </q-tooltip> -->
+            </q-tooltip>
           </custom-router-link>
           <balloon
             class="balloon--ccip"
