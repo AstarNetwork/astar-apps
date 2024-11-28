@@ -1138,5 +1138,6 @@ export default {
   governance: {
     newProposals: 'New proposals',
     ongoingReferenda: 'Ongoing referenda',
+    noProposals: 'No proposals at this time. Visit Subsquare to create a new one.',
   },
 };
