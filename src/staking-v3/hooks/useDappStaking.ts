@@ -492,6 +492,8 @@ export function useDappStaking() {
     const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
     const stakeInfo = getStakerInfo(dappAddress);
 
+    let message = '';
+
     if (amount <= 0) {
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
     } else if (amount > stakedAmount) {
@@ -507,31 +509,33 @@ export function useDappStaking() {
       (ledger.value?.unlocking?.length ?? 0) >= constants.value.maxUnlockingChunks
     ) {
       return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
-    } else if (
+    }
+
+    if (
       stakeInfo?.loyalStaker &&
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
       stakeInfo.staked.totalStake - amount < stakeInfo.staked.voting
     ) {
       // Handle possibility to lose bonus rewards.
-      const message =
+      message =
         stakeInfo.staked.buildAndEarn > BigInt(0)
           ? t('stakingV3.loyalStakerWarningAmount', {
               amount: ethers.utils.formatEther(stakeInfo.staked.buildAndEarn),
             })
           : t('stakingV3.loyalStakerWarning');
-
-      return [true, message];
-    } else if (constants.value && constants.value.minStakeAmount > stakedAmount - amount) {
-      // Handle un-staking all tokens.
-      return [
-        true,
-        t('stakingV3.willUnstakeAll', {
-          amount: constants.value.minStakeAmountToken,
-        }),
-      ];
     }
 
-    return [true, ''];
+    if (constants.value && constants.value.minStakeAmount > stakedAmount - amount) {
+      // Handle un-staking all tokens.
+      message =
+        message +
+        ' ' +
+        t('stakingV3.willUnstakeAll', {
+          amount: constants.value.minStakeAmountToken,
+        });
+    }
+
+    return [true, message];
   };
 
   const canUnlock = (amount: number): [boolean, string] => {
