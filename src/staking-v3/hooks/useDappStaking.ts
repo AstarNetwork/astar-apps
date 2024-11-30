@@ -487,15 +487,14 @@ export function useDappStaking() {
     return [true, '', ''];
   };
 
-  const canUnStake = (dappAddress: string, amount: number): [boolean, string] => {
-    const unstakeAmount = BigInt(ethers.utils.parseEther(amount.toString()).toString());
+  const canUnStake = (dappAddress: string, amount: bigint): [boolean, string] => {
     const dappInfo = getStakerInfo(dappAddress);
     const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
     const stakeInfo = getStakerInfo(dappAddress);
 
     if (amount <= 0) {
       return [false, t('stakingV3.dappStaking.ZeroAmount')];
-    } else if (unstakeAmount > stakedAmount) {
+    } else if (amount > stakedAmount) {
       return [false, t('stakingV3.dappStaking.UnstakeAmountTooLarge')];
     } else if (protocolState.value?.maintenance) {
       return [false, t('stakingV3.dappStaking.Disabled')];
@@ -508,18 +507,10 @@ export function useDappStaking() {
       (ledger.value?.unlocking?.length ?? 0) >= constants.value.maxUnlockingChunks
     ) {
       return [false, t('stakingV3.dappStaking.TooManyUnlockingChunks')];
-    } else if (constants.value && constants.value.minStakeAmount > stakedAmount - unstakeAmount) {
-      // Handle unstaking all tokens.
-      return [
-        true,
-        t('stakingV3.willUnstakeAll', {
-          amount: constants.value.minStakeAmountToken,
-        }),
-      ];
     } else if (
       stakeInfo?.loyalStaker &&
       protocolState.value?.periodInfo.subperiod === PeriodType.BuildAndEarn &&
-      stakeInfo.staked.totalStake - unstakeAmount < stakeInfo.staked.voting
+      stakeInfo.staked.totalStake - amount < stakeInfo.staked.voting
     ) {
       // Handle possibility to lose bonus rewards.
       const message =
@@ -530,6 +521,14 @@ export function useDappStaking() {
           : t('stakingV3.loyalStakerWarning');
 
       return [true, message];
+    } else if (constants.value && constants.value.minStakeAmount > stakedAmount - amount) {
+      // Handle un-staking all tokens.
+      return [
+        true,
+        t('stakingV3.willUnstakeAll', {
+          amount: constants.value.minStakeAmountToken,
+        }),
+      ];
     }
 
     return [true, ''];
