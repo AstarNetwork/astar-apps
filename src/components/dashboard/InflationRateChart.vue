@@ -8,6 +8,24 @@
         <span class="text--accent container--title--color">{{
           $t('dashboard.inflation.currentInflationRate')
         }}</span>
+        <div class="tooltip">
+          <astar-icon-help size="18" />
+          <q-tooltip
+            anchor="top middle"
+            self="bottom middle"
+            class="box--tooltip"
+            style="pointer-events: all !important"
+          >
+            <div>
+              <div v-if="showBurnInfo">
+                {{ $t('dashboard.inflation.astarBurnInfo') }}
+              </div>
+              <a :href="docsUrl.tokenomics2" target="_blank">
+                {{ $t('dashboard.inflation.moreInfo') }}
+              </a>
+            </div>
+          </q-tooltip>
+        </div>
       </div>
       <div class="row chart--value">
         <div>
@@ -27,8 +45,10 @@ import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import { titleFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
-import { useInflation } from 'src/hooks';
+import { useInflation, useNetworkInfo } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
+import { docsUrl } from 'src/links';
+import { navigateInNewTab } from 'src/util-general';
 
 export default defineComponent({
   components: {
@@ -43,13 +63,13 @@ export default defineComponent({
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
     const { t } = useI18n();
-    const {
-      maximumInflationData,
-      realizedInflationData,
-      estimatedInflation,
-      inflationParameters,
-      estimateRealizedInflation,
-    } = useInflation();
+    const { maximumInflationData, realizedInflationData, estimatedInflation, inflationParameters } =
+      useInflation();
+    const { isAstar } = useNetworkInfo();
+
+    const showBurnInfo = computed(
+      () => isAstar.value && estimatedInflation.value !== undefined && estimatedInflation.value < 0
+    );
 
     const maximumInflationRate = computed<string>(() =>
       ((inflationParameters.value?.maxInflationRate ?? 0) * 100).toFixed(1)
@@ -167,6 +187,9 @@ export default defineComponent({
       estimatedInflation,
       chartOptions,
       hasData,
+      showBurnInfo,
+      docsUrl,
+      navigateInNewTab,
     };
   },
 });
@@ -191,5 +214,10 @@ export default defineComponent({
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
     background-color: $container-bg-dark;
   }
+}
+
+.tooltip {
+  margin-left: 8px;
+  cursor: pointer;
 }
 </style>

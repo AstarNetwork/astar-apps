@@ -684,6 +684,9 @@ export default {
       maximumInflation: 'Maximum inflation ({rate}%)',
       realizedInflation: 'Realized inflation',
       wrongNetwork: 'Period 1 start block is not defined for the current network {network}.',
+      astarBurnInfo:
+        'The inflation rate is currently negative due to the significant burn on July 8, 2024. However, new tokens are issued daily with ASTR Tokenomics 2.0',
+      moreInfo: 'Find out more about Astar Tokenomics 2.0 by checking out our documentation',
     },
   },
   chart: {
