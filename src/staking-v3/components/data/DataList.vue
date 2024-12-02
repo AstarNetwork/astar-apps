@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useDataCalculations } from 'src/staking-v3/hooks';
 import DataCard from './DataCard.vue';
 import { useDappStaking, useDapps, usePeriod } from 'src/staking-v3/hooks';
@@ -182,10 +182,6 @@ export default defineComponent({
     const estimatedInflationFormatted = computed<string>(() =>
       estimatedInflation.value ? `${estimatedInflation.value.toFixed(2)} %` : '--'
     );
-
-    onMounted(() => {
-      estimateRealizedInflation();
-    });
 
     return {
       protocolState,

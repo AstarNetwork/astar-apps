@@ -1,6 +1,7 @@
 import { computed, ref, onMounted } from 'vue';
 import { useNetworkInfo } from './useNetworkInfo';
 import axios from 'axios';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export type GovernanceData = {
   title: string;
@@ -11,6 +12,7 @@ export type GovernanceData = {
 
 const proposals = ref<GovernanceData[]>([]);
 const ongoingReferenda = ref<GovernanceData>();
+const hasProposals = computed<boolean>(() => proposals.value.length > 0);
 
 const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
   try {
@@ -43,15 +45,11 @@ const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | 
 
     if (response.data) {
       const referendas = response.data.items.map(
-        (referenda: {
-          title: string;
-          referendumIndex: number;
-          referendumState: { state: string };
-        }) => {
+        (referenda: { title: string; referendumIndex: number; state: string }) => {
           return <GovernanceData>{
             title: referenda.title,
             index: referenda.referendumIndex,
-            state: referenda.referendumState.state,
+            state: referenda.state ?? 'Unknown',
             url: `https://${network}.subsquare.io/democracy/referenda/${referenda.referendumIndex}`,
           };
         }
@@ -67,14 +65,17 @@ const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | 
 };
 
 export function useGovernance() {
-  const { networkNameSubstrate } = useNetworkInfo();
+  const { currentNetworkIdx, networkNameSubstrate } = useNetworkInfo();
 
   const networkLowercase = computed<string>(() => {
     return networkNameSubstrate.value.toLowerCase();
   });
 
   const isGovernanceEnabled = computed<boolean>(() => {
-    return networkLowercase.value === 'shibuya';
+    return (
+      currentNetworkIdx.value === endpointKey.ASTAR ||
+      currentNetworkIdx.value === endpointKey.SHIBUYA
+    );
   });
 
   const governanceUrl = computed<string>(() => {
@@ -98,5 +99,6 @@ export function useGovernance() {
     proposals,
     ongoingReferenda,
     governanceUrl,
+    hasProposals,
   };
 }

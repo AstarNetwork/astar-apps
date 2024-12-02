@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { injectable } from 'inversify';
-import { BurnEvent, ITokenApiRepository, PeriodData } from '../ITokenApiRepository';
+import { BurnEvent, ITokenApiRepository, PeriodData, TokenIssuance } from '../ITokenApiRepository';
 
 @injectable()
 export class TokenApiRepository implements ITokenApiRepository {
@@ -44,6 +44,16 @@ export class TokenApiRepository implements ITokenApiRepository {
           user: data.user,
         };
       });
+    } catch (error) {
+      return [];
+    }
+  }
+
+  public async getTokeIssuanceHistory(network: string): Promise<TokenIssuance[]> {
+    try {
+      const url = `${TokenApiRepository.BaseUrl}/v1/${network}/token/supply-history`;
+      const response = await axios.get<TokenIssuance[]>(url);
+      return response.data;
     } catch (error) {
       return [];
     }
