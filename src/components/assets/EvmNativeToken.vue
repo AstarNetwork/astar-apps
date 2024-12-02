@@ -166,6 +166,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { nativeBridgeEnabled, layerZeroBridgeEnabled, ccipMinatoBridgeEnabled } from 'src/features';
 import CustomRouterLink from '../common/CustomRouterLink.vue';
 import Balloon from 'src/components/common/Balloon.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -242,9 +243,11 @@ export default defineComponent({
     watch(
       [isShibuyaEvm],
       async () => {
-        if (isShibuyaEvm.value) {
+        const isBallonDisplayed = Boolean(localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA));
+        if (isShibuyaEvm.value && !isBallonDisplayed) {
           await wait(1000);
           isCcipBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA, 'true');
         }
       },
       { immediate: true }
