@@ -80,7 +80,8 @@ export class AssetsRepository implements IAssetsRepository {
     try {
       const api = await this.api.getApi();
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
-      const transferableBal = (data.free.toBn() as BN).sub(new BN(data.frozen));
+      const untouchable = data.frozen.sub(data.reserved);
+      const transferableBal = (data.free.toBn() as BN).sub(new BN(untouchable));
       return transferableBal.toString();
     } catch (e) {
       console.error(e);
