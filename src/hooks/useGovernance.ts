@@ -45,15 +45,11 @@ const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | 
 
     if (response.data) {
       const referendas = response.data.items.map(
-        (referenda: {
-          title: string;
-          referendumIndex: number;
-          referendumState: { state: string };
-        }) => {
+        (referenda: { title: string; referendumIndex: number; state: string }) => {
           return <GovernanceData>{
             title: referenda.title,
             index: referenda.referendumIndex,
-            state: referenda.referendumState?.state ?? 'Unknown',
+            state: referenda.state ?? 'Unknown',
             url: `https://${network}.subsquare.io/democracy/referenda/${referenda.referendumIndex}`,
           };
         }
