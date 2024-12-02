@@ -1,4 +1,4 @@
-import { treasury } from '@polkadot/types/interfaces/definitions';
+import { democracy, treasury } from '@polkadot/types/interfaces/definitions';
 
 export default {
   confirm: 'Confirm',
@@ -1138,6 +1138,7 @@ export default {
   governance: {
     newProposals: 'New proposals',
     ongoingReferenda: 'Ongoing referenda',
+    governance: 'Governance',
     noProposals: 'No proposals at this time. Visit Subsquare to create a new one.',
   },
 };

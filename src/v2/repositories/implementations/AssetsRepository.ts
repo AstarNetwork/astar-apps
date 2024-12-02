@@ -19,6 +19,8 @@ import {
 } from './../../services/IAssetsService';
 import { IAssetsRepository } from './../IAssetsRepository';
 import { FrameSystemAccountInfo } from './SystemRepository';
+import { u128 } from '@polkadot/types';
+
 @injectable()
 export class AssetsRepository implements IAssetsRepository {
   constructor(
@@ -80,7 +82,9 @@ export class AssetsRepository implements IAssetsRepository {
     try {
       const api = await this.api.getApi();
       const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
-      const transferableBal = (data.free.toBn() as BN).sub(new BN(data.frozen));
+      const existentialDeposit = <u128>api.consts.balances.existentialDeposit;
+      const untouchable = BN.max(data.frozen.sub(data.reserved), existentialDeposit);
+      const transferableBal = (data.free.toBn() as BN).sub(new BN(untouchable));
       return transferableBal.toString();
     } catch (e) {
       console.error(e);

@@ -129,7 +129,7 @@
             </div>
             <div v-if="!isSkeleton" class="column--balance">
               <div class="column--amount text--amount">
-                {{ $n(truncate(lockInDappStaking + vestingTtl + reservedTtl, 3)) }}
+                {{ $n(truncate(lockedAmount, 3)) }}
               </div>
               <div class="column--symbol text--symbol">
                 {{ nativeTokenSymbol }}
@@ -252,6 +252,28 @@
                 </router-link>
               </div>
             </div>
+
+            <!-- Governance -->
+            <div class="row--expand">
+              <div class="row--expand__info">
+                <div class="column--label text--label">{{ $t('governance.governance') }}</div>
+                <div class="column--balance">
+                  <template v-if="!isSkeleton">
+                    <div class="column--amount text--amount">
+                      {{ $n(truncate(lockInDemocracy, 3)) }}
+                    </div>
+                    <div class="column--symbol text--symbol">
+                      {{ nativeTokenSymbol }}
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="skeleton--right">
+                      <q-skeleton animation="fade" class="skeleton--md" />
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -310,6 +332,7 @@ export default defineComponent({
     const vestingTtl = ref<number>(0);
     const reservedTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);
+    const lockInDemocracy = ref<number>(0);
     const isRocstar = ref<boolean>(false);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
@@ -369,6 +392,10 @@ export default defineComponent({
       }
     };
 
+    const lockedAmount = computed<number>(() =>
+      Math.max(vestingTtl.value, lockInDappStaking.value, lockInDemocracy.value, reservedTtl.value)
+    );
+
     watch([nativeTokenSymbol, balance, props], setBalanceData, { immediate: false });
 
     watchEffect(() => {
@@ -377,11 +404,14 @@ export default defineComponent({
       // Memo: `vesting ` -> there has been inputted 1 space here
       const vesting = accountDataRef.locks.find((it) => u8aToString(it.id) === 'vesting ');
       const dappStake = accountDataRef.locks.find((it) => u8aToString(it.id) === 'dapstake');
+      const democracy = accountDataRef.locks.find((it) => u8aToString(it.id) === 'democrac');
       const reserved = accountDataRef.reserved;
+
       if (vesting) {
         const amount = String(vesting.amount);
         vestingTtl.value = Number(ethers.utils.formatEther(amount));
       }
+
       if (dappStake) {
         const amount = String(dappStake.amount);
         lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
@@ -392,6 +422,10 @@ export default defineComponent({
       if (reserved) {
         const amount = reserved.toString();
         reservedTtl.value = Number(ethers.utils.formatEther(amount));
+      }
+
+      if (democracy) {
+        lockInDemocracy.value = Number(ethers.utils.formatEther(democracy.amount.toString()));
       }
     });
 
@@ -414,6 +448,7 @@ export default defineComponent({
       isShibuya,
       vestingTtl,
       lockInDappStaking,
+      lockInDemocracy,
       isFaucet,
       transferableBalance,
       isModalTransfer,
@@ -437,6 +472,7 @@ export default defineComponent({
       handleModalFaucet,
       handleModalEvmWithdraw,
       expandAsset,
+      lockedAmount,
     };
   },
 });
