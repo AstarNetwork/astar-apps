@@ -3,18 +3,20 @@
     <div class="header"><astar-icon-governance />{{ $t('governance.newProposals') }}</div>
     <hr class="separator" />
     <div class="governance-container">
-      <div v-for="proposal in proposals" :key="proposal.index">
+      <div v-if="!hasProposals">
+        <governance-link
+          :title="$t('governance.noProposals')"
+          :url="`${governanceUrl}/democracy/proposals`"
+        />
+      </div>
+      <div v-for="proposal in proposals" v-else :key="proposal.index">
         <governance-link :index="proposal.index" :title="proposal.title" :url="proposal.url" />
       </div>
     </div>
     <div v-if="ongoingReferenda" class="governance-container">
       <div class="header"><astar-icon-governance />{{ $t('governance.ongoingReferenda') }}</div>
       <hr class="separator" />
-      <governance-link
-        :index="ongoingReferenda.index"
-        :title="ongoingReferenda.title"
-        :url="ongoingReferenda.url"
-      />
+      <governance-link :title="ongoingReferenda.title" :url="ongoingReferenda.url" />
     </div>
   </div>
 </template>
@@ -27,9 +29,10 @@ import GovernanceLink from './GovernanceLink.vue';
 export default defineComponent({
   components: { GovernanceLink },
   setup() {
-    const { isGovernanceEnabled, proposals, ongoingReferenda } = useGovernance();
+    const { isGovernanceEnabled, proposals, ongoingReferenda, hasProposals, governanceUrl } =
+      useGovernance();
 
-    return { isGovernanceEnabled, proposals, ongoingReferenda };
+    return { isGovernanceEnabled, proposals, ongoingReferenda, hasProposals, governanceUrl };
   },
 });
 </script>

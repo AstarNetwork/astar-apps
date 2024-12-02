@@ -1139,5 +1139,6 @@ export default {
     newProposals: 'New proposals',
     ongoingReferenda: 'Ongoing referenda',
     governance: 'Governance',
+    noProposals: 'No proposals at this time. Visit Subsquare to create a new one.',
   },
 };

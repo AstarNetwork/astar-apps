@@ -10,10 +10,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
-    index: {
-      type: Number,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
