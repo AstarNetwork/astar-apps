@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--l1-bridge">
+  <div class="wrapper--ccip-bridge">
     <div class="rows">
       <div class="box--input-field">
         <div class="box__space-between">
@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="lzBridgeIcon[fromChainName]" alt="chain-icon" />
+          <img width="24" :src="ccipBridgeIcon[fromChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ fromChainName }}</span>
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img width="24" :src="lzBridgeIcon[toChainName]" alt="chain-icon" />
+          <img width="24" :src="ccipBridgeIcon[toChainName]" alt="chain-icon" />
           <div class="column--chain">
             <div>
               <span class="text--title">{{ toChainName }}</span>
@@ -78,14 +78,11 @@
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
+          <div class="box__row">
             <div class="token-logo">
               <img width="24" alt="token-logo" :src="selectedToken.image" />
             </div>
             <span class="text--title">{{ selectedToken.symbol }}</span>
-            <div class="icon--expand">
-              <astar-icon-expand size="20" />
-            </div>
           </div>
           <div class="box__column--input-amount">
             <input
@@ -124,43 +121,31 @@
 
       <div class="container--warning">
         <ul>
-          <li>{{ $t('bridge.slippage', { percent: LayerZeroSlippage }) }}</li>
           <li>
             {{
-              $t('bridge.feeOnTransaction', {
-                amount:
-                  nativeTokenSymbol === 'ASTR' ? $n(truncate(transactionFee, 4)) : transactionFee,
-                symbol: nativeTokenSymbol,
+              $t('bridge.feeOnBridge', {
+                amount: nativeToken === 'ETH' ? truncate(bridgeFee, 5) : $n(truncate(bridgeFee)),
+                symbol: nativeToken,
               })
             }}
           </li>
-          <li>{{ $t('bridge.warningLzWithdrawal') }}</li>
+          <li>
+            {{ $t('bridge.warningCcipTime', { time: ccipBridgeTime[fromChainName as CcipNetworkName] }) }}
+          </li>
         </ul>
       </div>
 
-      <div v-if="!layerZeroBridgeEnabled" class="row--box-error">
+      <div v-if="!ccipBridgeEnabled" class="row--box-error">
         <span class="color--white">
           {{ $t('bridge.underMaintenance') }}
         </span>
       </div>
 
       <div class="row--buttons">
-        <astar-button
-          class="button--confirm"
-          :disabled="
-            isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
-          "
-          @click="approve"
-        >
+        <astar-button class="button--confirm" :disabled="isApproveButtonDisabled" @click="approve">
           {{ $t('approve') }}
         </astar-button>
-        <astar-button
-          class="button--confirm"
-          :disabled="
-            !isApproved || isDisabledBridge || isHandling || isLoading || !layerZeroBridgeEnabled
-          "
-          @click="bridge"
-        >
+        <astar-button class="button--confirm" :disabled="isBridgeButtonDisabled" @click="bridge">
           {{ $t('bridge.bridge') }}
         </astar-button>
       </div>
@@ -172,13 +157,18 @@
 import { truncate } from '@astar-network/astar-sdk-core';
 import { isHex } from '@polkadot/util';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount } from 'src/hooks';
-import { EthBridgeNetworkName, LayerZeroToken, lzBridgeIcon } from 'src/modules/zk-evm-bridge';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { LayerZeroNetworkName, LayerZeroSlippage } from '../../../modules/zk-evm-bridge/layerzero';
-import { layerZeroBridgeEnabled } from 'src/features';
+import { ccipMinatoBridgeEnabled } from 'src/features';
+import {
+  ccipBridgeIcon,
+  CCIP_TOKEN,
+  CcipNetworkName,
+  ccipBridgeTime,
+} from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: {
@@ -186,12 +176,8 @@ export default defineComponent({
     [Jazzicon.name]: Jazzicon,
   },
   props: {
-    setRightUi: {
-      type: Function,
-      required: true,
-    },
     selectedToken: {
-      type: Object as PropType<LayerZeroToken>,
+      type: Object as PropType<CCIP_TOKEN>,
       required: true,
     },
     bridgeAmt: {
@@ -203,6 +189,10 @@ export default defineComponent({
       required: true,
     },
     isApproved: {
+      type: Boolean,
+      required: true,
+    },
+    isGasPayable: {
       type: Boolean,
       required: true,
     },
@@ -218,7 +208,11 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
-    transactionFee: {
+    isToSoneium: {
+      type: Boolean,
+      required: true,
+    },
+    bridgeFee: {
       type: Number,
       required: true,
     },
@@ -261,19 +255,46 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const nativeTokenSymbol = computed<string>(() => {
-      return props.fromChainName === LayerZeroNetworkName.AstarEvm ? 'ASTR' : 'ETH';
-    });
+    const { nativeTokenSymbol } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
 
+    const isApproveButtonDisabled = computed<boolean>(() =>
+      Boolean(
+        props.isApproved ||
+          props.isDisabledBridge ||
+          isHandling.value ||
+          isLoading.value ||
+          !ccipBridgeEnabled.value
+      )
+    );
+
+    const isBridgeButtonDisabled = computed<boolean>(() =>
+      Boolean(
+        !props.isApproved ||
+          props.isDisabledBridge ||
+          isHandling.value ||
+          isLoading.value ||
+          !ccipBridgeEnabled.value ||
+          !props.isGasPayable
+      )
+    );
+
+    const nativeToken = computed<string>(() => {
+      if (
+        props.fromChainName === CcipNetworkName.SoneiumMinato ||
+        props.fromChainName === CcipNetworkName.Soneium
+      ) {
+        return 'ETH';
+      } else {
+        return nativeTokenSymbol.value;
+      }
+    });
+
     const isNativeToken = computed<boolean>(() => {
-      return (
-        props.fromChainName === LayerZeroNetworkName.AstarEvm &&
-        props.selectedToken.symbol === 'ASTR'
-      );
+      return props.selectedToken.symbol === nativeToken.value;
     });
 
     const bridge = async (): Promise<void> => {
@@ -297,6 +318,11 @@ export default defineComponent({
       isHandling.value = false;
     };
 
+    // Todo: update for Soneium
+    const ccipBridgeEnabled = computed<boolean>(() => {
+      return ccipMinatoBridgeEnabled;
+    });
+
     watch(
       [props],
       () => {
@@ -309,16 +335,18 @@ export default defineComponent({
     );
 
     return {
-      lzBridgeIcon,
+      ccipBridgeIcon,
       currentAccount,
       EthBridgeNetworkName,
       isHandling,
       isLoading,
       isNativeToken,
       isEnabledWithdrawal,
-      LayerZeroSlippage,
-      nativeTokenSymbol,
-      layerZeroBridgeEnabled,
+      nativeToken,
+      ccipBridgeEnabled,
+      ccipBridgeTime,
+      isApproveButtonDisabled,
+      isBridgeButtonDisabled,
       truncate,
       bridge,
       approve,
@@ -328,5 +356,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/bridge/layerzero/styles/lz-bridge.scss';
+@use 'src/components/bridge/ccip/styles/ccip-bridge.scss';
 </style>

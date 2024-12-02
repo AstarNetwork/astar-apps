@@ -4,6 +4,7 @@ export const layerZeroBridgeEnabled = true;
 export const layerSwapBridgeEnabled = true;
 export const celerBridgeEnabled = true;
 export const omniBridgeEnabled = true;
+export const ccipMinatoBridgeEnabled = true;
 const stargateBridgeEnabled = true;
 const stakeStoneBridgeEnabled = true;
 const arthSwapBridgeEnabled = true;

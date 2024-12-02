@@ -34,7 +34,11 @@ export function useNetworkInfo() {
   const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
+  const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+  const isShibuyaEvm = computed<boolean>(() => {
+    return isH160.value && isShibuya.value;
+  });
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -129,5 +133,7 @@ export function useNetworkInfo() {
     dappStakingCurrency,
     isH160,
     nativeTokenImg,
+    isShibuya,
+    isShibuyaEvm,
   };
 }
