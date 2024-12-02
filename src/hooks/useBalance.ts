@@ -9,7 +9,7 @@ import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useDapps } from 'src/staking-v3';
-import { Option, Vec, u32 } from '@polkadot/types';
+import { Option, Vec, u128, u32 } from '@polkadot/types';
 
 // Temporarily moved here until uplift polkadot js for astar.js
 export const getVested = ({
@@ -226,7 +226,12 @@ export class AccountData {
     // refs.
     // https://wiki.polkadot.network/docs/learn-account-balances
     // https://github.com/paritytech/polkadot-sdk/blob/e8da320734ae44803f89dd2b35b3cfea0e1ecca1/substrate/frame/balances/src/impl_fungible.rs#L44
-    const untouchable = this.frozen.sub(this.reserved);
+    const existentialDeposit = <u128>$api?.consts.balances.existentialDeposit;
+    if (!existentialDeposit) {
+      return new BN(0);
+    }
+
+    const untouchable = BN.max(this.frozen.sub(this.reserved), existentialDeposit);
     return this.free.sub(untouchable);
   }
 
