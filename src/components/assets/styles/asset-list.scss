@@ -826,6 +826,25 @@
   }
 }
 
+.img--logo-soneium {
+  height: 24px;
+}
+
+.box--ccip {
+  position: relative;
+}
+
+.balloon--ccip {
+  width: 260px;
+  margin-top: 32px;
+  position: absolute;
+  left: -78px;
+  @media (min-width: $sm) {
+    margin-top: 8px;
+    left: -110px;
+  }
+}
+
 .body--dark {
   .row--locked-tokens .expand-container .rows--expand .row--expand {
     background-color: $navy-1;

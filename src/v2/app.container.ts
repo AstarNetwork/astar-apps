@@ -42,6 +42,7 @@ import {
   IBalancesRepository,
 } from './repositories';
 import { ILzBridgeRepository } from './repositories/ILzBridgeRepository';
+import { ICcipBridgeRepository } from './repositories/ICcipBridgeRepository';
 import {
   AccountUnificationRepository,
   AssetsRepository,
@@ -60,6 +61,7 @@ import {
 } from './repositories/implementations';
 import { IdentityRepository } from './repositories/implementations/IdentityRepository';
 import { LzBridgeRepository } from './repositories/implementations/LzBridgeRepository';
+import { CcipBridgeRepository } from './repositories/implementations/CcipBridgeRepository';
 import {
   IAccountUnificationService,
   IAssetsService,
@@ -73,6 +75,7 @@ import {
   IXvmService,
   IZkBridgeService,
   ILzBridgeService,
+  ICcipBridgeService,
   WalletType,
 } from './services';
 import {
@@ -88,6 +91,7 @@ import {
   XcmService,
   ZkBridgeService,
   LzBridgeService,
+  CcipBridgeService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 
@@ -149,6 +153,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);
   container.addTransient<IZkBridgeRepository>(ZkBridgeRepository, Symbols.ZkBridgeRepository);
   container.addTransient<ILzBridgeRepository>(LzBridgeRepository, Symbols.LzBridgeRepository);
+  container.addTransient<ICcipBridgeRepository>(CcipBridgeRepository, Symbols.CcipBridgeRepository);
   container.addSingleton<IIdentityRepository>(IdentityRepository, Symbols.IdentityRepository);
   container.addSingleton<INftRepository>(NftRepository, Symbols.NftRepository);
   container.addSingleton<IAccountUnificationRepository>(
@@ -174,6 +179,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IAssetsService>(AssetsService, Symbols.AssetsService);
   container.addTransient<IZkBridgeService>(ZkBridgeService, Symbols.ZkBridgeService);
   container.addTransient<ILzBridgeService>(LzBridgeService, Symbols.LzBridgeService);
+  container.addTransient<ICcipBridgeService>(CcipBridgeService, Symbols.CcipBridgeService);
   container.addSingleton<IAccountUnificationService>(
     AccountUnificationService,
     Symbols.AccountUnificationService

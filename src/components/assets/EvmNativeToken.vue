@@ -43,6 +43,35 @@
           </q-tooltip>
         </router-link>
 
+        <div class="box--ccip">
+          <custom-router-link
+            v-if="isShibuyaEvm"
+            :to="buildCcipBridgePageLink()"
+            :is-disabled="!ccipMinatoBridgeEnabled"
+          >
+            <button class="btn btn--icon">
+              <img
+                class="img--logo-soneium"
+                :src="require('src/assets/img/chain/soneium-color.svg')"
+                alt="soneium"
+              />
+            </button>
+            <span class="text--mobile-menu">{{ $t('assets.bridgeToSoneium') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.bridgeToSoneium') }}</span>
+            </q-tooltip>
+          </custom-router-link>
+          <balloon
+            class="balloon--ccip"
+            direction="top"
+            :is-balloon="isCcipBalloon"
+            :is-balloon-closing="isBalloonClosing"
+            :handle-close-balloon="closeCcipBalloon"
+            :text="$t('assets.bridgeToSoneium')"
+            :title="$t('new')"
+          />
+        </div>
+
         <custom-router-link
           v-if="isAstar"
           :to="buildLzBridgePageLink()"
@@ -118,7 +147,7 @@
   </div>
 </template>
 <script lang="ts">
-import { truncate } from '@astar-network/astar-sdk-core';
+import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
@@ -130,14 +159,16 @@ import {
   buildEthereumBridgePageLink,
   buildTransferPageLink,
   buildLzBridgePageLink,
+  buildCcipBridgePageLink,
 } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import { nativeBridgeEnabled, layerZeroBridgeEnabled } from 'src/features';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { nativeBridgeEnabled, layerZeroBridgeEnabled, ccipMinatoBridgeEnabled } from 'src/features';
 import CustomRouterLink from '../common/CustomRouterLink.vue';
+import Balloon from 'src/components/common/Balloon.vue';
 
 export default defineComponent({
-  components: { ModalFaucet, CustomRouterLink },
+  components: { ModalFaucet, CustomRouterLink, Balloon },
   props: {
     nativeTokenUsd: {
       type: Number,
@@ -153,7 +184,16 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkyoto, isAstar } = useNetworkInfo();
+    const isCcipBalloon = ref<boolean>(false);
+    const isBalloonClosing = ref<boolean>(false);
+
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkyoto, isAstar, isShibuyaEvm } =
+      useNetworkInfo();
+
+    const closeCcipBalloon = () => {
+      isCcipBalloon.value = false;
+    };
+
     const { currentAccount } = useAccount();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -198,6 +238,18 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
+    // Memo: display the balloon animation
+    watch(
+      [isShibuyaEvm],
+      async () => {
+        if (isShibuyaEvm.value) {
+          await wait(1000);
+          isCcipBalloon.value = true;
+        }
+      },
+      { immediate: true }
+    );
+
     return {
       nativeTokenImg,
       nativeTokenSymbol,
@@ -216,6 +268,12 @@ export default defineComponent({
       isAstar,
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
+      isShibuyaEvm,
+      ccipMinatoBridgeEnabled,
+      isCcipBalloon,
+      isBalloonClosing,
+      closeCcipBalloon,
+      buildCcipBridgePageLink,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,

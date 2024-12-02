@@ -1,0 +1,164 @@
+[
+  {
+    "inputs": [{ "internalType": "address", "name": "router", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "minLimit", "type": "uint256" },
+      { "internalType": "uint256", "name": "gotLimit", "type": "uint256" }
+    ],
+    "name": "GasLimitTooLow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "gotFee", "type": "uint256" },
+      { "internalType": "uint256", "name": "fee", "type": "uint256" }
+    ],
+    "name": "InsufficientFee",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "gotAmount", "type": "uint256" },
+      { "internalType": "uint256", "name": "msgValue", "type": "uint256" }
+    ],
+    "name": "InsufficientMsgValue",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "router", "type": "address" }],
+    "name": "InvalidRouter",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "gotAmounts", "type": "uint256" }],
+    "name": "InvalidTokenAmounts",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "gotAmount", "type": "uint256" },
+      { "internalType": "uint256", "name": "msgValue", "type": "uint256" }
+    ],
+    "name": "TokenAmountNotEqualToMsgValue",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "bytes32", "name": "messageId", "type": "bytes32" },
+          { "internalType": "uint64", "name": "sourceChainSelector", "type": "uint64" },
+          { "internalType": "bytes", "name": "sender", "type": "bytes" },
+          { "internalType": "bytes", "name": "data", "type": "bytes" },
+          {
+            "components": [
+              { "internalType": "address", "name": "token", "type": "address" },
+              { "internalType": "uint256", "name": "amount", "type": "uint256" }
+            ],
+            "internalType": "struct Client.EVMTokenAmount[]",
+            "name": "destTokenAmounts",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct Client.Any2EVMMessage",
+        "name": "message",
+        "type": "tuple"
+      }
+    ],
+    "name": "ccipReceive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "destinationChainSelector", "type": "uint64" },
+      {
+        "components": [
+          { "internalType": "bytes", "name": "receiver", "type": "bytes" },
+          { "internalType": "bytes", "name": "data", "type": "bytes" },
+          {
+            "components": [
+              { "internalType": "address", "name": "token", "type": "address" },
+              { "internalType": "uint256", "name": "amount", "type": "uint256" }
+            ],
+            "internalType": "struct Client.EVMTokenAmount[]",
+            "name": "tokenAmounts",
+            "type": "tuple[]"
+          },
+          { "internalType": "address", "name": "feeToken", "type": "address" },
+          { "internalType": "bytes", "name": "extraArgs", "type": "bytes" }
+        ],
+        "internalType": "struct Client.EVM2AnyMessage",
+        "name": "message",
+        "type": "tuple"
+      }
+    ],
+    "name": "ccipSend",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "destinationChainSelector", "type": "uint64" },
+      {
+        "components": [
+          { "internalType": "bytes", "name": "receiver", "type": "bytes" },
+          { "internalType": "bytes", "name": "data", "type": "bytes" },
+          {
+            "components": [
+              { "internalType": "address", "name": "token", "type": "address" },
+              { "internalType": "uint256", "name": "amount", "type": "uint256" }
+            ],
+            "internalType": "struct Client.EVMTokenAmount[]",
+            "name": "tokenAmounts",
+            "type": "tuple[]"
+          },
+          { "internalType": "address", "name": "feeToken", "type": "address" },
+          { "internalType": "bytes", "name": "extraArgs", "type": "bytes" }
+        ],
+        "internalType": "struct Client.EVM2AnyMessage",
+        "name": "message",
+        "type": "tuple"
+      }
+    ],
+    "name": "getFee",
+    "outputs": [{ "internalType": "uint256", "name": "fee", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRouter",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "i_weth",
+    "outputs": [{ "internalType": "contract IWrappedNative", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }],
+    "name": "supportsInterface",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "typeAndVersion",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "stateMutability": "payable", "type": "receive" }
+]

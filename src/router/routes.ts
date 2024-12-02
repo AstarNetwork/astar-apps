@@ -17,6 +17,7 @@ import Owner from 'src/staking-v3/components/Owner.vue';
 import MaintenanceMode from 'src/staking-v3/components/MaintenanceMode.vue';
 import { RouteRecordRaw } from 'vue-router';
 import LayerZero from 'src/components/bridge/layerzero/LayerZero.vue';
+import Ccip from 'src/components/bridge/ccip/Ccip.vue';
 
 export {
   buildTransferPageLink,
@@ -24,6 +25,7 @@ export {
   buildXvmTransferPageLink,
   buildEthereumBridgePageLink,
   buildLzBridgePageLink,
+  buildCcipBridgePageLink,
 } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
@@ -36,6 +38,7 @@ export enum Path {
   Assets = '/assets',
   Bridge = '/bridge',
   Ethereum = '/ethereum',
+  Ccip = '/ccip',
   Layerzero = '/layerzero',
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
@@ -119,6 +122,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'ethereum',
         component: L1,
+      },
+      {
+        path: 'ccip',
+        component: Ccip,
       },
       {
         path: 'Layerzero',

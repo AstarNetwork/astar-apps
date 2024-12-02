@@ -1,5 +1,3 @@
-import { democracy, treasury } from '@polkadot/types/interfaces/definitions';
-
 export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
@@ -494,6 +492,7 @@ export default {
     syncing: 'Syncing...',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    bridgeToSoneium: 'Bridge to Soneium',
     swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
@@ -550,6 +549,7 @@ export default {
       xcm: '(XCM)',
       faq: 'FAQ',
       recentHistory: 'Recent History',
+      ccipHistory: 'Find your recent history on CCIP Explorer',
       hotTopic: 'Hot Topic',
       inputAddressManually: 'Input an address manually',
       goBack: 'Go back',
@@ -1076,7 +1076,7 @@ export default {
       title: 'Native Bridge',
       tag: 'ERC20',
       text: 'Transfer assets between {l1} and {l2}.',
-      text2: 'Available on Astar zkEVM. Switch the network to use it.',
+      remark: 'Available on Astar zkEVM. Switch the network to use it.',
       learn: '(learn more)',
     },
     zKatanaBridge: {
@@ -1084,11 +1084,17 @@ export default {
       tag: 'ERC20',
       text: 'Transfer assets between Sepolia and zKatana testnet.',
     },
+    ccipMinatoBridge: {
+      title: 'Soneium Bridge',
+      tag: 'SBY',
+      text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
+      remark: 'Available on Shibuya EVM. Switch the network to use it.',
+    },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',
       text: 'Transfer assets between Astar EVM and Astar zkEVM.',
-      text2: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
+      remark: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
     },
     celerBridge: {
       title: 'Celer Bridge',
@@ -1104,10 +1110,12 @@ export default {
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:
       'It could take approximately 6 hours to finalize the bridge transaction from Astar zkEVM to Astar EVM',
+    warningCcipTime: 'It could take approximately {time} mins to finalize the bridge transaction',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
     slippage: 'Slippage: {percent}%',
     feeOnTransaction: 'Transaction fee: {amount} {symbol}',
+    feeOnBridge: 'Bridge fee: {amount} {symbol}',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
