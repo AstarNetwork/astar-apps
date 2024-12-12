@@ -53,8 +53,6 @@ export const polkadotJsUrl = {
   },
 };
 
-export const lfgmUrl = 'https://lfgm.astar.network';
-
 export const ccipExplorerUrl = 'https://ccip.chain.link';
 
 export const getSubscanExtrinsic = ({
