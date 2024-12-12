@@ -55,9 +55,6 @@
             $t('sidenavi.governance')
           }}</a>
         </nav>
-        <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
-          <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
-        </a>
         <div class="gradient-bg">
           <astar-domains />
           <!-- <blog-posts /> -->
@@ -97,7 +94,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBreakpoints, useNetworkInfo, useGovernance } from 'src/hooks';
 import { Path as RoutePath } from 'src/router/routes';
-import { lfgmUrl, socialUrl } from 'src/links';
+import { socialUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import AstarDomains from './AstarDomains.vue';
@@ -128,7 +125,6 @@ export default defineComponent({
       RoutePath,
       network,
       isZkyoto,
-      lfgmUrl,
       socialUrl,
       isGovernanceEnabled,
       governanceUrl,

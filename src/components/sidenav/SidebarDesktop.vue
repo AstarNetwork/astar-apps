@@ -88,9 +88,6 @@
           </div>
         </a>
       </div>
-      <a class="lfgm" :href="lfgmUrl" target="_blank">
-        <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
-      </a>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -110,7 +107,7 @@ import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
 import IconEcosystem from './components/IconEcosystem.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
-import { socialUrl, lfgmUrl } from 'src/links';
+import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -158,7 +155,6 @@ export default defineComponent({
       RoutePath,
       socialUrl,
       isZkyoto,
-      lfgmUrl,
       isGovernanceEnabled,
       governanceUrl,
     };
