@@ -55,8 +55,8 @@
             $t('sidenavi.governance')
           }}</a>
         </nav>
-        <a class="lfgm-mobile" :href="lfgmUrl" target="_blank">
-          <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
+        <a class=".surge-mobile" :href="surgeUrl" target="_blank">
+          <img :src="require('src/assets/img/surge_token.gif')" alt="Surge" />
         </a>
         <div class="gradient-bg">
           <astar-domains />
@@ -93,18 +93,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useBreakpoints, useNetworkInfo, useGovernance } from 'src/hooks';
-import { Path as RoutePath } from 'src/router/routes';
-import { lfgmUrl, socialUrl } from 'src/links';
-import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useBreakpoints, useGovernance, useNetworkInfo } from 'src/hooks';
+import { socialUrl, surgeUrl } from 'src/links';
+import { Path as RoutePath } from 'src/router/routes';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import AstarDomains from './AstarDomains.vue';
 import CommunityLinks from './CommunityLinks.vue';
+import LightDarkMode from './LightDarkMode.vue';
 // import BlogPosts from './BlogPosts.vue';
 import LocaleChanger from './LocaleChanger.vue';
-import LightDarkMode from './LightDarkMode.vue';
 
 export default defineComponent({
   components: { AstarDomains, CommunityLinks, LocaleChanger, LightDarkMode },
@@ -128,7 +128,7 @@ export default defineComponent({
       RoutePath,
       network,
       isZkyoto,
-      lfgmUrl,
+      surgeUrl,
       socialUrl,
       isGovernanceEnabled,
       governanceUrl,
@@ -219,14 +219,13 @@ export default defineComponent({
   padding: 0 16px;
 }
 
-.lfgm-mobile {
+.surge-mobile {
   display: flex;
   justify-content: center;
   margin: 40px 0px;
   img {
     width: 100%;
-    height: 150px;
-    background: $navy-3;
+    max-width: 200px;
   }
 }
 </style>
