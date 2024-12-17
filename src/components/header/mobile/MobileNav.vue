@@ -55,7 +55,7 @@
             $t('sidenavi.governance')
           }}</a>
         </nav>
-        <a class=".surge-mobile" :href="surgeUrl" target="_blank">
+        <a class="surge-mobile" :href="surgeUrl" target="_blank">
           <img :src="require('src/assets/img/surge_token.gif')" alt="Surge" />
         </a>
         <div class="gradient-bg">
@@ -225,7 +225,7 @@ export default defineComponent({
   margin: 40px 0px;
   img {
     width: 100%;
-    max-width: 200px;
+    max-width: 150px;
   }
 }
 </style>
