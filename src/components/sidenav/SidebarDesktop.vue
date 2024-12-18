@@ -90,7 +90,7 @@
       </div>
       <div>
         <a class="surge" :href="surgeUrl" target="_blank">
-          <img :src="require('src/assets/img/surge_token.gif')" alt="Surge" />
+          <img :src="require('src/assets/img/surge_token.webp')" alt="Surge" />
         </a>
         <q-tooltip>
           <span class="text--tooltip">{{ $t('joinSurge') }}</span>
