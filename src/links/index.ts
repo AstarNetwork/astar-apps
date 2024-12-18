@@ -1,6 +1,6 @@
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { blockExplorerUrls } from 'src/config/web3';
-import Web3 from 'web3';
+import type Web3 from 'web3';
 
 export const docsUrl = {
   topPage: 'https://docs.astar.network',
@@ -52,6 +52,8 @@ export const polkadotJsUrl = {
     shibuya: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#',
   },
 };
+
+export const surgeUrl = 'https://surge.sakefinance.com/';
 
 export const ccipExplorerUrl = 'https://ccip.chain.link';
 
