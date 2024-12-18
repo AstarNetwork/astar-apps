@@ -13,7 +13,7 @@
             <span class="text--to--balance">
               {{
                 $t('assets.modals.balance', {
-                  amount: $n(truncate(maxAmount)),
+                  amount: $n(truncate(maxAmountDisplay)),
                   token: nativeTokenSymbol,
                 })
               }}
@@ -112,25 +112,26 @@ export default defineComponent({
     );
     const { constants, unstake, canUnStake, getStakerInfo } = useDappStaking();
 
-    const minStakingAmount = computed<number>(() =>
-      Number(ethers.utils.formatEther(constants.value?.minStakeAmount ?? 0))
-    );
+    const minStakingAmount = computed<bigint>(() => constants.value?.minStakeAmount ?? BigInt(0));
 
     const isBelowThanMinStaking = computed<boolean>(() => {
       return minStakingAmount.value > Number(maxAmount.value) - Number(amount.value);
     });
-    const maxAmount = computed<string>(() => {
+    const maxAmount = computed<bigint>(() => {
       const selectedDappStakes = getStakerInfo(props.dapp.chain.address);
 
-      return selectedDappStakes
-        ? String(ethers.utils.formatEther(selectedDappStakes.staked.totalStake.toString()))
-        : '0';
+      return selectedDappStakes ? selectedDappStakes.staked.totalStake : BigInt(0);
     });
+
+    const maxAmountDisplay = computed<string>(() => {
+      return ethers.utils.formatEther(maxAmount.value);
+    });
+
     const amount = ref<string | null>(null);
     const errorMessage = ref<string | undefined>();
 
     const toMaxAmount = (): void => {
-      amount.value = truncate(maxAmount.value).toString();
+      amount.value = ethers.utils.formatEther(maxAmount.value.toString());
     };
 
     const inputHandler = (event: any): void => {
@@ -146,7 +147,10 @@ export default defineComponent({
     };
 
     const canUnbond = () => {
-      const [result, message] = canUnStake(props.dapp.basic.address, Number(amount.value));
+      const [result, message] = canUnStake(
+        props.dapp.basic.address,
+        ethers.utils.parseEther(amount.value ?? '0').toBigInt()
+      );
       errorMessage.value = message;
 
       return result;
@@ -166,6 +170,7 @@ export default defineComponent({
       nativeTokenSymbol,
       nativeTokenImg,
       maxAmount,
+      maxAmountDisplay,
       amount,
       selectedTip,
       nativeTipPrice,
