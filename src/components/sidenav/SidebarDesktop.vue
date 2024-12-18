@@ -116,7 +116,6 @@ import { useRouter } from 'vue-router';
 import Logo from '../common/Logo.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
 import IconEcosystem from './components/IconEcosystem.vue';
-import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {

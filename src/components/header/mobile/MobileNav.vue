@@ -98,7 +98,6 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useBreakpoints, useGovernance, useNetworkInfo } from 'src/hooks';
 import { socialUrl, surgeUrl } from 'src/links';
 import { Path as RoutePath } from 'src/router/routes';
-import { socialUrl } from 'src/links';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
