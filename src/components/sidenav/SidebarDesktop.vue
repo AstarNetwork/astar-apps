@@ -88,9 +88,14 @@
           </div>
         </a>
       </div>
-      <a class="surge" :href="surgeUrl" target="_blank">
-        <img :src="require('src/assets/img/surge_token.gif')" alt="Surge" />
-      </a>
+      <div>
+        <a class="surge" :href="surgeUrl" target="_blank">
+          <img :src="require('src/assets/img/surge_token.gif')" alt="Surge" />
+        </a>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('joinSurge') }}</span>
+        </q-tooltip>
+      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
