@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { is } from 'quasar';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { handleCheckProviderChainId } from 'src/config/web3';
@@ -10,6 +11,7 @@ import {
   REQUIRED_MINIMUM_BALANCE_ETH,
 } from 'src/modules/toast/index';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { idAstarNativeToken } from 'src/modules/xcm/tokens';
 import { container } from 'src/v2/common';
 import { IEventAggregator } from 'src/v2/messaging';
 import { IAssetsRepository } from 'src/v2/repositories/IAssetsRepository';
@@ -38,23 +40,27 @@ export class AssetsService implements IAssetsService {
   }
 
   public async transferNativeAsset(param: ParamAssetTransfer): Promise<void> {
-    const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
-    const isBalanceEnough =
-      Number(ethers.utils.formatEther(useableBalance)) -
-        Number(ethers.utils.formatEther(param.amount)) >
-      REQUIRED_MINIMUM_BALANCE;
+    const isNativeToken = param.assetId === idAstarNativeToken;
+    // Memo: Check if the native token's remaining balance is enough to pay the transaction fee
+    if (isNativeToken) {
+      const useableBalance = await this.AssetsRepository.getNativeBalance(param.senderAddress);
+      const isBalanceEnough =
+        Number(ethers.utils.formatEther(useableBalance)) -
+          Number(ethers.utils.formatEther(param.amount)) >
+        REQUIRED_MINIMUM_BALANCE;
 
-    if (isBalanceEnough) {
-      const transaction = await this.AssetsRepository.getNativeTransferCall(param);
-      const hash = await this.wallet.signAndSend({
-        extrinsic: transaction,
-        senderAddress: param.senderAddress,
-        successMessage: param.successMessage,
-      });
-      param.finalizedCallback(String(hash));
-    } else {
-      throw new Error(AlertMsg.MINIMUM_BALANCE);
+      if (!isBalanceEnough) {
+        throw new Error(AlertMsg.MINIMUM_BALANCE);
+      }
     }
+
+    const transaction = await this.AssetsRepository.getNativeTransferCall(param);
+    const hash = await this.wallet.signAndSend({
+      extrinsic: transaction,
+      senderAddress: param.senderAddress,
+      successMessage: param.successMessage,
+    });
+    param.finalizedCallback(String(hash));
   }
 
   public async transferEvmAsset(param: ParamEvmTransfer): Promise<void> {
