@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { is } from 'quasar';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { handleCheckProviderChainId } from 'src/config/web3';
