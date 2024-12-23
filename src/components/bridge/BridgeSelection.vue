@@ -79,39 +79,6 @@
             {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
-        <div v-if="isZkyoto" class="column--selection">
-          <button :disabled="!isEnableEthBridge">
-            <a
-              :href="zKatanaBridgeUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/ethereum.png')"
-                    alt="ethereum"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.zKatanaBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.zKatanaBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.zKatanaBridge.text') }}
-                  </span>
-                </div>
-              </div>
-            </a>
-          </button>
-        </div>
       </div>
       <div class="container--selection">
         <div class="column--selection">
