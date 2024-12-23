@@ -42,6 +42,45 @@
         </div>
 
         <div class="column--selection">
+          <button :disabled="!isEnableEthBridge">
+            <component
+              :is="isEnableEthBridge ? 'router-link' : 'div'"
+              :to="buildEthereumBridgePageLink()"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo"
+                    :src="require('src/assets/img/ethereum.png')"
+                    alt="ethereum"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ $t('bridge.ethereumBridge.tag') }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
+                  </span>
+                </div>
+              </div>
+            </component>
+          </button>
+          <p v-if="!isZkEvm" class="text--bridge-details">
+            {{ $t('bridge.ethereumBridge.remark') }}
+          </p>
+          <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
+            {{ $t('bridge.bridgeMaintenanceMode') }}
+          </p>
+        </div>
+
+        <div class="column--selection">
           <button :disabled="!isEnableLzBridge || !layerZeroBridgeEnabled">
             <component
               :is="isEnableLzBridge && layerZeroBridgeEnabled ? 'router-link' : 'div'"
