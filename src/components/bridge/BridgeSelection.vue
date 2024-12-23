@@ -220,7 +220,6 @@ export default defineComponent({
       isZkEvm,
       networkNameSubstrate,
       isMainnet,
-      isZkyoto,
       isAstarZkEvm,
       isAstar,
       isH160,
@@ -228,11 +227,11 @@ export default defineComponent({
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
-      return isZkyoto.value ? EthBridgeNetworkName.Sepolia : EthBridgeNetworkName.Ethereum;
+      return EthBridgeNetworkName.Ethereum;
     });
 
     const l2Name = computed<string>(() => {
-      return isZkyoto.value ? EthBridgeNetworkName.Zkyoto : EthBridgeNetworkName.AstarZk;
+      return EthBridgeNetworkName.AstarZk;
     });
 
     const cbridgeNetworkName = computed<string>(() => {
@@ -260,7 +259,6 @@ export default defineComponent({
       cbridgeNetworkName,
       layerSwapLink,
       zKatanaBridgeUrl,
-      isZkyoto,
       isEnableLzBridge,
       celerBridgeEnabled,
       layerSwapBridgeEnabled,

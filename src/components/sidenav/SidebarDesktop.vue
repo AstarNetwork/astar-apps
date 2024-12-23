@@ -125,7 +125,7 @@ export default defineComponent({
   },
   setup() {
     const { isOpen } = useSidebar();
-    const { isZkEvm, isZkyoto } = useNetworkInfo();
+    const { isZkEvm } = useNetworkInfo();
     const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
@@ -162,7 +162,6 @@ export default defineComponent({
       path,
       RoutePath,
       socialUrl,
-      isZkyoto,
       surgeUrl,
       isGovernanceEnabled,
       governanceUrl,

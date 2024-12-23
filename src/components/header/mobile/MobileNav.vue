@@ -114,7 +114,6 @@ export default defineComponent({
     const showNav = ref<boolean>(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
-    const { isZkyoto } = useNetworkInfo();
     const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
@@ -128,7 +127,6 @@ export default defineComponent({
       path,
       RoutePath,
       network,
-      isZkyoto,
       surgeUrl,
       socialUrl,
       isGovernanceEnabled,
