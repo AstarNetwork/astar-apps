@@ -40,44 +40,6 @@
             {{ $t('bridge.ccipMinatoBridge.remark') }}
           </p>
         </div>
-        <div class="column--selection">
-          <button :disabled="!isEnableEthBridge">
-            <component
-              :is="isEnableEthBridge ? 'router-link' : 'div'"
-              :to="buildEthereumBridgePageLink()"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/ethereum.png')"
-                    alt="ethereum"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.ethereumBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
-                  </span>
-                </div>
-              </div>
-            </component>
-          </button>
-          <p v-if="!isZkEvm" class="text--bridge-details">
-            {{ $t('bridge.ethereumBridge.remark') }}
-          </p>
-          <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
-            {{ $t('bridge.bridgeMaintenanceMode') }}
-          </p>
-        </div>
 
         <div class="column--selection">
           <button :disabled="!isEnableLzBridge || !layerZeroBridgeEnabled">
@@ -225,24 +187,24 @@
 </template>
 <script lang="ts">
 import { cbridgeAppLink } from 'src/c-bridge';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import {
-  Path as RoutePath,
-  buildEthereumBridgePageLink,
-  buildLzBridgePageLink,
-  buildCcipBridgePageLink,
-} from 'src/router/routes';
-import { computed, defineComponent } from 'vue';
-import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
-import {
+  ccipMinatoBridgeEnabled,
   celerBridgeEnabled,
   layerSwapBridgeEnabled,
-  nativeBridgeEnabled,
   layerZeroBridgeEnabled,
-  ccipMinatoBridgeEnabled,
+  nativeBridgeEnabled,
 } from 'src/features';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
+import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
+import {
+  Path as RoutePath,
+  buildCcipBridgePageLink,
+  buildEthereumBridgePageLink,
+  buildLzBridgePageLink,
+} from 'src/router/routes';
 import { navigateInNewTab } from 'src/util-general';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   components: {},
