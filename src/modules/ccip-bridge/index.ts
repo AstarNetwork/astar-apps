@@ -1,3 +1,9 @@
+import {
+  SONEIUM_ASTR_CONTRACT,
+  SONEIUM_CCIP_CHAIN_SELECTOR,
+  SONEIUM_CCIP_ROUTER,
+  SONEIUM_CHAIN_ID,
+} from 'src/config/env';
 import { astarNativeTokenErcAddr } from '../xcm';
 
 export enum CcipNetworkName {
@@ -12,7 +18,7 @@ export enum CcipChainId {
   'AstarEvm' = 592,
   'SoneiumMinato' = 1946,
   // Todo: update
-  'Soneium' = 9999,
+  'Soneium' = SONEIUM_CHAIN_ID,
 }
 
 export const ccipChainId = {
@@ -25,24 +31,22 @@ export const ccipChainId = {
 export const ccipChainSelector = {
   [CcipChainId.ShibuyaEvm]: '6955638871347136141',
   // Todo: update
-  [CcipChainId.AstarEvm]: '999999999999999',
+  [CcipChainId.AstarEvm]: '6422105447186081193',
   [CcipChainId.SoneiumMinato]: '686603546605904534',
   // Todo: update
-  [CcipChainId.Soneium]: '999999999999999',
+  [CcipChainId.Soneium]: SONEIUM_CCIP_CHAIN_SELECTOR,
 };
 
 const routerSoneiumMinato = '0x443a1bce545d56E2c3f20ED32eA588395FFce0f4';
-const routerSoneium = '0x443a1bce545d56E2c3f20ED32eA588395FFce0f4';
+const routerSoneium = SONEIUM_CCIP_ROUTER;
 
 const etherSenderReceiverShibuya = '0x89cB78A4A3cAD4cA86D3e3fF565f63B4620CB6ea';
-const etherSenderReceiverAstar = '0x89cB78A4A3cAD4cA86D3e3fF565f63B4620CB6ea';
+const etherSenderReceiverAstar = '0x4036a6Ff8C1a29677108Aef299B560f6E4fA5e71';
 
 export const ccipBridgeAddress = {
   [CcipChainId.ShibuyaEvm]: etherSenderReceiverShibuya,
-  // Todo: update
   [CcipChainId.AstarEvm]: etherSenderReceiverAstar,
   [CcipChainId.SoneiumMinato]: routerSoneiumMinato,
-  // Todo: update
   [CcipChainId.Soneium]: routerSoneium,
 };
 
@@ -50,7 +54,7 @@ export const ccipBridgeIcon = {
   [CcipNetworkName.ShibuyaEvm]: require('src/assets/img/chain/astar.png'),
   [CcipNetworkName.AstarEvm]: require('src/assets/img/chain/astar.png'),
   [CcipNetworkName.SoneiumMinato]: require('src/assets/img/chain/soneium-black.svg'),
-  [CcipNetworkName.Soneium]: require('src/assets/img/chain/astar.png'),
+  [CcipNetworkName.Soneium]: require('src/assets/img/chain/soneium-black.svg'),
 } as any;
 
 export interface CCIP_TOKEN {
@@ -67,6 +71,17 @@ export const CCIP_SBY: CCIP_TOKEN = {
   tokenAddress: {
     [CcipChainId.ShibuyaEvm]: astarNativeTokenErcAddr,
     [CcipChainId.SoneiumMinato]: '0x3c1F7c5f4C560afFCFe2b5ebF1271c3310867ff4',
+  },
+  decimals: 18,
+  image: require('/src/assets/img/token/astr.png'),
+};
+
+export const CCIP_ASTR: CCIP_TOKEN = {
+  symbol: 'ASTR',
+  name: 'Astar Token',
+  tokenAddress: {
+    [CcipChainId.AstarEvm]: astarNativeTokenErcAddr,
+    [CcipChainId.Soneium]: SONEIUM_ASTR_CONTRACT,
   },
   decimals: 18,
   image: require('/src/assets/img/token/astr.png'),

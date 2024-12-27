@@ -1090,6 +1090,12 @@ export default {
       text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
       remark: 'Available on Shibuya EVM. Switch the network to use it.',
     },
+    ccipSoneiumBridge: {
+      title: 'Soneium Bridge',
+      tag: 'ASTR',
+      text: 'Transfer ASTR between Soneium and Astar EVM. Powered by CCIP.',
+      remark: 'Available on Astar EVM. Switch the network to use it.',
+    },
     astarBridge: {
       title: 'LayerZero',
       tag: 'ASTR',

@@ -8,6 +8,7 @@ import {
   CCIP_TOKEN,
   CCIP_SBY,
   ccipBridgeAddress,
+  CCIP_ASTR,
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
@@ -24,7 +25,7 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 export const useCcipBridge = () => {
   const { isShibuya, nativeTokenSymbol } = useNetworkInfo();
 
-  const selectedToken = ref<CCIP_TOKEN>(CCIP_SBY);
+  const selectedToken = ref<CCIP_TOKEN>(isShibuya.value ? CCIP_SBY : CCIP_ASTR);
   const bridgeAmt = ref<string | null>(null);
   const toBridgeBalance = ref<number>(0);
   const fromBridgeBalance = ref<number>(0);
