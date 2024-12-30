@@ -91,5 +91,6 @@ export const ccipBridgeTime = {
   [CcipNetworkName.ShibuyaEvm]: 3,
   [CcipNetworkName.AstarEvm]: 3,
   [CcipNetworkName.SoneiumMinato]: 30,
-  [CcipNetworkName.Soneium]: 30,
+  // Todo: update to 60
+  [CcipNetworkName.Soneium]: 90,
 };
