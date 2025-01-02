@@ -52,7 +52,7 @@ export default defineComponent({
       claimBonusRewards,
       claimStakerAndBonusRewards,
     } = useDappStaking();
-    const { vote } = useVote(ref([]));
+    const { vote, canRestake } = useVote(ref([]));
     const { getDapp } = useDapps();
     const showRestakeModal = ref<boolean>(false);
 
@@ -95,7 +95,7 @@ export default defineComponent({
     };
 
     const handleRestakeConfirm = async (restake: boolean): Promise<void> => {
-      if (restake && stakerInfoRegisteredDapps.value.size > 0) {
+      if (restake && stakerInfoRegisteredDapps.value.size > 0 && canRestake.value) {
         await vote(restake);
       } else {
         if (props.claimType === ClaimType.Staker) {

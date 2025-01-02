@@ -132,7 +132,6 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       }
     });
 
-    console.log('restakeInfo', restakeInfo);
     return restakeInfo;
   });
 
@@ -164,6 +163,10 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
 
     return enabled && totalStakeAmount.value > 0;
   };
+
+  const canRestake = computed<boolean>(() => {
+    return canStake(restakeInfo.value, availableToVote.value)[0];
+  });
 
   const vote = async (restake: boolean): Promise<void> => {
     // If additional funds locking is required remainLockedToken value will be negative.
@@ -202,6 +205,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     dappToMoveTokensFrom,
     availableToMoveFrom,
     canVote,
+    canRestake,
     vote,
   };
 }
