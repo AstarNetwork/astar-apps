@@ -49,10 +49,26 @@
             :to="buildCcipBridgePageLink()"
             :is-disabled="!isEnableCcipBridge"
           >
-            <button class="btn btn--icon">
+            <button
+              v-if="width >= screenSize.sm"
+              class="btn btn--icon"
+              @mouseover="isSoneiumButtonHover = true"
+              @mouseleave="isSoneiumButtonHover = false"
+            >
               <img
                 class="img--logo-soneium"
-                :src="require('src/assets/img/chain/soneium-color.svg')"
+                :src="
+                  isSoneiumButtonHover
+                    ? require('src/assets/img/chain/soneium-white.svg')
+                    : require('src/assets/img/chain/soneium-color.svg')
+                "
+                alt="soneium"
+              />
+            </button>
+            <button v-else class="btn btn--icon">
+              <img
+                class="img--logo-soneium"
+                :src="require('src/assets/img/chain/soneium-white.svg')"
                 alt="soneium"
               />
             </button>
@@ -78,9 +94,9 @@
           :is-disabled="!layerZeroBridgeEnabled"
         >
           <button class="btn btn--icon"><astar-icon-bridge /></button>
-          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <span class="text--mobile-menu">{{ $t('assets.bridgeToZkEvm') }}</span>
           <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+            <span class="text--tooltip">{{ $t('assets.bridgeToZkEvm') }}</span>
           </q-tooltip>
         </custom-router-link>
 
@@ -192,6 +208,7 @@ export default defineComponent({
 
     const isCcipBalloon = ref<boolean>(false);
     const isBalloonClosing = ref<boolean>(false);
+    const isSoneiumButtonHover = ref<boolean>(false);
 
     const {
       currentNetworkName,
@@ -306,6 +323,7 @@ export default defineComponent({
       isCcipBalloon,
       isBalloonClosing,
       isAstarEvm,
+      isSoneiumButtonHover,
       closeCcipBalloon,
       buildCcipBridgePageLink,
       truncate,

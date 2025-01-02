@@ -493,6 +493,7 @@ export default {
     faucet: 'Faucet',
     bridge: 'Bridge',
     bridgeToSoneium: 'Bridge to Soneium',
+    bridgeToZkEvm: 'Bridge to zkEVM',
     swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
