@@ -114,14 +114,18 @@ export const useAccount = () => {
       const avatarContractAddress = identity?.getAvatarContractAddress();
       const avatarTokenId = identity?.getAvatarTokenId();
       if (avatarContractAddress && avatarTokenId) {
-        nft = await nftRepository.getNftMetadata(
-          currentNetworkName.value.toLowerCase(),
-          avatarContractAddress,
-          avatarTokenId
-        );
+        try {
+          nft = await nftRepository.getNftMetadata(
+            currentNetworkName.value.toLowerCase(),
+            avatarContractAddress,
+            avatarTokenId
+          );
 
-        if (nft) {
-          avatarUrl = getProxiedUrl(nft.image);
+          if (nft) {
+            avatarUrl = getProxiedUrl(nft.image);
+          }
+        } catch (error) {
+          console.error('Unable to fetch nft metadata', error);
         }
       }
 
