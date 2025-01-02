@@ -6,9 +6,9 @@
       </div>
       <div class="container--selection">
         <div class="column--selection">
-          <button :disabled="!isEnableMinatoBridge">
+          <button :disabled="!isEnableCcipBridge">
             <component
-              :is="isEnableMinatoBridge ? 'router-link' : 'div'"
+              :is="isEnableCcipBridge ? 'router-link' : 'div'"
               :to="buildCcipBridgePageLink()"
               class="button--bridge"
             >
@@ -24,20 +24,38 @@
               <div class="row--bridge-title">
                 <div class="text--bridge-tag">
                   <q-chip outline>
-                    {{ $t('bridge.ccipMinatoBridge.tag') }}
+                    {{
+                      $t(
+                        isShibuyaEvm
+                          ? 'bridge.ccipMinatoBridge.tag'
+                          : 'bridge.ccipSoneiumBridge.tag'
+                      )
+                    }}
                   </q-chip>
                 </div>
-                <span class="text--bridge-title">{{ $t('bridge.ccipMinatoBridge.title') }}</span>
+                <span class="text--bridge-title">{{
+                  $t(
+                    isShibuyaEvm
+                      ? 'bridge.ccipMinatoBridge.title'
+                      : 'bridge.ccipSoneiumBridge.title'
+                  )
+                }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
-                    {{ $t('bridge.ccipMinatoBridge.text') }}
+                    {{
+                      $t(
+                        isShibuyaEvm
+                          ? 'bridge.ccipMinatoBridge.text'
+                          : 'bridge.ccipSoneiumBridge.text'
+                      )
+                    }}
                   </span>
                 </div>
               </div>
             </component>
           </button>
-          <p v-if="!isShibuyaEvm" class="text--bridge-details">
-            {{ $t('bridge.ccipMinatoBridge.remark') }}
+          <p v-if="!isAstarEvm && !isShibuyaEvm" class="text--bridge-details">
+            {{ $t('bridge.ccipSoneiumBridge.remark') }}
           </p>
         </div>
         <div class="column--selection">
@@ -241,6 +259,7 @@ import {
   nativeBridgeEnabled,
   layerZeroBridgeEnabled,
   ccipMinatoBridgeEnabled,
+  ccipSoneiumBridgeEnabled,
 } from 'src/features';
 import { navigateInNewTab } from 'src/util-general';
 
@@ -257,6 +276,7 @@ export default defineComponent({
       isAstar,
       isH160,
       isShibuyaEvm,
+      isAstarEvm,
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
@@ -277,8 +297,11 @@ export default defineComponent({
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
     });
 
-    const isEnableMinatoBridge = computed<boolean>(() => {
-      return isShibuyaEvm.value && ccipMinatoBridgeEnabled;
+    const isEnableCcipBridge = computed<boolean>(() => {
+      return (
+        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
+        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
+      );
     });
 
     return {
@@ -298,8 +321,9 @@ export default defineComponent({
       layerSwapBridgeEnabled,
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
-      isEnableMinatoBridge,
+      isEnableCcipBridge,
       isShibuyaEvm,
+      isAstarEvm,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,

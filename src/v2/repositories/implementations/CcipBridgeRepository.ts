@@ -86,8 +86,10 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
     const { destinationChainSelector, message } = this.getMessageArgs(param);
     const fee = await contract.methods.getFee(destinationChainSelector, message).call();
+    // Memo: Add 5% of fee for buffer
+    const feeWithBuffer = ethers.BigNumber.from(fee).mul(105).div(100).toString();
 
-    return fee;
+    return feeWithBuffer;
   }
 
   public async getBridgeCcipAssetData({

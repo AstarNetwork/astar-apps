@@ -18,6 +18,7 @@ export enum LOCAL_STORAGE {
   XVM_TX_HISTORIES = 'xvmTxHistories',
   BALLOON_NATIVE_TOKEN = 'balloonNativeToken',
   BALLOON_CCIP_SHIBUYA = 'balloonCcipShibuya',
+  BALLOON_CCIP_ASTAR = 'balloonCcipAstar',
   THEME_COLOR = 'themeColor',
   MULTISIG = 'multisig',
   CLOSE_DAPP_STAKING_V3_ONBOARDING = 'closeDappStakingV3Onboarding',

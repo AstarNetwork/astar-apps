@@ -45,14 +45,30 @@
 
         <div class="box--ccip">
           <custom-router-link
-            v-if="isShibuyaEvm"
+            v-if="isShibuyaEvm || isAstarEvm"
             :to="buildCcipBridgePageLink()"
-            :is-disabled="!ccipMinatoBridgeEnabled"
+            :is-disabled="!isEnableCcipBridge"
           >
-            <button class="btn btn--icon">
+            <button
+              v-if="width >= screenSize.sm"
+              class="btn btn--icon"
+              @mouseover="isSoneiumButtonHover = true"
+              @mouseleave="isSoneiumButtonHover = false"
+            >
               <img
                 class="img--logo-soneium"
-                :src="require('src/assets/img/chain/soneium-color.svg')"
+                :src="
+                  isSoneiumButtonHover
+                    ? require('src/assets/img/chain/soneium-white.svg')
+                    : require('src/assets/img/chain/soneium-color.svg')
+                "
+                alt="soneium"
+              />
+            </button>
+            <button v-else class="btn btn--icon">
+              <img
+                class="img--logo-soneium"
+                :src="require('src/assets/img/chain/soneium-white.svg')"
                 alt="soneium"
               />
             </button>
@@ -78,9 +94,9 @@
           :is-disabled="!layerZeroBridgeEnabled"
         >
           <button class="btn btn--icon"><astar-icon-bridge /></button>
-          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
+          <span class="text--mobile-menu">{{ $t('assets.bridgeToZkEvm') }}</span>
           <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+            <span class="text--tooltip">{{ $t('assets.bridgeToZkEvm') }}</span>
           </q-tooltip>
         </custom-router-link>
 
@@ -163,7 +179,12 @@ import {
 } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import { nativeBridgeEnabled, layerZeroBridgeEnabled, ccipMinatoBridgeEnabled } from 'src/features';
+import {
+  nativeBridgeEnabled,
+  layerZeroBridgeEnabled,
+  ccipMinatoBridgeEnabled,
+  ccipSoneiumBridgeEnabled,
+} from 'src/features';
 import CustomRouterLink from '../common/CustomRouterLink.vue';
 import Balloon from 'src/components/common/Balloon.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -187,9 +208,17 @@ export default defineComponent({
 
     const isCcipBalloon = ref<boolean>(false);
     const isBalloonClosing = ref<boolean>(false);
+    const isSoneiumButtonHover = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isZkyoto, isAstar, isShibuyaEvm } =
-      useNetworkInfo();
+    const {
+      currentNetworkName,
+      nativeTokenSymbol,
+      isZkEvm,
+      isZkyoto,
+      isAstar,
+      isShibuyaEvm,
+      isAstarEvm,
+    } = useNetworkInfo();
 
     const closeCcipBalloon = () => {
       isCcipBalloon.value = false;
@@ -239,15 +268,33 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
+    const isEnableCcipBridge = computed<boolean>(() => {
+      return (
+        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
+        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
+      );
+    });
+
     // Memo: display the balloon animation
     watch(
-      [isShibuyaEvm],
+      [isShibuyaEvm, isAstarEvm],
       async () => {
-        const isBallonDisplayed = Boolean(localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA));
-        if (isShibuyaEvm.value && !isBallonDisplayed) {
+        const isBallonShibuyaDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA)
+        );
+        const isBallonAstarDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR)
+        );
+        if (isShibuyaEvm.value && !isBallonShibuyaDisplayed) {
           await wait(1000);
           isCcipBalloon.value = true;
           localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA, 'true');
+        }
+
+        if (isAstarEvm.value && !isBallonAstarDisplayed) {
+          await wait(1000);
+          isCcipBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR, 'true');
         }
       },
       { immediate: true }
@@ -272,9 +319,11 @@ export default defineComponent({
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
       isShibuyaEvm,
-      ccipMinatoBridgeEnabled,
+      isEnableCcipBridge,
       isCcipBalloon,
       isBalloonClosing,
+      isAstarEvm,
+      isSoneiumButtonHover,
       closeCcipBalloon,
       buildCcipBridgePageLink,
       truncate,
