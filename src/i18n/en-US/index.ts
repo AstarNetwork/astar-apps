@@ -1070,7 +1070,7 @@ export default {
     completed: 'Completed',
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
-    disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
+    disabledWithdrawal: 'Bridge to {network} is disabled.',
     thirdPartyBridge: '3rd Party Bridge',
     bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
     ethereumBridge: {
