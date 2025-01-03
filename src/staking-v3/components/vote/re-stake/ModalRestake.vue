@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, type PropType } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
 import TokenBalanceNative from 'src/components/common/TokenBalanceNative.vue';
@@ -62,7 +62,7 @@ export default defineComponent({
     };
 
     const confirm = (reStake: boolean): void => {
-      props.onConfirm && props.onConfirm(reStake);
+      props.onConfirm?.(reStake);
       closeModal();
     };
 

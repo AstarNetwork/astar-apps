@@ -207,9 +207,9 @@ export default defineComponent({
           (it: SubstrateAccount) => it.address === props.currentAccount
         );
         return index;
-      } else {
-        return null;
       }
+
+      return null;
     });
 
     const copyAddress = (address: string): void => {

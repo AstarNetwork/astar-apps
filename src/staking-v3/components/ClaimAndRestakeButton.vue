@@ -52,7 +52,7 @@ export default defineComponent({
       claimBonusRewards,
       claimStakerAndBonusRewards,
     } = useDappStaking();
-    const { vote } = useVote(ref([]));
+    const { vote, canRestake } = useVote(ref([]));
     const { getDapp } = useDapps();
     const showRestakeModal = ref<boolean>(false);
 
@@ -87,7 +87,7 @@ export default defineComponent({
     const setShowRestakeModal = async (value: boolean) => {
       // Idea is to restake proportionally to already staked dApps.
       // At the beginning of a period all stakes are reset so user will be able to claim rewards only.
-      if (value && stakerInfoRegisteredDapps.value.size === 0) {
+      if (value && (stakerInfoRegisteredDapps.value.size === 0 || !canRestake())) {
         await handleRestakeConfirm(false);
       } else {
         showRestakeModal.value = value;
