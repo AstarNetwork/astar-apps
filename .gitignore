@@ -1,6 +1,7 @@
 .DS_Store
 .thumbs.db
 node_modules
+.env
 
 # Quasar core related directories
 .quasar
@@ -52,3 +53,4 @@ astar-collator
 
 # Chopstick binaries
 db.sqlite*
+.vercel

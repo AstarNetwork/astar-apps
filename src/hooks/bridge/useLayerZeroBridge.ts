@@ -26,8 +26,6 @@ import { HistoryTxType, addLzHistories } from 'src/modules/account';
 import { isHex } from '@polkadot/util';
 
 export const useLayerZeroBridge = () => {
-  const { isAstar } = useNetworkInfo();
-
   const lzTokens = ref<LayerZeroToken[]>([]);
   const selectedToken = ref<LayerZeroToken>(LayerZeroTokens[0]);
   const importTokenAddress = ref<string>('');
@@ -37,12 +35,8 @@ export const useLayerZeroBridge = () => {
   const isGasPayable = ref<boolean | undefined>(undefined);
   const isLoadingGasPayable = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<LayerZeroNetworkName>(
-    isAstar.value ? LayerZeroNetworkName.AstarEvm : LayerZeroNetworkName.AstarZk
-  );
-  const toChainName = ref<LayerZeroNetworkName>(
-    isAstar.value ? LayerZeroNetworkName.AstarZk : LayerZeroNetworkName.AstarEvm
-  );
+  const fromChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarZk);
+  const toChainName = ref<LayerZeroNetworkName>(LayerZeroNetworkName.AstarEvm);
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
