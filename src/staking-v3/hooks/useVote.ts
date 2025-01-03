@@ -164,9 +164,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     return enabled && totalStakeAmount.value > 0;
   };
 
-  const canRestake = computed<boolean>(() => {
-    return canStake(restakeInfo.value, availableToVote.value)[0];
-  });
+  const canRestake = (): boolean => canStake(restakeInfo.value, availableToVote.value)[0];
 
   const vote = async (restake: boolean): Promise<void> => {
     // If additional funds locking is required remainLockedToken value will be negative.

@@ -87,7 +87,7 @@ export default defineComponent({
     const setShowRestakeModal = async (value: boolean) => {
       // Idea is to restake proportionally to already staked dApps.
       // At the beginning of a period all stakes are reset so user will be able to claim rewards only.
-      if (value && stakerInfoRegisteredDapps.value.size === 0) {
+      if (value && (stakerInfoRegisteredDapps.value.size === 0 || !canRestake())) {
         await handleRestakeConfirm(false);
       } else {
         showRestakeModal.value = value;
@@ -95,7 +95,7 @@ export default defineComponent({
     };
 
     const handleRestakeConfirm = async (restake: boolean): Promise<void> => {
-      if (restake && stakerInfoRegisteredDapps.value.size > 0 && canRestake.value) {
+      if (restake && stakerInfoRegisteredDapps.value.size > 0) {
         await vote(restake);
       } else {
         if (props.claimType === ClaimType.Staker) {
