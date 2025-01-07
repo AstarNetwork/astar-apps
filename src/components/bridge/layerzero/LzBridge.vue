@@ -267,7 +267,7 @@ export default defineComponent({
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isEnabledWithdrawal = computed<boolean>(() => true);
+    const isEnabledWithdrawal = computed<boolean>(() => false);
 
     const isNativeToken = computed<boolean>(() => {
       return (
