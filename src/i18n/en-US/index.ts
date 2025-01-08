@@ -1111,7 +1111,7 @@ export default {
     },
     astarEvmBridge: {
       title: 'EVM Bridge',
-      text: 'Transfer assets between EVM and native networks.',
+      text: 'Transfer assets between EVM and native network.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:
