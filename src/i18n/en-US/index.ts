@@ -561,6 +561,7 @@ export default {
       howToUsePortal: 'HOW TO USE THE PORTAL',
       xcmIsDisabled: 'XCM with {network} is temporarily disabled',
       xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is temporarily disabled',
+      toPlaceholder: '0x...(EVM) or Astar Native addresses',
     },
     modals: {
       max: 'Max',
@@ -1107,6 +1108,10 @@ export default {
       title: 'Layerswap',
       tag: 'ETH',
       text: '3rd Party Bridge. Fast and reliable crypto transfers across networks to Astar zkEVM.',
+    },
+    astarEvmBridge: {
+      title: 'EVM Bridge',
+      text: 'Transfer assets between EVM and native networks.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:

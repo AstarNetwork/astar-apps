@@ -42,6 +42,78 @@
         </div>
 
         <div class="column--selection">
+          <button>
+            <component
+              :is="true ? 'router-link' : 'div'"
+              :to="buildTransferPageLink(nativeTokenSymbol)"
+              class="button--bridge"
+            >
+              <div class="row--logo-bg">
+                <div class="img--logo-bg">
+                  <img
+                    class="img--logo-soneium"
+                    :src="require('src/assets/img/astar_icon2.svg')"
+                    alt="astar"
+                  />
+                </div>
+              </div>
+              <div class="row--bridge-title">
+                <div class="text--bridge-tag">
+                  <q-chip outline>
+                    {{ nativeTokenSymbol }}
+                  </q-chip>
+                </div>
+                <span class="text--bridge-title">{{ $t('bridge.astarEvmBridge.title') }}</span>
+                <div class="box--text-bridge">
+                  <span class="text--bridge">
+                    {{ $t('bridge.astarEvmBridge.text') }}
+                  </span>
+                </div>
+              </div>
+            </component>
+          </button>
+        </div>
+
+        <div class="column--selection">
+          <button
+            :disabled="!celerBridgeEnabled"
+            class="button--bridge"
+            @click="navigateInNewTab(cbridgeAppLink)"
+          >
+            <div class="row--logo-bg">
+              <div class="img--logo-bg">
+                <img
+                  class="img--logo"
+                  :src="require('src/assets/img/cbridge_logo.svg')"
+                  alt="cbridge"
+                />
+              </div>
+            </div>
+            <div class="row--bridge-title">
+              <div class="text--bridge-tag">
+                <q-chip outline>
+                  {{ $t('bridge.celerBridge.tag') }}
+                </q-chip>
+              </div>
+              <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
+              <div class="box--text-bridge">
+                <span class="text--bridge">
+                  {{
+                    $t('bridge.celerBridge.text', {
+                      cbridgeNetworkName,
+                    })
+                  }}
+                </span>
+              </div>
+            </div>
+          </button>
+          <p v-if="!celerBridgeEnabled" class="text--bridge-details">
+            {{ $t('bridge.celerBridge.warning') }}
+          </p>
+        </div>
+      </div>
+      <div class="container--selection">
+        <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
               :is="isEnableEthBridge ? 'router-link' : 'div'"
@@ -118,8 +190,7 @@
             {{ $t('bridge.bridgeMaintenanceMode') }}
           </p>
         </div>
-      </div>
-      <div class="container--selection">
+
         <div class="column--selection">
           <button
             :disabled="!layerSwapBridgeEnabled"
@@ -150,43 +221,6 @@
             </div>
           </button>
         </div>
-        <div class="column--selection">
-          <button
-            :disabled="!celerBridgeEnabled"
-            class="button--bridge"
-            @click="navigateInNewTab(cbridgeAppLink)"
-          >
-            <div class="row--logo-bg">
-              <div class="img--logo-bg">
-                <img
-                  class="img--logo"
-                  :src="require('src/assets/img/cbridge_logo.svg')"
-                  alt="cbridge"
-                />
-              </div>
-            </div>
-            <div class="row--bridge-title">
-              <div class="text--bridge-tag">
-                <q-chip outline>
-                  {{ $t('bridge.celerBridge.tag') }}
-                </q-chip>
-              </div>
-              <span class="text--bridge-title">{{ $t('bridge.celerBridge.title') }}</span>
-              <div class="box--text-bridge">
-                <span class="text--bridge">
-                  {{
-                    $t('bridge.celerBridge.text', {
-                      cbridgeNetworkName,
-                    })
-                  }}
-                </span>
-              </div>
-            </div>
-          </button>
-          <p v-if="!celerBridgeEnabled" class="text--bridge-details">
-            {{ $t('bridge.celerBridge.warning') }}
-          </p>
-        </div>
       </div>
     </div>
   </div>
@@ -208,6 +242,7 @@ import {
   buildCcipBridgePageLink,
   buildEthereumBridgePageLink,
   buildLzBridgePageLink,
+  buildTransferPageLink,
 } from 'src/router/routes';
 import { navigateInNewTab } from 'src/util-general';
 import { computed, defineComponent } from 'vue';
@@ -224,6 +259,7 @@ export default defineComponent({
       isAstar,
       isH160,
       isShibuyaEvm,
+      nativeTokenSymbol,
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
@@ -270,6 +306,8 @@ export default defineComponent({
       buildLzBridgePageLink,
       navigateInNewTab,
       buildCcipBridgePageLink,
+      buildTransferPageLink,
+      nativeTokenSymbol,
     };
   },
 });
