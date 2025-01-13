@@ -96,36 +96,33 @@
   margin-left: 24px;
 }
 
-// adding -120px to the margin-top to adjust the position because of the lgfm logo
 .menu__assets {
-  margin-top: calc(-276px - 120px);
-
+  margin-top: calc(-276px - 158px);
   &.governance_activated {
-    margin-top: calc(-276px - 120px - 46px);
+    margin-top: calc(-276px - 158px - 46px);
+
   }
 }
 
 .menu__dashboard {
-  margin-top: calc(-230px - 120px);
-
+  margin-top: calc(-230px - 158px);
   &.governance_activated {
-    margin-top: calc(-230px - 120px - 46px);
+    margin-top: calc(-230px - 158px - 46px);
   }
 }
 
 .menu__staking {
-  margin-top: calc(-184px - 120px);
-
+  margin-top: calc(-184px - 158px);
   &.governance_activated {
-    margin-top: calc(-184px - 120px - 46px);
+    margin-top: calc(-184px - 158px - 46px);
   }
 }
 
 .menu__bridge {
-  margin-top: calc(-138px - 120px);
+  margin-top: calc(-138px - 158px);
 
   &.governance_activated {
-    margin-top: calc(-138px - 120px - 46px);
+    margin-top: calc(-138px - 158px - 46px);
   }
 }
 
@@ -152,16 +149,21 @@
   }
 }
 
-.lfgm {
+.surge {
   display: flex;
-  align-items: center;
-  width: 224px;
-  height: 112px;
+  justify-content: center;
   margin-bottom: 8px;
   color: #fff;
   position: relative;
   transition: all 0.3s ease 0s;
+  img {
+    margin: 25px 0;
+    width: 100px;
+    height: 100px;
+  }
 }
-.lfgm:hover {
-  background: $navy-3;
+
+.surge:hover {
+  background: black;
 }
+

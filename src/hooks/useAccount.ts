@@ -104,26 +104,30 @@ export const useAccount = () => {
 
     if (mapped) {
       const identityRepository = container.get<IdentityRepository>(Symbols.IdentityRepository);
-      const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
+      // const nftRepository = container.get<INftRepository>(Symbols.NftRepository);
       const identity = await identityRepository.getIdentity(isEvmAddress ? mapped : address);
       const name = identity?.display || '';
 
       let avatarUrl: string | undefined;
       let nft: NftMetadata | undefined;
 
-      const avatarContractAddress = identity?.getAvatarContractAddress();
-      const avatarTokenId = identity?.getAvatarTokenId();
-      if (avatarContractAddress && avatarTokenId) {
-        nft = await nftRepository.getNftMetadata(
-          currentNetworkName.value.toLowerCase(),
-          avatarContractAddress,
-          avatarTokenId
-        );
+      // const avatarContractAddress = identity?.getAvatarContractAddress();
+      // const avatarTokenId = identity?.getAvatarTokenId();
+      // if (avatarContractAddress && avatarTokenId) {
+      //   try {
+      //     nft = await nftRepository.getNftMetadata(
+      //       currentNetworkName.value.toLowerCase(),
+      //       avatarContractAddress,
+      //       avatarTokenId
+      //     );
 
-        if (nft) {
-          avatarUrl = getProxiedUrl(nft.image);
-        }
-      }
+      //     if (nft) {
+      //       avatarUrl = getProxiedUrl(nft.image);
+      //     }
+      //   } catch (error) {
+      //     console.error('Unable to fetch nft metadata', error);
+      //   }
+      // }
 
       const account: UnifiedAccount = {
         nativeAddress: isEvmAddress ? mapped : address,

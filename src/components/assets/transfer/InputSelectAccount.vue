@@ -20,7 +20,7 @@
           class="input--address text--title"
           type="text"
           spellcheck="false"
-          placeholder="Destination Address"
+          :placeholder="$t('assets.transferPage.toPlaceholder')"
           @change="changeAddress"
         />
       </div>

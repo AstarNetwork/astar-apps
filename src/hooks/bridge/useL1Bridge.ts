@@ -59,8 +59,8 @@ export const useL1Bridge = () => {
   const isGasPayable = ref<boolean | undefined>(undefined);
   const isLoadingGasPayable = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<EthBridgeNetworkName>(l1Network.value);
-  const toChainName = ref<EthBridgeNetworkName>(l2Network.value);
+  const fromChainName = ref<EthBridgeNetworkName>(l2Network.value);
+  const toChainName = ref<EthBridgeNetworkName>(l1Network.value);
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
