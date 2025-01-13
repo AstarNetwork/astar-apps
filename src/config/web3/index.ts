@@ -1,5 +1,4 @@
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import { SONEIUM_CHAIN_ID, SONEIUM_EXPLORER_URL, SONEIUM_RPC_URL } from '../env';
 export {
   getChainData,
   setupNetwork,
@@ -50,8 +49,7 @@ export enum EVM {
   MOONRIVER = 1285,
   MOONBEAM = 1284,
   SONEIUM_MINATO_TESTNET = 1946,
-  // Todo: update
-  SONEIUM = SONEIUM_CHAIN_ID,
+  SONEIUM = 1868,
 }
 
 export const chainName = {
@@ -167,8 +165,7 @@ export const rpcUrls = {
   [EVM.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
   [EVM.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
   [EVM.SONEIUM_MINATO_TESTNET]: ['https://rpc.minato.soneium.org'],
-  // Todo: update
-  [EVM.SONEIUM]: [SONEIUM_RPC_URL],
+  [EVM.SONEIUM]: ['https://rpc.soneium.org/'],
 };
 
 export const blockExplorerUrls = {
@@ -185,8 +182,7 @@ export const blockExplorerUrls = {
   [EVM.MOONRIVER]: ['https://moonriver.moonscan.io'],
   [EVM.MOONBEAM]: ['https://moonbeam.moonscan.io'],
   [EVM.SONEIUM_MINATO_TESTNET]: ['https://soneium-minato.blockscout.com'],
-  // Todo: update
-  [EVM.SONEIUM]: [SONEIUM_EXPLORER_URL],
+  [EVM.SONEIUM]: ['https://soneium.blockscout.com'],
 };
 
 export const CHAIN_INFORMATION = {

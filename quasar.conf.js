@@ -55,14 +55,10 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-      env: {
-        SONEIUM_RPC_URL: process.env.SONEIUM_RPC_URL,
-        SONEIUM_EXPLORER_URL: process.env.SONEIUM_EXPLORER_URL,
-        SONEIUM_CHAIN_ID:process.env.SONEIUM_CHAIN_ID,
-        SONEIUM_CCIP_CHAIN_SELECTOR:process.env.SONEIUM_CCIP_CHAIN_SELECTOR,
-        SONEIUM_CCIP_ROUTER:process.env.SONEIUM_CCIP_ROUTER,
-        SONEIUM_ASTR_CONTRACT:process.env.SONEIUM_ASTR_CONTRACT,
-      },
+      // Memo: Create .env file in root directory to set environment variables
+      // env: {
+      //   SONEIUM_CCIP_ROUTER:process.env.SONEIUM_CCIP_ROUTER,
+      // },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
