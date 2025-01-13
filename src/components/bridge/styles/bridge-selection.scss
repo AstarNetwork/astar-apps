@@ -78,7 +78,7 @@
   width: 100%;
 }
 
-.column--selection button:not([disabled]) .button--bridge:hover {
+.column--selection :is(button, a):not([disabled]).button--bridge:hover {
   border: 1px solid $astar-blue !important;
   transition: all 0.3s ease 0s;
 }
@@ -204,11 +204,6 @@
       background: rgba(8, 16, 41, 0.7);
       box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.8);
     }
-  }
-
-  .column--selection button:not([disabled]) .button--bridge:hover {
-    border: 1px solid $astar-blue !important;
-    transition: all 0.3s ease 0s;
   }
 
   .img--logo-bg {

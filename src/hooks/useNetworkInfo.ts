@@ -31,7 +31,6 @@ export function useNetworkInfo() {
       currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM
   );
 
-  const isZkyoto = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ZKYOTO);
   const isAstarZkEvm = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR_ZKEVM);
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
   const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
@@ -130,7 +129,6 @@ export function useNetworkInfo() {
     polkadotJsLink,
     isZkEvm,
     networkNameSubstrate,
-    isZkyoto,
     isAstarZkEvm,
     isAstar,
     dappStakingCurrency,

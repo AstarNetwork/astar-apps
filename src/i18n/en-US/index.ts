@@ -44,6 +44,7 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
+  joinSurge: 'Join Astar Surge',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -561,6 +562,7 @@ export default {
       howToUsePortal: 'HOW TO USE THE PORTAL',
       xcmIsDisabled: 'XCM with {network} is temporarily disabled',
       xcmEvmIsDisabled: 'XCM to {network} via EVM wallets is temporarily disabled',
+      toPlaceholder: '0x...(EVM) or Astar Native addresses',
     },
     modals: {
       max: 'Max',
@@ -1070,7 +1072,7 @@ export default {
     completed: 'Completed',
     inProgress: 'In Progress',
     approvalMaxAmount: 'Approve Max Amount (option)',
-    disabledWithdrawal: 'Bridge to {network} is temporarily disabled',
+    disabledWithdrawal: 'Bridge to {network} is disabled.',
     thirdPartyBridge: '3rd Party Bridge',
     bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
     ethereumBridge: {
@@ -1113,6 +1115,10 @@ export default {
       title: 'Layerswap',
       tag: 'ETH',
       text: '3rd Party Bridge. Fast and reliable crypto transfers across networks to Astar zkEVM.',
+    },
+    astarEvmBridge: {
+      title: 'EVM Bridge',
+      text: 'Transfer assets between EVM and native network.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
     warningLzWithdrawal:

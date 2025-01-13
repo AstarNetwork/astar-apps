@@ -57,18 +57,6 @@
           />
           <span class="text--network">{{ $t('drawer.astarTestnet') }}</span>
         </button>
-        <button
-          class="row--network box--hover--active"
-          :class="selNetworkId === endpointKey.ZKYOTO && 'border--active'"
-          @click="setSelNetwork(endpointKey.ZKYOTO)"
-        >
-          <img
-            class="img--network-logo"
-            :src="require('src/assets/img/chain/astar-zkevm-logo-white.svg')"
-            alt="logo-zkatana"
-          />
-          <span class="text--network">{{ $t('drawer.zkTestnet') }}</span>
-        </button>
       </div>
       <div v-if="!isZkEvm" class="container--advanced">
         <div class="row--title-advanced">

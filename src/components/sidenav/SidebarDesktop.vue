@@ -88,9 +88,14 @@
           </div>
         </a>
       </div>
-      <a class="lfgm" :href="lfgmUrl" target="_blank">
-        <img :src="require('src/assets/img/lfgm.svg')" alt="LFGM" />
-      </a>
+      <div>
+        <a class="surge" :href="surgeUrl" target="_blank">
+          <img :src="require('src/assets/img/surge_token.webp')" alt="Surge" />
+        </a>
+        <q-tooltip>
+          <span class="text--tooltip">{{ $t('joinSurge') }}</span>
+        </q-tooltip>
+      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -101,16 +106,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'src/store';
-import { useGovernance, useNetworkInfo, useSidebar } from 'src/hooks';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import Logo from '../common/Logo.vue';
-import { useRouter } from 'vue-router';
+import { useGovernance, useNetworkInfo, useSidebar } from 'src/hooks';
+import { socialUrl, surgeUrl } from 'src/links';
 import { Path as RoutePath } from 'src/router/routes';
-import IconEcosystem from './components/IconEcosystem.vue';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import Logo from '../common/Logo.vue';
 import SidebarOptionDesktop from './SidebarOptionDesktop.vue';
-import { socialUrl, lfgmUrl } from 'src/links';
+import IconEcosystem from './components/IconEcosystem.vue';
 
 export default defineComponent({
   components: {
@@ -120,7 +125,7 @@ export default defineComponent({
   },
   setup() {
     const { isOpen } = useSidebar();
-    const { isZkEvm, isZkyoto } = useNetworkInfo();
+    const { isZkEvm } = useNetworkInfo();
     const { isGovernanceEnabled, governanceUrl } = useGovernance();
 
     const store = useStore();
@@ -132,7 +137,7 @@ export default defineComponent({
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
     const getIndicatorClass = (path: string): string => {
-      let indicatorClassObject: Record<string, string> = {
+      const indicatorClassObject: Record<string, string> = {
         dashboard: 'menu__dashboard',
         assets: 'menu__assets',
         'dapp-staking': 'menu__staking',
@@ -157,8 +162,7 @@ export default defineComponent({
       path,
       RoutePath,
       socialUrl,
-      isZkyoto,
-      lfgmUrl,
+      surgeUrl,
       isGovernanceEnabled,
       governanceUrl,
     };

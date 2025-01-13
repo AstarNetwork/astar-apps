@@ -137,16 +137,6 @@
           </q-tooltip>
         </a>
 
-        <a v-if="isZkyoto" :href="faucetSethLink" target="_blank" rel="noopener noreferrer">
-          <button class="btn btn--icon">
-            <astar-icon-faucet />
-          </button>
-          <span class="text--mobile-menu">{{ $t('assets.faucet') }}</span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.faucet') }}</span>
-          </q-tooltip>
-        </a>
-
         <div v-else-if="isFaucet">
           <button class="btn btn--icon" @click="handleModalFaucet({ isOpen: true })">
             <astar-icon-faucet />
@@ -168,26 +158,27 @@ import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink } from 'src/c-bridge';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
+import Balloon from 'src/components/common/Balloon.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import {
+  ccipMinatoBridgeEnabled,
+  layerZeroBridgeEnabled,
+  nativeBridgeEnabled,
+  ccipSoneiumBridgeEnabled,
+} from 'src/features';
 import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks';
 import { faucetSethLink } from 'src/links';
 import { getTokenImage } from 'src/modules/token';
 import {
-  buildEthereumBridgePageLink,
-  buildTransferPageLink,
-  buildLzBridgePageLink,
   buildCcipBridgePageLink,
+  buildEthereumBridgePageLink,
+  buildLzBridgePageLink,
+  buildTransferPageLink,
 } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import {
-  nativeBridgeEnabled,
-  layerZeroBridgeEnabled,
-  ccipMinatoBridgeEnabled,
-  ccipSoneiumBridgeEnabled,
-} from 'src/features';
+
 import CustomRouterLink from '../common/CustomRouterLink.vue';
-import Balloon from 'src/components/common/Balloon.vue';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -210,15 +201,8 @@ export default defineComponent({
     const isBalloonClosing = ref<boolean>(false);
     const isSoneiumButtonHover = ref<boolean>(false);
 
-    const {
-      currentNetworkName,
-      nativeTokenSymbol,
-      isZkEvm,
-      isZkyoto,
-      isAstar,
-      isShibuyaEvm,
-      isAstarEvm,
-    } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isAstar, isShibuyaEvm, isAstarEvm } =
+      useNetworkInfo();
 
     const closeCcipBalloon = () => {
       isCcipBalloon.value = false;
@@ -310,7 +294,6 @@ export default defineComponent({
       isFaucet,
       isModalFaucet,
       isZkEvm,
-      isZkyoto,
       faucetSethLink,
       width,
       screenSize,

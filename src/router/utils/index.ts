@@ -44,25 +44,15 @@ export const buildXvmTransferPageLink = (symbol: string): string => {
 };
 
 /**
- * A helper function to replace the network params to the selected network
- * EX: `http://localhost:8080/shiden/assets` -> `http://localhost:8080/astar/assets`
+ * A helper function to build the URL and redirect to the selected network's assets page
+ * EX: `http://localhost:8080/shiden/bridge` -> `http://localhost:8080/astar/assets`
  * @param network networkAlias in providerEndpoints
- * @returns URL
  */
 export const buildNetworkUrl = (network: string) => {
   const href = window.location.href;
   const hrefArray = href.split('/');
-  const networkIndex = 3;
-
-  const url = hrefArray
-    .slice(0, hrefArray.length)
-    .map((it: string, index: number) => (index === networkIndex ? network : it))
-    .join('/');
-
-  // Memo: `window.open(url, '_self')` won't work with `#`
-  if (url.includes('#staking')) {
-    return url.replace('#staking', '');
-  }
-
+  // Memo: Extract the protocol + host
+  const host = hrefArray.slice(0, 3).join('/');
+  const url = `${host}/${network}${Path.Assets}`;
   return url;
 };
