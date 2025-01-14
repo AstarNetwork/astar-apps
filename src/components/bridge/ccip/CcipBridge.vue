@@ -162,7 +162,7 @@ import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { ccipMinatoBridgeEnabled } from 'src/features';
+import { ccipMinatoBridgeEnabled, ccipSoneiumBridgeEnabled } from 'src/features';
 import {
   ccipBridgeIcon,
   CCIP_TOKEN,
@@ -255,7 +255,7 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, isShibuyaEvm, isAstarEvm } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -318,9 +318,12 @@ export default defineComponent({
       isHandling.value = false;
     };
 
-    // Todo: update for Soneium
     const ccipBridgeEnabled = computed<boolean>(() => {
-      return ccipMinatoBridgeEnabled;
+      return isShibuyaEvm.value
+        ? ccipMinatoBridgeEnabled
+        : isAstarEvm.value
+        ? ccipSoneiumBridgeEnabled
+        : false;
     });
 
     watch(

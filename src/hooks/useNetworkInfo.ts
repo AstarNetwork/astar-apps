@@ -38,6 +38,9 @@ export function useNetworkInfo() {
   const isShibuyaEvm = computed<boolean>(() => {
     return isH160.value && isShibuya.value;
   });
+  const isAstarEvm = computed<boolean>(() => {
+    return isH160.value && isAstar.value;
+  });
 
   const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
     if (isZkEvm.value) {
@@ -133,5 +136,6 @@ export function useNetworkInfo() {
     nativeTokenImg,
     isShibuya,
     isShibuyaEvm,
+    isAstarEvm,
   };
 }

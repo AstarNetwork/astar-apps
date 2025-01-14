@@ -494,6 +494,7 @@ export default {
     faucet: 'Faucet',
     bridge: 'Bridge',
     bridgeToSoneium: 'Bridge to Soneium',
+    bridgeToZkEvm: 'Bridge to zkEVM',
     swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
@@ -1091,6 +1092,12 @@ export default {
       tag: 'SBY',
       text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
       remark: 'Available on Shibuya EVM. Switch the network to use it.',
+    },
+    ccipSoneiumBridge: {
+      title: 'Soneium Bridge',
+      tag: 'ASTR',
+      text: 'Transfer ASTR between Soneium and Astar EVM. Powered by CCIP.',
+      remark: 'Available on Astar EVM. Switch the network to use it.',
     },
     astarBridge: {
       title: 'LayerZero',

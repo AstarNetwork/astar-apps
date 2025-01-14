@@ -12,6 +12,8 @@ const { configure } = require('quasar/wrappers');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const path = require('path');
+require('dotenv').config()
+
 
 module.exports = configure(function (ctx) {
   return {
@@ -53,7 +55,10 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
+      // Memo: Create .env file in root directory to set environment variables
+      // env: {
+      //   SONEIUM_CCIP_ROUTER:process.env.SONEIUM_CCIP_ROUTER,
+      // },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
