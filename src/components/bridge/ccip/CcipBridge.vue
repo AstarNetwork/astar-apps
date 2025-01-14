@@ -135,9 +135,14 @@
         </ul>
       </div>
 
-      <div v-if="!ccipBridgeEnabled" class="row--box-error">
+      <div v-if="!isH160" class="row--box-error">
         <span class="color--white">
-          {{ $t('bridge.underMaintenance') }}
+          {{ $t('bridge.warningInvalidWallet') }}
+        </span>
+      </div>
+      <div v-else-if="!ccipBridgeEnabled" class="row--box-error">
+        <span class="color--white">
+          {{ $t('bridge.ccipUnderMaintenance') }}
         </span>
       </div>
 
@@ -255,7 +260,7 @@ export default defineComponent({
   },
   setup(props) {
     const { currentAccount } = useAccount();
-    const { nativeTokenSymbol, isShibuyaEvm, isAstarEvm } = useNetworkInfo();
+    const { nativeTokenSymbol, isShibuyaEvm, isAstarEvm, isH160 } = useNetworkInfo();
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -350,6 +355,7 @@ export default defineComponent({
       ccipBridgeTime,
       isApproveButtonDisabled,
       isBridgeButtonDisabled,
+      isH160,
       truncate,
       bridge,
       approve,
