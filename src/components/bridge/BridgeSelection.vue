@@ -4,7 +4,7 @@
       <div class="container--title">
         <span>{{ $t('bridge.selectBridge') }}</span>
       </div>
-      <div class="container--selection">
+      <div class="container--bridges">
         <div class="column--selection">
           <button :disabled="!isEnableCcipBridge">
             <component
@@ -93,6 +93,37 @@
         </div>
 
         <div class="column--selection">
+          <!-- Todo: Update the link to Startgate -->
+          <button
+            :disabled="!celerBridgeEnabled"
+            class="button--bridge"
+            @click="navigateInNewTab(cbridgeAppLink)"
+          >
+            <div class="row--logo-bg">
+              <div class="img--logo-bg">
+                <img
+                  class="img--logo"
+                  :src="require('src/assets/img/token/vastr.png')"
+                  alt="vASTR"
+                />
+              </div>
+            </div>
+            <div class="row--bridge-title">
+              <div class="text--bridge-tag">
+                <q-chip outline>
+                  {{ $t('bridge.vastrBridge.tag') }}
+                </q-chip>
+              </div>
+              <span class="text--bridge-title">{{ $t('bridge.vastrBridge.title') }}</span>
+              <div class="box--text-bridge">
+                <span class="text--bridge">
+                  {{ $t('bridge.vastrBridge.text') }}
+                </span>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="column--selection">
           <button
             :disabled="!celerBridgeEnabled"
             class="button--bridge"
@@ -129,8 +160,6 @@
             {{ $t('bridge.celerBridge.warning') }}
           </p>
         </div>
-      </div>
-      <div class="container--selection">
         <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
