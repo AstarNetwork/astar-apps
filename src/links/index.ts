@@ -81,3 +81,7 @@ export const getEvmExplorerUrl = async (hash: string, web3: Web3): Promise<strin
   const blockExplorerUrl = blockExplorerUrls[connectedChainId];
   return `${blockExplorerUrl}/tx/${hash}`;
 };
+
+// Todo: update the link
+export const vastrBridgeLink =
+  'https://stargate.finance/bridge?srcChain=zkatana&srcToken=0x7746ef546d562b443AE4B4145541a3b1a3D75717&dstChain=astar&dstToken=0xfffFffff00000000000000010000000000000010';

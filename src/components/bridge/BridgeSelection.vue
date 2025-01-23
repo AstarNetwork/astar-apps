@@ -93,11 +93,10 @@
         </div>
 
         <div class="column--selection">
-          <!-- Todo: Update the link to Startgate -->
           <button
-            :disabled="!celerBridgeEnabled"
+            :disabled="!layerZeroBridgeEnabled"
             class="button--bridge"
-            @click="navigateInNewTab(cbridgeAppLink)"
+            @click="navigateInNewTab(vastrBridgeLink)"
           >
             <div class="row--logo-bg">
               <div class="img--logo-bg">
@@ -123,6 +122,7 @@
             </div>
           </button>
         </div>
+
         <div class="column--selection">
           <button
             :disabled="!celerBridgeEnabled"
@@ -285,6 +285,7 @@ import {
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
+import { vastrBridgeLink } from 'src/links/index';
 import {
   Path as RoutePath,
   buildCcipBridgePageLink,
@@ -355,6 +356,7 @@ export default defineComponent({
       isEnableCcipBridge,
       isShibuyaEvm,
       isAstarEvm,
+      vastrBridgeLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,
