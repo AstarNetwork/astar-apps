@@ -30,6 +30,7 @@
           <swiper-slide v-for="(item, index) in combinedCampaigns" :key="index">
             <div
               class="card--swiper"
+              data-testid="staking-banner-card"
               @click="item.link !== undefined ? goToLink(item.link) : goDappPageLink(item.address)"
             >
               <img :src="item.img" class="card__img" />

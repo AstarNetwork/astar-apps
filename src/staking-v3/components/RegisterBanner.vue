@@ -4,6 +4,7 @@
     :to="networkParam + Path.DappStaking + Path.Register"
     class="wrapper--register-banner"
     :style="{ backgroundImage: `url(${require('src/staking-v3/assets/register_bg.webp')})` }"
+    data-testid="register-dapp-banner"
   >
     <div class="congrats">
       <div class="text--congrats">&#127881; {{ `${$t('stakingV3.congrats')}` }}</div>
