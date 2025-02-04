@@ -96,27 +96,27 @@
           <button
             :disabled="!stargateBridgeEnabled"
             class="button--bridge"
-            @click="navigateInNewTab(vastrBridgeLink)"
+            @click="navigateInNewTab(stargateBridgeLink)"
           >
             <div class="row--logo-bg">
               <div class="img--logo-bg">
                 <img
-                  class="img--logo"
-                  :src="require('src/assets/img/token/vastr.png')"
-                  alt="vASTR"
+                  class="img--logo-stargate"
+                  :src="require('src/assets/img/logo-stargate.webp')"
+                  alt="stargate"
                 />
               </div>
             </div>
             <div class="row--bridge-title">
               <div class="text--bridge-tag">
                 <q-chip outline>
-                  {{ $t('bridge.vastrBridge.tag') }}
+                  {{ $t('bridge.stargateBridge.tag') }}
                 </q-chip>
               </div>
-              <span class="text--bridge-title">{{ $t('bridge.vastrBridge.title') }}</span>
+              <span class="text--bridge-title">{{ $t('bridge.stargateBridge.title') }}</span>
               <div class="box--text-bridge">
                 <span class="text--bridge">
-                  {{ $t('bridge.vastrBridge.text') }}
+                  {{ $t('bridge.stargateBridge.text') }}
                 </span>
               </div>
             </div>
@@ -286,7 +286,7 @@ import {
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
-import { vastrBridgeLink } from 'src/links/index';
+import { stargateBridgeLink } from 'src/links/index';
 import {
   Path as RoutePath,
   buildCcipBridgePageLink,
@@ -358,7 +358,7 @@ export default defineComponent({
       isEnableCcipBridge,
       isShibuyaEvm,
       isAstarEvm,
-      vastrBridgeLink,
+      stargateBridgeLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,

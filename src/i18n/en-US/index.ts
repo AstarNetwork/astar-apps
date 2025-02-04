@@ -1105,10 +1105,10 @@ export default {
       text: 'Transfer assets between Astar EVM and Astar zkEVM.',
       remark: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
     },
-    vastrBridge: {
-      title: 'vASTR Bridge',
+    stargateBridge: {
+      title: 'Stargate Bridge',
       tag: 'ERC20',
-      text: '3rd Party Bridge. Transfer vASTR between Astar EVM and Soneium.',
+      text: '3rd Party Bridge. Transfer assets between Soneium and Astar EVM.',
     },
     celerBridge: {
       title: 'Celer Bridge',
