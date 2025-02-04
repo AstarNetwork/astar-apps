@@ -1133,8 +1133,11 @@ export default {
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
     warningHighTrafficMore: '(read more)',
+    warningInvalidWallet: 'Please connect your EVM wallet to use the bridge',
     underMaintenance:
       'Astar zkEVM is currently under the maintenance. We apologize for any inconvenience.',
+    ccipUnderMaintenance:
+      'CCIP bridge is currently under the maintenance. We apologize for any inconvenience.',
     modals: {
       highTraffic: {
         text1:
