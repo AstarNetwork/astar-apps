@@ -6,6 +6,7 @@ import { Erc20Token, registeredErc20Tokens, tokenImageMap } from 'src/modules/to
 import { xcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { hasProperty } from '@astar-network/astar-sdk-core';
+import { vastrBridgeLink } from 'src/links';
 
 export const getTokenImage = ({
   isNativeToken,
@@ -171,6 +172,11 @@ export const getRegisteredErc20Tokens = ({
   const xc20Tokens = xcmToken[network].map((it) => {
     try {
       const asset = assets.find((that) => that.id === it.assetId) as Asset;
+      let bridgeUrl = null;
+      if (it.symbol === 'vASTR') {
+        bridgeUrl = vastrBridgeLink;
+      }
+
       return {
         srcChainId: Number(providerEndpoints[network].evmChainId),
         address: asset.mappedERC20Addr,
@@ -180,7 +186,7 @@ export const getRegisteredErc20Tokens = ({
         image: it.logo,
         isWrappedToken: false,
         isXC20: true,
-        bridgeUrl: null,
+        bridgeUrl,
       };
     } catch (error) {
       console.error(error);
