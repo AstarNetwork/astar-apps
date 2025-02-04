@@ -94,7 +94,7 @@
 
         <div class="column--selection">
           <button
-            :disabled="!layerZeroBridgeEnabled"
+            :disabled="!stargateBridgeEnabled"
             class="button--bridge"
             @click="navigateInNewTab(vastrBridgeLink)"
           >
@@ -281,6 +281,7 @@ import {
   layerZeroBridgeEnabled,
   ccipSoneiumBridgeEnabled,
   nativeBridgeEnabled,
+  stargateBridgeEnabled,
 } from 'src/features';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
@@ -353,6 +354,7 @@ export default defineComponent({
       layerSwapBridgeEnabled,
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
+      stargateBridgeEnabled,
       isEnableCcipBridge,
       isShibuyaEvm,
       isAstarEvm,

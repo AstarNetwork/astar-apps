@@ -92,6 +92,20 @@
             </custom-router-link>
           </div>
 
+          <div v-else>
+            <custom-router-link
+              v-if="token.bridgeUrl"
+              :to="token.bridgeUrl"
+              :is-disabled="!isBridgeEnabled(token.bridgeUrl)"
+            >
+              <button class="btn btn--icon"><astar-icon-bridge class="icon--bridge" /></button>
+              <span class="text--expand-menu">{{ $t('assets.bridge') }}</span>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
+              </q-tooltip>
+            </custom-router-link>
+          </div>
+
           <a :href="explorerLink" target="_blank" rel="noopener noreferrer">
             <button class="btn btn--icon">
               <astar-icon-external-link class="icon--external-link" />

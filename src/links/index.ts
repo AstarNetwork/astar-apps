@@ -82,6 +82,5 @@ export const getEvmExplorerUrl = async (hash: string, web3: Web3): Promise<strin
   return `${blockExplorerUrl}/tx/${hash}`;
 };
 
-// Todo: update the link
 export const vastrBridgeLink =
-  'https://stargate.finance/bridge?srcChain=zkatana&srcToken=0x7746ef546d562b443AE4B4145541a3b1a3D75717&dstChain=astar&dstToken=0xfffFffff00000000000000010000000000000010';
+  'https://stargate.finance/bridge?srcChain=astar&srcToken=0xfffFffff00000000000000010000000000000010&dstChain=soneium&dstToken=0x60336f9296C79dA4294A19153eC87F8E52158e5F';
