@@ -4,7 +4,7 @@
       <div class="container--title">
         <span>{{ $t('bridge.selectBridge') }}</span>
       </div>
-      <div class="container--selection">
+      <div class="container--bridges">
         <div class="column--selection">
           <button :disabled="!isEnableCcipBridge">
             <component
@@ -94,6 +94,37 @@
 
         <div class="column--selection">
           <button
+            :disabled="!stargateBridgeEnabled"
+            class="button--bridge"
+            @click="navigateInNewTab(stargateBridgeLink)"
+          >
+            <div class="row--logo-bg">
+              <div class="img--logo-bg">
+                <img
+                  class="img--logo-stargate"
+                  :src="require('src/assets/img/logo-stargate.webp')"
+                  alt="stargate"
+                />
+              </div>
+            </div>
+            <div class="row--bridge-title">
+              <div class="text--bridge-tag">
+                <q-chip outline>
+                  {{ $t('bridge.stargateBridge.tag') }}
+                </q-chip>
+              </div>
+              <span class="text--bridge-title">{{ $t('bridge.stargateBridge.title') }}</span>
+              <div class="box--text-bridge">
+                <span class="text--bridge">
+                  {{ $t('bridge.stargateBridge.text') }}
+                </span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="column--selection">
+          <button
             :disabled="!celerBridgeEnabled"
             class="button--bridge"
             @click="navigateInNewTab(cbridgeAppLink)"
@@ -129,8 +160,6 @@
             {{ $t('bridge.celerBridge.warning') }}
           </p>
         </div>
-      </div>
-      <div class="container--selection">
         <div class="column--selection">
           <button :disabled="!isEnableEthBridge">
             <component
@@ -252,10 +281,12 @@ import {
   layerZeroBridgeEnabled,
   ccipSoneiumBridgeEnabled,
   nativeBridgeEnabled,
+  stargateBridgeEnabled,
 } from 'src/features';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
+import { stargateBridgeLink } from 'src/links/index';
 import {
   Path as RoutePath,
   buildCcipBridgePageLink,
@@ -323,9 +354,11 @@ export default defineComponent({
       layerSwapBridgeEnabled,
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
+      stargateBridgeEnabled,
       isEnableCcipBridge,
       isShibuyaEvm,
       isAstarEvm,
+      stargateBridgeLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,

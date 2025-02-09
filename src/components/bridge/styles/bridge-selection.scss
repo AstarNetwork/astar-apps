@@ -17,6 +17,9 @@
   @media (min-width: $xl) {
     margin-top: 0px;
     margin-bottom: 0px;
+    align-items: end;
+    margin-right: -40px;
+    margin-top: -36px;
   }
 }
 
@@ -31,14 +34,23 @@
 
 .container--box {
   @media (min-width: $xl) {
-    position: absolute;
-    right: -40px;
-    top: -36px;
-    height: calc(100vh - 98px);
-    padding-right: 168px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 36px;
+    padding-right: 130px;
     padding-left: 48px;
-    padding-top: 58px;
+    padding-top: 24px;
     box-shadow: 0px 2px 8px 0px #00000014;
+  }
+}
+
+.container--bridges {
+  @media (min-width: $md) {
+    display: grid;
+    column-gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -61,6 +73,8 @@
   }
   @media (min-width: $sm) {
     width: 240px;
+    // Memo: to adjust the height to line up the buttons
+    min-height: 300px;
   }
 }
 
@@ -115,6 +129,11 @@
 .img--logo {
   width: 32px;
   height: 32px;
+}
+
+.img--logo-stargate {
+  width: 40px;
+  height: 40px;
 }
 
 .img--logo-astr {
