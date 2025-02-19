@@ -1134,6 +1134,7 @@ export default {
     slippage: 'Slippage: {percent}%',
     feeOnTransaction: 'Transaction fee: {amount} {symbol}',
     feeOnBridge: 'Bridge fee: {amount} {symbol}',
+    rebate: 'You will receive 0.00008 ETH for gas on Soneium',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',
