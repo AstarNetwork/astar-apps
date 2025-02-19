@@ -48,7 +48,7 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: true,
     },
-    stakeToAddress: {
+    moveFromAddress: {
       type: String,
       required: false,
       default: undefined,
@@ -70,6 +70,7 @@ export default defineComponent({
 
     const dapps = computed<DappVote[]>(() =>
       registeredDapps.value.map((dapp) => mapToDappVote(dapp))
+      .filter(dapp => dapp.address.toLowerCase() !== props.moveFromAddress?.toLowerCase())
     );
 
     const handleCategorySelected = (category: string): void => {

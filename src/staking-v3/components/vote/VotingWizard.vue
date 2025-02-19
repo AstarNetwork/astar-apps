@@ -5,7 +5,11 @@
         {{ title }}
       </div>
       <div class="balance-container">
-        {{ $t('stakingV3.voting.yourAvailableBalance') }}
+        {{
+          isBonusEntitledMove
+            ? $t('stakingV3.voting.availableToMove')
+            : $t('stakingV3.voting.yourAvailableBalance')
+        }}
         <token-balance-native :balance="availableToVoteDisplay.toString()" />
       </div>
     </div>
@@ -27,6 +31,7 @@
           />
         </div>
       </div>
+      <div>{{ $t('stakingV3.voting.safeMoveInfo') }}</div>
     </div>
     <wizard-steps
       :steps="wizardSteps"
@@ -40,6 +45,7 @@
         v-if="selectedStepIndex === Steps.ChooseDapps"
         :on-dapps-selected="handleDappsSelected"
         :scroll-to-top="scrollToWizardTop"
+        :move-from-address="moveFromAddress"
       />
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
@@ -139,6 +145,7 @@ export default defineComponent({
       availableToMoveFrom,
       canVote,
       vote,
+      isBonusEntitledMove
     } = useVote(selectedDapps, props.moveFromAddress);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
@@ -221,7 +228,7 @@ export default defineComponent({
     const handleConfirm = async (restake: boolean): Promise<void> => {
       scrollToWizardTop();
       isConfirmed.value = true;
-      await vote(restake);
+      await vote(!isBonusEntitledMove && restake);
       reset();
     };
 
@@ -281,6 +288,7 @@ export default defineComponent({
       showRestakeModal,
       totalStakerRewards,
       canVote,
+      isBonusEntitledMove,
       vote,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,

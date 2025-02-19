@@ -938,6 +938,7 @@ export default {
     unregisteredDappInfo:
       'This project has been unregistered but If you are currently entitled to Bonus you will be entitled to it as well as basic rewards as long as you do not move/unstake the fund during this Period. Unstake if you still want to (it has {days} days unlocking period).',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
+    moveSuccess: 'You successfully moved your stake to {number} dApp(s).',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
     claimRewardSuccess: 'You successfully claimed your rewards.',
@@ -1011,7 +1012,10 @@ export default {
       beSureToVote:
         'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
       yourAvailableBalance: 'Your available balance',
+      availableToMove: 'Available to move',
       moveFunds: 'Move funds',
+      safeMoveInfo:
+        'You can move your stake to up to {number} dApp(s) without loosing your bonus rewards.',
     },
     registration: {
       success: 'You successfully registered dApp {name} to the store.',

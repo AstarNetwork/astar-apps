@@ -262,6 +262,28 @@ export function useDappStaking() {
     ]);
   };
 
+  const claimAndMoveStake = async (
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[]
+  ): Promise<void> => {
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
+    await stakingService.claimAndMoveStake(
+      currentAccount.value,
+      moveFromAddress,
+      stakeInfo,
+      t('stakingV3.moveSuccess', { number: stakeInfo.length })
+    );
+
+    await Promise.all([
+      getAllRewards(),
+      fetchStakerInfoToStore(),
+      fetchStakeAmountsToStore(),
+      getCurrentEraInfo(),
+    ]);
+  };
+
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
@@ -431,7 +453,8 @@ export function useDappStaking() {
 
   const canStake = (
     stakes: DappStakeInfo[],
-    availableTokensBalance: bigint
+    availableTokensBalance: bigint,
+    useableBalance: bigint
     //Returns: [result, message, docsUrl]
   ): [boolean, string, string] => {
     let stakeSum = BigInt(0);
@@ -464,7 +487,7 @@ export function useDappStaking() {
       } else if (
         constants.value &&
         ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
-          availableTokensBalance - stakeSum
+          useableBalance - stakeSum
       ) {
         return [
           false,
@@ -672,6 +695,7 @@ export function useDappStaking() {
     getDappRewards,
     fetchConstantsToStore,
     claimLockAndStake,
+    claimAndMoveStake,
     getCurrentEraInfo,
     getDappTiers,
     getDappTier,

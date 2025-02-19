@@ -95,7 +95,9 @@ export interface AccountLedger {
 
 export interface SingularStakingInfo {
   readonly staked: StakeAmount;
+  readonly previousStaked: StakeAmount;
   readonly loyalStaker: boolean;
+  readonly bonusStatus: number;
 }
 
 export interface PeriodEndInfo {
@@ -126,6 +128,7 @@ export interface Constants {
   maxNumberOfContracts: number;
   maxUnlockingChunks: number;
   unlockingPeriod: number;
+  maxBonusSafeMovesPerPeriod: number;
 }
 
 export interface EraLengths {
