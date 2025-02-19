@@ -26,7 +26,7 @@
         />
         <div>
           <information :transfer-type="HistoryTxType.CCIP_BRIDGE" :is-history="false" />
-          <div class="row--banner">
+          <div v-if="toChainName === CcipNetworkName.Soneium" class="row--banner">
             <img
               class="banner--eth-rebates"
               src="~assets/img/banner/banner-eth-rebate.png"
@@ -45,7 +45,7 @@ import { useAccount } from 'src/hooks';
 import { HistoryTxType } from 'src/modules/account';
 import { defineComponent, ref } from 'vue';
 import { useCcipBridge } from '../../../hooks/bridge/useCcipBridge';
-
+import { CcipNetworkName } from 'src/modules/ccip-bridge';
 export default defineComponent({
   components: {
     Information,
@@ -98,6 +98,7 @@ export default defineComponent({
       bridgeFee,
       isToSoneium,
       isGasPayable,
+      CcipNetworkName,
       inputHandler,
       reverseChain,
       handleBridge,
