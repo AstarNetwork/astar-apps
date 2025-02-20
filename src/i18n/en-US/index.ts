@@ -939,6 +939,8 @@ export default {
       'This project has been unregistered but If you are currently entitled to Bonus you will be entitled to it as well as basic rewards as long as you do not move/unstake the fund during this Period. Unstake if you still want to (it has {days} days unlocking period).',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
     moveSuccess: 'You successfully moved your stake to {number} dApp(s).',
+    looseBonusWarning:
+      'You will partially loose your bonus rewards if you move your stake to more than {number} dApp(s).',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
     claimRewardSuccess: 'You successfully claimed your rewards.',

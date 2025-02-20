@@ -31,7 +31,9 @@
           />
         </div>
       </div>
-      <div>{{ $t('stakingV3.voting.safeMoveInfo') }}</div>
+      <div v-if="isBonusEntitledMove">
+        {{ $t('stakingV3.voting.safeMoveInfo', { number: allowedNumberOfMoves }) }}
+      </div>
     </div>
     <wizard-steps
       :steps="wizardSteps"
@@ -44,8 +46,12 @@
       <choose-dapps-panel
         v-if="selectedStepIndex === Steps.ChooseDapps"
         :on-dapps-selected="handleDappsSelected"
+        :on-dapps-selection-changed="handleDappsSelectionChanged"
         :scroll-to-top="scrollToWizardTop"
         :move-from-address="moveFromAddress"
+        :error-message="
+          isLoosingBonus ? $t('stakingV3.looseBonusWarning', { number: allowedNumberOfMoves }) : ''
+        "
       />
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
@@ -134,6 +140,7 @@ export default defineComponent({
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
     const showRestakeModal = ref<boolean>(false);
+    const isLoosingBonus = ref<boolean>(false);
     const wizard = ref();
     const {
       totalStakeAmount,
@@ -145,7 +152,10 @@ export default defineComponent({
       availableToMoveFrom,
       canVote,
       vote,
-      isBonusEntitledMove
+      isBonusEntitledMove,
+      stakeToMove,
+      isPartiallyLosingBonus,
+      allowedNumberOfMoves,
     } = useVote(selectedDapps, props.moveFromAddress);
     const completedSteps = computed<Map<number, boolean>>(
       () =>
@@ -202,6 +212,10 @@ export default defineComponent({
       selectedDapps.value = dapps;
       selectedComponentIndex.value = Steps.AddAmount;
       scrollToWizardTop();
+    };
+
+    const handleDappsSelectionChanged = (_: DappVote[], after: DappVote[]): void => {
+      isLoosingBonus.value = isBonusEntitledMove.value && isPartiallyLosingBonus(after.length);
     };
 
     const handleAmountsEntered = (): void => {
@@ -289,6 +303,8 @@ export default defineComponent({
       totalStakerRewards,
       canVote,
       isBonusEntitledMove,
+      isLoosingBonus,
+      stakeToMove,
       vote,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
@@ -301,6 +317,8 @@ export default defineComponent({
       scrollToWizardTop,
       setShowRestakeModal,
       handleRestakeConfirm,
+      handleDappsSelectionChanged,
+      allowedNumberOfMoves,
     };
   },
 });

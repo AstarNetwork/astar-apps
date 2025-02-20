@@ -6,6 +6,7 @@ import { useDappStaking } from './useDappStaking';
 import { abs, max } from 'src/v2/common';
 import { useDapps } from './useDapps';
 import { useDappStakingNavigation } from './useDappStakingNavigation';
+import { bool } from '@polkadot/types';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
@@ -49,6 +50,11 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
 
     return BigInt(0);
   });
+
+  const isPartiallyLosingBonus = (numberOfDappsToMoveTo: number) =>
+    allowedNumberOfMoves.value < numberOfDappsToMoveTo;
+
+  const allowedNumberOfMoves = computed<number>(() => (stakeToMove.value?.bonusStatus ?? 1) - 1);
 
   const isBonusEntitledMove = computed<boolean>(
     () => availableToMove.value > BigInt(0) && (stakeToMove.value?.loyalStaker || false)
@@ -229,5 +235,8 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     canRestake,
     vote,
     isBonusEntitledMove,
+    stakeToMove,
+    isPartiallyLosingBonus,
+    allowedNumberOfMoves,
   };
 }
