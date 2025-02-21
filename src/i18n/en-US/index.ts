@@ -44,7 +44,7 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
-  joinSurge: 'Join Astar Surge',
+  joinSurge: 'Go to ACS',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
