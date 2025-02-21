@@ -213,7 +213,8 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
     successMessage: string
   ): Promise<void> {
     this.guardStake(senderAddress, stakeInfo, moveFromAddress, BigInt(0));
-    const batch = await this.getClaimAndMoveStakeBatch(senderAddress, moveFromAddress, stakeInfo);
+    const ss58Address = await this.getSS58Address(senderAddress);
+    const batch = await this.getClaimAndMoveStakeBatch(ss58Address, moveFromAddress, stakeInfo);
 
     await this.wallet.sendEvmTransaction({
       from: senderAddress,

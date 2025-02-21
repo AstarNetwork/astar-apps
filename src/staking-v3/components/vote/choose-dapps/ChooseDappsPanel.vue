@@ -12,7 +12,7 @@
       :filter="searchTerm"
       :on-dapps-selected="handleDappsSelected"
     />
-    <error-panel :error-message="errorMessage" />
+    <error-panel :error-message="errorMessage" class="error-label" />
     <div v-if="currentView === View.Dapps" class="buttons">
       <go-back-button @click="goBackToCategories">{{
         $t('stakingV3.voting.backToCategory')
@@ -161,5 +161,9 @@ export default defineComponent({
       min-width: 160px;
     }
   }
+}
+
+.error-label {
+  margin-top: 24px;
 }
 </style>

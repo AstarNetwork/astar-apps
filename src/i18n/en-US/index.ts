@@ -941,6 +941,7 @@ export default {
     moveSuccess: 'You successfully moved your stake to {number} dApp(s).',
     looseBonusWarning:
       'You will partially loose your bonus rewards if you move your stake to more than {number} dApp(s).',
+    looseAllBonusWarning: 'You will loose your bonus rewards if you move your stake.',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
     claimRewardSuccess: 'You successfully claimed your rewards.',
@@ -1011,6 +1012,7 @@ export default {
       addAmounts: 'Please add the amount to each card.',
       review: 'Check everything is ok before confirming.',
       availableAfterStaking: 'Available amount after staking',
+      remainingAmountAfterMoving: 'Remaining amount on origin dApp after moving',
       beSureToVote:
         'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
       yourAvailableBalance: 'Your available balance',

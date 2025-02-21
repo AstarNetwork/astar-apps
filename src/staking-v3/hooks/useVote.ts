@@ -6,7 +6,6 @@ import { useDappStaking } from './useDappStaking';
 import { abs, max } from 'src/v2/common';
 import { useDapps } from './useDapps';
 import { useDappStakingNavigation } from './useDappStakingNavigation';
-import { bool } from '@polkadot/types';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
@@ -20,6 +19,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     getStakerInfo,
     claimLockAndStake,
     claimAndMoveStake,
+    isVotingPeriod,
   } = useDappStaking();
   const { navigateToAssets } = useDappStakingNavigation();
   const { getDapp } = useDapps();
@@ -57,11 +57,16 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   const allowedNumberOfMoves = computed<number>(() => (stakeToMove.value?.bonusStatus ?? 1) - 1);
 
   const isBonusEntitledMove = computed<boolean>(
-    () => availableToMove.value > BigInt(0) && (stakeToMove.value?.loyalStaker || false)
+    () =>
+      !isVotingPeriod.value &&
+      availableToMove.value > BigInt(0) &&
+      (stakeToMove.value?.loyalStaker || false)
   );
 
+  const isMove = computed<boolean>(() => dappToMoveTokensFrom.value !== undefined);
+
   const availableToVote = computed<bigint>(() =>
-    isBonusEntitledMove.value
+    isMove.value
       ? availableToMove.value
       : BigInt(useableBalance.value) +
         max(remainingLockedTokensInitial, BigInt(0)) +
@@ -69,7 +74,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   );
 
   const availableToVoteDisplay = computed<bigint>(() => {
-    if (isBonusEntitledMove.value) {
+    if (isMove.value) {
       return availableToMove.value - totalStakeAmount.value;
     }
 
@@ -235,6 +240,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     canRestake,
     vote,
     isBonusEntitledMove,
+    isMove,
     stakeToMove,
     isPartiallyLosingBonus,
     allowedNumberOfMoves,
