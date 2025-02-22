@@ -20,7 +20,6 @@
           :set-is-approving="setIsApproving"
           :is-approve-max-amount="isApproveMaxAmount"
           :bridge-fee="bridgeFee"
-          :is-to-soneium="isToSoneium"
           :is-gas-payable="Boolean(isGasPayable)"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
@@ -59,7 +58,6 @@ export default defineComponent({
       isApproving,
       isApproveMaxAmount,
       bridgeFee,
-      isToSoneium,
       isGasPayable,
       inputHandler,
       reverseChain,
@@ -87,7 +85,6 @@ export default defineComponent({
       isApproving,
       isApproveMaxAmount,
       bridgeFee,
-      isToSoneium,
       isGasPayable,
       inputHandler,
       reverseChain,

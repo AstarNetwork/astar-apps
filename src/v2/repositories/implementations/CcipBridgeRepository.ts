@@ -46,14 +46,16 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const defaultAbiCoder = ethers.utils.defaultAbiCoder;
 
     const destinationChainSelector = ccipChainSelector[destNetworkId];
-    const isToSoneium = Boolean(
-      destNetworkId === CcipChainId.SoneiumMinato || destNetworkId === CcipChainId.Soneium
+    const isWithdrawFromAstar = Boolean(
+      destNetworkId === CcipChainId.SoneiumMinato ||
+        destNetworkId === CcipChainId.Soneium ||
+        destNetworkId === CcipChainId.Sepolia
     );
 
-    const receiverAddress = isToSoneium ? senderAddress : ccipBridgeAddress[destNetworkId];
+    const receiverAddress = isWithdrawFromAstar ? senderAddress : ccipBridgeAddress[destNetworkId];
     const receiver = defaultAbiCoder.encode(['address'], [receiverAddress]);
 
-    const data = isToSoneium ? '0x' : defaultAbiCoder.encode(['address'], [senderAddress]);
+    const data = isWithdrawFromAstar ? '0x' : defaultAbiCoder.encode(['address'], [senderAddress]);
 
     const amt = ethers.utils.parseEther(String(amount)).toString();
     const tokenAmounts = [[tokenAddress, amt]];
@@ -99,9 +101,10 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     param: ParamBridgeCcipAsset;
     web3: Web3;
   }): Promise<{ txParam: TransactionConfig; nativeFee: number }> {
-    const isToSoneium = Boolean(
+    const isWithdrawFromAstar = Boolean(
       param.destNetworkId === CcipChainId.SoneiumMinato ||
-        param.destNetworkId === CcipChainId.Soneium
+        param.destNetworkId === CcipChainId.Soneium ||
+        param.destNetworkId === CcipChainId.Sepolia
     );
     const { message, destinationChainSelector } = this.getMessageArgs(param);
     const contractAddress = ccipBridgeAddress[param.fromNetworkId];
@@ -116,7 +119,9 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const data = contract.methods.ccipSend(destinationChainSelector, message).encodeABI();
 
     const fee = await this.getFee({ param, web3 });
-    const gasTokenBridge = ethers.utils.parseEther(isToSoneium ? String(param.amount) : '0');
+    const gasTokenBridge = ethers.utils.parseEther(
+      isWithdrawFromAstar ? String(param.amount) : '0'
+    );
     const value = (BigInt(gasTokenBridge.toString()) + BigInt(fee)).toString();
 
     return {

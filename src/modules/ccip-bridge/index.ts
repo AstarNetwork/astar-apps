@@ -5,6 +5,7 @@ export enum CcipNetworkName {
   'AstarEvm' = 'Astar EVM',
   'SoneiumMinato' = 'Soneium Minato',
   'Soneium' = 'Soneium',
+  'Sepolia' = 'Sepolia',
 }
 
 export enum CcipChainId {
@@ -12,6 +13,7 @@ export enum CcipChainId {
   'AstarEvm' = 592,
   'SoneiumMinato' = 1946,
   'Soneium' = 1868,
+  'Sepolia' = 11155111,
 }
 
 export const ccipChainId = {
@@ -19,6 +21,7 @@ export const ccipChainId = {
   [CcipNetworkName.AstarEvm]: CcipChainId.AstarEvm,
   [CcipNetworkName.SoneiumMinato]: CcipChainId.SoneiumMinato,
   [CcipNetworkName.Soneium]: CcipChainId.Soneium,
+  [CcipNetworkName.Sepolia]: CcipChainId.Sepolia,
 };
 
 export const ccipChainSelector = {
@@ -26,10 +29,13 @@ export const ccipChainSelector = {
   [CcipChainId.AstarEvm]: '6422105447186081193',
   [CcipChainId.SoneiumMinato]: '686603546605904534',
   [CcipChainId.Soneium]: '12505351618335765396',
+  [CcipChainId.Sepolia]: '16015286601757825753',
 };
 
 const routerSoneiumMinato = '0x443a1bce545d56E2c3f20ED32eA588395FFce0f4';
 const routerSoneium = '0x8C8B88d827Fe14Df2bc6392947d513C86afD6977';
+
+const routerSepolia = '0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59';
 
 const etherSenderReceiverShibuya = '0x89cB78A4A3cAD4cA86D3e3fF565f63B4620CB6ea';
 const etherSenderReceiverAstar = '0x4036a6Ff8C1a29677108Aef299B560f6E4fA5e71';
@@ -39,6 +45,7 @@ export const ccipBridgeAddress = {
   [CcipChainId.AstarEvm]: etherSenderReceiverAstar,
   [CcipChainId.SoneiumMinato]: routerSoneiumMinato,
   [CcipChainId.Soneium]: routerSoneium,
+  [CcipChainId.Sepolia]: routerSepolia,
 };
 
 export const ccipBridgeIcon = {
@@ -46,6 +53,7 @@ export const ccipBridgeIcon = {
   [CcipNetworkName.AstarEvm]: require('src/assets/img/chain/astar.png'),
   [CcipNetworkName.SoneiumMinato]: require('src/assets/img/chain/soneium-black.svg'),
   [CcipNetworkName.Soneium]: require('src/assets/img/chain/soneium-black.svg'),
+  [CcipNetworkName.Sepolia]: require('src/assets/img/ethereum.png'),
 } as any;
 
 export interface CCIP_TOKEN {
@@ -62,6 +70,7 @@ export const CCIP_SBY: CCIP_TOKEN = {
   tokenAddress: {
     [CcipChainId.ShibuyaEvm]: astarNativeTokenErcAddr,
     [CcipChainId.SoneiumMinato]: '0x3c1F7c5f4C560afFCFe2b5ebF1271c3310867ff4',
+    [CcipChainId.Sepolia]: '0x530cAA61D6bEF863309c1EAA2571A3A4CCB603d1',
   },
   decimals: 18,
   image: require('/src/assets/img/token/astr.png'),
@@ -83,4 +92,5 @@ export const ccipBridgeTime = {
   [CcipNetworkName.AstarEvm]: 3,
   [CcipNetworkName.SoneiumMinato]: 30,
   [CcipNetworkName.Soneium]: 120,
+  [CcipNetworkName.Sepolia]: 15, // Need to create a function
 };

@@ -37,7 +37,8 @@ export const useCcipBridge = () => {
     isShibuya.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm
   );
   const toChainName = ref<CcipNetworkName>(
-    isShibuya.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium
+    // isShibuya.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium
+    isShibuya.value ? CcipNetworkName.Sepolia : CcipNetworkName.Soneium
   );
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
@@ -70,9 +71,11 @@ export const useCcipBridge = () => {
 
   const toChainId = computed<CcipChainId>(() => ccipChainId[toChainName.value as CcipNetworkName]);
 
-  const isToSoneium = computed<boolean>(() =>
+  const isWithdrawFromAstar = computed<boolean>(() =>
     Boolean(
-      toChainId.value === CcipChainId.SoneiumMinato || toChainId.value === CcipChainId.Soneium
+      toChainId.value === CcipChainId.SoneiumMinato ||
+        toChainId.value === CcipChainId.Soneium ||
+        toChainId.value === CcipChainId.Sepolia
     )
   );
 
@@ -128,6 +131,7 @@ export const useCcipBridge = () => {
     try {
       showLoading(store.dispatch, true);
 
+      console.log('toChainId.value', toChainId.value);
       const [fromChainBalance, toChainBalance] = await Promise.all([
         getTokenBal({
           address: currentAccount.value,
@@ -142,6 +146,7 @@ export const useCcipBridge = () => {
           tokenSymbol: selectedToken.value.symbol,
         }),
       ]);
+      console.log('toChainBalance', toChainBalance);
 
       fromBridgeBalance.value = Number(fromChainBalance);
       toBridgeBalance.value = Number(toChainBalance);
@@ -224,7 +229,7 @@ export const useCcipBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    if (!bridgeAmt.value || isToSoneium.value) return '';
+    if (!bridgeAmt.value || isWithdrawFromAstar.value) return '';
     const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
     const amount = isApproveMaxAmount.value
       ? ethersConstants.MaxUint256
@@ -287,7 +292,7 @@ export const useCcipBridge = () => {
 
   const setIsGasPayable = async (): Promise<void> => {
     try {
-      if (!currentAccount.value || (!isToSoneium.value && !isApproved.value)) return;
+      if (!currentAccount.value || (!isWithdrawFromAstar.value && !isApproved.value)) return;
 
       isLoadingGasPayable.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
@@ -382,7 +387,7 @@ export const useCcipBridge = () => {
     isApproveMaxAmount,
     transactionFee,
     bridgeFee,
-    isToSoneium,
+    isWithdrawFromAstar,
     isGasPayable,
     setIsApproving,
     inputHandler,

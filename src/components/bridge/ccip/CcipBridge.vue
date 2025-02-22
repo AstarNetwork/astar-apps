@@ -213,10 +213,6 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
-    isToSoneium: {
-      type: Boolean,
-      required: true,
-    },
     bridgeFee: {
       type: Number,
       required: true,
