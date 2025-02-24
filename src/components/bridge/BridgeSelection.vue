@@ -9,7 +9,7 @@
           <button :disabled="!isEnableCcipBridge">
             <component
               :is="isEnableCcipBridge ? 'router-link' : 'div'"
-              :to="buildCcipBridgePageLink()"
+              :to="ccipSoneiumLink"
               class="button--bridge"
             >
               <div class="row--logo-bg">
@@ -296,6 +296,7 @@ import {
 } from 'src/router/routes';
 import { navigateInNewTab } from 'src/util-general';
 import { computed, defineComponent } from 'vue';
+import { CcipNetworkParam } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: {},
@@ -331,6 +332,22 @@ export default defineComponent({
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
     });
 
+    const ccipSoneiumLink = computed<string>(() => {
+      return buildCcipBridgePageLink(
+        isShibuyaEvm.value
+          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.SoneiumMinato }
+          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Soneium }
+      );
+    });
+
+    const ccipEthereumLink = computed<string>(() => {
+      return buildCcipBridgePageLink(
+        isShibuyaEvm.value
+          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.Sepolia }
+          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Ethereum }
+      );
+    });
+
     const isEnableCcipBridge = computed<boolean>(() => {
       return (
         (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
@@ -359,10 +376,11 @@ export default defineComponent({
       isShibuyaEvm,
       isAstarEvm,
       stargateBridgeLink,
+      CcipNetworkParam,
+      ccipSoneiumLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,
-      buildCcipBridgePageLink,
       buildTransferPageLink,
       nativeTokenSymbol,
     };

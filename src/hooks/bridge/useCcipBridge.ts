@@ -9,6 +9,8 @@ import {
   CCIP_SBY,
   ccipBridgeAddress,
   CCIP_ASTR,
+  ccipNetworkParam,
+  CcipNetworkParam,
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
@@ -21,9 +23,12 @@ import { ICcipBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers, constants as ethersConstants } from 'ethers';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { useRoute, useRouter } from 'vue-router';
 
 export const useCcipBridge = () => {
   const { isShibuya, nativeTokenSymbol } = useNetworkInfo();
+  const router = useRouter();
+  const route = useRoute();
 
   const selectedToken = ref<CCIP_TOKEN>(isShibuya.value ? CCIP_SBY : CCIP_ASTR);
   const bridgeAmt = ref<string | null>(null);
@@ -33,13 +38,14 @@ export const useCcipBridge = () => {
   const isLoadingGasPayable = ref<boolean>(true);
   const isFetchingFee = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<CcipNetworkName>(
-    isShibuya.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm
+
+  const fromChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.from as CcipNetworkParam]
   );
-  const toChainName = ref<CcipNetworkName>(
-    // isShibuya.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium
-    isShibuya.value ? CcipNetworkName.Sepolia : CcipNetworkName.Soneium
+  const toChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.to as CcipNetworkParam]
   );
+
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
@@ -131,7 +137,6 @@ export const useCcipBridge = () => {
     try {
       showLoading(store.dispatch, true);
 
-      console.log('toChainId.value', toChainId.value);
       const [fromChainBalance, toChainBalance] = await Promise.all([
         getTokenBal({
           address: currentAccount.value,
@@ -146,7 +151,6 @@ export const useCcipBridge = () => {
           tokenSymbol: selectedToken.value.symbol,
         }),
       ]);
-      console.log('toChainBalance', toChainBalance);
 
       fromBridgeBalance.value = Number(fromChainBalance);
       toBridgeBalance.value = Number(toChainBalance);
@@ -186,13 +190,17 @@ export const useCcipBridge = () => {
     }
   };
 
-  const reverseChain = async (
-    fromChain: CcipNetworkName,
-    toChain: CcipNetworkName
-  ): Promise<void> => {
-    fromChainName.value = toChain;
-    toChainName.value = fromChain;
+  const reverseChain = async (): Promise<void> => {
     resetStates();
+    const from = route.query.to;
+    const to = route.query.from;
+    router.replace({
+      query: {
+        ...route.query,
+        from,
+        to,
+      },
+    });
   };
 
   const setProviderChainId: WatchCallback<[number, EthereumProvider | undefined]> = async (

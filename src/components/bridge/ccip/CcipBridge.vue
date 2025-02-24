@@ -24,10 +24,7 @@
         </div>
       </div>
       <div v-if="isEnabledWithdrawal" class="row--reverse">
-        <button
-          class="icon--reverse cursor-pointer"
-          @click="() => reverseChain(fromChainName, toChainName)"
-        >
+        <button class="icon--reverse cursor-pointer" @click="() => reverseChain()">
           <astar-icon-sync size="20" />
         </button>
       </div>

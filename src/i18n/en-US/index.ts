@@ -494,6 +494,7 @@ export default {
     faucet: 'Faucet',
     bridge: 'Bridge',
     bridgeToSoneium: 'Bridge to Soneium',
+    bridgeToEthereum: 'Bridge to Ethereum',
     bridgeToZkEvm: 'Bridge to zkEVM',
     swap: 'Swap',
     manage: 'Manage',

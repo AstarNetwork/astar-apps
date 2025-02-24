@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="row__actions">
+      <div class="row__actions-evm">
         <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
           <button class="btn btn--icon">
             <astar-icon-transfer />
@@ -46,7 +46,7 @@
         <div class="box--ccip">
           <custom-router-link
             v-if="isShibuyaEvm || isAstarEvm"
-            :to="buildCcipBridgePageLink()"
+            :to="ccipSoneiumLink"
             :is-disabled="!isEnableCcipBridge"
           >
             <button
@@ -86,6 +86,54 @@
             :text="$t('assets.bridgeToSoneium')"
             :title="$t('new')"
           />
+        </div>
+
+        <div class="box--ccip">
+          <custom-router-link
+            v-if="isShibuyaEvm"
+            :to="ccipEthereumLink"
+            :is-disabled="!isEnableCcipBridge"
+          >
+            <button
+              v-if="width >= screenSize.sm"
+              class="btn btn--icon"
+              @mouseover="isSoneiumButtonHover = true"
+              @mouseleave="isSoneiumButtonHover = false"
+            >
+              <!-- Todo: update -->
+              <img
+                class="img--logo-soneium"
+                :src="
+                  isSoneiumButtonHover
+                    ? require('src/assets/img/ethereum.png')
+                    : require('src/assets/img/ethereum.png')
+                "
+                alt="soneium"
+              />
+            </button>
+            <!-- Todo: update -->
+            <button v-else class="btn btn--icon">
+              <img
+                class="img--logo-soneium"
+                :src="require('src/assets/img/ethereum.png')"
+                alt="ethereum"
+              />
+            </button>
+            <span class="text--mobile-menu">{{ $t('assets.bridgeToEthereum') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.bridgeToEthereum') }}</span>
+            </q-tooltip>
+          </custom-router-link>
+          <!-- Todo: Update -->
+          <!-- <balloon
+            class="balloon--ccip"
+            direction="top"
+            :is-balloon="isCcipBalloon"
+            :is-balloon-closing="isBalloonClosing"
+            :handle-close-balloon="closeCcipBalloon"
+            :text="$t('assets.bridgeToSoneium')"
+            :title="$t('new')"
+          /> -->
         </div>
 
         <custom-router-link
@@ -179,6 +227,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 import CustomRouterLink from '../common/CustomRouterLink.vue';
+import { CcipNetworkParam } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -239,6 +288,22 @@ export default defineComponent({
         console.error(error.message);
       }
     };
+
+    const ccipSoneiumLink = computed<string>(() => {
+      return buildCcipBridgePageLink(
+        isShibuyaEvm.value
+          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.SoneiumMinato }
+          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Soneium }
+      );
+    });
+
+    const ccipEthereumLink = computed<string>(() => {
+      return buildCcipBridgePageLink(
+        isShibuyaEvm.value
+          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.Sepolia }
+          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Ethereum }
+      );
+    });
 
     watchEffect(async () => {
       await updateStates(props.nativeTokenUsd);
@@ -307,8 +372,9 @@ export default defineComponent({
       isBalloonClosing,
       isAstarEvm,
       isSoneiumButtonHover,
+      ccipSoneiumLink,
+      ccipEthereumLink,
       closeCcipBalloon,
-      buildCcipBridgePageLink,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,
