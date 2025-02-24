@@ -1,7 +1,10 @@
 <template>
   <div class="wrapper--ccip-bridge">
     <div class="rows">
-      <div class="box--input-field">
+      <div
+        class="box--input-field cursor-pointer box--hover--active"
+        @click="setRightUi('select-chain', 'from')"
+      >
         <div class="box__space-between">
           <span> {{ $t('from') }}</span>
           <div>
@@ -38,7 +41,10 @@
           </span>
         </q-tooltip>
       </div>
-      <div class="box--input-field row--reverse-bottom">
+      <div
+        class="box--input-field row--reverse-bottom cursor-pointer box--hover--active"
+        @click="setRightUi('select-chain', 'to')"
+      >
         <div class="box__space-between">
           <span> {{ $t('to') }}</span>
           <div>
@@ -178,6 +184,10 @@ export default defineComponent({
     [Jazzicon.name]: Jazzicon,
   },
   props: {
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
     selectedToken: {
       type: Object as PropType<CCIP_TOKEN>,
       required: true,

@@ -38,14 +38,6 @@ export const useCcipBridge = () => {
   const isLoadingGasPayable = ref<boolean>(true);
   const isFetchingFee = ref<boolean>(true);
   const errMsg = ref<string>('');
-
-  const fromChainName = computed<CcipNetworkName>(
-    () => ccipNetworkParam[route.query.from as CcipNetworkParam]
-  );
-  const toChainName = computed<CcipNetworkName>(
-    () => ccipNetworkParam[route.query.to as CcipNetworkParam]
-  );
-
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
@@ -64,6 +56,19 @@ export const useCcipBridge = () => {
     isApproving.value = false;
     isApproved.value = false;
   };
+
+  const fromChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.from as CcipNetworkParam]
+  );
+  const toChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.to as CcipNetworkParam]
+  );
+
+  const chains = computed<CcipNetworkName[]>(() =>
+    isShibuya.value
+      ? [CcipNetworkName.ShibuyaEvm, CcipNetworkName.SoneiumMinato, CcipNetworkName.Sepolia]
+      : [CcipNetworkName.AstarEvm, CcipNetworkName.Soneium, CcipNetworkName.Ethereum]
+  );
 
   const store = useStore();
   const { t } = useI18n();
@@ -336,6 +341,23 @@ export const useCcipBridge = () => {
     immediate: true,
   });
 
+  const redirectToDefaultCcip = (): void => {
+    const isMatchQuery =
+      chains.value.includes(ccipNetworkParam[route.query.from as CcipNetworkParam]) &&
+      chains.value.includes(ccipNetworkParam[route.query.to as CcipNetworkParam]);
+
+    if (!isMatchQuery) {
+      const defaultFrom = isShibuya.value ? CcipNetworkParam.ShibuyaEvm : CcipNetworkParam.AstarEvm;
+      const defaultTo = isShibuya.value ? CcipNetworkParam.SoneiumMinato : CcipNetworkParam.Soneium;
+      router.replace({
+        query: {
+          from: defaultFrom,
+          to: defaultTo,
+        },
+      });
+    }
+  };
+
   const debounceDelay = 500;
   const debounceFetchFee = 1000;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
@@ -364,6 +386,10 @@ export const useCcipBridge = () => {
 
   watch([selectedToken, fromChainId], resetStates, {
     immediate: false,
+  });
+
+  watch([route], redirectToDefaultCcip, {
+    immediate: true,
   });
 
   const autoFetchAllowanceHandler = setInterval(
@@ -397,6 +423,9 @@ export const useCcipBridge = () => {
     bridgeFee,
     isWithdrawFromAstar,
     isGasPayable,
+    router,
+    route,
+    chains,
     setIsApproving,
     inputHandler,
     resetStates,
