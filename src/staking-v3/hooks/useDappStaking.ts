@@ -460,7 +460,6 @@ export function useDappStaking() {
     let stakeSum = BigInt(0);
 
     for (const stake of stakes) {
-      // const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
       stakeSum += stake.amount;
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
@@ -469,10 +468,18 @@ export function useDappStaking() {
       } else if (stake.amount <= 0) {
         return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (
-        constants.value?.minStakeAmountToken &&
-        stake.amount < constants.value.minStakeAmountToken &&
+        constants.value?.minStakeAmount &&
+        stake.amount < constants.value.minStakeAmount &&
         getStakerInfo(stake.address) === undefined
       ) {
+        return [
+          false,
+          t('stakingV3.dappStaking.LockedAmountBelowThreshold', {
+            amount: constants.value.minStakeAmountToken,
+          }),
+          '',
+        ];
+      } else if (constants.value?.minStakeAmount && stake.amount < constants.value.minStakeAmount) {
         return [
           false,
           t('stakingV3.dappStaking.LockedAmountBelowThreshold', {
