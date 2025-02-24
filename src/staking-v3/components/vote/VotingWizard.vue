@@ -172,7 +172,6 @@ export default defineComponent({
     );
 
     const looseBonusWarningMessage = computed<string>(() =>{
-      console.log('allowedNumberOfMoves.value', isLoosingBonus.value, allowedNumberOfMoves.value);
       if (isLoosingBonus.value && allowedNumberOfMoves.value > 0) {
         return t('stakingV3.looseBonusWarning', { number: allowedNumberOfMoves.value });
       }
