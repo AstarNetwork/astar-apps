@@ -23,6 +23,7 @@
           :is-approve-max-amount="isApproveMaxAmount"
           :bridge-fee="bridgeFee"
           :is-gas-payable="Boolean(isGasPayable)"
+          :load-is-approved="loadIsApproved"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
         <information
@@ -94,6 +95,7 @@ export default defineComponent({
       router,
       route,
       chains,
+      loadIsApproved,
       inputHandler,
       reverseChain,
       handleBridge,
@@ -186,6 +188,7 @@ export default defineComponent({
       isSelectFromChain,
       isHighlightRightUi,
       isModalSelectChain,
+      loadIsApproved,
       setRightUi,
       getSelectableChains,
       cancelHighlight,

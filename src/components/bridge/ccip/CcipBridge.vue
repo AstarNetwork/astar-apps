@@ -170,7 +170,7 @@ import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { ccipMinatoBridgeEnabled, ccipSoneiumBridgeEnabled } from 'src/features';
+import { checkIsCcipBridgeEnabled } from 'src/features';
 import {
   ccipBridgeIcon,
   CCIP_TOKEN,
@@ -198,6 +198,10 @@ export default defineComponent({
     },
     errMsg: {
       type: String,
+      required: true,
+    },
+    loadIsApproved: {
+      type: Boolean,
       required: true,
     },
     isApproved: {
@@ -269,10 +273,18 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
 
+    const ccipBridgeEnabled = computed<boolean>(() => {
+      return checkIsCcipBridgeEnabled({
+        from: props.fromChainName as CcipNetworkName,
+        to: props.toChainName as CcipNetworkName,
+      });
+    });
+
     const isApproveButtonDisabled = computed<boolean>(() =>
       Boolean(
         props.isApproved ||
           props.isDisabledBridge ||
+          props.loadIsApproved ||
           isHandling.value ||
           isLoading.value ||
           !ccipBridgeEnabled.value
@@ -325,14 +337,6 @@ export default defineComponent({
       }
       isHandling.value = false;
     };
-
-    const ccipBridgeEnabled = computed<boolean>(() => {
-      return isShibuyaEvm.value
-        ? ccipMinatoBridgeEnabled
-        : isAstarEvm.value
-        ? ccipSoneiumBridgeEnabled
-        : false;
-    });
 
     const bridgeTime = computed<number>(
       () =>

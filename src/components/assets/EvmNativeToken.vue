@@ -47,7 +47,7 @@
           <custom-router-link
             v-if="isShibuyaEvm || isAstarEvm"
             :to="ccipSoneiumLink"
-            :is-disabled="!isEnableCcipBridge"
+            :is-disabled="!isEnableSoneiumCcipBridge"
           >
             <button
               v-if="width >= screenSize.sm"
@@ -92,7 +92,7 @@
           <custom-router-link
             v-if="isShibuyaEvm"
             :to="ccipEthereumLink"
-            :is-disabled="!isEnableCcipBridge"
+            :is-disabled="!isEnableEthereumCcipBridge"
           >
             <button
               v-if="width >= screenSize.sm"
@@ -209,10 +209,9 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import Balloon from 'src/components/common/Balloon.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
-  ccipMinatoBridgeEnabled,
   layerZeroBridgeEnabled,
   nativeBridgeEnabled,
-  ccipSoneiumBridgeEnabled,
+  checkIsCcipBridgeEnabled,
 } from 'src/features';
 import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks';
 import { faucetSethLink } from 'src/links';
@@ -227,7 +226,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 import CustomRouterLink from '../common/CustomRouterLink.vue';
-import { CcipNetworkParam } from 'src/modules/ccip-bridge';
+import { CcipNetworkName, CcipNetworkParam } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -318,11 +317,16 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
-    const isEnableCcipBridge = computed<boolean>(() => {
-      return (
-        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
-        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
-      );
+    const isEnableSoneiumCcipBridge = computed<boolean>(() => {
+      const from = isShibuyaEvm.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm;
+      const to = isShibuyaEvm.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium;
+      return checkIsCcipBridgeEnabled({ from, to });
+    });
+
+    const isEnableEthereumCcipBridge = computed<boolean>(() => {
+      const from = isShibuyaEvm.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm;
+      const to = isShibuyaEvm.value ? CcipNetworkName.Sepolia : CcipNetworkName.Ethereum;
+      return checkIsCcipBridgeEnabled({ from, to });
     });
 
     // Memo: display the balloon animation
@@ -368,7 +372,8 @@ export default defineComponent({
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
       isShibuyaEvm,
-      isEnableCcipBridge,
+      isEnableSoneiumCcipBridge,
+      isEnableEthereumCcipBridge,
       isCcipBalloon,
       isBalloonClosing,
       isAstarEvm,
@@ -382,6 +387,7 @@ export default defineComponent({
       buildTransferPageLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
+      checkIsCcipBridgeEnabled,
     };
   },
 });

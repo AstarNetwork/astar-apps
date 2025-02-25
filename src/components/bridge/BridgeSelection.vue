@@ -268,8 +268,12 @@ import {
   layerSwapBridgeEnabled,
   layerZeroBridgeEnabled,
   ccipSoneiumBridgeEnabled,
+  ccipSepoliaBridgeEnabled,
+  ccipEthereumBridgeEnabled,
   nativeBridgeEnabled,
   stargateBridgeEnabled,
+  ccipShibuyaBridgeEnabled,
+  ccipAstarBridgeEnabled,
 } from 'src/features';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
@@ -337,10 +341,9 @@ export default defineComponent({
     });
 
     const isEnableCcipBridge = computed<boolean>(() => {
-      return (
-        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
-        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
-      );
+      return isShibuyaEvm.value
+        ? ccipMinatoBridgeEnabled && ccipSepoliaBridgeEnabled && ccipShibuyaBridgeEnabled
+        : ccipSoneiumBridgeEnabled && ccipEthereumBridgeEnabled && ccipAstarBridgeEnabled;
     });
 
     return {

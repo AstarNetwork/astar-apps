@@ -40,6 +40,7 @@ export const useCcipBridge = () => {
   const errMsg = ref<string>('');
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
+  const loadIsApproved = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
   const providerChainId = ref<number>(0);
   const transactionFee = ref<number>(0);
@@ -55,6 +56,7 @@ export const useCcipBridge = () => {
     isApproveMaxAmount.value = false;
     isApproving.value = false;
     isApproved.value = false;
+    loadIsApproved.value = false;
   };
 
   const fromChainName = computed<CcipNetworkName>(
@@ -97,6 +99,7 @@ export const useCcipBridge = () => {
   };
 
   const setIsApproved = async (): Promise<void> => {
+    loadIsApproved.value = true;
     const senderAddress = currentAccount.value;
     const fromChainIdRef = fromChainId.value;
     const contractAddress = ccipBridgeAddress[fromChainIdRef];
@@ -108,6 +111,7 @@ export const useCcipBridge = () => {
 
     if (!isApprovalRequired) {
       isApproved.value = true;
+      loadIsApproved.value = false;
       return;
     }
     if (!amount) return;
@@ -124,6 +128,8 @@ export const useCcipBridge = () => {
     } catch (error) {
       console.error(error);
       isApproved.value = false;
+    } finally {
+      loadIsApproved.value = false;
     }
   };
 
@@ -328,13 +334,6 @@ export const useCcipBridge = () => {
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
-  watch(
-    [providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable, isApproved],
-    setErrorMsg,
-    {
-      immediate: false,
-    }
-  );
 
   watch([fromChainName, selectedToken, currentAccount, toChainName], setBridgeBalance, {
     immediate: true,
@@ -362,6 +361,7 @@ export const useCcipBridge = () => {
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
   const debouncedSetIsFetchFee = debounce(getBridgeFee, debounceFetchFee);
   const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceFetchFee);
+  const debouncedSetErrorMsg = debounce(setErrorMsg, debounceDelay);
 
   watch(
     [selectedToken, fromChainId, currentAccount, bridgeAmt, toChainId],
@@ -398,6 +398,14 @@ export const useCcipBridge = () => {
       toChainName,
     ],
     debouncedSetIsGasPayable,
+    {
+      immediate: false,
+    }
+  );
+
+  watch(
+    [providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable, isApproved],
+    debouncedSetErrorMsg,
     {
       immediate: false,
     }
@@ -445,6 +453,7 @@ export const useCcipBridge = () => {
     router,
     route,
     chains,
+    loadIsApproved,
     setIsApproving,
     inputHandler,
     resetStates,
