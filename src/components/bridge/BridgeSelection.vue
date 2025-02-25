@@ -25,29 +25,17 @@
                 <div class="text--bridge-tag">
                   <q-chip outline>
                     {{
-                      $t(
-                        isShibuyaEvm
-                          ? 'bridge.ccipMinatoBridge.tag'
-                          : 'bridge.ccipSoneiumBridge.tag'
-                      )
+                      $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.tag' : 'bridge.ccipAstrBridge.tag')
                     }}
                   </q-chip>
                 </div>
                 <span class="text--bridge-title">{{
-                  $t(
-                    isShibuyaEvm
-                      ? 'bridge.ccipMinatoBridge.title'
-                      : 'bridge.ccipSoneiumBridge.title'
-                  )
+                  $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.title' : 'bridge.ccipAstrBridge.title')
                 }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
                     {{
-                      $t(
-                        isShibuyaEvm
-                          ? 'bridge.ccipMinatoBridge.text'
-                          : 'bridge.ccipSoneiumBridge.text'
-                      )
+                      $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.text' : 'bridge.ccipAstrBridge.text')
                     }}
                   </span>
                 </div>

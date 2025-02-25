@@ -82,12 +82,8 @@ export const useCcipBridge = () => {
 
   const toChainId = computed<CcipChainId>(() => ccipChainId[toChainName.value as CcipNetworkName]);
 
-  const isWithdrawFromAstar = computed<boolean>(() =>
-    Boolean(
-      toChainId.value === CcipChainId.SoneiumMinato ||
-        toChainId.value === CcipChainId.Soneium ||
-        toChainId.value === CcipChainId.Sepolia
-    )
+  const isNativeToken = computed<boolean>(
+    () => selectedToken.value.tokenAddress[fromChainId.value] === astarNativeTokenErcAddr
   );
 
   const isDisabledBridge = computed<boolean>(() => {
@@ -106,7 +102,7 @@ export const useCcipBridge = () => {
     const contractAddress = ccipBridgeAddress[fromChainIdRef];
     const tokenAddress = selectedToken.value.tokenAddress[fromChainId.value] as string;
     const decimals = selectedToken.value.decimals;
-    const amount = bridgeAmt.value ?? '0';
+    const amount = Number(bridgeAmt.value ?? '0');
 
     const isApprovalRequired = tokenAddress !== astarNativeTokenErcAddr;
 
@@ -124,7 +120,7 @@ export const useCcipBridge = () => {
       });
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
       console.info('allowance: ', formattedAllowance);
-      isApproved.value = Number(formattedAllowance) >= Number(amount);
+      isApproved.value = Number(formattedAllowance) >= amount;
     } catch (error) {
       console.error(error);
       isApproved.value = false;
@@ -242,7 +238,7 @@ export const useCcipBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    if (!bridgeAmt.value || isWithdrawFromAstar.value) return '';
+    if (!bridgeAmt.value || isNativeToken.value) return '';
     const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
     const amount = isApproveMaxAmount.value
       ? ethersConstants.MaxUint256
@@ -305,8 +301,7 @@ export const useCcipBridge = () => {
 
   const setIsGasPayable = async (): Promise<void> => {
     try {
-      if (!currentAccount.value || (!isWithdrawFromAstar.value && !isApproved.value)) return;
-
+      if (!currentAccount.value || (!isNativeToken.value && !isApproved.value)) return;
       isLoadingGasPayable.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
       const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
@@ -333,11 +328,15 @@ export const useCcipBridge = () => {
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
-  watch([providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable], setErrorMsg, {
-    immediate: false,
-  });
+  watch(
+    [providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable, isApproved],
+    setErrorMsg,
+    {
+      immediate: false,
+    }
+  );
 
-  watch([fromChainName, selectedToken, currentAccount], setBridgeBalance, {
+  watch([fromChainName, selectedToken, currentAccount, toChainName], setBridgeBalance, {
     immediate: true,
   });
 
@@ -364,12 +363,24 @@ export const useCcipBridge = () => {
   const debouncedSetIsFetchFee = debounce(getBridgeFee, debounceFetchFee);
   const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceFetchFee);
 
-  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
-    immediate: true,
-  });
+  watch(
+    [selectedToken, fromChainId, currentAccount, bridgeAmt, toChainId],
+    debouncedSetIsApproved,
+    {
+      immediate: true,
+    }
+  );
 
   watch(
-    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    [
+      bridgeAmt,
+      fromChainName,
+      currentAccount,
+      errMsg,
+      providerChainId,
+      currentAccount,
+      toChainName,
+    ],
     debouncedSetIsFetchFee,
     {
       immediate: false,
@@ -377,14 +388,22 @@ export const useCcipBridge = () => {
   );
 
   watch(
-    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    [
+      bridgeAmt,
+      fromChainName,
+      currentAccount,
+      errMsg,
+      providerChainId,
+      currentAccount,
+      toChainName,
+    ],
     debouncedSetIsGasPayable,
     {
       immediate: false,
     }
   );
 
-  watch([selectedToken, fromChainId], resetStates, {
+  watch([selectedToken, fromChainId, toChainId], resetStates, {
     immediate: false,
   });
 
@@ -421,7 +440,7 @@ export const useCcipBridge = () => {
     isApproveMaxAmount,
     transactionFee,
     bridgeFee,
-    isWithdrawFromAstar,
+    isNativeToken,
     isGasPayable,
     router,
     route,

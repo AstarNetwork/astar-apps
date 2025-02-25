@@ -97,15 +97,15 @@
             <button
               v-if="width >= screenSize.sm"
               class="btn btn--icon"
-              @mouseover="isSoneiumButtonHover = true"
-              @mouseleave="isSoneiumButtonHover = false"
+              @mouseover="isEthereumButtonHover = true"
+              @mouseleave="isEthereumButtonHover = false"
             >
               <!-- Todo: update -->
               <img
                 class="img--logo-soneium"
                 :src="
-                  isSoneiumButtonHover
-                    ? require('src/assets/img/ethereum.png')
+                  isEthereumButtonHover
+                    ? require('src/assets/img/chain/ethereum-white.webp')
                     : require('src/assets/img/ethereum.png')
                 "
                 alt="soneium"
@@ -115,7 +115,7 @@
             <button v-else class="btn btn--icon">
               <img
                 class="img--logo-soneium"
-                :src="require('src/assets/img/ethereum.png')"
+                :src="require('src/assets/img/chain/ethereum-white.webp')"
                 alt="ethereum"
               />
             </button>
@@ -249,6 +249,7 @@ export default defineComponent({
     const isCcipBalloon = ref<boolean>(false);
     const isBalloonClosing = ref<boolean>(false);
     const isSoneiumButtonHover = ref<boolean>(false);
+    const isEthereumButtonHover = ref<boolean>(false);
 
     const { currentNetworkName, nativeTokenSymbol, isZkEvm, isAstar, isShibuyaEvm, isAstarEvm } =
       useNetworkInfo();
@@ -372,6 +373,7 @@ export default defineComponent({
       isBalloonClosing,
       isAstarEvm,
       isSoneiumButtonHover,
+      isEthereumButtonHover,
       ccipSoneiumLink,
       ccipEthereumLink,
       closeCcipBalloon,

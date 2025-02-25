@@ -42,21 +42,17 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     destinationChainSelector: string;
     message: (string | (string | ethers.BigNumber)[][])[];
   } {
-    const { destNetworkId, senderAddress, amount, tokenAddress } = param;
+    const { destNetworkId, senderAddress, amount, tokenAddress, fromNetworkId } = param;
     const defaultAbiCoder = ethers.utils.defaultAbiCoder;
 
     const destinationChainSelector = ccipChainSelector[destNetworkId];
-    const isWithdrawFromAstar = Boolean(
-      destNetworkId === CcipChainId.SoneiumMinato ||
-        destNetworkId === CcipChainId.Soneium ||
-        destNetworkId === CcipChainId.Sepolia
+    const isSendToAstar = Boolean(
+      destNetworkId === CcipChainId.AstarEvm || destNetworkId === CcipChainId.ShibuyaEvm
     );
 
-    const receiverAddress = isWithdrawFromAstar ? senderAddress : ccipBridgeAddress[destNetworkId];
+    const receiverAddress = isSendToAstar ? ccipBridgeAddress[destNetworkId] : senderAddress;
     const receiver = defaultAbiCoder.encode(['address'], [receiverAddress]);
-
-    const data = isWithdrawFromAstar ? '0x' : defaultAbiCoder.encode(['address'], [senderAddress]);
-
+    const data = isSendToAstar ? defaultAbiCoder.encode(['address'], [senderAddress]) : '0x';
     const amt = ethers.utils.parseEther(String(amount)).toString();
     const tokenAmounts = [[tokenAddress, amt]];
     const feeToken = astarNativeTokenErcAddr;
@@ -101,10 +97,8 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     param: ParamBridgeCcipAsset;
     web3: Web3;
   }): Promise<{ txParam: TransactionConfig; nativeFee: number }> {
-    const isWithdrawFromAstar = Boolean(
-      param.destNetworkId === CcipChainId.SoneiumMinato ||
-        param.destNetworkId === CcipChainId.Soneium ||
-        param.destNetworkId === CcipChainId.Sepolia
+    const isNativeToken = Boolean(
+      param.fromNetworkId === CcipChainId.AstarEvm || param.fromNetworkId === CcipChainId.ShibuyaEvm
     );
     const { message, destinationChainSelector } = this.getMessageArgs(param);
     const contractAddress = ccipBridgeAddress[param.fromNetworkId];
@@ -119,10 +113,8 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const data = contract.methods.ccipSend(destinationChainSelector, message).encodeABI();
 
     const fee = await this.getFee({ param, web3 });
-    const gasTokenBridge = ethers.utils.parseEther(
-      isWithdrawFromAstar ? String(param.amount) : '0'
-    );
-    const value = (BigInt(gasTokenBridge.toString()) + BigInt(fee)).toString();
+    const nativeBridgeAmount = ethers.utils.parseEther(isNativeToken ? String(param.amount) : '0');
+    const value = (BigInt(nativeBridgeAmount.toString()) + BigInt(fee)).toString();
 
     return {
       txParam: {

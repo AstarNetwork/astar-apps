@@ -133,7 +133,7 @@
             }}
           </li>
           <li>
-            {{ $t('bridge.warningCcipTime', { time: ccipBridgeTime[fromChainName as CcipNetworkName] }) }}
+            {{ $t('bridge.warningCcipTime', { time: bridgeTime }) }}
           </li>
         </ul>
       </div>
@@ -334,6 +334,11 @@ export default defineComponent({
         : false;
     });
 
+    const bridgeTime = computed<number>(
+      () =>
+        ccipBridgeTime[props.fromChainName as CcipNetworkName][props.toChainName as CcipNetworkName]
+    );
+
     watch(
       [props],
       () => {
@@ -355,7 +360,7 @@ export default defineComponent({
       isEnabledWithdrawal,
       nativeToken,
       ccipBridgeEnabled,
-      ccipBridgeTime,
+      bridgeTime,
       isApproveButtonDisabled,
       isBridgeButtonDisabled,
       isH160,

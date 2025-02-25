@@ -114,11 +114,39 @@ export const CCIP_ASTR: CCIP_TOKEN = {
   image: require('/src/assets/img/token/astr.png'),
 };
 
-export const ccipBridgeTime = {
-  [CcipNetworkName.ShibuyaEvm]: 3,
-  [CcipNetworkName.AstarEvm]: 3,
-  [CcipNetworkName.SoneiumMinato]: 30,
-  [CcipNetworkName.Soneium]: 120,
-  [CcipNetworkName.Sepolia]: 15, // Need to create a function
-  [CcipNetworkName.Ethereum]: 15, // Need to create a function
+interface BridgeTimeMap {
+  [key: string]: {
+    [key: string]: number;
+  };
+}
+
+// Memo: time for from -> destination chain
+export const ccipBridgeTime: BridgeTimeMap = {
+  [CcipNetworkName.ShibuyaEvm]: {
+    [CcipNetworkName.SoneiumMinato]: 3,
+    [CcipNetworkName.Sepolia]: 20,
+  },
+  [CcipNetworkName.AstarEvm]: {
+    [CcipNetworkName.Soneium]: 3,
+    //Todo: Update
+    [CcipNetworkName.Ethereum]: 20,
+  },
+  [CcipNetworkName.SoneiumMinato]: {
+    [CcipNetworkName.ShibuyaEvm]: 30,
+    [CcipNetworkName.Sepolia]: 30,
+  },
+  [CcipNetworkName.Soneium]: {
+    [CcipNetworkName.AstarEvm]: 120,
+    //Todo: Update
+    [CcipNetworkName.Ethereum]: 120,
+  },
+  [CcipNetworkName.Sepolia]: {
+    [CcipNetworkName.ShibuyaEvm]: 15,
+    [CcipNetworkName.SoneiumMinato]: 15,
+  },
+  // Todo: update
+  [CcipNetworkName.Ethereum]: {
+    [CcipNetworkName.AstarEvm]: 20,
+    [CcipNetworkName.Soneium]: 20,
+  },
 };

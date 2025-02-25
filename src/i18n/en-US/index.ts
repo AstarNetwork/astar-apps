@@ -1088,16 +1088,16 @@ export default {
       tag: 'ERC20',
       text: 'Transfer assets between Sepolia and zKatana testnet.',
     },
-    ccipMinatoBridge: {
-      title: 'Soneium Bridge',
+    ccipSbyBridge: {
+      title: 'SBY Bridge',
       tag: 'SBY',
-      text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
+      text: 'Transfer SBY between Shibuya EVM, Soneium Minato and Sepolia. Powered by CCIP.',
       remark: 'Available on Shibuya EVM. Switch the network to use it.',
     },
-    ccipSoneiumBridge: {
-      title: 'Soneium Bridge',
+    ccipAstrBridge: {
+      title: 'ASTR Bridge',
       tag: 'ASTR',
-      text: 'Transfer ASTR between Soneium and Astar EVM. Powered by CCIP.',
+      text: 'Transfer ASTR between Astar EVM, Soneium and Ethereum. Powered by CCIP.',
       remark: 'Available on Astar EVM. Switch the network to use it.',
     },
     astarBridge: {
