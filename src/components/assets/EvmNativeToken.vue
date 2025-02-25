@@ -77,15 +77,6 @@
               <span class="text--tooltip">{{ $t('assets.bridgeToSoneium') }}</span>
             </q-tooltip>
           </custom-router-link>
-          <balloon
-            class="balloon--ccip"
-            direction="top"
-            :is-balloon="isCcipBalloon"
-            :is-balloon-closing="isBalloonClosing"
-            :handle-close-balloon="closeCcipBalloon"
-            :text="$t('assets.bridgeToSoneium')"
-            :title="$t('new')"
-          />
         </div>
 
         <div class="box--ccip">
@@ -124,16 +115,15 @@
               <span class="text--tooltip">{{ $t('assets.bridgeToEthereum') }}</span>
             </q-tooltip>
           </custom-router-link>
-          <!-- Todo: Update -->
-          <!-- <balloon
+          <balloon
             class="balloon--ccip"
             direction="top"
-            :is-balloon="isCcipBalloon"
+            :is-balloon="isCcipEthereumBalloon"
             :is-balloon-closing="isBalloonClosing"
-            :handle-close-balloon="closeCcipBalloon"
-            :text="$t('assets.bridgeToSoneium')"
+            :handle-close-balloon="closeCcipEthereumBalloon"
+            :text="$t('assets.bridgeToEthereum')"
             :title="$t('new')"
-          /> -->
+          />
         </div>
 
         <custom-router-link
@@ -245,7 +235,8 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const isCcipBalloon = ref<boolean>(false);
+    const isCcipSoneiumBalloon = ref<boolean>(false);
+    const isCcipEthereumBalloon = ref<boolean>(false);
     const isBalloonClosing = ref<boolean>(false);
     const isSoneiumButtonHover = ref<boolean>(false);
     const isEthereumButtonHover = ref<boolean>(false);
@@ -253,8 +244,12 @@ export default defineComponent({
     const { currentNetworkName, nativeTokenSymbol, isZkEvm, isAstar, isShibuyaEvm, isAstarEvm } =
       useNetworkInfo();
 
-    const closeCcipBalloon = () => {
-      isCcipBalloon.value = false;
+    const closeCcipSoneiumBalloon = () => {
+      isCcipSoneiumBalloon.value = false;
+    };
+
+    const closeCcipEthereumBalloon = () => {
+      isCcipEthereumBalloon.value = false;
     };
 
     const { currentAccount } = useAccount();
@@ -333,23 +328,25 @@ export default defineComponent({
     watch(
       [isShibuyaEvm, isAstarEvm],
       async () => {
-        const isBallonShibuyaDisplayed = Boolean(
-          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA)
+        const isBallonSepoliaCcipDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SEPOLIA)
         );
-        const isBallonAstarDisplayed = Boolean(
-          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR)
+        const isBallonEthreumCcipDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM)
         );
-        if (isShibuyaEvm.value && !isBallonShibuyaDisplayed) {
+
+        if (isShibuyaEvm.value && !isBallonSepoliaCcipDisplayed) {
           await wait(1000);
-          isCcipBalloon.value = true;
-          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA, 'true');
+          isCcipEthereumBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SEPOLIA, 'true');
         }
 
-        if (isAstarEvm.value && !isBallonAstarDisplayed) {
-          await wait(1000);
-          isCcipBalloon.value = true;
-          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR, 'true');
-        }
+        // Todo: uncomment when Ethereum bridge is ready
+        // if (isAstarEvm.value && !isBallonEthreumCcipDisplayed) {
+        //   await wait(1000);
+        //   isCcipEthereumBalloon.value = true;
+        //   localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM, 'true');
+        // }
       },
       { immediate: true }
     );
@@ -374,14 +371,16 @@ export default defineComponent({
       isShibuyaEvm,
       isEnableSoneiumCcipBridge,
       isEnableEthereumCcipBridge,
-      isCcipBalloon,
+      isCcipSoneiumBalloon,
       isBalloonClosing,
       isAstarEvm,
       isSoneiumButtonHover,
       isEthereumButtonHover,
       ccipSoneiumLink,
       ccipEthereumLink,
-      closeCcipBalloon,
+      isCcipEthereumBalloon,
+      closeCcipEthereumBalloon,
+      closeCcipSoneiumBalloon,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,
