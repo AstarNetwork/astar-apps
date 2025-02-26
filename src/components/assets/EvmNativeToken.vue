@@ -60,7 +60,7 @@
                 :src="
                   isSoneiumButtonHover
                     ? require('src/assets/img/chain/soneium-white.svg')
-                    : require('src/assets/img/chain/soneium-color.svg')
+                    : require('src/assets/img/chain/soneium-blue.svg')
                 "
                 alt="soneium"
               />
@@ -97,9 +97,9 @@
                 :src="
                   isEthereumButtonHover
                     ? require('src/assets/img/chain/ethereum-white.svg')
-                    : require('src/assets/img/ethereum.png')
+                    : require('src/assets/img/chain/ethereum-blue.svg')
                 "
-                alt="soneium"
+                alt="ethereum"
               />
             </button>
             <!-- Todo: update -->
