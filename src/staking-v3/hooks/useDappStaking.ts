@@ -453,7 +453,6 @@ export function useDappStaking() {
 
   const canStake = (
     stakes: DappStakeInfo[],
-    availableTokensBalance: bigint,
     useableBalance: bigint
     //Returns: [result, message, docsUrl]
   ): [boolean, string, string] => {
@@ -489,7 +488,7 @@ export function useDappStaking() {
         ];
       } else if (protocolState.value?.maintenance) {
         return [false, t('stakingV3.dappStaking.Disabled'), ''];
-      } else if (stakeSum > availableTokensBalance) {
+      } else if (stakeSum > useableBalance) {
         return [false, t('stakingV3.dappStaking.UnavailableStakeFunds'), ''];
       } else if (
         constants.value &&
