@@ -655,7 +655,9 @@ export class DappStakingRepository implements IDappStakingRepository {
           (unwrappedValue.staked.period.toNumber() === currentPeriod || includePreviousPeriods)
         ) {
           result.set(address, <SingularStakingInfo>{
-            loyalStaker: unwrappedValue.loyalStaker.isTrue,
+            loyalStaker: unwrappedValue.loyalStaker
+              ? unwrappedValue.loyalStaker.isTrue
+              : unwrappedValue.bonusStatus.toNumber() > 0,
             staked: this.mapStakeAmount(unwrappedValue.staked),
           });
         }

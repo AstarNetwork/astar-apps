@@ -86,6 +86,7 @@ export interface PalletDappStakingV3StakeAmount extends Struct {
 export interface PalletDappStakingV3SingularStakingInfo extends Struct {
   readonly staked: PalletDappStakingV3StakeAmount;
   readonly loyalStaker: bool;
+  readonly bonusStatus: u8;
 }
 
 export interface PalletDappStakingV3PeriodEndInfo extends Struct {
