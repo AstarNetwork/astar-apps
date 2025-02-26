@@ -96,7 +96,7 @@
                 class="img--logo-soneium"
                 :src="
                   isEthereumButtonHover
-                    ? require('src/assets/img/chain/ethereum-white.webp')
+                    ? require('src/assets/img/chain/ethereum-white.svg')
                     : require('src/assets/img/ethereum.png')
                 "
                 alt="soneium"
@@ -106,7 +106,7 @@
             <button v-else class="btn btn--icon">
               <img
                 class="img--logo-soneium"
-                :src="require('src/assets/img/chain/ethereum-white.webp')"
+                :src="require('src/assets/img/chain/ethereum-white.svg')"
                 alt="ethereum"
               />
             </button>

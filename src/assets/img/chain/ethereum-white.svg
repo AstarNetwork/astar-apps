@@ -1,0 +1,6 @@
+<svg width="256px" height="417px" viewBox="0 0 256 417" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none">
+    <g id="Ethereum" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polygon id="Upper-Tetrahedron" fill="white" points="127.5 0 0 213.5 127.5 279.5 255 213.5"/>
+        <polygon id="Lower-Tetrahedron" fill="white" points="127.5 298 0 234.5 127.5 417 255 234.5"/>
+    </g>
+</svg>
