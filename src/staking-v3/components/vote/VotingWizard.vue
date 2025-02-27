@@ -40,6 +40,7 @@
       </div>
     </div>
     <wizard-steps
+      v-if="!isMove"
       :steps="wizardSteps"
       :selected-step-index="selectedStepIndex"
       :completed-steps="completedSteps"
