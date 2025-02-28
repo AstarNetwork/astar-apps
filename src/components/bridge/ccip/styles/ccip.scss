@@ -33,3 +33,21 @@
     column-gap: 50px;
   }
 }
+
+.row--banner {
+  margin-top: 16px;
+}
+
+.banner--eth-rebates {
+  width: 348px;
+  border-radius: 6px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+  @media (min-width: $md) {
+    width: 320px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}

@@ -129,6 +129,9 @@
               })
             }}
           </li>
+          <li v-if="toChainName === CcipNetworkName.Soneium">
+            {{ $t('bridge.rebate') }}
+          </li>
           <li>
             {{ $t('bridge.warningCcipTime', { time: ccipBridgeTime[fromChainName as CcipNetworkName] }) }}
           </li>
@@ -356,6 +359,7 @@ export default defineComponent({
       isApproveButtonDisabled,
       isBridgeButtonDisabled,
       isH160,
+      CcipNetworkName,
       truncate,
       bridge,
       approve,
