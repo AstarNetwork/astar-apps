@@ -453,7 +453,8 @@ export function useDappStaking() {
 
   const canStake = (
     stakes: DappStakeInfo[],
-    useableBalance: bigint
+    useableBalance: bigint,
+    isMove = false
     //Returns: [result, message, docsUrl]
   ): [boolean, string, string] => {
     let stakeSum = BigInt(0);
@@ -478,19 +479,12 @@ export function useDappStaking() {
           }),
           '',
         ];
-      } else if (constants.value?.minStakeAmount && stake.amount < constants.value.minStakeAmount) {
-        return [
-          false,
-          t('stakingV3.dappStaking.LockedAmountBelowThreshold', {
-            amount: constants.value.minStakeAmountToken,
-          }),
-          '',
-        ];
       } else if (protocolState.value?.maintenance) {
         return [false, t('stakingV3.dappStaking.Disabled'), ''];
       } else if (stakeSum > useableBalance) {
         return [false, t('stakingV3.dappStaking.UnavailableStakeFunds'), ''];
       } else if (
+        !isMove &&
         constants.value &&
         ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
           useableBalance - stakeSum

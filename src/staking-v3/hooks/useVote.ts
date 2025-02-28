@@ -181,14 +181,15 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   const refUrl = ref<string>('');
 
   const canVote = (): boolean => {
-    const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value);
+    const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value, isMove.value);
     errorMessage.value = message;
     refUrl.value = url;
 
     return enabled && totalStakeAmount.value > 0;
   };
 
-  const canRestake = (): boolean => canStake(restakeInfo.value, availableToVote.value)[0];
+  const canRestake = (): boolean =>
+    canStake(restakeInfo.value, availableToVote.value, isMove.value)[0];
 
   const vote = async (restake: boolean): Promise<void> => {
     // If additional funds locking is required remainLockedToken value will be negative.
