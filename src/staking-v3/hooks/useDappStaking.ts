@@ -454,13 +454,15 @@ export function useDappStaking() {
   const canStake = (
     stakes: DappStakeInfo[],
     useableBalance: bigint,
-    isMove = false
+    moveFromAddress: string
     //Returns: [result, message, docsUrl]
   ): [boolean, string, string] => {
     let stakeSum = BigInt(0);
+    const isMove = moveFromAddress !== '';
 
     for (const stake of stakes) {
       stakeSum += stake.amount;
+
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
       } else if (isZkEvm.value) {
@@ -504,6 +506,20 @@ export function useDappStaking() {
         return [false, t('stakingV3.dappStaking.PeriodEndsNextEra'), ''];
       } else if (getDapp(stake.address)?.chain?.state === 'Unregistered') {
         return [false, t('stakingV3.dappStaking.NotOperatedDApp'), ''];
+      }
+    }
+
+    if (isMove) {
+      const dappInfo = getStakerInfo(moveFromAddress);
+      const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
+      if (constants.value && constants.value.minStakeAmount > stakedAmount - stakeSum) {
+        return [
+          true,
+          t('stakingV3.willMoveAll', {
+            amount: constants.value.minStakeAmountToken,
+          }),
+          '',
+        ];
       }
     }
 

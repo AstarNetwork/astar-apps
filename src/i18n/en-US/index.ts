@@ -960,6 +960,8 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    willMoveAll:
+      'The operation will move all of your staked tokens because the minimum staking amount is {amount} tokens.',
     onboarding: {
       introducing: 'Introducing',
       innovativeWayOfStaking: 'Innovative way of staking',
