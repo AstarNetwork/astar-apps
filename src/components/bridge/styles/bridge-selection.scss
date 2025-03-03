@@ -192,6 +192,18 @@
   }
 }
 
+.box--ethereum-soneium {
+  margin-right: -20px;
+  z-index: 1;
+}
+
+.box-soneium-logo {
+  background-color: white;
+  z-index: 2;
+  border-radius: 36px;
+  padding-left: 3px;
+}
+
 .body--light {
   .button--bridge {
     background-color: white;
@@ -227,5 +239,8 @@
 
   .img--logo-bg {
     background-color: $navy-3;
+  }
+  .box-soneium-logo {
+    background-color: $navy-1;
   }
 }

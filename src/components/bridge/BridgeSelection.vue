@@ -13,12 +13,21 @@
               class="button--bridge"
             >
               <div class="row--logo-bg">
-                <div class="img--logo-bg">
+                <div class="img--logo-bg box--ethereum-soneium">
                   <img
-                    class="img--logo-soneium"
-                    :src="require('src/assets/img/chain/soneium-color.svg')"
-                    alt="soneium"
+                    class="img--logo"
+                    :src="require('src/assets/img/chain/ethereum-gray.svg')"
+                    alt="ethereum"
                   />
+                </div>
+                <div class="box-soneium-logo">
+                  <div class="img--logo-bg">
+                    <img
+                      class="img--logo-soneium"
+                      :src="require('src/assets/img/chain/soneium-color.svg')"
+                      alt="soneium"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="row--bridge-title">
@@ -159,7 +168,7 @@
                 <div class="img--logo-bg">
                   <img
                     class="img--logo"
-                    :src="require('src/assets/img/ethereum.png')"
+                    :src="require('src/assets/img/chain/ethereum-gray.svg')"
                     alt="ethereum"
                   />
                 </div>
