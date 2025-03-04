@@ -2,6 +2,7 @@
   <div class="wrapper--amount">
     <img class="token--logo" alt="token-logo" :src="nativeTokenImg" />
     <input
+      :value="amount"
       inputmode="decimal"
       type="number"
       min="0"

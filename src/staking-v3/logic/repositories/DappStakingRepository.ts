@@ -224,6 +224,23 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
+  public async getMoveStakeCall(
+    fromContractAddress: string,
+    toContractAddress: string,
+    amount: bigint
+  ): Promise<ExtrinsicPayload> {
+    Guard.ThrowIfUndefined(fromContractAddress, 'fromContractAddress');
+    Guard.ThrowIfUndefined(toContractAddress, 'toContractAddress');
+    const api = await this.api.getApi();
+
+    return api.tx.dappStaking.moveStake(
+      getDappAddressEnum(fromContractAddress),
+      getDappAddressEnum(toContractAddress),
+      amount
+    );
+  }
+
+  //* @inheritdoc
   public async getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
@@ -332,20 +349,20 @@ export class DappStakingRepository implements IDappStakingRepository {
         standardEraLength: getNumber(eraLength),
         periodsPerCycle: getNumber(periodsPerCycle),
       };
-    } else {
-      // Can't use api.rpc for past blocks
-      // Using constants should be fine, because era lengths are not expected to change
-      // in near future.
-      const currentApi = await this.api.getApi();
-      const network = currentApi.runtimeChain.toHuman();
-      const eraLen = ERA_LENGTHS.get(network);
-
-      if (eraLen) {
-        return eraLen;
-      } else {
-        throw new Error(`Era lengths are not defined for this network: ${network}`);
-      }
     }
+
+    // Can't use api.rpc for past blocks
+    // Using constants should be fine, because era lengths are not expected to change
+    // in near future.
+    const currentApi = await this.api.getApi();
+    const network = currentApi.runtimeChain.toHuman();
+    const eraLen = ERA_LENGTHS.get(network);
+
+    if (eraLen) {
+      return eraLen;
+    }
+
+    throw new Error(`Era lengths are not defined for this network: ${network}`);
   }
 
   //* @inheritdoc
@@ -363,6 +380,9 @@ export class DappStakingRepository implements IDappStakingRepository {
       maxNumberOfContracts: (<u32>api.consts.dappStaking.maxNumberOfContracts).toNumber(),
       maxUnlockingChunks: (<u32>api.consts.dappStaking.maxUnlockingChunks).toNumber(),
       unlockingPeriod: (<u32>api.consts.dappStaking.unlockingPeriod).toNumber(),
+      maxBonusSafeMovesPerPeriod: (<u32>(
+        api.consts.dappStaking.maxBonusSafeMovesPerPeriod
+      )).toNumber(),
     };
   }
 
@@ -540,13 +560,13 @@ export class DappStakingRepository implements IDappStakingRepository {
           const t = <PalletDappStakingV3TierThreshold>threshold;
           if (t.isDynamicTvlAmount) {
             return t.asDynamicTvlAmount.amount.toBigInt();
-          } else {
-            return t.asFixedTvlAmount.amount.toBigInt();
           }
-        } else {
-          const t = <u128>threshold;
-          return t.toBigInt();
+
+          return t.asFixedTvlAmount.amount.toBigInt();
         }
+
+        const t = <u128>threshold;
+        return t.toBigInt();
       }),
     };
   }
@@ -643,7 +663,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     includePreviousPeriods: boolean
   ): Map<string, SingularStakingInfo> {
     const result = new Map<string, SingularStakingInfo>();
-    stakers.forEach(([key, value]) => {
+    for (const [key, value] of stakers) {
       const v = <Option<PalletDappStakingV3SingularStakingInfo>>value;
 
       if (v.isSome) {
@@ -654,17 +674,19 @@ export class DappStakingRepository implements IDappStakingRepository {
           address &&
           (unwrappedValue.staked.period.toNumber() === currentPeriod || includePreviousPeriods)
         ) {
+          //0 means the bonus is forfeited, and 1 or greater indicates that the stake is eligible for bonus.
+          const bonusStatus = unwrappedValue.bonusStatus.toNumber();
           result.set(address, <SingularStakingInfo>{
-            loyalStaker: unwrappedValue.loyalStaker
-              ? unwrappedValue.loyalStaker.isTrue
-              : unwrappedValue.bonusStatus.toNumber() > 0,
+            loyalStaker: bonusStatus > 0,
             staked: this.mapStakeAmount(unwrappedValue.staked),
+            previousStaked: this.mapStakeAmount(unwrappedValue.previousStaked),
+            bonusStatus,
           });
         }
       }
-    });
+    }
 
-    console.log('Staker info size: ' + result.size);
+    console.log(`Staker info size: ${result.size}`);
     return result;
   }
 
