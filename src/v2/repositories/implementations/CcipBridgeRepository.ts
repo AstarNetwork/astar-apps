@@ -1,8 +1,14 @@
 import { injectable } from 'inversify';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import ETHER_SENDER_RECEIVER_ABI from 'src/config/web3/abi/ccip/EtherSenderReceiver.json';
+import BURN_MINT_POOL_ABI from 'src/config/web3/abi/ccip/BurnMintTokenPool.json';
+import LOCK_RELEASE_POOL_ABI from 'src/config/web3/abi/ccip/LockReleaseTokenPool.json';
 import ROUTER_ABI from 'src/config/web3/abi/ccip/Router.json';
-import type { ParamApproveCcip, ParamBridgeCcipAsset } from 'src/v2/services/ICcipBridgeService';
+import type {
+  ParamApproveCcip,
+  ParamBridgeCcipAsset,
+  ParamFetchOutboundLimits,
+} from 'src/v2/services/ICcipBridgeService';
 import type Web3 from 'web3';
 import type { TransactionConfig } from 'web3-eth';
 import type { AbiItem } from 'web3-utils';
@@ -13,6 +19,7 @@ import {
   CcipChainId,
   ccipChainSelector,
   CcipNetworkName,
+  ccipTokenPoolAddress,
 } from 'src/modules/ccip-bridge';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ethers } from 'ethers';
@@ -88,6 +95,27 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const feeWithBuffer = ethers.BigNumber.from(fee).mul(105).div(100).toString();
 
     return feeWithBuffer;
+  }
+
+  public async getOutboundLimits({
+    param,
+    web3,
+  }: {
+    param: ParamFetchOutboundLimits;
+    web3: Web3;
+  }): Promise<string> {
+    const isFromAstar = Boolean(
+      param.fromNetworkId === CcipChainId.AstarEvm || param.fromNetworkId === CcipChainId.ShibuyaEvm
+    );
+    const remoteChainSelector = ccipChainSelector[param.destNetworkId];
+    const contractAddress = ccipTokenPoolAddress[param.fromNetworkId];
+    const abi = isFromAstar ? LOCK_RELEASE_POOL_ABI : BURN_MINT_POOL_ABI;
+    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const outboundState = await contract.methods
+      .getCurrentOutboundRateLimiterState(remoteChainSelector)
+      .call();
+    const remainCapacity = outboundState.tokens.toString();
+    return ethers.utils.formatEther(remainCapacity);
   }
 
   public async getBridgeCcipAssetData({

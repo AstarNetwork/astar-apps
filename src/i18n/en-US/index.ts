@@ -63,6 +63,8 @@ export default {
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     balanceNotEnough:
       'You do not have enough {symbol} in your account to pay for the transaction fee',
+    maximumAmount:
+      'The maximum amount you can transfer is {amount} {symbol}. Please try again with a smaller amount',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',

@@ -45,6 +45,7 @@ export const useCcipBridge = () => {
   const providerChainId = ref<number>(0);
   const transactionFee = ref<number>(0);
   const bridgeFee = ref<number>(0);
+  const outboundLimits = ref<number>(0);
 
   const resetStates = (): void => {
     bridgeAmt.value = '';
@@ -171,12 +172,15 @@ export const useCcipBridge = () => {
   const setErrorMsg = (): void => {
     const isLoadingGasPayableRef = isLoadingGasPayable.value;
     const isFetchingFeeRef = isFetchingFee.value;
+    const outboundLimitsRef = outboundLimits.value;
     if (isLoading.value || isLoadingGasPayableRef || isFetchingFeeRef) return;
     const bridgeAmtRef = Number(bridgeAmt.value);
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
     const isGasPayableRef = isGasPayable.value;
     const isBalanceNotEnough = !isGasPayableRef && bridgeAmtRef > 0 && isApproved.value;
+    // Todo: remove '!== 0' after all the lane has been applied the outbound limits
+    const isHitMaxAmount = outboundLimitsRef !== 0 && bridgeAmtRef > outboundLimitsRef;
 
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
@@ -185,6 +189,13 @@ export const useCcipBridge = () => {
         });
       } else if (providerChainIdRef !== fromChainId.value) {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
+      } else if (isHitMaxAmount) {
+        errMsg.value = t('warning.maximumAmount', {
+          amount: outboundLimits.value,
+          symbol: nativeTokenSymbol.value,
+        });
+        // Memo: finish the function, otherwise it will goes to `isBalanceNotEnough` block
+        return;
       } else if (isBalanceNotEnough) {
         errMsg.value = t('warning.balanceNotEnough', {
           symbol: nativeTokenSymbol.value,
@@ -305,6 +316,24 @@ export const useCcipBridge = () => {
     }
   };
 
+  const getOutboundLimits = async (): Promise<void> => {
+    try {
+      if (errMsg.value) return;
+      const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
+
+      const limit = await ccipBridgeService.fetchOutboundLimits({
+        fromNetworkId: fromChainId.value,
+        destNetworkId: toChainId.value,
+      });
+      // Memo: set the maximum outbound limit as 80% per user, so that other users can be able to use the bridge
+      outboundLimits.value = Number(limit) * 0.8;
+      console.log('outboundLimits.value', outboundLimits.value);
+    } catch (error) {
+      console.error(error);
+      outboundLimits.value = 0;
+    }
+  };
+
   const setIsGasPayable = async (): Promise<void> => {
     try {
       if (!currentAccount.value || (!isNativeToken.value && !isApproved.value)) return;
@@ -334,6 +363,7 @@ export const useCcipBridge = () => {
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
+  watch([fromChainId], getOutboundLimits, { immediate: true });
 
   watch([fromChainName, selectedToken, currentAccount, toChainName], setBridgeBalance, {
     immediate: true,

@@ -56,10 +56,8 @@ export const ccipChainSelector = {
 
 const routerSoneiumMinato = '0x443a1bce545d56E2c3f20ED32eA588395FFce0f4';
 const routerSoneium = '0x8C8B88d827Fe14Df2bc6392947d513C86afD6977';
-
 const routerSepolia = '0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59';
 const routerEthereum = '0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D';
-
 const etherSenderReceiverShibuya = '0x89cB78A4A3cAD4cA86D3e3fF565f63B4620CB6ea';
 const etherSenderReceiverAstar = '0x4036a6Ff8C1a29677108Aef299B560f6E4fA5e71';
 
@@ -70,6 +68,15 @@ export const ccipBridgeAddress = {
   [CcipChainId.Soneium]: routerSoneium,
   [CcipChainId.Sepolia]: routerSepolia,
   [CcipChainId.Ethereum]: routerEthereum,
+};
+
+export const ccipTokenPoolAddress = {
+  [CcipChainId.ShibuyaEvm]: '0xeD27dA98958AC5Bcd4729E91d91Df8f4910dF941',
+  [CcipChainId.AstarEvm]: '0x99B41d3e1529dF578f02d68c0c11a0Ca89a522d0',
+  [CcipChainId.SoneiumMinato]: '0xae6CD71f30BcaBEe12Bb25B2aB6Bc84132430F2B',
+  [CcipChainId.Soneium]: '0x2200B5f4fA30a55359Ef0FaE04890113BD73bd16',
+  [CcipChainId.Sepolia]: '0x8BEDECB512cCAD2962ce284DdE4540Aa219fa728',
+  [CcipChainId.Ethereum]: '0xE01338496c8b07490Ae642AF53AAa5A8e6645B4C',
 };
 
 export const ccipBridgeIcon = {
