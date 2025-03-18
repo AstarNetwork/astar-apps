@@ -9,7 +9,7 @@ import { useDappStakingNavigation } from './useDappStakingNavigation';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
-  const { useableBalance } = useBalance(currentAccount);
+  const { useableBalance, lockedInDemocracy } = useBalance(currentAccount);
   const {
     ledger,
     totalStake,
@@ -70,7 +70,8 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       ? availableToMove.value
       : BigInt(useableBalance.value) +
         max(remainingLockedTokensInitial, BigInt(0)) +
-        availableToMove.value
+        availableToMove.value +
+        lockedInDemocracy.value
   );
 
   const availableToVoteDisplay = computed<bigint>(() => {
@@ -79,8 +80,14 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     }
 
     return remainingLockedTokens.value >= BigInt(0)
-      ? BigInt(useableBalance.value) + remainingLockedTokens.value + availableToMove.value
-      : BigInt(useableBalance.value) - abs(remainingLockedTokens.value) + availableToMove.value;
+      ? BigInt(useableBalance.value) +
+          lockedInDemocracy.value +
+          remainingLockedTokens.value +
+          availableToMove.value
+      : BigInt(useableBalance.value) +
+          lockedInDemocracy.value -
+          abs(remainingLockedTokens.value) +
+          availableToMove.value;
   });
 
   const amountToUnstake = computed<bigint>(() =>

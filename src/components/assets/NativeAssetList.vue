@@ -341,7 +341,8 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
+    const { balance, accountData, isLoadingBalance, lockedInDemocracy } =
+      useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { currentNetworkName, nativeTokenSymbol, isSupportAuTransfer } = useNetworkInfo();
     const { faucetBalRequirement } = useFaucet();
@@ -404,7 +405,6 @@ export default defineComponent({
       // Memo: `vesting ` -> there has been inputted 1 space here
       const vesting = accountDataRef.locks.find((it) => u8aToString(it.id) === 'vesting ');
       const dappStake = accountDataRef.locks.find((it) => u8aToString(it.id) === 'dapstake');
-      const democracy = accountDataRef.locks.find((it) => u8aToString(it.id) === 'democrac');
       const reserved = accountDataRef.reserved;
 
       if (vesting) {
@@ -424,8 +424,10 @@ export default defineComponent({
         reservedTtl.value = Number(ethers.utils.formatEther(amount));
       }
 
-      if (democracy) {
-        lockInDemocracy.value = Number(ethers.utils.formatEther(democracy.amount.toString()));
+      if (lockedInDemocracy.value) {
+        lockInDemocracy.value = Number(
+          ethers.utils.formatEther(lockedInDemocracy.value.toString())
+        );
       }
     });
 

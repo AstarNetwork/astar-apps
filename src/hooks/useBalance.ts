@@ -2,7 +2,7 @@ import { ETHEREUM_EXTENSION } from 'src/modules/account';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from 'src/v2/models';
-import { BN } from '@polkadot/util';
+import { BN, u8aToString } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
@@ -167,6 +167,12 @@ export function useBalance(addressRef: Ref<string>) {
   const useableBalance = computed(() => {
     return accountData.value?.getUsableFeeBalance().toString() || '0';
   });
+  const lockedInDemocracy = computed(() => {
+    const lock = accountData.value?.locks.find((it) => u8aToString(it.id) === 'democrac');
+
+    return lock ? lock.amount.toBigInt() : BigInt(0);
+  });
+
   const isLoadingBalance = ref<boolean>(true);
 
   const { balanceRef, accountDataRef, isLoadingAccount } = useCall(addressRef);
@@ -196,7 +202,7 @@ export function useBalance(addressRef: Ref<string>) {
     { immediate: true }
   );
 
-  return { balance, accountData, useableBalance, isLoadingBalance };
+  return { balance, accountData, useableBalance, isLoadingBalance, lockedInDemocracy };
 }
 
 export class AccountData {
