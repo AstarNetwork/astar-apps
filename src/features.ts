@@ -1,7 +1,6 @@
 // Bridges
-export const nativeBridgeEnabled = true;
-export const layerZeroBridgeEnabled = true;
-export const layerSwapBridgeEnabled = false;
+export const nativeBridgeEnabled = false;
+export const layerZeroBridgeEnabled = false;
 export const celerBridgeEnabled = true;
 export const omniBridgeEnabled = true;
 export const ccipMinatoBridgeEnabled = true;

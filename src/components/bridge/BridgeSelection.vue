@@ -160,114 +160,6 @@
             {{ $t('bridge.celerBridge.warning') }}
           </p>
         </div>
-        <div class="column--selection">
-          <button :disabled="!isEnableEthBridge">
-            <component
-              :is="isEnableEthBridge ? 'router-link' : 'div'"
-              :to="buildEthereumBridgePageLink()"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/ethereum.png')"
-                    alt="ethereum"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.ethereumBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.ethereumBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.ethereumBridge.text', { l1: l1Name, l2: l2Name }) }}
-                  </span>
-                </div>
-              </div>
-            </component>
-          </button>
-          <p v-if="!isZkEvm" class="text--bridge-details">
-            {{ $t('bridge.ethereumBridge.remark') }}
-          </p>
-          <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
-            {{ $t('bridge.bridgeMaintenanceMode') }}
-          </p>
-        </div>
-
-        <div class="column--selection">
-          <button :disabled="!isEnableLzBridge || !layerZeroBridgeEnabled">
-            <component
-              :is="isEnableLzBridge && layerZeroBridgeEnabled ? 'router-link' : 'div'"
-              :to="buildLzBridgePageLink()"
-              class="button--bridge"
-            >
-              <div class="row--logo-bg">
-                <div class="img--logo-bg">
-                  <img
-                    class="img--logo"
-                    :src="require('src/assets/img/layerzero_bridge_logo.svg')"
-                    alt="astar-bridge"
-                  />
-                </div>
-              </div>
-              <div class="row--bridge-title">
-                <div class="text--bridge-tag">
-                  <q-chip outline>
-                    {{ $t('bridge.astarBridge.tag') }}
-                  </q-chip>
-                </div>
-                <span class="text--bridge-title">{{ $t('bridge.astarBridge.title') }}</span>
-                <div class="box--text-bridge">
-                  <span class="text--bridge">
-                    {{ $t('bridge.astarBridge.text') }}
-                  </span>
-                </div>
-              </div>
-            </component>
-          </button>
-          <p v-if="!isEnableLzBridge" class="text--bridge-details">
-            {{ $t('bridge.astarBridge.remark') }}
-          </p>
-          <p v-if="!layerZeroBridgeEnabled" class="text--bridge-details">
-            {{ $t('bridge.bridgeMaintenanceMode') }}
-          </p>
-        </div>
-
-        <div class="column--selection">
-          <button
-            :disabled="!layerSwapBridgeEnabled"
-            class="button--bridge"
-            @click="navigateInNewTab(layerSwapLink)"
-          >
-            <div class="row--logo-bg">
-              <div class="img--logo-bg">
-                <img
-                  class="img--logo"
-                  :src="require('src/assets/img/layerswap_logo.svg')"
-                  alt="layer-swap"
-                />
-              </div>
-            </div>
-            <div class="row--bridge-title">
-              <div class="text--bridge-tag">
-                <q-chip outline>
-                  {{ $t('bridge.layerSwap.tag') }}
-                </q-chip>
-              </div>
-              <span class="text--bridge-title">{{ $t('bridge.layerSwap.title') }}</span>
-              <div class="box--text-bridge">
-                <span class="text--bridge">
-                  {{ $t('bridge.layerSwap.text') }}
-                </span>
-              </div>
-            </div>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -277,15 +169,10 @@ import { cbridgeAppLink } from 'src/c-bridge';
 import {
   ccipMinatoBridgeEnabled,
   celerBridgeEnabled,
-  layerSwapBridgeEnabled,
-  layerZeroBridgeEnabled,
   ccipSoneiumBridgeEnabled,
-  nativeBridgeEnabled,
   stargateBridgeEnabled,
 } from 'src/features';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
-import { layerSwapLink, zKatanaBridgeUrl } from 'src/modules/zk-evm-bridge/index';
 import { stargateBridgeLink } from 'src/links/index';
 import {
   Path as RoutePath,
@@ -301,34 +188,11 @@ export default defineComponent({
   components: {},
   setup() {
     const { currentAccount } = useAccount();
-    const {
-      isZkEvm,
-      networkNameSubstrate,
-      isMainnet,
-      isAstarZkEvm,
-      isAstar,
-      isH160,
-      isShibuyaEvm,
-      isAstarEvm,
-      nativeTokenSymbol,
-    } = useNetworkInfo();
-
-    const l1Name = computed<string>(() => {
-      return EthBridgeNetworkName.Ethereum;
-    });
-
-    const l2Name = computed<string>(() => {
-      return EthBridgeNetworkName.AstarZk;
-    });
+    const { networkNameSubstrate, isMainnet, isShibuyaEvm, isAstarEvm, nativeTokenSymbol } =
+      useNetworkInfo();
 
     const cbridgeNetworkName = computed<string>(() => {
-      return !isZkEvm.value && isMainnet.value ? networkNameSubstrate.value : 'Astar';
-    });
-
-    const isEnableEthBridge = computed<boolean>(() => isZkEvm.value && nativeBridgeEnabled);
-
-    const isEnableLzBridge = computed<boolean>(() => {
-      return isH160.value && (isAstar.value || isAstarZkEvm.value);
+      return isMainnet.value ? networkNameSubstrate.value : 'Astar';
     });
 
     const isEnableCcipBridge = computed<boolean>(() => {
@@ -342,18 +206,8 @@ export default defineComponent({
       currentAccount,
       cbridgeAppLink,
       RoutePath,
-      isEnableEthBridge,
-      isZkEvm,
-      l1Name,
-      l2Name,
       cbridgeNetworkName,
-      layerSwapLink,
-      zKatanaBridgeUrl,
-      isEnableLzBridge,
       celerBridgeEnabled,
-      layerSwapBridgeEnabled,
-      nativeBridgeEnabled,
-      layerZeroBridgeEnabled,
       stargateBridgeEnabled,
       isEnableCcipBridge,
       isShibuyaEvm,
