@@ -24,6 +24,7 @@ import { Symbols } from 'src/v2/symbols';
 import { ethers, constants as ethersConstants } from 'ethers';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { useRoute, useRouter } from 'vue-router';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export const useCcipBridge = () => {
   const { isShibuya, nativeTokenSymbol } = useNetworkInfo();
@@ -46,6 +47,7 @@ export const useCcipBridge = () => {
   const transactionFee = ref<number>(0);
   const bridgeFee = ref<number>(0);
   const outboundLimits = ref<number>(0);
+  const isLoadingOutboundLimits = ref<boolean>(true);
 
   const resetStates = (): void => {
     bridgeAmt.value = '';
@@ -173,7 +175,16 @@ export const useCcipBridge = () => {
     const isLoadingGasPayableRef = isLoadingGasPayable.value;
     const isFetchingFeeRef = isFetchingFee.value;
     const outboundLimitsRef = outboundLimits.value;
-    if (isLoading.value || isLoadingGasPayableRef || isFetchingFeeRef) return;
+    const isLoadingOutboundLimitsRef = isLoadingOutboundLimits.value;
+    if (
+      isLoading.value ||
+      isLoadingGasPayableRef ||
+      isFetchingFeeRef ||
+      isLoadingOutboundLimitsRef
+    ) {
+      return;
+    }
+
     const bridgeAmtRef = Number(bridgeAmt.value);
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
@@ -191,7 +202,7 @@ export const useCcipBridge = () => {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
       } else if (isHitMaxAmount) {
         errMsg.value = t('warning.maximumAmount', {
-          amount: outboundLimits.value,
+          amount: truncate(outboundLimits.value),
           symbol: nativeTokenSymbol.value,
         });
         // Memo: finish the function, otherwise it will goes to `isBalanceNotEnough` block
@@ -288,6 +299,7 @@ export const useCcipBridge = () => {
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
     await setBridgeBalance();
+    await setOutboundLimits();
     return hash;
   };
 
@@ -316,8 +328,9 @@ export const useCcipBridge = () => {
     }
   };
 
-  const getOutboundLimits = async (): Promise<void> => {
+  const setOutboundLimits = async (): Promise<void> => {
     try {
+      isLoadingOutboundLimits.value = true;
       if (errMsg.value) return;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
 
@@ -327,10 +340,11 @@ export const useCcipBridge = () => {
       });
       // Memo: set the maximum outbound limit as 80% per user, so that other users can be able to use the bridge
       outboundLimits.value = Number(limit) * 0.8;
-      console.log('outboundLimits.value', outboundLimits.value);
     } catch (error) {
       console.error(error);
       outboundLimits.value = 0;
+    } finally {
+      isLoadingOutboundLimits.value = false;
     }
   };
 
@@ -363,7 +377,7 @@ export const useCcipBridge = () => {
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
-  watch([fromChainId], getOutboundLimits, { immediate: true });
+  watch([fromChainId], setOutboundLimits, { immediate: true });
 
   watch([fromChainName, selectedToken, currentAccount, toChainName], setBridgeBalance, {
     immediate: true,

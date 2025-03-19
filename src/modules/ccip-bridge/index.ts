@@ -76,7 +76,7 @@ export const ccipTokenPoolAddress = {
   [CcipChainId.SoneiumMinato]: '0xae6CD71f30BcaBEe12Bb25B2aB6Bc84132430F2B',
   [CcipChainId.Soneium]: '0x2200B5f4fA30a55359Ef0FaE04890113BD73bd16',
   [CcipChainId.Sepolia]: '0x8BEDECB512cCAD2962ce284DdE4540Aa219fa728',
-  [CcipChainId.Ethereum]: '0xE01338496c8b07490Ae642AF53AAa5A8e6645B4C',
+  [CcipChainId.Ethereum]: '0x98ef4b1fe8fe9c73deb07a77c9f861e8558439d7',
 };
 
 export const ccipBridgeIcon = {
@@ -114,8 +114,7 @@ export const CCIP_ASTR: CCIP_TOKEN = {
   tokenAddress: {
     [CcipChainId.AstarEvm]: astarNativeTokenErcAddr,
     [CcipChainId.Soneium]: '0x2CAE934a1e84F693fbb78CA5ED3B0A6893259441',
-    // Todo: Update
-    [CcipChainId.Ethereum]: '0x2CAE934a1e84F693fbb78CA5ED3B0A6893259441',
+    [CcipChainId.Ethereum]: '0xf27441230eadeac85b764610325cc9a0d7859689',
   },
   decimals: 18,
   image: require('/src/assets/img/token/astr.png'),

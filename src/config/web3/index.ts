@@ -149,7 +149,7 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
-  [EVM.ETHEREUM_MAINNET]: ['https://eth.public-rpc.com'],
+  [EVM.ETHEREUM_MAINNET]: ['https://ethereum-rpc.publicnode.com'],
   [EVM.SEPOLIA_TESTNET]: ['https://ethereum-sepolia-rpc.publicnode.com'],
   // [EVM.SEPOLIA_TESTNET]: ['https://sepolia-01.astar.network'],
   // [EVM.SEPOLIA_TESTNET]: ['https://eth-sepolia.public.blastapi.io'],

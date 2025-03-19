@@ -81,7 +81,7 @@
 
         <div class="box--ccip">
           <custom-router-link
-            v-if="isShibuyaEvm"
+            v-if="isShibuyaEvm || isAstarEvm"
             :to="ccipEthereumLink"
             :is-disabled="!isEnableEthereumCcipBridge"
           >
@@ -91,7 +91,6 @@
               @mouseover="isEthereumButtonHover = true"
               @mouseleave="isEthereumButtonHover = false"
             >
-              <!-- Todo: update -->
               <img
                 class="img--logo-soneium"
                 :src="
@@ -102,7 +101,6 @@
                 alt="ethereum"
               />
             </button>
-            <!-- Todo: update -->
             <button v-else class="btn btn--icon">
               <img
                 class="img--logo-soneium"
@@ -341,12 +339,11 @@ export default defineComponent({
           localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SEPOLIA, 'true');
         }
 
-        // Todo: uncomment when Ethereum bridge is ready
-        // if (isAstarEvm.value && !isBallonEthreumCcipDisplayed) {
-        //   await wait(1000);
-        //   isCcipEthereumBalloon.value = true;
-        //   localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM, 'true');
-        // }
+        if (isAstarEvm.value && !isBallonEthreumCcipDisplayed) {
+          await wait(1000);
+          isCcipEthereumBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM, 'true');
+        }
       },
       { immediate: true }
     );
