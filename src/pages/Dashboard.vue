@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper--dashboard">
-    <dashboard v-if="isReady && !isZkEvm" />
-    <zk-evm-dashboard v-else-if="isReady && isZkEvm" />
+    <dashboard v-if="isReady" />
     <div v-else />
   </div>
 </template>
@@ -10,22 +9,19 @@
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
-import ZkEvmDashboard from 'src/components/dashboard/ZkEvmDashboard.vue';
-import { usePageReady, useNetworkInfo } from 'src/hooks';
+import { usePageReady } from 'src/hooks';
 import { generateMeta } from 'src/config/metadata';
 import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
     Dashboard,
-    ZkEvmDashboard,
   },
   setup() {
     useMeta(generateMeta(Path.Dashboard));
     const { isReady } = usePageReady();
-    const { isZkEvm } = useNetworkInfo();
 
-    return { isReady, isZkEvm };
+    return { isReady };
   },
 });
 </script>
