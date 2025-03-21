@@ -341,14 +341,6 @@ export default defineComponent({
       );
     });
 
-    const ccipEthereumLink = computed<string>(() => {
-      return buildCcipBridgePageLink(
-        isShibuyaEvm.value
-          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.Sepolia }
-          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Ethereum }
-      );
-    });
-
     const isEnableCcipBridge = computed<boolean>(() => {
       return isShibuyaEvm.value
         ? ccipMinatoBridgeEnabled && ccipSepoliaBridgeEnabled && ccipShibuyaBridgeEnabled
