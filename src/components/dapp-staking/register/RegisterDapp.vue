@@ -160,7 +160,6 @@ export default defineComponent({
     const { t } = useI18n();
     const { registerDapp } = useDapps();
     const { signPayload } = useSignPayload();
-    const { selectedTip } = useGasPrice();
     const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);

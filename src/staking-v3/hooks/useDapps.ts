@@ -14,7 +14,7 @@ import { Symbols } from 'src/v2/symbols';
 import { useNetworkInfo } from 'src/hooks';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 import { NewDappItem } from 'src/staking-v3';
 import { useI18n } from 'vue-i18n';

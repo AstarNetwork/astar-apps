@@ -10,20 +10,6 @@
         <span class="text--title">{{ $t('drawer.astarL1') }}</span>
         <div class="line--bottom-bg bottom--l1" />
       </button>
-
-      <button
-        class="card--astar box--hover--active"
-        :class="selNetworkId === endpointKey.ASTAR_ZKEVM && 'border--active'"
-        @click="setSelNetwork(endpointKey.ASTAR_ZKEVM)"
-      >
-        <img
-          class="img--astar"
-          :src="require('src/assets/img/chain/zkatana-logo.png')"
-          alt="logo-astar-zkevm"
-        />
-        <span class="text--title">{{ $t('drawer.astarZkL2') }}</span>
-        <div class="line--bottom-bg bottom--zkevm" />
-      </button>
     </div>
 
     <div class="container--other-networks">

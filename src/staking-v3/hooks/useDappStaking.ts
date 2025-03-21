@@ -34,7 +34,6 @@ import { initialDappTiersConfiguration, initialTiersConfiguration } from '../sto
 import { checkIsDappStakingV3 } from 'src/modules/dapp-staking';
 import { ApiPromise } from '@polkadot/api';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
-import { docsUrl } from 'src/links';
 
 export interface RewardsPerPeriod {
   period: number;
