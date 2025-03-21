@@ -239,8 +239,16 @@ export default defineComponent({
     const isSoneiumButtonHover = ref<boolean>(false);
     const isEthereumButtonHover = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isAstar, isShibuyaEvm, isAstarEvm } =
-      useNetworkInfo();
+    const {
+      currentNetworkName,
+      nativeTokenSymbol,
+      isZkEvm,
+      isAstar,
+      isShibuyaEvm,
+      isAstarEvm,
+      ccipSoneiumLink,
+      ccipEthereumLink,
+    } = useNetworkInfo();
 
     const closeCcipSoneiumBalloon = () => {
       isCcipSoneiumBalloon.value = false;
@@ -281,22 +289,6 @@ export default defineComponent({
         console.error(error.message);
       }
     };
-
-    const ccipSoneiumLink = computed<string>(() => {
-      return buildCcipBridgePageLink(
-        isShibuyaEvm.value
-          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.SoneiumMinato }
-          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Soneium }
-      );
-    });
-
-    const ccipEthereumLink = computed<string>(() => {
-      return buildCcipBridgePageLink(
-        isShibuyaEvm.value
-          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.Sepolia }
-          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Ethereum }
-      );
-    });
 
     watchEffect(async () => {
       await updateStates(props.nativeTokenUsd);

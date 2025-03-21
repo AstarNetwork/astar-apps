@@ -313,6 +313,7 @@ export default defineComponent({
       isShibuyaEvm,
       isAstarEvm,
       nativeTokenSymbol,
+      ccipSoneiumLink,
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
@@ -331,14 +332,6 @@ export default defineComponent({
 
     const isEnableLzBridge = computed<boolean>(() => {
       return isH160.value && (isAstar.value || isAstarZkEvm.value);
-    });
-
-    const ccipSoneiumLink = computed<string>(() => {
-      return buildCcipBridgePageLink(
-        isShibuyaEvm.value
-          ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.SoneiumMinato }
-          : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Soneium }
-      );
     });
 
     const isEnableCcipBridge = computed<boolean>(() => {
