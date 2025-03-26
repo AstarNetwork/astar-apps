@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="row__actions">
+      <div class="row__actions-evm">
         <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
           <button class="btn btn--icon">
             <astar-icon-transfer />
@@ -46,8 +46,8 @@
         <div class="box--ccip">
           <custom-router-link
             v-if="isShibuyaEvm || isAstarEvm"
-            :to="buildCcipBridgePageLink()"
-            :is-disabled="!isEnableCcipBridge"
+            :to="ccipSoneiumLink"
+            :is-disabled="!isEnableSoneiumCcipBridge"
           >
             <button
               v-if="width >= screenSize.sm"
@@ -60,7 +60,7 @@
                 :src="
                   isSoneiumButtonHover
                     ? require('src/assets/img/chain/soneium-white.svg')
-                    : require('src/assets/img/chain/soneium-color.svg')
+                    : require('src/assets/img/chain/soneium-blue.svg')
                 "
                 alt="soneium"
               />
@@ -77,13 +77,49 @@
               <span class="text--tooltip">{{ $t('assets.bridgeToSoneium') }}</span>
             </q-tooltip>
           </custom-router-link>
+        </div>
+
+        <div class="box--ccip">
+          <custom-router-link
+            v-if="isShibuyaEvm || isAstarEvm"
+            :to="ccipEthereumLink"
+            :is-disabled="!isEnableEthereumCcipBridge"
+          >
+            <button
+              v-if="width >= screenSize.sm"
+              class="btn btn--icon"
+              @mouseover="isEthereumButtonHover = true"
+              @mouseleave="isEthereumButtonHover = false"
+            >
+              <img
+                class="img--logo-soneium"
+                :src="
+                  isEthereumButtonHover
+                    ? require('src/assets/img/chain/ethereum-white.svg')
+                    : require('src/assets/img/chain/ethereum-blue.svg')
+                "
+                alt="ethereum"
+              />
+            </button>
+            <button v-else class="btn btn--icon">
+              <img
+                class="img--logo-soneium"
+                :src="require('src/assets/img/chain/ethereum-white.svg')"
+                alt="ethereum"
+              />
+            </button>
+            <span class="text--mobile-menu">{{ $t('assets.bridgeToEthereum') }}</span>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('assets.bridgeToEthereum') }}</span>
+            </q-tooltip>
+          </custom-router-link>
           <balloon
             class="balloon--ccip"
             direction="top"
-            :is-balloon="isCcipBalloon"
+            :is-balloon="isCcipEthereumBalloon"
             :is-balloon-closing="isBalloonClosing"
-            :handle-close-balloon="closeCcipBalloon"
-            :text="$t('assets.bridgeToSoneium')"
+            :handle-close-balloon="closeCcipEthereumBalloon"
+            :text="$t('assets.bridgeToEthereum')"
             :title="$t('new')"
           />
         </div>
@@ -161,10 +197,9 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import Balloon from 'src/components/common/Balloon.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
-  ccipMinatoBridgeEnabled,
   layerZeroBridgeEnabled,
   nativeBridgeEnabled,
-  ccipSoneiumBridgeEnabled,
+  checkIsCcipBridgeEnabled,
 } from 'src/features';
 import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks';
 import { faucetSethLink } from 'src/links';
@@ -179,6 +214,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 import CustomRouterLink from '../common/CustomRouterLink.vue';
+import { CcipNetworkName, CcipNetworkParam } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -197,15 +233,29 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
 
-    const isCcipBalloon = ref<boolean>(false);
+    const isCcipSoneiumBalloon = ref<boolean>(false);
+    const isCcipEthereumBalloon = ref<boolean>(false);
     const isBalloonClosing = ref<boolean>(false);
     const isSoneiumButtonHover = ref<boolean>(false);
+    const isEthereumButtonHover = ref<boolean>(false);
 
-    const { currentNetworkName, nativeTokenSymbol, isZkEvm, isAstar, isShibuyaEvm, isAstarEvm } =
-      useNetworkInfo();
+    const {
+      currentNetworkName,
+      nativeTokenSymbol,
+      isZkEvm,
+      isAstar,
+      isShibuyaEvm,
+      isAstarEvm,
+      ccipSoneiumLink,
+      ccipEthereumLink,
+    } = useNetworkInfo();
 
-    const closeCcipBalloon = () => {
-      isCcipBalloon.value = false;
+    const closeCcipSoneiumBalloon = () => {
+      isCcipSoneiumBalloon.value = false;
+    };
+
+    const closeCcipEthereumBalloon = () => {
+      isCcipEthereumBalloon.value = false;
     };
 
     const { currentAccount } = useAccount();
@@ -252,33 +302,39 @@ export default defineComponent({
 
     const isTruncate = !nativeTokenSymbol.value.toUpperCase().includes('BTC');
 
-    const isEnableCcipBridge = computed<boolean>(() => {
-      return (
-        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
-        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
-      );
+    const isEnableSoneiumCcipBridge = computed<boolean>(() => {
+      const from = isShibuyaEvm.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm;
+      const to = isShibuyaEvm.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium;
+      return checkIsCcipBridgeEnabled({ from, to });
+    });
+
+    const isEnableEthereumCcipBridge = computed<boolean>(() => {
+      const from = isShibuyaEvm.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm;
+      const to = isShibuyaEvm.value ? CcipNetworkName.Sepolia : CcipNetworkName.Ethereum;
+      return checkIsCcipBridgeEnabled({ from, to });
     });
 
     // Memo: display the balloon animation
     watch(
       [isShibuyaEvm, isAstarEvm],
       async () => {
-        const isBallonShibuyaDisplayed = Boolean(
-          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA)
+        const isBallonSepoliaCcipDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_SEPOLIA)
         );
-        const isBallonAstarDisplayed = Boolean(
-          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR)
+        const isBallonEthreumCcipDisplayed = Boolean(
+          localStorage.getItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM)
         );
-        if (isShibuyaEvm.value && !isBallonShibuyaDisplayed) {
+
+        if (isShibuyaEvm.value && !isBallonSepoliaCcipDisplayed) {
           await wait(1000);
-          isCcipBalloon.value = true;
-          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SHIBUYA, 'true');
+          isCcipEthereumBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_SEPOLIA, 'true');
         }
 
-        if (isAstarEvm.value && !isBallonAstarDisplayed) {
+        if (isAstarEvm.value && !isBallonEthreumCcipDisplayed) {
           await wait(1000);
-          isCcipBalloon.value = true;
-          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ASTAR, 'true');
+          isCcipEthereumBalloon.value = true;
+          localStorage.setItem(LOCAL_STORAGE.BALLOON_CCIP_ETHEREUM, 'true');
         }
       },
       { immediate: true }
@@ -302,18 +358,24 @@ export default defineComponent({
       nativeBridgeEnabled,
       layerZeroBridgeEnabled,
       isShibuyaEvm,
-      isEnableCcipBridge,
-      isCcipBalloon,
+      isEnableSoneiumCcipBridge,
+      isEnableEthereumCcipBridge,
+      isCcipSoneiumBalloon,
       isBalloonClosing,
       isAstarEvm,
       isSoneiumButtonHover,
-      closeCcipBalloon,
-      buildCcipBridgePageLink,
+      isEthereumButtonHover,
+      ccipSoneiumLink,
+      ccipEthereumLink,
+      isCcipEthereumBalloon,
+      closeCcipEthereumBalloon,
+      closeCcipSoneiumBalloon,
       truncate,
       handleModalFaucet,
       buildTransferPageLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
+      checkIsCcipBridgeEnabled,
     };
   },
 });

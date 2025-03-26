@@ -9,45 +9,42 @@
           <button :disabled="!isEnableCcipBridge">
             <component
               :is="isEnableCcipBridge ? 'router-link' : 'div'"
-              :to="buildCcipBridgePageLink()"
+              :to="ccipSoneiumLink"
               class="button--bridge"
             >
               <div class="row--logo-bg">
-                <div class="img--logo-bg">
+                <div class="img--logo-bg box--ethereum-soneium">
                   <img
-                    class="img--logo-soneium"
-                    :src="require('src/assets/img/chain/soneium-color.svg')"
-                    alt="soneium"
+                    class="img--logo"
+                    :src="require('src/assets/img/chain/ethereum-gray.svg')"
+                    alt="ethereum"
                   />
+                </div>
+                <div class="box-soneium-logo">
+                  <div class="img--logo-bg">
+                    <img
+                      class="img--logo-soneium"
+                      :src="require('src/assets/img/chain/soneium-color.svg')"
+                      alt="soneium"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="row--bridge-title">
                 <div class="text--bridge-tag">
                   <q-chip outline>
                     {{
-                      $t(
-                        isShibuyaEvm
-                          ? 'bridge.ccipMinatoBridge.tag'
-                          : 'bridge.ccipSoneiumBridge.tag'
-                      )
+                      $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.tag' : 'bridge.ccipAstrBridge.tag')
                     }}
                   </q-chip>
                 </div>
                 <span class="text--bridge-title">{{
-                  $t(
-                    isShibuyaEvm
-                      ? 'bridge.ccipMinatoBridge.title'
-                      : 'bridge.ccipSoneiumBridge.title'
-                  )
+                  $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.title' : 'bridge.ccipAstrBridge.title')
                 }}</span>
                 <div class="box--text-bridge">
                   <span class="text--bridge">
                     {{
-                      $t(
-                        isShibuyaEvm
-                          ? 'bridge.ccipMinatoBridge.text'
-                          : 'bridge.ccipSoneiumBridge.text'
-                      )
+                      $t(isShibuyaEvm ? 'bridge.ccipSbyBridge.text' : 'bridge.ccipAstrBridge.text')
                     }}
                   </span>
                 </div>
@@ -171,7 +168,7 @@
                 <div class="img--logo-bg">
                   <img
                     class="img--logo"
-                    :src="require('src/assets/img/ethereum.png')"
+                    :src="require('src/assets/img/chain/ethereum-gray.svg')"
                     alt="ethereum"
                   />
                 </div>
@@ -280,8 +277,12 @@ import {
   layerSwapBridgeEnabled,
   layerZeroBridgeEnabled,
   ccipSoneiumBridgeEnabled,
+  ccipSepoliaBridgeEnabled,
+  ccipEthereumBridgeEnabled,
   nativeBridgeEnabled,
   stargateBridgeEnabled,
+  ccipShibuyaBridgeEnabled,
+  ccipAstarBridgeEnabled,
 } from 'src/features';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
@@ -296,6 +297,7 @@ import {
 } from 'src/router/routes';
 import { navigateInNewTab } from 'src/util-general';
 import { computed, defineComponent } from 'vue';
+import { CcipNetworkParam } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: {},
@@ -311,6 +313,7 @@ export default defineComponent({
       isShibuyaEvm,
       isAstarEvm,
       nativeTokenSymbol,
+      ccipSoneiumLink,
     } = useNetworkInfo();
 
     const l1Name = computed<string>(() => {
@@ -332,10 +335,9 @@ export default defineComponent({
     });
 
     const isEnableCcipBridge = computed<boolean>(() => {
-      return (
-        (isShibuyaEvm.value && ccipMinatoBridgeEnabled) ||
-        (isAstarEvm.value && ccipSoneiumBridgeEnabled)
-      );
+      return isShibuyaEvm.value
+        ? ccipMinatoBridgeEnabled && ccipSepoliaBridgeEnabled && ccipShibuyaBridgeEnabled
+        : ccipSoneiumBridgeEnabled && ccipEthereumBridgeEnabled && ccipAstarBridgeEnabled;
     });
 
     return {
@@ -359,10 +361,11 @@ export default defineComponent({
       isShibuyaEvm,
       isAstarEvm,
       stargateBridgeLink,
+      CcipNetworkParam,
+      ccipSoneiumLink,
       buildEthereumBridgePageLink,
       buildLzBridgePageLink,
       navigateInNewTab,
-      buildCcipBridgePageLink,
       buildTransferPageLink,
       nativeTokenSymbol,
     };

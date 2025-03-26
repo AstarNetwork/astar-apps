@@ -9,6 +9,8 @@ import {
   CCIP_SBY,
   ccipBridgeAddress,
   CCIP_ASTR,
+  ccipNetworkParam,
+  CcipNetworkParam,
 } from 'src/modules/ccip-bridge';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { useStore } from 'src/store';
@@ -21,9 +23,13 @@ import { ICcipBridgeService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers, constants as ethersConstants } from 'ethers';
 import { astarNativeTokenErcAddr } from 'src/modules/xcm';
+import { useRoute, useRouter } from 'vue-router';
+import { truncate } from '@astar-network/astar-sdk-core';
 
 export const useCcipBridge = () => {
   const { isShibuya, nativeTokenSymbol } = useNetworkInfo();
+  const router = useRouter();
+  const route = useRoute();
 
   const selectedToken = ref<CCIP_TOKEN>(isShibuya.value ? CCIP_SBY : CCIP_ASTR);
   const bridgeAmt = ref<string | null>(null);
@@ -33,18 +39,15 @@ export const useCcipBridge = () => {
   const isLoadingGasPayable = ref<boolean>(true);
   const isFetchingFee = ref<boolean>(true);
   const errMsg = ref<string>('');
-  const fromChainName = ref<CcipNetworkName>(
-    isShibuya.value ? CcipNetworkName.ShibuyaEvm : CcipNetworkName.AstarEvm
-  );
-  const toChainName = ref<CcipNetworkName>(
-    isShibuya.value ? CcipNetworkName.SoneiumMinato : CcipNetworkName.Soneium
-  );
   const isApproved = ref<boolean>(false);
   const isApproving = ref<boolean>(false);
+  const loadIsApproved = ref<boolean>(false);
   const isApproveMaxAmount = ref<boolean>(false);
   const providerChainId = ref<number>(0);
   const transactionFee = ref<number>(0);
   const bridgeFee = ref<number>(0);
+  const outboundLimits = ref<number>(0);
+  const isLoadingOutboundLimits = ref<boolean>(true);
 
   const resetStates = (): void => {
     bridgeAmt.value = '';
@@ -56,7 +59,21 @@ export const useCcipBridge = () => {
     isApproveMaxAmount.value = false;
     isApproving.value = false;
     isApproved.value = false;
+    loadIsApproved.value = false;
   };
+
+  const fromChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.from as CcipNetworkParam]
+  );
+  const toChainName = computed<CcipNetworkName>(
+    () => ccipNetworkParam[route.query.to as CcipNetworkParam]
+  );
+
+  const chains = computed<CcipNetworkName[]>(() =>
+    isShibuya.value
+      ? [CcipNetworkName.ShibuyaEvm, CcipNetworkName.SoneiumMinato, CcipNetworkName.Sepolia]
+      : [CcipNetworkName.AstarEvm, CcipNetworkName.Soneium, CcipNetworkName.Ethereum]
+  );
 
   const store = useStore();
   const { t } = useI18n();
@@ -70,10 +87,8 @@ export const useCcipBridge = () => {
 
   const toChainId = computed<CcipChainId>(() => ccipChainId[toChainName.value as CcipNetworkName]);
 
-  const isToSoneium = computed<boolean>(() =>
-    Boolean(
-      toChainId.value === CcipChainId.SoneiumMinato || toChainId.value === CcipChainId.Soneium
-    )
+  const isNativeToken = computed<boolean>(
+    () => selectedToken.value.tokenAddress[fromChainId.value] === astarNativeTokenErcAddr
   );
 
   const isDisabledBridge = computed<boolean>(() => {
@@ -87,17 +102,19 @@ export const useCcipBridge = () => {
   };
 
   const setIsApproved = async (): Promise<void> => {
+    loadIsApproved.value = true;
     const senderAddress = currentAccount.value;
     const fromChainIdRef = fromChainId.value;
     const contractAddress = ccipBridgeAddress[fromChainIdRef];
     const tokenAddress = selectedToken.value.tokenAddress[fromChainId.value] as string;
     const decimals = selectedToken.value.decimals;
-    const amount = bridgeAmt.value ?? '0';
+    const amount = Number(bridgeAmt.value ?? '0');
 
     const isApprovalRequired = tokenAddress !== astarNativeTokenErcAddr;
 
     if (!isApprovalRequired) {
       isApproved.value = true;
+      loadIsApproved.value = false;
       return;
     }
     if (!amount) return;
@@ -110,10 +127,12 @@ export const useCcipBridge = () => {
       });
       const formattedAllowance = ethers.utils.formatUnits(amountAllowance, decimals).toString();
       console.info('allowance: ', formattedAllowance);
-      isApproved.value = Number(formattedAllowance) >= Number(amount);
+      isApproved.value = Number(formattedAllowance) >= amount;
     } catch (error) {
       console.error(error);
       isApproved.value = false;
+    } finally {
+      loadIsApproved.value = false;
     }
   };
 
@@ -155,12 +174,24 @@ export const useCcipBridge = () => {
   const setErrorMsg = (): void => {
     const isLoadingGasPayableRef = isLoadingGasPayable.value;
     const isFetchingFeeRef = isFetchingFee.value;
-    if (isLoading.value || isLoadingGasPayableRef || isFetchingFeeRef) return;
+    const outboundLimitsRef = outboundLimits.value;
+    const isLoadingOutboundLimitsRef = isLoadingOutboundLimits.value;
+    if (
+      isLoading.value ||
+      isLoadingGasPayableRef ||
+      isFetchingFeeRef ||
+      isLoadingOutboundLimitsRef
+    ) {
+      return;
+    }
+
     const bridgeAmtRef = Number(bridgeAmt.value);
     const providerChainIdRef = providerChainId.value;
     const selectedTokenRef = selectedToken.value;
     const isGasPayableRef = isGasPayable.value;
     const isBalanceNotEnough = !isGasPayableRef && bridgeAmtRef > 0 && isApproved.value;
+    // Todo: remove '!== 0' after all the lane has been applied the outbound limits
+    const isHitMaxAmount = outboundLimitsRef !== 0 && bridgeAmtRef > outboundLimitsRef;
 
     try {
       if (bridgeAmtRef > fromBridgeBalance.value) {
@@ -169,6 +200,13 @@ export const useCcipBridge = () => {
         });
       } else if (providerChainIdRef !== fromChainId.value) {
         errMsg.value = t('warning.selectedInvalidNetworkInWallet');
+      } else if (isHitMaxAmount) {
+        errMsg.value = t('warning.maximumAmount', {
+          amount: truncate(outboundLimits.value),
+          symbol: nativeTokenSymbol.value,
+        });
+        // Memo: finish the function, otherwise it will goes to `isBalanceNotEnough` block
+        return;
       } else if (isBalanceNotEnough) {
         errMsg.value = t('warning.balanceNotEnough', {
           symbol: nativeTokenSymbol.value,
@@ -181,13 +219,17 @@ export const useCcipBridge = () => {
     }
   };
 
-  const reverseChain = async (
-    fromChain: CcipNetworkName,
-    toChain: CcipNetworkName
-  ): Promise<void> => {
-    fromChainName.value = toChain;
-    toChainName.value = fromChain;
+  const reverseChain = async (): Promise<void> => {
     resetStates();
+    const from = route.query.to;
+    const to = route.query.from;
+    router.replace({
+      query: {
+        ...route.query,
+        from,
+        to,
+      },
+    });
   };
 
   const setProviderChainId: WatchCallback<[number, EthereumProvider | undefined]> = async (
@@ -224,7 +266,7 @@ export const useCcipBridge = () => {
   };
 
   const handleApprove = async (): Promise<String> => {
-    if (!bridgeAmt.value || isToSoneium.value) return '';
+    if (!bridgeAmt.value || isNativeToken.value) return '';
     const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
     const amount = isApproveMaxAmount.value
       ? ethersConstants.MaxUint256
@@ -257,6 +299,7 @@ export const useCcipBridge = () => {
     bridgeAmt.value = '';
     isApproveMaxAmount.value = false;
     await setBridgeBalance();
+    await setOutboundLimits();
     return hash;
   };
 
@@ -285,10 +328,29 @@ export const useCcipBridge = () => {
     }
   };
 
+  const setOutboundLimits = async (): Promise<void> => {
+    try {
+      isLoadingOutboundLimits.value = true;
+      if (errMsg.value) return;
+      const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
+
+      const limit = await ccipBridgeService.fetchOutboundLimits({
+        fromNetworkId: fromChainId.value,
+        destNetworkId: toChainId.value,
+      });
+      // Memo: set the maximum outbound limit as 80% per user, so that other users can be able to use the bridge
+      outboundLimits.value = Number(limit) * 0.8;
+    } catch (error) {
+      console.error(error);
+      outboundLimits.value = 0;
+    } finally {
+      isLoadingOutboundLimits.value = false;
+    }
+  };
+
   const setIsGasPayable = async (): Promise<void> => {
     try {
-      if (!currentAccount.value || (!isToSoneium.value && !isApproved.value)) return;
-
+      if (!currentAccount.value || (!isNativeToken.value && !isApproved.value)) return;
       isLoadingGasPayable.value = true;
       const ccipBridgeService = container.get<ICcipBridgeService>(Symbols.CcipBridgeService);
       const amount = bridgeAmt.value ? Number(bridgeAmt.value) : 0.00001;
@@ -315,26 +377,54 @@ export const useCcipBridge = () => {
   };
 
   watch([fromChainId, ethProvider], setProviderChainId, { immediate: true });
-  watch([providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable], setErrorMsg, {
-    immediate: false,
-  });
+  watch([fromChainId], setOutboundLimits, { immediate: true });
 
-  watch([fromChainName, selectedToken, currentAccount], setBridgeBalance, {
+  watch([fromChainName, selectedToken, currentAccount, toChainName], setBridgeBalance, {
     immediate: true,
   });
+
+  const redirectToDefaultCcip = (): void => {
+    const isMatchQuery =
+      chains.value.includes(ccipNetworkParam[route.query.from as CcipNetworkParam]) &&
+      chains.value.includes(ccipNetworkParam[route.query.to as CcipNetworkParam]);
+
+    if (!isMatchQuery) {
+      const defaultFrom = isShibuya.value ? CcipNetworkParam.ShibuyaEvm : CcipNetworkParam.AstarEvm;
+      const defaultTo = isShibuya.value ? CcipNetworkParam.SoneiumMinato : CcipNetworkParam.Soneium;
+      router.replace({
+        query: {
+          from: defaultFrom,
+          to: defaultTo,
+        },
+      });
+    }
+  };
 
   const debounceDelay = 500;
   const debounceFetchFee = 1000;
   const debouncedSetIsApproved = debounce(setIsApproved, debounceDelay);
   const debouncedSetIsFetchFee = debounce(getBridgeFee, debounceFetchFee);
   const debouncedSetIsGasPayable = debounce(setIsGasPayable, debounceFetchFee);
-
-  watch([selectedToken, fromChainId, currentAccount, bridgeAmt], debouncedSetIsApproved, {
-    immediate: true,
-  });
+  const debouncedSetErrorMsg = debounce(setErrorMsg, debounceDelay);
 
   watch(
-    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    [selectedToken, fromChainId, currentAccount, bridgeAmt, toChainId],
+    debouncedSetIsApproved,
+    {
+      immediate: true,
+    }
+  );
+
+  watch(
+    [
+      bridgeAmt,
+      fromChainName,
+      currentAccount,
+      errMsg,
+      providerChainId,
+      currentAccount,
+      toChainName,
+    ],
     debouncedSetIsFetchFee,
     {
       immediate: false,
@@ -342,15 +432,35 @@ export const useCcipBridge = () => {
   );
 
   watch(
-    [bridgeAmt, fromChainName, currentAccount, errMsg, providerChainId, currentAccount],
+    [
+      bridgeAmt,
+      fromChainName,
+      currentAccount,
+      errMsg,
+      providerChainId,
+      currentAccount,
+      toChainName,
+    ],
     debouncedSetIsGasPayable,
     {
       immediate: false,
     }
   );
 
-  watch([selectedToken, fromChainId], resetStates, {
+  watch(
+    [providerChainId, isLoading, bridgeAmt, selectedToken, isGasPayable, isApproved],
+    debouncedSetErrorMsg,
+    {
+      immediate: false,
+    }
+  );
+
+  watch([selectedToken, fromChainId, toChainId], resetStates, {
     immediate: false,
+  });
+
+  watch([route], redirectToDefaultCcip, {
+    immediate: true,
   });
 
   const autoFetchAllowanceHandler = setInterval(
@@ -382,8 +492,12 @@ export const useCcipBridge = () => {
     isApproveMaxAmount,
     transactionFee,
     bridgeFee,
-    isToSoneium,
+    isNativeToken,
     isGasPayable,
+    router,
+    route,
+    chains,
+    loadIsApproved,
     setIsApproving,
     inputHandler,
     resetStates,

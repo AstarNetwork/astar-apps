@@ -420,6 +420,19 @@
     }
   }
 
+  .row__actions-evm {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 32px;
+    @media (min-width: $sm) {
+      gap: 20px;
+      width: 50%;
+      justify-content: flex-end;
+      padding-top: 0;
+    }
+  }
+
   .row__actions-multi {
     display: flex;
     justify-content: center;
@@ -828,7 +841,7 @@
 }
 
 .img--logo-soneium {
-  height: 24px;
+  height: 30px;
 }
 
 .box--ccip {
