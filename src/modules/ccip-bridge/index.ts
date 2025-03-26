@@ -145,8 +145,8 @@ export const ccipBridgeTime: BridgeTimeMap = {
     [CcipNetworkName.Ethereum]: 30,
   },
   [CcipNetworkName.Sepolia]: {
-    [CcipNetworkName.ShibuyaEvm]: 15,
-    [CcipNetworkName.SoneiumMinato]: 15,
+    [CcipNetworkName.ShibuyaEvm]: 20,
+    [CcipNetworkName.SoneiumMinato]: 20,
   },
   [CcipNetworkName.Ethereum]: {
     [CcipNetworkName.AstarEvm]: 20,
