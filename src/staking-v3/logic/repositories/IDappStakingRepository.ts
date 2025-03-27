@@ -87,6 +87,18 @@ export interface IDappStakingRepository {
   getStakeCall(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload>;
 
   /**
+   * Gets move stake call. Tokens needs to be locked in order to be staked.
+   * @param fromContractAddress Address of the contract to move stake from.
+   * @param toContractAddress Address of the contract to move stakes on.
+   * @param amount Amount to move, lower or equal than total stake amount.
+   */
+  getMoveStakeCall(
+    fromContractAddress: string,
+    toContractAddress: string,
+    amount: bigint
+  ): Promise<ExtrinsicPayload>;
+
+  /**
    * Gets unstake call.
    * @param contractAddress Address of the contract to be unstaked from.
    * @param amount Unstaking amount.

@@ -1,6 +1,5 @@
-import { Balance } from '@astar-network/metamask-astar-types';
-import { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces';
-import {
+import type { AccountId32, Perbill, Permill } from '@polkadot/types/interfaces';
+import type {
   BTreeMap,
   Compact,
   Enum,
@@ -13,7 +12,7 @@ import {
   u32,
   u8,
 } from '@polkadot/types';
-import { Codec } from '@polkadot/types/types';
+import type { Codec } from '@polkadot/types/types';
 
 interface PalletDappStakingV3PeriodType extends Enum {
   readonly isVoting: boolean;
@@ -27,13 +26,6 @@ interface PalletDappStakingV3PeriodInfo extends Struct {
   readonly number: Compact<u32>;
   readonly subperiod: PalletDappStakingV3PeriodType;
   readonly nextSubperiodStartEra: Compact<u32>;
-}
-
-interface PalletDappStakingV3DAppState extends Enum {
-  readonly isRegistered: boolean;
-  readonly isUnregistered: boolean;
-  readonly asUnregistered: Compact<u32>;
-  readonly type: 'Registered' | 'Unregistered';
 }
 
 interface PalletDappStakingV3UnlockingChunk extends Struct {
@@ -84,8 +76,9 @@ export interface PalletDappStakingV3StakeAmount extends Struct {
 }
 
 export interface PalletDappStakingV3SingularStakingInfo extends Struct {
+  readonly previousStaked: PalletDappStakingV3StakeAmount;
   readonly staked: PalletDappStakingV3StakeAmount;
-  readonly loyalStaker: bool;
+  readonly bonusStatus: u8;
 }
 
 export interface PalletDappStakingV3PeriodEndInfo extends Struct {

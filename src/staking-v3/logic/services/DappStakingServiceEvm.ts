@@ -206,6 +206,26 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   }
 
   // @inheritdoc
+  public async claimAndMoveStake(
+    senderAddress: string,
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
+  ): Promise<void> {
+    this.guardStake(senderAddress, stakeInfo, moveFromAddress, BigInt(0));
+    const ss58Address = await this.getSS58Address(senderAddress);
+    const batch = await this.getClaimAndMoveStakeBatch(ss58Address, moveFromAddress, stakeInfo);
+
+    await this.wallet.sendEvmTransaction({
+      from: senderAddress,
+      to: dispatch,
+      data: batch.method.toHex(),
+      successMessage,
+      failureMessage: 'Call failed',
+    });
+  }
+
+  // @inheritdoc
   public async claimUnlockedTokens(senderAddress: string, successMessage: string): Promise<void> {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 

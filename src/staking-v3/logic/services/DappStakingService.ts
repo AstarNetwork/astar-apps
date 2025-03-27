@@ -412,6 +412,18 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     await this.signCall(batch, senderAddress, successMessage);
   }
 
+  // @inheritdoc
+  public async claimAndMoveStake(
+    senderAddress: string,
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
+  ): Promise<void> {
+    this.guardStake(senderAddress, stakeInfo, moveFromAddress, BigInt(0));
+    const batch = await this.getClaimAndMoveStakeBatch(senderAddress, moveFromAddress, stakeInfo);
+    await this.signCall(batch, senderAddress, successMessage);
+  }
+
   protected guardStake(
     senderAddress: string,
     stakeInfo: DappStakeInfo[],
@@ -466,6 +478,34 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     // Stake tokens
     for (const info of stakeInfo) {
       calls.push(await this.dappStakingRepository.getStakeCall(info.address, info.amount));
+    }
+
+    const batch = await this.dappStakingRepository.batchAllCalls(calls);
+
+    return batch;
+  }
+
+  protected async getClaimAndMoveStakeBatch(
+    senderAddress: string,
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[]
+  ): Promise<ExtrinsicPayload> {
+    const calls: ExtrinsicPayload[] = [];
+
+    // Staker rewards
+    const claimStakerCall = await this.getClaimStakerRewardsCall(senderAddress);
+    claimStakerCall && calls.push(...claimStakerCall);
+    // Bonus rewards
+    const claimBonusCalls = await this.getClaimBonusRewardsCalls(senderAddress);
+    claimBonusCalls && calls.push(...claimBonusCalls);
+    // Move stake
+    for (const info of stakeInfo) {
+      const moveCall = await this.dappStakingRepository.getMoveStakeCall(
+        moveFromAddress,
+        info.address,
+        info.amount
+      );
+      moveCall && calls.push(moveCall);
     }
 
     const batch = await this.dappStakingRepository.batchAllCalls(calls);

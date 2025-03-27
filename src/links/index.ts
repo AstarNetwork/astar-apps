@@ -53,7 +53,7 @@ export const polkadotJsUrl = {
   },
 };
 
-export const surgeUrl = 'https://surge.sakefinance.com/';
+export const surgeUrl = 'https://acs.astar.network/';
 
 export const ccipExplorerUrl = 'https://ccip.chain.link';
 

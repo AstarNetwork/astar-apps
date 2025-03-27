@@ -44,7 +44,7 @@ export default {
   help: 'Help',
   share: 'Share',
   multisig: 'Multisig',
-  joinSurge: 'Join Astar Surge',
+  joinSurge: 'Go to ACS',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -941,6 +941,10 @@ export default {
     unregisteredDappInfo:
       'This project has been unregistered but If you are currently entitled to Bonus you will be entitled to it as well as basic rewards as long as you do not move/unstake the fund during this Period. Unstake if you still want to (it has {days} days unlocking period).',
     voteSuccess: 'You successfully voted on {number} dApp(s). All pending rewards are claimed.',
+    moveSuccess: 'You successfully moved your stake to {number} dApp(s).',
+    looseBonusWarning:
+      'You will partially loose your bonus rewards if you move your stake to more than {number} dApp(s).',
+    looseAllBonusWarning: 'You will loose your bonus rewards if you move your stake.',
     unbondSuccess: 'You successfully unbonded from {dapp}.',
     unbondFromUnregisteredSuccess: 'You successfully unbonded from unregistered dApp {dapp}.',
     claimRewardSuccess: 'You successfully claimed your rewards.',
@@ -959,6 +963,8 @@ export default {
     registerNow: 'Register now',
     willUnstakeAll:
       'The operation will unstake all of your staked tokens because the minimum staking amount is {amount} tokens.',
+    willMoveAll:
+      'The operation will move all of your staked tokens because the minimum staking amount is {amount} tokens.',
     onboarding: {
       introducing: 'Introducing',
       innovativeWayOfStaking: 'Innovative way of staking',
@@ -1011,10 +1017,14 @@ export default {
       addAmounts: 'Please add the amount to each card.',
       review: 'Check everything is ok before confirming.',
       availableAfterStaking: 'Available amount after staking',
+      remainingAmountAfterMoving: 'Remaining amount on origin dApp after moving',
       beSureToVote:
         'Be sure you vote on dapps otherwise those tokens are not eligible for any rewards.',
       yourAvailableBalance: 'Your available balance',
+      availableToMove: 'Available to move',
       moveFunds: 'Move funds',
+      safeMoveInfo:
+        'You can move your stake to up to {number} dApp(s) without loosing your bonus rewards.',
     },
     registration: {
       success: 'You successfully registered dApp {name} to the store.',
@@ -1137,6 +1147,7 @@ export default {
     slippage: 'Slippage: {percent}%',
     feeOnTransaction: 'Transaction fee: {amount} {symbol}',
     feeOnBridge: 'Bridge fee: {amount} {symbol}',
+    rebate: 'You will receive 0.00008 ETH for gas on Soneium',
     gelatoApiError: 'Bridge UI is not available, please try again later',
     warningHighTraffic:
       'High bridge traffic may delay withdrawal transactions up to 5 hours. We appreciate your patience.',

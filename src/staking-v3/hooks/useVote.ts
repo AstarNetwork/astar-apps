@@ -1,5 +1,5 @@
 import { Ref, computed, ref, watch } from 'vue';
-import type { CombinedDappInfo, DappStakeInfo, DappVote } from '../logic';
+import type { CombinedDappInfo, DappStakeInfo, DappVote, SingularStakingInfo } from '../logic';
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
 import { useDappStaking } from './useDappStaking';
@@ -9,7 +9,7 @@ import { useDappStakingNavigation } from './useDappStakingNavigation';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
-  const { useableBalance } = useBalance(currentAccount);
+  const { useableBalance, lockedInDemocracy } = useBalance(currentAccount);
   const {
     ledger,
     totalStake,
@@ -18,6 +18,8 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     canStake,
     getStakerInfo,
     claimLockAndStake,
+    claimAndMoveStake,
+    isVotingPeriod,
   } = useDappStaking();
   const { navigateToAssets } = useDappStakingNavigation();
   const { getDapp } = useDapps();
@@ -37,27 +39,56 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     return locked.value - totalStakeAmount.value - totalStake.value;
   });
 
+  const stakeToMove = computed<SingularStakingInfo | undefined>(() =>
+    getStakerInfo(dAppToMoveFromAddress.value)
+  );
+
   const availableToMove = computed<bigint>(() => {
-    const info = getStakerInfo(dAppToMoveFromAddress.value);
-    if (info) {
-      return info.staked.totalStake;
+    if (stakeToMove.value) {
+      return stakeToMove.value.staked.totalStake;
     }
 
     return BigInt(0);
   });
 
-  const availableToVote = computed<bigint>(
+  const isPartiallyLosingBonus = (numberOfDappsToMoveTo: number) =>
+    allowedNumberOfMoves.value < numberOfDappsToMoveTo;
+
+  const allowedNumberOfMoves = computed<number>(() => (stakeToMove.value?.bonusStatus ?? 1) - 1);
+
+  const isBonusEntitledMove = computed<boolean>(
     () =>
-      BigInt(useableBalance.value) +
-      max(remainingLockedTokensInitial, BigInt(0)) +
-      availableToMove.value
+      !isVotingPeriod.value &&
+      availableToMove.value > BigInt(0) &&
+      (stakeToMove.value?.loyalStaker || false)
   );
 
-  const availableToVoteDisplay = computed<bigint>(() =>
-    remainingLockedTokens.value >= BigInt(0)
-      ? BigInt(useableBalance.value) + remainingLockedTokens.value + availableToMove.value
-      : BigInt(useableBalance.value) - abs(remainingLockedTokens.value) + availableToMove.value
+  const isMove = computed<boolean>(() => dappToMoveTokensFrom.value !== undefined);
+
+  const availableToVote = computed<bigint>(() =>
+    isMove.value
+      ? availableToMove.value
+      : BigInt(useableBalance.value) +
+        max(remainingLockedTokensInitial, BigInt(0)) +
+        availableToMove.value +
+        lockedInDemocracy.value
   );
+
+  const availableToVoteDisplay = computed<bigint>(() => {
+    if (isMove.value) {
+      return availableToMove.value - totalStakeAmount.value;
+    }
+
+    return remainingLockedTokens.value >= BigInt(0)
+      ? BigInt(useableBalance.value) +
+          lockedInDemocracy.value +
+          remainingLockedTokens.value +
+          availableToMove.value
+      : BigInt(useableBalance.value) +
+          lockedInDemocracy.value -
+          abs(remainingLockedTokens.value) +
+          availableToMove.value;
+  });
 
   const amountToUnstake = computed<bigint>(() =>
     availableToMove.value > totalStakeAmount.value ? totalStakeAmount.value : availableToMove.value
@@ -157,14 +188,19 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   const refUrl = ref<string>('');
 
   const canVote = (): boolean => {
-    const [enabled, message, url] = canStake(stakeInfo.value, availableToVote.value);
+    const [enabled, message, url] = canStake(
+      stakeInfo.value,
+      availableToVote.value,
+      dappToMoveTokensFromAddress ?? ''
+    );
     errorMessage.value = message;
     refUrl.value = url;
 
     return enabled && totalStakeAmount.value > 0;
   };
 
-  const canRestake = (): boolean => canStake(restakeInfo.value, availableToVote.value)[0];
+  const canRestake = (): boolean =>
+    canStake(restakeInfo.value, availableToVote.value, dappToMoveTokensFromAddress ?? '')[0];
 
   const vote = async (restake: boolean): Promise<void> => {
     // If additional funds locking is required remainLockedToken value will be negative.
@@ -173,12 +209,17 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     const tokensToLockIncludingRestake =
       (tokensToLock < 0 ? tokensToLock * BigInt(-1) : BigInt(0)) +
       (restake ? totalStakerRewards.value : BigInt(0));
-    await claimLockAndStake(
-      restake ? restakeInfo.value : stakeInfo.value,
-      tokensToLockIncludingRestake,
-      dAppToMoveFromAddress.value,
-      amountToUnstake.value
-    );
+
+    if (dappToMoveTokensFrom.value) {
+      await claimAndMoveStake(dappToMoveTokensFrom.value.chain.address, stakeInfo.value);
+    } else {
+      await claimLockAndStake(
+        restake ? restakeInfo.value : stakeInfo.value,
+        tokensToLockIncludingRestake,
+        dAppToMoveFromAddress.value,
+        amountToUnstake.value
+      );
+    }
 
     navigateToAssets();
   };
@@ -205,5 +246,10 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     canVote,
     canRestake,
     vote,
+    isBonusEntitledMove,
+    isMove,
+    stakeToMove,
+    isPartiallyLosingBonus,
+    allowedNumberOfMoves,
   };
 }

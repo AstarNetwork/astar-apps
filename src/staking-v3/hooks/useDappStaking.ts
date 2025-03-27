@@ -262,6 +262,28 @@ export function useDappStaking() {
     ]);
   };
 
+  const claimAndMoveStake = async (
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[]
+  ): Promise<void> => {
+    const stakingService = container.get<() => IDappStakingService>(
+      Symbols.DappStakingServiceFactoryV3
+    )();
+    await stakingService.claimAndMoveStake(
+      currentAccount.value,
+      moveFromAddress,
+      stakeInfo,
+      t('stakingV3.moveSuccess', { number: stakeInfo.length })
+    );
+
+    await Promise.all([
+      getAllRewards(),
+      fetchStakerInfoToStore(),
+      fetchStakeAmountsToStore(),
+      getCurrentEraInfo(),
+    ]);
+  };
+
   const claimBonusRewards = async (): Promise<void> => {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
@@ -431,14 +453,16 @@ export function useDappStaking() {
 
   const canStake = (
     stakes: DappStakeInfo[],
-    availableTokensBalance: bigint
+    useableBalance: bigint,
+    moveFromAddress: string
     //Returns: [result, message, docsUrl]
   ): [boolean, string, string] => {
     let stakeSum = BigInt(0);
+    const isMove = moveFromAddress !== '';
 
     for (const stake of stakes) {
-      // const stakeAmount = ethers.utils.parseEther(stake.amount.toString()).toBigInt();
       stakeSum += stake.amount;
+
       if (!stake.address) {
         return [false, t('stakingV3.noDappSelected'), ''];
       } else if (isZkEvm.value) {
@@ -446,8 +470,8 @@ export function useDappStaking() {
       } else if (stake.amount <= 0) {
         return [false, t('stakingV3.dappStaking.ZeroAmount'), ''];
       } else if (
-        constants.value?.minStakeAmountToken &&
-        stake.amount < constants.value.minStakeAmountToken &&
+        constants.value?.minStakeAmount &&
+        stake.amount < constants.value.minStakeAmount &&
         getStakerInfo(stake.address) === undefined
       ) {
         return [
@@ -459,12 +483,13 @@ export function useDappStaking() {
         ];
       } else if (protocolState.value?.maintenance) {
         return [false, t('stakingV3.dappStaking.Disabled'), ''];
-      } else if (stakeSum > availableTokensBalance) {
+      } else if (stakeSum > useableBalance) {
         return [false, t('stakingV3.dappStaking.UnavailableStakeFunds'), ''];
       } else if (
+        !isMove &&
         constants.value &&
         ethers.utils.parseEther(constants.value.minBalanceAfterStaking.toString()).toBigInt() >
-          availableTokensBalance - stakeSum
+          useableBalance - stakeSum
       ) {
         return [
           false,
@@ -481,6 +506,20 @@ export function useDappStaking() {
         return [false, t('stakingV3.dappStaking.PeriodEndsNextEra'), ''];
       } else if (getDapp(stake.address)?.chain?.state === 'Unregistered') {
         return [false, t('stakingV3.dappStaking.NotOperatedDApp'), ''];
+      }
+    }
+
+    if (isMove) {
+      const dappInfo = getStakerInfo(moveFromAddress);
+      const stakedAmount = dappInfo?.staked.totalStake ?? BigInt(0);
+      if (constants.value && constants.value.minStakeAmount > stakedAmount - stakeSum) {
+        return [
+          true,
+          t('stakingV3.willMoveAll', {
+            amount: constants.value.minStakeAmountToken,
+          }),
+          '',
+        ];
       }
     }
 
@@ -672,6 +711,7 @@ export function useDappStaking() {
     getDappRewards,
     fetchConstantsToStore,
     claimLockAndStake,
+    claimAndMoveStake,
     getCurrentEraInfo,
     getDappTiers,
     getDappTier,

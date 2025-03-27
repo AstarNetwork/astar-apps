@@ -22,10 +22,14 @@
     <div class="container-2-columns">
       <div class="staking-balances">
         <div class="container-2-columns">
-          <div>{{ $t('stakingV3.voting.availableAfterStaking') }}</div>
+          <div v-if="isMove">{{ $t('stakingV3.voting.remainingAmountAfterMoving') }}</div>
+          <div v-else>{{ $t('stakingV3.voting.availableAfterStaking') }}</div>
           <token-balance-native :balance="stakeInfo.availableAfterStaking.toString()" />
         </div>
-        <div v-if="stakeInfo.remainingLockedTokens > BigInt(0)" class="remaining-balance">
+        <div
+          v-if="stakeInfo.remainingLockedTokens > BigInt(0) && !isMove"
+          class="remaining-balance"
+        >
           <div class="container-2-columns pink">
             <div>{{ $t('stakingV3.remainingLockedBalance') }}</div>
             <token-balance-native :balance="stakeInfo.remainingLockedTokens.toString()" />
@@ -110,6 +114,11 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: false,
       default: undefined,
+    },
+    isMove: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup(props) {

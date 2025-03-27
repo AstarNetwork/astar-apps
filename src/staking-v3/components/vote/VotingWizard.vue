@@ -5,7 +5,11 @@
         {{ title }}
       </div>
       <div class="balance-container">
-        {{ $t('stakingV3.voting.yourAvailableBalance') }}
+        {{
+          isBonusEntitledMove
+            ? $t('stakingV3.voting.availableToMove')
+            : $t('stakingV3.voting.yourAvailableBalance')
+        }}
         <token-balance-native :balance="availableToVoteDisplay.toString()" />
       </div>
     </div>
@@ -27,8 +31,16 @@
           />
         </div>
       </div>
+      <div v-if="isBonusEntitledMove">
+        {{
+          allowedNumberOfMoves == 0
+            ? $t('stakingV3.looseAllBonusWarning')
+            : $t('stakingV3.voting.safeMoveInfo', { number: allowedNumberOfMoves })
+        }}
+      </div>
     </div>
     <wizard-steps
+      v-if="!isMove"
       :steps="wizardSteps"
       :selected-step-index="selectedStepIndex"
       :completed-steps="completedSteps"
@@ -39,7 +51,10 @@
       <choose-dapps-panel
         v-if="selectedStepIndex === Steps.ChooseDapps"
         :on-dapps-selected="handleDappsSelected"
+        :on-dapps-selection-changed="handleDappsSelectionChanged"
         :scroll-to-top="scrollToWizardTop"
+        :move-from-address="moveFromAddress"
+        :error-message="looseBonusWarningMessage"
       />
       <choose-amounts-panel
         v-if="selectedStepIndex === Steps.AddAmount"
@@ -50,6 +65,7 @@
         :on-amounts-entered="handleAmountsEntered"
         :on-remove-dapp="handleRemoveDapp"
         :on-go-back="handleGoBackToDapps"
+        :is-move="isMove"
       />
       <review-panel
         v-if="selectedStepIndex === Steps.Review"
@@ -128,6 +144,7 @@ export default defineComponent({
     const stakesEntered = ref<boolean>(false);
     const isConfirmed = ref<boolean>(false);
     const showRestakeModal = ref<boolean>(false);
+    const isLoosingBonus = ref<boolean>(false);
     const wizard = ref();
     const {
       totalStakeAmount,
@@ -139,7 +156,13 @@ export default defineComponent({
       availableToMoveFrom,
       canVote,
       vote,
+      isBonusEntitledMove,
+      isMove,
+      stakeToMove,
+      isPartiallyLosingBonus,
+      allowedNumberOfMoves,
     } = useVote(selectedDapps, props.moveFromAddress);
+
     const completedSteps = computed<Map<number, boolean>>(
       () =>
         new Map([
@@ -148,6 +171,18 @@ export default defineComponent({
           [Steps.Review, isConfirmed.value],
         ])
     );
+
+    const looseBonusWarningMessage = computed<string>(() =>{
+      if (isLoosingBonus.value && allowedNumberOfMoves.value > 0) {
+        return t('stakingV3.looseBonusWarning', { number: allowedNumberOfMoves.value });
+      }
+
+      if (isLoosingBonus.value && allowedNumberOfMoves.value == 0) {
+        return t('stakingV3.looseAllBonusWarning');
+      }
+
+      return '';
+  });
 
     const { totalStakerRewards, stakerInfo } = useDappStaking();
 
@@ -197,6 +232,10 @@ export default defineComponent({
       scrollToWizardTop();
     };
 
+    const handleDappsSelectionChanged = (_: DappVote[], after: DappVote[]): void => {
+      isLoosingBonus.value = isBonusEntitledMove.value && isPartiallyLosingBonus(after.length);
+    };
+
     const handleAmountsEntered = (): void => {
       selectedComponentIndex.value = Steps.Review;
       stakesEntered.value = true;
@@ -211,7 +250,7 @@ export default defineComponent({
     };
 
     const handleConfirmAndRestake = async (): Promise<void> => {
-      if (totalStakerRewards.value > BigInt(0) && stakerInfo.value.size > 0) {
+      if (totalStakerRewards.value > BigInt(0) && stakerInfo.value.size > 0 && !isMove.value) {
         setShowRestakeModal(true);
       } else {
         await handleConfirm(false);
@@ -281,6 +320,10 @@ export default defineComponent({
       showRestakeModal,
       totalStakerRewards,
       canVote,
+      isBonusEntitledMove,
+      isMove,
+      isLoosingBonus,
+      stakeToMove,
       vote,
       handleStepSelected: handleSelectComponent,
       handleDappsSelected,
@@ -293,6 +336,9 @@ export default defineComponent({
       scrollToWizardTop,
       setShowRestakeModal,
       handleRestakeConfirm,
+      handleDappsSelectionChanged,
+      allowedNumberOfMoves,
+      looseBonusWarningMessage,
     };
   },
 });

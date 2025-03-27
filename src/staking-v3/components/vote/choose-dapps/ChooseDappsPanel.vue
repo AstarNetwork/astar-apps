@@ -12,6 +12,7 @@
       :filter="searchTerm"
       :on-dapps-selected="handleDappsSelected"
     />
+    <error-panel :error-message="errorMessage" class="error-label" />
     <div v-if="currentView === View.Dapps" class="buttons">
       <go-back-button @click="goBackToCategories">{{
         $t('stakingV3.voting.backToCategory')
@@ -28,6 +29,7 @@ import DappsList from './DappsList.vue';
 import ChooseCategory from './ChooseCategory.vue';
 import DappSearch from './DappSearch.vue';
 import GoBackButton from '../GoBackButton.vue';
+import ErrorPanel from '../../ErrorPanel.vue';
 import { type DappVote, mapToDappVote } from '../../../logic';
 import { useDapps } from 'src/staking-v3/hooks';
 import { useI18n } from 'vue-i18n';
@@ -38,20 +40,30 @@ enum View {
 }
 
 export default defineComponent({
-  components: { DappsList, ChooseCategory, DappSearch, GoBackButton },
+  components: { DappsList, ChooseCategory, DappSearch, GoBackButton, ErrorPanel },
   props: {
     onDappsSelected: {
       type: Function as PropType<(dapps: DappVote[]) => void>,
       required: true,
     },
+    onDappsSelectionChanged: {
+      type: Function as PropType<(before: DappVote[], after: DappVote[]) => void>,
+      required: false,
+      default: undefined,
+    },
     scrollToTop: {
       type: Function as PropType<() => void>,
       required: true,
     },
-    stakeToAddress: {
+    moveFromAddress: {
       type: String,
       required: false,
       default: undefined,
+    },
+    errorMessage: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   setup(props) {
@@ -70,6 +82,7 @@ export default defineComponent({
 
     const dapps = computed<DappVote[]>(() =>
       registeredDapps.value.map((dapp) => mapToDappVote(dapp))
+      .filter(dapp => dapp.address.toLowerCase() !== props.moveFromAddress?.toLowerCase())
     );
 
     const handleCategorySelected = (category: string): void => {
@@ -83,6 +96,7 @@ export default defineComponent({
     };
 
     const handleDappsSelected = (dapps: DappVote[]): void => {
+      props.onDappsSelectionChanged?.(selectedDapps.value, dapps);
       selectedDapps.value = dapps;
     };
 
@@ -147,5 +161,9 @@ export default defineComponent({
       min-width: 160px;
     }
   }
+}
+
+.error-label {
+  margin-top: 24px;
 }
 </style>

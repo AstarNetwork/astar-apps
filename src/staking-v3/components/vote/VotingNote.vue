@@ -88,9 +88,9 @@ export default defineComponent({
 }
 
 .note-container {
-  background-color: $white;
   padding: 16px;
   border-radius: 16px;
+  border: 1px solid $navy-1;
 }
 
 .note--title {

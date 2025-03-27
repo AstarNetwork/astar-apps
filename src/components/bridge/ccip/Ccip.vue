@@ -26,11 +26,16 @@
           :load-is-approved="loadIsApproved"
           @update:isApproveMaxAmount="(value: boolean) => (isApproveMaxAmount = value)"
         />
-        <information
-          v-if="rightUi === 'information'"
-          :transfer-type="HistoryTxType.CCIP_BRIDGE"
-          :is-history="false"
-        />
+        <div v-if="rightUi === 'information'">
+          <information :transfer-type="HistoryTxType.CCIP_BRIDGE" :is-history="false" />
+          <div v-if="isGasRebate" class="row--banner">
+            <img
+              class="banner--eth-rebates"
+              src="~assets/img/banner/banner-eth-rebate.png"
+              alt="eth-rebate"
+            />
+          </div>
+        </div>
         <select-chain
           v-if="rightUi === 'select-chain'"
           v-click-away="cancelHighlight"
@@ -59,7 +64,7 @@ import { computed, defineComponent, ref } from 'vue';
 import { useCcipBridge } from '../../../hooks/bridge/useCcipBridge';
 import { wait } from '@astar-network/astar-sdk-core';
 import { reverseObject } from 'src/modules/common';
-import { CcipNetworkName, ccipNetworkParam, CcipNetworkParam } from 'src/modules/ccip-bridge';
+import { CcipNetworkName, ccipNetworkParam } from 'src/modules/ccip-bridge';
 
 type RightUi = 'information' | 'select-chain';
 
@@ -105,6 +110,13 @@ export default defineComponent({
 
     const { currentAccount } = useAccount();
     const { screenSize, width } = useBreakpoints();
+
+    const isGasRebate = computed<boolean>(() => {
+      return (
+        toChainName.value === CcipNetworkName.Soneium &&
+        fromChainName.value === CcipNetworkName.AstarEvm
+      );
+    });
 
     const handleSetChain = async (chain: CcipNetworkName): Promise<void> => {
       let query = { from: '', to: '' };
@@ -189,6 +201,7 @@ export default defineComponent({
       isHighlightRightUi,
       isModalSelectChain,
       loadIsApproved,
+      isGasRebate,
       setRightUi,
       getSelectableChains,
       cancelHighlight,

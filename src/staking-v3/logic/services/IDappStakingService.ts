@@ -123,6 +123,22 @@ export interface IDappStakingService {
     successMessage: string
   ): Promise<void>;
 
+  /**
+   * Batches and invokes multiple calls
+   * 1. Claims staker and bonus rewards if available
+   * 2. Moves a given tokens amount from one dApp to another
+   * @param senderAddress Staker address.
+   * @param moveFromAddress Address of the contract to move stake from.
+   * @param stakeInfo A map containing contract addresses and amounts to stake.
+   * @param successMessage Message to be displayed on the call success.
+   */
+  claimAndMoveStake(
+    senderAddress: string,
+    moveFromAddress: string,
+    stakeInfo: DappStakeInfo[],
+    successMessage: string
+  ): Promise<void>;
+
   getDappRewardsForPeriod(contractAddress: string, period: number): Promise<[bigint, number]>;
 
   /**

@@ -56,7 +56,7 @@
           }}</a>
         </nav>
         <a class="surge-mobile" :href="surgeUrl" target="_blank">
-          <img :src="require('src/assets/img/surge_token.webp')" alt="Surge" />
+          <img :src="require('src/assets/img/surge_token.webp')" alt="Go to ACS" />
         </a>
 
         <div class="gradient-bg">

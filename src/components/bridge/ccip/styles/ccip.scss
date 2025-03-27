@@ -34,6 +34,24 @@
   }
 }
 
+.row--banner {
+  margin-top: 16px;
+}
+
+.banner--eth-rebates {
+  width: 348px;
+  border-radius: 6px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+  @media (min-width: $md) {
+    width: 320px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
 .half-opacity {
   opacity: 0.4;
   transition: all 0.3s ease 0s;
