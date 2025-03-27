@@ -6,11 +6,12 @@ import { astarNativeTokenErcAddr } from 'src/modules/xcm';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { ICcipBridgeRepository } from 'src/v2/repositories/ICcipBridgeRepository';
 import { IWalletService } from 'src/v2/services';
-import { ICcipBridgeService } from 'src/v2/services/ICcipBridgeService';
+import { ICcipBridgeService, ParamFetchOutboundLimits } from 'src/v2/services/ICcipBridgeService';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { ParamApproveCcip, ParamBridgeCcipAsset } from '../ICcipBridgeService';
 import { CcipChainId } from 'src/modules/ccip-bridge';
+import { buildWeb3Instance, EVM } from 'src/config/web3';
 
 @injectable()
 export class CcipBridgeService implements ICcipBridgeService {
@@ -61,13 +62,8 @@ export class CcipBridgeService implements ICcipBridgeService {
   }
 
   public async fetchFee(param: ParamBridgeCcipAsset): Promise<string> {
-    const provider = getEvmProvider(this.currentWallet as any);
+    const provider = buildWeb3Instance(Number(param.fromNetworkId) as EVM);
     const web3 = new Web3(provider as any);
-    const connectedNetwork = await web3.eth.net.getId();
-
-    if (param.fromNetworkId !== connectedNetwork) {
-      return '0';
-    }
 
     return await this.CcipBridgeRepository.getFee({
       param,
@@ -91,6 +87,16 @@ export class CcipBridgeService implements ICcipBridgeService {
       data: String(txParam.data),
     });
     return transactionHash;
+  }
+
+  public async fetchOutboundLimits(param: ParamFetchOutboundLimits): Promise<string> {
+    const provider = buildWeb3Instance(Number(param.fromNetworkId) as EVM);
+    const web3 = new Web3(provider as any);
+
+    return await this.CcipBridgeRepository.getOutboundLimits({
+      param,
+      web3,
+    });
   }
 
   // Memo: to check if users have enough native token to pay the gas and fee

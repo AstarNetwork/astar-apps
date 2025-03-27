@@ -1,3 +1,4 @@
+import { CcipNetworkParam } from 'src/modules/ccip-bridge';
 import { networkParam, Path } from 'src/router/routes';
 
 export const getHeaderName = (path: string): string => {
@@ -30,8 +31,15 @@ export const buildEthereumBridgePageLink = (): string => {
   return networkParam + Path.Bridge + Path.Ethereum;
 };
 
-export const buildCcipBridgePageLink = (): string => {
-  return networkParam + Path.Bridge + Path.Ccip;
+export const buildCcipBridgePageLink = ({
+  from,
+  to,
+}: {
+  from: CcipNetworkParam;
+  to: CcipNetworkParam;
+}): string => {
+  const base = networkParam + Path.Bridge + Path.Ccip;
+  return base + `?from=${from}&to=${to}`;
 };
 
 export const buildLzBridgePageLink = (): string => {

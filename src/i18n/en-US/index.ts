@@ -63,6 +63,8 @@ export default {
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     balanceNotEnough:
       'You do not have enough {symbol} in your account to pay for the transaction fee',
+    maximumAmount:
+      'The maximum amount you can transfer is {amount} {symbol}. Please try again with a smaller amount',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientOriginChainNativeBalance: 'Insufficient native token balance on {chain}',
@@ -494,6 +496,7 @@ export default {
     faucet: 'Faucet',
     bridge: 'Bridge',
     bridgeToSoneium: 'Bridge to Soneium',
+    bridgeToEthereum: 'Bridge to Ethereum',
     bridgeToZkEvm: 'Bridge to zkEVM',
     swap: 'Swap',
     manage: 'Manage',
@@ -1097,16 +1100,16 @@ export default {
       tag: 'ERC20',
       text: 'Transfer assets between Sepolia and zKatana testnet.',
     },
-    ccipMinatoBridge: {
-      title: 'Soneium Bridge',
+    ccipSbyBridge: {
+      title: 'SBY Bridge',
       tag: 'SBY',
-      text: 'Transfer SBY between Soneium Minato and Shibuya EVM. Powered by CCIP.',
+      text: 'Transfer SBY between Shibuya EVM, Soneium Minato and Sepolia. Powered by CCIP.',
       remark: 'Available on Shibuya EVM. Switch the network to use it.',
     },
-    ccipSoneiumBridge: {
-      title: 'Soneium Bridge',
+    ccipAstrBridge: {
+      title: 'ASTR Bridge',
       tag: 'ASTR',
-      text: 'Transfer ASTR between Soneium and Astar EVM. Powered by CCIP.',
+      text: 'Transfer ASTR between Astar EVM, Soneium and Ethereum. Powered by CCIP.',
       remark: 'Available on Astar EVM. Switch the network to use it.',
     },
     astarBridge: {

@@ -1,7 +1,10 @@
 <template>
   <div class="wrapper--ccip-bridge">
     <div class="rows">
-      <div class="box--input-field">
+      <div
+        class="box--input-field cursor-pointer box--hover--active"
+        @click="setRightUi('select-chain', 'from')"
+      >
         <div class="box__space-between">
           <span> {{ $t('from') }}</span>
           <div>
@@ -24,10 +27,7 @@
         </div>
       </div>
       <div v-if="isEnabledWithdrawal" class="row--reverse">
-        <button
-          class="icon--reverse cursor-pointer"
-          @click="() => reverseChain(fromChainName, toChainName)"
-        >
+        <button class="icon--reverse cursor-pointer" @click="() => reverseChain()">
           <astar-icon-sync size="20" />
         </button>
       </div>
@@ -41,7 +41,10 @@
           </span>
         </q-tooltip>
       </div>
-      <div class="box--input-field row--reverse-bottom">
+      <div
+        class="box--input-field row--reverse-bottom cursor-pointer box--hover--active"
+        @click="setRightUi('select-chain', 'to')"
+      >
         <div class="box__space-between">
           <span> {{ $t('to') }}</span>
           <div>
@@ -133,7 +136,7 @@
             {{ $t('bridge.rebate') }}
           </li>
           <li>
-            {{ $t('bridge.warningCcipTime', { time: ccipBridgeTime[fromChainName as CcipNetworkName] }) }}
+            {{ $t('bridge.warningCcipTime', { time: bridgeTime }) }}
           </li>
         </ul>
       </div>
@@ -170,7 +173,7 @@ import { EthBridgeNetworkName } from 'src/modules/zk-evm-bridge';
 import { useStore } from 'src/store';
 import { PropType, computed, defineComponent, ref, watch } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { ccipMinatoBridgeEnabled, ccipSoneiumBridgeEnabled } from 'src/features';
+import { checkIsCcipBridgeEnabled } from 'src/features';
 import {
   ccipBridgeIcon,
   CCIP_TOKEN,
@@ -184,6 +187,10 @@ export default defineComponent({
     [Jazzicon.name]: Jazzicon,
   },
   props: {
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
     selectedToken: {
       type: Object as PropType<CCIP_TOKEN>,
       required: true,
@@ -194,6 +201,10 @@ export default defineComponent({
     },
     errMsg: {
       type: String,
+      required: true,
+    },
+    loadIsApproved: {
+      type: Boolean,
       required: true,
     },
     isApproved: {
@@ -213,10 +224,6 @@ export default defineComponent({
       required: true,
     },
     isDisabledBridge: {
-      type: Boolean,
-      required: true,
-    },
-    isToSoneium: {
       type: Boolean,
       required: true,
     },
@@ -269,10 +276,18 @@ export default defineComponent({
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isEnabledWithdrawal = computed<boolean>(() => true);
 
+    const ccipBridgeEnabled = computed<boolean>(() => {
+      return checkIsCcipBridgeEnabled({
+        from: props.fromChainName as CcipNetworkName,
+        to: props.toChainName as CcipNetworkName,
+      });
+    });
+
     const isApproveButtonDisabled = computed<boolean>(() =>
       Boolean(
         props.isApproved ||
           props.isDisabledBridge ||
+          props.loadIsApproved ||
           isHandling.value ||
           isLoading.value ||
           !ccipBridgeEnabled.value
@@ -326,13 +341,10 @@ export default defineComponent({
       isHandling.value = false;
     };
 
-    const ccipBridgeEnabled = computed<boolean>(() => {
-      return isShibuyaEvm.value
-        ? ccipMinatoBridgeEnabled
-        : isAstarEvm.value
-        ? ccipSoneiumBridgeEnabled
-        : false;
-    });
+    const bridgeTime = computed<number>(
+      () =>
+        ccipBridgeTime[props.fromChainName as CcipNetworkName][props.toChainName as CcipNetworkName]
+    );
 
     watch(
       [props],
@@ -355,7 +367,7 @@ export default defineComponent({
       isEnabledWithdrawal,
       nativeToken,
       ccipBridgeEnabled,
-      ccipBridgeTime,
+      bridgeTime,
       isApproveButtonDisabled,
       isBridgeButtonDisabled,
       isH160,

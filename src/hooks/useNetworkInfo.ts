@@ -7,7 +7,9 @@ import {
 } from 'src/config/chain';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { polkadotJsUrl } from 'src/links';
+import { CcipNetworkParam } from 'src/modules/ccip-bridge';
 import { getTokenImage } from 'src/modules/token';
+import { buildCcipBridgePageLink } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 
@@ -118,6 +120,22 @@ export function useNetworkInfo() {
       : shibuya;
   });
 
+  const ccipSoneiumLink = computed<string>(() => {
+    return buildCcipBridgePageLink(
+      isShibuyaEvm.value
+        ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.SoneiumMinato }
+        : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Soneium }
+    );
+  });
+
+  const ccipEthereumLink = computed<string>(() => {
+    return buildCcipBridgePageLink(
+      isShibuyaEvm.value
+        ? { from: CcipNetworkParam.ShibuyaEvm, to: CcipNetworkParam.Sepolia }
+        : { from: CcipNetworkParam.AstarEvm, to: CcipNetworkParam.Ethereum }
+    );
+  });
+
   return {
     isMainnet,
     currentNetworkChain,
@@ -137,5 +155,7 @@ export function useNetworkInfo() {
     isShibuya,
     isShibuyaEvm,
     isAstarEvm,
+    ccipSoneiumLink,
+    ccipEthereumLink,
   };
 }
