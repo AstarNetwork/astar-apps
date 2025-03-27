@@ -39,16 +39,6 @@ export default defineComponent({
         link: 'https://astar.network/',
       },
       {
-        title: 'Astar 2.0',
-        img: icon_img.astar2,
-        link: 'https://astar.network/astar2',
-      },
-      {
-        title: 'Tech Stack',
-        img: icon_img.tech_stack,
-        link: 'https://astar.network/developers/techstack',
-      },
-      {
         title: 'Astar Docs',
         img: icon_img.docs,
         link: 'https://docs.astar.network/',
