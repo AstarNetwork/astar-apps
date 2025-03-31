@@ -1,8 +1,8 @@
 import { CcipNetworkName } from './modules/ccip-bridge';
 
 // Bridges
-export const nativeBridgeEnabled = true;
-export const layerZeroBridgeEnabled = true;
+export const nativeBridgeEnabled = false;
+export const layerZeroBridgeEnabled = false;
 export const layerSwapBridgeEnabled = false;
 export const celerBridgeEnabled = true;
 export const omniBridgeEnabled = true;
