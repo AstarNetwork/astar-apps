@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { clickDisclaimerButton } from 'src/modules/playwright';
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/astar/assets');
-});
-
 test.describe('init screen', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/astar/assets');
+  });
+
   test('click the dapp staking page', async ({ page }) => {
     const dappStakingButton = page.getByTestId('dapp-staking');
     await dappStakingButton.click();

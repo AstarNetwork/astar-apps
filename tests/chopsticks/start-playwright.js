@@ -1,3 +1,5 @@
+const core = require('@actions/core');
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const spawn = (cmd) =>
   new Promise((resolve, reject) => {
@@ -6,7 +8,7 @@ const spawn = (cmd) =>
     const stdout = [];
     cp.stdout.on('data', (data) => {
       stdout.push(data.toString());
-      console.info(data.toString())
+      console.info(data.toString());
 
       if (data.toString().includes('Ctrl+C')) {
         cp.kill(9);
@@ -32,16 +34,26 @@ async function run(nodeName, networkInfo, args) {
   console.info('endpoint :', endpoint);
 
   let result = await spawn('npx playwright install --with-deps');
+
+  // Print playwright version
+  await spawn('npx playwright --version');
+
+  // Start tests
   result = await spawn(
     `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test tests/test_specs --project=chromium`
   );
 
   // MEMO: for debugging specific test case
   // result = await spawn(
-  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/assets-transactions-evm.spec.ts --project=chromium --debug`
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' HEADLESS='true' npx playwright test test_specs/assets-transactions.spec.ts --project=chromium`
   // );
 
-  return result?.includes('failed') ? 0 : 1;
+  const runResult = result?.includes('failed') || result?.includes('flaky') ? 1 : 0;
+  if (runResult !== 0) {
+    core.setFailed('One or more playwright tests failed.');
+  }
+
+  return runResult;
 }
 
 module.exports = { run };
