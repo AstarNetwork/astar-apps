@@ -36,6 +36,7 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ASTAR_APPS }}'
           projectId: astar-apps
+          firebaseToolsVersion: 13.35.1
   e2etest:
     permissions:
       checks: write
