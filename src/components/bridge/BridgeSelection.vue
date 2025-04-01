@@ -191,9 +191,9 @@
           <p v-if="!isZkEvm" class="text--bridge-details">
             {{ $t('bridge.ethereumBridge.remark') }}
           </p>
-          <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
+          <!-- <p v-if="!nativeBridgeEnabled" class="text--bridge-details">
             {{ $t('bridge.bridgeMaintenanceMode') }}
-          </p>
+          </p> -->
         </div>
 
         <div class="column--selection">
@@ -230,9 +230,9 @@
           <p v-if="!isEnableLzBridge" class="text--bridge-details">
             {{ $t('bridge.astarBridge.remark') }}
           </p>
-          <p v-if="!layerZeroBridgeEnabled" class="text--bridge-details">
+          <!-- <p v-if="!layerZeroBridgeEnabled" class="text--bridge-details">
             {{ $t('bridge.bridgeMaintenanceMode') }}
-          </p>
+          </p> -->
         </div>
 
         <div class="column--selection">
