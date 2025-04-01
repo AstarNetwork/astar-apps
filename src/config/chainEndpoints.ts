@@ -130,7 +130,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://astar.subscan.io',
     blockscout: 'https://astar-zkevm.explorer.startale.com',
     evmChainId: '3776',
-    evmEndpoints: ['https://rpc.startale.com/astar-zkevm'],
+    evmEndpoints: ['https://rpc-zkevm.astar.network'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/zkatana-logo.png?raw=true',
