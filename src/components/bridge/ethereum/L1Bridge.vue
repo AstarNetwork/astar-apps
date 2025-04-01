@@ -277,7 +277,8 @@ export default defineComponent({
     const store = useStore();
     const isHandling = ref<boolean>(false);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const isEnabledWithdrawal = computed<boolean>(() => false);
+    // const isEnabledWithdrawal = computed<boolean>(() => false);
+    const isEnabledWithdrawal = computed<boolean>(() => true);
     const isHighTrafficModalOpen = ref<boolean>(false);
     const isWarningHighTraffic = computed<boolean>(() => false);
 
