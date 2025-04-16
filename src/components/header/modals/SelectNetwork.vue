@@ -10,21 +10,6 @@
         <span class="text--title">{{ $t('drawer.astarL1') }}</span>
         <div class="line--bottom-bg bottom--l1" />
       </button>
-
-      <button
-        :disabled="true"
-        class="card--astar box--hover--active"
-        :class="selNetworkId === endpointKey.ASTAR_ZKEVM && 'border--active'"
-        @click="setSelNetwork(endpointKey.ASTAR_ZKEVM)"
-      >
-        <img
-          class="img--astar"
-          :src="require('src/assets/img/chain/zkatana-logo.png')"
-          alt="logo-astar-zkevm"
-        />
-        <span class="text--title">{{ $t('drawer.astarZkL2') }}</span>
-        <div class="line--bottom-bg bottom--zkevm" />
-      </button>
     </div>
 
     <div class="container--other-networks">
@@ -59,7 +44,7 @@
           <span class="text--network">{{ $t('drawer.astarTestnet') }}</span>
         </button>
       </div>
-      <div v-if="!isZkEvm" class="container--advanced">
+      <div class="container--advanced">
         <div class="row--title-advanced">
           <span class="text--network">{{ $t('drawer.advanced') }}</span>
           <button
@@ -87,7 +72,7 @@
                 <div class="title--endpoint">
                   <span class="text--network">
                     {{ providerEndpoints[selNetworkId].displayName.replace('Network', '') }}
-                    {{ isZkEvm ? 'RPC' : 'Endpoint' }}
+                    Endpoint
                   </span>
                 </div>
                 <div>
@@ -231,10 +216,6 @@ export default defineComponent({
     },
     checkIsCheckedEndpoint: {
       type: Function,
-      required: true,
-    },
-    isZkEvm: {
-      type: Boolean,
       required: true,
     },
     isSelectLightClient: {

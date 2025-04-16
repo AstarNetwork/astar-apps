@@ -21,7 +21,6 @@
               :set-custom-endpoint="setCustomEndpoint"
               :set-is-network="setIsNetwork"
               :check-is-checked-endpoint="checkIsCheckedEndpoint"
-              :is-zk-evm="isZkEvm"
               :is-select-light-client="isSelectLightClient"
               :is-light-client-extension="isLightClientExtension"
               :is-disabled="isDisabled"
@@ -59,7 +58,6 @@
               :selected-wallet="(selectedWallet as SupportWallet)"
               :select-network="selectNetwork"
               :sel-network-id="selNetworkId"
-              :is-zk-evm="isZkEvm"
               :is-animated-in="isAnimatedIn"
             />
           </div>
@@ -87,7 +85,6 @@ import SelectAccount from './SelectAccount.vue';
 import SelectMultisigAccount from './SelectMultisigAccount.vue';
 import SelectNetwork from './SelectNetwork.vue';
 import SelectWallet from './SelectWallet.vue';
-import Ads from './Ads.vue';
 
 export default defineComponent({
   components: {
@@ -182,10 +179,6 @@ export default defineComponent({
 
     const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const isZkEvm = computed<boolean>(
-      () =>
-        selNetworkId.value === endpointKey.ASTAR_ZKEVM || selNetworkId.value === endpointKey.ZKYOTO
-    );
 
     const setInitialCustomEndpoint = (): string => {
       const selectedEndpointStored = String(localStorage.getItem(SELECTED_ENDPOINT));
@@ -296,9 +289,6 @@ export default defineComponent({
         return !isLightClientExtension.value;
       }
       if (selNetworkId.value === endpointKey.CUSTOM && !customEndpoint.value) {
-        return true;
-      }
-      if (isZkEvm.value && !isH160.value) {
         return true;
       }
 
@@ -455,7 +445,6 @@ export default defineComponent({
       endpointKey,
       isSelectLightClient,
       isLightClientExtension,
-      isZkEvm,
       isDisabled,
       SupportWallet,
       WalletModalOption,

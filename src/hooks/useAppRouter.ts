@@ -24,6 +24,7 @@ import { handleAddDefaultTokens } from './../modules/zk-evm-bridge/l1-bridge/ind
 import { useAccount } from './useAccount';
 import { checkIsNativeWallet } from './helper/wallet';
 import { PolkasafeWrapper } from 'src/types/polkasafe';
+import { buildNetworkUrl } from 'src/router/utils';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } =
   LOCAL_STORAGE;
@@ -54,7 +55,7 @@ export function useAppRouter() {
   };
 
   // Memo: reload the app if local storage is invalid
-  const handleInvalidStorage = (): void => {
+  const handleInvalidStorage = async (): Promise<void> => {
     const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
     const storedWallet = localStorage.getItem(SELECTED_WALLET);
     const isWalletConnect = storedWallet === SupportWallet.WalletConnect;
@@ -62,6 +63,13 @@ export function useAppRouter() {
       (storedAddress && !storedWallet) || (!isWalletConnect && storedWallet && !storedAddress);
 
     invalidCondition && handleResetAccount();
+
+    if (isZkEvm.value) {
+      const network = providerEndpoints[endpointKey.ASTAR].networkAlias;
+      const url = buildNetworkUrl(network);
+      await wait(1000);
+      window.open(url, '_self');
+    }
   };
 
   const handleCheckWalletType = (): void => {
@@ -158,7 +166,9 @@ export function useAppRouter() {
   };
 
   watchEffect(handleInputNetworkParam);
-  watchEffect(handleInvalidStorage);
+  watchEffect(async () => {
+    handleInvalidStorage();
+  });
   watchEffect(initializePolkasafeClient);
   watchEffect(handleAddDefaultTokens);
   watchEffect(handleCheckWalletType);

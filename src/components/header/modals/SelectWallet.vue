@@ -42,7 +42,6 @@
             v-for="(wallet, index) in nativeWallets"
             :key="index"
             :data-testid="wallet.name"
-            :disabled="isZkEvm"
             class="box__row--wallet box--hover--active"
             :class="currentWallet === wallet.source && 'border--active'"
             @click="setSubstrateWalletModal(wallet.source)"
@@ -59,7 +58,6 @@
           <button
             v-if="isEnablePolkasafe"
             class="box__row--wallet box--hover--active"
-            :disabled="isZkEvm"
             :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
             @click="setPolkasafeModal()"
           >
@@ -162,10 +160,6 @@ export default defineComponent({
       required: true,
     },
     isNoExtension: {
-      type: Boolean,
-      required: true,
-    },
-    isZkEvm: {
       type: Boolean,
       required: true,
     },
