@@ -27,7 +27,8 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   const dAppToMoveFromAddress = ref<string>(dappToMoveTokensFromAddress ?? '');
   let remainingLockedTokensInitial = BigInt(0);
 
-  const locked = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
+  const lockedInDappStaking = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
+  const locked = computed<bigint>(() => max(lockedInDappStaking.value, lockedInDemocracy.value));
 
   const totalStakeAmount = computed<bigint>(() =>
     ethers.utils
@@ -70,8 +71,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       ? availableToMove.value
       : BigInt(useableBalance.value) +
         max(remainingLockedTokensInitial, BigInt(0)) +
-        availableToMove.value +
-        lockedInDemocracy.value
+        availableToMove.value
   );
 
   const availableToVoteDisplay = computed<bigint>(() => {
@@ -80,14 +80,8 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
     }
 
     return remainingLockedTokens.value >= BigInt(0)
-      ? BigInt(useableBalance.value) +
-          lockedInDemocracy.value +
-          remainingLockedTokens.value +
-          availableToMove.value
-      : BigInt(useableBalance.value) +
-          lockedInDemocracy.value -
-          abs(remainingLockedTokens.value) +
-          availableToMove.value;
+      ? BigInt(useableBalance.value) + remainingLockedTokens.value + availableToMove.value
+      : BigInt(useableBalance.value) - abs(remainingLockedTokens.value) + availableToMove.value;
   });
 
   const amountToUnstake = computed<bigint>(() =>
