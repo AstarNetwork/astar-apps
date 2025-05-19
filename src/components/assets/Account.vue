@@ -12,51 +12,6 @@
             </span>
           </div>
           <div v-else />
-          <div class="wallet-tab__bg">
-            <template v-if="isH160">
-              <template v-if="isZkEvm">
-                <template v-if="currentNetworkIdx === endpointKey.ASTAR_ZKEVM">
-                  <a class="btn" href="/astar/assets"> Astar EVM (L1) </a>
-                  <div class="btn active">Astar zkEVM</div>
-                </template>
-                <template v-if="currentNetworkIdx === endpointKey.ZKYOTO">
-                  <a class="btn" href="/shibuya-testnet/assets"> Shibuya EVM (L1) </a>
-                  <div class="btn active">Astar zKyoto</div>
-                </template>
-              </template>
-
-              <template v-else>
-                <div class="btn active">
-                  {{ currentNetworkName.replace('Network', '') }}
-                  EVM (L1)
-                </div>
-                <a
-                  v-if="currentNetworkIdx === endpointKey.SHIBUYA"
-                  class="btn"
-                  href="/zkyoto-testnet/assets"
-                >
-                  Astar zKyoto
-                </a>
-                <a
-                  v-else-if="currentNetworkIdx === endpointKey.ASTAR"
-                  href="/astar-zkevm/assets"
-                  class="btn"
-                >
-                  Astar zkEVM
-                </a>
-              </template>
-            </template>
-
-            <!-- Native -->
-            <div v-else class="btn active">
-              {{
-                currentNetworkIdx === endpointKey.ZKYOTO
-                  ? 'Astar'
-                  : currentNetworkName.replace('Network', '')
-              }}
-              {{ $t('native') }}
-            </div>
-          </div>
         </div>
 
         <div class="row">
