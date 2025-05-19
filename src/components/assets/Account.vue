@@ -5,13 +5,31 @@
         <div class="account-bg" :style="{ backgroundImage: `url(${bg})` }" />
 
         <div class="wallet-tab">
-          <div v-if="isLockdropAccount && !isZkEvm" class="row--lockdrop">
+          <div v-if="isLockdropAccount" class="row--lockdrop">
             <span>{{ $t('assets.lockdropAccount') }}</span>
             <span class="text--switch-account" @click="toggleEvmWalletSchema">
               {{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}
             </span>
           </div>
           <div v-else />
+          <div class="wallet-tab__bg">
+            <div v-if="isH160">
+              <div class="btn active">
+                {{ currentNetworkName.replace('Network', '') }}
+                EVM (L1)
+              </div>
+            </div>
+
+            <!-- Native -->
+            <div v-else class="btn active">
+              {{
+                currentNetworkIdx === endpointKey.ZKYOTO
+                  ? 'Astar'
+                  : currentNetworkName.replace('Network', '')
+              }}
+              {{ $t('native') }}
+            </div>
+          </div>
         </div>
 
         <div class="row">
@@ -173,7 +191,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
-    const { currentNetworkIdx, isZkEvm } = useNetworkInfo();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const isWalletConnect = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -216,11 +234,10 @@ export default defineComponent({
     };
 
     watch(
-      [balance, props, currentAccount, ledger, isZkEvm],
+      [balance, props, currentAccount, ledger],
       () => {
         balUsd.value = null;
-        const h160LockedBal =
-          isZkEvm.value || !isH160.value ? '0' : String(ledger?.value?.locked.toString());
+        const h160LockedBal = !isH160.value ? '0' : String(ledger?.value?.locked.toString());
         if (!balance.value || !props.nativeTokenUsd) return;
 
         const bal =
@@ -318,7 +335,6 @@ export default defineComponent({
       isAccountUnification,
       unifiedAccount,
       isAccountUnified,
-      isZkEvm,
       bg,
       currentNetworkIdx,
       currentNetworkName,
