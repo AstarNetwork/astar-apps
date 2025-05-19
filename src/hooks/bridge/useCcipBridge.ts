@@ -242,7 +242,6 @@ export const useCcipBridge = () => {
       const chainId = await web3Provider.value.eth.getChainId();
       providerChainId.value = chainId;
 
-      providerChainId.value = await web3Provider.value!.eth.net.getId();
       if (providerChainId.value !== fromChainId) {
         await setupNetwork({ network: fromChainId, provider: ethProvider.value });
         const chainId = await web3Provider.value.eth.getChainId();

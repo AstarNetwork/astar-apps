@@ -124,30 +124,6 @@
           />
         </div>
 
-        <custom-router-link
-          v-if="isAstar"
-          :to="buildLzBridgePageLink()"
-          :is-disabled="!layerZeroBridgeEnabled"
-        >
-          <button class="btn btn--icon"><astar-icon-bridge /></button>
-          <span class="text--mobile-menu">{{ $t('assets.bridgeToZkEvm') }}</span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridgeToZkEvm') }}</span>
-          </q-tooltip>
-        </custom-router-link>
-
-        <custom-router-link
-          v-if="isZkEvm"
-          :to="buildEthereumBridgePageLink()"
-          :is-disabled="!nativeBridgeEnabled"
-        >
-          <button class="btn btn--icon"><astar-icon-bridge /></button>
-          <span class="text--mobile-menu">{{ $t('assets.bridge') }}</span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('assets.bridge') }}</span>
-          </q-tooltip>
-        </custom-router-link>
-
         <!-- Only SDN is able to bridge via cBridge at this moment -->
         <!-- <a
           v-if="nativeTokenSymbol === 'SDN'"
@@ -205,7 +181,6 @@ import { useAccount, useBreakpoints, useFaucet, useNetworkInfo } from 'src/hooks
 import { faucetSethLink } from 'src/links';
 import { getTokenImage } from 'src/modules/token';
 import {
-  buildCcipBridgePageLink,
   buildEthereumBridgePageLink,
   buildLzBridgePageLink,
   buildTransferPageLink,
@@ -214,7 +189,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 import CustomRouterLink from '../common/CustomRouterLink.vue';
-import { CcipNetworkName, CcipNetworkParam } from 'src/modules/ccip-bridge';
+import { CcipNetworkName } from 'src/modules/ccip-bridge';
 
 export default defineComponent({
   components: { ModalFaucet, CustomRouterLink, Balloon },
@@ -242,7 +217,6 @@ export default defineComponent({
     const {
       currentNetworkName,
       nativeTokenSymbol,
-      isZkEvm,
       isAstar,
       isShibuyaEvm,
       isAstarEvm,
@@ -268,7 +242,6 @@ export default defineComponent({
       getTokenImage({
         isNativeToken: true,
         symbol: nativeTokenSymbol.value,
-        isZkEvm: isZkEvm.value,
       })
     );
 
@@ -349,7 +322,6 @@ export default defineComponent({
       cbridgeAppLink,
       isFaucet,
       isModalFaucet,
-      isZkEvm,
       faucetSethLink,
       width,
       screenSize,

@@ -37,7 +37,6 @@
           {{ $t('stakingV3.unregisteredDappInfo', { days: constants?.unlockingPeriod ?? '--' }) }}
         </span>
         <astar-button
-          :disabled="true"
           class="btn--unregistered-dapp"
           @click="unstakeFromUnregistered(key, getDappName(key))"
         >

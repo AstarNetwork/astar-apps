@@ -497,7 +497,6 @@ export default {
     bridge: 'Bridge',
     bridgeToSoneium: 'Bridge to Soneium',
     bridgeToEthereum: 'Bridge to Ethereum',
-    bridgeToZkEvm: 'Bridge to zkEVM',
     swap: 'Swap',
     manage: 'Manage',
     xcm: 'XCM',
@@ -1088,18 +1087,6 @@ export default {
     disabledWithdrawal: 'Bridge to {network} is disabled.',
     thirdPartyBridge: '3rd Party Bridge',
     bridgeMaintenanceMode: 'Bridge is currently under maintenance mode. Please come back later.',
-    ethereumBridge: {
-      title: 'Native Bridge',
-      tag: 'ERC20',
-      text: 'Transfer assets between {l1} and {l2}.',
-      remark: 'Available on Astar zkEVM. Switch the network to use it.',
-      learn: '(learn more)',
-    },
-    zKatanaBridge: {
-      title: 'zKatana Bridge',
-      tag: 'ERC20',
-      text: 'Transfer assets between Sepolia and zKatana testnet.',
-    },
     ccipSbyBridge: {
       title: 'SBY Bridge',
       tag: 'SBY',
@@ -1112,12 +1099,6 @@ export default {
       text: 'Transfer ASTR between Astar EVM, Soneium and Ethereum. Powered by CCIP.',
       remark: 'Available on Astar EVM. Switch the network to use it.',
     },
-    astarBridge: {
-      title: 'LayerZero',
-      tag: 'ASTR',
-      text: 'Transfer assets between Astar EVM and Astar zkEVM.',
-      remark: 'Available on Astar zkEVM and Astar EVM. Switch the network to use it.',
-    },
     stargateBridge: {
       title: 'Stargate Bridge',
       tag: 'ERC20',
@@ -1129,18 +1110,11 @@ export default {
       text: '3rd Party Bridge. Transfer assets between Ethereum or L2s and {cbridgeNetworkName} EVM.',
       warning: 'Celer Team announced to not access to cbridge, please do not use it.',
     },
-    layerSwap: {
-      title: 'Layerswap',
-      tag: 'ETH',
-      text: '3rd Party Bridge. Fast and reliable crypto transfers across networks to Astar zkEVM.',
-    },
     astarEvmBridge: {
       title: 'EVM Bridge',
       text: 'Transfer assets between EVM and native network.',
     },
     warning32blocks: 'It could take around 10~20mins or more to finalize',
-    warningLzWithdrawal:
-      'It could take approximately 6 hours to finalize the bridge transaction from Astar zkEVM to Astar EVM',
     warningCcipTime: 'It could take approximately {time} mins to finalize the bridge transaction',
     warning2steps:
       'Bridging to L1 (Ethereum) involves 2 steps, and it requires users to make a claim on the L1 network (available in Recent History)',
