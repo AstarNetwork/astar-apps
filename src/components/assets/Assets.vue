@@ -126,7 +126,7 @@ export default defineComponent({
     const isModalXcmTransfer = ref<boolean>(false);
 
     const store = useStore();
-    const { currentAccount } = useAccount();
+    const { currentAccount, senderSs58Account } = useAccount();
 
     const { accountData } = useBalance(currentAccount);
     const {
@@ -253,14 +253,10 @@ export default defineComponent({
     const { allDapps } = useDapps();
     const ownDapps = computed<CombinedDappInfo[]>(() => {
       if (!allDapps.value) return [];
-      return allDapps.value.filter((dapp) => dapp.chain.owner === currentAccount.value);
+      return allDapps.value.filter((dapp) => dapp.chain.owner === senderSs58Account.value);
     });
 
-    const isDappOwner = computed<boolean>(() => {
-      if (ownDapps.value.length > 0) return true;
-      return false;
-    });
-
+    const isDappOwner = computed<boolean>(() => ownDapps.value.length > 0);
     const nativeSection = ref<HTMLElement | null>(null);
     const stakingSection = ref<HTMLElement | null>(null);
     const projectSection = ref<HTMLElement | null>(null);

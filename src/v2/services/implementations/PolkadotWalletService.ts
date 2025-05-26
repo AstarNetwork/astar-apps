@@ -185,6 +185,21 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     throw new Error('Method not implemented.');
   }
 
+  public async signMessage(signerAddress: string, message: string): Promise<string> {
+    const signer = await this.getSigner(signerAddress);
+    if (typeof signer.signRaw !== 'function') {
+      throw new Error('Signer does not support signRaw method');
+    }
+
+    const result = await signer.signRaw({
+      address: signerAddress,
+      data: message,
+      type: 'bytes',
+    });
+
+    return result.signature;
+  }
+
   private async getAccounts(): Promise<Account[]> {
     await this.checkExtension();
     const metadata = await this.metadataRepository.getChainMetadata();

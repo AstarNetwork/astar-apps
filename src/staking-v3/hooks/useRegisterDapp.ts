@@ -6,7 +6,7 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useDapps } from './useDapps';
 
 export function useRegisterDapp() {
-  const { currentAccount, isH160Formatted } = useAccount();
+  const { currentAccount } = useAccount();
   const { getDappByOwner } = useDapps();
   const { currentNetworkName } = useNetworkInfo();
 
@@ -14,10 +14,9 @@ export function useRegisterDapp() {
 
   const getDappAddressToRegister = async (): Promise<string | undefined> => {
     const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-    const developerContract =
-      currentAccount.value && !isH160Formatted.value
-        ? getDappByOwner(currentAccount.value)?.address
-        : undefined;
+    const developerContract = currentAccount.value
+      ? getDappByOwner(currentAccount.value)?.address
+      : undefined;
     if (developerContract) {
       const dapp = await repository.getDapp(currentNetworkName.value, developerContract);
       return dapp === undefined ? developerContract : undefined;

@@ -11,11 +11,11 @@ import {
   TokenApiProviderRepository,
 } from '../logic';
 import { Symbols } from 'src/v2/symbols';
-import { useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { useStore } from 'src/store';
-import axios, { AxiosError } from 'axios';
-import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import axios from 'axios';
+import { TOKEN_API_URL, toSS58Address } from '@astar-network/astar-sdk-core';
 import { NewDappItem } from 'src/staking-v3';
 import { useI18n } from 'vue-i18n';
 
@@ -26,6 +26,7 @@ export function useDapps() {
   const tokenApiProviderRepository = container.get<TokenApiProviderRepository>(
     Symbols.TokenApiProviderRepository
   );
+  const { isH160Formatted } = useAccount();
 
   const registeredDapps = computed<CombinedDappInfo[]>(
     () => store.getters['stakingV3/getRegisteredDapps']
@@ -102,8 +103,9 @@ export function useDapps() {
     allDapps.value.find((d) => d.chain.address.toLowerCase() === dappAddress?.toLowerCase());
 
   const getDappByOwner = (ownerAddress: string): DappInfo | undefined => {
+    const owner = isH160Formatted.value ? toSS58Address(ownerAddress) : ownerAddress;
     const dapps = [...allDapps.value.map((x) => x.chain), ...newDapps.value];
-    return dapps.find((d) => d.owner === ownerAddress && d.state === DappState.Registered);
+    return dapps.find((d) => d.owner === owner && d.state === DappState.Registered);
   };
 
   const getFileInfo = (fileName: string, dataUrl: string): FileInfo => {
