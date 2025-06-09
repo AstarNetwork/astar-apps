@@ -1,4 +1,5 @@
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
+import { stringToU8a } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { handleCheckProviderChainId } from 'src/config/web3';
@@ -231,6 +232,14 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     const provider = new ethers.providers.Web3Provider(this.provider);
     const signer = provider.getSigner();
     const signature = await signer._signTypedData(domain, types, value);
+
+    return signature;
+  }
+
+  public async signMessage(signerAddress: string, message: string): Promise<string> {
+    const provider = new ethers.providers.Web3Provider(this.provider);
+    const signer = provider.getSigner();
+    const signature = await signer.signMessage(stringToU8a(message));
 
     return signature;
   }

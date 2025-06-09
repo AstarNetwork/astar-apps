@@ -243,4 +243,6 @@ export interface IDappStakingRepository {
    * Gets a call to the legacy code to support v2 ledger stakers to withdraw their funds.
    */
   getWithdrawUnbondedCall(): Promise<ExtrinsicPayload>;
+
+  getRegisterDappCall(developerAddress: string, dappAddress: string): Promise<ExtrinsicPayload>;
 }

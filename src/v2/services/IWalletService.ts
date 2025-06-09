@@ -63,4 +63,12 @@ export interface IWalletService {
     types: Record<string, Array<TypedDataField>>,
     value: Record<string, any>
   ): Promise<string>;
+
+  /**
+   * Signs random bytes
+   * @param signerAddress Signer address
+   * @param data Data to sign
+   * @param message message to sign
+   */
+  signMessage(signerAddress: string, message: string): Promise<string>;
 }

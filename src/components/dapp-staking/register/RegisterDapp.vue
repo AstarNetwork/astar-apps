@@ -123,7 +123,7 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/staking-v3/logic/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
+import { useAccount, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { Path } from 'src/router';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
@@ -160,11 +160,9 @@ export default defineComponent({
     const { t } = useI18n();
     const { registerDapp } = useDapps();
     const { signPayload } = useSignPayload();
-    const { selectedTip } = useGasPrice();
     const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const currentAddress = computed(() => store.getters['general/selectedAddress']);
+    const { currentAccount, senderSs58Account } = useAccount();
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
@@ -238,10 +236,7 @@ export default defineComponent({
         store.commit('general/setLoading', true);
         const service = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
         const repository = container.get<IDappStakingRepository>(Symbols.DappStakingRepositoryV3);
-        const developerContract =
-          currentAddress.value &&
-          !isH160.value &&
-          (await service.getRegisteredContract(currentAddress.value));
+        const developerContract = await service.getRegisteredContract(senderSs58Account.value);
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
           const registeredDapp = (await repository.getDapp(
@@ -304,13 +299,14 @@ export default defineComponent({
       dappForm?.value?.validate().then(async (success: boolean) => {
         if (success && validateCustomComponents()) {
           const senderAddress = store.getters['general/selectedAddress'];
+          const isH160 = store.getters['general/isH160Formatted'];
           const currentNetwork = computed(() => {
             const chainInfo = store.getters['general/chainInfo'];
             const chain = chainInfo ? chainInfo.chain : '';
             return chain.toString().split(' ')[0];
           });
 
-          const signature = await signPayload(senderAddress, data.address);
+          const signature = await signPayload(senderSs58Account.value, data.address);
           const result = await registerDapp({
             dapp: data,
             senderAddress,
@@ -326,9 +322,9 @@ export default defineComponent({
     };
 
     watch(
-      [currentAddress],
+      [currentAccount],
       () => {
-        if (currentAddress) {
+        if (currentAccount.value) {
           getDapp();
         }
       },
