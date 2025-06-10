@@ -16,7 +16,7 @@ const hasProposals = computed<boolean>(() => proposals.value.length > 0);
 
 const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
   try {
-    const url = `https://${network}.subsquare.io/api/democracy/proposals?simple=true&page=1&page_size=2`;
+    const url = `https://${network}-api.subsquare.io/democracy/proposals?simple=true&page=1&page_size=2`;
     const response = await axios.get(url);
 
     if (response.data) {
@@ -40,7 +40,7 @@ const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
 
 const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | undefined> => {
   try {
-    const url = `https://${network}.subsquare.io/api/democracy/referendums?simple=true&page=1&page_size=5`;
+    const url = `https://${network}-api.subsquare.io/democracy/referendums?simple=true&page=1&page_size=5`;
     const response = await axios.get(url);
 
     if (response.data) {
@@ -72,10 +72,7 @@ export function useGovernance() {
   });
 
   const isGovernanceEnabled = computed<boolean>(() => {
-    return (
-      currentNetworkIdx.value === endpointKey.ASTAR ||
-      currentNetworkIdx.value === endpointKey.SHIBUYA
-    );
+    return currentNetworkIdx.value === endpointKey.ASTAR;
   });
 
   const governanceUrl = computed<string>(() => {
