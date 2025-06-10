@@ -13,10 +13,12 @@ export type GovernanceData = {
 const proposals = ref<GovernanceData[]>([]);
 const ongoingReferenda = ref<GovernanceData>();
 const hasProposals = computed<boolean>(() => proposals.value.length > 0);
+const baseApiUrl = (network: string): string => `https://${network}-api.subsquare.io`;
+const baseUrl = (network: string): string => `https://${network}.subsquare.io`;
 
 const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
   try {
-    const url = `https://${network}.subsquare.io/api/democracy/proposals?simple=true&page=1&page_size=2`;
+    const url = `${baseApiUrl(network)}/democracy/proposals?simple=true&page=1&page_size=2`;
     const response = await axios.get(url);
 
     if (response.data) {
@@ -26,7 +28,7 @@ const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
             title: proposal.title,
             index: proposal.proposalIndex,
             state: proposal.proposalState.state,
-            url: `https://${network}.subsquare.io/democracy/proposal/${proposal.proposalIndex}`,
+            url: `${baseUrl(network)}/democracy/proposal/${proposal.proposalIndex}`,
           };
         }
       );
@@ -40,7 +42,7 @@ const fetchProposals = async (network: string): Promise<GovernanceData[]> => {
 
 const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | undefined> => {
   try {
-    const url = `https://${network}.subsquare.io/api/democracy/referendums?simple=true&page=1&page_size=5`;
+    const url = `${baseApiUrl(network)}/democracy/referendums?simple=true&page=1&page_size=5`;
     const response = await axios.get(url);
 
     if (response.data) {
@@ -50,7 +52,7 @@ const fetchOngoingReferenda = async (network: string): Promise<GovernanceData | 
             title: referenda.title,
             index: referenda.referendumIndex,
             state: referenda.state ?? 'Unknown',
-            url: `https://${network}.subsquare.io/democracy/referenda/${referenda.referendumIndex}`,
+            url: `${baseUrl(network)}/democracy/referenda/${referenda.referendumIndex}`,
           };
         }
       );
@@ -72,10 +74,7 @@ export function useGovernance() {
   });
 
   const isGovernanceEnabled = computed<boolean>(() => {
-    return (
-      currentNetworkIdx.value === endpointKey.ASTAR ||
-      currentNetworkIdx.value === endpointKey.SHIBUYA
-    );
+    return currentNetworkIdx.value === endpointKey.ASTAR;
   });
 
   const governanceUrl = computed<string>(() => {
