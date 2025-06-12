@@ -44,6 +44,7 @@ import { AlertType } from 'src/store/general/state';
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
 import { AlertMsg } from 'src/modules/toast';
+import { navigateInNewTab } from 'src/util-general';
 
 export default defineComponent({
   name: 'NotificationBar',
@@ -92,7 +93,7 @@ export default defineComponent({
     const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
 
     const goToSubscan = (): void => {
-      window.open(props.explorerUrl, '_blank');
+      navigateInNewTab(props.explorerUrl);
     };
 
     return {
