@@ -30,7 +30,9 @@
           <swiper-slide v-for="(item, index) in combinedCampaigns" :key="index">
             <div
               class="card--swiper"
-              @click="item.link !== undefined ? goToLink(item.link) : goDappPageLink(item.address)"
+              @click="
+                item.link !== undefined ? navigateInNewTab(item.link) : goDappPageLink(item.address)
+              "
             >
               <img :src="item.img" class="card__img" />
               <div class="card__bottom">
@@ -57,6 +59,7 @@ import { defineComponent } from 'vue';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import { useCampaign } from '../hooks';
+import { navigateInNewTab } from 'src/util-general';
 
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -73,10 +76,6 @@ export default defineComponent({
     const router = useRouter();
     const { combinedCampaigns } = useCampaign();
 
-    const goToLink = (link: string): void => {
-      window.open(link, '_blank');
-    };
-
     const goDappPageLink = (address: string | undefined): void => {
       const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
@@ -86,7 +85,7 @@ export default defineComponent({
     return {
       modules: [Navigation],
       combinedCampaigns,
-      goToLink,
+      navigateInNewTab,
       goDappPageLink,
     };
   },

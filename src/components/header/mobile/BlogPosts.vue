@@ -5,7 +5,7 @@
         v-for="(t, index) in items"
         :key="index"
         class="card--blog-post"
-        @click="goToLink(t.link)"
+        @click="navigateInNewTab(t.link)"
       >
         <img :src="t.img" :alt="t.title" />
       </div>
@@ -16,6 +16,7 @@
 import { defineComponent, ref, watch } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
+import { navigateInNewTab } from 'src/util-general';
 
 interface Data {
   img: string;
@@ -55,13 +56,9 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const goToLink = (link: string): void => {
-      window.open(link, '_blank');
-    };
-
     return {
       items,
-      goToLink,
+      navigateInNewTab,
     };
   },
 });

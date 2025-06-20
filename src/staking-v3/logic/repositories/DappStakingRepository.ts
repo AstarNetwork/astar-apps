@@ -593,6 +593,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappStaking.withdrawUnbonded();
   }
 
+  public async getRegisterDappCall(
+    developerAddress: string,
+    dappAddress: string
+  ): Promise<ExtrinsicPayload> {
+    const api = await this.api.getApi();
+    const address = getDappAddressEnum(dappAddress);
+    return api.tx.dappStaking.register(developerAddress, address);
+  }
+
   // ------------------ MAPPERS ------------------
   private mapToModel(state: PalletDappStakingV3ProtocolState): ProtocolState {
     return {

@@ -15,7 +15,7 @@
             :width="140"
             :height="25"
             class="button--website"
-            @click="goLink(dapp.extended?.url ?? '/')"
+            @click="navigateInNewTab(dapp.extended?.url ?? '/')"
           >
             {{ $t('dappStaking.dappPage.goToWebsite') }}
           </astar-irregular-button>
@@ -194,6 +194,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CommunityType } from '@astar-network/astar-sdk-core';
 import { CombinedDappInfo } from 'src/staking-v3/logic';
+import { navigateInNewTab } from 'src/util-general';
 
 export default defineComponent({
   props: {
@@ -243,15 +244,11 @@ export default defineComponent({
       }
     });
 
-    const goLink = (url: string) => {
-      window.open(url, '_blank');
-    };
-
     return {
       sanitizeData,
       getShortenAddress,
       copyAddress,
-      goLink,
+      navigateInNewTab,
       explorerUrl,
       communities,
       virtualMachineTags,
