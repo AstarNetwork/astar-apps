@@ -169,7 +169,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     successMessage,
     failureMessage,
   }: ParamSendEvmTransaction): Promise<string> {
-    console.log('sendEvmTransaction');
     try {
       const web3 = new Web3(this.provider as any);
       const resultCheckProvider = await handleCheckProviderChainId(this.provider);
