@@ -34,7 +34,7 @@ export class UniqueXcmRepository extends XcmRepository {
     const unqCollectionId = 0;
 
     const destination = {
-      V2: {
+      V5: {
         parents: '1',
         interior: {
           X2: [
@@ -43,9 +43,6 @@ export class UniqueXcmRepository extends XcmRepository {
             },
             {
               AccountId32: {
-                network: {
-                  Any: null,
-                },
                 id: decodeAddress(recipientAddress),
               },
             },
