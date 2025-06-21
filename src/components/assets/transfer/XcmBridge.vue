@@ -12,6 +12,7 @@
           :is-selectable="isH160 ? false : true"
           :balance="String(fromAddressBalance)"
           :symbol="token.metadata.symbol"
+          data-testid="xcm-select-from-chain"
         />
         <select-evm-wallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
@@ -29,6 +30,7 @@
           :is-selectable="true"
           :balance="String(destAddressBalance)"
           :symbol="token.metadata.symbol"
+          data-testid="xcm-select-to-chain"
         />
         <div v-if="isEvmBridge || isWithdrawalEthChain">
           <simple-input

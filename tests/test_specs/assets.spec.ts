@@ -1,6 +1,5 @@
 import { clickDisclaimerButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
-import { ApiPromise } from '@polkadot/api';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
@@ -12,18 +11,7 @@ import {
   selectAccount,
   selectMultisigAccount,
 } from '../common';
-import { getApi } from '../common-api';
 import { test } from '../fixtures';
-import { wait } from '@astar-network/astar-sdk-core';
-
-let api: ApiPromise;
-test.beforeAll(async () => {
-  api = await getApi();
-});
-
-test.afterAll(async () => {
-  await api.disconnect();
-});
 
 test.beforeEach(async ({ page, context }) => {
   // TODO consider moving this into beforeAll
@@ -40,7 +28,7 @@ test.beforeEach(async ({ page, context }) => {
   await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
   await page.goto('/astar/assets');
   await connectToNetwork(page);
-  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  await selectAccount(page, ALICE_ACCOUNT_NAME, context);
 });
 
 test.describe('account panel', () => {

@@ -26,7 +26,7 @@
               :is-disabled="isDisabled"
             />
           </div>
-          <div v-else>
+          <div v-else data-testid="wallet-select">
             <div v-if="modalAccountSelect">
               <select-account
                 :selected-wallet="(selectedWallet as SupportWallet)"
