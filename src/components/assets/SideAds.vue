@@ -69,6 +69,7 @@ export default defineComponent({
 }
 .swiper {
   overflow: hidden;
+  z-index: 0;
 }
 .card--swiper {
   border: solid 1px $gray-2;
