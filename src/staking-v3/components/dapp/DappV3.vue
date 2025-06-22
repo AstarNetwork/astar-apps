@@ -78,13 +78,7 @@ export default defineComponent({
     const { getDapp, registeredDapps } = useDapps();
     const { navigateToVote, navigateToHome } = useDappStakingNavigation();
     const store = useStore();
-
     const dappAddress = computed<string>(() => route.query.dapp as string);
-
-    const goLink = (url: string) => {
-      window.open(url, '_blank');
-    };
-
     const dapp = computed<CombinedDappInfo | undefined>(() => getDapp(dappAddress.value));
 
     // Fetch full dApp model from API. Initially, store contains dapp with props required for the main page.
@@ -134,7 +128,6 @@ export default defineComponent({
     return {
       Path,
       dapp,
-      goLink,
       navigateToVote,
       isZkEvm,
       twitterUrl,

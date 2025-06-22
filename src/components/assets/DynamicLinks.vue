@@ -6,7 +6,7 @@
         :key="index"
         class="card"
         :style="`background-image: url('${t.background}'); background-size: cover; background-position: center;`"
-        @click="goToLink(t.link)"
+        @click="navigateInNewTab(t.link)"
       >
         <div class="card--info">
           <div
@@ -28,6 +28,7 @@ import linksData from 'src/data/dynamic_links.json';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
+import { navigateInNewTab } from 'src/util-general';
 
 interface Data {
   background: string;
@@ -86,14 +87,10 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const goToLink = (link: string): void => {
-      window.open(link, '_blank');
-    };
-
     return {
       truncate,
       items,
-      goToLink,
+      navigateInNewTab,
     };
   },
 });

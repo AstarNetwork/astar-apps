@@ -180,6 +180,7 @@ import { useStore } from 'src/store';
 import { socialUrl, docsUrl } from 'src/links';
 import { CultureCode, languagesSelector } from 'src/i18n';
 import { i18n } from 'src/boot/i18n';
+import { navigateInNewTab } from 'src/util-general';
 
 export default defineComponent({
   components: {
@@ -199,7 +200,7 @@ export default defineComponent({
 
     const selectLinkIdx = ref(-1);
     const goLink = (url: string) => {
-      window.open(url, '_blank');
+      navigateInNewTab(url);
     };
 
     const goToLink = (linkIdx: number) => {
