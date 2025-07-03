@@ -241,12 +241,11 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload> {
+  public async getUnstakeCall(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
-    const amountFormatted = this.getFormattedAmount(amount);
 
-    return api.tx.dappStaking.unstake(getDappAddressEnum(contractAddress), amountFormatted);
+    return api.tx.dappStaking.unstake(getDappAddressEnum(contractAddress), amount);
   }
 
   //* @inheritdoc
@@ -258,21 +257,16 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   //* @inheritdoc
-  public async getUnlockCall(amount: number): Promise<ExtrinsicPayload> {
+  public async getUnlockCall(amount: bigint): Promise<ExtrinsicPayload> {
     const api = await this.api.getApi();
-    const amountFormatted = this.getFormattedAmount(amount);
 
-    return api.tx.dappStaking.unlock(amountFormatted);
-  }
-
-  private getFormattedAmount(amount: number): BigInt {
-    return ethers.utils.parseEther(amount.toString()).toBigInt();
+    return api.tx.dappStaking.unlock(amount);
   }
 
   //* @inheritdoc
   public async getUnstakeAndUnlockCalls(
     contractAddress: string,
-    amount: number
+    amount: bigint
   ): Promise<ExtrinsicPayload[]> {
     Guard.ThrowIfUndefined(contractAddress, 'contractAddress');
     const api = await this.api.getApi();
