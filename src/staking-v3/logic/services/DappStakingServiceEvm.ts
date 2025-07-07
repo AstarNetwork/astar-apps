@@ -50,7 +50,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
   // @inheritdoc
   public async claimUnstakeAndUnlock(
     contractAddress: string,
-    amount: number,
+    amount: bigint,
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
@@ -112,7 +112,7 @@ export class DappStakingServiceEvm extends DappStakingService implements IDappSt
 
   public async unlockTokens(
     senderAddress: string,
-    amount: number,
+    amount: bigint,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');

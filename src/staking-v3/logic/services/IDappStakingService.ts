@@ -28,7 +28,7 @@ export interface IDappStakingService {
    */
   claimUnstakeAndUnlock(
     contractAddress: string,
-    amount: number,
+    amount: bigint,
     senderAddress: string,
     successMessage: string
   ): Promise<void>;
@@ -161,7 +161,7 @@ export interface IDappStakingService {
    */
   relockUnlockingTokens(senderAddress: string, successMessage: string): Promise<void>;
 
-  unlockTokens(senderAddress: string, amount: number, successMessage: string): Promise<void>;
+  unlockTokens(senderAddress: string, amount: bigint, successMessage: string): Promise<void>;
 
   getStakerInfo(
     address: string,
