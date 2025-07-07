@@ -8,7 +8,7 @@
     <div class="wrapper--maintenance">
       <div class="main--text">{{ $t('stakingV3.dappStaking.Disabled') }}</div>
       <div class="sub-text">{{ $t('dappStaking.maintenance.visitLater') }}</div>
-      <div class="home" @click="goHome">{{ $t('links.goToAssets') }}</div>
+      <div class="home" @click="goToAssets">{{ $t('links.goToAssets') }}</div>
     </div>
   </modal-wrapper>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
     });
     const isClosingModal = ref(false);
     const closeModal = () => {};
-    const goHome = () => {
+    const goToAssets = () => {
       router.push(Path.Assets);
     };
 
@@ -41,7 +41,7 @@ export default defineComponent({
       show,
       isClosingModal,
       closeModal,
-      goHome,
+      goToAssets,
     };
   },
 });
