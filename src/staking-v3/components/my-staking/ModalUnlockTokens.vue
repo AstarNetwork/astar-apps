@@ -138,7 +138,6 @@ export default defineComponent({
       const unlockAmount = isMaxAmount.value
         ? props.maxUnlockAmount
         : ethers.utils.parseEther(amount.value ?? '0').toBigInt();
-      console.log('Unlocking tokens:', unlockAmount);
       await unlock(unlockAmount);
     };
 
