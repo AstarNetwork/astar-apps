@@ -732,6 +732,7 @@ export default {
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
     astarDocs: 'Astar Docs',
+    goHome: 'Go Home',
   },
   disclaimer: {
     disclaimer: 'Disclaimer',

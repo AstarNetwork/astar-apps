@@ -8,7 +8,7 @@
     <div class="wrapper--maintenance">
       <div class="main--text">{{ $t('stakingV3.dappStaking.Disabled') }}</div>
       <div class="sub-text">{{ $t('dappStaking.maintenance.visitLater') }}</div>
-      <div class="home" @click="goHome">{{ $t('links.astarHome') }}</div>
+      <div class="home" @click="goHome">{{ $t('links.goHome') }}</div>
     </div>
   </modal-wrapper>
 </template>
