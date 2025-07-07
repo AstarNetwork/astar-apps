@@ -473,6 +473,7 @@ export default {
       switching: 'Switching to',
       willBeBack: 'We will be back',
       verySoon: 'very soon',
+      visitLater: 'Please visit the page later.',
     },
   },
   assets: {
@@ -763,9 +764,9 @@ export default {
     noDappSelected: 'No dApp selected.',
     stakerRewardsExpired: 'Staker rewards expired.',
     dappStaking: {
-      Disabled: 'Pallet is disabled/in maintenance mode.',
+      Disabled: 'dApp staking is currently in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
-      NoStakingInfo: 'Account has no staking information for the contract',
+      NoStakingInfo: 'Account has no staking informatimoon for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
         'Period ends in the next era. It is not possible to stake in the last era of a period.',
