@@ -473,6 +473,7 @@ export default {
       switching: 'Switching to',
       willBeBack: 'We will be back',
       verySoon: 'very soon',
+      visitLater: 'Please visit the page later.',
     },
   },
   assets: {
@@ -731,6 +732,7 @@ export default {
     portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
     astarDocs: 'Astar Docs',
+    goHome: 'Go Home',
   },
   disclaimer: {
     disclaimer: 'Disclaimer',
@@ -763,7 +765,7 @@ export default {
     noDappSelected: 'No dApp selected.',
     stakerRewardsExpired: 'Staker rewards expired.',
     dappStaking: {
-      Disabled: 'Pallet is disabled/in maintenance mode.',
+      Disabled: 'dApp staking is currently in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
       NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
