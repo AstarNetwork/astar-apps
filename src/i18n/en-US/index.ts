@@ -766,7 +766,7 @@ export default {
     dappStaking: {
       Disabled: 'dApp staking is currently in maintenance mode.',
       NoExpiredEntries: 'There are no expired entries to clean up.',
-      NoStakingInfo: 'Account has no staking informatimoon for the contract',
+      NoStakingInfo: 'Account has no staking information for the contract',
       NotOperatedDApp: 'dApp is part of dApp staking but is not active anymore.',
       PeriodEndsNextEra:
         'Period ends in the next era. It is not possible to stake in the last era of a period.',
