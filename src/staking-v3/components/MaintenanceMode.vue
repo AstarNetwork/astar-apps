@@ -78,4 +78,10 @@ export default defineComponent({
   cursor: pointer;
   color: $astar-blue;
 }
+
+.body--dark {
+  .wrapper--maintenance {
+    color: $gray-1;
+  }
+}
 </style>
