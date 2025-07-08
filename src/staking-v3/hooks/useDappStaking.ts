@@ -180,7 +180,7 @@ export function useDappStaking() {
       ? protocolState.value.periodInfo.number < period - constants.value.rewardRetentionInPeriods
       : true;
 
-  const unstake = async (dapp: CombinedDappInfo, amount: number): Promise<void> => {
+  const unstake = async (dapp: CombinedDappInfo, amount: bigint): Promise<void> => {
     const stakingService = container.get<() => IDappStakingService>(
       Symbols.DappStakingServiceFactoryV3
     )();
@@ -363,11 +363,7 @@ export function useDappStaking() {
       const stakingService = container.get<() => IDappStakingService>(
         Symbols.DappStakingServiceFactoryV3
       )();
-      await stakingService.unlockTokens(
-        currentAccount.value,
-        Number(ethers.utils.formatEther(amount)),
-        t('stakingV3.unlockSuccess')
-      );
+      await stakingService.unlockTokens(currentAccount.value, amount, t('stakingV3.unlockSuccess'));
     }
   };
 

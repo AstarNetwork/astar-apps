@@ -103,7 +103,7 @@ export interface IDappStakingRepository {
    * @param contractAddress Address of the contract to be unstaked from.
    * @param amount Unstaking amount.
    */
-  getUnstakeCall(contractAddress: string, amount: number): Promise<ExtrinsicPayload>;
+  getUnstakeCall(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload>;
 
   /**
    * Gets unstake from unregistered contract call.
@@ -115,14 +115,14 @@ export interface IDappStakingRepository {
    * Gets unlock call.
    * @param amount Amount of tokens to unlock.
    */
-  getUnlockCall(amount: number): Promise<ExtrinsicPayload>;
+  getUnlockCall(amount: bigint): Promise<ExtrinsicPayload>;
 
   /**
    * Gets batch call made of unstake and unlock calls.
    * @param contractAddress Address of the contract to be staked to.
    * @param amount Staking amount.
    */
-  getUnstakeAndUnlockCalls(contractAddress: string, amount: number): Promise<ExtrinsicPayload[]>;
+  getUnstakeAndUnlockCalls(contractAddress: string, amount: bigint): Promise<ExtrinsicPayload[]>;
 
   /**
    * Gets claim staker rewards batch call. Situations when multiple claim staker call are required

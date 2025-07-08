@@ -1,11 +1,51 @@
 <template>
-  <div class="wrapper--maintenance">
-    <div class="header--text">{{ $t('dappStaking.maintenance.switching') }}</div>
-    <div class="main--text">V3</div>
-    <div class="footer--text">{{ $t('dappStaking.maintenance.willBeBack') }}</div>
-    <div class="footer--text">{{ $t('dappStaking.maintenance.verySoon') }}</div>
-  </div>
+  <modal-wrapper
+    :is-modal-open="show"
+    title=""
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
+  >
+    <div class="wrapper--maintenance">
+      <div class="main--text">{{ $t('stakingV3.dappStaking.Disabled') }}</div>
+      <div class="sub-text">{{ $t('dappStaking.maintenance.visitLater') }}</div>
+      <div class="home" @click="goToAssets">{{ $t('links.goToAssets') }}</div>
+    </div>
+  </modal-wrapper>
 </template>
+
+<script lang="ts">
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { useDappStaking } from '../hooks';
+import { Path } from 'src/router';
+
+export default defineComponent({
+  name: 'MaintenanceMode',
+  components: {
+    ModalWrapper,
+  },
+  setup() {
+    const router = useRouter();
+    const { protocolState } = useDappStaking();
+    const show = computed<boolean>(() => {
+      return protocolState.value ? protocolState.value.maintenance : false;
+    });
+    const isClosingModal = ref(false);
+    const closeModal = () => {};
+    const goToAssets = () => {
+      router.push(Path.Assets);
+    };
+
+    return {
+      show,
+      isClosingModal,
+      closeModal,
+      goToAssets,
+    };
+  },
+});
+</script>
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
@@ -13,25 +53,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  height: 70vh;
+  height: 100%;
   width: 100%;
   font-size: 24px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  background: url('/images/bk_maintenance.png') no-repeat center;
   color: $container-bg-white;
-  @media (min-width: $lg) {
-    background-size: contain;
-  }
-}
-
-.header--text {
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 96.8%;
+  row-gap: 24px;
+  padding: 16px;
+  padding-bottom: 48px;
+  color: $navy-1;
 }
 
 .main--text {
@@ -42,11 +74,14 @@
   margin: 16px 0;
 }
 
-.footer--text {
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  letter-spacing: 2.8px;
+.home {
+  cursor: pointer;
+  color: $astar-blue;
+}
+
+.body--dark {
+  .wrapper--maintenance {
+    color: $gray-1;
+  }
 }
 </style>

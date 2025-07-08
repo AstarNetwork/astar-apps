@@ -109,7 +109,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
   // @inheritdoc
   public async claimUnstakeAndUnlock(
     contractAddress: string,
-    amount: number,
+    amount: bigint,
     senderAddress: string,
     successMessage: string
   ): Promise<void> {
@@ -122,7 +122,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
 
   protected async getClaimUnstakeAndUnlockBatch(
     contractAddress: string,
-    amount: number,
+    amount: bigint,
     senderAddress: string
   ): Promise<ExtrinsicPayload> {
     const claimStakerCalls = await this.getClaimStakerAndBonusRewardsCalls(senderAddress);
@@ -189,7 +189,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
 
   public async unlockTokens(
     senderAddress: string,
-    amount: number,
+    amount: bigint,
     successMessage: string
   ): Promise<void> {
     Guard.ThrowIfUndefined(senderAddress, 'senderAddress');
@@ -471,7 +471,7 @@ export class DappStakingService extends SignerService implements IDappStakingSer
     if (unstakeAmount > BigInt(0)) {
       const unstakeCall = await this.dappStakingRepository.getUnstakeCall(
         unstakeFromAddress,
-        Number(ethers.utils.formatEther(unstakeAmount.toString()))
+        unstakeAmount
       );
       calls.push(unstakeCall);
     }

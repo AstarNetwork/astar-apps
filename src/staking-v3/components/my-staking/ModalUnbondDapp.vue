@@ -129,13 +129,16 @@ export default defineComponent({
 
     const amount = ref<string | null>(null);
     const errorMessage = ref<string | undefined>();
+    const isMaxAmount = ref<boolean>(false);
 
     const toMaxAmount = (): void => {
       amount.value = ethers.utils.formatEther(maxAmount.value.toString());
+      isMaxAmount.value = true;
     };
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
+      isMaxAmount.value = false;
     };
 
     const isClosingModal = ref<boolean>(false);
@@ -158,9 +161,12 @@ export default defineComponent({
 
     const unbound = async (): Promise<void> => {
       await closeModal();
-      const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : amount.value;
+      const unlockAmount = isMaxAmount.value
+        ? maxAmount.value
+        : ethers.utils.parseEther(amount.value ?? '0').toBigInt();
+      const unstakeAmount = isBelowThanMinStaking.value ? maxAmount.value : unlockAmount;
       if (unstakeAmount) {
-        await unstake(props.dapp, Number(unstakeAmount));
+        await unstake(props.dapp, unstakeAmount);
       } else {
         throw 'Invalid un-bonding amount';
       }

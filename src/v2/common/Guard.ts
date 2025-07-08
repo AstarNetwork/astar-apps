@@ -25,7 +25,7 @@ export class Guard {
    * @param paramName Parameter name.
    * @param paramValue Parameter value.
    */
-  public static ThrowIfNegative(paramName: string, paramValue: BN | number): void {
+  public static ThrowIfNegative(paramName: string, paramValue: BN | number | bigint): void {
     if (!paramName) {
       throw new Error('Invalid argument paramName');
     }
