@@ -66,6 +66,12 @@ export default defineComponent({
   color: $navy-1;
 }
 
+.body--dark {
+  .wrapper--maintenance {
+    color: $gray-1;
+  }
+}
+
 .main--text {
   font-size: 48px;
   font-style: normal;
