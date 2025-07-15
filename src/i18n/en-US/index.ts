@@ -131,6 +131,9 @@ export default {
     loading: 'Loading...',
     comingSoon: 'Coming soon',
     checkHowToSolve: 'Check how to solve this problem',
+    snapDeprecated:
+      '⚠️ Important: Astar Snap is being deprecated soon. Make sure to migrate your assets to a supported wallet to keep them accessible.',
+    availableWallet: 'You can find available wallet options in our documentation.',
     speed: {
       speed: 'Transaction speed',
       speedTip: 'Transaction speed (Tip)',

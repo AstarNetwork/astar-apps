@@ -6,11 +6,11 @@
     <div class="wrapper--dashboard-layout__inner">
       <portal-header />
       <!-- <under-maintenance-banner /> -->
+      <snap-deprecated-banner />
       <dapp-staking-banner />
       <main id="assets-top" class="wrapper--main">
         <div class="wrapper--components">
           <div class="page-bg" :style="{ backgroundImage: `url(${bg})` }" />
-
           <slot />
         </div>
       </main>
@@ -28,12 +28,14 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import UnderMaintenanceBanner from 'src/components/header/UnderMaintenanceBanner.vue';
 import DappStakingBanner from 'src/components/header/DappStakingBanner.vue';
+import SnapDeprecatedBanner from 'src/components/header/SnapDeprecatedBanner.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarDesktop,
     DappStakingBanner,
+    SnapDeprecatedBanner,
   },
   setup() {
     const store = useStore();
