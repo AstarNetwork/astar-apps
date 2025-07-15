@@ -21,14 +21,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const isSnap = ref<boolean>(false);
-    const { currentAccount } = useAccount();
-
-    const accounts = computed(() => store.getters['general/substrateAccounts']);
+    const { currentAccount, substrateAccounts } = useAccount();
 
     watch(
-      [accounts, currentAccount],
+      [substrateAccounts, currentAccount],
       () => {
-        const selectedWallet = getSelectedAccount(accounts.value);
+        const selectedWallet = getSelectedAccount(substrateAccounts.value);
         isSnap.value = selectedWallet?.source === SupportWallet.Snap;
       },
       { immediate: false }
@@ -75,7 +73,7 @@ export default defineComponent({
 }
 
 .banner__link {
-  color: $astar-blue;
+  color: blue;
   text-decoration: underline;
 }
 </style>
