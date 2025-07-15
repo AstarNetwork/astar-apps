@@ -13,6 +13,7 @@ import { XcmRepository } from '../XcmRepository';
  */
 export class AstarXcmRepository extends XcmRepository {
   private astarNativeTokenId;
+  protected readonly xcmVersion = 'V5';
 
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);

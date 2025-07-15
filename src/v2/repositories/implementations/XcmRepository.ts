@@ -47,7 +47,7 @@ export const ASTAR_ADDRESS_PREFIX = 5;
 @injectable()
 export class XcmRepository implements IXcmRepository {
   // XCM version to use for all message constructions
-  protected readonly xcmVersion: 'V3' | 'V5' = 'V5';
+  protected readonly xcmVersion: 'V3' | 'V5' = 'V3';
 
   // Ids of Astar tokens on foreign network. To be initialized in iherited class.
   protected astarTokens: TokenId;

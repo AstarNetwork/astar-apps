@@ -13,7 +13,6 @@ import { XcmRepository } from '../XcmRepository';
  * Used to transfer assets from Interlay/Kintsugi
  */
 export class InterlayXcmRepository extends XcmRepository {
-  protected readonly xcmVersion = 'V3';
 
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
