@@ -16,6 +16,8 @@ const TOKEN_IDS: Record<string, any> = {
 };
 
 export class PendulumXcmRepository extends XcmRepository {
+  protected readonly xcmVersion = 'V3';
+
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
     const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
