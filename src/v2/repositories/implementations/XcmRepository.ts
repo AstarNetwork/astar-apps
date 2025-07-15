@@ -305,7 +305,14 @@ export class XcmRepository implements IXcmRepository {
     const api = await this.apiFactory.get(endpoint);
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(tokenId);
     const formattedAssetConfig = JSON.parse(config.toString());
-    return formattedAssetConfig.v3;
+
+    // Get the first available version (v3, v4, v5, etc.)
+    const versionKey = Object.keys(formattedAssetConfig)[0];
+    if (!versionKey) {
+      throw new Error('No version found in asset config');
+    }
+
+    return formattedAssetConfig[versionKey];
   }
 
   protected async fetchAssetConfig(
