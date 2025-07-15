@@ -128,7 +128,7 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const version = 'V3';
+    const version = 'V5';
     // the target parachain connected to the current relaychain
     const destination = {
       [version]: {
@@ -210,7 +210,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      V3: {
+      V5: {
         fun: {
           Fungible: new BN(amount),
         },
@@ -219,7 +219,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const destination = {
-      V3: {
+      V5: {
         interior: {
           X1: {
             AccountId32: {

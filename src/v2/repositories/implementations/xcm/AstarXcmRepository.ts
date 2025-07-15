@@ -50,7 +50,7 @@ export class AstarXcmRepository extends XcmRepository {
         };
 
     const assets = {
-      V3: {
+      V5: {
         fun: {
           Fungible: new BN(amount),
         },
@@ -73,7 +73,7 @@ export class AstarXcmRepository extends XcmRepository {
         };
 
     const destination = {
-      V3: {
+      V5: {
         interior: {
           X2: [
             {
@@ -97,7 +97,7 @@ export class AstarXcmRepository extends XcmRepository {
     if (feeAssetInformation.feeAssetIsRequired) {
       // we need to use another token for the fee
       const fee = {
-        V3: {
+        V5: {
           fun: {
             Fungible: new BN(feeAssetInformation.feeAmount),
           },

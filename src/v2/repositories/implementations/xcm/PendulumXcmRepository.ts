@@ -40,7 +40,7 @@ export class PendulumXcmRepository extends XcmRepository {
       throw `Token name for ${token.originAssetId} is not defined`;
     }
 
-    const version = 'V3';
+    const version = 'V5';
 
     const AccountId32 = {
       id: decodeAddress(recipientAddress),

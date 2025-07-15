@@ -35,7 +35,7 @@ export class StatemintXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const version = 'V3';
+    const version = 'V5';
     const destination = {
       [version]: {
         interior: {
