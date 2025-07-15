@@ -46,6 +46,9 @@ export const ASTAR_ADDRESS_PREFIX = 5;
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
+  // XCM version to use for all message constructions
+  protected readonly xcmVersion = 'V5';
+  
   // Ids of Astar tokens on foreign network. To be initialized in iherited class.
   protected astarTokens: TokenId;
 
@@ -128,10 +131,9 @@ export class XcmRepository implements IXcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const version = 'V5';
     // the target parachain connected to the current relaychain
     const destination = {
-      [version]: {
+      [this.xcmVersion]: {
         interior: {
           X1: {
             Parachain: new BN(to.parachainId),
@@ -149,7 +151,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const beneficiary = {
-      [version]: {
+      [this.xcmVersion]: {
         interior: {
           X1: {
             AccountId32,
@@ -160,7 +162,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      [version]: [
+      [this.xcmVersion]: [
         {
           fun: {
             Fungible: amount,
@@ -210,7 +212,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      V5: {
+      [this.xcmVersion]: {
         fun: {
           Fungible: new BN(amount),
         },
@@ -219,7 +221,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const destination = {
-      V5: {
+      [this.xcmVersion]: {
         interior: {
           X1: {
             AccountId32: {

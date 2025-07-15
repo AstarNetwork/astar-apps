@@ -47,7 +47,7 @@ export class AcalaXcmRepository extends XcmRepository {
     const tokenData = this.getTokenData(token);
 
     const destination = {
-      V5: {
+      [this.xcmVersion]: {
         parents: '1',
         interior: {
           X2: [

@@ -35,7 +35,7 @@ export class InterlayXcmRepository extends XcmRepository {
     const tokenData = { Token: token.originAssetId };
 
     const destination = {
-      V5: {
+      [this.xcmVersion]: {
         parents: '1',
         interior: {
           X2: [
