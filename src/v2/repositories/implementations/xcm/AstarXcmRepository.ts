@@ -4,7 +4,7 @@ import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
-import { Asset, Chain, ethWalletChains, XcmChain } from 'src/v2/models';
+import { Asset, ethWalletChains, XcmChain } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
@@ -40,14 +40,10 @@ export class AstarXcmRepository extends XcmRepository {
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
 
     const asset = isWithdrawAssets
-      ? {
-          Concrete: await this.fetchAssetConfig(from, token, endpoint),
-        }
+      ? await this.fetchAssetConfig(from, token, endpoint)
       : {
-          Concrete: {
-            interior: 'Here',
-            parents: new BN(0),
-          },
+          interior: 'Here',
+          parents: new BN(0),
         };
 
     const assets = {
