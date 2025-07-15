@@ -34,10 +34,6 @@ export default defineComponent({
       { immediate: false }
     );
 
-    // watchEffect(() => {
-    //   console.log('isSnap', isSnap.value);
-    // });
-
     return { docsUrl, isSnap };
   },
 });
