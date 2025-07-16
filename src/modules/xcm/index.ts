@@ -298,10 +298,7 @@ export let xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_POLKADOT,
-    endpoints: [
-      'wss://hk.p.bifrost-rpc.liebi.com/ws',
-      'wss://bifrost-polkadot.api.onfinality.io/public-ws',
-    ],
+    endpoints: ['wss://hk.p.bifrost-rpc.liebi.com/ws'],
     chopsticksEndpoint: 'ws://localhost:9947',
     subscan: 'https://bifrost.subscan.io',
     isAstarNativeToken: true,
