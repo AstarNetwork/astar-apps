@@ -43,14 +43,12 @@ export class HydrationXcmRepository extends XcmRepository {
       throw `Token name for ${token.originAssetId} is not defined`;
     }
 
-    const version = 'V3';
-
     const AccountId32 = {
       id: decodeAddress(recipientAddress),
     };
 
     const destination = {
-      [version]: {
+      [this.xcmVersion]: {
         parents: '1',
         interior: {
           X2: [

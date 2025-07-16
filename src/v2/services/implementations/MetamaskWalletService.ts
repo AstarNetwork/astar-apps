@@ -178,10 +178,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       const rawTx = await getRawEvmTransaction(web3, from, to, data, value);
 
       // Memo: passing this variable (estimatedGas) to `sendTransaction({gas: estimatedGas})` causes an error when sending `withdrawal` transactions.
-      // the function goes the catch statement if something goes wrong while getting the estimatedGas. This way, the UI prevents sending invalid transactions which could cause loss of assets.
+      // 20/6/2025: Tested with `withdrawal` transaction on Shibuya and it works fine.
       const estimatedGas = await web3.eth.estimateGas(rawTx);
+      const estimatedGasBigInt = BigInt(estimatedGas);
+      // Memo: Adding 20% to the estimated gas to avoid out of gas errors
+      const gasLimit = estimatedGasBigInt + estimatedGasBigInt / BigInt(5);
       const transactionHash = await web3.eth
-        .sendTransaction({ ...rawTx })
+        .sendTransaction({ ...rawTx, gas: gasLimit.toString() })
         .once('transactionHash', (transactionHash) => {
           this.eventAggregator.publish(new BusyMessage(true));
         })

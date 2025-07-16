@@ -113,7 +113,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/bnc.svg'),
       isXcmCompatible: true,
       originChain: Chain.BIFROST_POLKADOT,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '0.5',
     },
     {
       symbol: 'vDOT',
@@ -153,7 +153,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/vastr.png'),
       isXcmCompatible: true,
       originChain: Chain.BIFROST_POLKADOT,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '5',
     },
     {
       symbol: 'PINK',
@@ -316,7 +316,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/token/bnc.svg'),
       isXcmCompatible: true,
       originChain: Chain.BIFROST_KUSAMA,
-      minBridgeAmount: '0.1',
+      minBridgeAmount: '0.5',
     },
     {
       symbol: 'vKSM',

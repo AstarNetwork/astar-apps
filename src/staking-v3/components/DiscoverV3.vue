@@ -50,6 +50,7 @@
         backgroundImage: `url(${require('src/staking-v3/assets/dapp_staking_period002_bg.webp')})`,
       }"
     />
+    <maintenance-mode />
   </div>
 </template>
 
@@ -69,6 +70,7 @@ import PeriodInfoBuild from './PeriodInfoBuild.vue';
 import VotingWizard from './vote/VotingWizard.vue';
 import PeriodStats from './PeriodStats.vue';
 import ToggleButtons from './ToggleButtons.vue';
+import MaintenanceMode from './MaintenanceMode.vue';
 
 export default defineComponent({
   components: {
@@ -81,6 +83,7 @@ export default defineComponent({
     VotingWizard,
     PeriodStats,
     ToggleButtons,
+    MaintenanceMode,
   },
   setup() {
     const { isZkEvm, isAstarZkEvm, currentNetworkIdx } = useNetworkInfo();

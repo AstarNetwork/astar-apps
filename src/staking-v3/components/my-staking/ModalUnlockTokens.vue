@@ -104,13 +104,16 @@ export default defineComponent({
       ethers.utils.formatEther(props.maxUnlockAmount.toString())
     );
     const amount = ref<string | null>(null);
+    const isMaxAmount = ref<boolean>(false);
 
     const toMaxAmount = (): void => {
       amount.value = truncate(maxAmount.value).toString();
+      isMaxAmount.value = true;
     };
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
+      isMaxAmount.value = false;
     };
 
     const isClosingModal = ref<boolean>(false);
@@ -132,7 +135,10 @@ export default defineComponent({
 
     const unlockTokens = async (): Promise<void> => {
       await closeModal();
-      await unlock(ethers.utils.parseEther(amount.value ?? '0').toBigInt());
+      const unlockAmount = isMaxAmount.value
+        ? props.maxUnlockAmount
+        : ethers.utils.parseEther(amount.value ?? '0').toBigInt();
+      await unlock(unlockAmount);
     };
 
     return {
