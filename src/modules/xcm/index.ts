@@ -286,9 +286,9 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/pha.png'),
     parachainId: parachainIds.PHALA,
     endpoints: [
-      'wss://api.phala.network/ws',
       'wss://phala-rpc.dwellir.com',
       'wss://phala.api.onfinality.io/public-ws',
+      'wss://rpc.helikon.io/phala',
     ],
     subscan: 'https://phala.subscan.io',
     isAstarNativeToken: true,
@@ -298,10 +298,7 @@ export let xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_POLKADOT,
-    endpoints: [
-      'wss://hk.p.bifrost-rpc.liebi.com/ws',
-      'wss://bifrost-polkadot.api.onfinality.io/public-ws',
-    ],
+    endpoints: ['wss://hk.p.bifrost-rpc.liebi.com/ws'],
     chopsticksEndpoint: 'ws://localhost:9947',
     subscan: 'https://bifrost.subscan.io',
     isAstarNativeToken: true,

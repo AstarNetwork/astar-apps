@@ -4,7 +4,7 @@ import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
-import { Asset, Chain, ethWalletChains, XcmChain } from 'src/v2/models';
+import { Asset, ethWalletChains, XcmChain } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
@@ -13,6 +13,7 @@ import { XcmRepository } from '../XcmRepository';
  */
 export class AstarXcmRepository extends XcmRepository {
   private astarNativeTokenId;
+  protected readonly xcmVersion = 'V5';
 
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
@@ -39,18 +40,14 @@ export class AstarXcmRepository extends XcmRepository {
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
 
     const asset = isWithdrawAssets
-      ? {
-          Concrete: await this.fetchAssetConfig(from, token, endpoint),
-        }
+      ? await this.fetchAssetConfig(from, token, endpoint)
       : {
-          Concrete: {
-            interior: 'Here',
-            parents: new BN(0),
-          },
+          interior: 'Here',
+          parents: new BN(0),
         };
 
     const assets = {
-      V3: {
+      [this.xcmVersion]: {
         fun: {
           Fungible: new BN(amount),
         },
@@ -73,7 +70,7 @@ export class AstarXcmRepository extends XcmRepository {
         };
 
     const destination = {
-      V3: {
+      [this.xcmVersion]: {
         interior: {
           X2: [
             {
@@ -97,7 +94,7 @@ export class AstarXcmRepository extends XcmRepository {
     if (feeAssetInformation.feeAssetIsRequired) {
       // we need to use another token for the fee
       const fee = {
-        V3: {
+        [this.xcmVersion]: {
           fun: {
             Fungible: new BN(feeAssetInformation.feeAmount),
           },
