@@ -1,5 +1,17 @@
 [
   {
+    "name": "NEET Raffles",
+    "shortDescription": "Our Raffles DApp is now live on Astar Ecosystem! Create and join raffles with up to 5 NFTs and multiple pricing options.",
+    "link": "https://NEET.gg/raffles",
+    "img": "images/dapp_promotions/NEETRaffles.png"
+  },
+  {
+    "name": "Ledger - dApp Staking V3",
+    "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
+    "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
+    "img": "images/dapp_promotions/ledger_dApp_Staking_v3.png"
+  },
+  {
     "name": "Archisinal",
     "shortDescription": "Pioneering Real-World-Assets in the built environment",
     "link": "https://www.archisinal.io/",
