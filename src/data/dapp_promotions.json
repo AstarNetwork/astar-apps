@@ -1,17 +1,5 @@
 [
   {
-    "name": "NEET Raffles",
-    "shortDescription": "Our Raffles DApp is now live on Astar Ecosystem! Create and join raffles with up to 5 NFTs and multiple pricing options.",
-    "link": "https://NEET.gg/raffles",
-    "img": "images/dapp_promotions/NEETRaffles.png"
-  },
-  {
-    "name": "Ledger - dApp Staking V3",
-    "shortDescription": "Join dApp Staking V3 with your Ledger device using the new Astar Native app.",
-    "link": "https://docs.astar.network/docs/build/integrations/wallets/ledger/ledger-native",
-    "img": "images/dapp_promotions/ledger_dApp_Staking_v3.png"
-  },
-  {
     "name": "Archisinal",
     "shortDescription": "Pioneering Real-World-Assets in the built environment",
     "link": "https://www.archisinal.io/",
@@ -46,17 +34,5 @@
     "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
     "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
     "img": "images/dapp_promotions/astr_token.png"
-  },
-  {
-    "name": "MoonFit",
-    "shortDescription": "#1 Cross-chain Social Fitness App on iOS & Android, Apple Watch",
-    "link": "https://app.moonfit.xyz/astar-reward",
-    "img": "images/dapp_promotions/moonfit.png"
-  },
-  {
-    "name": "PINKY",
-    "shortDescription": "Stake on PINKY and earn a fixed 46% reward in PINKY and ASTAR.",
-    "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=0xae1bb2090fb748dd28e82cb632206836d9ef3c85",
-    "img": "images/dapp_promotions/pinky.jpg"
   }
 ]
