@@ -13,13 +13,5 @@
     "subtitle": "dApp Staking is available on EVM",
     "link": "https://app.algem.io/liquid-staking",
     "gradient": ["#dcac45", "#0f0a40"]
-  },
-  {
-    "img": "",
-    "category": "Stake & Earn 'Rewarding' NFT",
-    "title": "Neurolanche",
-    "subtitle": "Join our staking and earn soulbound 'rewarding' NFT",
-    "link": "https://twitter.com/neurolanche/status/1722222206204399642?s=52&t=ISh07fvjMqpmUg40w5HqBg",
-    "gradient": ["#FF9999", "#0F0A40"]
   }
 ]
