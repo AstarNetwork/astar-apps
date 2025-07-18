@@ -55,9 +55,6 @@
             $t('sidenavi.governance')
           }}</a>
         </nav>
-        <a class="surge-mobile" :href="surgeUrl" target="_blank">
-          <img :src="require('src/assets/img/surge_token.webp')" alt="Go to ACS" />
-        </a>
 
         <div class="gradient-bg">
           <astar-domains />
@@ -95,8 +92,8 @@
 
 <script lang="ts">
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useBreakpoints, useGovernance, useNetworkInfo } from 'src/hooks';
-import { socialUrl, surgeUrl } from 'src/links';
+import { useBreakpoints, useGovernance } from 'src/hooks';
+import { socialUrl } from 'src/links';
 import { Path as RoutePath } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
@@ -127,7 +124,6 @@ export default defineComponent({
       path,
       RoutePath,
       network,
-      surgeUrl,
       socialUrl,
       isGovernanceEnabled,
       governanceUrl,
