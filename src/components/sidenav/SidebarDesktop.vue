@@ -88,14 +88,6 @@
           </div>
         </a>
       </div>
-      <div>
-        <a class="surge" :href="surgeUrl" target="_blank">
-          <img :src="require('src/assets/img/surge_token.webp')" alt="Go to ACS" />
-        </a>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('joinSurge') }}</span>
-        </q-tooltip>
-      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -108,7 +100,7 @@
 <script lang="ts">
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useGovernance, useNetworkInfo, useSidebar } from 'src/hooks';
-import { socialUrl, surgeUrl } from 'src/links';
+import { socialUrl } from 'src/links';
 import { Path as RoutePath } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
@@ -162,7 +154,6 @@ export default defineComponent({
       path,
       RoutePath,
       socialUrl,
-      surgeUrl,
       isGovernanceEnabled,
       governanceUrl,
     };
