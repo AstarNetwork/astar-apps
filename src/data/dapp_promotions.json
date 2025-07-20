@@ -1,15 +1,9 @@
 [
   {
-    "name": "NEET Raffles",
-    "shortDescription": "Our Raffles DApp is now live on Astar Ecosystem! Create and join raffles with up to 5 NFTs and multiple pricing options.",
-    "link": "https://NEET.gg/en/raffles",
-    "img": "images/dapp_promotions/NEETRaffles.png"
-  },
-  {
-    "name": "NEET dispatcher",
-    "shortDescription": "NEET Dispatcher on Soneium is live. Automate txs. Batch like a god.",
-    "link": "https://NEET.gg/en/dispatcher",
-    "img": "images/dapp_promotions/NEETDispatcher.png"
+    "name": "NEET",
+    "shortDescription": "NEET ecosystem on Astar - Raffles DApp with up to 5 NFTs, Dispatcher for transaction automation, and more tools for the community.",
+    "link": "https://NEET.gg",
+    "img": "images/dapp_promotions/NEET.png"
   },
   {
     "name": "Ledger - dApp Staking V3",
