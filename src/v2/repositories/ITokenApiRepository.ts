@@ -45,4 +45,11 @@ export interface ITokenApiRepository {
    * @param network Network name.
    */
   getTokeIssuanceHistory(network: string): Promise<TokenIssuance[]>;
+
+  /**
+   * Gets the block range for the given dApp staking period.
+   * @param network Network name.
+   * @param period Period number.
+   */
+  getPeriodBlockRange(network: string, period: number): Promise<{ start: number; end?: number }>;
 }

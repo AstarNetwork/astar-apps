@@ -47,31 +47,17 @@ export function usePeriodStats(period: Ref<number>) {
     return combinedData.filter((data) => data !== undefined) as DappStatistics[];
   });
 
-  const getPeriodEndBlock = (period: number, currentPeriod: number): number => {
-    const periodStartBlock = PERIOD1_START_BLOCKS.get(currentNetworkName.value.toLowerCase());
+  const getPeriodEndBlock = async (period: number): Promise<number> => {
+    try {
+      const tokenApiRepository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
+      const networkName = currentNetworkName.value.toLowerCase();
+      const range = await tokenApiRepository.getPeriodBlockRange(networkName, period);
 
-    if (periodStartBlock) {
-      if (period < currentPeriod) {
-        const {
-          standardEraLength,
-          standardErasPerBuildAndEarnPeriod,
-          standardErasPerVotingPeriod,
-        } = eraLengths.value;
-        return (
-          periodStartBlock +
-          (standardErasPerBuildAndEarnPeriod + standardErasPerVotingPeriod) *
-            standardEraLength *
-            period -
-          1
-        );
-      }
-
+      return range.end ?? currentBlock.value;
+    } catch (error) {
+      console.error('Failed to get period end block', error);
       return currentBlock.value;
     }
-
-    throw new Error(
-      `Can't determine dApp staking start block for network ${currentNetworkName.value}`
-    );
   };
 
   const calculateTvlRatio = async (block: number): Promise<void> => {
@@ -82,14 +68,12 @@ export function usePeriodStats(period: Ref<number>) {
     );
 
     const allDappsId = allDapps.value.map((dapp) => dapp.chain.id);
+    const periodEndBlock = await getPeriodEndBlock(period.value);
     const [stats, totalIssuance, periodInfo, stakes] = await Promise.all([
       repository.getStakingPeriodStatistics(currentNetworkName.value.toLowerCase(), period.value),
       balancesRepository.getTotalIssuance(block),
       dappStakingRepository.getCurrentEraInfo(block),
-      dappStakingRepository.getContractsStake(
-        allDappsId,
-        getPeriodEndBlock(period.value, protocolState.value?.periodInfo.number ?? period.value)
-      ),
+      dappStakingRepository.getContractsStake(allDappsId, periodEndBlock),
     ]);
 
     // Update skates receiver from indexer although the indexer data is correct, we are using on chain data
@@ -126,10 +110,7 @@ export function usePeriodStats(period: Ref<number>) {
         eraLengths.value.standardEraLength
       ) {
         try {
-          const periodEndBlock = getPeriodEndBlock(
-            period.value,
-            protocolState.value?.periodInfo.number ?? period.value
-          );
+          const periodEndBlock = await getPeriodEndBlock(period.value);
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
           const block = Math.min(periodEndBlock, currentBlock.value) - 1;
