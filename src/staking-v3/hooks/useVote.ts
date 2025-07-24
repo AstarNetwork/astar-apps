@@ -9,7 +9,7 @@ import { useDappStakingNavigation } from './useDappStakingNavigation';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
-  const { useableBalance, lockedInDemocracy } = useBalance(currentAccount);
+  const { useableBalance } = useBalance(currentAccount);
   const {
     ledger,
     totalStake,
