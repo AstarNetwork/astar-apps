@@ -28,7 +28,7 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   let remainingLockedTokensInitial = BigInt(0);
 
   const lockedInDappStaking = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
-  const locked = computed<bigint>(() => max(lockedInDappStaking.value, lockedInDemocracy.value));
+  const locked = computed<bigint>(() => lockedInDappStaking.value);
 
   const totalStakeAmount = computed<bigint>(() =>
     ethers.utils
