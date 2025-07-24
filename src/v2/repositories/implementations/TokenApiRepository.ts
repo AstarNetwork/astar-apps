@@ -58,4 +58,17 @@ export class TokenApiRepository implements ITokenApiRepository {
       return [];
     }
   }
+
+  public async getPeriodBlockRange(
+    network: string,
+    period: number
+  ): Promise<{ start: number; end?: number }> {
+    try {
+      const url = `${TokenApiRepository.BaseUrl}/v3/${network}/dapps-staking/get-period-range/${period}`;
+      const response = await axios.get<{ start: number; end?: number }>(url);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch block range for period ${period} on network ${network}`);
+    }
+  }
 }
