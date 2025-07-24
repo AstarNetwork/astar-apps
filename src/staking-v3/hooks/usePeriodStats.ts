@@ -47,7 +47,7 @@ export function usePeriodStats(period: Ref<number>) {
     return combinedData.filter((data) => data !== undefined) as DappStatistics[];
   });
 
-  const getPeriodEndBlock = async (period: number, currentPeriod: number): Promise<number> => {
+  const getPeriodEndBlock = async (period: number): Promise<number> => {
     try {
       const tokenApiRepository = container.get<ITokenApiRepository>(Symbols.TokenApiRepository);
       const networkName = currentNetworkName.value.toLowerCase();
@@ -68,10 +68,7 @@ export function usePeriodStats(period: Ref<number>) {
     );
 
     const allDappsId = allDapps.value.map((dapp) => dapp.chain.id);
-    const periodEndBlock = await getPeriodEndBlock(
-      period.value,
-      protocolState.value?.periodInfo.number ?? period.value
-    );
+    const periodEndBlock = await getPeriodEndBlock(period.value);
     const [stats, totalIssuance, periodInfo, stakes] = await Promise.all([
       repository.getStakingPeriodStatistics(currentNetworkName.value.toLowerCase(), period.value),
       balancesRepository.getTotalIssuance(block),
@@ -113,10 +110,7 @@ export function usePeriodStats(period: Ref<number>) {
         eraLengths.value.standardEraLength
       ) {
         try {
-          const periodEndBlock = await getPeriodEndBlock(
-            period.value,
-            protocolState.value?.periodInfo.number ?? period.value
-          );
+          const periodEndBlock = await getPeriodEndBlock(period.value);
           const stakingService = container.get<IDappStakingService>(Symbols.DappStakingServiceV3);
 
           const block = Math.min(periodEndBlock, currentBlock.value) - 1;
