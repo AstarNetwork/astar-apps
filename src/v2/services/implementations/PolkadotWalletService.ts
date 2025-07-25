@@ -218,7 +218,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       const extension = this.extensions.find((x) => x.name === sender.source);
 
       if (extension) {
-        return extension.signer;
+        return extension.signer as Signer;
       } else {
         throw new Error(`Can't find polkadot extension for ${sender.address}, ${sender.source}`);
       }
@@ -233,7 +233,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       let retryCount = 0;
       let extensions: InjectedExtension[] = [];
       do {
-        extensions = await web3Enable('Astar portal');
+        extensions = (await web3Enable('Astar portal')) as InjectedExtension[];
         await wait(100);
         retryCount++;
       } while (extensions.length === 0 && retryCount <= maxRetryCount);
