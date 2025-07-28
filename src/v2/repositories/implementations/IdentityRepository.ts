@@ -35,14 +35,18 @@ export class IdentityRepository implements IIdentityRepository {
     if (!api.query.identity) {
       return undefined;
     }
-    const result = await api.query.identity.identityOf<Option<Tuple>>(address);
+    const result = await api.query.identity.identityOf<Option<PalletIdentityRegistration>>(address);
 
     if (result.isNone) {
       return undefined;
     }
 
     const unwrappedResult = result.unwrapOrDefault();
-    const identity = <PalletIdentityRegistration>unwrappedResult[0];
+    const identity = <PalletIdentityRegistration>unwrappedResult;
+    if (!identity || !identity.info) {
+      return undefined;
+    }
+
     const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
     identity.info.additional.forEach((x) => {
       // Seems dirty. The problem here is that some raw data is treated as ASCII and some as bytes
