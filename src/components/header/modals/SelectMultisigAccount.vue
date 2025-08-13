@@ -165,6 +165,7 @@ import { container } from 'src/v2/common';
 import { ASTAR_ADDRESS_PREFIX } from 'src/v2/repositories/implementations';
 import { Symbols } from 'src/v2/symbols';
 import { PolkasafeWrapper } from 'src/types/polkasafe';
+import { Polkasafe } from 'polkasafe';
 
 export default defineComponent({
   components: {
@@ -314,10 +315,21 @@ export default defineComponent({
     };
 
     const handleInitializePolkasafe = async (signatory: string, injector: any): Promise<void> => {
-      const client = new PolkasafeWrapper();
-      await client.connect('astar', signatory, injector);
-      container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
-      await setMultisigAccounts(client, signatory);
+      // Memo: Use for debugging purposes
+      console.debug('signatory', signatory); // wallet address 5
+      console.debug('injector', injector);
+
+      const c = new Polkasafe();
+      c.connect('astar', signatory, injector);
+
+      const { data, error } = await c.connectAddress(signatory);
+      console.debug('data', data);
+      console.debug('error', error);
+
+      // const client = new PolkasafeWrapper();
+      // await client.connect('astar', signatory, injector);
+      // container.addConstant<PolkasafeWrapper>(Symbols.PolkasafeClient, client);
+      // await setMultisigAccounts(client, signatory);
     };
 
     const handleGetMultisigAccounts = async (): Promise<void> => {
