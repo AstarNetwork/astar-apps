@@ -122,7 +122,7 @@ export const useL1History = () => {
             let decimal = 18;
 
             if (it.orig_addr !== astarNativeTokenErcAddr) {
-              const contract = new originNetWeb3.eth.Contract(ERC20_ABI as AbiItem[], it.orig_addr);
+              const contract = new originNetWeb3.eth.Contract(ERC20_ABI as any, it.orig_addr);
               const data = await Promise.all([
                 contract.methods.name().call(),
                 contract.methods.symbol().call(),

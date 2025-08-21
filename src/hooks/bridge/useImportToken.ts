@@ -43,7 +43,7 @@ export const useImportToken = ({
         return;
       }
 
-      const contract = new fromChainWeb3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const contract = new fromChainWeb3.eth.Contract(ABI as any, tokenAddress);
 
       const [decimal, name, symbol, userBalance] = await Promise.all([
         contract.methods.decimals().call(),
@@ -102,7 +102,7 @@ export const useImportToken = ({
     try {
       const fromChainWeb3 = web3Provider.value;
       const tokenAddress = importTokenAddress.value;
-      const contract = new fromChainWeb3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const contract = new fromChainWeb3.eth.Contract(ABI as any, tokenAddress);
 
       const [decimal, name, symbol] = await Promise.all([
         contract.methods.decimals().call(),

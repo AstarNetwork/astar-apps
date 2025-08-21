@@ -44,7 +44,7 @@ export default defineComponent({
   setup(props) {
     const { navigateOwnerPage } = useDappStakingNavigation();
     const { rewards, getDappRewards } = useDappStaking();
-    const dAppRewardsMap = ref<{ dapp: string, rewards: bigint }[]>([]);
+    const dAppRewardsMap = ref<{ dapp: string; rewards: bigint }[]>([]);
 
     const checkIsRewards = (address: string): boolean => {
       const dapp = dAppRewardsMap.value.find((it) => it.dapp === address);
@@ -52,12 +52,11 @@ export default defineComponent({
         return dapp.rewards > 0;
       }
       return false;
-    }
+    };
 
     const setDappRewardsMap = async (): Promise<void> => {
-      const dAppRewardsArray: { dapp: string, rewards: bigint }[] = [];
-      if (props.ownDapps.length === 0) return
-
+      const dAppRewardsArray: { dapp: string; rewards: bigint }[] = [];
+      if (props.ownDapps.length === 0) return;
 
       for await (const dapp of props.ownDapps) {
         const ownedContractAddress = dapp.chain.address;
@@ -67,7 +66,7 @@ export default defineComponent({
         }
       }
       dAppRewardsMap.value = dAppRewardsArray;
-    }
+    };
 
     watch([rewards], setDappRewardsMap, { immediate: false });
 

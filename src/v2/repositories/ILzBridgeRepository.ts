@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import { ParamApprove, ParamBridgeLzAsset } from '../services/ILzBridgeService';
 
 export interface ILzBridgeRepository {

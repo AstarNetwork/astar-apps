@@ -41,7 +41,7 @@ export const buildErc20Contract = ({
   if (!web3) {
     throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
   }
-  return new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+  return new web3.eth.Contract(ABI as any, tokenAddress);
 };
 
 export const setupNetwork = async ({
@@ -203,7 +203,7 @@ export const getTokenBal = async ({
       if (!isTokenExist) {
         return '0';
       }
-      const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const contract = new web3.eth.Contract(ABI as any, tokenAddress);
       const decimals = await contract.methods.decimals().call();
       const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
       const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
@@ -266,7 +266,7 @@ export const fetchErc20TokenInfo = async ({
   srcChainId: number;
 }): Promise<Erc20Token | null> => {
   try {
-    const contract = new web3.eth.Contract(ABI as AbiItem[], address);
+    const contract = new web3.eth.Contract(ABI as any, address);
     const [decimal, name, symbol] = await Promise.all([
       contract.methods.decimals().call(),
       contract.methods.name().call(),

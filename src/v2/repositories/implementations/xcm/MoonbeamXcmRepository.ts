@@ -14,7 +14,7 @@ import { Asset, XcmChain } from 'src/v2/models';
 import { XcmRepository } from 'src/v2/repositories/implementations/XcmRepository';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import { AbiItem } from 'web3-utils';
 import { ethers } from 'ethers';
 import { AstarNativeToken } from 'src/v2/config/xcm/XcmRepositoryConfiguration';
@@ -116,7 +116,7 @@ export class MoonbeamXcmRepository extends XcmRepository {
     if (!isConnectedNetwork) throw Error('EVM wallet has been connected to the wrong network');
     if (!this._web3) throw Error('web3 instance is not defined');
 
-    const contract = new this._web3.eth.Contract(moonbeamXcmAbi as AbiItem[], PRE_COMPILED_ADDRESS);
+    const contract = new this._web3.eth.Contract(moonbeamXcmAbi as any, PRE_COMPILED_ADDRESS);
     const address = await this.getEvmWalletAddress();
     let currencyAddress = '';
     const symbol = token.metadata.symbol;

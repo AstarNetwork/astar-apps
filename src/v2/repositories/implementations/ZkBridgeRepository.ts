@@ -12,7 +12,7 @@ import {
 } from 'src/modules/zk-evm-bridge';
 import { ParamBridgeAsset, ParamClaim } from 'src/v2/services';
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import { AbiItem } from 'web3-utils';
 import { IZkBridgeRepository } from '../IZkBridgeRepository';
 
@@ -29,7 +29,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
   }): Promise<TransactionConfig> {
     const contractAddress = EthBridgeContract[param.fromChainName];
     const tokenAddress = param.tokenAddress;
-    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
+    const contract = new web3.eth.Contract(ERC20_ABI as any, tokenAddress);
 
     const data = contract.methods.approve(contractAddress, param.amount).encodeABI();
     return {
@@ -58,7 +58,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
 
     const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
     // ABI: https://github.com/0xPolygonHermez/zkevm-bridge-ui/blob/develop/abis/bridge.json
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
     const isNativeToken = param.tokenAddress === astarNativeTokenErcAddr;
     const destinationAddress = param.senderAddress;
     const amount = ethers.utils.parseUnits(String(param.amount), param.decimal).toString();
@@ -101,7 +101,7 @@ export class ZkBridgeRepository implements IZkBridgeRepository {
         : EthBridgeContract[EthBridgeNetworkName.Sepolia];
 
     const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
 
     const { main_exit_root, merkle_proof, rollup_exit_root, rollup_merkle_proof } =
       await fetchMerkleProof(deposit_cnt, Number(network_id));
