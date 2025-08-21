@@ -28,13 +28,6 @@
         />
         <div v-if="rightUi === 'information'">
           <information :transfer-type="HistoryTxType.CCIP_BRIDGE" :is-history="false" />
-          <div v-if="isGasRebate" class="row--banner">
-            <img
-              class="banner--eth-rebates"
-              src="~assets/img/banner/banner-eth-rebate.png"
-              alt="eth-rebate"
-            />
-          </div>
         </div>
         <select-chain
           v-if="rightUi === 'select-chain'"
