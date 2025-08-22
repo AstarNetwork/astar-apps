@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--bridge-selection {
@@ -175,7 +176,7 @@
   a {
     color: $astar-blue;
     &:hover {
-      color: lighten($astar-blue, 10%);
+      color: color.adjust($astar-blue, $lightness: 10%);
     }
   }
 }
@@ -187,7 +188,7 @@
   a {
     color: $astar-blue;
     &:hover {
-      color: lighten($astar-blue-dark, 10%);
+      color: color.adjust($astar-blue-dark, $lightness: 10%);
     }
   }
 }
@@ -220,7 +221,7 @@
     a {
       color: $astar-blue-dark;
       &:hover {
-        color: lighten($astar-blue-dark, 10%);
+        color: color.adjust($astar-blue-dark, $lightness: 10%);
       }
     }
   }

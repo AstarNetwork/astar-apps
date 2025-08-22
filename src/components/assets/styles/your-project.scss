@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--your-project {
@@ -103,7 +104,7 @@
     background-color: $navy-3;
     color: $gray-1;
     &:hover {
-      background-color: lighten($navy-3, 5%);
+      background-color: color.adjust($navy-3, $lightness: 5%);
     }
   }
 

@@ -129,6 +129,8 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+@use 'sass:color';
+@import 'src/css/quasar.variables.scss';
 .body--dark {
   .wrapper--modal-onboarding {
     .modal-content {
@@ -151,7 +153,7 @@ export default defineComponent({
     z-index: 9999;
     transition: all 0.2s ease;
     &:hover {
-      background-color: lighten($astar-blue, 10%);
+      background-color: color.adjust($astar-blue, $lightness: 10%);
     }
     &::after {
       font-size: 12px;
