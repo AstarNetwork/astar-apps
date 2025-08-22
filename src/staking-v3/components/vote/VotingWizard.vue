@@ -172,7 +172,7 @@ export default defineComponent({
         ])
     );
 
-    const looseBonusWarningMessage = computed<string>(() =>{
+    const looseBonusWarningMessage = computed<string>(() => {
       if (isLoosingBonus.value && allowedNumberOfMoves.value > 0) {
         return t('stakingV3.looseBonusWarning', { number: allowedNumberOfMoves.value });
       }
@@ -182,7 +182,7 @@ export default defineComponent({
       }
 
       return '';
-  });
+    });
 
     const { totalStakerRewards, stakerInfo } = useDappStaking();
 

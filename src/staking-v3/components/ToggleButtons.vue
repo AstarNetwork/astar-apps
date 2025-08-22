@@ -29,7 +29,7 @@ export default defineComponent({
     const handleButtonSelected = (index: number) => {
       selectedButtonIndex.value = index;
       emit('buttonSelected', index);
-    }
+    };
 
     return { selectedButtonIndex, handleButtonSelected };
   },

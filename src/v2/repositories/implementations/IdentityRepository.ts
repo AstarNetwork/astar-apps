@@ -43,6 +43,10 @@ export class IdentityRepository implements IIdentityRepository {
 
     const unwrappedResult = result.unwrapOrDefault();
     const identity = <PalletIdentityRegistration>unwrappedResult[0];
+    if (!identity) {
+      return undefined;
+    }
+
     const data = new IdentityData(u8aToString(identity.info.display.asRaw), []);
     identity.info.additional.forEach((x) => {
       // Seems dirty. The problem here is that some raw data is treated as ASCII and some as bytes

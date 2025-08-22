@@ -1,5 +1,5 @@
 import type Web3 from 'web3';
-import type { TransactionConfig } from 'web3-eth';
+import type { TransactionConfig } from 'web3-core';
 import type {
   ParamApproveCcip,
   ParamBridgeCcipAsset,

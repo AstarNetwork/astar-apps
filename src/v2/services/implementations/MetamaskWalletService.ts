@@ -134,7 +134,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
         })) as string;
         const { uncompressedPubKey } = utils.recoverPublicKeyFromSig(h160Address, msg, signature);
 
-        const contract = new web3.eth.Contract(lockdropDispatchAbi as AbiItem[], contractAddress);
+        const contract = new web3.eth.Contract(lockdropDispatchAbi as any, contractAddress);
 
         const data = contract.methods
           .dispatch_lockdrop_call(hexEncodedCall, uncompressedPubKey)

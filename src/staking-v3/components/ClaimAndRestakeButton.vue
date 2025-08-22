@@ -58,19 +58,18 @@ export default defineComponent({
 
     // Staker info containing registered dApps only.
     // Rewards can't be re-staked for unregistered dApps.
-    const stakerInfoRegisteredDapps =
-      computed<Map<string, SingularStakingInfo>>(() => {
-        const result = new Map<string, SingularStakingInfo>();
+    const stakerInfoRegisteredDapps = computed<Map<string, SingularStakingInfo>>(() => {
+      const result = new Map<string, SingularStakingInfo>();
 
-        stakerInfo.value.forEach((value, key) => {
-          const dapp = getDapp(key);
-          if (dapp) {
-            result.set(key, value);
-          }
-        });
-
-        return result;
+      stakerInfo.value.forEach((value, key) => {
+        const dapp = getDapp(key);
+        if (dapp) {
+          result.set(key, value);
+        }
       });
+
+      return result;
+    });
 
     const amountToClaim = computed<bigint>(() => {
       if (props.claimType === ClaimType.Staker) {

@@ -81,8 +81,9 @@ export default defineComponent({
     );
 
     const dapps = computed<DappVote[]>(() =>
-      registeredDapps.value.map((dapp) => mapToDappVote(dapp))
-      .filter(dapp => dapp.address.toLowerCase() !== props.moveFromAddress?.toLowerCase())
+      registeredDapps.value
+        .map((dapp) => mapToDappVote(dapp))
+        .filter((dapp) => dapp.address.toLowerCase() !== props.moveFromAddress?.toLowerCase())
     );
 
     const handleCategorySelected = (category: string): void => {

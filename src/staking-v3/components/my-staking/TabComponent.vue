@@ -38,10 +38,10 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
-    currentTabIndex:{
-      type:Number,
+    currentTabIndex: {
+      type: Number,
       required: true,
-    }
+    },
   },
   setup(props) {
     const selectedTabIndex = ref<number>(0);
@@ -51,20 +51,23 @@ export default defineComponent({
       if (props.tabSelected) {
         props.tabSelected(index);
       }
-    }
+    };
 
-    watch(() => props.tabs, () => {
-      // If the selected tab is not visible, select the first visible tab
-      const tab = props.tabs[selectedTabIndex.value];
-      if (!tab.visible) {
-        for (let i = 0; i < props.tabs.length; i++) {
-          if (props.tabs[i].visible) {
-            handleTabSelected(i);
-            break;
+    watch(
+      () => props.tabs,
+      () => {
+        // If the selected tab is not visible, select the first visible tab
+        const tab = props.tabs[selectedTabIndex.value];
+        if (!tab.visible) {
+          for (let i = 0; i < props.tabs.length; i++) {
+            if (props.tabs[i].visible) {
+              handleTabSelected(i);
+              break;
+            }
           }
         }
       }
-    });
+    );
 
     return { selectedTabIndex, handleTabSelected };
   },

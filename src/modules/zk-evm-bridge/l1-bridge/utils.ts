@@ -35,7 +35,7 @@ export const getNetworkId = async (chainName: EthBridgeNetworkName): Promise<num
   const contractAddress = EthBridgeContract[chainName];
 
   const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
-  const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+  const contract = new web3.eth.Contract(abi as any, contractAddress);
   return Number(await contract.methods.networkID().call());
 };
 
@@ -116,10 +116,7 @@ export const getBridgedTokenAddress = async ({
   const toChainContractAddress = EthBridgeContract[fromChainName];
 
   const abi = ZK_EVM_AGGREGATED_BRIDGE_ABI;
-  const fromChainContract = new fromChainWeb3.eth.Contract(
-    abi as AbiItem[],
-    toChainContractAddress
-  );
+  const fromChainContract = new fromChainWeb3.eth.Contract(abi as any, toChainContractAddress);
 
   const networkId = await getNetworkId(fromChainName);
 

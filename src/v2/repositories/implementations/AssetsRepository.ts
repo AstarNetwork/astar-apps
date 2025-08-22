@@ -10,7 +10,7 @@ import { IApi } from 'src/v2/integration';
 import { IGasPriceProvider } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import { AbiItem } from 'web3-utils';
 import {
   ParamAssetTransfer,
@@ -53,7 +53,7 @@ export class AssetsRepository implements IAssetsRepository {
         value: web3.utils.toWei(String(amount), 'ether'),
       };
     } else {
-      const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], contractAddress);
+      const contract = new web3.eth.Contract(ERC20_ABI as any, contractAddress);
       const amt = ethers.utils.parseUnits(String(amount), decimals).toString();
       return {
         from: senderAddress,

@@ -88,7 +88,7 @@ export class XcmEvmService implements IXcmEvmService {
       try {
         const provider = getEvmProvider(this.currentWallet as any);
         const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(ABI as AbiItem[], evmPrecompiledContract.xcm);
+        const contract = new web3.eth.Contract(ABI as any, evmPrecompiledContract.xcm);
         const data = contract.methods
           .assets_withdraw(
             assetIds,

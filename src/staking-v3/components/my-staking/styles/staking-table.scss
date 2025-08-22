@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import 'src/css/quasar.variables.scss';
 
 .table--wrapper {
@@ -189,10 +190,10 @@
   .row--header {
     color: $gray-2;
     background: $navy-4;
-    border-color: lighten($navy-3, 10%);
+    border-color: color.adjust($navy-3, $lightness: 10%);
   }
   .row {
-    border-color: lighten($navy-3, 10%);
+    border-color: color.adjust($navy-3, $lightness: 10%);
   }
   .row--actions {
     .row {

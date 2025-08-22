@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ParamAssetTransfer, ParamEvmTransfer, ParamEvmWithdraw } from 'src/v2/services';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import Web3 from 'web3';
 
 export interface IAssetsRepository {

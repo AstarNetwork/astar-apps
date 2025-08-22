@@ -8,7 +8,7 @@ import ERC20_ZKEVM_OFT_ABI from 'src/config/web3/abi/layerzero/oft-zkevm-bridge-
 import { LayerZeroId } from 'src/modules/zk-evm-bridge';
 import { ParamApprove, ParamBridgeLzAsset } from 'src/v2/services/ILzBridgeService';
 import Web3 from 'web3';
-import { TransactionConfig } from 'web3-eth';
+import { TransactionConfig } from 'web3-core';
 import { AbiItem } from 'web3-utils';
 import { ILzBridgeRepository } from '../ILzBridgeRepository';
 
@@ -24,7 +24,7 @@ export class LzBridgeRepository implements ILzBridgeRepository {
     web3: Web3;
   }): Promise<TransactionConfig> {
     const { contractAddress, tokenAddress } = param;
-    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
+    const contract = new web3.eth.Contract(ERC20_ABI as any, tokenAddress);
 
     const data = contract.methods.approve(contractAddress, param.amount).encodeABI();
     return {
@@ -52,7 +52,7 @@ export class LzBridgeRepository implements ILzBridgeRepository {
       : fromNetworkId === LayerZeroId.AstarEvm
       ? ERC20_ASTAR_OFT_ABI
       : ERC20_ZKEVM_OFT_ABI;
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
 
     // Ref: https://docs.layerzero.network/v1/developers/evm-guides/contract-standards/oft-v1.2#how-to-deploy-proxyoft-and-oft-contracts
     const minDstGas = await contract.methods.minDstGasLookup(destNetworkId, 1).call();

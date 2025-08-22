@@ -10,7 +10,7 @@ import type {
   ParamFetchOutboundLimits,
 } from 'src/v2/services/ICcipBridgeService';
 import type Web3 from 'web3';
-import type { TransactionConfig } from 'web3-eth';
+import type { TransactionConfig } from 'web3-core';
 import type { AbiItem } from 'web3-utils';
 import type { ICcipBridgeRepository } from '../ICcipBridgeRepository';
 import {
@@ -34,7 +34,7 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     web3: Web3;
   }): Promise<TransactionConfig> {
     const { contractAddress, tokenAddress } = param;
-    const contract = new web3.eth.Contract(ERC20_ABI as AbiItem[], tokenAddress);
+    const contract = new web3.eth.Contract(ERC20_ABI as any, tokenAddress);
 
     const data = contract.methods.approve(contractAddress, param.amount).encodeABI();
     return {
@@ -88,7 +88,7 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
         ? ETHER_SENDER_RECEIVER_ABI
         : ROUTER_ABI;
 
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
     const { destinationChainSelector, message } = this.getMessageArgs(param);
     const fee = await contract.methods.getFee(destinationChainSelector, message).call();
     // Memo: Add 5% of fee for buffer
@@ -110,7 +110,7 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
     const remoteChainSelector = ccipChainSelector[param.destNetworkId];
     const contractAddress = ccipTokenPoolAddress[param.fromNetworkId];
     const abi = isFromAstar ? LOCK_RELEASE_POOL_ABI : BURN_MINT_POOL_ABI;
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
     const outboundState = await contract.methods
       .getCurrentOutboundRateLimiterState(remoteChainSelector)
       .call();
@@ -137,7 +137,7 @@ export class CcipBridgeRepository implements ICcipBridgeRepository {
         ? ETHER_SENDER_RECEIVER_ABI
         : ROUTER_ABI;
 
-    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const contract = new web3.eth.Contract(abi as any, contractAddress);
     const data = contract.methods.ccipSend(destinationChainSelector, message).encodeABI();
 
     const fee = await this.getFee({ param, web3 });

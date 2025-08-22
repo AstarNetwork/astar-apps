@@ -57,6 +57,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+@use 'sass:color';
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--data-card {
@@ -129,7 +130,7 @@ export default defineComponent({
 .text--link {
   color: $astar-blue-dark;
   &:hover {
-    color: lighten($astar-blue-dark, 15%);
+    color: color.adjust($astar-blue-dark, $lightness: 15%);
   }
 }
 </style>

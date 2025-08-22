@@ -22,7 +22,7 @@ export class WalletService {
           message = this.getErrorMessage(dispatchError);
           result = true;
         } else if (section === 'ethCall' && method === 'Executed') {
-          const [, dispatchError] = data as unknown as ITuple<[Result<Null, DispatchError>]>;
+          const [, dispatchError] = data as any;
 
           if (dispatchError && dispatchError.isErr) {
             message = this.getErrorMessage(dispatchError.asErr);

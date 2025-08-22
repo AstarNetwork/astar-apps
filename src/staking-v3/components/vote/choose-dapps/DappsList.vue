@@ -106,7 +106,6 @@ export default defineComponent({
       }
 
       return props.dapps;
-
     });
 
     const selectedIndexes = ref<number[]>([]);
@@ -141,7 +140,8 @@ export default defineComponent({
       return number === 0 ? undefined : number;
     };
 
-    const isItemSelected = (index: number): boolean => selectedIndexes.value.includes(globalDappIndex(index));
+    const isItemSelected = (index: number): boolean =>
+      selectedIndexes.value.includes(globalDappIndex(index));
 
     return {
       modules: [Grid, Navigation],

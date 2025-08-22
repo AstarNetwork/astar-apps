@@ -144,7 +144,7 @@ export const useAccountUnification = () => {
         xcmAssets.value.assets.map(async (asset: Asset) => {
           try {
             if (!asset.mappedERC20Addr || !asset.metadata.symbol) return null;
-            const contract = new web3Provider.eth.Contract(ABI as AbiItem[], asset.mappedERC20Addr);
+            const contract = new web3Provider.eth.Contract(ABI as any, asset.mappedERC20Addr);
             const balance = (await contract.methods.balanceOf(from).call()) ?? ('0' as string);
             const evmData = {
               assetId: asset.id,
