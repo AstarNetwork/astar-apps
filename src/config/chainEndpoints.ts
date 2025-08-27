@@ -41,7 +41,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.n.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
@@ -69,7 +69,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shiden-rpc.n.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shiden.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
@@ -97,7 +97,7 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'The test network of the layer 2 scaling blockchain',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.n.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
@@ -120,7 +120,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Astar zkEVM Network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.n.dwellir.com' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
     ],
     isSupportContract: false,
@@ -140,7 +140,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'zKyoto Network',
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
-      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.n.dwellir.com' },
     ],
     isSupportContract: false,
     typeDef: typeDefs.plasmCollatorDefinitions,

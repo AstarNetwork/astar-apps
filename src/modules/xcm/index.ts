@@ -72,7 +72,7 @@ export let xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.ASTAR,
     endpoints: [
       'wss://rpc.astar.network',
-      'wss://astar-rpc.dwellir.com',
+      'wss://astar-rpc.n.dwellir.com',
       'wss://astar.public.blastapi.io',
       'wss://astar.api.onfinality.io/public-ws',
     ],
@@ -87,7 +87,7 @@ export let xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.ASTAR,
     endpoints: [
       'wss://rpc.astar.network',
-      'wss://astar-rpc.dwellir.com',
+      'wss://astar-rpc.n.dwellir.com',
       'wss://astar.public.blastapi.io',
       'wss://astar.api.onfinality.io/public-ws',
     ],
@@ -102,7 +102,6 @@ export let xcmChainObj: XcmChainObj = {
     endpoints: [
       'wss://kusama-rpc.polkadot.io',
       'wss://kusama-rpc.dwellir.com',
-      'wss://kusama-rpc.dwellir.com',
       'wss://kusama.api.onfinality.io/public-ws',
     ],
     subscan: 'https://kusama.subscan.io',
@@ -115,8 +114,7 @@ export let xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.SHIDEN,
     endpoints: [
       'wss://rpc.shiden.astar.network',
-      'wss://shiden-rpc.dwellir.com',
-      'wss://shiden-rpc.dwellir.com',
+      'wss://shiden-rpc.n.dwellir.com',
       'wss://shiden.public.blastapi.io',
       'wss://shiden.api.onfinality.io/public-ws',
     ],
@@ -131,8 +129,7 @@ export let xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.SHIDEN,
     endpoints: [
       'wss://rpc.shiden.astar.network',
-      'wss://shiden-rpc.dwellir.com',
-      'wss://shiden-rpc.dwellir.com',
+      'wss://shiden-rpc.n.dwellir.com',
       'wss://shiden.public.blastapi.io',
       'wss://shiden.api.onfinality.io/public-ws',
     ],
