@@ -11,9 +11,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install dependencies (frozen, no scripts) and build
+      - name: Install dependencies (frozen) and build
         run: |
-          yarn install --frozen-lockfile --ignore-scripts
+          yarn install --frozen-lockfile
           yarn build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
