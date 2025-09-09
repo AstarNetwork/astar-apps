@@ -4,7 +4,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 1 * *'  # Trigger the workflow every month
+    - cron: '0 0 1 * *' # Trigger the workflow every month
 
 jobs:
   build_and_check:
@@ -14,7 +14,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: yarn && yarn build
+      - name: Install dependencies (frozen) and build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
 
       - name: Link Checker
         id: lychee

@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: install dependencies & build
-        run: yarn && yarn build
+      - name: Install dependencies (frozen) and build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

@@ -29,7 +29,10 @@ jobs:
         with:
           node-version: 18
       - run: npm install -g yarn
-      - run: yarn && yarn build
+      - name: Install dependencies (frozen) and build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
       - id: deploy_firebase_hosting_channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -51,7 +54,7 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
+        run: yarn install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests

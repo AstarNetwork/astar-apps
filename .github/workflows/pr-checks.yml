@@ -16,7 +16,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: lint
         run: |
-          yarn
+          yarn install --frozen-lockfile
           yarn lint
         working-directory: ./
   run_tests:
@@ -33,7 +33,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: unit_test
         run: |
-          yarn
+          yarn install --frozen-lockfile
           yarn test
         working-directory: ./
   build_code:
@@ -50,6 +50,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: build
         run: |
-          yarn
+          yarn install --frozen-lockfile
           yarn build
         working-directory: ./
