@@ -14,7 +14,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: yarn && yarn build
+      - name: Install dependencies (frozen, no scripts) and build
+        run: |
+          yarn install --frozen-lockfile --ignore-scripts
+          yarn build
 
       - name: Link Checker
         id: lychee
