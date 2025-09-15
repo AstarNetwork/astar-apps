@@ -689,7 +689,6 @@ export class DappStakingRepository implements IDappStakingRepository {
       }
     }
 
-    console.log(`Staker info size: ${result.size}`);
     return result;
   }
 
