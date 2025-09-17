@@ -9,7 +9,7 @@ import { useDappStakingNavigation } from './useDappStakingNavigation';
 
 export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: string) {
   const { currentAccount } = useAccount();
-  const { useableBalance } = useBalance(currentAccount);
+  const { useableBalance, lockedInDemocracy } = useBalance(currentAccount);
   const {
     ledger,
     totalStake,
@@ -28,7 +28,9 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   let remainingLockedTokensInitial = BigInt(0);
 
   const lockedInDappStaking = computed<bigint>(() => ledger?.value?.locked ?? BigInt(0));
-  const locked = computed<bigint>(() => lockedInDappStaking.value);
+  const locked = computed<bigint>(() =>
+    max(lockedInDemocracy.value, lockedInDappStaking.value - totalStakeAmount.value)
+  );
 
   const totalStakeAmount = computed<bigint>(() =>
     ethers.utils
@@ -199,7 +201,11 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
   const vote = async (restake: boolean): Promise<void> => {
     // If additional funds locking is required remainLockedToken value will be negative.
     // In case of nomination transfer no additional funds locking is required.
-    const tokensToLock = remainingLockedTokens.value + availableToMove.value;
+    const tokensToLock =
+      lockedInDappStaking.value -
+      (totalStakeAmount.value + totalStake.value) +
+      availableToMove.value;
+
     const tokensToLockIncludingRestake =
       (tokensToLock < 0 ? tokensToLock * BigInt(-1) : BigInt(0)) +
       (restake ? totalStakerRewards.value : BigInt(0));
