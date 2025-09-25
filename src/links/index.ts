@@ -40,9 +40,9 @@ export const deepLink = {
 };
 
 export const stagingOrigin = 'https://staging.portal.astar.network';
-export const productionOrigin = 'https://portal.astar.network';
+// export const productionOrigin = 'https://portal.astar.network';
 // Memo: for debugging
-// export const productionOrigin = 'http://localhost:8080';
+export const productionOrigin = 'http://localhost:8080';
 
 export const polkasafeUrl = 'https://app.polkasafe.xyz';
 
