@@ -54,3 +54,4 @@ astar-collator
 # Chopstick binaries
 db.sqlite*
 .vercel
+CLAUDE.md
