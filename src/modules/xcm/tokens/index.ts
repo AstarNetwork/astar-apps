@@ -65,7 +65,16 @@ export const xcmToken = {
       originChain: Chain.MOONBEAM,
       minBridgeAmount: '0.2',
     },
-
+    {
+      symbol: 'USDT',
+      isNativeToken: false,
+      assetId: '4294969280',
+      originAssetId: '1984',
+      logo: require('/src/assets/img/token/usdt.png'),
+      isXcmCompatible: true,
+      originChain: Chain.ASSET_HUB,
+      minBridgeAmount: '1.5',
+    },
     {
       symbol: 'IBTC',
       isNativeToken: false,
