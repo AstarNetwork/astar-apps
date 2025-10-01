@@ -81,9 +81,17 @@ export function useVote(dapps: Ref<DappVote[]>, dappToMoveTokensFromAddress?: st
       return availableToMove.value - totalStakeAmount.value;
     }
 
-    return remainingLockedTokens.value >= BigInt(0)
-      ? BigInt(useableBalance.value) + remainingLockedTokens.value + availableToMove.value
-      : BigInt(useableBalance.value) - abs(remainingLockedTokens.value) + availableToMove.value;
+    // Calculate available balance after staking
+    // Use the initial remaining locked tokens (before staking amount input)
+    // to avoid double-counting the staking amount reduction
+    const availableBalance = BigInt(useableBalance.value);
+    const initialRemainingLocked = max(remainingLockedTokensInitial, BigInt(0));
+    const actualAvailable = availableBalance + availableToMove.value + initialRemainingLocked;
+
+    // Return the balance after subtracting the staking amount
+    const afterStaking = actualAvailable - totalStakeAmount.value;
+
+    return afterStaking;
   });
 
   const amountToUnstake = computed<bigint>(() =>
