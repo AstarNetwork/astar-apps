@@ -385,9 +385,9 @@ export const restrictedXcmNetwork = {
   ],
   [astarChain.SHIDEN]: [
     {
-      chain: '',
-      // chain: Chain.MOONRIVER,
-      isRestrictedFromNative: false,
+      // chain: '',
+      chain: Chain.KUSAMA,
+      isRestrictedFromNative: true,
       isRestrictedFromEvm: true,
     },
   ],
