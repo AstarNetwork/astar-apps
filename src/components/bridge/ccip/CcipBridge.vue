@@ -132,9 +132,6 @@
               })
             }}
           </li>
-          <li v-if="toChainName === CcipNetworkName.Soneium">
-            {{ $t('bridge.rebate') }}
-          </li>
           <li>
             {{ $t('bridge.warningCcipTime', { time: bridgeTime }) }}
           </li>
