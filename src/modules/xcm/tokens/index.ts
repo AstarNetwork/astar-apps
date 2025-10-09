@@ -214,8 +214,8 @@ export const xcmToken = {
       originAssetId: '',
       logo: require('/src/assets/img/token/kusama.png'),
       isXcmCompatible: true,
-      originChain: Chain.KUSAMA,
-      minBridgeAmount: '0.1',
+      originChain: Chain.ASSET_HUB_KUSAMA,
+      minBridgeAmount: '0.01',
     },
     {
       symbol: 'ASEED',

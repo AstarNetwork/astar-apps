@@ -35,6 +35,11 @@ export class StatemintXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
+    const isNativeToken = token.originChain === from.name && token.isNativeToken;
+    if (isNativeToken) {
+      return this.getTransferCallNative(from, to, recipientAddress, amount, endpoint);
+    }
+
     const destination = {
       [this.xcmVersion]: {
         interior: {
@@ -103,6 +108,98 @@ export class StatemintXcmRepository extends XcmRepository {
     );
   }
 
+  public async getTransferCallNative(
+    from: XcmChain,
+    to: XcmChain,
+    recipientAddress: string,
+    amount: BN,
+    endpoint: string
+  ): Promise<ExtrinsicPayload> {
+    const destination = {
+      [this.xcmVersion]: {
+        interior: {
+          X1: {
+            Parachain: to.parachainId,
+          },
+        },
+        parents: 1,
+      },
+    };
+
+    const assets = {
+      [this.xcmVersion]: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: {
+            Concrete: {
+              interior: { Here: null },
+              parents: 1,
+            },
+          },
+        },
+      ],
+    };
+
+    const assetsTransferType = {
+      LocalReserve: 'NULL',
+    };
+
+    const remoteFeeId = {
+      [this.xcmVersion]: {
+        Concrete: {
+          interior: { Here: null },
+          parents: 1,
+        },
+      },
+    };
+
+    const weightLimit = {
+      Unlimited: null,
+    };
+
+    const AccountId32 = {
+      id: decodeAddress(recipientAddress),
+    };
+
+    const customXcmOnDest = {
+      [this.xcmVersion]: [
+        {
+          DepositAsset: {
+            assets: {
+              Wild: {
+                All: null,
+              },
+            },
+            beneficiary: {
+              interior: {
+                X1: {
+                  AccountId32,
+                },
+              },
+              parents: 0,
+            },
+          },
+        },
+      ],
+    };
+
+    return await this.buildTxCall(
+      from,
+      endpoint,
+      'polkadotXcm',
+      'transferAssetsUsingTypeAndThen',
+      destination,
+      assets,
+      assetsTransferType,
+      remoteFeeId,
+      assetsTransferType, // fees_transfer_type, same as assets_transfer_type
+      customXcmOnDest,
+      weightLimit
+    );
+  }
+
   public async getTokenBalance(
     address: string,
     chain: XcmChain,
@@ -119,6 +216,9 @@ export class StatemintXcmRepository extends XcmRepository {
     }
     try {
       const api = await this.apiFactory.get(endpoint);
+      if (isNativeToken) {
+        return (await this.getNativeBalance(address, chain, endpoint)).toString();
+      }
       const result = await api.query.assets.account<Account>(token.originAssetId, address);
       const data = result.toJSON();
       const balance = data ? String(data.balance) : '0';
