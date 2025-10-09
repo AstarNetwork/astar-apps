@@ -142,7 +142,6 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/asset-hub.svg'),
     parachainId: parachainIds.ASSET_HUB_KUSAMA,
     endpoints: [
-      'wss://asset-hub-kusama-rpc.n.dwellir.com',
       'wss://statemine-rpc-tn.dwellir.com',
       'wss://kusama-asset-hub-rpc.polkadot.io',
       'wss://sys.ibp.network/asset-hub-kusama',
