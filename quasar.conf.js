@@ -12,8 +12,7 @@ const { configure } = require('quasar/wrappers');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const path = require('path');
-require('dotenv').config()
-
+require('dotenv').config();
 
 module.exports = configure(function (ctx) {
   return {
@@ -84,6 +83,10 @@ module.exports = configure(function (ctx) {
         chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js', 'vue'] }]);
         chain.resolve.symlinks(false);
         chain.resolve.alias.set('vue', path.resolve('./node_modules/vue'));
+
+        // Add React aliases to handle React dependencies in Vue project
+        chain.resolve.alias.set('react', path.resolve('./node_modules/react'));
+        chain.resolve.alias.set('react-dom', path.resolve('./node_modules/react-dom'));
       },
       extendWebpack(cfg) {
         cfg.plugins.push(new NodePolyfillPlugin({}));

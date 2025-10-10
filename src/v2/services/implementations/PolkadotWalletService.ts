@@ -1,6 +1,6 @@
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { Signer } from '@polkadot/types/types';
+import { ISubmittableResult, Signer } from '@polkadot/types/types';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
@@ -15,8 +15,8 @@ import { Account } from 'src/v2/models';
 import {
   IGasPriceProvider,
   IWalletService,
+  ParamGetMultisigTransaction,
   ParamSendEvmTransaction,
-  ParamSendMultisigTransaction,
   ParamSignAndSend,
 } from 'src/v2/services';
 import { PolkasafeRepository } from 'src/v2/repositories/implementations';
@@ -26,6 +26,7 @@ import { WalletService } from './WalletService';
 import { ASTAR_SS58_FORMAT, hasProperty } from '@astar-network/astar-sdk-core';
 import { IApi } from 'src/v2/integration';
 import { SupportWallet } from 'src/config/wallets';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -88,13 +89,13 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         const multisig = localStorage.getItem(LOCAL_STORAGE.MULTISIG);
         if (multisig) {
           try {
-            const callHash = await this.sendMultisigTransaction({
+            const transaction = await this.getMultisigTransaction({
               multisig,
               senderAddress,
-              tip,
               extrinsic,
             });
-            resolve(callHash);
+            extrinsic = transaction;
+            senderAddress = encodeAddress(this.polkasafeClient.getAddress(), ASTAR_SS58_FORMAT);
           } catch (error: any) {
             const isDuplicatedTx = error.message.includes('AlreadyApproved');
             const message = isDuplicatedTx
@@ -106,64 +107,62 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             this.eventAggregator.publish(new BusyMessage(false));
             resolve(error.message);
           }
-        } else {
-          try {
-            const unsub = await extrinsic.signAndSend(
-              senderAddress,
-              {
-                signer: await this.getSigner(senderAddress),
-                nonce: -1,
-                tip,
-                withSignedTransaction: true,
-              },
-              (result) => {
-                try {
-                  isDetectExtensionsAction
-                    ? this.detectExtensionsAction(false)
-                    : this.eventAggregator.publish(new BusyMessage(true));
+        }
+        try {
+          const unsub = await extrinsic.signAndSend(
+            senderAddress,
+            {
+              signer: await this.getSigner(senderAddress),
+              nonce: -1,
+              tip,
+            },
+            (result) => {
+              try {
+                isDetectExtensionsAction
+                  ? this.detectExtensionsAction(false)
+                  : this.eventAggregator.publish(new BusyMessage(true));
 
-                  if (result.isCompleted) {
-                    if (!this.isExtrinsicFailed(result.events)) {
-                      if (result.isError) {
-                        this.eventAggregator.publish(
-                          new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
-                        );
-                      } else {
-                        const subscanUrl = getSubscanExtrinsic({
-                          subscanBase: subscan,
-                          hash: result.txHash.toHex(),
-                        });
-                        this.eventAggregator.publish(
-                          new ExtrinsicStatusMessage({
-                            success: true,
-                            message: successMessage ?? AlertMsg.SUCCESS,
-                            method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-                            explorerUrl: subscanUrl,
-                          })
-                        );
-                      }
-                    }
-                    this.eventAggregator.publish(new BusyMessage(false));
-                    if (finalizedCallback) {
-                      finalizedCallback(result);
-                    }
-                    resolve(extrinsic.hash.toHex());
-                    unsub();
-                  } else {
-                    if (isMobileDevice && !result.isCompleted) {
-                      this.eventAggregator.publish(new BusyMessage(true));
+                if (result.isCompleted) {
+                  if (!this.isExtrinsicFailed(result.events)) {
+                    if (result.isError) {
+                      this.eventAggregator.publish(
+                        new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+                      );
+                    } else {
+                      const subscanUrl = getSubscanExtrinsic({
+                        subscanBase: subscan,
+                        hash: result.txHash.toHex(),
+                      });
+                      this.eventAggregator.publish(
+                        new ExtrinsicStatusMessage({
+                          success: true,
+                          message: successMessage ?? AlertMsg.SUCCESS,
+                          method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                          explorerUrl: subscanUrl,
+                        })
+                      );
                     }
                   }
-                } catch (error) {
                   this.eventAggregator.publish(new BusyMessage(false));
+                  if (finalizedCallback) {
+                    finalizedCallback(result);
+                  }
+                  resolve(extrinsic.hash.toHex());
                   unsub();
-                  reject(error as Error);
+                } else {
+                  if (isMobileDevice && !result.isCompleted) {
+                    this.eventAggregator.publish(new BusyMessage(true));
+                  }
                 }
+              } catch (error) {
+                this.eventAggregator.publish(new BusyMessage(false));
+                unsub();
+                reject(error as Error);
               }
-            );
-          } catch (error) {
-            reject(error as Error);
-          }
+            }
+          );
+        } catch (error) {
+          reject(error as Error);
         }
       });
     } catch (e) {
@@ -300,12 +299,11 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     return '';
   }
 
-  private async sendMultisigTransaction({
+  private async getMultisigTransaction({
     multisig,
     senderAddress,
-    tip,
     extrinsic,
-  }: ParamSendMultisigTransaction): Promise<string> {
+  }: ParamGetMultisigTransaction): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     this.eventAggregator.publish(new BusyMessage(true));
     const account = JSON.parse(multisig);
     let multisigAddress = senderAddress;
@@ -322,25 +320,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         throw Error(`Please add Existential Deposit to ${multisigAddress}`);
       }
     }
-    const callHash = await this.polkasafeClient.sendMultisigTransaction({
+    const api = await this.api.getApi();
+    const transaction = await this.polkasafeClient.getMultisigTransaction({
       multisigAddress,
       transaction: extrinsic,
-      isProxyAccount,
-      tip,
+      api,
+      proxyAddress: isProxyAccount ? multisigAddress : '',
     });
-    // Memo: give some time to wait for listing the transaction on PolkaSafe portal (queue page), so that users won't need to refresh the page to find the transaction for approving
-    const syncTime = 1000 * 10;
-    await wait(syncTime);
 
-    this.eventAggregator.publish(
-      new ExtrinsicStatusMessage({
-        success: true,
-        message: AlertMsg.SUCCESS_MULTISIG,
-        method: `${extrinsic.method.section}.${extrinsic.method.method}`,
-        explorerUrl: polkasafeUrl + '/transactions?tab=Queue#' + callHash,
-      })
-    );
-    this.eventAggregator.publish(new BusyMessage(false));
-    return callHash;
+    return transaction;
   }
 }

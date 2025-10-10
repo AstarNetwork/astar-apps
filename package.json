@@ -67,8 +67,10 @@
     "luxon": "^2.5.2",
     "marked": "^4.0.15",
     "path": "^0.12.7",
-    "polkasafe": "^1.4.4",
+    "polkasafe": "^1.5.0",
     "quasar": "^2.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
     "secp256k1": "^4.0.2",
     "serve-static": "^1.14.1",
@@ -108,6 +110,8 @@
     "@types/marked": "^4.0.3",
     "@types/node": "^16.11.9",
     "@types/query-string": "^6.3.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@types/store": "^2.0.2",
     "@types/three": "^0.165.0",
     "@types/validator": "^13.7.11",
@@ -144,5 +148,20 @@
   "browser": {
     "crypto": false,
     "stream": false
+  },
+  "resolutions": {
+    "@polkadot/api": "16.4.2",
+    "@polkadot/types": "16.4.2",
+    "@polkadot/types-known": "16.4.2",
+    "@polkadot/util": "13.5.3",
+    "@polkadot/util-crypto": "13.5.3",
+    "@polkadot/keyring": "13.5.3",
+    "@polkadot/ui-keyring": "3.15.2",
+    "@polkadot/extension-dapp": "0.61.4",
+    "@polkadot/hw-ledger": "13.5.3",
+    "@polkadot/api-contract": "16.4.2",
+    "@polkadot/rpc-provider": "16.4.2",
+    "@polkadot/x-randomvalues": "13.5.3",
+    "@substrate/connect": "^1.0.0"
   }
 }

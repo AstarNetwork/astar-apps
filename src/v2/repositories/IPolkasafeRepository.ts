@@ -1,13 +1,16 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { ApiPromise } from '@polkadot/api';
 
 export interface IPolkasafeRepository {
-  sendMultisigTransaction(param: MultisigTransactionParam): Promise<string>;
+  getMultisigTransaction(
+    param: MultisigTransactionParam
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 }
 
 export interface MultisigTransactionParam {
   multisigAddress: string;
+  api: ApiPromise;
   transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-  tip: string;
-  isProxyAccount: boolean;
+  proxyAddress: string;
 }
