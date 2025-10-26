@@ -6,39 +6,15 @@
     "img": "images/dapp_promotions/NEET.png"
   },
   {
-    "name": "Archisinal",
-    "shortDescription": "Pioneering Real-World-Assets in the built environment",
-    "link": "https://www.archisinal.io/",
-    "img": "images/dapp_promotions/Archisinal.png"
-  },
-  {
-    "name": "DeStore",
-    "shortDescription": "Web3 Shopify Powered by Astar",
-    "link": "https://twitter.com/DeStore_Network",
-    "img": "images/dapp_promotions/destore.jpg"
-  },
-  {
     "name": "Lucky - No-loss lottery",
     "shortDescription": "The more you stake, the more chance you have to win a raffle!",
     "link": "https://portal.astar.network/astar/dapp-staking/dapp?dapp=zsv1gvepvmwfdshmwgczs4zyvmmwesbjwqjn4wdpuefrrpy",
     "img": "images/dapp_promotions/lucky.png"
   },
   {
-    "name": "apeXchimpz (AXC)",
-    "shortDescription": "Stake for FREE #modularNFTs, guaranteed! We take NFTs further...",
-    "link": "https://www.apexchimpz.com/dapp-on-astar",
-    "img": "images/dapp_promotions/apeXchimpz.jpg"
-  },
-  {
     "name": "Algem - Liquid Staking",
     "shortDescription": "Receive one liquid nASTR token for every ASTR token you stake. Then use nASTR to yield farm on the ecosystem to maximize your earnings.",
     "link": "https://www.algem.io/",
     "img": "images/dapp_promotions/algem.jpg"
-  },
-  {
-    "name": "ASTR token, value and utility",
-    "shortDescription": "How the ASTR Token Brings Utility and Value to the Astar Ecosystem",
-    "link": "https://astar.network/blog/how-the-astr-token-brings-utility-and-value-to-the-astar-39387",
-    "img": "images/dapp_promotions/astr_token.png"
   }
 ]
