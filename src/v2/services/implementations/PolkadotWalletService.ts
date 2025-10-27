@@ -310,11 +310,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     const isProxyAccount = Boolean(account.multisigAccount.isProxyAccount);
     if (isProxyAccount) {
       // Memo: get the multisig address of the proxy account
-      const multiAddress = createKeyMulti(
-        account.multisigAccount.signatories,
-        account.multisigAccount.threshold
-      );
-      multisigAddress = encodeAddress(multiAddress, ASTAR_SS58_FORMAT);
+      multisigAddress = encodeAddress(account.multisigAccount.multisigAddress, ASTAR_SS58_FORMAT);
       const bal = await this.assetsRepository.getNativeBalance(multisigAddress);
       if (Number(bal) === 0) {
         throw Error(`Please add Existential Deposit to ${multisigAddress}`);
@@ -322,10 +318,10 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     }
     const api = await this.api.getApi();
     const transaction = await this.polkasafeClient.getMultisigTransaction({
-      multisigAddress,
+      multisigAddress: multisigAddress,
       transaction: extrinsic,
       api,
-      proxyAddress: isProxyAccount ? multisigAddress : '',
+      proxyAddress: isProxyAccount ? senderAddress : '',
     });
 
     return transaction;
