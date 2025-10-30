@@ -73,7 +73,6 @@ export let xcmChainObj: XcmChainObj = {
     endpoints: [
       'wss://rpc.astar.network',
       'wss://astar-rpc.n.dwellir.com',
-      'wss://astar.public.blastapi.io',
       'wss://astar.api.onfinality.io/public-ws',
     ],
     chopsticksEndpoint: 'ws://localhost:9944',
@@ -88,7 +87,6 @@ export let xcmChainObj: XcmChainObj = {
     endpoints: [
       'wss://rpc.astar.network',
       'wss://astar-rpc.n.dwellir.com',
-      'wss://astar.public.blastapi.io',
       'wss://astar.api.onfinality.io/public-ws',
     ],
     subscan: 'https://astar.subscan.io',
@@ -115,7 +113,6 @@ export let xcmChainObj: XcmChainObj = {
     endpoints: [
       'wss://rpc.shiden.astar.network',
       'wss://shiden-rpc.n.dwellir.com',
-      'wss://shiden.public.blastapi.io',
       'wss://shiden.api.onfinality.io/public-ws',
     ],
     chopsticksEndpoint: 'ws://localhost:9961',
@@ -130,7 +127,6 @@ export let xcmChainObj: XcmChainObj = {
     endpoints: [
       'wss://rpc.shiden.astar.network',
       'wss://shiden-rpc.n.dwellir.com',
-      'wss://shiden.public.blastapi.io',
       'wss://shiden.api.onfinality.io/public-ws',
     ],
     subscan: 'https://shiden.subscan.io',
