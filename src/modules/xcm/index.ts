@@ -380,11 +380,16 @@ export const restrictedXcmNetwork = {
       isRestrictedFromNative: true,
       isRestrictedFromEvm: true,
     },
+    {
+      chain: Chain.POLKADOT,
+      isRestrictedFromNative: true,
+      isRestrictedFromEvm: true,
+    },
   ],
   [astarChain.SHIDEN]: [
     {
-      // chain: '',
-      chain: Chain.KUSAMA,
+      chain: '',
+      // chain: Chain.KUSAMA,
       isRestrictedFromNative: true,
       isRestrictedFromEvm: true,
     },
