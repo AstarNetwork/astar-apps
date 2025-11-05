@@ -7,7 +7,8 @@ export const docsUrl = {
   evmDeposit:
     'https://docs.astar.network/docs/use/manage-assets/transfer-tokens#sending-astrsdn-to-astar-native-accounts-from-astar-evm',
   troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
-  createPromotion: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/create-promotion/',
+  createPromotion:
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
   inflation: 'https://docs.astar.network/docs/learn/tokenomics2/Inflation/',
   faqLedger:
