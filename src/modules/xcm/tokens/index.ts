@@ -22,8 +22,8 @@ export const xcmToken = {
       originAssetId: '',
       logo: require('/src/assets/img/token/dot.png'),
       isXcmCompatible: true,
-      originChain: Chain.POLKADOT,
-      minBridgeAmount: '1.1',
+      originChain: Chain.ASSET_HUB,
+      minBridgeAmount: '0.1',
     },
     {
       symbol: 'ACA',

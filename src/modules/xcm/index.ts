@@ -217,7 +217,11 @@ export let xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/chain/asset-hub.svg'),
     parachainId: parachainIds.ASSET_HUB,
     endpoints: [
-      'wss://statemint-rpc.dwellir.com',
+      'wss://statemint-rpc-tn.dwellir.com',
+      'wss://asset-hub-polkadot-rpc.n.dwellir.com',
+      'wss://sys.ibp.network/asset-hub-polkadot',
+      'wss://asset-hub-polkadot.dotters.network',
+      'wss://rpc-asset-hub-polkadot.luckyfriday.io',
       'wss://polkadot-asset-hub-rpc.polkadot.io',
       'wss://statemint.api.onfinality.io/public-ws',
     ],
@@ -377,11 +381,6 @@ export const restrictedXcmNetwork = {
   [astarChain.ASTAR]: [
     {
       chain: Chain.EQUILIBRIUM,
-      isRestrictedFromNative: true,
-      isRestrictedFromEvm: true,
-    },
-    {
-      chain: Chain.POLKADOT,
       isRestrictedFromNative: true,
       isRestrictedFromEvm: true,
     },
