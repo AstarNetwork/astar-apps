@@ -31,6 +31,7 @@ export enum SupportWallet {
   Dcent = 'DcentWallet',
   DcentEvm = 'DcentWalletEvm',
   Okx = 'okxwallet',
+  PolkaGate = 'polkagate',
 }
 
 export enum SupportMultisig {
@@ -66,6 +67,7 @@ export const WalletModalOption = {
   Dcent: SupportWallet.Dcent,
   DcentEvm: SupportWallet.DcentEvm,
   Okx: SupportWallet.Okx,
+  PolkaGate: SupportWallet.PolkaGate,
 };
 
 export const SubstrateWallets = [
@@ -83,6 +85,7 @@ export const SubstrateWallets = [
   SupportWallet.Snap,
   SupportWallet.EnkryptNative,
   SupportWallet.Dcent,
+  SupportWallet.PolkaGate,
 ];
 
 export interface Wallet {
@@ -215,6 +218,15 @@ export const supportWalletObj = {
     guideUrl: 'https://userguide.dcentwallet.com',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
+  },
+  [SupportWallet.PolkaGate]: {
+    img: require('/src/assets/img/logo_polkagate.png'),
+    name: 'PolkaGate',
+    source: SupportWallet.PolkaGate,
+    walletUrl: 'https://polkagate.xyz',
+    guideUrl: 'https://docs.polkagate.xyz',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
   },
 };
 
