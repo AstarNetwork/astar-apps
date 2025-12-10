@@ -4,7 +4,6 @@ export {
   faqH160XcmBridge,
   faqSs58Transfer,
   faqSs58XcmBridge,
-  faqSs58XvmTransfer,
   faqZkEthereumBridge,
 } from 'src/modules/information/faq';
 

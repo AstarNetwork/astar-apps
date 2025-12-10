@@ -7,10 +7,10 @@ export const faqDappStaking: Faq[] = [
   },
   {
     title: 'How can my project get listed?',
-    url: 'https://docs.astar.network/docs/use/dapp-staking/for-devs/register-dapp/',
+    url: 'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-devs/register-dapp/',
   },
   {
     title: 'How can I unstake?',
-    url: 'https://docs.astar.network/docs/use/dapp-staking/for-stakers/unstaking',
+    url: 'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-stakers/unstaking',
   },
 ];

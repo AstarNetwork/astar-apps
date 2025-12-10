@@ -97,7 +97,8 @@ export const supportWalletObj = {
     name: 'Polkadot.js',
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
-    guideUrl: 'https://docs.astar.network/docs/use/user-guides/create-wallet',
+    guideUrl:
+      'https://docs.astar.network/docs/use/get-started/astar-substrate-wallet/wallet/polkadot.js/install-polkadot-js',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
@@ -106,8 +107,7 @@ export const supportWalletObj = {
     name: 'Astar Snap',
     source: SupportWallet.Snap,
     walletUrl: 'https://snaps.metamask.io/snap/npm/astar-network/snap/',
-    guideUrl:
-      'https://docs.astar.network/docs/use/manage-wallets/wallet-providers/metamask-astar-snap/',
+    guideUrl: 'https://snaps.metamask.io/snap/npm/astar-network/snap/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
