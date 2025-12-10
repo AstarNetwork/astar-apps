@@ -144,15 +144,6 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: true,
   },
-  [SupportWallet.Clover]: {
-    img: require('/src/assets/img/logo-clover.png'),
-    name: 'Clover',
-    source: SupportWallet.Clover,
-    walletUrl: 'https://clover.finance/',
-    guideUrl: 'https://docs.clover.finance/quick-start/about-clover',
-    isSupportBrowserExtension: true,
-    isSupportMobileApp: false,
-  },
   [SupportWallet.Math]: {
     img: require('/src/assets/img/logo-mathwallet.png'),
     name: 'Math Wallet',
@@ -170,15 +161,6 @@ export const supportWalletObj = {
     guideUrl: 'https://novawallet.io/',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
-  },
-  [SupportWallet.Metadot]: {
-    img: require('/src/assets/img/logo-metadot.png'),
-    name: 'Metadot',
-    source: SupportWallet.Metadot,
-    walletUrl: 'https://metadot.app/',
-    guideUrl: 'https://docs.metadot.app/install-metadot-on-chrome-and-firefox',
-    isSupportBrowserExtension: true,
-    isSupportMobileApp: false,
   },
   [SupportWallet.HanaNative]: {
     img: require('/src/assets/img/logo-hana.png'),
