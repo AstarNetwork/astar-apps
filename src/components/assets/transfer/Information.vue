@@ -114,7 +114,6 @@ import {
   faqH160XcmBridge,
   faqSs58Transfer,
   faqSs58XcmBridge,
-  faqSs58XvmTransfer,
   getTxHistories,
   hotTopics,
   RecentHistory,
@@ -167,7 +166,7 @@ export default defineComponent({
       if (props.transferType === HistoryTxType.LZ_BRIDGE) {
         return faqZkEthereumBridge;
       }
-      return faqSs58XvmTransfer;
+      return [];
     });
 
     const setTxHistories = async (): Promise<void> => {

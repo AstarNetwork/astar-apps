@@ -5,8 +5,9 @@ import type Web3 from 'web3';
 export const docsUrl = {
   topPage: 'https://docs.astar.network',
   evmDeposit:
-    'https://docs.astar.network/docs/use/manage-assets/transfer-tokens#sending-astrsdn-to-astar-native-accounts-from-astar-evm',
-  troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/astar-portal/transfer-tokens/',
+  troubleShooting:
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/astar-portal/troubleshooting/',
   createPromotion:
     'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',
@@ -14,7 +15,8 @@ export const docsUrl = {
   faqLedger:
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-i-am-a-leger-astar-native-app-user-what-do-i-need-to-do',
   learnDappStaking: 'https://docs.astar.network/docs/learn/dapp-staking/',
-  dappStakingForStakers: 'https://docs.astar.network/docs/use/dapp-staking/for-stakers/',
+  dappStakingForStakers:
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-stakers/',
   dappStakingStaked16Dapps:
     'https://docs.astar.network/docs/learn/dapp-staking/dapp-staking-faq/#q-ive-staked-16-dapps-and-now-i-cant-add-or-move-tokens-and-im-getting-an-error-what-should-i-do',
   availableWallets: 'https://docs.astar.network/docs/use/get-started/',
