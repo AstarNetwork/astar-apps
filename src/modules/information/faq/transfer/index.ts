@@ -11,7 +11,7 @@ export const faqH160Transfer: Faq[] = [
   },
   {
     title: 'What is the easiest way to bring tokens to Astar from other chains?',
-    url: 'https://docs.astar.network/docs/use/manage-assets/xc-swap',
+    url: 'https://docs.astar.network/docs/use/how-to-guides/layer-1/get-astr-token/xy-finance',
   },
   {
     title: 'Any video tutorials available for new users?',
@@ -26,7 +26,7 @@ export const faqH160XcmBridge: Faq[] = [
   },
   {
     title: 'What is the easiest way to bring tokens to Astar from other chains?',
-    url: 'https://docs.astar.network/docs/use/manage-assets/xc-swap',
+    url: 'https://docs.astar.network/docs/use/how-to-guides/layer-1/get-astr-token/xy-finance',
   },
   {
     title: 'What is Minimum Balance?',
