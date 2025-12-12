@@ -5,8 +5,9 @@ import type Web3 from 'web3';
 export const docsUrl = {
   topPage: 'https://docs.astar.network',
   evmDeposit:
-    'https://docs.astar.network/docs/use/manage-assets/transfer-tokens#sending-astrsdn-to-astar-native-accounts-from-astar-evm',
-  troubleShooting: 'https://docs.astar.network/docs/use/troubleshooting/',
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/astar-portal/transfer-tokens/',
+  troubleShooting:
+    'https://docs.astar.network/docs/use/how-to-guides/layer-1/astar-portal/troubleshooting/',
   createPromotion:
     'https://docs.astar.network/docs/use/how-to-guides/layer-1/dapp-staking/for-devs/create-promotion/',
   tokenomics2: 'https://docs.astar.network/docs/learn/tokenomics2/',

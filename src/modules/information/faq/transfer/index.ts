@@ -41,7 +41,7 @@ export const faqH160XcmBridge: Faq[] = [
 export const faqSs58Transfer: Faq[] = [
   {
     title: 'How can I send ASTR/SDN from Exchanges to Portal?',
-    url: 'https://docs.astar.network/docs/use/manage-assets/transfer-tokens/#sending-astrsdn-to-centralized-exchanges-from-astar-network',
+    url: 'https://docs.astar.network/docs/use/how-to-guides/layer-1/astar-portal/transfer-tokens',
   },
   {
     title: 'What is Minimum Balance?',
@@ -68,7 +68,7 @@ export const faqSs58XcmBridge: Faq[] = [
   },
   {
     title: 'What is Minimum Balance?',
-    url: 'https://docs.astar.network/docs/use/manage-assets/transfer-tokens/#cross-chain-transfer-xcm',
+    url: 'https://docs.astar.network/docs/learn/glossary/#existential-deposit',
   },
   {
     title: 'Any video tutorials available for new users?',
