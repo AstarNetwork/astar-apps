@@ -40,13 +40,7 @@
                 :native-address="unifiedAccount?.nativeAddress"
                 :icon-url="unifiedAccount?.avatarUrl"
               />
-              <img
-                v-else-if="iconWallet"
-                width="24"
-                :src="iconWallet"
-                alt="wallet-icon"
-                :class="multisig && 'img--polkasafe-account'"
-              />
+              <img v-else-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
             </div>
 
             <div>
@@ -101,14 +95,6 @@
       </div>
     </div>
 
-    <div v-if="multisig" class="row--details-signatory">
-      <div class="column-account-name">
-        <img v-if="iconWallet" width="24" :src="signatoryIconWallet" alt="wallet-icon" />
-        <span class="text--accent">{{
-          $t('assets.theSignatory', { account: multisig.signatory.name })
-        }}</span>
-      </div>
-    </div>
     <modal-lockdrop-warning
       v-if="isLockdropAccount && !isH160"
       :is-modal="isModalLockdropWarning"
@@ -125,7 +111,7 @@ import { $api } from 'src/boot/api';
 import ModalLockdropWarning from 'src/components/assets/modals/ModalLockdropWarning.vue';
 import AuIcon from 'src/components/header/modals/account-unification/AuIcon.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { SupportWallet } from 'src/config/wallets';
 import {
   useAccount,
   useAccountUnification,
@@ -171,7 +157,6 @@ export default defineComponent({
     const {
       currentAccount,
       currentAccountName,
-      multisig,
       showAccountUnificationModal,
       isAccountUnification,
     } = useAccount();
@@ -209,11 +194,6 @@ export default defineComponent({
     const totalBal = computed<number>(() => {
       const addAmount = isH160.value ? props.ttlErc20Amount : props.ttlNativeXcmUsdAmount;
       return Number(balUsd.value) + addAmount;
-    });
-
-    const signatoryIconWallet = computed<string>(() => {
-      // @ts-ignore
-      return multisig.value ? supportWalletObj[multisig.value.signatory.source].img : '';
     });
 
     const copyAddress = () => {
@@ -329,9 +309,6 @@ export default defineComponent({
       isSkeleton,
       totalBal,
       ETHEREUM_EXTENSION,
-      multisig,
-      supportWalletObj,
-      signatoryIconWallet,
       isAccountUnification,
       unifiedAccount,
       isAccountUnified,

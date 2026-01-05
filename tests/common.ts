@@ -1,7 +1,6 @@
 import { BrowserContext, Page } from '@playwright/test';
 import { getWindow } from './fixtures';
 import { NODE_ENDPOINT } from './common-api';
-import { wait } from '@astar-network/astar-sdk-core';
 
 export const ALICE_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice';
@@ -54,36 +53,6 @@ export const signMessage = async (context: BrowserContext): Promise<void> => {
   const extensionWindow = await getWindow('polkadot{.js}', context);
   await extensionWindow.getByRole('textbox').fill('Test1234');
   await extensionWindow.getByRole('button', { name: 'Sign the message' }).click();
-};
-
-export const selectMultisigAccount = async (
-  page: Page,
-  context: BrowserContext,
-  isProxyAccount: boolean
-): Promise<void> => {
-  // Memo: wallet name is defined in PolkaSafe portal
-  const walletName = 'Test multisig';
-  await page.getByTestId('btn-account').click();
-  const walletTab = page.getByTestId('select-wallet-tab');
-  await walletTab.click();
-  await page.getByText('PolkaSafe').click();
-  await page.locator('.row--input').click();
-  await page.getByText('Bob').click();
-  await signMessage(context);
-  await page
-    .getByTestId(isProxyAccount ? 'proxy-account' : 'not-proxy-account')
-    .getByLabel(walletName)
-    .check();
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
-};
-
-// Memo: We won't actually send the transaction because the PolkaSafe SDK will send the transaction via an actual WSS endpoint (such as OnFinality)
-export const checkIsMultisigTxSignButtonVisible = async (
-  context: BrowserContext
-): Promise<boolean> => {
-  const extensionWindow = await getWindow('polkadot{.js}', context);
-  await extensionWindow.getByRole('textbox').fill('Test1234');
-  return extensionWindow.getByRole('button', { name: 'Sign the transaction' }) ? true : false;
 };
 
 export const closePolkadotWelcomePopup = async (context: BrowserContext): Promise<void> => {

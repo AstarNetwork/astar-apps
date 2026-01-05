@@ -55,22 +55,6 @@
               </span>
             </div>
           </button>
-          <button
-            v-if="isEnablePolkasafe"
-            class="box__row--wallet box--hover--active"
-            :class="currentWallet === SupportMultisig.Polkasafe && 'border--active'"
-            @click="setPolkasafeModal()"
-          >
-            <div class="box--img">
-              <img
-                :src="require('src/assets/img/logo-polkasafe-black.svg')"
-                class="img--polkasafe"
-              />
-            </div>
-            <div>
-              <span> PolkaSafe </span>
-            </div>
-          </button>
         </div>
         <div v-if="selWallet && isNoExtension" class="box--no-extension">
           <div class="title--no-extension">
@@ -128,16 +112,14 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { initPolkadotSnap } from '@astar-network/metamask-astar-adapter';
 import { $api } from 'src/boot/api';
-import { endpointKey } from 'src/config/chainEndpoints';
 import {
-  SupportMultisig,
   SupportWallet,
   Wallet,
   supportAllWalletsObj,
   supportEvmWallets,
   supportWallets,
 } from 'src/config/wallets';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount } from 'src/hooks';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { initiatePolkdatodSnap } from 'src/modules/snap';
@@ -152,10 +134,6 @@ export default defineComponent({
       required: true,
     },
     connectEthereumWallet: {
-      type: Function,
-      required: true,
-    },
-    openPolkasafeModal: {
       type: Function,
       required: true,
     },
@@ -183,7 +161,6 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const { currentAccountName, disconnectAccount, isAccountUnification } = useAccount();
-    const { currentNetworkIdx } = useNetworkInfo();
     const isClosing = ref<boolean>(false);
     const closeUi = async (): Promise<void> => {
       isClosing.value = true;
@@ -256,11 +233,6 @@ export default defineComponent({
       props.setWalletModal(source);
     };
 
-    const setPolkasafeModal = async (): Promise<void> => {
-      handleExtensions();
-      props.openPolkasafeModal();
-    };
-
     const setEvmWalletModal = async (source: string): Promise<void> => {
       await disconnectAccount();
       await props.connectEthereumWallet(source);
@@ -269,30 +241,18 @@ export default defineComponent({
 
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
 
-    const isEnablePolkasafe = computed<boolean>(() => {
-      const networkIdx = store.getters['general/networkIdx'];
-      const isChopstickAstar =
-        networkIdx === endpointKey.CUSTOM && currentNetworkIdx.value === endpointKey.ASTAR;
-      return props.selNetworkId === endpointKey.ASTAR || isChopstickAstar;
-    });
-
     return {
       nativeWallets,
       evmWallets,
       currentWallet,
       currentAccountName,
       selWallet,
-      SupportMultisig,
       castWalletName,
       setSubstrateWalletModal,
       setEvmWalletModal,
       disconnectAccount,
-      setPolkasafeModal,
-      currentNetworkIdx,
-      endpointKey,
       isAccountUnification,
       isClosing,
-      isEnablePolkasafe,
       SupportWallet,
     };
   },

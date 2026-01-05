@@ -44,8 +44,6 @@ export const productionOrigin = 'https://portal.astar.network';
 // Memo: for debugging
 // export const productionOrigin = 'http://localhost:8080';
 
-export const polkasafeUrl = 'https://app.polkasafe.xyz';
-
 export const polkadotJsUrl = {
   settings: {
     astar: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#',

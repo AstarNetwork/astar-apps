@@ -36,21 +36,10 @@
                 :select-network="selectNetwork"
               />
             </div>
-            <div v-else-if="modalPolkasafeSelect">
-              <select-multisig-account
-                :selected-wallet="(selectedWallet as SupportWallet)"
-                :disconnect-account="disconnectAccount"
-                :current-account="currentAccount"
-                :set-modal-account-select="setModalAccountSelect"
-                :select-network="selectNetwork"
-                :set-modal-polkasafe-select="setModalPolkasafeSelect"
-              />
-            </div>
             <select-wallet
               v-else
               :set-wallet-modal="setWalletModal"
               :connect-ethereum-wallet="connectEthereumWallet"
-              :open-polkasafe-modal="openPolkasafeModal"
               :is-no-extension="
                 modalName === WalletModalOption.NoExtension ||
                 modalName === WalletModalOption.OutdatedWallet
@@ -82,7 +71,6 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
 import NetworkWalletTab from './NetworkWalletTab.vue';
 import SelectAccount from './SelectAccount.vue';
-import SelectMultisigAccount from './SelectMultisigAccount.vue';
 import SelectNetwork from './SelectNetwork.vue';
 import SelectWallet from './SelectWallet.vue';
 
@@ -91,7 +79,6 @@ export default defineComponent({
     NetworkWalletTab,
     SelectWallet,
     SelectAccount,
-    SelectMultisigAccount,
     SelectNetwork,
     // Ads,
   },
@@ -120,10 +107,6 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
-    modalPolkasafeSelect: {
-      type: Boolean,
-      required: true,
-    },
     setWalletModal: {
       type: Function,
       required: true,
@@ -132,15 +115,7 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    openPolkasafeModal: {
-      type: Function,
-      required: true,
-    },
     setModalAccountSelect: {
-      type: Function,
-      required: true,
-    },
-    setModalPolkasafeSelect: {
       type: Function,
       required: true,
     },

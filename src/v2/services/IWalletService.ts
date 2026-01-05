@@ -25,13 +25,6 @@ export interface ParamSendEvmTransaction {
   failureMessage?: string;
 }
 
-export interface ParamSendMultisigTransaction {
-  extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>;
-  multisig: string;
-  senderAddress: string;
-  tip: string;
-}
-
 export interface IWalletService {
   /**
    * Signs and sends transaction. Returns transaction hash.

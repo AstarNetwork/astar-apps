@@ -80,14 +80,11 @@ export default {
     clearedLocalStorage:
       'Effacer votre cache local! Le portail sera rechargé dans quelques secondes',
     checkYourTransactions: 'Vérifiez vos transactions',
-    approveOnPolkasafe: 'Approuvez sur PolkaSafe',
     success: 'Succès',
     note: 'Note',
     error: 'Erreur',
     copied: 'Copié',
     info: 'Info',
-    enablePolkasafe:
-      "Signez dans l'extension de portefeuille pour activer la fonctionnalité PolkaSafe; la fenêtre modale peut prendre un certain temps avant d'apparaitre",
   },
   common: {
     updateMetadata: 'Mettre à jour les métadonnées',
@@ -161,7 +158,6 @@ export default {
     select: 'Veuillez sélectionner un portefeuille pour vous connecter à ce portail',
     nativeWallets: 'Comptes natifs',
     evmWallets: 'Comptes EVM',
-    multisigAccount: 'Comptes multi-signatures',
     accountUnification: "Unification d'un compte",
     math: {
       supportsNetwork: 'Math Wallet ne prend en charge que le réseau Shiden',
@@ -169,13 +165,6 @@ export default {
         "Basculez vers le réseau 'Shiden' dans l'extension Math Wallet et rafraîchissez la page",
     },
     showBalance: 'Afficher le solde des {token}',
-    multisig: {
-      initPolkasafe:
-        'Initialisation du SDK PolkaSafe pour une demande de signature; Ceci peut prendre un moment ',
-      noAccounts: "Aucun compte multi-signature n'a été trouvé",
-      goToPokasafe: 'Allez sur PolkaSafe pour en créer un',
-      proxy: 'Proxy',
-    },
     unifiedAccount: {
       create: 'Créer un compte unifié',
       readCarefully: 'Lisez attentivement',

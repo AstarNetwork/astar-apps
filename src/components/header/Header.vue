@@ -29,12 +29,9 @@
       :modal-name="modalName"
       :selected-wallet="selectedWallet"
       :modal-account-select="modalAccountSelect"
-      :modal-polkasafe-select="modalPolkasafeSelect"
       :set-wallet-modal="setWalletModal"
       :connect-ethereum-wallet="connectEthereumWallet"
-      :open-polkasafe-modal="openPolkasafeModal"
       :set-modal-account-select="setModalAccountSelect"
-      :set-modal-polkasafe-select="setModalPolkasafeSelect"
       :set-is-select-wallet="setIsSelectWallet"
     />
 
@@ -96,15 +93,12 @@ export default defineComponent({
     const {
       modalName,
       modalAccountSelect,
-      modalPolkasafeSelect,
       modalAccountUnificationSelect,
       selectedWallet,
       openSelectModal,
       setWalletModal,
       connectEthereumWallet,
-      openPolkasafeModal,
       setModalAccountSelect,
-      setModalPolkasafeSelect,
     } = useConnectWallet();
 
     const { isZkEvm } = useNetworkInfo();
@@ -119,7 +113,6 @@ export default defineComponent({
       isSelectWallet.value = false;
       modalName.value = '';
       modalAccountSelect.value = false;
-      modalPolkasafeSelect.value = false;
     };
 
     // Memo: open the network modal if there is no wallet address stored in the browser
@@ -186,7 +179,6 @@ export default defineComponent({
       WalletModalOption,
       currentAccount,
       modalAccountSelect,
-      modalPolkasafeSelect,
       width,
       screenSize,
       isLoading,
@@ -200,9 +192,7 @@ export default defineComponent({
       disconnectAccount,
       setWalletModal,
       connectEthereumWallet,
-      openPolkasafeModal,
       setModalAccountSelect,
-      setModalPolkasafeSelect,
       setIsSelectWallet,
     };
   },

@@ -97,14 +97,11 @@ export default {
     copyAddressSuccessfully: 'Copy address success!',
     clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
-    approveOnPolkasafe: 'Approve on PolkaSafe',
     success: 'Success',
     note: 'Note',
     error: 'Error',
     copied: 'Copied',
     info: 'Info',
-    enablePolkasafe:
-      'Please sign on the wallet extension to enable PolkaSafe functionality; the popup may take a while to appear',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -197,7 +194,6 @@ export default {
     select: 'Please select a wallet to connect to this portal',
     nativeWallets: 'Native Wallets',
     evmWallets: 'EVM Wallets',
-    multisigAccount: 'Multisig Accounts',
     accountUnification: 'Account Unification',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
@@ -206,12 +202,6 @@ export default {
     },
     showBalance: 'Show {token} balance',
     switchWalletConnectNetwork: 'Please switch to {network} network in your wallet',
-    multisig: {
-      initPolkasafe: 'Initializing PolkaSafe SDK for signature request; this may take a while',
-      noAccounts: 'There are no multisig accounts found',
-      goToPokasafe: 'Go to PolkaSafe to create one',
-      proxy: 'Proxy',
-    },
     unifiedAccount: {
       create: 'Create Unified Account',
       readCarefully: 'Please read carefully',

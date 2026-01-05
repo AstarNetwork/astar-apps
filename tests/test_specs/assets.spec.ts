@@ -10,7 +10,6 @@ import {
   connectToNetwork,
   createAccount,
   selectAccount,
-  selectMultisigAccount,
 } from '../common';
 import { getApi } from '../common-api';
 import { test } from '../fixtures';
@@ -45,18 +44,6 @@ test.beforeEach(async ({ page, context }) => {
 
 test.describe('account panel', () => {
   test('should copy wallet address', async ({ page }) => {
-    await page.locator('#copyAddress').click();
-    await expect(page.locator('.noti-content')).toBeVisible();
-  });
-
-  test('should copy multisig wallet address', async ({ page, context }) => {
-    await selectMultisigAccount(page, context, false);
-    await page.locator('#copyAddress').click();
-    await expect(page.locator('.noti-content')).toBeVisible();
-  });
-
-  test('should copy multisig proxy wallet address', async ({ page, context }) => {
-    await selectMultisigAccount(page, context, true);
     await page.locator('#copyAddress').click();
     await expect(page.locator('.noti-content')).toBeVisible();
   });

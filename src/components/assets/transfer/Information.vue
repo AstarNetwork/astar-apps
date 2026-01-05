@@ -30,7 +30,7 @@
         </a>
       </div>
     </div>
-    <div v-if="isHistory && !isMultisig" id="history" class="container--information">
+    <div v-if="isHistory" id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -146,7 +146,7 @@ export default defineComponent({
     const txHistories = ref<RecentHistory[]>([]);
     const lztTxHistories = ref<RecentLzHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { senderSs58Account, isMultisig, currentAccount } = useAccount();
+    const { senderSs58Account, currentAccount } = useAccount();
     const { currentNetworkName, isAstarZkEvm } = useNetworkInfo();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
@@ -225,7 +225,6 @@ export default defineComponent({
       txHistories,
       isLoadingTxHistories,
       socialUrl,
-      isMultisig,
       lztTxHistories,
       HistoryTxType,
       ccipExplorerUrl,
