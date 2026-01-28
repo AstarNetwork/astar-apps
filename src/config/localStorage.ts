@@ -1,5 +1,4 @@
 import { hasProperty } from '@astar-network/astar-sdk-core';
-import { SupportMultisig } from './wallets';
 
 export enum LOCAL_STORAGE {
   DEFAULT_CURRENCY = 'defaultCurrency',
@@ -68,11 +67,6 @@ export const updateAccountHistories = ({
   network: string;
   txs: any[];
 }): void => {
-  const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-  // Memo: There are no transaction details in multisig txs(approve_as_multi)
-  if (wallet === SupportMultisig.Polkasafe) {
-    return;
-  }
   let newDataObj;
   const numberOfStoredTxs = 5;
   txs.slice(0, numberOfStoredTxs);

@@ -1,13 +1,7 @@
 <template>
   <div>
     <button type="button" class="btn--account" data-testid="btn-account">
-      <img
-        v-if="width >= screenSize.sm"
-        class="icon"
-        width="24"
-        :src="iconWallet"
-        :class="multisig && 'img--polkasafe'"
-      />
+      <img v-if="width >= screenSize.sm" class="icon" width="24" :src="iconWallet" />
       <span>
         {{ getShortenAddress(account, 4) }}
       </span>
@@ -16,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { useBreakpoints, useWalletIcon, useAccount } from 'src/hooks';
+import { useBreakpoints, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { defineComponent } from 'vue';
 
@@ -30,13 +24,11 @@ export default defineComponent({
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { iconWallet } = useWalletIcon();
-    const { multisig } = useAccount();
 
     return {
       width,
       screenSize,
       iconWallet,
-      multisig,
       getShortenAddress,
     };
   },

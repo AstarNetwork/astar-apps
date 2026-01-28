@@ -2,7 +2,6 @@ export * from './MetadataRepository';
 export * from './SystemRepository';
 export * from './EthCallRepository';
 export * from './XcmRepository';
-export * from './PolkasafeRepository';
 export * from './xcm/AcalaXcmRepository';
 export * from './xcm/InterlayXcmRepository';
 export * from './xcm/AstarXcmRepository';

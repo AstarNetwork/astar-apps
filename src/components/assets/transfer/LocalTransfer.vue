@@ -15,13 +15,7 @@
           </div>
         </div>
         <div class="box__row">
-          <img
-            v-if="iconWallet"
-            width="24"
-            :src="iconWallet"
-            alt="wallet-icon"
-            :class="multisig && 'img--polkasafe'"
-          />
+          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
           <div class="column--wallet-address">
             <div class="column--wallet-name">
               <span class="text--title">{{ currentAccountName }}</span>
@@ -228,7 +222,7 @@ export default defineComponent({
   },
   setup(props) {
     const { iconWallet } = useWalletIcon();
-    const { currentAccount, currentAccountName, multisig, isLockdropAccount } = useAccount();
+    const { currentAccount, currentAccountName, isLockdropAccount } = useAccount();
     const { nativeTokenSymbol, networkNameSubstrate, isSupportAuTransfer, isZkEvm } =
       useNetworkInfo();
     const t = computed<Asset>(() => props.token);
@@ -283,7 +277,6 @@ export default defineComponent({
       isRequiredCheck,
       isTransferNativeToken,
       isNativeToEvm,
-      multisig,
       isZkEvm,
       networkNameSubstrate,
       isSupportAuTransfer,

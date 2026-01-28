@@ -1,8 +1,7 @@
 import { isValidEvmAddress, toSS58Address, wait } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportMultisig, SupportWallet } from 'src/config/wallets';
-import { Multisig } from 'src/modules/multisig';
+import { SupportWallet } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { SubstrateAccount, UnifiedAccount } from 'src/store/general/state';
 import { container } from 'src/v2/common';
@@ -25,7 +24,6 @@ export const useAccount = () => {
   const store = useStore();
   const { getProxiedUrl } = useNft();
   const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
-  const multisig = ref<Multisig>();
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
@@ -53,7 +51,6 @@ export const useAccount = () => {
 
     return currentAccount.value;
   });
-  const isMultisig = computed<boolean>(() => !!localStorage.getItem(LOCAL_STORAGE.MULTISIG));
   const { SELECTED_ADDRESS, SELECTED_WALLET, MULTISIG } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
@@ -221,16 +218,6 @@ export const useAccount = () => {
       if (currentAddress.value) {
         await checkIfUnified(currentAddress.value);
       }
-
-      const storedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
-      if (storedWallet === SupportMultisig.Polkasafe) {
-        currentAccount.value = currentAddress.value;
-        multisig.value = JSON.parse(localStorage.getItem(LOCAL_STORAGE.MULTISIG) || '{}');
-        currentAccountName.value = multisig.value!.multisigAccount.name;
-        localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
-      } else {
-        multisig.value = undefined;
-      }
     },
     { immediate: true }
   );
@@ -246,8 +233,6 @@ export const useAccount = () => {
     currentAccount,
     currentAccountName,
     senderSs58Account,
-    multisig,
-    isMultisig,
     isAccountUnification,
     isH160Formatted,
     isLockdropAccount,

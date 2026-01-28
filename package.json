@@ -67,7 +67,6 @@
     "luxon": "^2.5.2",
     "marked": "^4.0.15",
     "path": "^0.12.7",
-    "polkasafe": "^1.4.4",
     "quasar": "^2.12.7",
     "reflect-metadata": "^0.1.13",
     "secp256k1": "^4.0.2",
@@ -138,11 +137,29 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">=18.x",
+    "node": ">=20.x",
     "yarn": ">=1.22.0"
   },
   "browser": {
     "crypto": false,
     "stream": false
+  },
+  "resolutions": {
+    "@polkadot/api": "16.4.2",
+    "@polkadot/api-augment": "16.4.2",
+    "@polkadot/api-base": "16.4.2",
+    "@polkadot/api-contract": "16.4.2",
+    "@polkadot/api-derive": "16.4.2",
+    "@polkadot/types": "16.4.2",
+    "@polkadot/types-augment": "16.4.2",
+    "@polkadot/types-codec": "16.4.2",
+    "@polkadot/types-create": "16.4.2",
+    "@polkadot/types-known": "16.4.2",
+    "@polkadot/rpc-augment": "16.4.2",
+    "@polkadot/rpc-core": "16.4.2",
+    "@polkadot/rpc-provider": "16.4.2",
+    "@polkadot/util": "13.5.3",
+    "@polkadot/util-crypto": "13.5.3",
+    "@polkadot/keyring": "13.5.3"
   }
 }

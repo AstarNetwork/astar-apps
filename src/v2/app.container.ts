@@ -32,7 +32,6 @@ import {
   IInflationRepository,
   IMetadataRepository,
   INftRepository,
-  IPolkasafeRepository,
   ITokenApiRepository,
   ISystemRepository,
   IXcmRepository,
@@ -51,7 +50,6 @@ import {
   InflationRepository,
   MetadataRepository,
   NftRepository,
-  PolkasafeRepository,
   SystemRepository,
   TokenApiRepository,
   XcmRepository,
@@ -147,7 +145,6 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
   container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
-  container.addTransient<IPolkasafeRepository>(PolkasafeRepository, Symbols.PolkasafeRepository);
   container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<IAssetsRepository>(AssetsRepository, Symbols.AssetsRepository);

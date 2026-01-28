@@ -22,7 +22,7 @@ jobs:
           token: ${{ env.GH_TOKEN }}
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - run: yarn && yarn build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

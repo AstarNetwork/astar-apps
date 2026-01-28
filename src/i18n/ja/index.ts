@@ -79,14 +79,11 @@ export default {
     copyAddressSuccessfully: 'コピー完了!',
     clearedLocalStorage: 'ローカルストレージをクリアしました！ポータルは数秒で再読み込みされます。',
     checkYourTransactions: 'トランザクションをチェックしてください。',
-    approveOnPolkasafe: 'PolkaSafeで承認',
     success: '成功',
     note: 'Note',
     error: 'エラー',
     copied: 'コピーした',
     info: '情報',
-    enablePolkasafe:
-      'PolkaSafeの機能を有効にするには、ウォレットエクステンションにサインオンしてください。ポップアップが表示されるまで時間がかかる場合があります。',
   },
   common: {
     updateMetadata: 'Metadataをアップデートしてください。',
@@ -157,7 +154,6 @@ export default {
     select: 'このポータルに接続するウォレットを選択してください。',
     nativeWallets: 'Native アカウント',
     evmWallets: 'EVM アカウント',
-    multisigAccount: 'マルチシグ アカウント',
     accountUnification: 'Account Unification',
     math: {
       supportsNetwork: 'Math WalletはShidenネットワークにのみ対応です。',
@@ -165,12 +161,6 @@ export default {
         'Math Walletの拡張機能であなたのネットワークをShidenに切り替え、このページを更新してください。',
     },
     showBalance: '{token}の残高を表示する',
-    multisig: {
-      initPolkasafe: '署名要求のためにPolkaSafe SDKを初期化しています。しばらく時間がかかります。',
-      noAccounts: 'マルチシグアカウントが見つかりません。',
-      goToPokasafe: 'PolkaSafe で作成します。',
-      proxy: 'プロキシ',
-    },
     unifiedAccount: {
       create: 'Unified Accountを作成',
       readCarefully: '必ずお読みください。',

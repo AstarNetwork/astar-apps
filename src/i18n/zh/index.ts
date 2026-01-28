@@ -90,13 +90,11 @@ export default {
     copyAddressSuccessfully: '地址复制成功！',
     clearedLocalStorage: '已清除本地存储！门户将在几秒钟内重新加载',
     checkYourTransactions: '检查您的交易',
-    approveOnPolkasafe: '在 PolkaSafe 上批准',
     success: '成功',
     note: '备注',
     error: '错误',
     copied: '已复制',
     info: '信息',
-    enablePolkasafe: '请在钱包扩展程序上签名以启用 PolkaSafe 功能；弹出窗口可能需要一段时间出现',
   },
   common: {
     updateMetadata: '更新元数据',
@@ -185,7 +183,6 @@ export default {
     select: '请选择一个钱包以连接到该门户',
     nativeWallets: '本地钱包',
     evmWallets: 'EVM 钱包',
-    multisigAccount: '多重签名账户',
     accountUnification: '账户合并',
     math: {
       supportsNetwork: 'Math 钱包仅支持 Shiden 网络',
@@ -193,12 +190,6 @@ export default {
     },
     showBalance: '显示 {token} 余额',
     switchWalletConnectNetwork: '请在您的钱包中切换到 {network} 网络',
-    multisig: {
-      initPolkasafe: '正在初始化 PolkaSafe SDK 以请求签名；这可能需要一些时间',
-      noAccounts: '未找到任何多重签名账户',
-      goToPokasafe: '前往 PolkaSafe 创建一个',
-      proxy: '代理',
-    },
     unifiedAccount: {
       create: '创建统一账户',
       readCarefully: '请仔细阅读',
