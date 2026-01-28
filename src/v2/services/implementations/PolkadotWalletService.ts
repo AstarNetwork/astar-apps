@@ -1,6 +1,6 @@
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { Signer } from '@polkadot/types/types';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import type { Signer } from '@polkadot/types/types';
 import { ethers } from 'ethers';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { inject, injectable } from 'inversify';
