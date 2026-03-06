@@ -69,7 +69,7 @@ export async function installPolkadotSnap(): Promise<boolean> {
 
 export async function getInjectedMetamaskExtension(): Promise<InjectedMetamaskExtension | null> {
   const extensions = await web3EnablePromise;
-  return getMetamaskExtension(extensions || []) || null;
+  return getMetamaskExtension((extensions || []) as InjectedExtension[]) || null;
 }
 
 function getMetamaskExtension(
